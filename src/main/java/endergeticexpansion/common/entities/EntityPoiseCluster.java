@@ -11,6 +11,7 @@ import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -75,7 +76,7 @@ public class EntityPoiseCluster extends LivingEntity {
 	@Override
 	@SuppressWarnings("deprecation")
 	public void tick() {
-		if(Math.ceil(this.posY) < (this.getOrigin().getY() + this.getBlocksToMoveUp()) - 1 && this.dataManager.get(ASCEND)) {
+		if(Math.ceil(this.posY) < (this.getOrigin().getY() + this.getBlocksToMoveUp()) && this.dataManager.get(ASCEND)) {
 			this.setMotion(0, Math.toRadians(3), 0);
 		}
 		
@@ -100,6 +101,11 @@ public class EntityPoiseCluster extends LivingEntity {
 			}
 		}
 		
+		if(this.isAscending() && this.prevPosY == posY && this.ticksExisted % 25 == 0 && Math.ceil(this.posY) > this.getOrigin().getY() + this.getBlocksToMoveUp()) {
+			this.dataManager.set(ASCEND, false);
+			this.setBlocksToMoveUp(0);
+		}
+		
 		/*
 		 * Used to make it try to move down if there is another entity of itself above it
 		 */
@@ -115,6 +121,10 @@ public class EntityPoiseCluster extends LivingEntity {
 				if(entity instanceof EntityPoiseCluster) {
 					this.dataManager.set(ASCEND, false);
 					this.setBlocksToMoveUp(0);
+				}
+				
+				if(entity instanceof PlayerEntity) {
+					((PlayerEntity)entity).fallDistance = 0;
 				}
 				
 			}
