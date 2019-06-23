@@ -1,0 +1,37 @@
+{
+	"block.cluster.place":
+    {
+        "category": "block",
+        "subtitle": "Cluster Place",
+        "sounds": [
+        	{ "name": "endergetic_expansion:block/cluster_place_0", "stream": true},
+        	{ "name": "endergetic_expansion:block/cluster_place_1", "stream": true}
+        ]
+    },
+    "block.cluster.break":
+    {
+        "category": "block",
+        "subtitle": "Cluster Break",
+        "sounds": [
+        	{ "name": "endergetic_expansion:block/cluster_break_0", "stream": true}
+        ]
+    },
+    "block.cluster.step":
+    {
+        "category": "block",
+        "subtitle": "Cluster Step",
+        "sounds": [
+        	{ "name": "endergetic_expansion:block/cluster_step_0", "stream": true},
+        	{ "name": "endergetic_expansion:block/cluster_step_1", "stream": true},
+        	{ "name": "endergetic_expansion:block/cluster_step_2", "stream": true}
+        ]
+    },
+    "block.cluster.hit":
+    {
+        "category": "block",
+        "subtitle": "Cluster Hit",
+        "sounds": [
+        	{ "name": "endergetic_expansion:block/cluster_hit", "stream": true}
+        ]
+    }
+}

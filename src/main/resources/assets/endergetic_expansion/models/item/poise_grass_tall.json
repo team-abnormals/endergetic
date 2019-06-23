@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "endergetic_expansion:block/poise_grass_tall_bottom"
+    }
+}

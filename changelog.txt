@@ -1,0 +1,83 @@
+Build: 1.14.2-26.0.15 - Mon Jun 10 21:04:07 GMT 2019
+	lex:
+		Fix Fishing and Mineshaft Minecarts loot tables erroring. #5785 Fix
+		Client block breaking speed not matching the server. #5790 Fix Village
+		Siege event location, and MC-154328 preventing Sieges starting. #5800
+		Fix EntityJoinWorldEvent not firing on client, or some server code
+		paths. #5786
+
+=========
+Build: 1.14.2-26.0.14 - Mon Jun 10 04:13:40 GMT 2019
+	tterrag:
+		Adjust NetworkEvent#enqueueWork to match vanilla logic
+		In singleplayer our packet work could get delayed until the next tick, 
+		breaking the expectation of packet read order. Fixes that using 
+		NetworkHooks.openGui would result in missing inventory data on the
+		client
+
+=========
+Build: 1.14.2-26.0.13 - Sun Jun 09 18:19:15 GMT 2019
+	lex:
+		Fix gameDir argument error on dedicated server.
+
+=========
+Build: 1.14.2-26.0.12 - Sun Jun 09 08:24:28 GMT 2019
+	tterrag:
+		Add registry flag for syncing
+
+	tterrag:
+		Add forge registries for most vanilla registries
+		Made all registry names consistent with their vanilla counterparts Also
+		added a system for legacy registry names, so no data will be lost 
+		Cleaned up formatting in GameData and ForgeRegistries
+
+=========
+Build: 1.14.2-26.0.10 - Sun Jun 09 04:19:52 GMT 2019
+	tterrag:
+		Add forge registry for container types, expose
+		ScreenManager.registerFactory
+
+	tterrag:
+		Fix issues preventing test mods loading
+
+=========
+Build: 1.14.2-26.0.8 - Sat Jun 08 18:30:30 GMT 2019
+	cpw:
+		Don't NPE during construction of ModLoadingException..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.7 - Sat Jun 08 16:22:18 GMT 2019
+	lex:
+		Fix misobfed methods due to mapping conflict.
+
+=========
+Build: 1.14.2-26.0.6 - Sat Jun 08 14:45:48 GMT 2019
+	cpw:
+		Update mappings
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.5 - Sat Jun 08 05:33:37 GMT 2019
+	tterrag:
+		Fix block activation not occurring serverside
+		Missing block of code from the old patch caused it to be skipped
+
+=========
+Build: 1.14.2-26.0.4 - Sat Jun 08 05:02:43 GMT 2019
+	tterrag:
+		Rework model patches/classes for new bake signature
+
+=========
+Build: 1.14.2-26.0.3 - Sat Jun 08 02:41:53 GMT 2019
+	lex:
+		Fix NamespacedWrapper not delegating a new getter. Fixing data loading
+		spam at world start. Update red/yellow/green tags with new vanilla item
+		names. Reenabled test source directory in project and made ModelDataTest
+		compile.
+
+=========
+Build: 1.14.2-26.0.2 - Fri Jun 07 21:49:40 GMT 2019
+	cpw:
+		Fix realms class name
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>

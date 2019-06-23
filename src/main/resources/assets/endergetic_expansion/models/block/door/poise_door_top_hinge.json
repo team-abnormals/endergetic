@@ -1,0 +1,7 @@
+{
+    "parent": "block/door_top_rh",
+    "textures": {
+        "bottom": "endergetic_expansion:block/poise_door_bottom",
+        "top": "endergetic_expansion:block/poise_door_top"
+    }
+}

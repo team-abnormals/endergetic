@@ -1,0 +1,8 @@
+{
+    "parent": "block/outer_stairs",
+    "textures": {
+        "bottom": "endergetic_expansion:block/poise_planks",
+        "top": "endergetic_expansion:block/poise_planks",
+        "side": "endergetic_expansion:block/poise_planks"
+    }
+}

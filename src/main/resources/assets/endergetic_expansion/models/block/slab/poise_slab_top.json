@@ -1,0 +1,8 @@
+{
+    "parent": "block/slab_top",
+    "textures": {
+        "bottom": "endergetic_expansion:block/poise_planks",
+        "top": "endergetic_expansion:block/poise_planks",
+        "side": "endergetic_expansion:block/poise_planks"
+    }
+}

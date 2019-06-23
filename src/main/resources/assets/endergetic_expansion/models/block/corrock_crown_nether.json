@@ -1,0 +1,6 @@
+{
+	"model": "endergetic_expansion:empty",
+	"textures": {
+      	"particle": "endergetic_expansion:item/corrock_crown_nether"
+    }
+}
