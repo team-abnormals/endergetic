@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -21,6 +22,14 @@ public class BlockBoof extends ContainerBlock {
 	public BlockBoof(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(BOOFED, false));
+	}
+	
+	public boolean canProvidePower(BlockState state) {
+		return state.get(BOOFED);
+	}
+	
+	public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		return 15;
 	}
 	
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
