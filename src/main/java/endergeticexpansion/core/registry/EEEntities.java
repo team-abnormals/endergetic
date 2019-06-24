@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import endergeticexpansion.common.entities.EntityBolloomFruit;
+import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.Entity;
@@ -28,10 +29,11 @@ public class EEEntities {
 	 */
 	public static final EntityType<EntityPoiseCluster> POISE_CLUSTER = createEntity(EntityPoiseCluster.class, EntityPoiseCluster::new, 1F, 1F, 0x000000, 0xFFFFFF);
 	public static final EntityType<EntityBolloomFruit> BOLLOOM_FRUIT = createEntity(EntityBolloomFruit.class, EntityBolloomFruit::new, 0.5F, 0.50F, 0x000000, 0xFFFFFF);
+	public static final EntityType<EntityBoofBlock> BOOF_BLOCK = createEntity(EntityBoofBlock.class, EntityBoofBlock::new, 1.6F, 1.6F, 0x000000, 0xFFFFFF);
 	
 	private static <T extends Entity> EntityType<T> createEntity(Class<T> entityClass, EntityType.IFactory<T> factory, float width, float height, int eggPrimary, int eggSecondary) {
         ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, classToString(entityClass));
-        EntityType<T> entity = EntityType.Builder.create(factory, EntityClassification.MISC).size(width, height).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).build(location.toString());
+        EntityType<T> entity = EntityType.Builder.create(factory, EntityClassification.MISC).size(width, height).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(3).build(location.toString());
         entity.setRegistryName(location);
         entities.add(entity);
 

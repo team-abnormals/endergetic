@@ -21,7 +21,7 @@ public class EEItems {
 	@SubscribeEvent
 	public static void onRegisterItems(RegistryEvent.Register<Item> event) {
 		final IForgeRegistry<Item> registry = event.getRegistry();
-		Item[] items = {
+		final Item[] items = {
 			BOLLOOM_FRUIT, BOOFLO_HIDE
 		};
 		registry.registerAll(items);

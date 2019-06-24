@@ -1,6 +1,7 @@
 package endergeticexpansion.core.registry;
 
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityBoof;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
@@ -19,5 +20,6 @@ public class EETileEntities {
 	 */
 	public static TileEntityType<TileEntityBolloomBud> BOLLOOM_BUD;
 	public static TileEntityType<TileEntityPuffBugHive> PUFFBUG_HIVE;
+	public static TileEntityType<TileEntityBoof> BOOF_BLOCK;
 	
 }

@@ -24,7 +24,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 /*
@@ -116,7 +115,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	public void tick() {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		this.dataManager.set(SWAY, MathHelper.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
+		this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
 		if(!this.getDataManager().get(UNTIED)) {
 			this.setPosition(
 				this.getDataManager().get(ORIGINAL_X_SWAY) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
@@ -303,7 +302,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
-		if(!this.getEntityWorld().isRemote) {
+		if(!this.getEntityWorld().isRemote && this.ticksExisted > 10) {
 			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT));
 		}
 		this.remove();

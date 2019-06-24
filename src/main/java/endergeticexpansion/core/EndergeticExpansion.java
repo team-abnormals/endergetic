@@ -1,6 +1,7 @@
 package endergeticexpansion.core;
 
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityBoof;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
@@ -46,5 +47,7 @@ public class EndergeticExpansion {
     	event.getRegistry().register(EETileEntities.BOLLOOM_BUD = (TileEntityType<TileEntityBolloomBud>) TileEntityType.Builder.func_223042_a(TileEntityBolloomBud::new, EEBlocks.BOLLOOM_BUD).build(null).setRegistryName(MOD_ID, "bolloom_bud"));
     
     	event.getRegistry().register(EETileEntities.PUFFBUG_HIVE = (TileEntityType<TileEntityPuffBugHive>) TileEntityType.Builder.func_223042_a(TileEntityPuffBugHive::new, EEBlocks.PUFFBUG_HIVE).build(null).setRegistryName(MOD_ID, "puffbug_hive"));
+    	
+    	event.getRegistry().register(EETileEntities.BOOF_BLOCK = (TileEntityType<TileEntityBoof>) TileEntityType.Builder.func_223042_a(TileEntityBoof::new, EEBlocks.BOOF_BLOCK).build(null).setRegistryName(MOD_ID, "boof_block"));
     }
 }
