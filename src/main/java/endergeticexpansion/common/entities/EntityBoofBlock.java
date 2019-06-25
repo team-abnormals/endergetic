@@ -8,6 +8,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
@@ -58,7 +60,9 @@ public class EntityBoofBlock extends LivingEntity {
 				if(!(entity instanceof EntityBoofBlock) &&
 					!(entity instanceof ShulkerEntity) &&
 					!(entity instanceof TridentEntity) &&
-					!(entity instanceof AbstractArrowEntity)
+					!(entity instanceof AbstractArrowEntity) &&
+					!(entity instanceof PaintingEntity) &&
+					!(entity instanceof ItemFrameEntity)
 				) {
 					if(entity.posY - 0.45F >= this.posY) {
 						entity.addVelocity(0, this.rand.nextFloat() * 0.05D + 0.35D, 0);

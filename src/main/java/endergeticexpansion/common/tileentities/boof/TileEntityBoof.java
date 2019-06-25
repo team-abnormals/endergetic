@@ -8,6 +8,8 @@ import endergeticexpansion.common.entities.EntityBolloomFruit;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -33,6 +35,8 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				!(entity instanceof FishingBobberEntity) &&
 				!(entity instanceof AbstractArrowEntity) &&
 				!(entity instanceof EntityBolloomFruit) &&
+				!(entity instanceof PaintingEntity) &&
+				!(entity instanceof ItemFrameEntity) &&
 				!world.getBlockState(pos).get(BlockBoof.BOOFED)) {
 				
 				if(entity instanceof PlayerEntity) {
