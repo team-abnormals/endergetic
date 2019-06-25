@@ -1,13 +1,15 @@
 package endergeticexpansion.core;
 
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityBoof;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
+import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.proxy.*;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
+import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,6 +34,7 @@ public class EndergeticExpansion {
     
 	void preInit(final FMLCommonSetupEvent event) {
 		proxy.preInit();
+		EEDispenserBehaviorRegistry.registerAll();
 	}
     
     @SubscribeEvent
@@ -49,5 +52,6 @@ public class EndergeticExpansion {
     	event.getRegistry().register(EETileEntities.PUFFBUG_HIVE = (TileEntityType<TileEntityPuffBugHive>) TileEntityType.Builder.func_223042_a(TileEntityPuffBugHive::new, EEBlocks.PUFFBUG_HIVE).build(null).setRegistryName(MOD_ID, "puffbug_hive"));
     	
     	event.getRegistry().register(EETileEntities.BOOF_BLOCK = (TileEntityType<TileEntityBoof>) TileEntityType.Builder.func_223042_a(TileEntityBoof::new, EEBlocks.BOOF_BLOCK).build(null).setRegistryName(MOD_ID, "boof_block"));
+    	event.getRegistry().register(EETileEntities.BOOF_DISPENSED = (TileEntityType<TileEntityDispensedBoof>) TileEntityType.Builder.func_223042_a(TileEntityDispensedBoof::new, EEBlocks.BOOF_DISPENSED_BLOCK).build(null).setRegistryName(MOD_ID, "boof_dispensed_block"));
     }
 }

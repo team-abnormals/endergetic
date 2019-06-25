@@ -1,9 +1,9 @@
-package endergeticexpansion.common.tileentities;
+package endergeticexpansion.common.tileentities.boof;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
-import endergeticexpansion.common.blocks.poise.BlockBoof;
+import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
 import endergeticexpansion.common.entities.EntityBolloomFruit;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.core.registry.EETileEntities;
@@ -43,10 +43,8 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 					BlockBoof.doBoof(world, pos);
 				}
 			} else if((entity instanceof AbstractArrowEntity)) {
-				/*
-				 * NOTE: MUST CHANGE inGround to field_70254_i when decompiling into a jar
-				 */
-				Field inGround = findField(AbstractArrowEntity.class, "inGround");
+				String fieldName = this.isDeveloperWorkspace() ? "inGround" : "field_70254_i";
+				Field inGround = findField(AbstractArrowEntity.class, fieldName);
 				try {
 					inGround.set(entity, Boolean.FALSE);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -55,6 +53,14 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				BlockBoof.doBoof(getWorld(), getPos());
 			}
 		}
+	}
+	
+	public boolean isDeveloperWorkspace() {
+	    final String target = System.getenv().get("target");
+	    if (target == null) {
+	        return false;
+	    }
+	    return target.contains("userdev");
 	}
 	
 	private static Field findField(Class<?> clazz, String name) {
@@ -68,10 +74,8 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
     }
 	
 	@SuppressWarnings("serial")
-	public static class UnableToFindFieldException extends RuntimeException
-    {
-        private UnableToFindFieldException(Exception e)
-        {
+	public static class UnableToFindFieldException extends RuntimeException {
+        private UnableToFindFieldException(Exception e) {
             super(e);
         }
     }

@@ -1,5 +1,6 @@
 package endergeticexpansion.core.registry.util;
 
+import endergeticexpansion.common.items.itemblocks.ItemBlockBoof;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.Block;
@@ -12,6 +13,10 @@ import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
 
 public class RegistryUtils {
+	
+	public static Item createBoofItem(Block blockForInput, ItemGroup itemGroup) {
+		return new ItemBlockBoof(blockForInput, new Item.Properties().group(itemGroup)).setRegistryName(blockForInput.getRegistryName());
+	}
 
 	public static BlockItem createSimpleBlockItem(Block blockForInput, ItemGroup itemGroup) {
 		return (BlockItem) new BlockItem(blockForInput, new Item.Properties().group(itemGroup)).setRegistryName(blockForInput.getRegistryName());

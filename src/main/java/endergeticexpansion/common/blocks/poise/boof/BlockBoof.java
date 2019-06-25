@@ -1,13 +1,17 @@
-package endergeticexpansion.common.blocks.poise;
+package endergeticexpansion.common.blocks.poise.boof;
 
 import endergeticexpansion.common.entities.EntityBoofBlock;
-import endergeticexpansion.common.tileentities.TileEntityBoof;
+import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -61,6 +65,29 @@ public class BlockBoof extends ContainerBlock {
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.MODEL;
+	}
+	
+	public static class BoofDispenseBehavior extends OptionalDispenseBehavior {
+		
+		@Override
+		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+			World world = source.getWorld();
+			this.field_218407_b = true;
+            BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+            BlockState blockstate = world.getBlockState(blockpos);
+            if(!blockstate.getMaterial().isReplaceable()) {
+    			this.field_218407_b = false;
+            } else {
+            	this.field_218407_b = true;
+            }
+            
+            if (this.field_218407_b) {
+            	world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            }
+            
+            return stack;
+		}
+		
 	}
 	
 }

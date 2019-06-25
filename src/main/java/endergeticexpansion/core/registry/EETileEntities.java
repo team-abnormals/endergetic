@@ -1,10 +1,11 @@
 package endergeticexpansion.core.registry;
 
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityBoof;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
+import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import net.minecraft.tileentity.TileEntityType;
 
 /*
@@ -21,5 +22,5 @@ public class EETileEntities {
 	public static TileEntityType<TileEntityBolloomBud> BOLLOOM_BUD;
 	public static TileEntityType<TileEntityPuffBugHive> PUFFBUG_HIVE;
 	public static TileEntityType<TileEntityBoof> BOOF_BLOCK;
-	
+	public static TileEntityType<TileEntityDispensedBoof> BOOF_DISPENSED;
 }
