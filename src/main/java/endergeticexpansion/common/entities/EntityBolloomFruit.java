@@ -116,7 +116,7 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 		this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
-		if(!this.getDataManager().get(UNTIED)) {
+		if(!this.isUntied()) {
 			this.setPosition(
 				this.getDataManager().get(ORIGINAL_X_SWAY) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
 				this.getSetY(),
@@ -130,11 +130,11 @@ public class EntityBolloomFruit extends LivingEntity {
 		    this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
 		}
 		
-		if(ticksExisted % 50 == 0 && this.getRNG().nextInt(5) == 0 && !this.getDataManager().get(UNTIED)) {
+		if(ticksExisted % 50 == 0 && this.getRNG().nextInt(5) == 0 && !this.isUntied()) {
 			this.getDataManager().set(GROWN, true);
 		}
 		
-		if(ticksExisted % 1200 == 0 && this.getDataManager().get(UNTIED)) {
+		if(ticksExisted % 1200 == 0 && this.isUntied()) {
 			this.remove();
 		}
 		
@@ -153,33 +153,33 @@ public class EntityBolloomFruit extends LivingEntity {
 		    this.setAngle(this.getAngle() - 0.03F);
 		}
 		
-		if(world.isAreaLoaded(this.getDataManager().get(ORIGIN), 1)) {
-			if(this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).getBlock() != EEBlocks.BOLLOOM_BUD || !this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).get(BlockBolloomBud.OPENED)) {
+		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+			if(this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() != EEBlocks.BOLLOOM_BUD || !this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
 				this.setUntied();
 			}
 			
-			if(this.getDataManager().get(UNTIED) && this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).getBlock() == EEBlocks.BOLLOOM_BUD) {
-				if(this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).get(BlockBolloomBud.OPENED)) {
+			if(this.isUntied() && this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() == EEBlocks.BOLLOOM_BUD) {
+				if(this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
 					if(this.getDirection() == 0) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_NORTH_FRUIT, false));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_NORTH_FRUIT, false));
 					} else if(this.getDirection() == 1) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_EAST_FRUIT, false));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_EAST_FRUIT, false));
 					} else if(this.getDirection() == 2) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_SOUTH_FRUIT, false));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_SOUTH_FRUIT, false));
 					} else {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_WEST_FRUIT, false));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_WEST_FRUIT, false));
 					}
 				}
-			} else if(!this.getDataManager().get(UNTIED) && this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).getBlock() == EEBlocks.BOLLOOM_BUD) {
-				if(this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).get(BlockBolloomBud.OPENED)) {
+			} else if(!this.isUntied() && this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() == EEBlocks.BOLLOOM_BUD) {
+				if(this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
 					if(this.getDirection() == 0) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_NORTH_FRUIT, true));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_NORTH_FRUIT, true));
 					} else if(this.getDirection() == 1) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_EAST_FRUIT, true));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_EAST_FRUIT, true));
 					} else if(this.getDirection() == 2) {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_SOUTH_FRUIT, true));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_SOUTH_FRUIT, true));
 					} else {
-						this.getEntityWorld().setBlockState(this.getDataManager().get(ORIGIN), this.getEntityWorld().getBlockState(this.getDataManager().get(ORIGIN)).with(BlockBolloomBud.HAS_WEST_FRUIT, true));
+						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_WEST_FRUIT, true));
 					}
 				}
 			}
@@ -289,6 +289,14 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	public float getDesiredAngle() {
 		return this.getDataManager().get(DESIRED_ANGLE);
+	}
+	
+	public BlockPos getOrigin() {
+		return this.getDataManager().get(ORIGIN);
+	}
+	
+	public boolean isUntied() {
+		return this.getDataManager().get(UNTIED);
 	}
 	
 	public void setOriginalSway(float x, float z) {

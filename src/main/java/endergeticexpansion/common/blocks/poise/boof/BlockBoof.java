@@ -11,6 +11,8 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -82,7 +84,12 @@ public class BlockBoof extends ContainerBlock {
             }
             
             if (this.field_218407_b) {
-            	world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            	IFluidState fluidstate = world.getFluidState(blockpos);
+            	if(fluidstate.getFluid() == Fluids.WATER) {
+            		world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            	} else {
+            		world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            	}
             }
             
             return stack;

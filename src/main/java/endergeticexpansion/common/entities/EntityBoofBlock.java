@@ -28,8 +28,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityBoofBlock extends LivingEntity {
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187200_j);
-
+	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.field_187200_j);
+	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.field_187198_h);
+	
 	public EntityBoofBlock(EntityType<? extends EntityBoofBlock> type, World world) {
 		super(EEEntities.BOOF_BLOCK, world);
 		this.setNoGravity(true);
@@ -44,12 +45,13 @@ public class EntityBoofBlock extends LivingEntity {
 	@Override
 	protected void registerData() {
 		this.getDataManager().register(ORIGIN, BlockPos.ZERO);
+		this.getDataManager().register(FOR_PROJECTILE, false);
 		super.registerData();
 	}
 	
 	@Override
 	public void tick() {
-		AxisAlignedBB bb = this.getBoundingBox();
+		AxisAlignedBB bb = this.getBoundingBox().grow(0, 0.25F, 0);
 		List<Entity> entities = this.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
 		int entityCount = entities.size();
 		boolean hasEntity = entityCount > 0;
@@ -66,17 +68,22 @@ public class EntityBoofBlock extends LivingEntity {
 				) {
 					if(entity.posY - 0.45F >= this.posY) {
 						entity.addVelocity(0, this.rand.nextFloat() * 0.05D + 0.35D, 0);
+					} else if(entity.posY < this.posY - 1F) {
+						entity.addVelocity(0, this.rand.nextFloat() * -0.05D - 0.35D, 0);
 					} else {
 						entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 6F * 0.1F, this.rand.nextFloat() * 0.45D + 0.25D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 6F * 0.1F);
 					}
 				} else if((entity instanceof TridentEntity) || (entity instanceof AbstractArrowEntity)) {
+					this.setForProjectile();
 					this.getEntityWorld().setBlockState(getOrigin(), Blocks.AIR.getDefaultState());
 					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F);
 				}
 			}
 		}
 		if(this.ticksExisted >= 10) {
-			if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1)) {
+			if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.getEntityWorld().getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK && !this.isForProjectile()) {
+				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.getDefaultState());
+			} else if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
 				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.getDefaultState());
 			}
 			this.remove();
@@ -93,6 +100,18 @@ public class EntityBoofBlock extends LivingEntity {
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {return false;}
 	
+	public boolean isForProjectile() {
+		return this.getDataManager().get(FOR_PROJECTILE);
+	}
+	
+	@Override
+	public boolean canRenderOnFire() {
+		return false;
+	}
+	
+	public void setForProjectile() {
+		this.getDataManager().set(FOR_PROJECTILE, true);
+	}
 	
 	public void setOrigin(BlockPos pos) {
 		this.getDataManager().set(ORIGIN, pos);
