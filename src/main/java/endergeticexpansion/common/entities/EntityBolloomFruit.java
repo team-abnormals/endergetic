@@ -109,19 +109,22 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	public void tick() {
+		if(!world.isAreaLoaded(this.getOrigin(), 1)) return;
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 		if(world.isAreaLoaded(this.getOrigin(), 1)) {
 			this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
 		}
-		if(!this.isUntied()) {
-			this.setPosition(
-				this.getDataManager().get(ORIGINAL_X) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
-				this.getSetY(),
-				this.getDataManager().get(ORIGINAL_Z) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
-			);
-		} else {
-			this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
+		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+			if(!this.isUntied()) {
+				this.setPosition(
+					this.getDataManager().get(ORIGINAL_X) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
+					this.getSetY(),
+					this.getDataManager().get(ORIGINAL_Z) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
+				);
+			} else {
+				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
+			}
 		}
 		
 		if (ticksExisted % 45 == 0) {
