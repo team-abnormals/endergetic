@@ -26,13 +26,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/*
- * @author SmellyModder & PIMan
- * Big creds to PIMan for helping me with the math!
- */
 public class EntityBolloomFruit extends LivingEntity {
-	private static final DataParameter<Float> ORIGINAL_X_SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Float> ORIGINAL_Z_SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
+	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
+	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
+	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
 	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
 	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
 	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187192_b);
@@ -40,7 +37,6 @@ public class EntityBolloomFruit extends LivingEntity {
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
 	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
 	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187200_j);
-	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
 	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187192_b);
 	public float prevVineAngle;
 	public float prevAngle;
@@ -86,8 +82,8 @@ public class EntityBolloomFruit extends LivingEntity {
 	@Override
 	protected void registerData() {
 		super.registerData();
-		this.getDataManager().register(ORIGINAL_X_SWAY, 0F);
-		this.getDataManager().register(ORIGINAL_Z_SWAY, 0F);
+		this.getDataManager().register(ORIGINAL_X, 0F);
+		this.getDataManager().register(ORIGINAL_Z, 0F);
 		this.getDataManager().register(ORIGINAL_Y, 0F);
 		this.getDataManager().register(SWAY, 0F);
 		this.getDataManager().register(ANGLE, 0F);
@@ -115,12 +111,14 @@ public class EntityBolloomFruit extends LivingEntity {
 	public void tick() {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
+		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+			this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
+		}
 		if(!this.isUntied()) {
 			this.setPosition(
-				this.getDataManager().get(ORIGINAL_X_SWAY) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
+				this.getDataManager().get(ORIGINAL_X) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
 				this.getSetY(),
-				this.getDataManager().get(ORIGINAL_Z_SWAY) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
+				this.getDataManager().get(ORIGINAL_Z) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
 			);
 		} else {
 			this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
@@ -300,8 +298,8 @@ public class EntityBolloomFruit extends LivingEntity {
 	}
 	
 	public void setOriginalSway(float x, float z) {
-		this.getDataManager().set(ORIGINAL_Z_SWAY, (float) z);
-		this.getDataManager().set(ORIGINAL_X_SWAY, (float) x);
+		this.getDataManager().set(ORIGINAL_Z, (float) z);
+		this.getDataManager().set(ORIGINAL_X, (float) x);
 	}
 	
 	public void setUntied() {
