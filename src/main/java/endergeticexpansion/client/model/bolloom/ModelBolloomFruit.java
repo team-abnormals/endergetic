@@ -172,9 +172,9 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
     	super.func_212843_a_(entity, swing, speed, partialTicks);
     }
 
-    public void setRotateAngle(RendererModel RendererModel, float x, float y, float z) {
-        RendererModel.rotateAngleX = x;
-        RendererModel.rotateAngleY = y;
-        RendererModel.rotateAngleZ = z;
+    public void setRotateAngle(RendererModel rendererModel, float x, float y, float z) {
+        rendererModel.rotateAngleX = x;
+        rendererModel.rotateAngleY = y;
+        rendererModel.rotateAngleZ = z;
     }
 }
