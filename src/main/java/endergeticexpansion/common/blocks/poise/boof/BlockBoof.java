@@ -11,6 +11,7 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
@@ -48,6 +49,15 @@ public class BlockBoof extends ContainerBlock {
 			super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
 		} else {
 			entityIn.fall(fallDistance, 0.0F);
+		}
+	}
+	
+	@Override
+	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+		if(entityIn instanceof PlayerEntity) {
+			((PlayerEntity)entityIn).entityCollisionReduction = Float.MAX_VALUE;
+			((PlayerEntity)entityIn).onGround = false;
+			((PlayerEntity)entityIn).fallDistance = 0;
 		}
 	}
 	

@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "endergetic_expansion",
+    "pattern":
+    [
+    	"BBB",
+        "BBB",
+        "BBB"
+    ],
+    "key":
+    {
+        "B":
+        {
+            "item": "endergetic_expansion:booflo_hide"
+        }
+    },
+    "result":
+    {
+        "item": "endergetic_expansion:boof_block"
+    }
+}

@@ -43,6 +43,7 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 					if(!((PlayerEntity)entity).isSneaking()){
 						BlockBoof.doBoof(world, pos);
 					}
+					((PlayerEntity)entity).fallDistance = 0;
 				} else {
 					BlockBoof.doBoof(world, pos);
 				}

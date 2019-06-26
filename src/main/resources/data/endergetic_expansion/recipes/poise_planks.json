@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "endergetic_expansion",
+  "ingredients": [
+    {
+      	"tag": "endergetic_expansion:poise_logs"
+    }
+  ],
+  "result": {
+    "item": "endergetic_expansion:poise_planks",
+    "count": 4
+  }
+}

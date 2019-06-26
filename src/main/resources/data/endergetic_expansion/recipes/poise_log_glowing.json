@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "endergetic_expansion",
+    "pattern":
+    [
+    	"LLL",
+        "LPL",
+        "LLL"
+    ],
+    "key":
+    {
+        "L":
+        {
+            "item": "endergetic_expansion:poise_log"
+        },
+        "P":
+        {
+            "item": "endergetic_expansion:poise_cluster"
+        }
+    },
+    "result":
+    {
+        "item": "endergetic_expansion:poise_log_glowing",
+        "count": 8
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic_expansion",
+  "pattern": [
+    "W#W",
+    "W#W"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "W": {
+      "item": "endergetic_expansion:poise_planks"
+    }
+  },
+  "result": {
+    "item": "endergetic_expansion:poise_fence",
+    "count": 3
+  }
+}

@@ -6,11 +6,16 @@ import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
-import endergeticexpansion.core.proxy.*;
+import endergeticexpansion.core.proxy.ClientProxy;
+import endergeticexpansion.core.proxy.CommonProxy;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -36,6 +41,13 @@ public class EndergeticExpansion {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 	}
+	
+	public static final ItemGroup ENDERGETIC_BLOCKS = (new ItemGroup("tab" + MOD_ID) {
+		@OnlyIn(Dist.CLIENT)
+		public ItemStack createIcon() { 
+			return new ItemStack(EEBlocks.POISE_GRASS); 
+		}
+	});
     
     @SubscribeEvent
 	@SuppressWarnings("unchecked")

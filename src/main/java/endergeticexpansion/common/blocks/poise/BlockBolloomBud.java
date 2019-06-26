@@ -85,7 +85,7 @@ public class BlockBolloomBud extends Block {
 	
 	@Override
 	public int tickRate(IWorldReader worldIn) {
-		return 20;
+		return 40;
 	}
 	
 	@Override

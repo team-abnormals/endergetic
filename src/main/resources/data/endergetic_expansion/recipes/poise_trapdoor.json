@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic_expansion",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic_expansion:poise_planks"
+    }
+  },
+  "result": {
+    "item": "endergetic_expansion:poise_trapdoor",
+    "count": 2
+  }
+}
