@@ -36,7 +36,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
 	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187200_j);
+	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187200_j);
 	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187192_b);
 	public float prevVineAngle;
 	public float prevAngle;
@@ -66,7 +66,7 @@ public class EntityBolloomFruit extends LivingEntity {
 			this.setOriginalSway(origin.getX() + 0.5F - 0.2F, origin.getZ() + 0.5F);
 			this.setDirection(1);
 		}
-		this.getDataManager().set(ORIGIN, budPos);
+		this.getDataManager().set(BUD_POS, budPos);
 		this.setVineHeight(height);
 		this.getDataManager().set(ORIGINAL_Y, origin.getY() + 1.15F);
 		this.prevRenderYawOffset = 180.0F;
@@ -90,7 +90,7 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.getDataManager().register(DESIRED_ANGLE, 0F);
 		this.getDataManager().register(VINE_HEIGHT, 0);
 		this.getDataManager().register(DIRECTION, 0);
-		this.getDataManager().register(ORIGIN, BlockPos.ZERO);
+		this.getDataManager().register(BUD_POS, BlockPos.ZERO);
 		this.getDataManager().register(UNTIED, false);
 		this.getDataManager().register(GROWN, false);
 	}
@@ -293,7 +293,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	}
 	
 	public BlockPos getOrigin() {
-		return this.getDataManager().get(ORIGIN);
+		return this.getDataManager().get(BUD_POS);
 	}
 	
 	public boolean isUntied() {
