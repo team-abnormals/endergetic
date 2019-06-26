@@ -71,7 +71,9 @@ public class EntityBoofBlock extends LivingEntity {
 					} else if(entity.posY < this.posY - 1F) {
 						entity.addVelocity(0, this.rand.nextFloat() * -0.05D - 0.35D, 0);
 					} else {
-						entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 6F * 0.1F, this.rand.nextFloat() * 0.45D + 0.25D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 6F * 0.1F);
+						float amount = 0.5F;
+						Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
+						entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
 				} else if((entity instanceof TridentEntity) || (entity instanceof AbstractArrowEntity)) {
 					this.setForProjectile();
