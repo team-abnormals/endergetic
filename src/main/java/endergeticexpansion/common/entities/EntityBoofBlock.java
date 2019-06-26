@@ -11,6 +11,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.monster.ShulkerEntity;
+import net.minecraft.entity.monster.VexEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -64,6 +65,8 @@ public class EntityBoofBlock extends LivingEntity {
 					!(entity instanceof TridentEntity) &&
 					!(entity instanceof AbstractArrowEntity) &&
 					!(entity instanceof PaintingEntity) &&
+					!(entity instanceof VexEntity) &&
+					!(entity instanceof EntityPoiseCluster) &&
 					!(entity instanceof ItemFrameEntity)
 				) {
 					if(entity.posY - 0.45F >= this.posY) {

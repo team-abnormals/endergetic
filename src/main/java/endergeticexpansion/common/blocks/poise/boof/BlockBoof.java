@@ -11,6 +11,8 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
@@ -29,6 +31,11 @@ public class BlockBoof extends ContainerBlock {
 	public BlockBoof(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(BOOFED, false));
+	}
+	
+	@Override
+	public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, PlacementType type, EntityType<?> entityType) {
+		return false;
 	}
 	
 	public boolean canProvidePower(BlockState state) {
