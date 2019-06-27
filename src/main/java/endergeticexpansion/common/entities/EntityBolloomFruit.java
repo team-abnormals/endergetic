@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -70,7 +71,31 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.setVineHeight(height);
 		this.getDataManager().set(ORIGINAL_Y, origin.getY() + 1.15F);
 	}
-	
+
+	@Override
+	public void writeAdditional(CompoundNBT nbt) {
+		super.writeAdditional(nbt);
+		nbt.putLong("BUD_POS", this.getDataManager().get(BUD_POS).toLong());
+		nbt.putBoolean("GROWN", this.getDataManager().get(GROWN));
+		nbt.putBoolean("UNTIED", this.getDataManager().get(UNTIED));
+		nbt.putFloat("ORIGINAL_X", this.getDataManager().get(ORIGINAL_X));
+		nbt.putFloat("ORIGINAL_Y", this.getDataManager().get(ORIGINAL_Y));
+		nbt.putFloat("ORIGINAL_Z", this.getDataManager().get(ORIGINAL_Z));
+		nbt.putInt("VINE_HEIGHT", this.getVineHeight());
+	}
+
+	@Override
+	public void readAdditional(CompoundNBT nbt) {
+		super.readAdditional(nbt);
+		this.getDataManager().set(BUD_POS, BlockPos.fromLong(nbt.getLong("BUD_POS")));
+		this.getDataManager().set(GROWN, nbt.getBoolean("GROWN"));
+		this.getDataManager().set(UNTIED, nbt.getBoolean("UNTIED"));
+		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("ORIGINAL_X"));
+		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("ORIGINAL_Y"));
+		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGINAL_Z"));
+		this.getDataManager().set(VINE_HEIGHT, nbt.getInt("VINE_HEIGHT"));
+	}
+
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return super.getRenderBoundingBox().grow(35);
