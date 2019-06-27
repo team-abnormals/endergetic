@@ -29,8 +29,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityBoofBlock extends LivingEntity {
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.field_187200_j);
-	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.field_187198_h);
+	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.BLOCK_POS);
+	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.BOOLEAN);
 	
 	public EntityBoofBlock(EntityType<? extends EntityBoofBlock> type, World world) {
 		super(EEEntities.BOOF_BLOCK, world);

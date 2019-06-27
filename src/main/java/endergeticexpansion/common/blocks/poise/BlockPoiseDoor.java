@@ -181,7 +181,7 @@ public class BlockPoiseDoor extends Block {
 			if ((!flag1 || flag) && i >= 0) {
 				int j = direction.getXOffset();
 				int k = direction.getZOffset();
-				Vec3d vec3d = p_208073_1_.func_221532_j();
+				Vec3d vec3d = p_208073_1_.getHitVec();
 				double d0 = vec3d.x - (double)blockpos.getX();
 				double d1 = vec3d.z - (double)blockpos.getZ();
 				return (j >= 0 || !(d1 < 0.5D)) && (j <= 0 || !(d1 > 0.5D)) && (k >= 0 || !(d0 > 0.5D)) && (k <= 0 || !(d0 < 0.5D)) ? DoorHingeSide.LEFT : DoorHingeSide.RIGHT;
@@ -228,7 +228,7 @@ public class BlockPoiseDoor extends Block {
 		BlockPos blockpos = pos.down();
 		BlockState blockstate = worldIn.getBlockState(blockpos);
 		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
-			return Block.func_220056_d(blockstate, worldIn, blockpos, Direction.UP);
+			return Block.hasSolidSide(blockstate, worldIn, blockpos, Direction.UP);
 		} else {
 			return blockstate.getBlock() == this;
 		}

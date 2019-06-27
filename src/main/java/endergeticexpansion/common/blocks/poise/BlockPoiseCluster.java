@@ -50,7 +50,7 @@ public class BlockPoiseCluster extends Block {
 				if (!worldIn.isRemote) {
 					EntityPoiseCluster cluster = new EntityPoiseCluster(worldIn, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
-					worldIn.func_217376_c(cluster);
+					worldIn.addEntity(cluster);
 				}
 				worldIn.removeBlock(pos, false);
 			} else {
@@ -76,7 +76,7 @@ public class BlockPoiseCluster extends Block {
 			if(worldIn.getBlockState(pos.up()).isAir() && !isBlocked && !worldIn.isRemote) {
 				EntityPoiseCluster cluster = new EntityPoiseCluster(worldIn, pos, pos.getX(), pos.getY(), pos.getZ());
 				cluster.setBlocksToMoveUp(10);
-				worldIn.func_217376_c(cluster);
+				worldIn.addEntity(cluster);
 				entityIn.remove();
 				worldIn.destroyBlock(pos, false);
 			} else {

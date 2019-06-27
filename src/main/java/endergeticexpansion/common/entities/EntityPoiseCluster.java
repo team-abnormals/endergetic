@@ -29,10 +29,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityPoiseCluster extends LivingEntity {
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.field_187200_j);
-	private static final DataParameter<Integer> BLOCKS_TO_MOVE_UP = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.field_187192_b);
-	private static final DataParameter<Integer> TIMES_HIT = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.field_187192_b);
-	private static final DataParameter<Boolean> ASCEND = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.field_187198_h);
+	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.BLOCK_POS);
+	private static final DataParameter<Integer> BLOCKS_TO_MOVE_UP = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> TIMES_HIT = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.VARINT);
+	private static final DataParameter<Boolean> ASCEND = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.BOOLEAN);
 	
 	public EntityPoiseCluster(EntityType<? extends EntityPoiseCluster> cluster, World worldIn) {
 		super(EEEntities.POISE_CLUSTER, worldIn);
@@ -230,7 +230,7 @@ public class EntityPoiseCluster extends LivingEntity {
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
-		return CreatureAttribute.UNDEAD;
+		return CreatureAttribute.field_223222_a_;
 	}
 	
 	public void setOrigin(BlockPos pos) {

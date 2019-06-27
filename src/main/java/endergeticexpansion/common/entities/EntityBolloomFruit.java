@@ -27,17 +27,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class EntityBolloomFruit extends LivingEntity {
-	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187192_b);
-	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187193_c);
-	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
-	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187198_h);
-	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187200_j);
-	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.field_187192_b);
+	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
+	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
+	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	public float prevVineAngle;
 	public float prevAngle;
 	
@@ -198,7 +198,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
-		return CreatureAttribute.UNDEAD;
+		return CreatureAttribute.field_223222_a_;
 	}
 	
 	@Override

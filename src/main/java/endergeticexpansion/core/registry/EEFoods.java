@@ -6,6 +6,6 @@ import net.minecraft.potion.Effects;
 
 public class EEFoods {
 
-	public static final Food BOLLOOM_FRUIT = new Food.Builder().func_221456_a(2).func_221454_a(0.3F).func_221452_a(new EffectInstance(Effects.field_188424_y, 125, 0), 1.0F).func_221455_b().func_221453_d();
+	public static final Food BOLLOOM_FRUIT = new Food.Builder().hunger(2).saturation(0.3F).effect(new EffectInstance(Effects.LEVITATION, 125, 0), 1.0F).setAlwaysEdible().build();
 	
 }

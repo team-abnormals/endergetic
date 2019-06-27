@@ -27,7 +27,7 @@ public class RenderBolloomFruit extends LivingRenderer<EntityBolloomFruit, Model
 	}
 	
 	protected boolean canRenderName(EntityBolloomFruit entity) {
-		return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.field_76990_c.pointedEntity);
+		return false;
 	}
 	
 }

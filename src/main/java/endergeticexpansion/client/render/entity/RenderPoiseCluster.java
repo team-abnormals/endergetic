@@ -19,7 +19,7 @@ public class RenderPoiseCluster extends LivingRenderer<EntityPoiseCluster, Model
 	}
 	
 	protected boolean canRenderName(EntityPoiseCluster entity) {
-		return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.field_76990_c.pointedEntity);
+		return false;
 	}
 
 }

@@ -41,18 +41,18 @@ public class EndergeticExpansion {
     @SubscribeEvent
 	@SuppressWarnings("unchecked")
 	public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-    	event.getRegistry().register(EETileEntities.CORROCK_CROWN = (TileEntityType<TileEntityCorrockCrown>) TileEntityType.Builder.func_223042_a(TileEntityCorrockCrown::new, 
+    	event.getRegistry().register(EETileEntities.CORROCK_CROWN = (TileEntityType<TileEntityCorrockCrown>) TileEntityType.Builder.create(TileEntityCorrockCrown::new, 
     		EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING, EEBlocks.CORROCK_CROWN_OVERWORLD_WALL, EEBlocks.CORROCK_CROWN_NETHER_STANDING, EEBlocks.CORROCK_CROWN_NETHER_WALL,
     		EEBlocks.CORROCK_CROWN_END_STANDING, EEBlocks.CORROCK_CROWN_END_WALL)
     		.build(null).setRegistryName(MOD_ID, "corrock_crown"));
     	
-    	event.getRegistry().register(EETileEntities.FRISBLOOM_STEM = (TileEntityType<TileEntityFrisbloomStem>) TileEntityType.Builder.func_223042_a(TileEntityFrisbloomStem::new, EEBlocks.FRISBLOOM_STEM).build(null).setRegistryName(MOD_ID, "frisbloom_stem"));
+    	event.getRegistry().register(EETileEntities.FRISBLOOM_STEM = (TileEntityType<TileEntityFrisbloomStem>) TileEntityType.Builder.create(TileEntityFrisbloomStem::new, EEBlocks.FRISBLOOM_STEM).build(null).setRegistryName(MOD_ID, "frisbloom_stem"));
     
-    	event.getRegistry().register(EETileEntities.BOLLOOM_BUD = (TileEntityType<TileEntityBolloomBud>) TileEntityType.Builder.func_223042_a(TileEntityBolloomBud::new, EEBlocks.BOLLOOM_BUD).build(null).setRegistryName(MOD_ID, "bolloom_bud"));
+    	event.getRegistry().register(EETileEntities.BOLLOOM_BUD = (TileEntityType<TileEntityBolloomBud>) TileEntityType.Builder.create(TileEntityBolloomBud::new, EEBlocks.BOLLOOM_BUD).build(null).setRegistryName(MOD_ID, "bolloom_bud"));
     
-    	event.getRegistry().register(EETileEntities.PUFFBUG_HIVE = (TileEntityType<TileEntityPuffBugHive>) TileEntityType.Builder.func_223042_a(TileEntityPuffBugHive::new, EEBlocks.PUFFBUG_HIVE).build(null).setRegistryName(MOD_ID, "puffbug_hive"));
+    	event.getRegistry().register(EETileEntities.PUFFBUG_HIVE = (TileEntityType<TileEntityPuffBugHive>) TileEntityType.Builder.create(TileEntityPuffBugHive::new, EEBlocks.PUFFBUG_HIVE).build(null).setRegistryName(MOD_ID, "puffbug_hive"));
     	
-    	event.getRegistry().register(EETileEntities.BOOF_BLOCK = (TileEntityType<TileEntityBoof>) TileEntityType.Builder.func_223042_a(TileEntityBoof::new, EEBlocks.BOOF_BLOCK).build(null).setRegistryName(MOD_ID, "boof_block"));
-    	event.getRegistry().register(EETileEntities.BOOF_DISPENSED = (TileEntityType<TileEntityDispensedBoof>) TileEntityType.Builder.func_223042_a(TileEntityDispensedBoof::new, EEBlocks.BOOF_DISPENSED_BLOCK).build(null).setRegistryName(MOD_ID, "boof_dispensed_block"));
+    	event.getRegistry().register(EETileEntities.BOOF_BLOCK = (TileEntityType<TileEntityBoof>) TileEntityType.Builder.create(TileEntityBoof::new, EEBlocks.BOOF_BLOCK).build(null).setRegistryName(MOD_ID, "boof_block"));
+    	event.getRegistry().register(EETileEntities.BOOF_DISPENSED = (TileEntityType<TileEntityDispensedBoof>) TileEntityType.Builder.create(TileEntityDispensedBoof::new, EEBlocks.BOOF_DISPENSED_BLOCK).build(null).setRegistryName(MOD_ID, "boof_dispensed_block"));
     }
 }

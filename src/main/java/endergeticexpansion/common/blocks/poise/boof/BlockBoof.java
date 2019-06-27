@@ -71,7 +71,7 @@ public class BlockBoof extends ContainerBlock {
 	public static void doBoof(World world, BlockPos pos) {
 		if(!world.isRemote) {
 			EntityBoofBlock boofBlock = new EntityBoofBlock(world, pos);
-			world.func_217376_c(boofBlock);
+			world.addEntity(boofBlock);
 		}
 		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.getDefaultState().with(BOOFED, true));
 	}
@@ -91,16 +91,16 @@ public class BlockBoof extends ContainerBlock {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			World world = source.getWorld();
-			this.field_218407_b = true;
+			this.successful = true;
             BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
             BlockState blockstate = world.getBlockState(blockpos);
             if(!blockstate.getMaterial().isReplaceable()) {
-    			this.field_218407_b = false;
+    			this.successful = false;
             } else {
-            	this.field_218407_b = true;
+            	this.successful = true;
             }
             
-            if (this.field_218407_b) {
+            if (this.successful) {
             	IFluidState fluidstate = world.getFluidState(blockpos);
             	if(fluidstate.getFluid() == Fluids.WATER) {
             		world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));

@@ -152,19 +152,19 @@ public class BlockBolloomBud extends Block {
 			if(!world.isRemote) {
 				if(chances[0]) {
 					EntityBolloomFruit fruitN = new EntityBolloomFruit(world, pos, pos.north().up(heightn - 1), heightn, Direction.NORTH);
-					world.func_217376_c(fruitN);
+					world.addEntity(fruitN);
 				}
 				if(chances[1]) {
 					EntityBolloomFruit fruitS = new EntityBolloomFruit(world, pos, pos.south().up(heights - 1), heights, Direction.SOUTH);
-					world.func_217376_c(fruitS);
+					world.addEntity(fruitS);
 				}
 				if(chances[2]) {
 					EntityBolloomFruit fruitE = new EntityBolloomFruit(world, pos, pos.east().up(heighte - 1), heighte, Direction.EAST);
-					world.func_217376_c(fruitE);
+					world.addEntity(fruitE);
 				}
 				if(chances[3]) {
 					EntityBolloomFruit fruitW = new EntityBolloomFruit(world, pos, pos.west().up(heightw - 1), heightw, Direction.WEST);
-					world.func_217376_c(fruitW);
+					world.addEntity(fruitW);
 				}
 			}
 		}
