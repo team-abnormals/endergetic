@@ -1,5 +1,6 @@
 package endergeticexpansion.core.registry;
 
+import endergeticexpansion.common.items.ItemBolloomBalloon;
 import endergeticexpansion.common.items.ItemBolloomFruit;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.item.Item;
@@ -17,12 +18,13 @@ public class EEItems {
 	 */
 	public static Item BOLLOOM_FRUIT = new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_fruit");
 	public static Item BOOFLO_HIDE   = new Item(new Item.Properties().group(ItemGroup.MATERIALS)).setRegistryName(EndergeticExpansion.MOD_ID, "booflo_hide");
+	public static Item BOLLOOM_BALLOON = new ItemBolloomBalloon(new Item.Properties().group(ItemGroup.TOOLS)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon");
 	
 	@SubscribeEvent
 	public static void onRegisterItems(RegistryEvent.Register<Item> event) {
 		final IForgeRegistry<Item> registry = event.getRegistry();
 		final Item[] items = {
-			BOLLOOM_FRUIT, BOOFLO_HIDE
+			BOLLOOM_FRUIT, BOOFLO_HIDE, BOLLOOM_BALLOON
 		};
 		registry.registerAll(items);
 	}
