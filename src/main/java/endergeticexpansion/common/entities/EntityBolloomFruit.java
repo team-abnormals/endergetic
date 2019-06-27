@@ -39,6 +39,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
 	public float prevVineAngle;
 	public float prevAngle;
 	
@@ -70,6 +71,7 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.getDataManager().set(BUD_POS, budPos);
 		this.setVineHeight(height);
 		this.getDataManager().set(ORIGINAL_Y, origin.getY() + 1.15F);
+		this.getDataManager().set(TICKSEXISTED, 0);
 	}
 
 	@Override
@@ -115,6 +117,7 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.getDataManager().register(BUD_POS, BlockPos.ZERO);
 		this.getDataManager().register(UNTIED, false);
 		this.getDataManager().register(GROWN, false);
+		this.getDataManager().register(TICKSEXISTED, 0);
 	}
 	
 	@Override
@@ -131,10 +134,11 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	public void tick() {
+		super.tick();
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		if(world.isAreaLoaded(this.getOrigin(), 1) && !world.isRemote) {
-			this.dataManager.set(SWAY, (float) Math.sin((float) (2 * Math.PI / 100 * ticksExisted)) * 0.5F);
+		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+			this.dataManager.set(SWAY, (float) Math.sin((2 * Math.PI / 100 * getTicksExisted())) * 0.5F);
 		}
 		if(world.isAreaLoaded(this.getOrigin(), 1)) {
 			if(!this.isUntied()) {
@@ -147,17 +151,17 @@ public class EntityBolloomFruit extends LivingEntity {
 				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-		
+
 		if(!world.isRemote) {
-			if (ticksExisted % 45 == 0) {
+			if (getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
 			}
 			
-			if(ticksExisted % 50 == 0 && this.getRNG().nextInt(5) == 0 && !this.isUntied()) {
+			if(getTicksExisted() % 50 == 0 && this.getRNG().nextInt(5) == 0 && !this.isUntied()) {
 				this.getDataManager().set(GROWN, true);
 			}
 			
-			if(ticksExisted % 1200 == 0 && this.isUntied()) {
+			if(getTicksExisted() % 1200 == 0 && this.isUntied()) {
 				this.remove();
 			}
 			
@@ -215,8 +219,7 @@ public class EntityBolloomFruit extends LivingEntity {
 		
 		this.clearActivePotions();
 		this.extinguish();
-		
-		super.tick();
+		incrementTicksExisted();
 	}
 	
 	@Override
@@ -290,7 +293,15 @@ public class EntityBolloomFruit extends LivingEntity {
 	public boolean isGrown() {
 		return this.getDataManager().get(GROWN);
 	}
-	
+
+	public int getTicksExisted() {
+		return this.getDataManager().get(TICKSEXISTED);
+	}
+
+	public void incrementTicksExisted() {
+		this.getDataManager().set(TICKSEXISTED, getTicksExisted() + 1);
+	}
+
 	public float getVineAngle() {
 		return (float) Math.atan(this.dataManager.get(SWAY) / (this.getVineHeight()));
 	}
