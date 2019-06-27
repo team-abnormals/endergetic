@@ -14,6 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -62,12 +63,22 @@ public class EntityPoiseCluster extends LivingEntity {
 		this.dataManager.register(ASCEND, true);
 	}
 	
-	public void setBlocksToMoveUp(int value) {
-		this.dataManager.set(BLOCKS_TO_MOVE_UP, value);
+	@Override
+	public void writeAdditional(CompoundNBT nbt) {
+		super.writeAdditional(nbt);
+		nbt.putLong("ORIGIN", this.getDataManager().get(ORIGIN).toLong());
+		nbt.putInt("BLOCKS_TO_MOVE_UP", this.getDataManager().get(BLOCKS_TO_MOVE_UP));
+		nbt.putInt("TIMES_HIT", this.getDataManager().get(TIMES_HIT));
+		nbt.putBoolean("ASCEND", this.getDataManager().get(ASCEND));
 	}
 	
-	public int getBlocksToMoveUp() {
-		return this.dataManager.get(BLOCKS_TO_MOVE_UP);
+	@Override
+	public void readAdditional(CompoundNBT nbt) {
+		super.readAdditional(nbt);
+		this.getDataManager().set(ORIGIN, BlockPos.fromLong(nbt.getLong("ORIGIN")));
+		this.getDataManager().set(BLOCKS_TO_MOVE_UP, nbt.getInt("BLOCKS_TO_MOVE_UP"));
+		this.getDataManager().set(TIMES_HIT, nbt.getInt("TIMES_HIT"));
+		this.getDataManager().set(ASCEND, nbt.getBoolean("ASCEND"));
 	}
 	
 	/*
@@ -196,6 +207,14 @@ public class EntityPoiseCluster extends LivingEntity {
 	
 	@Override
 	public void fall(float distance, float damageMultiplier) {}
+	
+	public void setBlocksToMoveUp(int value) {
+		this.dataManager.set(BLOCKS_TO_MOVE_UP, value);
+	}
+	
+	public int getBlocksToMoveUp() {
+		return this.dataManager.get(BLOCKS_TO_MOVE_UP);
+	}
 	
 	/*
 	 * Used to tell if the entity is ascending or descending
