@@ -1,6 +1,5 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import endergeticexpansion.common.entities.EntityPoiseCluster;
@@ -20,7 +19,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -90,13 +88,6 @@ public class BlockPoiseCluster extends Block {
 	@Override
 	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.TRANSLUCENT;
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(this));
-		return dropList;
 	}
 	
 	@SuppressWarnings("deprecation")

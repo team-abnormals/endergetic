@@ -1,7 +1,5 @@
 package endergeticexpansion.common.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -13,7 +11,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -25,7 +22,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 
 public class BlockFrisbloomStem extends Block {
 	//The height position of the current stem; 5 layers total
@@ -37,18 +33,6 @@ public class BlockFrisbloomStem extends Block {
 		this.setDefaultState(this.stateContainer.getBaseState()
 			.with(LAYER, 0)
 		);
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState state, Builder builder) {
-		Random rand = new Random();
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		if(state.get(LAYER) == 4) {
-			for(int i = 0; i <= rand.nextInt(3) + 2; i++) {
-				dropList.add(new ItemStack(EEBlocks.FRISBLOOM_BUD));
-			}
-		}
-		return dropList;
 	}
 	
 	@Override

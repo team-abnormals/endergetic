@@ -10,8 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -38,10 +36,6 @@ public class BlockPuffBugHive extends Block {
 	
 	@Override
 	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack);
-		if(i > 0) {
-			spawnAsEntity(worldIn, pos, new ItemStack(this));
-		}
 		if(state.get(HAS_HANGER)) {
 			worldIn.destroyBlock(pos.up(), false);
 		}
@@ -50,10 +44,8 @@ public class BlockPuffBugHive extends Block {
 	
 	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		if(player.isCreative()) {
-			if(state.get(HAS_HANGER)) {
-				worldIn.destroyBlock(pos.up(), false);
-			}
+		if(state.get(HAS_HANGER) && player.isCreative()) {
+			worldIn.destroyBlock(pos.up(), false);
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}

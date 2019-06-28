@@ -1,8 +1,5 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -39,7 +36,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
@@ -58,15 +54,6 @@ public class BlockPoiseDoor extends Block {
 	public BlockPoiseDoor(Block.Properties builder) {
 		super(builder);
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(OPEN, Boolean.valueOf(false)).with(HINGE, DoorHingeSide.LEFT).with(POWERED, Boolean.valueOf(false)).with(HALF, DoubleBlockHalf.LOWER));
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		if(p_220076_1_.get(HALF) == DoubleBlockHalf.LOWER) {
-			dropList.add(new ItemStack(this));
-		}
-		return dropList;
 	}
 	
 	@Override

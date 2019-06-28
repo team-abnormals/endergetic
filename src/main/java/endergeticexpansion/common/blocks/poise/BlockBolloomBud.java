@@ -1,7 +1,5 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -14,7 +12,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +25,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -55,13 +51,6 @@ public class BlockBolloomBud extends Block {
 	@Override
 	public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return Block.makeCuboidShape(-16.0D, -16.0D, -16.0D, 32.0D, 32.0D, 32.0D);
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(this));
-		return dropList;
 	}
 	
 	@Override

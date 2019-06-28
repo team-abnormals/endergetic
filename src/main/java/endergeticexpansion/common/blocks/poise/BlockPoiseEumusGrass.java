@@ -1,52 +1,22 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.lighting.LightEngine;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.ToolType;
 
 public class BlockPoiseEumusGrass extends Block {
 
 	public BlockPoiseEumusGrass(Properties properties) {
 		super(properties);
-	}
-	
-	@Override
-	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		if(stack.getItem() instanceof PickaxeItem) {
-			int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack);
-			if(i > 0) {
-				spawnAsEntity(worldIn, pos, new ItemStack(this));
-			} else {
-				spawnAsEntity(worldIn, pos, new ItemStack(EEBlocks.EUMUS));
-			}
-		} else {
-			spawnAsEntity(worldIn, pos, new ItemStack(EEBlocks.EUMUS));
-		}
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(EEBlocks.EUMUS));
-		return dropList;
 	}
 	
 	@Override

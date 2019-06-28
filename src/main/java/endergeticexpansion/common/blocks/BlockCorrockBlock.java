@@ -1,7 +1,5 @@
 package endergeticexpansion.common.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -13,7 +11,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -23,7 +20,7 @@ import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.dimension.NetherDimension;
 import net.minecraft.world.dimension.OverworldDimension;
-import net.minecraft.world.storage.loot.LootContext.Builder;
+import net.minecraftforge.common.ToolType;
 
 public class BlockCorrockBlock extends Block {
 
@@ -32,10 +29,8 @@ public class BlockCorrockBlock extends Block {
 	}
 	
 	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(this));
-		return dropList;
+	public ToolType getHarvestTool(BlockState state) {
+		return ToolType.PICKAXE;
 	}
 	
 	@Override

@@ -1,7 +1,5 @@
 package endergeticexpansion.common.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import endergeticexpansion.core.registry.EEBlocks;
@@ -10,7 +8,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.BlockRenderLayer;
@@ -22,7 +19,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 
 public class BlockFrisbloomBud extends Block {
 	public static final IntegerProperty LAYER = IntegerProperty.create("layers_total", 0, 3);
@@ -33,13 +29,6 @@ public class BlockFrisbloomBud extends Block {
 		this.setDefaultState(this.stateContainer.getBaseState()
 			.with(LAYER, 0)
 		);
-	}
-	
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(this));
-		return dropList;
 	}
 	
 	@Override

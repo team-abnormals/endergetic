@@ -6,11 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -65,16 +60,6 @@ public class BlockPoiseGrass extends Block {
 
 	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT_MIPPED;
-	}
-	
-	@Override
-	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack);
-		if(i > 0) {
-			spawnAsEntity(worldIn, pos, new ItemStack(this));
-		} else {
-			spawnAsEntity(worldIn, pos, new ItemStack(Blocks.END_STONE));
-		}
 	}
 	
 }
