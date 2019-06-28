@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "axis=y":  { "model": "endergetic:block/poise_log_stripped" },
+        "axis=z":   { "model": "endergetic:block/poise_log_stripped", "x": 90 },
+        "axis=x":   { "model": "endergetic:block/poise_log_stripped", "x": 90, "y": 90 }
+    }
+}

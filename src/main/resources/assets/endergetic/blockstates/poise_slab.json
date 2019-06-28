@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "type=bottom": { "model": "endergetic:block/slab/poise_slab" },
+        "type=top": { "model": "endergetic:block/slab/poise_slab_top" },
+        "type=double": { "model": "endergetic:block/poise_planks" }
+    }
+}

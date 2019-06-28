@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "half=lower": { "model": "endergetic:block/tall_poise_grass_bottom" },
+        "half=upper": { "model": "endergetic:block/tall_poise_grass_top" }
+    }
+}

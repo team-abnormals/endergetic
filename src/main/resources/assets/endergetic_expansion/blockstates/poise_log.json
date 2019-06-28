@@ -1,7 +1,0 @@
-{
-    "variants": {
-        "axis=y":  { "model": "endergetic_expansion:block/poise_log" },
-        "axis=z":   { "model": "endergetic_expansion:block/poise_log", "x": 90 },
-        "axis=x":   { "model": "endergetic_expansion:block/poise_log", "x": 90, "y": 90 }
-    }
-}

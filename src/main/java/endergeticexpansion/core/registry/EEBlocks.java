@@ -12,6 +12,7 @@ import endergeticexpansion.common.blocks.poise.BlockPoiseGrassPlant;
 import endergeticexpansion.common.blocks.poise.BlockPoiseGrassPlantTall;
 import endergeticexpansion.common.blocks.poise.BlockPoiseLog;
 import endergeticexpansion.common.blocks.poise.BlockPoisePlanks;
+import endergeticexpansion.common.blocks.poise.BlockPoiseWood;
 import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
 import endergeticexpansion.common.blocks.poise.boof.BlockDispensedBoof;
 import endergeticexpansion.common.blocks.poise.hive.BlockHiveHanger;
@@ -58,8 +59,11 @@ public class EEBlocks {
 	public static Block POISE_GRASS_TALL  = new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_tall");
 	public static Block POISE_CLUSTER     = new BlockPoiseCluster(EEProperties.POISE_CLUSTER.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "poise_cluster");
 	public static Block POISE_LOG         = new BlockPoiseLog(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log");
+	public static Block POISE_WOOD        = new BlockPoiseWood(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood");
 	public static Block POISE_LOG_GLOWING = new BlockPoiseLog(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_glowing");
+	public static Block POISE_WOOD_GLOWING = new BlockPoiseWood(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_glowing");
 	public static Block POISE_LOG_STRIPPED = new BlockPoiseLog(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_stripped");
+	public static Block POISE_WOOD_STRIPPED = new BlockPoiseWood(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_stripped");
 	public static Block POISE_PLANKS      = new BlockPoisePlanks(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_planks");
 	public static Block POISE_DOOR        = new BlockPoiseDoor(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_door");
 	public static Block POISE_SLAB        = new BlockSlabBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_slab");
@@ -86,8 +90,9 @@ public class EEBlocks {
 		final Block blocks[] = {
 			FRISBLOOM_STEM, FRISBLOOM_BUD, CORROCK_BLOCK_OVERWORLD, CORROCK_BLOCK_NETHER, CORROCK_BLOCK_END, CORROCK_OVERWORLD, CORROCK_NETHER, CORROCK_END,
 			CORROCK_CROWN_OVERWORLD_WALL, CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_NETHER_WALL, CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_END_WALL, CORROCK_CROWN_END_STANDING,
-			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_PLANKS, POISE_STAIRS, POISE_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE,
-			POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR, BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOOF_BLOCK, BOOF_DISPENSED_BLOCK
+			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
+			POISE_PLANKS, POISE_STAIRS, POISE_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
+			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOOF_BLOCK, BOOF_DISPENSED_BLOCK
 		};
 		event.getRegistry().registerAll(blocks);
 	}
@@ -100,9 +105,12 @@ public class EEBlocks {
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_OVERWORLD, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_NETHER, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_END, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_OVERWORLD, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_NETHER, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_END, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_OVERWORLD, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_NETHER, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_END, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_OVERWORLD_WALL, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_NETHER_WALL, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_END_STANDING, CORROCK_CROWN_END_WALL, ItemGroup.DECORATIONS));
 		
 		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISMOSS_EUMUS, ItemGroup.BUILDING_BLOCKS));
@@ -113,11 +121,15 @@ public class EEBlocks {
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG_GLOWING, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG_STRIPPED, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD_GLOWING, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD_STRIPPED, ItemGroup.BUILDING_BLOCKS));
+		
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_PLANKS, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_SLAB, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_STAIRS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE_GATE, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE_GATE, ItemGroup.REDSTONE));
 		registry.register(RegistryUtils.createTallItemBlock(POISE_DOOR, ItemGroup.REDSTONE));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_PRESSURE_PLATE, ItemGroup.REDSTONE));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_BUTTON, ItemGroup.REDSTONE));
@@ -130,10 +142,6 @@ public class EEBlocks {
 		registry.register(new BlockItem(PUFFBUG_HIVE, hive).setRegistryName(PUFFBUG_HIVE.getRegistryName()));
 		
 		registry.register(RegistryUtils.createSimpleBlockItem(BOOF_BLOCK, ItemGroup.DECORATIONS));
-		
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_OVERWORLD_WALL, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_NETHER_WALL, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_END_STANDING, CORROCK_CROWN_END_WALL, ItemGroup.BUILDING_BLOCKS));
 	}
 	
 }

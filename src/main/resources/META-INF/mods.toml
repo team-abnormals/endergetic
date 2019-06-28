@@ -4,8 +4,8 @@ loaderVersion="[24,)"
 issueTrackerURL="https://github.com/SnappyDragon18/Endergetic/issues"
 
 [[mods]]
-    modId="endergetic_expansion"
-    namespace="endergetic_expansion"
+    modId="endergetic"
+    namespace="endergetic"
     version="1.1.5"
     displayName="The Endergetic Expansion"
     authors="SmellyModder, Endergized, Timinations, pengu61151, cipher_zero_x, Minecraft Abnormals, orillymc"

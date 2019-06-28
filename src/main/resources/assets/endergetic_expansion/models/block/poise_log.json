@@ -1,7 +1,0 @@
-{
-    "parent": "block/cube_column",
-    "textures": {
-        "end": "endergetic_expansion:block/poise_log_top",
-        "side": "endergetic_expansion:block/poise_log"
-    }
-}

@@ -1,6 +1,0 @@
-{
-    "parent": "block/button",
-    "textures": {
-        "texture": "endergetic_expansion:block/poise_planks"
-    }
-}

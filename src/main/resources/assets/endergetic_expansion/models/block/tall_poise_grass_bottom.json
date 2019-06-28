@@ -1,6 +1,0 @@
-{
-    "parent": "block/cross",
-    "textures": {
-        "cross": "endergetic_expansion:block/poise_grass_tall_bottom"
-    }
-}

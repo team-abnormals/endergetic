@@ -3,6 +3,6 @@
   "values": [
     "#minecraft:wooden_fences",
     "minecraft:nether_brick_fence",
-    "endergetic_expansion:poise_fence"
+    "endergetic:poise_fence"
   ]
 }

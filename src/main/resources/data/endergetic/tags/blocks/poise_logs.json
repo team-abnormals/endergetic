@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "endergetic_expansion:poise_log",
+    "endergetic_expansion:poise_log_stripped",
+    "endergetic_expansion:poise_wood",
+    "endergetic_expansion:poise_wood_stripped"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:poise_planks"
+    }
+  },
+  "result": {
+    "item": "endergetic:poise_slab",
+    "count": 6
+  }
+}

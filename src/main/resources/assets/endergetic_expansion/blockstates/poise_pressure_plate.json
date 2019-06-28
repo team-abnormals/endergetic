@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "powered=false": { "model": "endergetic_expansion:block/redstone/poise_pressure_plate" },
-        "powered=true": { "model": "endergetic_expansion:block/redstone/poise_pressure_plate_down" }
-    }
-}

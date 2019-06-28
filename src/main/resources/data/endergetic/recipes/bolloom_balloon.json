@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "F",
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": 
+    {
+      "item": "minecraft:string"
+    },
+    "F": 
+    {
+      "item": "endergetic:bolloom_fruit"
+    }
+  },
+  "result": {
+    "item": "endergetic:bolloom_balloon",
+    "count": 1
+  }
+}

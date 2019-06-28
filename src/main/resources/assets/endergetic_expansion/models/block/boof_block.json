@@ -1,6 +1,0 @@
-{
-    "parent": "block/cube_all",
-    "textures": {
-        "all": "endergetic_expansion:block/boof_block"
-    }
-}

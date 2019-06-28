@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "endergetic",
+  "ingredients": [
+    {
+      "item": "endergetic:poise_planks"
+    }
+  ],
+  "result": {
+    "item": "endergetic:poise_button"
+  }
+}

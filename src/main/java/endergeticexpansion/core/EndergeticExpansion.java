@@ -21,7 +21,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
-	public static final String MOD_ID = "endergetic_expansion";
+	public static final String MOD_ID = "endergetic";
 	
 	public static EndergeticExpansion instance;
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);

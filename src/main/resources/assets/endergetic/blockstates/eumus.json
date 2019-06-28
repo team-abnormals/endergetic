@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+            { "model": "endergetic:block/eumus" },
+            { "model": "endergetic:block/eumus", "y": 90 },
+            { "model": "endergetic:block/eumus", "y": 180 },
+            { "model": "endergetic:block/eumus", "y": 270 }
+        ]
+    }
+}
