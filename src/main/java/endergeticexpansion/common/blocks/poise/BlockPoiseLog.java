@@ -1,14 +1,10 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -17,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext.Builder;
 import net.minecraftforge.common.ToolType;
 
 public class BlockPoiseLog extends RotatedPillarBlock {
@@ -39,13 +34,6 @@ public class BlockPoiseLog extends RotatedPillarBlock {
 	@Override
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.AXE;
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState p_220076_1_, Builder p_220076_2_) {
-		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
-		dropList.add(new ItemStack(this));
-		return dropList;
 	}
 	
 	@Override
