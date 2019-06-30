@@ -15,6 +15,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorld;
@@ -43,6 +44,7 @@ public class EntityBolloomBalloon extends Entity {
 		this.setPosition(pos.getX() + 0.5F, pos.getY() + 3, pos.getZ() + 0.5F);
 		this.setOriginalPos(pos.getX() + 0.5F, pos.getY() + 3, pos.getZ() + 0.5F);
 		this.setKnotId(ownerKnot);
+		this.forceSpawn = true;
 	}
 	
 	@Override
@@ -51,8 +53,8 @@ public class EntityBolloomBalloon extends Entity {
 		this.move(MoverType.SELF, this.getMotion());
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		if(!world.isRemote) {
-			if(this.getKnot() == null) {
+		if(this.getEntityWorld().isAreaLoaded(this.getPosition().down(3), 1)) {
+			if(!this.getEntityWorld().getBlockState(this.getPosition().down(3)).getBlock().isIn(BlockTags.FENCES)) {
 				this.setUntied();
 			}
 		}
@@ -119,18 +121,18 @@ public class EntityBolloomBalloon extends Entity {
 			nbt.put("KnotUUID", NBTUtil.writeUniqueId(this.getKnotId()));
 		}
 		nbt.putBoolean("UNTIED", this.getDataManager().get(UNTIED));
-		nbt.putFloat("ORIGINAL_X", this.getDataManager().get(ORIGINAL_X));
-		nbt.putFloat("ORIGINAL_Y", this.getDataManager().get(ORIGINAL_Y));
-		nbt.putFloat("ORIGINAL_Z", this.getDataManager().get(ORIGINAL_Z));
+		nbt.putFloat("ORIGIN_X", this.getDataManager().get(ORIGINAL_X));
+		nbt.putFloat("ORIGIN_Y", this.getDataManager().get(ORIGINAL_Y));
+		nbt.putFloat("ORIGIN_Z", this.getDataManager().get(ORIGINAL_Z));
 	}
 	
 	@Override
 	protected void readAdditional(CompoundNBT nbt) {
 		this.setKnotId(nbt.getUniqueId("KnotUUID"));
 		this.getDataManager().set(UNTIED, nbt.getBoolean("UNTIED"));
-		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("ORIGINAL_X"));
-		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("ORIGINAL_Y"));
-		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGINAL_Z"));
+		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("ORIGIN_X"));
+		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("ORIGIN_Y"));
+		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGIN_Z"));
 	}
 	
 	@Nullable
@@ -194,9 +196,30 @@ public class EntityBolloomBalloon extends Entity {
     	return false;
     }
     
-    @Override
+	@Override
+	@SuppressWarnings("deprecation")
 	public boolean canBePushed() {
-		return true;
+		return !removed;
+	}
+	
+	@Nullable
+	public AxisAlignedBB getCollisionBoundingBox() {
+		return this.getBoundingBox();
+	}
+	
+	@Nullable
+	public AxisAlignedBB getCollisionBox(Entity entityIn) {
+		return entityIn.canBePushed() ? entityIn.getBoundingBox() : null;
+	}
+	
+	public void applyEntityCollision(Entity entityIn) {
+		if (entityIn instanceof EntityBolloomBalloon) {
+			if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
+				super.applyEntityCollision(entityIn);
+			}
+		} else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY) {
+			super.applyEntityCollision(entityIn);
+		}
 	}
     
     @Override

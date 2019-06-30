@@ -49,7 +49,6 @@ public class EntityBolloomKnot extends Entity {
 				}
 			}
 		}
-		System.out.println(this.getBalloonsTied());
 	}
 	
 	@Nullable
