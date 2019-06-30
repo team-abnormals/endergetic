@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
-import endergeticexpansion.common.entities.EntityBolloomFruit;
 import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemFrameEntity;

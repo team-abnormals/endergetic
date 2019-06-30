@@ -1,4 +1,4 @@
-package endergeticexpansion.common.entities;
+package endergeticexpansion.common.entities.bolloom;
 
 import javax.annotation.Nullable;
 

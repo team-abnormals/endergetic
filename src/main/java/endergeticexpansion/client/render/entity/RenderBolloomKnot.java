@@ -3,7 +3,7 @@ package endergeticexpansion.client.render.entity;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import endergeticexpansion.client.model.bolloom.ModelBolloomKnot;
-import endergeticexpansion.common.entities.EntityBolloomKnot;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;

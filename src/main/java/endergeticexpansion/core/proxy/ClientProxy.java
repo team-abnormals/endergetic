@@ -2,10 +2,11 @@ package endergeticexpansion.core.proxy;
 
 import endergeticexpansion.client.render.entity.*;
 import endergeticexpansion.client.render.tile.*;
-import endergeticexpansion.common.entities.EntityBolloomFruit;
-import endergeticexpansion.common.entities.EntityBolloomKnot;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -28,6 +29,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityPoiseCluster.class, RenderPoiseCluster::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofBlock.class, RenderBoofBlock::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomKnot.class, RenderBolloomKnot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomBalloon.class, RenderBolloomBalloon::new);
 	}
 	
 }

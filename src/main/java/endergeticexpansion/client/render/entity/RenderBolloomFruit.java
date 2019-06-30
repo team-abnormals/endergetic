@@ -1,7 +1,7 @@
 package endergeticexpansion.client.render.entity;
 
 import endergeticexpansion.client.model.bolloom.ModelBolloomFruit;
-import endergeticexpansion.common.entities.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;

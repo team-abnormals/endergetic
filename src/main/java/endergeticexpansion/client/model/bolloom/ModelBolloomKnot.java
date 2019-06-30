@@ -1,6 +1,6 @@
 package endergeticexpansion.client.model.bolloom;
 
-import endergeticexpansion.common.entities.EntityBolloomKnot;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 

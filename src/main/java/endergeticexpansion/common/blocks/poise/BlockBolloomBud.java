@@ -4,7 +4,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.common.entities.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;

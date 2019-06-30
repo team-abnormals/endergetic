@@ -2,7 +2,7 @@ package endergeticexpansion.client.model.bolloom;
 
 import com.mojang.blaze3d.platform.GLX;
 
-import endergeticexpansion.common.entities.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 
