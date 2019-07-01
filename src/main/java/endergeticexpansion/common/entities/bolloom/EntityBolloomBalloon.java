@@ -44,6 +44,9 @@ public class EntityBolloomBalloon extends Entity {
 		super(entityType, world);
 	}
 	
+	/*
+	 * Used for Adding onto a fence
+	 */
 	public EntityBolloomBalloon(World world, UUID ownerKnot, BlockPos pos, float offset) {
 		this(EEEntities.ObjectEntites.BOLLOOM_BALLOON, world);
 		float xOffset = this.rand.nextBoolean() ? -offset : offset;
@@ -55,6 +58,19 @@ public class EntityBolloomBalloon extends Entity {
 		this.prevPosX = pos.getX() + 0.5F + xOffset;
 		this.prevPosY = pos.getY() + 3;
 		this.prevPosZ = pos.getZ() + 0.5F + zOffset;
+	}
+	
+	/*
+	 * Used for Dispensers
+	 */
+	public EntityBolloomBalloon(World world, BlockPos pos) {
+		this(EEEntities.ObjectEntites.BOLLOOM_BALLOON, world);
+		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+		this.setOriginalPos(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+		this.setUntied();
+		this.prevPosX = pos.getX() + 0.5F;
+		this.prevPosY = pos.getY();
+		this.prevPosZ = pos.getZ() + 0.5F;
 	}
 	
 	@Override
@@ -87,7 +103,7 @@ public class EntityBolloomBalloon extends Entity {
 				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-		if(!world.isRemote) {
+		if(!world.isRemote && ticksExisted > 10) {
 			if (this.getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
 			}

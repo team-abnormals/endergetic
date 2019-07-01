@@ -15,7 +15,7 @@ public class BlockEumus extends Block {
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.SHOVEL;
 	}
-	
+
 	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT_MIPPED;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
 import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.entity.Entity;
@@ -39,6 +40,7 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				!(entity instanceof PaintingEntity) &&
 				!(entity instanceof ItemFrameEntity) &&
 				!(entity instanceof ShulkerEntity) &&
+				!(entity instanceof EntityBolloomBalloon) &&
 				!world.getBlockState(pos).get(BlockBoof.BOOFED)) {
 				
 				if(entity instanceof PlayerEntity) {
