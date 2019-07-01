@@ -49,6 +49,9 @@ public class EntityBolloomKnot extends Entity {
 				}
 			}
 		}
+		if(this.getBalloonsTied() <= 0) {
+			this.remove();
+		}
 	}
 	
 	@Nullable
@@ -63,10 +66,16 @@ public class EntityBolloomKnot extends Entity {
 	
 	public static void createStartingKnot(World world, BlockPos pos) {
 		EntityBolloomKnot knot = new EntityBolloomKnot(world, pos);
-		EntityBolloomBalloon balloon = new EntityBolloomBalloon(world, knot.getUniqueID(), pos);
+		EntityBolloomBalloon balloon = new EntityBolloomBalloon(world, knot.getUniqueID(), pos, 0);
 		knot.setBalloonsTied(1);
 		world.addEntity(knot);
 		world.addEntity(balloon);
+	}
+	
+	public void addBalloon() {
+		EntityBolloomBalloon balloon = new EntityBolloomBalloon(this.getEntityWorld(), this.getUniqueID(), this.getHangingPos(), 0.1F);
+		world.addEntity(balloon);
+		this.setBalloonsTied(this.getBalloonsTied() + 1);
 	}
 	
 	protected boolean onValidBlock() {
@@ -126,7 +135,7 @@ public class EntityBolloomKnot extends Entity {
 	}
 	
 	public boolean hasMaxBalloons() {
-		return this.getDataManager().get(BALLOONS_TIED) > 5;
+		return this.getDataManager().get(BALLOONS_TIED) > 3;
 	}
 
 	@Nonnull

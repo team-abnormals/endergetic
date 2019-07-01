@@ -155,7 +155,10 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
         GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
         this.fruit.render(f5);
         
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 90.0F, 90.0F);
+        int i = entity.getBrightnessForRender();
+        int j = i % 65536;
+        int k = i / 65536;
+        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, j, k);
         this.vine_x.render(f5);
     }
     

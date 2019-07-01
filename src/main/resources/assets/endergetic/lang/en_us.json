@@ -45,5 +45,6 @@
 	"entity.endergetic.poise_cluster": "Poise Cluster",
 	"entity.endergetic.bolloom_fruit": "Bolloom Fruit",
 	"entity.endergetic.boof_block": "Boof Block",
-	"entity.endergetic.bolloom_knot": "Bolloom Knot"
+	"entity.endergetic.bolloom_knot": "Bolloom Knot",
+	"entity.endergetic.bolloom_balloon": "Bolloom Balloon"
 }

@@ -27,6 +27,7 @@ public class ItemBolloomBalloon extends Item {
 		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		BlockPos pos = context.getPos();
@@ -36,8 +37,12 @@ public class ItemBolloomBalloon extends Item {
 		if(!(block instanceof FenceBlock)) {
 			return ActionResultType.FAIL;
 		} else {
-			if(!world.isRemote) {
-				this.attachToFence(pos, world);
+			if(world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up(2)).isAir() && world.getBlockState(pos.up(3)).isAir()) {
+				if(!world.isRemote) {
+					this.attachToFence(pos, world, context.getItem());
+				}
+			} else {
+				return ActionResultType.FAIL;
 			}
 			for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos))) {
 				if(entity instanceof EntityBolloomKnot) {
@@ -50,17 +55,19 @@ public class ItemBolloomBalloon extends Item {
 		}
 	}
 
-	public void attachToFence(BlockPos fencePos, World world) {
+	public void attachToFence(BlockPos fencePos, World world, ItemStack stack) {
 		for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(fencePos))) {
 			if(entity instanceof EntityBolloomKnot) {
 				if(!((EntityBolloomKnot)entity).hasMaxBalloons()) {
 					EntityBolloomKnot setKnot = EntityBolloomKnot.getKnotForPosition(world, fencePos);
-					setKnot.setBalloonsTied(setKnot.getBalloonsTied() + 1);
+					setKnot.addBalloon();
+					stack.shrink(1);
 				}
 			}
         }
 		if(EntityBolloomKnot.getKnotForPosition(world, fencePos) == null) {
 			EntityBolloomKnot.createStartingKnot(world, fencePos);
+			stack.shrink(1);
 		}
 	}
 	
