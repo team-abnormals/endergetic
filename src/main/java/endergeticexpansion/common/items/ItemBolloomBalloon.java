@@ -10,6 +10,7 @@ import net.minecraft.block.FenceBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,9 +41,7 @@ public class ItemBolloomBalloon extends Item {
 		World world = context.getWorld();
 		Block block = world.getBlockState(pos).getBlock();
 		
-		if(!(block instanceof FenceBlock)) {
-			return ActionResultType.FAIL;
-		} else {
+		if(block instanceof FenceBlock) {
 			if(world.getBlockState(pos.up()).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != Blocks.LAVA && world.getBlockState(pos.up(2)).getMaterial().isReplaceable() && world.getBlockState(pos.up(2)).getBlock() != Blocks.LAVA && world.getBlockState(pos.up(3)).getMaterial().isReplaceable() && world.getBlockState(pos.up(3)).getBlock() != Blocks.LAVA) {
 				if(!world.isRemote) {
 					this.attachToFence(pos, world, context.getItem());
@@ -57,8 +56,8 @@ public class ItemBolloomBalloon extends Item {
 					}
 				}
 	        }
-			return ActionResultType.PASS;
 		}
+		return ActionResultType.PASS;
 	}
 
 	public void attachToFence(BlockPos fencePos, World world, ItemStack stack) {
@@ -76,7 +75,17 @@ public class ItemBolloomBalloon extends Item {
 			stack.shrink(1);
 		}
 	}
-	
+
+	@Override
+	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
+		if(!target.world.isRemote) {
+			//See how many balloons are already attached to target entity
+			//If more fit, spawn balloon and increment count and return true
+			//Otherwise return false
+		}
+		return super.itemInteractionForEntity(stack, player, target, hand);
+	}
+
 	public static class BalloonDispenseBehavior extends DefaultDispenseItemBehavior {
 		
 		@SuppressWarnings("deprecation")

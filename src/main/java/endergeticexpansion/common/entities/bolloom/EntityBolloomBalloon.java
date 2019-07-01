@@ -1,7 +1,6 @@
 package endergeticexpansion.common.entities.bolloom;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -9,6 +8,7 @@ import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,6 +35,7 @@ public class EntityBolloomBalloon extends Entity {
 	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> ENTITY = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.<Optional<UUID>>createKey(EntityBolloomBalloon.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
@@ -74,6 +75,23 @@ public class EntityBolloomBalloon extends Entity {
 		this.prevPosX = pos.getX() + 0.5F;
 		this.prevPosY = pos.getY();
 		this.prevPosZ = pos.getZ() + 0.5F;
+	}
+
+	/*
+	 * Used for attaching to entities
+	 */
+	public EntityBolloomBalloon(World world, LivingEntity entity) {
+		this(EEEntities.ObjectEntites.BOLLOOM_BALLOON, world);
+		UUID entityID = entity.getUniqueID();
+		this.setPosition(entity.posX + 0.5F, entity.posY + 0.5F, entity.posZ + 0.5F);
+		this.setOriginalPos((float)entity.posX + 0.5F, (float)entity.posY + 0.5F, (float)entity.posZ + 0.5F);
+		this.setKnotId(entityID);
+		this.getDataManager().set(ENTITY, true);
+		this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
+		this.setAngle((float) (rand.nextDouble() * 2 * Math.PI));
+		this.prevPosX = entity.posX + 0.5F;
+		this.prevPosY = entity.posY;
+		this.prevPosZ = entity.posZ + 0.5F;
 	}
 	
 	@Override
@@ -151,6 +169,7 @@ public class EntityBolloomBalloon extends Entity {
 		this.getDataManager().register(ORIGINAL_Y, 0F);
 		this.getDataManager().register(FENCE_POS, BlockPos.ZERO);
 		this.getDataManager().register(UNTIED, false);
+		this.getDataManager().register(ENTITY, false);
 		this.getDataManager().register(ANGLE, 0F);
 		this.getDataManager().register(SWAY, 0F);
 		this.getDataManager().register(DESIRED_ANGLE, 0F);
