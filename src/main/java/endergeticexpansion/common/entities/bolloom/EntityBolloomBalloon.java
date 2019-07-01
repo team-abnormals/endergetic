@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.core.registry.EEEntities;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
@@ -68,6 +69,8 @@ public class EntityBolloomBalloon extends Entity {
 		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setOriginalPos(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setUntied();
+		this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
+		this.setAngle((float) (rand.nextDouble() * 2 * Math.PI));
 		this.prevPosX = pos.getX() + 0.5F;
 		this.prevPosY = pos.getY();
 		this.prevPosZ = pos.getZ() + 0.5F;
@@ -103,12 +106,13 @@ public class EntityBolloomBalloon extends Entity {
 				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-		if(!world.isRemote && ticksExisted > 10) {
+		if(!world.isRemote && ticksExisted > 1) {
 			if (this.getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
 			}
 			
 			if(this.getTicksExisted() % 1200 == 0 && this.isUntied()) {
+				this.onBroken(this);
 				this.remove();
 			}
 			
@@ -223,12 +227,11 @@ public class EntityBolloomBalloon extends Entity {
 		return ((ServerWorld)world).getEntityByUuid(getKnotId());
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean checkForBlocksDown() {
 		for (int i = 0; i < 3; i++) {
-			BlockPos pos = this.getPosition().down(i);
+			BlockPos pos = this.getFencePos().up(3).down(i);
 			if(this.getEntityWorld().isAreaLoaded(pos, 1)) {
-				if(!this.getEntityWorld().getBlockState(pos).isAir()) {
+				if(!this.getEntityWorld().getBlockState(pos).getMaterial().isReplaceable() || this.getEntityWorld().getBlockState(pos).getBlock() == Blocks.LAVA) {
 					return true;
 				}
 			}

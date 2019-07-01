@@ -4,6 +4,7 @@ import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
@@ -33,7 +34,6 @@ public class ItemBolloomBalloon extends Item {
 		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		BlockPos pos = context.getPos();
@@ -43,7 +43,7 @@ public class ItemBolloomBalloon extends Item {
 		if(!(block instanceof FenceBlock)) {
 			return ActionResultType.FAIL;
 		} else {
-			if(world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up(2)).isAir() && world.getBlockState(pos.up(3)).isAir()) {
+			if(world.getBlockState(pos.up()).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != Blocks.LAVA && world.getBlockState(pos.up(2)).getMaterial().isReplaceable() && world.getBlockState(pos.up(2)).getBlock() != Blocks.LAVA && world.getBlockState(pos.up(3)).getMaterial().isReplaceable() && world.getBlockState(pos.up(3)).getBlock() != Blocks.LAVA) {
 				if(!world.isRemote) {
 					this.attachToFence(pos, world, context.getItem());
 				}
@@ -109,6 +109,8 @@ public class ItemBolloomBalloon extends Item {
 						}
 			        }
 				}
+			} else {
+				return super.dispenseStack(source, stack);
 			}
 			return stack;
 		}

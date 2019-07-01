@@ -12,11 +12,13 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +33,11 @@ public class BlockBoof extends ContainerBlock {
 	public BlockBoof(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(BOOFED, false));
+	}
+	
+	@Override
+	public PathNodeType getAiPathNodeType(BlockState state, IBlockReader world, BlockPos pos, MobEntity entity) {
+		return PathNodeType.DAMAGE_CACTUS;
 	}
 	
 	@Override
