@@ -1,5 +1,8 @@
 package endergeticexpansion.core;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -10,6 +13,7 @@ import endergeticexpansion.core.proxy.ClientProxy;
 import endergeticexpansion.core.proxy.CommonProxy;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
+import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
@@ -22,6 +26,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
 	
 	public static EndergeticExpansion instance;
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
@@ -36,6 +41,7 @@ public class EndergeticExpansion {
 	void preInit(final FMLCommonSetupEvent event) {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
+		EECapabilities.registerAll();
 	}
     
     @SubscribeEvent

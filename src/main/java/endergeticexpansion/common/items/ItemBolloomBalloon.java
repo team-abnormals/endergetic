@@ -1,7 +1,9 @@
 package endergeticexpansion.common.items;
 
+import endergeticexpansion.common.capability.balloons.BalloonProvider;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
+import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -32,7 +34,12 @@ public class ItemBolloomBalloon extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+		playerIn.getCapability(BalloonProvider.BALLOON_CAP, null)
+	    .ifPresent(balloons -> {
+	        balloons.incrementBalloons(1);
+	        EndergeticExpansion.LOGGER.info(balloons.getBalloonsTied());
+	    });
+		return new ActionResult<>(ActionResultType.FAIL, itemstack);
 	}
 	
 	@Override
