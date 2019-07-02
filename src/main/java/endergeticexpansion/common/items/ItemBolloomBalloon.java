@@ -37,9 +37,9 @@ public class ItemBolloomBalloon extends Item {
 		playerIn.getCapability(BalloonProvider.BALLOON_CAP, null)
 	    .ifPresent(balloons -> {
 	        balloons.incrementBalloons(1);
-	        EndergeticExpansion.LOGGER.info(balloons.getBalloonsTied());
+	        System.out.println(balloons.getBalloonsTied());
 	    });
-		return new ActionResult<>(ActionResultType.FAIL, itemstack);
+		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 	}
 	
 	@Override

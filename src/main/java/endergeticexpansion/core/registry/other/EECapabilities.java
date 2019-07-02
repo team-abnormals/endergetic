@@ -12,7 +12,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EECapabilities {
 	public static final ResourceLocation BALLOON_CAP = new ResourceLocation(EndergeticExpansion.MOD_ID, "balloons");
 
