@@ -5,6 +5,7 @@ import java.util.*;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.util.MathUtils;
+import endergeticexpansion.common.capability.balloons.BalloonProvider;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -176,12 +177,18 @@ public class EntityBolloomBalloon extends Entity {
 		if(!world.isRemote()) {
 			if(this.getAttachedEntity() != null) {
 				if(!this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
+					if(this.getAttachedEntity() != null) {
+						this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
+						.ifPresent(balloons -> {
+							balloons.decrementBalloons(1);
+						});
+					}
 					this.setUntied();
 					this.getDataManager().set(ATTACHED_ENTITY, false);
 				}
-			} else if(this.getAttachedEntity() == null && this.getDataManager().get(ATTACHED_ENTITY)) {
-				this.setUntied();
-				this.getDataManager().set(ATTACHED_ENTITY, false);
+				if(this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
+					this.applyMotionToAttachedEntity(getAttachedEntity());
+				}
 			}
 		}
 		this.incrementTicksExisted();
@@ -241,6 +248,12 @@ public class EntityBolloomBalloon extends Entity {
 		if(this.getKnot() != null) {
 			((EntityBolloomKnot)this.getKnot()).setBalloonsTied(((EntityBolloomKnot)this.getKnot()).getBalloonsTied() - 1);
 		}
+		if(this.getAttachedEntity() != null) {
+			this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
+			.ifPresent(balloons -> {
+				balloons.decrementBalloons(1);
+			});
+		}
 	}
 	
 	@Override
@@ -250,7 +263,10 @@ public class EntityBolloomBalloon extends Entity {
 				((EntityBolloomKnot)this.getKnot()).setBalloonsTied(((EntityBolloomKnot)this.getKnot()).getBalloonsTied() - 1);
 			}
 			if(this.getAttachedEntity() != null) {
-				
+				this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
+				.ifPresent(balloons -> {
+					balloons.decrementBalloons(1);
+				});
 			}
 		}
 		super.onKillCommand();
@@ -280,14 +296,23 @@ public class EntityBolloomBalloon extends Entity {
 	}
 	
 	/*
-	 * Used to keep the balloon above the entity's bounding box and in the middle; 
-	 * used for keeping the balloons in the right spot when an entity's bounding box changes, e.x. Player when swimming
-	 * Always check that the world isn't a remote world
+	 * Make sure for 3 and 4 balloons to add the motion depending on the actual balloon's motion so the balloons won't clip through blocks when going up
 	 */
-	public double[] getPositionsForAttachedEntityMatchingBoundingBox() {
-		Entity entity = this.getAttachedEntity();
-		Vec3d middleUp = entity.getBoundingBox().getCenter().add(0, entity.getBoundingBox().maxY / 2, 0);
-		return new double[] {middleUp.getX(), middleUp.getY(), middleUp.getZ()};
+	public void applyMotionToAttachedEntity(Entity entity) {
+		this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
+		.ifPresent(balloons -> {
+			if(balloons.getBalloonsTied() == 1 && !entity.onGround) {
+				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.8F, 1));
+				entity.fallDistance = 0;
+			} else if(balloons.getBalloonsTied() == 2 && !entity.onGround) {
+				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.5F, 1));
+				entity.fallDistance = 0;
+			} else if(balloons.getBalloonsTied() == 3) {
+				
+			} else if(balloons.getBalloonsTied() == 4) {
+				
+			}
+		});
 	}
 	
 	public static void addBalloonToEntity(Entity entity) {
