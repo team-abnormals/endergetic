@@ -3,6 +3,7 @@ package endergeticexpansion.client.model.bolloom;
 import com.mojang.blaze3d.platform.GLX;
 
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 
@@ -44,6 +45,8 @@ public class ModelBolloomBalloon<T extends EntityBolloomBalloon> extends EntityM
 
     @Override
     public void render(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    	EndergeticExpansion.LOGGER.info(entity.prevPosY);
+    	EndergeticExpansion.LOGGER.info(entity.posY);
     	GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
         this.balloon.render(f5);
         

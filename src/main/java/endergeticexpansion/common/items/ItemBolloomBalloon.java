@@ -3,7 +3,6 @@ package endergeticexpansion.common.items;
 import endergeticexpansion.common.capability.balloons.BalloonProvider;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
-import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -12,7 +11,6 @@ import net.minecraft.block.FenceBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,12 +32,19 @@ public class ItemBolloomBalloon extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		playerIn.getCapability(BalloonProvider.BALLOON_CAP, null)
-	    .ifPresent(balloons -> {
-	        balloons.incrementBalloons(1);
-	        System.out.println(balloons.getBalloonsTied());
-	    });
-		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+		if(playerIn.isSneaking()) {
+			if(!worldIn.isRemote) {
+				playerIn.getCapability(BalloonProvider.BALLOON_CAP, null)
+				.ifPresent(balloons -> {
+					if(balloons.getBalloonsTied() < 4) {
+						balloons.incrementBalloons(1);
+						EntityBolloomBalloon.addBalloonToEntity(playerIn);
+					}
+				});
+			}
+			return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+		}
+		return new ActionResult<>(ActionResultType.FAIL, itemstack);
 	}
 	
 	@Override
@@ -81,16 +86,6 @@ public class ItemBolloomBalloon extends Item {
 			EntityBolloomKnot.createStartingKnot(world, fencePos);
 			stack.shrink(1);
 		}
-	}
-
-	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
-		if(!target.world.isRemote) {
-			//See how many balloons are already attached to target entity
-			//If more fit, spawn balloon and increment count and return true
-			//Otherwise return false
-		}
-		return super.itemInteractionForEntity(stack, player, target, hand);
 	}
 
 	public static class BalloonDispenseBehavior extends DefaultDispenseItemBehavior {
