@@ -117,7 +117,8 @@ public class EntityBolloomBalloon extends Entity {
 				this.setOriginalPos(
 					(float)this.getAttachedEntity().posX,
 					(float)this.getAttachedEntity().posY + 2 + this.getAttachedEntity().getEyeHeight(),
-					(float)this.getAttachedEntity().posZ);
+					(float)this.getAttachedEntity().posZ
+				);
 				this.prevPosX = this.getAttachedEntity().prevPosX;
 				this.prevPosY = this.getAttachedEntity().prevPosY + 2 + this.getAttachedEntity().getEyeHeight();
 				this.prevPosZ = this.getAttachedEntity().prevPosZ;
@@ -175,8 +176,12 @@ public class EntityBolloomBalloon extends Entity {
 		if(!world.isRemote()) {
 			if(this.getAttachedEntity() != null) {
 				if(!this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
+					this.setUntied();
 					this.getDataManager().set(ATTACHED_ENTITY, false);
 				}
+			} else if(this.getAttachedEntity() == null && this.getDataManager().get(ATTACHED_ENTITY)) {
+				this.setUntied();
+				this.getDataManager().set(ATTACHED_ENTITY, false);
 			}
 		}
 		this.incrementTicksExisted();
@@ -204,7 +209,7 @@ public class EntityBolloomBalloon extends Entity {
 			nbt.put("KnotUUID", NBTUtil.writeUniqueId(this.getKnotId()));
 		}
 		if(this.getAttachedEntityId() != null) {
-			nbt.put("AttachedEntityUUID", NBTUtil.writeUniqueId(this.getAttachedEntityId()));
+			nbt.putUniqueId("AttachedEntityUUID", this.getAttachedEntityId());
 		}
 		nbt.putBoolean("UNTIED", this.getDataManager().get(UNTIED));
 		nbt.putBoolean("ATTACHED", this.getDataManager().get(ATTACHED_ENTITY));
@@ -240,8 +245,13 @@ public class EntityBolloomBalloon extends Entity {
 	
 	@Override
 	public void onKillCommand() {
-		if(!this.getEntityWorld().isRemote && this.getKnot() != null) {
-			((EntityBolloomKnot)this.getKnot()).setBalloonsTied(((EntityBolloomKnot)this.getKnot()).getBalloonsTied() - 1);
+		if(!this.getEntityWorld().isRemote) {
+			if(this.getKnot() != null) {
+				((EntityBolloomKnot)this.getKnot()).setBalloonsTied(((EntityBolloomKnot)this.getKnot()).getBalloonsTied() - 1);
+			}
+			if(this.getAttachedEntity() != null) {
+				
+			}
 		}
 		super.onKillCommand();
 	}
