@@ -302,10 +302,12 @@ public class EntityBolloomBalloon extends Entity {
 		this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
 		.ifPresent(balloons -> {
 			if(balloons.getBalloonsTied() == 1 && !entity.onGround) {
-				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.8F, 1));
+				//entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.8F, 1));
+				entity.setMotion(entity.getMotion().mul(1, 0.8, 1));
 				entity.fallDistance = 0;
 			} else if(balloons.getBalloonsTied() == 2 && !entity.onGround) {
-				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.5F, 1));
+				//entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.5F, 1));
+				entity.setMotion(entity.getMotion().mul(1, 0.5, 1));
 				entity.fallDistance = 0;
 			} else if(balloons.getBalloonsTied() == 3) {
 				
