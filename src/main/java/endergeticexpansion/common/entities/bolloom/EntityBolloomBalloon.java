@@ -154,7 +154,6 @@ public class EntityBolloomBalloon extends Entity {
 			    this.setAngle(this.getAngle() - 0.03F);
 			}
 		}
-		
 		if(world.isAreaLoaded(this.getPosition(), 1)) {
 			if(!this.isUntied()) {
 				this.setPosition(
@@ -167,7 +166,6 @@ public class EntityBolloomBalloon extends Entity {
 				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-		
 		if(!this.getDataManager().get(ATTACHED_ENTITY)) {
 			if(this.checkForBlocksDown()) {
 				if(!this.getEntityWorld().isRemote && this.getKnot() != null && !this.isUntied()) {
