@@ -284,7 +284,7 @@ public class EntityBolloomBalloon extends Entity {
 				this.onBroken(source.getTrueSource());
 			}
 			return true;
-		}	
+		}
 	}
 	
 	public boolean isInvulnerableTo(DamageSource source) {
