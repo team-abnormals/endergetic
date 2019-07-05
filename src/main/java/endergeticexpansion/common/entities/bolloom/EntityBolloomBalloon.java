@@ -310,19 +310,21 @@ public class EntityBolloomBalloon extends Entity {
 		this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
 		.ifPresent(balloons -> {
 			if(entity instanceof LivingEntity) {
-				if(balloons.getBalloonsTied() == 1) {
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 5, 250, false, false, false));
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, 5, 1, false, false, false));
-				} else if(balloons.getBalloonsTied() == 2) {
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 5, 255, false, false));
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, 5, 1, false, false));
+				if(balloons.getBalloonsTied() == 1 && !entity.onGround) {
+					//entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.8F, 1));
+					entity.setMotion(entity.getMotion().mul(1, 0.8, 1));
+					entity.fallDistance = 0;
+				} else if(balloons.getBalloonsTied() == 2 && !entity.onGround) {
+					//entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.5F, 1));
+					entity.setMotion(entity.getMotion().mul(1, 0.5, 1));
+					entity.fallDistance = 0;
 				} else if(balloons.getBalloonsTied() == 3) {
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 1, 1, false, false));
+				
 				} else if(balloons.getBalloonsTied() == 4) {
-					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 1, 4, false, false));
+				
 				}
-			}
 			entity.fallDistance = 0;
+			}
 		});
 	}
 	
