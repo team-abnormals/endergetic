@@ -3,6 +3,7 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import endergeticexpansion.common.network.MessageUpdatePlayerMotion;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -16,23 +17,35 @@ import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
+	public static final String NETWORK_PROTOCOL = "1";
 	
 	public static EndergeticExpansion instance;
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+	
+	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
+		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
+		.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
+		.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
+		.simpleChannel();
     
 	public EndergeticExpansion() {
 		instance = this;
+		
+		this.setupMessages();
     	
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::registerTileEntities);
@@ -61,4 +74,12 @@ public class EndergeticExpansion {
     	event.getRegistry().register(EETileEntities.BOOF_BLOCK = (TileEntityType<TileEntityBoof>) TileEntityType.Builder.create(TileEntityBoof::new, EEBlocks.BOOF_BLOCK).build(null).setRegistryName(MOD_ID, "boof_block"));
     	event.getRegistry().register(EETileEntities.BOOF_DISPENSED = (TileEntityType<TileEntityDispensedBoof>) TileEntityType.Builder.create(TileEntityDispensedBoof::new, EEBlocks.BOOF_DISPENSED_BLOCK).build(null).setRegistryName(MOD_ID, "boof_dispensed_block"));
     }
+    
+    void setupMessages() {
+    	CHANNEL.messageBuilder(MessageUpdatePlayerMotion.class, 0)
+    	.encoder(MessageUpdatePlayerMotion::serialize).decoder(MessageUpdatePlayerMotion::deserialize)
+    	.consumer(MessageUpdatePlayerMotion::handle)
+    	.add();
+    }
+    
 }

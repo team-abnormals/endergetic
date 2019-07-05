@@ -1,9 +1,7 @@
 package endergeticexpansion.api.util;
 
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
 
 public class MathUtils {
 

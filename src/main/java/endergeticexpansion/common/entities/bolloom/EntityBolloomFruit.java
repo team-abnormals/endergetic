@@ -17,6 +17,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
@@ -25,6 +27,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 
 public class EntityBolloomFruit extends LivingEntity {
@@ -151,7 +154,6 @@ public class EntityBolloomFruit extends LivingEntity {
 				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-
 		if(!world.isRemote) {
 			if (getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (rand.nextDouble() * 2 * Math.PI));
@@ -260,6 +262,12 @@ public class EntityBolloomFruit extends LivingEntity {
 		return false;
 	}
 	
+	private void doParticles() {
+		if (this.world instanceof ServerWorld) {
+			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.getDefaultState()), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+		}
+	}
+	
 	@Override
 	public boolean canBreatheUnderwater() {
 		return true;
@@ -349,9 +357,10 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
-		if(!this.getEntityWorld().isRemote && this.ticksExisted > 10) {
+		if(!this.getEntityWorld().isRemote && this.ticksExisted > 5) {
 			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT));
 		}
+		this.doParticles();
 		this.remove();
 	}
 	

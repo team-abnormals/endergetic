@@ -1,6 +1,5 @@
 package endergeticexpansion.common.items;
 
-import endergeticexpansion.common.capability.balloons.BalloonProvider;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import net.minecraft.block.Block;
@@ -11,14 +10,11 @@ import net.minecraft.block.FenceBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,24 +23,6 @@ public class ItemBolloomBalloon extends Item {
 
 	public ItemBolloomBalloon(Properties properties) {
 		super(properties);
-	}
-	
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		if(playerIn.isSneaking()) {
-			if(!worldIn.isRemote) {
-				playerIn.getCapability(BalloonProvider.BALLOON_CAP, null)
-				.ifPresent(balloons -> {
-					if(balloons.getBalloonsTied() < 4) {
-						balloons.incrementBalloons(1);
-						EntityBolloomBalloon.addBalloonToEntity(playerIn);
-					}
-				});
-			}
-			return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
-		}
-		return new ActionResult<>(ActionResultType.FAIL, itemstack);
 	}
 	
 	@Override

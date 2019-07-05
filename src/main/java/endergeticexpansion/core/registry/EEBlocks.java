@@ -76,6 +76,7 @@ public class EEBlocks {
 	public static Block BOLLOOM_BUD       = new BlockBolloomBud(EEProperties.POISE_WOOD.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_bud");
 	public static Block PUFFBUG_HIVE      = new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_hive");
 	public static Block HIVE_HANGER       = new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)).setRegistryName(EndergeticExpansion.MOD_ID, "hive_hanger");
+	public static Block BOLLOOM_PARTICLE  = new Block(EEProperties.POISE_WOOD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_particle");
 	public static Block BOOF_BLOCK        = new BlockBoof(EEProperties.BOOF_BLOCK).setRegistryName(EndergeticExpansion.MOD_ID, "boof_block");
 	public static Block BOOF_DISPENSED_BLOCK = new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)).setRegistryName(EndergeticExpansion.MOD_ID, "boof_dispensed_block");
 	
@@ -92,7 +93,7 @@ public class EEBlocks {
 			CORROCK_CROWN_OVERWORLD_WALL, CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_NETHER_WALL, CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_END_WALL, CORROCK_CROWN_END_STANDING,
 			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
 			POISE_PLANKS, POISE_STAIRS, POISE_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
-			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOOF_BLOCK, BOOF_DISPENSED_BLOCK
+			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_DISPENSED_BLOCK
 		};
 		event.getRegistry().registerAll(blocks);
 	}

@@ -4,20 +4,24 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.common.capability.balloons.BalloonProvider;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
@@ -174,23 +178,23 @@ public class EntityBolloomBalloon extends Entity {
 				this.setUntied();
 			}
 		}
-		if(!world.isRemote()) {
-			if(this.getAttachedEntity() != null) {
-				if(!this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
-					if(this.getAttachedEntity() != null) {
-						this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
-						.ifPresent(balloons -> {
-							balloons.decrementBalloons(1);
-						});
-					}
-					this.setUntied();
-					this.getDataManager().set(ATTACHED_ENTITY, false);
-				}
-				if(this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
-					this.applyMotionToAttachedEntity(getAttachedEntity());
-				}
-			}
-		}
+//		if(!world.isRemote()) {
+//			if(this.getAttachedEntity() != null) {
+//				if(!this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
+//					if(this.getAttachedEntity() != null) {
+//						this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
+//						.ifPresent(balloons -> {
+//							balloons.decrementBalloons(1);
+//						});
+//					}
+//					this.setUntied();
+//					this.getDataManager().set(ATTACHED_ENTITY, false);
+//				}
+//				if(this.getAttachedEntity().isAlive() && this.getDataManager().get(ATTACHED_ENTITY)) {
+//					this.applyMotionToAttachedEntity(getAttachedEntity());
+//				}
+//			}
+//		}
 		this.incrementTicksExisted();
 	}
 	
@@ -213,7 +217,7 @@ public class EntityBolloomBalloon extends Entity {
 	@Override
 	protected void writeAdditional(CompoundNBT nbt) {
 		if(this.getKnotId() != null) {
-			nbt.put("KnotUUID", NBTUtil.writeUniqueId(this.getKnotId()));
+			nbt.putUniqueId("KnotUUID", this.getKnotId());
 		}
 		if(this.getAttachedEntityId() != null) {
 			nbt.putUniqueId("AttachedEntityUUID", this.getAttachedEntityId());
@@ -254,6 +258,7 @@ public class EntityBolloomBalloon extends Entity {
 				balloons.decrementBalloons(1);
 			});
 		}
+		this.doParticles();
 	}
 	
 	@Override
@@ -295,23 +300,29 @@ public class EntityBolloomBalloon extends Entity {
 		return entityIn instanceof PlayerEntity ? this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)entityIn), 0.0F) : false;
 	}
 	
-	/*
-	 * Make sure for 3 and 4 balloons to add the motion depending on the actual balloon's motion so the balloons won't clip through blocks when going up
-	 */
+	private void doParticles() {
+		if (this.world instanceof ServerWorld) {
+			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.getDefaultState()), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+		}
+	}
+	
 	public void applyMotionToAttachedEntity(Entity entity) {
 		this.getAttachedEntity().getCapability(BalloonProvider.BALLOON_CAP, null)
 		.ifPresent(balloons -> {
-			if(balloons.getBalloonsTied() == 1 && !entity.onGround) {
-				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.8F, 1));
-				entity.fallDistance = 0;
-			} else if(balloons.getBalloonsTied() == 2 && !entity.onGround) {
-				entity.setMotionMultiplier(world.getBlockState(entity.getPosition()), new Vec3d(1, 0.5F, 1));
-				entity.fallDistance = 0;
-			} else if(balloons.getBalloonsTied() == 3) {
-				
-			} else if(balloons.getBalloonsTied() == 4) {
-				
+			if(entity instanceof LivingEntity) {
+				if(balloons.getBalloonsTied() == 1) {
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 5, 250, false, false, false));
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, 5, 1, false, false, false));
+				} else if(balloons.getBalloonsTied() == 2) {
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 5, 255, false, false));
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, 5, 1, false, false));
+				} else if(balloons.getBalloonsTied() == 3) {
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 1, 1, false, false));
+				} else if(balloons.getBalloonsTied() == 4) {
+					((LivingEntity)entity).addPotionEffect(new EffectInstance(Effects.LEVITATION, 1, 4, false, false));
+				}
 			}
+			entity.fallDistance = 0;
 		});
 	}
 	
