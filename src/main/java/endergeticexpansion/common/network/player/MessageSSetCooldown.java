@@ -31,9 +31,9 @@ public class MessageSSetCooldown {
 	}
 
 	public void toBytes(PacketBuffer buf) {
-		buf.writeString(itemName);
-		buf.writeInt(cooldown);
-		buf.writeBoolean(isVest);
+		buf.writeString(this.itemName);
+		buf.writeInt(this.cooldown);
+		buf.writeBoolean(this.isVest);
 	}
 
 	public static void serialize(MessageSSetCooldown message, PacketBuffer packet) {
@@ -53,12 +53,27 @@ public class MessageSSetCooldown {
 				PlayerEntity player = ctx.get().getSender();
 				if(message.isVest) {
 					if(!player.inventory.armorItemInSlot(2).isEmpty() && player.inventory.armorItemInSlot(2).getItem() == EEItems.BOOFLO_VEST) {
-						player.getCooldownTracker().setCooldown(player.inventory.armorItemInSlot(2).getItem(), message.cooldown);
+						player.getCooldownTracker().setCooldown(player.inventory.armorItemInSlot(2).getItem(), MessageSSetCooldown.getDelayForBoofedAmount(player.inventory.armorItemInSlot(2)));
 					}
 				}
 			});
 		}
 		
 		ctx.get().setPacketHandled(true);
+	}
+	
+	public static int getDelayForBoofedAmount(ItemStack stack) {
+		if(stack.hasTag()) {
+			if(stack.getTag().getInt("timesBoofed") == 1) {
+				return 20;
+			}
+			else if(stack.getTag().getInt("timesBoofed") == 2) {
+				return 40;
+			}
+			else if(stack.getTag().getInt("timesBoofed") >= 3) {
+				return 100;
+			} 
+		}
+		return 10;
 	}
 }

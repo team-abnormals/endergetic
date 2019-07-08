@@ -8,7 +8,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import endergeticexpansion.core.registry.EEItems;
 
-/*
+/**
  * @author - SmellyModder(Luke Tonon)
  */
 public enum EEArmorMaterials implements IArmorMaterial {

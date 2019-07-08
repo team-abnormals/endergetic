@@ -1,12 +1,9 @@
 package endergeticexpansion.common.items;
 
-import java.util.List;
-
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.other.EEArmorMaterials;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,12 +11,15 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * 
+ * @author - SmellyModder(Luke Tonon)
+ *
+ */
 public class ItemBoofloVest extends ArmorItem {
 
 	public ItemBoofloVest(Properties properties) {
@@ -47,14 +47,6 @@ public class ItemBoofloVest extends ArmorItem {
 		}
 	}
 	
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		if (hasTag(stack)) {
-			tooltip.add(new TranslationTextComponent("hmm yess", stack.getTag().getInt("timesBoofed")));
-		}
-	}
-	
 	public boolean hasTag(ItemStack stack) {
 		if(!stack.hasTag()) {
 			stack.setTag(new CompoundNBT());
@@ -71,20 +63,7 @@ public class ItemBoofloVest extends ArmorItem {
 	}
 	
 	public void setDelayForBoofedAmount(ItemStack stack, PlayerEntity player) {
-		if(stack.hasTag()) {
-			if(stack.getTag().getInt("timesBoofed") == 1) {
-				NetworkUtil.setSItemCooldown(stack, 10, true);
-			}
-			else if(stack.getTag().getInt("timesBoofed") == 2) {
-				NetworkUtil.setSItemCooldown(stack, 20, true);
-			}
-			else if(stack.getTag().getInt("timesBoofed") == 3) {
-				NetworkUtil.setSItemCooldown(stack, 40, true);
-			} 
-			else if(stack.getTag().getInt("timesBoofed") >= 4) {
-				NetworkUtil.setSItemCooldown(stack, 100, true);
-			}
-		}
+		NetworkUtil.setSItemCooldown(stack, 100, true);
 	}
 	
 	@Override

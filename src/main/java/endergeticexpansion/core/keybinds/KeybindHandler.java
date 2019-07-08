@@ -12,14 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 
-/*
+/**
  * @author - SmellyModder(Luke Tonon)
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
@@ -40,7 +39,7 @@ public class KeybindHandler {
         	
         	ItemStack stack = player.inventory.armorItemInSlot(2);
         	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround) {
-        		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
+        		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player) && !Minecraft.getInstance().isGamePaused()) {
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
         			((ItemBoofloVest)stack.getItem()).setDelayForBoofedAmount(stack, player);
@@ -49,12 +48,4 @@ public class KeybindHandler {
         	}
         }
     }
-    
-    public boolean hasTag(ItemStack stack) {
-		if(!stack.hasTag()) {
-			stack.setTag(new CompoundNBT());
-			return false;
-		}
-		return true;
-	}
 }
