@@ -3,7 +3,10 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import endergeticexpansion.common.network.MessageUpdatePlayerMotion;
+import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
+import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.common.network.player.MessageCUpdatePlayerMotion;
+import endergeticexpansion.common.network.player.MessageSSetCooldown;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -76,9 +79,24 @@ public class EndergeticExpansion {
     }
     
     void setupMessages() {
-    	CHANNEL.messageBuilder(MessageUpdatePlayerMotion.class, 0)
-    	.encoder(MessageUpdatePlayerMotion::serialize).decoder(MessageUpdatePlayerMotion::deserialize)
-    	.consumer(MessageUpdatePlayerMotion::handle)
+    	CHANNEL.messageBuilder(MessageCUpdatePlayerMotion.class, 0)
+    	.encoder(MessageCUpdatePlayerMotion::serialize).decoder(MessageCUpdatePlayerMotion::deserialize)
+    	.consumer(MessageCUpdatePlayerMotion::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageCUpdateNBTTag.class, 0)
+    	.encoder(MessageCUpdateNBTTag::serialize).decoder(MessageCUpdateNBTTag::deserialize)
+    	.consumer(MessageCUpdateNBTTag::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageSUpdateNBTTag.class, 0)
+    	.encoder(MessageSUpdateNBTTag::serialize).decoder(MessageSUpdateNBTTag::deserialize)
+    	.consumer(MessageSUpdateNBTTag::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageSSetCooldown.class, 0)
+    	.encoder(MessageSSetCooldown::serialize).decoder(MessageSSetCooldown::deserialize)
+    	.consumer(MessageSSetCooldown::handle)
     	.add();
     }
     

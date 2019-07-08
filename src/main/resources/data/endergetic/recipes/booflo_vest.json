@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "H H",
+    "HBH",
+    "HHH"
+  ],
+  "key": {
+    "B": 
+    {
+      "item": "endergetic:boof_block"
+    },
+    "H": 
+    {
+      "item": "endergetic:booflo_hide"
+    }
+  },
+  "result": {
+    "item": "endergetic:booflo_vest",
+    "count": 1
+  }
+}

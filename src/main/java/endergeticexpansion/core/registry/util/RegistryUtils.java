@@ -37,4 +37,8 @@ public class RegistryUtils {
 		return new SpawnEggItem(entityType, eggColor1, eggColor2, new Item.Properties().group(itemGroup)).setRegistryName(entityType.getRegistryName() + "_spawn_egg");
 	}
 	
+	public static Item.Properties createSimpleItemProperty(int stackSize, ItemGroup itemGroup){
+		return new Item.Properties().group(itemGroup).maxStackSize(stackSize);
+	}
+	
 }
