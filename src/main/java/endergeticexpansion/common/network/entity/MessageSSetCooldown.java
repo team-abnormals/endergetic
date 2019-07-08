@@ -1,4 +1,4 @@
-package endergeticexpansion.common.network.player;
+package endergeticexpansion.common.network.entity;
 
 import java.util.function.Supplier;
 

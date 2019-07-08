@@ -3,13 +3,14 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import endergeticexpansion.common.network.entity.MessageCSetVelocity;
+import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
+import endergeticexpansion.common.network.entity.MessageSBoofEntity;
+import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
-import endergeticexpansion.common.network.player.MessageCSetVelocity;
-import endergeticexpansion.common.network.player.MessageCUpdatePlayerMotion;
-import endergeticexpansion.common.network.player.MessageSSetCooldown;
-import endergeticexpansion.common.network.player.MessageSSetVelocity;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -112,9 +113,14 @@ public class EndergeticExpansion {
     	.consumer(MessageSSetVelocity::handle)
     	.add();
     	
-    	CHANNEL.messageBuilder(MessageDamageItem.class, 5)
+    	CHANNEL.messageBuilder(MessageDamageItem.class, 6)
     	.encoder(MessageDamageItem::serialize).decoder(MessageDamageItem::deserialize)
     	.consumer(MessageDamageItem::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageSBoofEntity.class, 7)
+    	.encoder(MessageSBoofEntity::serialize).decoder(MessageSBoofEntity::deserialize)
+    	.consumer(MessageSBoofEntity::handle)
     	.add();
     }
     

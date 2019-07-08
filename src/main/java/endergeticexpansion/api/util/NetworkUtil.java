@@ -1,11 +1,12 @@
 package endergeticexpansion.api.util;
 
+import endergeticexpansion.common.network.entity.MessageCSetVelocity;
+import endergeticexpansion.common.network.entity.MessageSBoofEntity;
+import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
-import endergeticexpansion.common.network.player.MessageCSetVelocity;
-import endergeticexpansion.common.network.player.MessageSSetCooldown;
-import endergeticexpansion.common.network.player.MessageSSetVelocity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
@@ -54,18 +55,28 @@ public class NetworkUtil {
 	 * Used for setting the client side Player Velocity from the server side
 	 */
 	@OnlyIn(Dist.DEDICATED_SERVER)
-	public static void setCPlayerVelocity(Vec3d motion, int id) {
+	public static void setCVelocity(Vec3d motion, int id) {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageCSetVelocity(motion, id));
 	}
 	
 	/**
 	 * @param motion{Vec3d} - The vector motion of the entity
 	 * @param id{Integer} - The Player's Entity Id
-	 * Used for setting server side Player Velocity from the client side
+	 * Used for setting server side Entity Velocity from the client side
 	 */
 	@OnlyIn(Dist.CLIENT)
-	public static void setSPlayerVelocity(Vec3d motion, int id) {
+	public static void setSVelocity(Vec3d motion, int id) {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetVelocity(motion, id));
+	}
+	
+	/**
+	 * @param velX, velY, velZ{double} - The velocity values for x, y, and z
+	 * @param radius{int} - The radius the blast will affect; measured in blocks
+	 * Used for pushing entities back through the client for the server
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void SBoofEntity(double velX, double velY, double velZ, int radius) {
+		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(velX, velY, velZ, radius));
 	}
 	
 	/**

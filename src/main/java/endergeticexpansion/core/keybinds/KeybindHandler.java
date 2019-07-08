@@ -10,8 +10,10 @@ import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,8 +40,8 @@ public class KeybindHandler {
     public static void onKeyPressed(KeyInputEvent event) {
         if(BOOF.isPressed()) {
         	PlayerEntity player = Minecraft.getInstance().player;
-        	
         	ItemStack stack = player.inventory.armorItemInSlot(2);
+        	
         	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !KeybindHandler.isPlayerOnGroundReal(player) && !player.onGround && Minecraft.getInstance().currentScreen == null) {
         		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
         			player.fallDistance = player.fallDistance - 2;
@@ -49,9 +51,20 @@ public class KeybindHandler {
         			NetworkUtil.damageItem(stack, 1);
         			NetworkUtil.updateSItemNBT(stack);
         			
-        			double[] vars = {4D, player.rotationYaw, 3.141593D, 180D};
+        			double[] vars = {4D, player.rotationYaw, Math.PI, 180D};
         			player.setVelocity(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D, 0.75D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D);
-        			NetworkUtil.setSPlayerVelocity(new Vec3d(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.75D, 1.0D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D), player.getEntityId());
+        			NetworkUtil.setSVelocity(new Vec3d(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.75D, 1.0D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D), player.getEntityId());
+        		
+        			AxisAlignedBB bb = player.getBoundingBox().grow(2.0D);
+        			List<Entity> entities = player.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
+        			for(int i = 0; i < entities.size(); i++) {
+        				Entity entity = entities.get(i);
+        				
+        				if(entity.getEntityId() != player.getEntityId()) {
+        					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
+        				}
+        			}
+        			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
         		}
         	}
         }

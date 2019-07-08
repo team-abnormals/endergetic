@@ -1,8 +1,9 @@
-package endergeticexpansion.common.network.player;
+package endergeticexpansion.common.network.entity;
 
 import java.util.function.Supplier;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.LogicalSide;
@@ -11,13 +12,13 @@ import net.minecraftforge.fml.network.NetworkEvent;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class MessageSSetVelocity {
+public class MessageCSetVelocity {
 	private int entityId;
 	private double vecX;
 	private double vecY;
 	private double vecZ;
 	
-	public MessageSSetVelocity(Vec3d motion, int entityId) {
+	public MessageCSetVelocity(Vec3d motion, int entityId) {
 		this.entityId = entityId;
 		this.vecX = motion.getX();
 		this.vecY = motion.getY();
@@ -31,20 +32,20 @@ public class MessageSSetVelocity {
 		buf.writeDouble(this.vecZ);
 	}
 	
-	public static MessageSSetVelocity deserialize(PacketBuffer buf) {
+	public static MessageCSetVelocity deserialize(PacketBuffer buf) {
 		int entityId = buf.readInt();
 		double vecX = buf.readDouble();
 		double vecY = buf.readDouble();
 		double vecZ = buf.readDouble();
-		return new MessageSSetVelocity(new Vec3d(vecX, vecY, vecZ), entityId);
+		return new MessageCSetVelocity(new Vec3d(vecX, vecY, vecZ), entityId);
 	}
 	
-	public static void handle(MessageSSetVelocity message, Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(MessageCSetVelocity message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		PlayerEntity player = ctx.get().getSender();
+		Entity entity = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				player.setVelocity(message.vecX, message.vecY, message.vecZ);
+				entity.setVelocity(message.vecX, message.vecY, message.vecZ);
 			});
 			context.setPacketHandled(true);
 		}
