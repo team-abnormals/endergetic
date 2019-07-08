@@ -2,6 +2,7 @@ package endergeticexpansion.common.items;
 
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.other.EEArmorMaterials;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
@@ -29,7 +30,7 @@ public class ItemBoofloVest extends ArmorItem {
 	@Override
 	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 		if(entityIn instanceof PlayerEntity) {
-			if(((PlayerEntity)entityIn).onGround && !((PlayerEntity)entityIn).isElytraFlying()) {
+			if(((PlayerEntity)entityIn).onGround && !((PlayerEntity)entityIn).isElytraFlying() && KeybindHandler.isPlayerOnGroundReal(((PlayerEntity)entityIn))) {
 				if(this.hasTag(stack)) {
 					stack.getTag().putInt("timesBoofed", 0);
 				}

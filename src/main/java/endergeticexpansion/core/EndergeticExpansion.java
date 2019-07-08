@@ -3,10 +3,13 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.common.network.player.MessageCSetVelocity;
 import endergeticexpansion.common.network.player.MessageCUpdatePlayerMotion;
 import endergeticexpansion.common.network.player.MessageSSetCooldown;
+import endergeticexpansion.common.network.player.MessageSSetVelocity;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
@@ -84,19 +87,34 @@ public class EndergeticExpansion {
     	.consumer(MessageCUpdatePlayerMotion::handle)
     	.add();
     	
-    	CHANNEL.messageBuilder(MessageCUpdateNBTTag.class, 0)
+    	CHANNEL.messageBuilder(MessageCUpdateNBTTag.class, 1)
     	.encoder(MessageCUpdateNBTTag::serialize).decoder(MessageCUpdateNBTTag::deserialize)
     	.consumer(MessageCUpdateNBTTag::handle)
     	.add();
     	
-    	CHANNEL.messageBuilder(MessageSUpdateNBTTag.class, 0)
+    	CHANNEL.messageBuilder(MessageSUpdateNBTTag.class, 2)
     	.encoder(MessageSUpdateNBTTag::serialize).decoder(MessageSUpdateNBTTag::deserialize)
     	.consumer(MessageSUpdateNBTTag::handle)
     	.add();
     	
-    	CHANNEL.messageBuilder(MessageSSetCooldown.class, 0)
+    	CHANNEL.messageBuilder(MessageSSetCooldown.class, 3)
     	.encoder(MessageSSetCooldown::serialize).decoder(MessageSSetCooldown::deserialize)
     	.consumer(MessageSSetCooldown::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageCSetVelocity.class, 4)
+    	.encoder(MessageCSetVelocity::serialize).decoder(MessageCSetVelocity::deserialize)
+    	.consumer(MessageCSetVelocity::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageSSetVelocity.class, 5)
+    	.encoder(MessageSSetVelocity::serialize).decoder(MessageSSetVelocity::deserialize)
+    	.consumer(MessageSSetVelocity::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageDamageItem.class, 5)
+    	.encoder(MessageDamageItem::serialize).decoder(MessageDamageItem::deserialize)
+    	.consumer(MessageDamageItem::handle)
     	.add();
     }
     
