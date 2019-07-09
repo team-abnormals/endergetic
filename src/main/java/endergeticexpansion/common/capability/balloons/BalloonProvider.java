@@ -13,11 +13,10 @@ public class BalloonProvider implements ICapabilitySerializable<INBT> {
 	public static final Capability<IBalloonStorage> BALLOON_CAP = null;
 	
 	private IBalloonStorage instance = BALLOON_CAP.getDefaultInstance();
-	private LazyOptional<IBalloonStorage> balloonSupplier = LazyOptional.of(() -> instance);
 
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		return balloonSupplier.cast();
+		return cap == BALLOON_CAP ? LazyOptional.of(() -> this).cast() : LazyOptional.empty();
 	}
 
 	@Override
