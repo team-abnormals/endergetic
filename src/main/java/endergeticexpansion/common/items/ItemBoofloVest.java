@@ -1,6 +1,7 @@
 package endergeticexpansion.common.items;
 
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.client.model.armor.ModelBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.other.EEArmorMaterials;
@@ -77,10 +78,16 @@ public class ItemBoofloVest extends ArmorItem {
 		return EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest.png";
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
-		return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+	public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlotType armorSlot, A _default) {
+		if(stack.hasTag()) {
+			if(stack.getTag().getBoolean("boofed")) {
+				return (A) new ModelBoofloVest(1.0F);
+			}
+		}
+		return super.getArmorModel(entityLiving, stack, armorSlot, _default);
 	}
 	
 }

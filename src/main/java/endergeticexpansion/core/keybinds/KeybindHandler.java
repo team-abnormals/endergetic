@@ -5,12 +5,19 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.items.ItemBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.item.PaintingEntity;
+import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -42,9 +49,8 @@ public class KeybindHandler {
         	PlayerEntity player = Minecraft.getInstance().player;
         	ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-        	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !KeybindHandler.isPlayerOnGroundReal(player) && !player.onGround && Minecraft.getInstance().currentScreen == null) {
+        	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround && Minecraft.getInstance().currentScreen == null) {
         		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
-        			player.fallDistance = player.fallDistance - 2;
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
         			((ItemBoofloVest)stack.getItem()).setDelayForBoofedAmount(stack, player);
@@ -60,8 +66,25 @@ public class KeybindHandler {
         			for(int i = 0; i < entities.size(); i++) {
         				Entity entity = entities.get(i);
         				
-        				if(entity.getEntityId() != player.getEntityId()) {
-        					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
+        				//Todo - Make the
+        				if(entity.getEntityId() != player.getEntityId() &&
+        					!(entity instanceof EntityBoofBlock) &&
+        					!(entity instanceof ShulkerEntity) &&
+        					!(entity instanceof PaintingEntity) &&
+        					!(entity instanceof EntityPoiseCluster) &&
+        					!(entity instanceof ItemFrameEntity)
+        				) {
+        					if(entity instanceof EntityBolloomFruit) {
+        						if(((EntityBolloomFruit)entity).isUntied()) {
+        							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
+        						}
+        					} else if(entity instanceof EntityBolloomBalloon) {
+        						if(((EntityBolloomBalloon)entity).isUntied()) {
+        							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
+        						}
+        					} else {
+        						entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
+        					}
         				}
         			}
         			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);

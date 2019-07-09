@@ -3,7 +3,14 @@ package endergeticexpansion.common.network.entity;
 import java.util.List;
 import java.util.function.Supplier;
 
+import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.item.PaintingEntity;
+import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -50,8 +57,24 @@ public class MessageSBoofEntity {
     			for(int i = 0; i < entities.size(); i++) {
     				Entity entity = entities.get(i);
     				
-    				if(entity.getEntityId() != player.getEntityId()) {
-    					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180)) * message.velX * 0.1D, message.velY, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180)) * message.velZ * 0.1D);
+    				if(entity.getEntityId() != player.getEntityId() &&
+        				!(entity instanceof EntityBoofBlock) &&
+        				!(entity instanceof ShulkerEntity) &&
+        				!(entity instanceof PaintingEntity) &&
+        				!(entity instanceof EntityPoiseCluster) &&
+        				!(entity instanceof ItemFrameEntity)
+        			) {
+    					if(entity instanceof EntityBolloomFruit) {
+    						if(((EntityBolloomFruit)entity).isUntied()) {
+    							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180)) * message.velX * 0.1D, message.velY, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180)) * message.velZ * 0.1D);
+    						}
+    					} else if(entity instanceof EntityBolloomBalloon) {
+    						if(((EntityBolloomBalloon)entity).isUntied()) {
+    							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180)) * message.velX * 0.1D, message.velY, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180)) * message.velZ * 0.1D);
+    						}
+    					} else {
+    						entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180)) * message.velX * 0.1D, message.velY, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180)) * message.velZ * 0.1D);
+    					}
     				}
     			}
 			});

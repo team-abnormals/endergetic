@@ -70,8 +70,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param velX, velY, velZ{double} - The velocity values for x, y, and z
-	 * @param radius{int} - The radius the blast will affect; measured in blocks
+	 * @param velX, velY, velZ{Double} - The velocity values for x, y, and z
+	 * @param radius{Integer} - The radius the blast will affect; measured in blocks
 	 * Used for pushing entities back through the client for the server
 	 */
 	@OnlyIn(Dist.CLIENT)
