@@ -3,6 +3,7 @@ package endergeticexpansion.api.util;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
 import endergeticexpansion.common.network.entity.MessageSBoofEntity;
 import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
 import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
@@ -77,6 +78,16 @@ public class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void SBoofEntity(double velX, double velY, double velZ, int radius) {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(velX, velY, velZ, radius));
+	}
+	
+	/**
+	 * @param entityId{Integer} - The entity's id
+	 * @param distance{Integer} - The height of the fall
+	 * Used for setting fall distance in booflo vests
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void setSFallDistance(int entityId, int distance) {
+		EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetFallDistance(entityId, distance));
 	}
 	
 	/**

@@ -7,6 +7,7 @@ import endergeticexpansion.common.network.entity.MessageCSetVelocity;
 import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
 import endergeticexpansion.common.network.entity.MessageSBoofEntity;
 import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
 import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
@@ -121,6 +122,11 @@ public class EndergeticExpansion {
     	CHANNEL.messageBuilder(MessageSBoofEntity.class, 7)
     	.encoder(MessageSBoofEntity::serialize).decoder(MessageSBoofEntity::deserialize)
     	.consumer(MessageSBoofEntity::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageSSetFallDistance.class, 8)
+    	.encoder(MessageSSetFallDistance::serialize).decoder(MessageSSetFallDistance::deserialize)
+    	.consumer(MessageSSetFallDistance::handle)
     	.add();
     }
     

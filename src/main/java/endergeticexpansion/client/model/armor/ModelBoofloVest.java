@@ -30,7 +30,11 @@ public class ModelBoofloVest<T extends LivingEntity> extends BipedModel<T> {
     	super.render(entity, f, f1, f2, f3, f4, f5);
     	GlStateManager.pushMatrix();
     	GlStateManager.scalef(1.25F, 1.25F, 1.25F);
-    	GlStateManager.translatef(-0.25F, -0.05F, -0.125F);
+    	if(entity.isSneaking()) {
+    		GlStateManager.translatef(-0.25F, 0.18F, -0.175F);
+    	} else {
+    		GlStateManager.translatef(-0.25F, -0.05F, -0.125F);
+    	}
         this.strap.render(f5);
     	GlStateManager.popMatrix();
     }

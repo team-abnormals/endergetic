@@ -60,7 +60,7 @@ public class KeybindHandler {
         			double[] vars = {4D, player.rotationYaw, Math.PI, 180D};
         			player.setVelocity(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D, 0.75D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D);
         			NetworkUtil.setSVelocity(new Vec3d(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.75D, 1.0D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D), player.getEntityId());
-        		
+        			
         			AxisAlignedBB bb = player.getBoundingBox().grow(2.0D);
         			List<Entity> entities = player.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
         			for(int i = 0; i < entities.size(); i++) {
