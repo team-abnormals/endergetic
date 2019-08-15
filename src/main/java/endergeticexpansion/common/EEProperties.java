@@ -5,6 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraftforge.common.ToolType;
 
 public class EEProperties {
 	public static final Block.Properties FRISBLOOM_STEM    = Block.Properties.create(Material.PLANTS, MaterialColor.PURPLE_TERRACOTTA).hardnessAndResistance(0F);
@@ -27,6 +28,7 @@ public class EEProperties {
 	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.WOOD).hardnessAndResistance(2, 10);
 	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.WOOD).hardnessAndResistance(2, 10).lightValue(15);
 	public static final Block.Properties BOOF_BLOCK        = Block.Properties.create(Material.WOOL, MaterialColor.YELLOW_TERRACOTTA).sound(SoundType.CLOTH).hardnessAndResistance(0.85F);
+	public static final Block.Properties EUMUS_BRICKS      = Block.Properties.create(Material.ROCK, MaterialColor.PURPLE_TERRACOTTA).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).hardnessAndResistance(2, 30);
 	
 	public static final Block.Properties PUFFBUG_HIVE(boolean hanger) {
 		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
