@@ -55,6 +55,7 @@ public class BlockCorrock extends Block {
 		}
 	}
 	
+	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		return worldIn.getBlockState(pos.down()).isSolid();
 	}

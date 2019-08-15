@@ -20,4 +20,9 @@ public class BlockEumus extends Block {
 		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 	
+	@Override
+	public boolean isSolid(BlockState p_200124_1_) {
+		return true;
+	}
+	
 }
