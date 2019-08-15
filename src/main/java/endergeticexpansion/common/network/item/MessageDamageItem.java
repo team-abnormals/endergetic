@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageDamageItem {
@@ -48,22 +49,24 @@ public class MessageDamageItem {
 	}
 
 	public static void handle(MessageDamageItem message, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			PlayerEntity player = ctx.get().getSender();
-			if(message.isVest) {
-				if(!player.inventory.armorItemInSlot(2).isEmpty() && player.inventory.armorItemInSlot(2).getItem() == EEItems.BOOFLO_VEST) {
-					player.inventory.armorItemInSlot(2).damageItem(1, player, (p_213341_0_) -> {
-						p_213341_0_.sendBreakAnimation(EquipmentSlotType.CHEST);
-					});
+		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			ctx.get().enqueueWork(() -> {
+				PlayerEntity player = ctx.get().getSender();
+				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+				if(message.isVest) {
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+						vest.damageItem(1, player, (p_213341_0_) -> {
+							p_213341_0_.sendBreakAnimation(EquipmentSlotType.CHEST);
+						});
+					}
+				} else {
+					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
+						player.inventory.getCurrentItem().damageItem(1, player, (p_213341_0_) -> {
+							p_213341_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+						});
 				}
-			} else {
-				if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
-					player.inventory.getCurrentItem().damageItem(1, player, (p_213341_0_) -> {
-						p_213341_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-					});
-			}
-		});
-
-		ctx.get().setPacketHandled(true);
+			});
+			ctx.get().setPacketHandled(true);
+		}
 	}
 }

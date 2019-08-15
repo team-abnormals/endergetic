@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
@@ -52,14 +53,14 @@ public class MessageSSetCooldown {
 			ctx.get().enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				if(message.isVest) {
-					if(!player.inventory.armorItemInSlot(2).isEmpty() && player.inventory.armorItemInSlot(2).getItem() == EEItems.BOOFLO_VEST) {
-						player.getCooldownTracker().setCooldown(player.inventory.armorItemInSlot(2).getItem(), MessageSSetCooldown.getDelayForBoofedAmount(player.inventory.armorItemInSlot(2)));
+					ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+						player.getCooldownTracker().setCooldown(vest.getItem(), MessageSSetCooldown.getDelayForBoofedAmount(vest));
 					}
 				}
 			});
+			ctx.get().setPacketHandled(true);
 		}
-		
-		ctx.get().setPacketHandled(true);
 	}
 	
 	public static int getDelayForBoofedAmount(ItemStack stack) {

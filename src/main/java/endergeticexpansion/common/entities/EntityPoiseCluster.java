@@ -249,7 +249,7 @@ public class EntityPoiseCluster extends LivingEntity {
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
-		return CreatureAttribute.field_223222_a_;
+		return CreatureAttribute.ILLAGER;
 	}
 	
 	public void setOrigin(BlockPos pos) {

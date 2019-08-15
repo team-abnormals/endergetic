@@ -4,9 +4,11 @@ import java.util.function.Supplier;
 
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageSUpdateNBTTag {
@@ -48,18 +50,20 @@ public class MessageSUpdateNBTTag {
 	}
 
 	public static void handle(MessageSUpdateNBTTag message, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			PlayerEntity player = ctx.get().getSender();
-			if(message.isVest) {
-				if(!player.inventory.armorItemInSlot(2).isEmpty() && player.inventory.armorItemInSlot(2).getItem() == EEItems.BOOFLO_VEST) {
-					player.inventory.armorItemInSlot(2).setTag(message.tag);
+		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			ctx.get().enqueueWork(() -> {
+				PlayerEntity player = ctx.get().getSender();
+				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+				if(message.isVest) {
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+						vest.setTag(message.tag);
+					}
+				} else {
+					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
+						player.inventory.getCurrentItem().setTag(message.tag);
 				}
-			} else {
-				if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
-					player.inventory.getCurrentItem().setTag(message.tag);
-			}
-		});
-
-		ctx.get().setPacketHandled(true);
+			});
+			ctx.get().setPacketHandled(true);
+		}
 	}
 }

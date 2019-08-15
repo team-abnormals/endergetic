@@ -27,7 +27,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
 
 public class EntityBolloomFruit extends LivingEntity {
@@ -226,7 +226,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
-		return CreatureAttribute.field_223222_a_;
+		return CreatureAttribute.ILLAGER;
 	}
 	
 	@Override

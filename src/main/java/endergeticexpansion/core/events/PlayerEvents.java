@@ -12,11 +12,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public class PlayerEvents {
@@ -24,7 +26,7 @@ public class PlayerEvents {
 	//@SubscribeEvent
 	public static void onEntityClicked(PlayerInteractEvent.EntityInteract event) {
 		Entity entity = event.getTarget();
-		PlayerEntity player = event.getEntityPlayer();
+		PlayerEntity player = event.getPlayer();
 		if(event.getItemStack().getItem() instanceof ItemBolloomBalloon && !entity.getEntityWorld().isRemote && !player.isSneaking()) {
 			if(entity instanceof LivingEntity && !(entity instanceof EntityBolloomFruit) && !(entity instanceof EntityBoofBlock) && !(entity instanceof EntityPoiseCluster)) {
 				entity.getCapability(BalloonProvider.BALLOON_CAP, null)
@@ -51,16 +53,22 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event) {
 		PlayerEntity player = event.player;
-    	ItemStack stack = player.inventory.armorItemInSlot(2);
+    	ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
     	
-    	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround) {
-    		if(stack.hasTag()) {
+    	if(player != null && !stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST) {
+    		if(stack.hasTag() && !player.onGround) {
     			if(stack.getTag().getBoolean("boofed")) {
     				player.fallDistance = 0;
     			}
     		}
+    		if(event.side == LogicalSide.SERVER) {
+    			if(player.onGround) {
+    				if(stack.hasTag()) {
+    					stack.getTag().putInt("timesBoofed", 0);
+    				}
+    			}
+    		}
     	}
-    	
 	}
 	
 }

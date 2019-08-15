@@ -42,7 +42,7 @@ public class ModelBoofloVest<T extends LivingEntity> extends BipedModel<T> {
 	@Override
 	public void setRotationAngles(T entity, float p_212844_2_, float p_212844_3_, float p_212844_4_,float p_212844_5_, float p_212844_6_, float p_212844_7_) {
 		super.setRotationAngles(entity, p_212844_2_, p_212844_3_, p_212844_4_, p_212844_5_, p_212844_6_, p_212844_7_);
-		this.strap.func_217177_a(this.field_78115_e);
+		this.strap.copyModelAngles(this.bipedBody);
 	}
 
 }
