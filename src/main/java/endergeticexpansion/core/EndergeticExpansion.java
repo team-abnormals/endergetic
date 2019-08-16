@@ -27,7 +27,6 @@ import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;

@@ -1,4 +1,6 @@
 {
+	"_comment": "Blocks",
+	
 	"block.endergetic.corrock_overworld_block": "Overworld Corrock Block",
 	"block.endergetic.corrock_nether_block": "Nether Corrock Block",
 	"block.endergetic.corrock_end_block": "End Corrock Block",
@@ -43,6 +45,11 @@
 	"block.endergetic.eumus_chiseled_bricks": "Eumus Chiseled Bricks",
 	"block.endergetic.eumus_brick_slab": "Eumus Brick Slab",
 	"block.endergetic.eumus_brick_stairs": "Eumus Brick Stairs",
+	
+	"_comment": "Items",
+	
+	"item.endergetic.poise_boat": "Poise Boat",
+	"item.endergetic.eumus_brick": "Eumus Brick",
 	"item.endergetic.bolloom_fruit": "Bolloom Fruit",
 	"item.endergetic.bolloom_balloon": "Bolloom Balloon",
 	"item.endergetic.bolloom_balloon_red": "Red Bolloom Balloon",
@@ -62,6 +69,9 @@
 	"item.endergetic.bolloom_balloon_black": "Black Bolloom Balloon",
 	"item.endergetic.booflo_hide": "Booflo Hide",
 	"item.endergetic.booflo_vest": "Booflo Vest",
+	
+	"_comment": "Entities",
+	
 	"entity.endergetic.poise_cluster": "Poise Cluster",
 	"entity.endergetic.bolloom_fruit": "Bolloom Fruit",
 	"entity.endergetic.boof_block": "Boof Block",

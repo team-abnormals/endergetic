@@ -65,11 +65,11 @@ public class MessageSSetCooldown {
 	
 	public static int getDelayForBoofedAmount(ItemStack stack) {
 		if(stack.hasTag()) {
-			if(stack.getTag().getInt("timesBoofed") <= 4) {
+			if(stack.getTag().getInt("timesBoofed") < 3) {
 				return 7;
 			}
-			else if(stack.getTag().getInt("timesBoofed") >= 4) {
-				return (int) (0.5 * (stack.getTag().getInt("timesBoofed") - 2) * 20);
+			else if(stack.getTag().getInt("timesBoofed") > 2) {
+				return (int) (0.5 * (stack.getTag().getInt("timesBoofed")) * 20);
 			}
 		}
 		return 20;

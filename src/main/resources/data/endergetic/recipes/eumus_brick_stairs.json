@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:eumus_bricks"
+    }
+  },
+  "result": {
+    "item": "endergetic:eumus_brick_stairs",
+    "count": 4
+  }
+}

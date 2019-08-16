@@ -1,12 +1,14 @@
 package endergeticexpansion.core.registry;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityEndergeticBoat;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
@@ -16,10 +18,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.registries.ObjectHolder;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -33,10 +37,27 @@ public class EEEntities {
 	public static final EntityType<EntityPoiseCluster> POISE_CLUSTER = createEntity(EntityPoiseCluster.class, EntityPoiseCluster::new, EntityClassification.MISC, 1F, 1F, 0x000000, 0xFFFFFF);
 	public static final EntityType<EntityBolloomFruit> BOLLOOM_FRUIT = createEntity(EntityBolloomFruit.class, EntityBolloomFruit::new, EntityClassification.MISC, 0.5F, 0.5F, 0x000000, 0xFFFFFF);
 	public static final EntityType<EntityBoofBlock> BOOF_BLOCK = createEntity(EntityBoofBlock.class, EntityBoofBlock::new, EntityClassification.MISC, 1.6F, 1.6F, 0x000000, 0xFFFFFF);
+	public static final EntityType<EntityEndergeticBoat> POISE_BOAT = createItemEntity(EntityEndergeticBoat.class, EntityEndergeticBoat::new, EntityEndergeticBoat::new, EntityClassification.MISC, 1.375F, 0.5625F);
 	
 	private static <T extends Entity> EntityType<T> createEntity(Class<T> entityClass, EntityType.IFactory<T> factory, EntityClassification entityClassification, float width, float height, int eggPrimary, int eggSecondary) {
         ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, classToString(entityClass));
         EntityType<T> entity = EntityType.Builder.create(factory, entityClassification).size(width, height).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(3).build(location.toString());
+        entity.setRegistryName(location);
+        entities.add(entity);
+
+        return entity;
+    }
+	
+	private static <T extends Entity> EntityType<T> createItemEntity(Class<T> entityClass, EntityType.IFactory<T> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, T> clientFactory, EntityClassification entityClassification, float width, float height) {
+        ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, classToString(entityClass));
+        EntityType<T> entity = EntityType.Builder.create(factory, entityClassification)
+        	.size(width, height)
+        	.setTrackingRange(64)
+        	.setShouldReceiveVelocityUpdates(true)
+        	.setUpdateInterval(3)
+        	.setCustomClientFactory(clientFactory)
+        	.build(location.toString()
+        );
         entity.setRegistryName(location);
         entities.add(entity);
 
