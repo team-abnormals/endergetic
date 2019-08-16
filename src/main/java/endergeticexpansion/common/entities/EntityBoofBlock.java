@@ -16,6 +16,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -79,7 +80,7 @@ public class EntityBoofBlock extends LivingEntity {
 						entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
 				} else if((entity instanceof TridentEntity) || (entity instanceof AbstractArrowEntity)) {
-					this.setForProjectile();
+					this.setForProjectile(true);
 					this.getEntityWorld().setBlockState(getOrigin(), Blocks.AIR.getDefaultState());
 					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F);
 				}
@@ -95,6 +96,23 @@ public class EntityBoofBlock extends LivingEntity {
 		}
 		this.setMotion(Vec3d.ZERO);
 		super.tick();
+	}
+	
+	@Override
+	public void readAdditional(CompoundNBT nbt) {
+		super.readAdditional(nbt);
+		this.setOrigin(new BlockPos(nbt.getInt("OriginX"), nbt.getInt("OriginY"), nbt.getInt("OriginZ")));
+		this.setForProjectile(nbt.getBoolean("ForProjectile"));
+	}
+	
+	@Override
+	public void writeAdditional(CompoundNBT nbt) {
+		super.writeAdditional(nbt);
+		BlockPos blockpos = this.getOrigin();
+		nbt.putInt("OriginX", blockpos.getX());
+		nbt.putInt("OriginY", blockpos.getY());
+		nbt.putInt("OriginZ", blockpos.getZ());
+		nbt.putBoolean("ForProjectile", this.isForProjectile());
 	}
 	
 	@Override
@@ -114,8 +132,8 @@ public class EntityBoofBlock extends LivingEntity {
 		return false;
 	}
 	
-	public void setForProjectile() {
-		this.getDataManager().set(FOR_PROJECTILE, true);
+	public void setForProjectile(boolean forProjectile) {
+		this.getDataManager().set(FOR_PROJECTILE, forProjectile);
 	}
 	
 	public void setOrigin(BlockPos pos) {

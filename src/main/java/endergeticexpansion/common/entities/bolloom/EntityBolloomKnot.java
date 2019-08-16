@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -64,16 +65,18 @@ public class EntityBolloomKnot extends Entity {
         return null;
     }
 	
-	public static void createStartingKnot(World world, BlockPos pos) {
+	public static void createStartingKnot(World world, BlockPos pos, DyeColor balloonColor) {
 		EntityBolloomKnot knot = new EntityBolloomKnot(world, pos);
 		EntityBolloomBalloon balloon = new EntityBolloomBalloon(world, knot.getUniqueID(), pos, 0);
 		knot.setBalloonsTied(1);
+		balloon.setColor(balloonColor);
 		world.addEntity(knot);
 		world.addEntity(balloon);
 	}
 	
-	public void addBalloon() {
+	public void addBalloon(DyeColor balloonColor) {
 		EntityBolloomBalloon balloon = new EntityBolloomBalloon(this.getEntityWorld(), this.getUniqueID(), this.getHangingPos(), 0.1F);
+		balloon.setColor(balloonColor);
 		world.addEntity(balloon);
 		this.setBalloonsTied(this.getBalloonsTied() + 1);
 	}

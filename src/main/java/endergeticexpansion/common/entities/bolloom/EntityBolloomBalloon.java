@@ -1,6 +1,7 @@
 package endergeticexpansion.common.entities.bolloom;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -13,6 +14,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -22,12 +26,15 @@ import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBolloomBalloon extends Entity {
@@ -43,6 +50,7 @@ public class EntityBolloomBalloon extends Entity {
 	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.<Optional<UUID>>createKey(EntityBolloomBalloon.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
+	protected static final DataParameter<Byte> COLOR = EntityDataManager.createKey(EntityBolloomBalloon.class, DataSerializers.BYTE);
 	public float prevVineAngle;
 	public float prevAngle;
 	
@@ -208,6 +216,7 @@ public class EntityBolloomBalloon extends Entity {
 		this.getDataManager().register(SWAY, 0F);
 		this.getDataManager().register(DESIRED_ANGLE, 0F);
 		this.getDataManager().register(TICKSEXISTED, 0);
+		this.getDataManager().register(COLOR, (byte)16);
 	}
 
 	@Override
@@ -224,6 +233,7 @@ public class EntityBolloomBalloon extends Entity {
 		nbt.putFloat("ORIGIN_Y", this.getDataManager().get(ORIGINAL_Y));
 		nbt.putFloat("ORIGIN_Z", this.getDataManager().get(ORIGINAL_Z));
 		nbt.putLong("FENCE_POS", this.getDataManager().get(FENCE_POS).toLong());
+		nbt.putByte("Color", this.dataManager.get(COLOR));
 	}
 	
 	@Override
@@ -236,6 +246,7 @@ public class EntityBolloomBalloon extends Entity {
 		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("ORIGIN_Y"));
 		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGIN_Z"));
 		this.getDataManager().set(FENCE_POS, BlockPos.fromLong(nbt.getLong("FENCE_POS")));
+		this.dataManager.set(COLOR, nbt.getByte("Color"));
 	}
 	
 	@Override
@@ -330,6 +341,21 @@ public class EntityBolloomBalloon extends Entity {
 	}
 	
 	@Nullable
+	@OnlyIn(Dist.CLIENT)
+	public DyeColor getColor() {
+		Byte obyte = this.dataManager.get(COLOR);
+		return obyte != 16 && obyte <= 15 ? DyeColor.byId(obyte) : null;
+	}
+	
+	public void setColor(@Nullable DyeColor color) {
+		if(color == null) {
+			this.dataManager.set(COLOR, (byte) 16);
+		} else {
+			this.dataManager.set(COLOR, (byte) color.getId());
+		}
+	}
+	
+	@Nullable
 	public Entity getKnot() {
 		return ((ServerWorld)world).getEntityByUuid(getKnotId());
 	}
@@ -349,6 +375,18 @@ public class EntityBolloomBalloon extends Entity {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public final boolean processInitialInteract(PlayerEntity player, Hand hand) {
+		ItemStack itemstack = player.getHeldItem(hand);
+		if (itemstack.getItem() instanceof DyeItem) {
+			if(!world.isRemote) {
+				this.setColor(((DyeItem)itemstack.getItem()).getDyeColor());
+				itemstack.shrink(1);
+			}
+		}
+		return super.processInitialInteract(player, hand);
 	}
 	
 	@Override

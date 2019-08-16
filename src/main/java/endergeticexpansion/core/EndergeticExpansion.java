@@ -20,12 +20,14 @@ import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.proxy.ClientProxy;
 import endergeticexpansion.core.proxy.CommonProxy;
+import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -63,6 +65,7 @@ public class EndergeticExpansion {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
+		EEBiomes.registerBiomeDictionaryTags();
 	}
     
     @SubscribeEvent
