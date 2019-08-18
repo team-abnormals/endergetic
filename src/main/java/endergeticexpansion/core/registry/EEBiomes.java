@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import endergeticexpansion.common.biomes.BiomePoiseForest;
+import endergeticexpansion.common.world.biomes.BiomePoiseForest;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
