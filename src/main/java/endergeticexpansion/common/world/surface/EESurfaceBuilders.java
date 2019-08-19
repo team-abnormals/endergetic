@@ -23,7 +23,7 @@ public class EESurfaceBuilders {
 	 * Surface Builder Configs
 	 */
 	public static final SurfaceBuilderConfig END_STONE_CONFIG = new SurfaceBuilderConfig(END_STONE, END_STONE, END_STONE);
-	public static final SurfaceBuilderConfig EUMUS_CONFIG     = new SurfaceBuilderConfig(EUMUS, END_STONE, EUMUS);
+	public static final SurfaceBuilderConfig EUMUS_CONFIG     = new SurfaceBuilderConfig(EUMUS, EUMUS, EUMUS);
 	public static final SurfaceBuilderConfig POISMOSS_CONFIG  = new SurfaceBuilderConfig(POISMOSS, END_STONE, EUMUS);
 	
 	/*
