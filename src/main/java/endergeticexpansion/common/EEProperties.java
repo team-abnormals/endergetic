@@ -21,7 +21,8 @@ public class EEProperties {
 	
 	@SuppressWarnings("static-access")
 	public static final Block.Properties POISE_GRASS(boolean isPlant) {
-		return !isPlant ? Block.Properties.create(Material.ROCK, MaterialColor.PURPLE).from(Blocks.END_STONE).tickRandomly() : Block.Properties.create(Material.PLANTS, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.PLANT).hardnessAndResistance(0F).doesNotBlockMovement();
+		//Fire you say? Well trust me its safe
+		return !isPlant ? Block.Properties.create(Material.ROCK, MaterialColor.PURPLE).from(Blocks.END_STONE).tickRandomly() : Block.Properties.create(Material.FIRE, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.PLANT).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	
 	public static final Block.Properties POISE_CLUSTER     = Block.Properties.create(Material.ORGANIC, MaterialColor.PINK_TERRACOTTA);
