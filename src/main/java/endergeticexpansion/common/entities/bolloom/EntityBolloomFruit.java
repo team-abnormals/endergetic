@@ -7,6 +7,7 @@ import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -28,6 +29,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.world.World;
 
 public class EntityBolloomFruit extends LivingEntity {
@@ -39,7 +42,7 @@ public class EntityBolloomFruit extends LivingEntity {
 	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
+	public static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
@@ -100,10 +103,11 @@ public class EntityBolloomFruit extends LivingEntity {
 		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGINAL_Z"));
 		this.getDataManager().set(VINE_HEIGHT, nbt.getInt("VINE_HEIGHT"));
 	}
-
+	
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().grow(35);
+		return super.getRenderBoundingBox().grow(Minecraft.getInstance().gameSettings.renderDistanceChunks * 1024);
 	}
 	
 	@Override
