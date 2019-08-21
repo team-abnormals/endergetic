@@ -14,6 +14,9 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 public class FeaturePoiseCluster extends Feature<NoFeatureConfig> {
 	protected static final BlockState GLOWING_POISE_LOG = EEBlocks.POISE_WOOD_GLOWING.getDefaultState();
 	protected static final BlockState POISE_CLUSTER = EEBlocks.POISE_CLUSTER.getDefaultState();

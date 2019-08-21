@@ -16,6 +16,9 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 	protected static final BlockState BOLLOOM_BUD = EEBlocks.BOLLOOM_BUD.getDefaultState();
 

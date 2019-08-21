@@ -15,6 +15,9 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.GrassFeatureConfig;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 @SuppressWarnings("deprecation")
 public class FeaturePoiseGrass extends Feature<GrassFeatureConfig> {
 	

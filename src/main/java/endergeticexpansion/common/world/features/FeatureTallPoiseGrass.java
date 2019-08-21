@@ -14,6 +14,9 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.DoublePlantConfig;
 import net.minecraft.world.gen.feature.Feature;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 public class FeatureTallPoiseGrass extends Feature<DoublePlantConfig> {
 	
 	public FeatureTallPoiseGrass(Function<Dynamic<?>, ? extends DoublePlantConfig> config) {

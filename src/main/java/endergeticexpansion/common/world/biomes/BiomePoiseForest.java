@@ -22,6 +22,7 @@ public class BiomePoiseForest extends Biome {
 		
 		this.addFeature(Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.POISE_CLUSTER, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 4, 22)));
 		this.addFeature(Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.BOLLOOM_BUD, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 10, 40)));
+		this.addFeature(Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.POISE_TREE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 10, 40)));
 		
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_TALLGRASS, new DoublePlantConfig(EEBlocks.POISE_GRASS_TALL.getDefaultState()), Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 0, 7)));
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS, new GrassFeatureConfig(EEBlocks.POISE_GRASS.getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
