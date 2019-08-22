@@ -29,7 +29,7 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if(rand.nextFloat() >= 0.60) {
-			if(world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
+			if(isValidGround(world.getBlockState(pos.down())) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
 				world.setBlockState(pos, BOLLOOM_BUD, 2);
 				return true;
 			}
@@ -66,6 +66,10 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_WEST_FRUIT, true), 2);
 		}
 		((TileEntityBolloomBud)IWorld.getTileEntity(pos)).markForSpawning();
+	}
+	
+	private boolean isValidGround(BlockState state) {
+		return state == EEBlocks.POISMOSS_EUMUS.getDefaultState() || state == EEBlocks.POISE_GRASS_BLOCK.getDefaultState();
 	}
 	
 	public boolean isAreaReplacable(IWorld world, BlockPos pos) {

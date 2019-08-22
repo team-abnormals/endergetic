@@ -30,22 +30,94 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		int treeHeight = rand.nextInt(19) + 13;
+		int size = 0;
 		//Random tree top size; small(45%), medium(40%), large(15%)
-		float size = rand.nextFloat();
-		if(size <= 0.45) {
+		float rng = rand.nextFloat();
+		if(rng <= 0.45F) {
 			size = 0;
-		} else if(size >= 0.45) {
-			size = 1;
-		} else if(size >= 0.85) {
-			size = 2;
+		} else {
+			if(rng >= 0.85F) {
+				size = 2;
+			} else {
+				size = 1;	
+			}
 		}
 		if(world.getBlockState(pos.down()) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() && this.isAreaOpen(world, pos) || world.getBlockState(pos.down()) == Blocks.END_STONE.getDefaultState() && this.isAreaOpen(world, pos)) {
-			this.buildTreeBase(world, pos, rand);
-			this.buildStem(world, pos, rand, treeHeight);
-			this.buildTreeTop(world, pos, rand, treeHeight, 2);
-			
-			this.buildPoismossCircle(world, world, rand, pos);
-			return true;
+			boolean[] isSutableForSizes = new boolean[] {
+				GenerationUtils.isAreaReplacable(world, pos.north(3).west(3).up(treeHeight).getX(), pos.north(3).west(3).up(treeHeight).getY(), pos.north(3).west(3).up(treeHeight).getZ(), pos.south(3).east(3).up(treeHeight + 7).getX(), pos.south(3).east(3).up(treeHeight + 7).getY(), pos.south(3).east(3).up(treeHeight + 7).getZ()),
+				GenerationUtils.isAreaReplacable(world, pos.north(4).west(4).up(treeHeight).getX(), pos.north(4).west(4).up(treeHeight).getY(), pos.north(4).west(4).up(treeHeight).getZ(), pos.south(4).east(4).up(treeHeight + 9).getX(), pos.south(4).east(4).up(treeHeight + 9).getY(), pos.south(4).east(4).up(treeHeight + 9).getZ()),
+				GenerationUtils.isAreaReplacable(world, pos.north(6).west(6).up(treeHeight).getX(), pos.north(6).west(6).up(treeHeight).getY(), pos.north(6).west(6).up(treeHeight).getZ(), pos.south(6).east(6).up(treeHeight + 13).getX(), pos.south(6).east(6).up(treeHeight + 13).getY(), pos.south(6).east(6).up(treeHeight + 13).getZ())
+			};
+			if(size == 0) {
+				if(GenerationUtils.isAreaReplacable(world, pos.north().west().getX(), pos.north().west().getY(), pos.north().west().getZ(), pos.south().east().up(treeHeight).getX(), pos.south().east().up(treeHeight).getY(), pos.south().east().up(treeHeight).getZ())) {
+					if(isSutableForSizes[0]) {
+						this.buildTreeBase(world, pos, rand);
+						this.buildStem(world, pos, rand, treeHeight);
+						this.buildTreeTop(world, pos, rand, treeHeight, size);
+					
+						this.buildPoismossCircle(world, world, rand, pos);
+						return true;
+					}
+					return false;
+				} else {
+					return false;
+				}
+			} else if(size == 1) {
+				if(GenerationUtils.isAreaReplacable(world, pos.north().west().getX(), pos.north().west().getY(), pos.north().west().getZ(), pos.south().east().up(treeHeight).getX(), pos.south().east().up(treeHeight).getY(), pos.south().east().up(treeHeight).getZ())) {
+					if(isSutableForSizes[1]) {
+						this.buildTreeBase(world, pos, rand);
+						this.buildStem(world, pos, rand, treeHeight);
+						this.buildTreeTop(world, pos, rand, treeHeight, size);
+					
+						this.buildPoismossCircle(world, world, rand, pos);
+						return true;
+					} else {
+						if(isSutableForSizes[0]) {
+							this.buildTreeBase(world, pos, rand);
+							this.buildStem(world, pos, rand, treeHeight);
+							this.buildTreeTop(world, pos, rand, treeHeight, 0);
+						
+							this.buildPoismossCircle(world, world, rand, pos);
+							return true;
+						}
+					}
+					return false;
+				} else {
+					return false;
+				}
+			} else if(size == 2) {
+				if(GenerationUtils.isAreaReplacable(world, pos.north().west().getX(), pos.north().west().getY(), pos.north().west().getZ(), pos.south().east().up(treeHeight).getX(), pos.south().east().up(treeHeight).getY(), pos.south().east().up(treeHeight).getZ())) {
+					if(isSutableForSizes[2]) {
+						this.buildTreeBase(world, pos, rand);
+						this.buildStem(world, pos, rand, treeHeight);
+						this.buildTreeTop(world, pos, rand, treeHeight, size);
+					
+						this.buildPoismossCircle(world, world, rand, pos);
+						return true;
+					} else {
+						if(isSutableForSizes[1]) {
+							this.buildTreeBase(world, pos, rand);
+							this.buildStem(world, pos, rand, treeHeight);
+							this.buildTreeTop(world, pos, rand, treeHeight, 1);
+						
+							this.buildPoismossCircle(world, world, rand, pos);
+							return true;
+						} else {
+							if(isSutableForSizes[0]) {
+								this.buildTreeBase(world, pos, rand);
+								this.buildStem(world, pos, rand, treeHeight);
+								this.buildTreeTop(world, pos, rand, treeHeight, 0);
+							
+								this.buildPoismossCircle(world, world, rand, pos);
+								return true;
+							}
+						}
+					}
+					return false;
+				} else {
+					return false;
+				}
+			}
 		}
 		return false;
 	}
@@ -83,13 +155,6 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		}
 	}
 	
-	/**
-	 * @param world
-	 * @param pos
-	 * @param rand
-	 * @param arrivedPos
-	 * @param size
-	 */
 	private void buildTreeTop(IWorld world, BlockPos pos, Random rand, int arrivedPos, int size) {
 		if(size == 0) {
 			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
@@ -670,10 +735,130 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			
 			//South
 			GenerationUtils.fillAreaWithBlockCube(world, origin.south(6).up(6).west().getX(), origin.south(6).up(6).west().getY(), origin.south(6).up(6).west().getZ(), origin.south(6).up(8).east().getX(), origin.south(6).up(8).east().getY(), origin.south(6).up(8).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.south(5).up(6).west(3).getX(), origin.south(5).up(6).west(3).getY(), origin.south(5).up(6).west(3).getZ(), origin.south(5).up(8).west(2).getX(), origin.south(5).up(8).north(2).getY(), origin.south(5).up(8).west(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.south(5).up(6).east(2).getX(), origin.south(5).up(6).east(2).getY(), origin.south(5).up(6).east(2).getZ(), origin.south(5).up(8).east(3).getX(), origin.south(5).up(8).east(3).getY(), origin.south(5).up(8).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.south(5).up(9).west(2).getX(), origin.south(5).up(9).west(2).getY(), origin.south(5).up(9).west(2).getZ(), origin.south(5).up(9).east(2).getX(), origin.south(5).up(9).east(2).getY(), origin.south(5).up(9).east(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.south(5).up(10).west().getX(), origin.south(5).up(10).west().getY(), origin.south(5).up(10).west().getZ(), origin.south(5).up(10).east().getX(), origin.south(5).up(10).east().getY(), origin.south(5).up(10).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 			
 			//West
 			GenerationUtils.fillAreaWithBlockCube(world, origin.west(6).up(6).north().getX(), origin.west(6).up(6).north().getY(), origin.west(6).up(6).north().getZ(), origin.west(6).up(8).south().getX(), origin.west(6).up(8).south().getY(), origin.west(6).up(8).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
-		
+			GenerationUtils.fillAreaWithBlockCube(world, origin.west(5).up(6).north(3).getX(), origin.west(5).up(6).north(3).getY(), origin.west(5).up(6).north(3).getZ(), origin.west(5).up(8).north(2).getX(), origin.west(5).up(8).north(2).getY(), origin.west(5).up(8).north(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.west(5).up(6).south(2).getX(), origin.west(5).up(6).south(2).getY(), origin.west(5).up(6).south(2).getZ(), origin.west(5).up(8).south(3).getX(), origin.west(5).up(8).south(3).getY(), origin.west(5).up(8).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.west(5).up(9).north(2).getX(), origin.west(5).up(9).north(2).getY(), origin.west(5).up(9).north(2).getZ(), origin.west(5).up(9).south(2).getX(), origin.west(5).up(9).south(2).getY(), origin.west(5).up(9).south(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.west(5).up(10).north().getX(), origin.west(5).up(10).north().getY(), origin.west(5).up(10).north().getZ(), origin.west(5).up(10).south().getX(), origin.west(5).up(10).south().getY(), origin.west(5).up(10).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+			
+			//Corners
+			this.setPoiseCluster(world, origin.up(6).north(4).west(4));
+			this.setPoiseCluster(world, origin.up(7).north(4).west(4));
+			this.setPoiseCluster(world, origin.up(8).north(4).west(4));
+			this.setPoiseCluster(world, origin.up(9).north(4).west(4));
+			this.setPoiseCluster(world, origin.up(9).north(4).west(3));
+			this.setPoiseCluster(world, origin.up(10).north(4).west(3));
+			this.setPoiseCluster(world, origin.up(10).north(4).west(2));
+			this.setPoiseCluster(world, origin.up(9).north(3).west(4));
+			this.setPoiseCluster(world, origin.up(10).north(3).west(4));
+			this.setPoiseCluster(world, origin.up(10).north(2).west(4));
+			
+			this.setPoiseCluster(world, origin.up(6).east(4).north(4));
+			this.setPoiseCluster(world, origin.up(7).east(4).north(4));
+			this.setPoiseCluster(world, origin.up(8).east(4).north(4));
+			this.setPoiseCluster(world, origin.up(9).east(4).north(4));
+			this.setPoiseCluster(world, origin.up(9).east(4).north(3));
+			this.setPoiseCluster(world, origin.up(10).east(4).north(3));
+			this.setPoiseCluster(world, origin.up(10).east(4).north(2));
+			this.setPoiseCluster(world, origin.up(9).east(3).north(4));
+			this.setPoiseCluster(world, origin.up(10).east(3).north(4));
+			this.setPoiseCluster(world, origin.up(10).east(2).north(4));
+			
+			this.setPoiseCluster(world, origin.up(6).south(4).east(4));
+			this.setPoiseCluster(world, origin.up(7).south(4).east(4));
+			this.setPoiseCluster(world, origin.up(8).south(4).east(4));
+			this.setPoiseCluster(world, origin.up(9).south(4).east(4));
+			this.setPoiseCluster(world, origin.up(9).south(4).east(3));
+			this.setPoiseCluster(world, origin.up(10).south(4).east(3));
+			this.setPoiseCluster(world, origin.up(10).south(4).east(2));
+			this.setPoiseCluster(world, origin.up(9).south(3).east(4));
+			this.setPoiseCluster(world, origin.up(10).south(3).east(4));
+			this.setPoiseCluster(world, origin.up(10).south(2).east(4));
+			
+			this.setPoiseCluster(world, origin.up(6).west(4).south(4));
+			this.setPoiseCluster(world, origin.up(7).west(4).south(4));
+			this.setPoiseCluster(world, origin.up(8).west(4).south(4));
+			this.setPoiseCluster(world, origin.up(9).west(4).south(4));
+			this.setPoiseCluster(world, origin.up(9).west(4).south(3));
+			this.setPoiseCluster(world, origin.up(10).west(4).south(3));
+			this.setPoiseCluster(world, origin.up(10).west(4).south(2));
+			this.setPoiseCluster(world, origin.up(9).west(3).south(4));
+			this.setPoiseCluster(world, origin.up(10).west(3).south(4));
+			this.setPoiseCluster(world, origin.up(10).west(2).south(4));
+			
+			//Top
+			this.setPoiseCluster(world, origin.up(11).north(3).west(3));
+			this.setPoiseCluster(world, origin.up(11).north(2).west(3));
+			this.setPoiseCluster(world, origin.up(11).north(2).west(4));
+			this.setPoiseCluster(world, origin.up(11).north(3).west(2));
+			this.setPoiseCluster(world, origin.up(11).north(4).west(2));
+			
+			this.setPoiseCluster(world, origin.up(11).north(4).west());
+			this.setPoiseCluster(world, origin.up(11).north(4));
+			this.setPoiseCluster(world, origin.up(11).north(4).east());
+			
+			this.setPoiseCluster(world, origin.up(11).east(3).north(3));
+			this.setPoiseCluster(world, origin.up(11).east(2).north(3));
+			this.setPoiseCluster(world, origin.up(11).east(2).north(4));
+			this.setPoiseCluster(world, origin.up(11).east(3).north(2));
+			this.setPoiseCluster(world, origin.up(11).east(4).north(2));
+			
+			this.setPoiseCluster(world, origin.up(11).east(4).north());
+			this.setPoiseCluster(world, origin.up(11).east(4));
+			this.setPoiseCluster(world, origin.up(11).east(4).south());
+			
+			this.setPoiseCluster(world, origin.up(11).south(3).east(3));
+			this.setPoiseCluster(world, origin.up(11).south(2).east(3));
+			this.setPoiseCluster(world, origin.up(11).south(2).east(4));
+			this.setPoiseCluster(world, origin.up(11).south(3).east(2));
+			this.setPoiseCluster(world, origin.up(11).south(4).east(2));
+			
+			this.setPoiseCluster(world, origin.up(11).south(4).east());
+			this.setPoiseCluster(world, origin.up(11).south(4));
+			this.setPoiseCluster(world, origin.up(11).south(4).west());
+			
+			this.setPoiseCluster(world, origin.up(11).west(3).south(3));
+			this.setPoiseCluster(world, origin.up(11).west(2).south(3));
+			this.setPoiseCluster(world, origin.up(11).west(2).south(4));
+			this.setPoiseCluster(world, origin.up(11).west(3).south(2));
+			this.setPoiseCluster(world, origin.up(11).west(4).south(2));
+			
+			this.setPoiseCluster(world, origin.up(11).west(4).south());
+			this.setPoiseCluster(world, origin.up(11).west(4));
+			this.setPoiseCluster(world, origin.up(11).west(4).north());
+			
+			this.setPoiseCluster(world, origin.up(12).north(3).west());
+			this.setPoiseCluster(world, origin.up(12).north(3));
+			this.setPoiseCluster(world, origin.up(12).north(3).east());
+			this.setPoiseCluster(world, origin.up(12).east(3).north());
+			this.setPoiseCluster(world, origin.up(12).east(3));
+			this.setPoiseCluster(world, origin.up(12).east(3).south());
+			this.setPoiseCluster(world, origin.up(12).south(3).east());
+			this.setPoiseCluster(world, origin.up(12).south(3));
+			this.setPoiseCluster(world, origin.up(12).south(3).west());
+			this.setPoiseCluster(world, origin.up(12).west(3).north());
+			this.setPoiseCluster(world, origin.up(12).west(3));
+			this.setPoiseCluster(world, origin.up(12).west(3).south());
+			
+			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
+				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
+					this.setPoiseCluster(world, new BlockPos(x, origin.up(13).getY(), z));
+				}
+			}
+			for(int x = origin.getX() - 2; x <= origin.getX() + 2; x++) {
+				for(int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
+					if(x == origin.getX() + 2 || z == origin.getZ() + 2 || x == origin.getX() - 2 || z == origin.getZ() - 2) {
+						this.setPoiseCluster(world, new BlockPos(x, origin.up(12).getY(), z));
+					}
+				}
+			}
 		}
 	}
 	
