@@ -42,7 +42,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		if(world.getBlockState(pos.down()) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() && this.isAreaOpen(world, pos) || world.getBlockState(pos.down()) == Blocks.END_STONE.getDefaultState() && this.isAreaOpen(world, pos)) {
 			this.buildTreeBase(world, pos, rand);
 			this.buildStem(world, pos, rand, treeHeight);
-			this.buildTreeTop(world, pos, rand, treeHeight, (int) size);
+			this.buildTreeTop(world, pos, rand, treeHeight, 2);
 			
 			this.buildPoismossCircle(world, world, rand, pos);
 			return true;
@@ -83,8 +83,15 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	/**
+	 * @param world
+	 * @param pos
+	 * @param rand
+	 * @param arrivedPos
+	 * @param size
+	 */
 	private void buildTreeTop(IWorld world, BlockPos pos, Random rand, int arrivedPos, int size) {
-		if(size == 0 || size == 2) {
+		if(size == 0) {
 			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
 				for(int z = pos.getZ() - 1; z <= pos.getZ() + 1; z++) {
 					this.setPoiseLog(world, new BlockPos(x, pos.up(arrivedPos).getY(), z), rand, false, true);
@@ -323,6 +330,183 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 				}
 			}
 			this.addTreeDomeTop(world, pos, rand, arrivedPos, 1);
+		} else {
+			BlockPos origin = pos.up(arrivedPos);
+			this.setPoiseLog(world, origin, rand, false, true);
+			if(rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.north(), rand, false, true);
+			if(rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.east(), rand, false, true);
+			if(rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.south(), rand, false, true);
+			if(rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.west(), rand, false, true);
+			
+			GenerationUtils.fillWithRandomTwoBlocksCube(world, origin.up().north().west().getX(), origin.up().north().west().getY(), origin.up().north().west().getZ(), origin.up(2).east().south().getX(), origin.up(2).east().south().getY(), origin.up(2).east().south().getZ(), rand, EEBlocks.POISE_LOG.getDefaultState(), EEBlocks.POISE_LOG_GLOWING.getDefaultState(), 0.10F);
+		
+			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
+				for(int z = origin.getZ() - 3; z <= origin.getZ() + 3; z++) {
+					this.setPoiseLog(world, new BlockPos(x, origin.up(3).getY(), z), rand, false, true);
+				}
+			}
+			for(int x = origin.getX() - 3; x <= origin.getX() + 3; x++) {
+				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
+					this.setPoiseLog(world, new BlockPos(x, origin.up(3).getY(), z), rand, false, true);
+				}
+			}
+			this.setPoiseLog(world, origin.up(3).north(2).east(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(3).north(2).west(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(3).south(2).east(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(3).south(2).west(2), rand, false, true);
+			
+			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
+				for(int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
+					this.setPoiseLog(world, new BlockPos(x, origin.up(4).getY(), z), rand, false, true);
+				}
+			}
+			for(int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
+				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
+					this.setPoiseLog(world, new BlockPos(x, origin.up(4).getY(), z), rand, false, true);
+				}
+			}
+			this.setPoiseLog(world, origin.up(4).north(3).east(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).north(4).east(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).north(3).east(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).north(2).east(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).north(2).east(4), rand, false, true);
+			
+			world.setBlockState(origin.up(4).north(2).east(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			
+			this.setPoiseLog(world, origin.up(4).east(3).south(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).east(4).south(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).east(3).south(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).east(2).south(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).east(2).south(4), rand, false, true);
+			
+			world.setBlockState(origin.up(4).east(2).south(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			
+			this.setPoiseLog(world, origin.up(4).south(3).west(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).south(4).west(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).south(3).west(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).south(2).west(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).south(2).west(4), rand, false, true);
+			
+			world.setBlockState(origin.up(4).south(2).west(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			
+			this.setPoiseLog(world, origin.up(4).west(3).north(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).west(4).north(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).west(3).north(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).west(2).north(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(4).west(2).north(4), rand, false, true);
+			
+			world.setBlockState(origin.up(4).west(2).north(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			
+			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
+				for(int z = origin.getZ() - 3; z <= origin.getZ() + 3; z++) {
+					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+				}
+			}
+			for(int x = origin.getX() - 3; x <= origin.getX() + 3; x++) {
+				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
+					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+				}
+			}
+			
+			this.setPoiseLog(world, origin.up(5).north(5), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(5).east(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(5).east(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(5).west(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(5).west(2), rand, false, true);
+			
+			this.setPoiseLog(world, origin.up(5).east(5), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).east(5).north(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).east(5).north(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).east(5).south(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).east(5).south(2), rand, false, true);
+			
+			this.setPoiseLog(world, origin.up(5).south(5), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(5).west(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(5).west(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(5).east(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(5).east(2), rand, false, true);
+			
+			this.setPoiseLog(world, origin.up(5).west(5), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).west(5).south(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).west(5).south(2), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).west(5).north(), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).west(5).north(2), rand, false, true);
+			
+			this.setPoiseLog(world, origin.up(5).north(4).west(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(3).west(4), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(4).east(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).north(3).east(4), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(4).west(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(3).west(4), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(4).east(3), rand, false, true);
+			this.setPoiseLog(world, origin.up(5).south(3).east(4), rand, false, true);
+			
+			int[] sideRandValues = new int[] {
+				rand.nextInt(3) + 1,
+				rand.nextInt(3) + 1,
+				rand.nextInt(3) + 1,
+				rand.nextInt(3) + 1
+			};
+			for(int yn = 1; yn <= sideRandValues[0]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).north(6).up(5).up(yn), rand, false, true);
+				if(yn == 1 && rand.nextFloat() <= 0.25F) {
+					if(rand.nextBoolean()) {
+						this.setPoiseLog(world, pos.up(arrivedPos).north(6).west().up(5).up(yn), rand, false, true);
+					} else {
+						this.setPoiseLog(world, pos.up(arrivedPos).north(6).east().up(5).up(yn), rand, false, true);
+					}
+				}
+			}
+			for(int yn = 1; yn <= sideRandValues[1]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).east(6).up(5).up(yn), rand, false, true);
+				if(yn == 1 && rand.nextFloat() <= 0.25F) {
+					if(rand.nextBoolean()) {
+						this.setPoiseLog(world, pos.up(arrivedPos).east(6).north().up(5).up(yn), rand, false, true);
+					} else {
+						this.setPoiseLog(world, pos.up(arrivedPos).east(6).south().up(5).up(yn), rand, false, true);
+					}
+				}
+			}
+			for(int yn = 1; yn <= sideRandValues[2]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).south(6).up(5).up(yn), rand, false, true);
+				if(yn == 1 && rand.nextFloat() <= 0.25F) {
+					if(rand.nextBoolean()) {
+						this.setPoiseLog(world, pos.up(arrivedPos).south(6).west().up(5).up(yn), rand, false, true);
+					} else {
+						this.setPoiseLog(world, pos.up(arrivedPos).south(6).east().up(5).up(yn), rand, false, true);
+					}
+				}
+			}
+			for(int yn = 1; yn <= sideRandValues[3]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).west(6).up(5).up(yn), rand, false, true);
+				if(yn == 1 && rand.nextFloat() <= 0.25F) {
+					if(rand.nextBoolean()) {
+						this.setPoiseLog(world, pos.up(arrivedPos).west(6).south().up(5).up(yn), rand, false, true);
+					} else {
+						this.setPoiseLog(world, pos.up(arrivedPos).west(6).north().up(5).up(yn), rand, false, true);
+					}
+				}
+			}
+			
+			int[] cornerRandValues = new int[] {
+				rand.nextFloat() <= 0.75 ? rand.nextInt(3) + 1 : 0,
+				rand.nextFloat() <= 0.75 ? rand.nextInt(3) + 1 : 0,
+				rand.nextFloat() <= 0.75 ? rand.nextInt(3) + 1 : 0,
+				rand.nextFloat() <= 0.75 ? rand.nextInt(3) + 1 : 0
+			};
+			for(int yn = 1; yn <= cornerRandValues[0]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).north(4).east(4).up(5).up(yn), rand, false, true);
+			}
+			for(int yn = 1; yn <= cornerRandValues[1]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).east(4).south(4).up(5).up(yn), rand, false, true);
+			}
+			for(int yn = 1; yn <= cornerRandValues[2]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).south(4).west(4).up(5).up(yn), rand, false, true);
+			}
+			for(int yn = 1; yn <= cornerRandValues[3]; yn++) {
+				this.setPoiseLog(world, pos.up(arrivedPos).west(4).north(4).up(5).up(yn), rand, false, true);
+			}
+			this.addTreeDomeTop(world, pos, rand, arrivedPos, 2);
 		}
 	}
 	
@@ -469,6 +653,27 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseCluster(world, origin.south(2).west().up(9));
 			this.setPoiseCluster(world, origin.south(2).up(9));
 			this.setPoiseCluster(world, origin.south(2).east().up(9));
+		} else {
+			//North
+			GenerationUtils.fillAreaWithBlockCube(world, origin.north(6).up(6).west().getX(), origin.north(6).up(6).west().getY(), origin.north(6).up(6).west().getZ(), origin.north(6).up(8).east().getX(), origin.north(6).up(8).west().getY(), origin.north(6).up(8).west().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.north(5).up(6).west(3).getX(), origin.north(5).up(6).west(3).getY(), origin.north(5).up(6).west(3).getZ(), origin.north(5).up(8).west(2).getX(), origin.north(5).up(8).west(2).getY(), origin.north(5).up(8).west(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.north(5).up(6).east(2).getX(), origin.north(5).up(6).east(2).getY(), origin.north(5).up(6).east(2).getZ(), origin.north(5).up(8).east(3).getX(), origin.north(5).up(8).east(3).getY(), origin.north(5).up(8).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.north(5).up(9).west(2).getX(), origin.north(5).up(9).west(2).getY(), origin.north(5).up(9).west(2).getZ(), origin.north(5).up(9).east(2).getX(), origin.north(5).up(9).east(2).getY(), origin.north(5).up(9).east(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.north(5).up(10).west().getX(), origin.north(5).up(10).west().getY(), origin.north(5).up(10).west().getZ(), origin.north(5).up(10).east().getX(), origin.north(5).up(10).east().getY(), origin.north(5).up(10).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+			//East
+			GenerationUtils.fillAreaWithBlockCube(world, origin.east(6).up(6).north().getX(), origin.east(6).up(6).north().getY(), origin.east(6).up(6).north().getZ(), origin.east(6).up(8).south().getX(), origin.east(6).up(8).south().getY(), origin.east(6).up(8).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.east(5).up(6).north(3).getX(), origin.east(5).up(6).north(3).getY(), origin.east(5).up(6).north(3).getZ(), origin.east(5).up(8).north(2).getX(), origin.east(5).up(8).north(2).getY(), origin.east(5).up(8).north(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.east(5).up(6).south(2).getX(), origin.east(5).up(6).south(2).getY(), origin.east(5).up(6).south(2).getZ(), origin.east(5).up(8).south(3).getX(), origin.east(5).up(8).south(3).getY(), origin.east(5).up(8).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.east(5).up(9).south(2).getX(), origin.east(5).up(9).north(2).getY(), origin.east(5).up(9).north(2).getZ(), origin.east(5).up(9).south(2).getX(), origin.east(5).up(9).south(2).getY(), origin.east(5).up(9).south(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			GenerationUtils.fillAreaWithBlockCube(world, origin.east(5).up(10).north().getX(), origin.east(5).up(10).north().getY(), origin.east(5).up(10).north().getZ(), origin.east(5).up(10).south().getX(), origin.east(5).up(10).south().getY(), origin.east(5).up(10).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+			//South
+			GenerationUtils.fillAreaWithBlockCube(world, origin.south(6).up(6).west().getX(), origin.south(6).up(6).west().getY(), origin.south(6).up(6).west().getZ(), origin.south(6).up(8).east().getX(), origin.south(6).up(8).east().getY(), origin.south(6).up(8).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+			//West
+			GenerationUtils.fillAreaWithBlockCube(world, origin.west(6).up(6).north().getX(), origin.west(6).up(6).north().getY(), origin.west(6).up(6).north().getZ(), origin.west(6).up(8).south().getX(), origin.west(6).up(8).south().getY(), origin.west(6).up(8).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
 		}
 	}
 	
