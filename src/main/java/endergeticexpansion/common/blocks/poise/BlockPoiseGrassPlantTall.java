@@ -1,17 +1,22 @@
 package endergeticexpansion.common.blocks.poise;
 
+import java.util.Random;
+
 import javax.annotation.Nullable;
 
+import endergeticexpansion.common.world.other.PoiseTree;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.IGrowable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
@@ -27,14 +32,16 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 
-public class BlockPoiseGrassPlantTall extends Block {
+public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D);
 	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+	public static final IntegerProperty STAGE = BlockStateProperties.STAGE_0_1;
 
 	public BlockPoiseGrassPlantTall(Block.Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER));
+		this.setDefaultState(this.stateContainer.getBaseState().with(STAGE, 0).with(HALF, DoubleBlockHalf.LOWER));
 	}
 	
 	@Override
@@ -113,7 +120,7 @@ public class BlockPoiseGrassPlantTall extends Block {
 	}
 
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(HALF);
+		builder.add(HALF, STAGE);
 	}
 	
 	public BlockRenderLayer getRenderLayer() {
@@ -131,5 +138,31 @@ public class BlockPoiseGrassPlantTall extends Block {
 	@OnlyIn(Dist.CLIENT)
 	public long getPositionRandom(BlockState state, BlockPos pos) {
 		return MathHelper.getCoordinateRandom(pos.getX(), pos.down(state.get(HALF) == DoubleBlockHalf.LOWER ? 0 : 1).getY(), pos.getZ());
+	}
+
+	@Override
+	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
+		return true;
+	}
+
+	@Override
+	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
+		return worldIn.rand.nextFloat() <= 0.35F;
+	}
+
+	@Override
+	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
+		this.grow(worldIn, pos, state, rand);
+	}
+	
+	public void grow(IWorld worldIn, BlockPos pos, BlockState state, Random rand) {
+		if (state.get(STAGE) == 0) {
+			worldIn.setBlockState(pos, state.cycle(STAGE), 4);
+		} else {
+			if (!ForgeEventFactory.saplingGrowTree(worldIn, rand, pos)) return;
+			PoiseTree tree = new PoiseTree();
+			BlockPos treePos = state.get(HALF) == DoubleBlockHalf.LOWER ? pos : pos.down();
+			tree.spawn(worldIn, treePos, state, rand);
+		}
 	}
 }
