@@ -43,7 +43,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 				size = 1;	
 			}
 		}
-		if(world.getBlockState(pos.down()) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() && this.isAreaOpen(world, pos) || world.getBlockState(pos.down()) == Blocks.END_STONE.getDefaultState() && this.isAreaOpen(world, pos)) {
+		if(this.isValidGround(world, pos.down()) && this.isAreaOpen(world, pos)) {
 			boolean[] isSutableForSizes = new boolean[] {
 				GenerationUtils.isAreaReplacable(world, pos.north(3).west(3).up(treeHeight).getX(), pos.north(3).west(3).up(treeHeight).getY(), pos.north(3).west(3).up(treeHeight).getZ(), pos.south(3).east(3).up(treeHeight + 7).getX(), pos.south(3).east(3).up(treeHeight + 7).getY(), pos.south(3).east(3).up(treeHeight + 7).getZ()),
 				GenerationUtils.isAreaReplacable(world, pos.north(4).west(4).up(treeHeight).getX(), pos.north(4).west(4).up(treeHeight).getY(), pos.north(4).west(4).up(treeHeight).getZ(), pos.south(4).east(4).up(treeHeight + 9).getX(), pos.south(4).east(4).up(treeHeight + 9).getY(), pos.south(4).east(4).up(treeHeight + 9).getZ()),
@@ -1153,6 +1153,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			}
 		}
 		return true;
+	}
+	
+	private boolean isValidGround(IWorld world, BlockPos pos) {
+		return world.getBlockState(pos) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() || world.getBlockState(pos) == EEBlocks.POISMOSS_EUMUS.getDefaultState() || world.getBlockState(pos) == EEBlocks.EUMUS.getDefaultState() || world.getBlockState(pos) == Blocks.END_STONE.getDefaultState();
 	}
 	
 }
