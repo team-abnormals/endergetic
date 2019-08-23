@@ -6,6 +6,7 @@ import java.util.function.Function;
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
+import endergeticexpansion.common.blocks.poise.BlockPoiseLog;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -54,7 +55,11 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 						this.buildTreeBase(world, pos, rand);
 						this.buildStem(world, pos, rand, treeHeight);
 						this.buildTreeTop(world, pos, rand, treeHeight, size);
-					
+						
+						if(rand.nextFloat() <= 0.80F) {
+							this.tryToBuildBranch(world, pos, rand, treeHeight);
+						}
+						
 						this.buildPoismossCircle(world, world, rand, pos);
 						return true;
 					}
@@ -68,6 +73,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 						this.buildTreeBase(world, pos, rand);
 						this.buildStem(world, pos, rand, treeHeight);
 						this.buildTreeTop(world, pos, rand, treeHeight, size);
+						
+						if(rand.nextFloat() <= 0.80F) {
+							this.tryToBuildBranch(world, pos, rand, treeHeight);
+						}
 					
 						this.buildPoismossCircle(world, world, rand, pos);
 						return true;
@@ -76,6 +85,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 							this.buildTreeBase(world, pos, rand);
 							this.buildStem(world, pos, rand, treeHeight);
 							this.buildTreeTop(world, pos, rand, treeHeight, 0);
+							
+							if(rand.nextFloat() <= 0.80F) {
+								this.tryToBuildBranch(world, pos, rand, treeHeight);
+							}
 						
 							this.buildPoismossCircle(world, world, rand, pos);
 							return true;
@@ -91,6 +104,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 						this.buildTreeBase(world, pos, rand);
 						this.buildStem(world, pos, rand, treeHeight);
 						this.buildTreeTop(world, pos, rand, treeHeight, size);
+						
+						if(rand.nextFloat() <= 0.80F) {
+							this.tryToBuildBranch(world, pos, rand, treeHeight);
+						}
 					
 						this.buildPoismossCircle(world, world, rand, pos);
 						return true;
@@ -99,6 +116,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 							this.buildTreeBase(world, pos, rand);
 							this.buildStem(world, pos, rand, treeHeight);
 							this.buildTreeTop(world, pos, rand, treeHeight, 1);
+							
+							if(rand.nextFloat() <= 0.80F) {
+								this.tryToBuildBranch(world, pos, rand, treeHeight);
+							}
 						
 							this.buildPoismossCircle(world, world, rand, pos);
 							return true;
@@ -107,6 +128,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 								this.buildTreeBase(world, pos, rand);
 								this.buildStem(world, pos, rand, treeHeight);
 								this.buildTreeTop(world, pos, rand, treeHeight, 0);
+								
+								if(rand.nextFloat() <= 0.80F) {
+									this.tryToBuildBranch(world, pos, rand, treeHeight);
+								}
 							
 								this.buildPoismossCircle(world, world, rand, pos);
 								return true;
@@ -862,6 +887,62 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	private void tryToBuildBranch(IWorld world, BlockPos pos, Random rand, int treeHeight) {
+		// First array - Values for the amout of blocks in the facing direction, Second Array - Values for the amount of blocks up
+		int[] branchLengths = new int[] {
+			rand.nextInt(3) + 1,
+			rand.nextInt(3) + 1,
+			1,
+			1
+		};
+		int[] branchHeights = new int[] {
+			1,
+			1,
+			rand.nextInt(4) + 1,
+			rand.nextInt(4) + 4
+		};
+		Direction randDir = Direction.byIndex(rand.nextInt(4) + 2);
+		int pickedHeight = rand.nextInt((int) Math.ceil(treeHeight / 3)) + 6;
+		BlockPos pickedPosition = pos.offset(randDir).up(pickedHeight);
+		if(world.getBlockState(pickedPosition).getMaterial().isReplaceable() && treeHeight > 15) {
+			if(this.isViableBranchArea(world, pickedPosition, randDir, 2 + branchLengths[0] + branchLengths[1], pickedPosition.offset(randDir, branchLengths[0] + branchLengths[1] + branchLengths[2] + branchLengths[3]).up(3 + branchHeights[2]).up(branchHeights[3]))) {
+				this.setPoiseLog(world, pickedPosition, rand, false, true);
+				this.setPoiseLog(world, pickedPosition.up(), rand, false, true);
+				this.setPoiseLog(world, pickedPosition.down(), rand, false, true);
+				
+				for(int dir = 0; dir <= branchLengths[0]; dir++) {
+					this.setPoiseLogWithDirection(world, pickedPosition.offset(randDir, dir), rand, randDir);
+					if(dir == branchLengths[0]) {
+						this.setPoiseLog(world, pickedPosition.offset(randDir, dir).up(), rand, false, true);
+					}
+				}
+				for(int dir = 1; dir <= branchLengths[1]; dir++) {
+					this.setPoiseLogWithDirection(world, pickedPosition.offset(randDir, dir + branchLengths[0]).up(), rand, randDir);
+					if(dir == branchLengths[1]) {
+						this.setPoiseLog(world, pickedPosition.offset(randDir, branchLengths[0] + branchLengths[1]).up(2), rand, false, true);
+					}
+				}
+				for(int dir = 1; dir <= branchLengths[2]; dir++) {
+					this.setPoiseLogWithDirection(world, pickedPosition.offset(randDir, dir + branchLengths[0] + branchLengths[1]).up(2), rand, randDir);
+					if(dir == branchLengths[2]) {
+						for(int y = 0; y < branchHeights[2]; y++) {
+							this.setPoiseLog(world, pickedPosition.offset(randDir, branchLengths[0] + branchLengths[1] + branchLengths[2]).up(3).up(y), rand, false, false);
+						}
+					}
+				}
+				for(int dir = 1; dir <= branchLengths[3]; dir++) {
+					this.setPoiseLogWithDirection(world, pickedPosition.offset(randDir, dir + branchLengths[0] + branchLengths[1] + branchLengths[2]).up(2 + branchHeights[2]), rand, randDir);
+					if(dir == branchLengths[3]) {
+						for(int y = 0; y < branchHeights[3]; y++) {
+							this.setPoiseLog(world, pickedPosition.offset(randDir, branchLengths[0] + branchLengths[1] + branchLengths[2] + branchLengths[3]).up(3 + branchHeights[2]).up(y), rand, false, false);
+						}
+					}
+				}
+				this.buildTreeTop(world, pickedPosition.offset(randDir, branchLengths[0] + branchLengths[1] + branchLengths[2] + branchLengths[3]).up(3 + branchHeights[2]).up(branchHeights[3]), rand, 0, 0);
+			}
+		}
+	}
+	
 	private void buildSideBubble(IWorld world, BlockPos pos, Random rand) {
 		int variant = rand.nextInt(100);
 		if(variant >= 49) {
@@ -1018,10 +1099,47 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	private void setPoiseLogWithDirection(IWorld world, BlockPos pos, Random rand, Direction direction) {
+		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.getDefaultState().with(BlockPoiseLog.AXIS, direction.getAxis()) : EEBlocks.POISE_LOG_GLOWING.getDefaultState().with(BlockPoiseLog.AXIS, direction.getAxis());
+		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
+			world.setBlockState(pos, logState, 2);
+		}
+	}
+	
 	private void setPoiseCluster(IWorld world, BlockPos pos) {
 		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, EEBlocks.POISE_CLUSTER.getDefaultState(), 2);
 		}
+	}
+	
+	private boolean isViableBranchArea(IWorld world, BlockPos pos, Direction direction, int directionLength, BlockPos topPosition) {
+		int y = topPosition.getY() - pos.getY();
+		if(direction == Direction.NORTH) {
+			if(GenerationUtils.isAreaReplacable(world, pos.down().west().north(directionLength).getX(), pos.down().west().north(directionLength).getY(), pos.down().west().north(directionLength).getZ(), pos.up(y).east().getX(), pos.up(y).east().getY(), pos.up(y).east().getZ())) {
+				if(GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).up(7).getX(), topPosition.south(3).east(3).up(7).getY(), topPosition.south(3).east(3).up(7).getZ())) {
+					return true;
+				}
+			}
+		} else if(direction == Direction.EAST) {
+			if(GenerationUtils.isAreaReplacable(world, pos.down().north().east(directionLength).getX(), pos.down().north().east(directionLength).getY(), pos.down().north().east(directionLength).getZ(), pos.up(y).west().getX(), pos.up(y).west().getY(), pos.up(y).west().getZ())) {
+				if(GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).up(7).getX(), topPosition.south(3).east(3).up(7).getY(), topPosition.south(3).east(3).up(7).getZ())) {
+					return true;
+				}
+			}
+		} else if(direction == Direction.SOUTH) {
+			if(GenerationUtils.isAreaReplacable(world, pos.down().west().getX(), pos.down().west().getY(), pos.down().west().getZ(), pos.up(y).east().south(directionLength).getX(), pos.up(y).east().south(directionLength).getY(), pos.up(y).east().south(directionLength).getZ())) {
+				if(GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).up(7).getX(), topPosition.south(3).east(3).up(7).getY(), topPosition.south(3).east(3).up(7).getZ())) {
+					return true;
+				}
+			}
+		} else {
+			if(GenerationUtils.isAreaReplacable(world, pos.down().north().getX(), pos.down().north().getY(), pos.down().north().getZ(), pos.up(y).south().west(directionLength).getX(), pos.up(y).south().west(directionLength).getY(), pos.up(y).south().west(directionLength).getZ())) {
+				if(GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).up(7).getX(), topPosition.south(3).east(3).up(7).getY(), topPosition.south(3).east(3).up(7).getZ())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean isAreaOpen(IWorld world, BlockPos pos) {
