@@ -21,6 +21,7 @@ public class EEFeatures {
 	public static final Feature<NoFeatureConfig> POISE_CLUSTER     = registerFeature("poise_cluster", new FeaturePoiseCluster(NoFeatureConfig::deserialize));
 	public static final Feature<NoFeatureConfig> BOLLOOM_BUD       = registerFeature("bolloom_bud", new FeatureBolloomBud(NoFeatureConfig::deserialize));
 	public static final Feature<NoFeatureConfig> PUFFBUG_HIVE      = registerFeature("puffbug_hive", new FeaturePuffBugHive(NoFeatureConfig::deserialize));
+	public static final Feature<NoFeatureConfig> POISE_DOME        = registerFeature("poise_dome", new FeaturePoiseDome(NoFeatureConfig::deserialize));
 	public static final Feature<NoFeatureConfig> POISE_TREE        = registerFeature("poise_tree", new FeaturePoiseTree(NoFeatureConfig::deserialize));
 	
 	private static Feature registerFeature(String name, Feature feature){
