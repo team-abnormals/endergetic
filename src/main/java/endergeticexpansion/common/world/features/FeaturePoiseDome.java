@@ -266,6 +266,44 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).north(9).west(3).getX(), origin.up(12).north(9).west(3).getY(), origin.up(12).north(9).west(3).getZ(), origin.up(12).north(9).east(3).getX(), origin.up(12).north(9).east(3).getY(), origin.up(12).north(9).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 		}
 		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).north(8).west(8).getX(), origin.up(9).north(8).west(8).getY(), origin.up(9).north(8).west(8).getZ(), origin.up(10).north(8).west(8).getX(), origin.up(10).north(8).west(8).getY(), origin.up(10).north(8).west(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).north(8).west(7).getX(), origin.up(11).north(8).west(7).getY(), origin.up(11).north(8).west(7).getZ(), origin.up(11).north(8).west(6).getX(), origin.up(11).north(8).west(6).getY(), origin.up(11).north(8).west(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).north(8).west(6).getX(), origin.up(12).north(8).west(6).getY(), origin.up(12).north(8).west(6).getZ(), origin.up(12).north(8).west(4).getX(), origin.up(12).north(8).west(4).getY(), origin.up(12).north(8).west(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).north(8).east(8).getX(), origin.up(9).north(8).east(8).getY(), origin.up(9).north(8).east(8).getZ(), origin.up(10).north(8).east(8).getX(), origin.up(10).north(8).east(8).getY(), origin.up(10).north(8).east(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).north(8).east(6).getX(), origin.up(11).north(8).east(6).getY(), origin.up(11).north(8).east(6).getZ(), origin.up(11).north(8).east(7).getX(), origin.up(11).north(8).east(7).getY(), origin.up(11).north(8).east(7).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).north(8).east(4).getX(), origin.up(12).north(8).east(4).getY(), origin.up(12).north(8).east(4).getZ(), origin.up(12).north(8).east(6).getX(), origin.up(12).north(8).east(6).getY(), origin.up(12).north(8).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).north(8).west(4).getX(), origin.up(13).north(8).west(4).getY(), origin.up(13).north(8).west(4).getZ(), origin.up(13).north(8).east(4).getX(), origin.up(13).north(8).east(4).getY(), origin.up(13).north(8).east(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		this.setPoiseCluster(world, origin.up(12).north(7).west(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).north(7).west(6).getX(), origin.up(13).north(7).west(6).getY(), origin.up(13).north(7).west(6).getZ(), origin.up(13).north(7).west(5).getX(), origin.up(13).north(7).west(5).getY(), origin.up(13).north(7).west(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		this.setPoiseCluster(world, origin.up(12).north(7).east(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).north(7).east(5).getX(), origin.up(13).north(7).east(5).getY(), origin.up(13).north(7).east(5).getZ(), origin.up(13).north(7).east(6).getX(), origin.up(13).north(7).east(6).getY(), origin.up(13).north(7).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).north(7).west(4).getX(), origin.up(14).north(7).west(4).getY(), origin.up(14).north(7).west(4).getZ(), origin.up(14).north(7).east(4).getX(), origin.up(14).north(7).east(4).getY(), origin.up(14).north(7).east(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).north(6).west(6).getX(), origin.up(14).north(6).west(6).getY(), origin.up(14).north(6).west(6).getZ(), origin.up(14).north(6).west(3).getX(), origin.up(14).north(6).west(3).getY(), origin.up(14).north(6).west(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).north(6).east(3).getX(), origin.up(14).north(6).east(3).getY(), origin.up(14).north(6).east(3).getZ(), origin.up(14).north(6).east(6).getX(), origin.up(14).north(6).east(6).getY(), origin.up(14).north(6).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).north(6).west(3).getX(), origin.up(15).north(6).west(3).getY(), origin.up(15).north(6).west(3).getZ(), origin.up(14).north(6).east(3).getX(), origin.up(14).north(6).east(3).getY(), origin.up(14).north(6).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).north(6).west(2).getX(), origin.up(15).north(6).west(2).getY(), origin.up(15).north(6).west(2).getZ(), origin.up(15).north(6).east(2).getX(), origin.up(15).north(6).east(2).getY(), origin.up(15).north(6).east(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).north(5).west(5).getX(), origin.up(15).north(5).west(5).getY(), origin.up(15).north(5).west(5).getZ(), origin.up(15).north(5).east(5).getX(), origin.up(15).north(5).east(5).getY(), origin.up(15).north(5).east(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).north(4).west(5).getX(), origin.up(15).north(4).west(5).getY(), origin.up(15).north(4).west(5).getZ(), origin.up(15).north(4).west(2).getX(), origin.up(15).north(4).west(2).getY(), origin.up(15).north(4).west(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).north(4).east(2).getX(), origin.up(15).north(4).east(2).getY(), origin.up(15).north(4).east(2).getZ(), origin.up(15).north(4).east(5).getX(), origin.up(15).north(4).east(5).getY(), origin.up(15).north(4).east(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).north(4).west().getX(), origin.up(16).north(4).west().getY(), origin.up(16).north(4).west().getZ(), origin.up(16).north(4).east().getX(), origin.up(16).north(4).east().getY(), origin.up(16).north(4).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
 		/*
 		 * East
 		 */
@@ -323,6 +361,44 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).east(9).north(3).getX(), origin.up(12).east(9).north(3).getY(), origin.up(12).east(9).north(3).getZ(), origin.up(12).east(9).south(3).getX(), origin.up(12).east(9).south(3).getY(), origin.up(12).east(9).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 		}
 		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).east(8).north(8).getX(), origin.up(9).east(8).north(8).getY(), origin.up(9).east(8).north(8).getZ(), origin.up(10).east(8).north(8).getX(), origin.up(10).east(8).north(8).getY(), origin.up(10).east(8).north(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).east(8).north(7).getX(), origin.up(11).east(8).north(7).getY(), origin.up(11).east(8).north(7).getZ(), origin.up(11).east(8).north(6).getX(), origin.up(11).east(8).north(6).getY(), origin.up(11).east(8).north(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).east(8).north(6).getX(), origin.up(12).east(8).north(6).getY(), origin.up(12).east(8).north(6).getZ(), origin.up(12).east(8).north(4).getX(), origin.up(12).east(8).north(4).getY(), origin.up(12).east(8).north(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+					
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).east(8).south(8).getX(), origin.up(9).east(8).south(8).getY(), origin.up(9).east(8).south(8).getZ(), origin.up(10).east(8).south(8).getX(), origin.up(10).east(8).south(8).getY(), origin.up(10).east(8).south(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).east(8).south(6).getX(), origin.up(11).east(8).south(6).getY(), origin.up(11).east(8).south(6).getZ(), origin.up(11).east(8).south(7).getX(), origin.up(11).east(8).south(7).getY(), origin.up(11).east(8).south(7).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).east(8).south(4).getX(), origin.up(12).east(8).south(4).getY(), origin.up(12).east(8).south(4).getZ(), origin.up(12).east(8).south(6).getX(), origin.up(12).east(8).south(6).getY(), origin.up(12).east(8).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+					
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).east(8).north(4).getX(), origin.up(13).east(8).north(4).getY(), origin.up(13).east(8).north(4).getZ(), origin.up(13).east(8).south(4).getX(), origin.up(13).east(8).south(4).getY(), origin.up(13).east(8).south(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		this.setPoiseCluster(world, origin.up(12).east(7).north(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).east(7).north(6).getX(), origin.up(13).east(7).north(6).getY(), origin.up(13).east(7).north(6).getZ(), origin.up(13).east(7).north(5).getX(), origin.up(13).east(7).north(5).getY(), origin.up(13).east(7).north(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		this.setPoiseCluster(world, origin.up(12).east(7).south(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).east(7).south(5).getX(), origin.up(13).east(7).south(5).getY(), origin.up(13).east(7).south(5).getZ(), origin.up(13).east(7).south(6).getX(), origin.up(13).east(7).south(6).getY(), origin.up(13).east(7).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).east(7).north(4).getX(), origin.up(14).east(7).north(4).getY(), origin.up(14).east(7).north(4).getZ(), origin.up(14).east(7).south(4).getX(), origin.up(14).east(7).south(4).getY(), origin.up(14).east(7).south(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).east(6).north(6).getX(), origin.up(14).east(6).north(6).getY(), origin.up(14).east(6).north(6).getZ(), origin.up(14).east(6).north(3).getX(), origin.up(14).east(6).north(3).getY(), origin.up(14).east(6).north(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).east(6).south(3).getX(), origin.up(14).east(6).south(3).getY(), origin.up(14).east(6).south(3).getZ(), origin.up(14).east(6).south(6).getX(), origin.up(14).east(6).south(6).getY(), origin.up(14).east(6).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).east(6).north(3).getX(), origin.up(15).east(6).north(3).getY(), origin.up(15).east(6).north(3).getZ(), origin.up(14).east(6).south(3).getX(), origin.up(14).east(6).south(3).getY(), origin.up(14).east(7).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).east(6).north(2).getX(), origin.up(15).east(6).north(2).getY(), origin.up(15).east(6).north(2).getZ(), origin.up(15).east(6).south(2).getX(), origin.up(15).east(6).south(2).getY(), origin.up(15).east(6).south(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).east(5).north(5).getX(), origin.up(15).east(5).north(5).getY(), origin.up(15).east(5).north(5).getZ(), origin.up(15).east(5).south(5).getX(), origin.up(15).east(5).south(5).getY(), origin.up(15).east(5).south(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).east(4).north(5).getX(), origin.up(15).east(4).north(5).getY(), origin.up(15).east(4).north(5).getZ(), origin.up(15).east(4).north(2).getX(), origin.up(15).east(4).north(2).getY(), origin.up(15).east(4).north(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).east(4).south(2).getX(), origin.up(15).east(4).south(2).getY(), origin.up(15).east(4).south(2).getZ(), origin.up(15).east(4).south(5).getX(), origin.up(15).east(4).south(5).getY(), origin.up(15).east(4).south(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).east(4).north().getX(), origin.up(16).east(4).north().getY(), origin.up(16).east(4).north().getZ(), origin.up(16).east(4).south().getX(), origin.up(16).east(4).south().getY(), origin.up(16).east(4).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
 		/*
 		 * South
 		 */
@@ -376,6 +452,44 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).south(9).east(3).getX(), origin.up(11).south(9).east(3).getY(), origin.up(11).south(9).east(3).getZ(), origin.up(11).south(9).east(5).getX(), origin.up(11).south(9).east(5).getY(), origin.up(11).south(9).east(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 				
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).south(9).west(3).getX(), origin.up(12).south(9).west(3).getY(), origin.up(12).south(9).west(3).getZ(), origin.up(12).south(9).east(3).getX(), origin.up(12).south(9).east(3).getY(), origin.up(12).south(9).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).south(8).west(8).getX(), origin.up(9).south(8).west(8).getY(), origin.up(9).south(8).west(8).getZ(), origin.up(10).south(8).west(8).getX(), origin.up(10).south(8).west(8).getY(), origin.up(10).south(8).west(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).south(8).west(7).getX(), origin.up(11).south(8).west(7).getY(), origin.up(11).south(8).west(7).getZ(), origin.up(11).south(8).west(6).getX(), origin.up(11).south(8).west(6).getY(), origin.up(11).south(8).west(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).south(8).west(6).getX(), origin.up(12).south(8).west(6).getY(), origin.up(12).south(8).west(6).getZ(), origin.up(12).south(8).west(4).getX(), origin.up(12).south(8).west(4).getY(), origin.up(12).south(8).west(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+						
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).south(8).east(8).getX(), origin.up(9).south(8).east(8).getY(), origin.up(9).south(8).east(8).getZ(), origin.up(10).south(8).east(8).getX(), origin.up(10).south(8).east(8).getY(), origin.up(10).south(8).east(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).south(8).east(6).getX(), origin.up(11).south(8).east(6).getY(), origin.up(11).south(8).east(6).getZ(), origin.up(11).south(8).east(7).getX(), origin.up(11).south(8).east(7).getY(), origin.up(11).south(8).east(7).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).south(8).east(4).getX(), origin.up(12).south(8).east(4).getY(), origin.up(12).south(8).east(4).getZ(), origin.up(12).south(8).east(6).getX(), origin.up(12).south(8).east(6).getY(), origin.up(12).south(8).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+						
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).south(8).west(4).getX(), origin.up(13).south(8).west(4).getY(), origin.up(13).south(8).west(4).getZ(), origin.up(13).south(8).east(4).getX(), origin.up(13).south(8).east(4).getY(), origin.up(13).south(8).east(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		this.setPoiseCluster(world, origin.up(12).south(7).west(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).south(7).west(6).getX(), origin.up(13).south(7).west(6).getY(), origin.up(13).south(7).west(6).getZ(), origin.up(13).south(7).west(5).getX(), origin.up(13).south(7).west(5).getY(), origin.up(13).south(7).west(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+				
+		this.setPoiseCluster(world, origin.up(12).south(7).east(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).south(7).east(5).getX(), origin.up(13).south(7).east(5).getY(), origin.up(13).south(7).east(5).getZ(), origin.up(13).south(7).east(6).getX(), origin.up(13).south(7).east(6).getY(), origin.up(13).south(7).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+				
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).south(7).west(4).getX(), origin.up(14).south(7).west(4).getY(), origin.up(14).south(7).west(4).getZ(), origin.up(14).south(7).east(4).getX(), origin.up(14).south(7).east(4).getY(), origin.up(14).south(7).east(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).south(6).west(6).getX(), origin.up(14).south(6).west(6).getY(), origin.up(14).south(6).west(6).getZ(), origin.up(14).south(6).west(3).getX(), origin.up(14).south(6).west(3).getY(), origin.up(14).south(6).west(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).south(6).east(3).getX(), origin.up(14).south(6).east(3).getY(), origin.up(14).south(6).east(3).getZ(), origin.up(14).south(6).east(6).getX(), origin.up(14).south(6).east(6).getY(), origin.up(14).south(6).east(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).south(6).west(3).getX(), origin.up(15).south(6).west(3).getY(), origin.up(15).south(6).west(3).getZ(), origin.up(14).south(6).east(3).getX(), origin.up(14).south(6).east(3).getY(), origin.up(14).south(7).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).south(6).west(2).getX(), origin.up(15).south(6).west(2).getY(), origin.up(15).south(6).west(2).getZ(), origin.up(15).south(6).east(2).getX(), origin.up(15).south(6).east(2).getY(), origin.up(15).south(6).east(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).south(5).west(5).getX(), origin.up(15).south(5).west(5).getY(), origin.up(15).south(5).west(5).getZ(), origin.up(15).south(5).east(5).getX(), origin.up(15).south(5).east(5).getY(), origin.up(15).south(5).east(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).south(4).west(5).getX(), origin.up(15).south(4).west(5).getY(), origin.up(15).south(4).west(5).getZ(), origin.up(15).south(4).west(2).getX(), origin.up(15).south(4).west(2).getY(), origin.up(15).south(4).west(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).south(4).east(2).getX(), origin.up(15).south(4).east(2).getY(), origin.up(15).south(4).east(2).getZ(), origin.up(15).south(4).east(5).getX(), origin.up(15).south(4).east(5).getY(), origin.up(15).south(4).east(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).south(4).west().getX(), origin.up(16).south(4).west().getY(), origin.up(16).south(4).west().getZ(), origin.up(16).south(4).east().getX(), origin.up(16).south(4).east().getY(), origin.up(16).south(4).east().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 		}
 		
 		/*
@@ -435,6 +549,48 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).west(9).north(3).getX(), origin.up(12).west(9).north(3).getY(), origin.up(12).west(9).north(3).getZ(), origin.up(12).west(9).south(3).getX(), origin.up(12).west(9).south(3).getY(), origin.up(12).west(9).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 		}
 		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).west(8).north(8).getX(), origin.up(9).west(8).north(8).getY(), origin.up(9).west(8).north(8).getZ(), origin.up(10).west(8).north(8).getX(), origin.up(10).west(8).north(8).getY(), origin.up(10).west(8).north(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).west(8).north(7).getX(), origin.up(11).west(8).north(7).getY(), origin.up(11).west(8).north(7).getZ(), origin.up(11).west(8).north(6).getX(), origin.up(11).west(8).north(6).getY(), origin.up(11).west(8).north(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).west(8).north(6).getX(), origin.up(12).west(8).north(6).getY(), origin.up(12).west(8).north(6).getZ(), origin.up(12).west(8).north(4).getX(), origin.up(12).west(8).north(4).getY(), origin.up(12).west(8).north(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(9).west(8).south(8).getX(), origin.up(9).west(8).south(8).getY(), origin.up(9).west(8).south(8).getZ(), origin.up(10).west(8).south(8).getX(), origin.up(10).west(8).south(8).getY(), origin.up(10).west(8).south(8).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(11).west(8).south(6).getX(), origin.up(11).west(8).south(6).getY(), origin.up(11).west(8).south(6).getZ(), origin.up(11).west(8).south(7).getX(), origin.up(11).west(8).south(7).getY(), origin.up(11).west(8).south(7).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(12).west(8).south(4).getX(), origin.up(12).west(8).south(4).getY(), origin.up(12).west(8).south(4).getZ(), origin.up(12).west(8).south(6).getX(), origin.up(12).west(8).south(6).getY(), origin.up(12).west(8).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).west(8).north(4).getX(), origin.up(13).west(8).north(4).getY(), origin.up(13).west(8).north(4).getZ(), origin.up(13).west(8).south(4).getX(), origin.up(13).west(8).south(4).getY(), origin.up(13).west(8).south(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		this.setPoiseCluster(world, origin.up(12).west(7).north(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).west(7).north(6).getX(), origin.up(13).west(7).north(6).getY(), origin.up(13).west(7).north(6).getZ(), origin.up(13).west(7).north(5).getX(), origin.up(13).west(7).north(5).getY(), origin.up(13).west(7).north(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+					
+		this.setPoiseCluster(world, origin.up(12).west(7).south(7), rand);
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(13).west(7).south(5).getX(), origin.up(13).west(7).south(5).getY(), origin.up(13).west(7).south(5).getZ(), origin.up(13).west(7).south(6).getX(), origin.up(13).west(7).south(6).getY(), origin.up(13).west(7).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+					
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).west(7).north(4).getX(), origin.up(14).west(7).north(4).getY(), origin.up(14).west(7).north(4).getZ(), origin.up(14).west(7).south(4).getX(), origin.up(14).west(7).south(4).getY(), origin.up(14).west(7).south(4).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).west(6).north(6).getX(), origin.up(14).west(6).north(6).getY(), origin.up(14).west(6).north(6).getZ(), origin.up(14).west(6).north(3).getX(), origin.up(14).west(6).north(3).getY(), origin.up(14).west(6).north(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(14).west(6).south(3).getX(), origin.up(14).west(6).south(3).getY(), origin.up(14).west(6).south(3).getZ(), origin.up(14).west(6).south(6).getX(), origin.up(14).west(6).south(6).getY(), origin.up(14).west(6).south(6).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+			
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).west(6).north(3).getX(), origin.up(15).west(6).north(3).getY(), origin.up(15).west(6).north(3).getZ(), origin.up(14).west(6).south(3).getX(), origin.up(14).west(6).south(3).getY(), origin.up(14).west(7).south(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		{
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).west(6).north(2).getX(), origin.up(15).west(6).north(2).getY(), origin.up(15).west(6).north(2).getZ(), origin.up(15).west(6).south(2).getX(), origin.up(15).west(6).south(2).getY(), origin.up(15).west(6).south(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).west(5).north(5).getX(), origin.up(15).west(5).north(5).getY(), origin.up(15).west(5).north(5).getZ(), origin.up(15).west(5).south(5).getX(), origin.up(15).west(5).south(5).getY(), origin.up(15).west(5).south(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+				
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).west(4).north(5).getX(), origin.up(15).west(4).north(5).getY(), origin.up(15).west(4).north(5).getZ(), origin.up(15).west(4).north(2).getX(), origin.up(15).west(4).north(2).getY(), origin.up(15).west(4).north(2).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(15).west(4).south(2).getX(), origin.up(15).west(4).south(2).getY(), origin.up(15).west(4).south(2).getZ(), origin.up(15).west(4).south(5).getX(), origin.up(15).west(4).south(5).getY(), origin.up(15).west(4).south(5).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).west(4).north().getX(), origin.up(16).west(4).north().getY(), origin.up(16).west(4).north().getZ(), origin.up(16).west(4).south().getX(), origin.up(16).west(4).south().getY(), origin.up(16).west(4).south().getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		}
+		
+		/*
+		 * Top
+		 */
+		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).north(3).west(3).getX(), origin.up(16).north(3).west(3).getY(), origin.up(16).north(3).west(3).getZ(), origin.up(16).south(3).east(3).getX(), origin.up(16).south(3).east(3).getY(), origin.up(16).south(3).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
 	}
 	
 	private void buildPoismossCircle(IWorld world, IWorldGenerationReader reader, Random random, BlockPos pos) {
