@@ -1,4 +1,6 @@
-﻿{
+{
+	"_comment": "Blocks",
+	
 	"block.endergetic.corrock_overworld_block": "Bloc de Corroche d'Overworld",
 	"block.endergetic.corrock_nether_block": "Bloc de Corroche du Nether",
 	"block.endergetic.corrock_end_block": "Bloc de Corroche d'End",
@@ -17,7 +19,7 @@
 	"block.endergetic.poismoss_eumus": "Eumus équilibré",
 	"block.endergetic.poise_grass_block": "Equimousse",
 	"block.endergetic.poise_grass": "Buisson d'équilibre",
-	"block.endergetic.poise_grass_tall": "Grand buisson d'équilibre",
+	"block.endergetic.poise_grass_tall": "Grand buisson d'équilibre",	
 	"block.endergetic.poise_cluster": "Grappe d'équilibre",
 	"block.endergetic.poise_log": "Tige d'équilibre",
 	"block.endergetic.poise_log_stripped": "Tige d'équilibre écorcé",
@@ -39,10 +41,36 @@
 	"block.endergetic.hive_hanger": "Crochet à Ruche",
 	"block.endergetic.boof_block": "Bloc de Bouf",
 	"block.endergetic.boof_dispensed_block": "Bloc de Boof étendu",
+	"block.endergetic.eumus_bricks": "Briques d'Eumus",
+	"block.endergetic.eumus_chiseled_bricks": "Briques d'Eumus sculptée",
+	"block.endergetic.eumus_brick_slab": "Dalle en brique d'Eumus",
+	"block.endergetic.eumus_brick_stairs": "Escaliers en brique d'Eumus",
 	
+	"_comment": "Items",
+	
+	"item.endergetic.poise_boat": "Bateau en équilibre",
+	"item.endergetic.eumus_brick": "Brique d'Eumus",
 	"item.endergetic.bolloom_fruit": "Fruit de Bolloum",
 	"item.endergetic.bolloom_balloon": "Ballon de Bolloum",
+	"item.endergetic.bolloom_balloon_red": "Ballon de Bolloum rouge",
+	"item.endergetic.bolloom_balloon_orange": "Ballon de Bolloum orange",
+	"item.endergetic.bolloom_balloon_yellow": "Ballon de Bolloum jaune",
+	"item.endergetic.bolloom_balloon_lime": "Ballon de Bolloum vert clair",
+	"item.endergetic.bolloom_balloon_green": "Ballon de Bolloum vert",
+	"item.endergetic.bolloom_balloon_light_blue": "Ballon de Bolloum bleu clair",
+	"item.endergetic.bolloom_balloon_cyan": "Ballon de Bolloum cyan",
+	"item.endergetic.bolloom_balloon_blue": "Ballon de Bolloum bleu",
+	"item.endergetic.bolloom_balloon_magenta": "Ballon de Bolloum magenta",
+	"item.endergetic.bolloom_balloon_purple": "Ballon de Bolloum violet",
+	"item.endergetic.bolloom_balloon_brown": "Ballon de Bolloum marron",
+	"item.endergetic.bolloom_balloon_gray": "Ballon de Bolloum gris",
+	"item.endergetic.bolloom_balloon_light_gray": "Ballon de Bolloum gris clair",
+	"item.endergetic.bolloom_balloon_pink": "Ballon de Bolloum rose",
+	"item.endergetic.bolloom_balloon_black": "Ballon de Bolloum noir",
 	"item.endergetic.booflo_hide": "Peau de Bouflo",
+	"item.endergetic.booflo_vest": "Veste en Bouflo",
+	
+	"_comment": "Entities",
 	
 	"entity.endergetic.poise_cluster": "Grappe d'équilibre",
 	"entity.endergetic.bolloom_fruit": "Fruit de Bolloum",
