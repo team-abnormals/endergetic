@@ -7,11 +7,9 @@ import net.minecraft.world.biome.provider.EndBiomeProviderSettings;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EndOverrideHandler {
-	@ObjectHolder("minecraft:the_end")
 	public static BiomeProviderType<EndBiomeProviderSettings, EndBiomeProvider> ENDERGETIC_END = new BiomeProviderType<>(EndergeticBiomeProvider::new, EndBiomeProviderSettings::new);
 
 	@SubscribeEvent

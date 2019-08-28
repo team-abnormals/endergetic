@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.Feature;
@@ -21,11 +20,9 @@ public abstract class EndergeticTree {
 		if (treefeature == null) {
 			return false;
 		} else {
-			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 4);
 			if (treefeature.place(worldIn, worldIn.getChunkProvider().getChunkGenerator(), random, pos, IFeatureConfig.NO_FEATURE_CONFIG)) {
 				return true;
 			} else {
-				worldIn.setBlockState(pos, blockUnder, 4);
 				return false;
 			}
 		}
