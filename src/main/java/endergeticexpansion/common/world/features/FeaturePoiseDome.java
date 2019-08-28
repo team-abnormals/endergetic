@@ -6,6 +6,7 @@ import java.util.function.Function;
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
+import endergeticexpansion.api.util.MathUtils.ComputableEquation;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -591,6 +592,76 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		 * Top
 		 */
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).north(3).west(3).getX(), origin.up(16).north(3).west(3).getY(), origin.up(16).north(3).west(3).getZ(), origin.up(16).south(3).east(3).getX(), origin.up(16).south(3).east(3).getY(), origin.up(16).south(3).east(3).getZ(), EEBlocks.POISE_CLUSTER.getDefaultState());
+		
+		if(rand.nextFloat() <= 0.25F) {
+			int i = rand.nextInt(4);
+			this.buildDomeHole(world, origin.up(16), rand, true, i);
+		}
+		boolean[] doSide = {
+			rand.nextBoolean(),
+			rand.nextBoolean(),
+			rand.nextBoolean(),
+			rand.nextBoolean()
+		};
+		if(doSide[0]) {
+			this.buildDomeHole(world, origin.up(16), rand, false, 0);
+		}
+		if(doSide[1]) {
+			this.buildDomeHole(world, origin.up(16), rand, false, 1);
+		}
+		if(doSide[2]) {
+			this.buildDomeHole(world, origin.up(16), rand, false, 2);
+		}
+		if(doSide[3]) {
+			this.buildDomeHole(world, origin.up(16), rand, false, 3);
+		}
+		
+		boolean[] doHangerSide = {
+			rand.nextFloat() <= 0.25F ? true : false,
+			rand.nextFloat() <= 0.25F ? true : false,
+			rand.nextFloat() <= 0.25F ? true : false,
+			rand.nextFloat() <= 0.25F ? true : false,
+		};
+		if(doHangerSide[0]) {
+			if(rand.nextBoolean()) {
+				this.buildPoiseHanger(world, origin.up(8).north(10).east(rand.nextInt(3)), rand, 0, false);
+			} else {
+				this.buildPoiseHanger(world, origin.up(8).north(10).west(rand.nextInt(3)), rand, 0, false);
+			}
+		}
+		if(doHangerSide[1]) {
+			if(rand.nextBoolean()) {
+				this.buildPoiseHanger(world, origin.up(8).east(10).south(rand.nextInt(3)), rand, 1, false);
+			} else {
+				this.buildPoiseHanger(world, origin.up(8).east(10).north(rand.nextInt(3)), rand, 1, false);
+			}
+		}
+		if(doHangerSide[2]) {
+			if(rand.nextBoolean()) {
+				this.buildPoiseHanger(world, origin.up(8).south(10).west(rand.nextInt(3)), rand, 2, false);
+			} else {
+				this.buildPoiseHanger(world, origin.up(8).south(10).east(rand.nextInt(3)), rand, 2, false);
+			}
+		}
+		if(doHangerSide[3]) {
+			if(rand.nextBoolean()) {
+				this.buildPoiseHanger(world, origin.up(8).west(10).south(rand.nextInt(3)), rand, 3, false);
+			} else {
+				this.buildPoiseHanger(world, origin.up(8).west(10).north(rand.nextInt(3)), rand, 3, false);
+			}
+		}
+		if(rand.nextFloat() <= 0.25F) {
+			this.buildPoiseHanger(world, origin.up(5).north(9).east(8), rand, 0, true);
+		}
+		if(rand.nextFloat() <= 0.25F) {
+			this.buildPoiseHanger(world, origin.up(5).north(8).west(9), rand, 1, true);
+		}
+		if(rand.nextFloat() <= 0.25F) {
+			this.buildPoiseHanger(world, origin.up(5).south(8).east(9), rand, 2, true);
+		}
+		if(rand.nextFloat() <= 0.25F) {
+			this.buildPoiseHanger(world, origin.up(5).south(9).west(8), rand, 3, true);
+		}
 	}
 	
 	private void buildPoismossCircle(IWorld world, IWorldGenerationReader reader, Random random, BlockPos pos) {
@@ -619,6 +690,570 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	private void buildDomeHole(IWorld world, BlockPos pos, Random rand, boolean top, int variant) {
+		if(top) {
+			switch(variant) {
+				case 0:
+					this.setPoiseLogUnsafe(world, pos, rand);
+					this.setPoiseLogUnsafe(world, pos.north(), rand);
+					this.setPoiseLogUnsafe(world, pos.north(2), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.north(3).east(), rand);
+					this.setPoiseLogUnsafe(world, pos.north(4).east(), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().north(5).east(2), rand);
+					this.setPoiseLogUnsafe(world, pos.down().north(5).east(3), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).north(6).east(4), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).north(6).east(5), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).north(6).east(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(3).north(5).east(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).north(4).east(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).north(3).east(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).north(2).east(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).north().east(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).east(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().south().east(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down().south().east(5), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.south(2).east(4), rand);
+					this.setPoiseLogUnsafe(world, pos.south(2).east(3), rand);
+					this.setPoiseLogUnsafe(world, pos.south(2).east(2), rand);
+					this.setPoiseLogUnsafe(world, pos.south().east(), rand);
+					
+					//Air
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.north(2).east().getX(), pos.north(2).east().getY(), pos.north(2).east().getZ(), pos.east().getX(), pos.east().getY(), pos.east().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down().north(4).east(2).getX(), pos.down().north(4).east(2).getY(), pos.down().north(4).east(2).getZ(), pos.south().east(4).getX(), pos.south().east(4).getY(), pos.south().east(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).north(5).east(4).getX(), pos.down(2).north(5).east(4).getY(), pos.down(2).north(5).east(4).getZ(), pos.down().east(6).getX(), pos.down().east(6).getY(), pos.down().east(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).north(4).east(7).getX(), pos.down(2).north(4).east(7).getY(), pos.down(2).north(4).east(7).getZ(), pos.down(2).north(2).east(7).getX(), pos.down(2).north(2).east(7).getY(), pos.down(2).north(2).east(7).getZ(), Blocks.AIR.getDefaultState());
+					break;
+				case 1:
+					this.setPoiseLogUnsafe(world, pos, rand);
+					this.setPoiseLogUnsafe(world, pos.east(), rand);
+					this.setPoiseLogUnsafe(world, pos.east(2), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.east(3).south(), rand);
+					this.setPoiseLogUnsafe(world, pos.east(4).south(), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().east(5).south(2), rand);
+					this.setPoiseLogUnsafe(world, pos.down().east(5).south(3), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).east(6).south(4), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).east(6).south(5), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).east(6).south(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(3).east(5).south(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).east(4).south(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).east(3).south(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).east(2).south(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).east().south(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).south(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().west().south(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down().west().south(5), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.west(2).south(4), rand);
+					this.setPoiseLogUnsafe(world, pos.west(2).south(3), rand);
+					this.setPoiseLogUnsafe(world, pos.west(2).south(2), rand);
+					this.setPoiseLogUnsafe(world, pos.west().south(), rand);
+					
+					//Air
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.east(2).south().getX(), pos.east(2).south().getY(), pos.east(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down().east(4).south(4).getX(), pos.down().east(4).south(4).getY(), pos.down().east(4).south(4).getZ(), pos.west().south(2).getX(), pos.west().south(2).getY(), pos.west().south(2).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).east(5).south(6).getX(), pos.down(2).east(5).south(6).getY(), pos.down(2).east(5).south(6).getZ(), pos.down().south(4).getX(), pos.down().south(4).getY(), pos.down().south(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).east(4).south(7).getX(), pos.down(2).east(4).south(7).getY(), pos.down(2).east(4).south(7).getZ(), pos.down(2).east(2).south(7).getX(), pos.down(2).east(2).south(7).getY(), pos.down(2).east(2).south(7).getZ(), Blocks.AIR.getDefaultState());
+					break;
+				case 2:
+					this.setPoiseLogUnsafe(world, pos, rand);
+					this.setPoiseLogUnsafe(world, pos.south(), rand);
+					this.setPoiseLogUnsafe(world, pos.south(2), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.south(3).west(), rand);
+					this.setPoiseLogUnsafe(world, pos.south(4).west(), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().south(5).west(2), rand);
+					this.setPoiseLogUnsafe(world, pos.down().south(5).west(3), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).south(6).west(4), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).south(6).west(5), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).south(6).west(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(3).south(5).west(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).south(4).west(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).south(3).west(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).south(2).west(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).south().west(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).west(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().north().west(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down().north().west(5), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.north(2).west(4), rand);
+					this.setPoiseLogUnsafe(world, pos.north(2).west(3), rand);
+					this.setPoiseLogUnsafe(world, pos.north(2).west(2), rand);
+					this.setPoiseLogUnsafe(world, pos.north().west(), rand);
+					
+					//Air
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.south(2).west().getX(), pos.south(2).west().getY(), pos.south(2).west().getZ(), pos.west().getX(), pos.west().getY(), pos.west().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down().south(4).west(2).getX(), pos.down().south(4).west(2).getY(), pos.down().south(4).west(2).getZ(), pos.north().west(4).getX(), pos.north().west(4).getY(), pos.north().west(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).south(5).west(4).getX(), pos.down(2).south(5).west(4).getY(), pos.down(2).south(5).west(4).getZ(), pos.down().west(6).getX(), pos.down().west(6).getY(), pos.down().west(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).south(4).west(7).getX(), pos.down(2).south(4).west(7).getY(), pos.down(2).south(4).west(7).getZ(), pos.down(2).south(2).west(7).getX(), pos.down(2).south(2).west(7).getY(), pos.down(2).south(2).west(7).getZ(), Blocks.AIR.getDefaultState());
+					break;
+				case 3:
+					this.setPoiseLogUnsafe(world, pos, rand);
+					this.setPoiseLogUnsafe(world, pos.west(), rand);
+					this.setPoiseLogUnsafe(world, pos.west(2), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.west(3).south(), rand);
+					this.setPoiseLogUnsafe(world, pos.west(4).south(), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().west(5).south(2), rand);
+					this.setPoiseLogUnsafe(world, pos.down().west(5).south(3), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).west(6).south(4), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).west(6).south(5), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).west(6).south(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(3).west(5).south(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).west(4).south(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).west(3).south(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(3).west(2).south(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(2).west().south(7), rand);
+					this.setPoiseLogUnsafe(world, pos.down(2).south(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down().east().south(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down().east().south(5), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.east(2).south(4), rand);
+					this.setPoiseLogUnsafe(world, pos.east(2).south(3), rand);
+					this.setPoiseLogUnsafe(world, pos.east(2).south(2), rand);
+					this.setPoiseLogUnsafe(world, pos.east().south(), rand);
+					
+					//Air
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.west(2).south().getX(), pos.west(2).south().getY(), pos.west(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down().west(4).south(2).getX(), pos.down().west(4).south(2).getY(), pos.down().west(4).south(2).getZ(), pos.east().south(4).getX(), pos.east().south(4).getY(), pos.east().south(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).west(5).south(4).getX(), pos.down(2).west(5).south(4).getY(), pos.down(2).west(5).south(4).getZ(), pos.down().south(6).getX(), pos.down().south(6).getY(), pos.down().south(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).west(4).south(7).getX(), pos.down(2).west(4).south(7).getY(), pos.down(2).west(4).south(7).getZ(), pos.down(2).west(2).south(7).getX(), pos.down(2).west(2).south(7).getY(), pos.down(2).west(2).south(7).getZ(), Blocks.AIR.getDefaultState());
+					break;
+			}
+		} else {
+			switch(variant) {
+				case 0:
+					this.setPoiseLogUnsafe(world, pos.down(6).north(8).east(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(6).north(9).east(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).north(10).east(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(8).north(11).east(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down(9).north(11).east(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).north(11).east(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(11).north(10).east(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(11).north(9).east(9), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).north(8).east(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(9).north(7).east(10), rand);
+					this.setPoiseLogUnsafe(world, pos.down(8).north(7).east(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).north(8).east(9), rand);
+					
+					//Air
+					world.setBlockState(pos.down(7).north(8).east(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(7).north(9).east(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).north(8).east(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).north(9).east(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).north(10).east(7), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).north(8).east(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).north(9).east(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).north(10).east(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(10).north(9).east(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).north(10).east(8), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).north(10).east(6), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).north(10).east(7), Blocks.AIR.getDefaultState(), 2);
+				case 1:
+					this.setPoiseLogUnsafe(world, pos.down(6).east(8).south(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(6).east(9).south(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).east(10).south(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(8).east(11).south(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down(9).east(11).south(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).east(11).south(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(11).east(10).south(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(11).east(9).south(9), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).east(8).south(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(9).east(7).south(10), rand);
+					this.setPoiseLogUnsafe(world, pos.down(8).east(7).south(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).east(8).south(9), rand);
+					
+					//Air
+					world.setBlockState(pos.down(7).east(8).south(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(7).east(9).south(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).east(8).south(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).east(9).south(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).east(10).south(7), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).east(8).south(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).east(9).south(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).east(10).south(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(10).east(9).south(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).east(10).south(8), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).east(10).south(6), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).east(10).south(7), Blocks.AIR.getDefaultState(), 2);
+				case 2:
+					this.setPoiseLogUnsafe(world, pos.down(6).south(8).west(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(6).south(9).west(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).south(10).west(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(8).south(11).west(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down(9).south(11).west(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).south(11).west(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(11).south(10).west(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(11).south(9).west(9), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).south(8).west(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(9).south(7).west(10), rand);
+					this.setPoiseLogUnsafe(world, pos.down(8).south(7).west(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).south(8).west(9), rand);
+					
+					//Air
+					world.setBlockState(pos.down(7).south(8).west(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(7).south(9).west(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).south(8).west(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).south(9).west(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).south(10).west(7), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).south(8).west(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).south(9).west(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).south(10).west(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(10).south(9).west(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).south(10).west(8), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).south(10).west(6), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).south(10).west(7), Blocks.AIR.getDefaultState(), 2);
+				case 3:
+					this.setPoiseLogUnsafe(world, pos.down(6).west(8).north(8), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(6).west(9).north(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).west(10).north(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(8).west(11).north(6), rand);
+					this.setPoiseLogUnsafe(world, pos.down(9).west(11).north(6), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).west(11).north(7), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(11).west(10).north(8), rand);
+					this.setPoiseLogUnsafe(world, pos.down(11).west(9).north(9), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(10).west(8).north(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(9).west(7).north(10), rand);
+					this.setPoiseLogUnsafe(world, pos.down(8).west(7).north(10), rand);
+					
+					this.setPoiseLogUnsafe(world, pos.down(7).west(8).north(9), rand);
+					
+					//Air
+					world.setBlockState(pos.down(7).west(8).north(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(7).west(9).north(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).west(8).north(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).west(9).north(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(8).west(10).north(7), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).west(8).north(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).west(9).north(8), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(9).west(10).north(7), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(10).west(9).north(9), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).west(10).north(8), Blocks.AIR.getDefaultState(), 2);
+					
+					world.setBlockState(pos.down(8).west(10).north(6), Blocks.AIR.getDefaultState(), 2);
+					world.setBlockState(pos.down(10).west(10).north(7), Blocks.AIR.getDefaultState(), 2);
+			}
+		}
+	}
+	
+	private void buildPoiseHanger(IWorld world, BlockPos pos, Random rand, int direction, boolean corner) {
+		if(!corner) {
+			switch(direction) {
+				case 0:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up().south(), rand);
+					this.setPoiseLogHighProb(world, pos.up().south(2), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).south(), rand);
+					this.setPoiseCluster(world, pos.up(2).south(2), rand);
+					this.setPoiseCluster(world, pos.up(2).south(3), rand);
+					this.setPoiseCluster(world, pos.up(2).south(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).south(2).west(), rand);
+					
+					this.setPoiseCluster(world, pos.south(), rand);
+					this.setPoiseCluster(world, pos.south(2), rand);
+					this.setPoiseCluster(world, pos.south(3), rand);
+					this.setPoiseCluster(world, pos.south(2).east(), rand);
+					this.setPoiseCluster(world, pos.south(2).west(), rand);
+					this.setPoiseCluster(world, pos.up().south(), rand);
+					this.setPoiseCluster(world, pos.up().south(3), rand);
+					this.setPoiseCluster(world, pos.up().south(4), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(3).east(), rand);
+					this.setPoiseCluster(world, pos.up().south(3).west(), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(2).east(2), rand);
+					this.setPoiseCluster(world, pos.up().south(2).west(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().south().east(), rand);
+					this.setPoiseCluster(world, pos.up().south().west(), rand);
+					break;
+				case 1:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up().west(), rand);
+					this.setPoiseLogHighProb(world, pos.up().west(2), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).west(2), rand);
+					this.setPoiseCluster(world, pos.up(2).west(3), rand);
+					this.setPoiseCluster(world, pos.up(2).west(2).south(), rand);
+					this.setPoiseCluster(world, pos.up(2).west(2).north(), rand);
+					
+					this.setPoiseCluster(world, pos.west(), rand);
+					this.setPoiseCluster(world, pos.west(2), rand);
+					this.setPoiseCluster(world, pos.west(3), rand);
+					this.setPoiseCluster(world, pos.west(2).south(), rand);
+					this.setPoiseCluster(world, pos.west(2).north(), rand);
+					this.setPoiseCluster(world, pos.up().west(), rand);
+					this.setPoiseCluster(world, pos.up().west(3), rand);
+					this.setPoiseCluster(world, pos.up().west(4), rand);
+					
+					this.setPoiseCluster(world, pos.up().west(3).south(), rand);
+					this.setPoiseCluster(world, pos.up().west(3).north(), rand);
+					
+					this.setPoiseCluster(world, pos.up().west(2).south(2), rand);
+					this.setPoiseCluster(world, pos.up().west(2).north(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().west().south(), rand);
+					this.setPoiseCluster(world, pos.up().west().north(), rand);
+					break;
+				case 2:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up().north(), rand);
+					this.setPoiseLogHighProb(world, pos.up().north(2), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).north(), rand);
+					this.setPoiseCluster(world, pos.up(2).north(2), rand);
+					this.setPoiseCluster(world, pos.up(2).north(3), rand);
+					this.setPoiseCluster(world, pos.up(2).north(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).north(2).east(), rand);
+					
+					this.setPoiseCluster(world, pos.north(), rand);
+					this.setPoiseCluster(world, pos.north(2), rand);
+					this.setPoiseCluster(world, pos.north(3), rand);
+					this.setPoiseCluster(world, pos.north(2).west(), rand);
+					this.setPoiseCluster(world, pos.north(2).east(), rand);
+					this.setPoiseCluster(world, pos.up().north(), rand);
+					this.setPoiseCluster(world, pos.up().north(3), rand);
+					this.setPoiseCluster(world, pos.up().north(4), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(3).west(), rand);
+					this.setPoiseCluster(world, pos.up().north(3).east(), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(2).west(2), rand);
+					this.setPoiseCluster(world, pos.up().north(2).east(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().north().west(), rand);
+					this.setPoiseCluster(world, pos.up().north().east(), rand);
+					break;
+				case 3:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up().east(), rand);
+					this.setPoiseLogHighProb(world, pos.up().east(2), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).east(2), rand);
+					this.setPoiseCluster(world, pos.up(2).east(3), rand);
+					this.setPoiseCluster(world, pos.up(2).east(2).north(), rand);
+					this.setPoiseCluster(world, pos.up(2).east(2).south(), rand);
+					
+					this.setPoiseCluster(world, pos.east(), rand);
+					this.setPoiseCluster(world, pos.east(2), rand);
+					this.setPoiseCluster(world, pos.east(3), rand);
+					this.setPoiseCluster(world, pos.east(2).north(), rand);
+					this.setPoiseCluster(world, pos.east(2).south(), rand);
+					this.setPoiseCluster(world, pos.up().east(), rand);
+					this.setPoiseCluster(world, pos.up().east(3), rand);
+					this.setPoiseCluster(world, pos.up().east(4), rand);
+					
+					this.setPoiseCluster(world, pos.up().east(3).north(), rand);
+					this.setPoiseCluster(world, pos.up().east(3).south(), rand);
+					
+					this.setPoiseCluster(world, pos.up().east(2).north(2), rand);
+					this.setPoiseCluster(world, pos.up().east(2).south(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().east().north(), rand);
+					this.setPoiseCluster(world, pos.up().east().south(), rand);
+					break;
+			}
+		} else {
+			switch(direction) {
+				case 0:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up(), rand);
+					this.setPoiseLogHighProb(world, pos.up().south(), rand);
+					this.setPoiseLogHighProb(world, pos.up().south().west(), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).south().west(), rand);
+					this.setPoiseCluster(world, pos.up(2).south(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).south().west(2), rand);
+					this.setPoiseCluster(world, pos.up(2).south(), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(2).west(), rand);
+					this.setPoiseCluster(world, pos.up().west(), rand);
+					this.setPoiseCluster(world, pos.up().south().west(2), rand);
+					this.setPoiseCluster(world, pos.up().south(), rand);
+					
+					this.setPoiseCluster(world, pos.south(2).west(), rand);
+					this.setPoiseCluster(world, pos.west(), rand);
+					this.setPoiseCluster(world, pos.south().west(2), rand);
+					this.setPoiseCluster(world, pos.south(), rand);
+					
+					this.setPoiseCluster(world, pos.south().west(), rand);
+					this.setPoiseCluster(world, pos.up().south(2).west(2), rand);
+					this.setPoiseCluster(world, pos.up().south(2), rand);
+					this.setPoiseCluster(world, pos.up().west(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(3).west(), rand);
+					this.setPoiseCluster(world, pos.up().north().west(), rand);
+					this.setPoiseCluster(world, pos.up().south().west(3), rand);
+					this.setPoiseCluster(world, pos.up().south().east(), rand);
+					break;
+				case 1:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up(), rand);
+					this.setPoiseLogHighProb(world, pos.up().south(), rand);
+					this.setPoiseLogHighProb(world, pos.up().south().east(), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).south().east(), rand);
+					this.setPoiseCluster(world, pos.up(2).south(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).south().east(2), rand);
+					this.setPoiseCluster(world, pos.up(2).south(), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(2).east(), rand);
+					this.setPoiseCluster(world, pos.up().east(), rand);
+					this.setPoiseCluster(world, pos.up().south().east(2), rand);
+					this.setPoiseCluster(world, pos.up().south(), rand);
+					
+					this.setPoiseCluster(world, pos.south(2).east(), rand);
+					this.setPoiseCluster(world, pos.east(), rand);
+					this.setPoiseCluster(world, pos.south().east(2), rand);
+					this.setPoiseCluster(world, pos.south(), rand);
+					
+					this.setPoiseCluster(world, pos.south().east(), rand);
+					this.setPoiseCluster(world, pos.up().south(2).east(2), rand);
+					this.setPoiseCluster(world, pos.up().south(2), rand);
+					this.setPoiseCluster(world, pos.up().east(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().south(3).east(), rand);
+					this.setPoiseCluster(world, pos.up().east().east(), rand);
+					this.setPoiseCluster(world, pos.up().south().east(3), rand);
+					this.setPoiseCluster(world, pos.up().south().west(), rand);
+					break;
+				case 2:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up(), rand);
+					this.setPoiseLogHighProb(world, pos.up().north(), rand);
+					this.setPoiseLogHighProb(world, pos.up().north().west(), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).north().west(), rand);
+					this.setPoiseCluster(world, pos.up(2).north(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).west(), rand);
+					this.setPoiseCluster(world, pos.up(2).north().west(2), rand);
+					this.setPoiseCluster(world, pos.up(2).north(), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(2).west(), rand);
+					this.setPoiseCluster(world, pos.up().west(), rand);
+					this.setPoiseCluster(world, pos.up().north().west(2), rand);
+					this.setPoiseCluster(world, pos.up().north(), rand);
+					
+					this.setPoiseCluster(world, pos.north(2).west(), rand);
+					this.setPoiseCluster(world, pos.west(), rand);
+					this.setPoiseCluster(world, pos.north().west(2), rand);
+					this.setPoiseCluster(world, pos.north(), rand);
+					
+					this.setPoiseCluster(world, pos.north().west(), rand);
+					this.setPoiseCluster(world, pos.up().north(2).west(2), rand);
+					this.setPoiseCluster(world, pos.up().north(2), rand);
+					this.setPoiseCluster(world, pos.up().west(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(3).west(), rand);
+					this.setPoiseCluster(world, pos.up().west().west(), rand);
+					this.setPoiseCluster(world, pos.up().north().west(3), rand);
+					this.setPoiseCluster(world, pos.up().north().east(), rand);
+					break;
+				case 3:
+					this.setPoiseLogHighProb(world, pos, rand);
+					this.setPoiseLogHighProb(world, pos.up(), rand);
+					this.setPoiseLogHighProb(world, pos.up().north(), rand);
+					this.setPoiseLogHighProb(world, pos.up().north().east(), rand);
+					
+					this.setPoiseCluster(world, pos.up(2).north().east(), rand);
+					this.setPoiseCluster(world, pos.up(2).north(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).east(), rand);
+					this.setPoiseCluster(world, pos.up(2).north().east(2), rand);
+					this.setPoiseCluster(world, pos.up(2).north(), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(2).east(), rand);
+					this.setPoiseCluster(world, pos.up().east(), rand);
+					this.setPoiseCluster(world, pos.up().north().east(2), rand);
+					this.setPoiseCluster(world, pos.up().north(), rand);
+					
+					this.setPoiseCluster(world, pos.north(2).east(), rand);
+					this.setPoiseCluster(world, pos.east(), rand);
+					this.setPoiseCluster(world, pos.north().east(2), rand);
+					this.setPoiseCluster(world, pos.north(), rand);
+					
+					this.setPoiseCluster(world, pos.north().east(), rand);
+					this.setPoiseCluster(world, pos.up().north(2).east(2), rand);
+					this.setPoiseCluster(world, pos.up().north(2), rand);
+					this.setPoiseCluster(world, pos.up().east(2), rand);
+					
+					this.setPoiseCluster(world, pos.up().north(3).east(), rand);
+					this.setPoiseCluster(world, pos.up().east().east(), rand);
+					this.setPoiseCluster(world, pos.up().north().east(3), rand);
+					this.setPoiseCluster(world, pos.up().north().west(), rand);
+					break;
+			}
+		}
+	}
+	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
 		BlockPos blockpos = pos.up();
 		if(world.getBlockState(blockpos).getBlock() == Blocks.AIR) {
@@ -633,11 +1268,23 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	private void setPoiseLogHighProb(IWorld world, BlockPos pos, Random rand) {
+		BlockState logState = rand.nextFloat() <= 0.35F ? EEBlocks.POISE_LOG.getDefaultState() : EEBlocks.POISE_LOG_GLOWING.getDefaultState();
+		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
+			world.setBlockState(pos, logState, 2);
+		}
+	}
+	
 	private void setPoiseLog(IWorld world, BlockPos pos, Random rand) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.getDefaultState() : EEBlocks.POISE_LOG_GLOWING.getDefaultState();
 		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}
+	}
+	
+	private void setPoiseLogUnsafe(IWorld world, BlockPos pos, Random rand) {
+		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.getDefaultState() : EEBlocks.POISE_LOG_GLOWING.getDefaultState();
+		world.setBlockState(pos, logState, 2);
 	}
 	
 	private void setPoismoss(IWorld world, BlockPos pos) {

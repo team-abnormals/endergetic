@@ -40,6 +40,26 @@ public class GenerationUtils {
 		}
 	}
 	
+	public static void fillAreaWithBlockCubeUnsafe(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		for(int yy = y1; yy <= y2; yy++) {
+			for (int xx = x1; xx <= x2; xx++) {
+				for (int zz = z1; zz <= z2; zz++) {
+					world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+				}
+			}
+		}
+	}
+	
+	public static void fillAreaWithBlockCubeUnsafeReverse(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		for(int yy = y1; yy <= y2; yy++) {
+			for (int xx = x1; xx >= x2; xx--) {
+				for (int zz = z1; zz >= z2; zz--) {
+					world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+				}
+			}
+		}
+	}
+	
 	public static void fillWithRandomTwoBlocksCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, Random rand, BlockState block, BlockState block2, float chance) {
 		for(int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {

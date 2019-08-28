@@ -3,6 +3,9 @@ package endergeticexpansion.api.util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 public class MathUtils {
 
 	/*
@@ -12,5 +15,9 @@ public class MathUtils {
     public static Vec3d getCenterAdjusted(AxisAlignedBB bb, double xMultiplier, double yMultiplier, double zMultiplier) {
         return new Vec3d(bb.minX + (bb.maxX - bb.minX) * xMultiplier, bb.minY + (bb.maxY - bb.minY) * yMultiplier, bb.minZ + (bb.maxZ - bb.minZ) * zMultiplier);
     }
+    
+    public interface ComputableEquation {
+    	public double compute(double theta);
+	}
 	
 }
