@@ -6,7 +6,6 @@ import java.util.function.Function;
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
-import endergeticexpansion.api.util.MathUtils.ComputableEquation;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,9 +25,11 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(world.getBlockState(pos).getBlock() == Blocks.END_STONE) {
-			this.buildDomeBase(world, pos.up(10), rand);
-			this.buildDome(world, pos.up(10), rand);
+		if(world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE && isViableDomeArea(world, pos) && this.isGroundViable(world, pos.down(3), rand)) {
+			this.buildDomeBase(world, pos, rand);
+			this.buildDome(world, pos, rand);
+			
+			this.buildGround(world, pos, rand);
 		}
 		return false;
 	}
@@ -1000,6 +1001,64 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 		}
 	}
 	
+	private void buildGround(IWorld world, BlockPos pos, Random rand) {
+		BlockPos origin = pos.down();
+		for(int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
+			for(int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 12; x <= origin.getX() + 12; x++) {
+			for(int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 11; x <= origin.getX() + 11; x++) {
+			for(int z = origin.getZ() - 7; z <= origin.getZ() + 7; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 10; x <= origin.getX() + 10; x++) {
+			for(int z = origin.getZ() - 8; z <= origin.getZ() + 8; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 9; x <= origin.getX() + 9; x++) {
+			for(int z = origin.getZ() - 9; z <= origin.getZ() + 9; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 8; x <= origin.getX() + 8; x++) {
+			for(int z = origin.getZ() - 10; z <= origin.getZ() + 10; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 7; x <= origin.getX() + 7; x++) {
+			for(int z = origin.getZ() - 11; z <= origin.getZ() + 11; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
+			for(int z = origin.getZ() - 12; z <= origin.getZ() + 12; z++) {
+				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
+				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
+			}
+		}
+		for(int x = 0; x <= 4; x++) {
+			world.setBlockState(origin.down().north(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
+			world.setBlockState(origin.north(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
+			world.setBlockState(origin.down().south(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
+			world.setBlockState(origin.south(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
+		}
+	}
+	
 	private void buildPoiseHanger(IWorld world, BlockPos pos, Random rand, int direction, boolean corner) {
 		if(!corner) {
 			switch(direction) {
@@ -1252,6 +1311,25 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 					break;
 			}
 		}
+	}
+	
+	private boolean isViableDomeArea(IWorld world, BlockPos pos) {
+		return GenerationUtils.isAreaReplacable(world, pos.north(13).west(13).getX(), pos.north(13).west(13).getY(), pos.north(13).west(13).getZ(), pos.up(16).south(13).east(13).getX(), pos.up(16).south(13).east(13).getY(), pos.up(16).south(13).east(13).getZ());
+	}
+	
+	private boolean isGroundViable(IWorld world, BlockPos pos, Random rand) {
+		for (int xx = pos.north(13).west(13).getX(); xx <= pos.south(13).east(13).getX(); xx++) {
+			for (int zz = pos.north(13).west(13).getZ(); zz <= pos.south(13).east(13).getZ(); zz++) {
+				if(!isProperBlock(world, new BlockPos(xx, pos.getY(), zz))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean isProperBlock(IWorld world, BlockPos pos) {
+		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISE_GRASS_BLOCK || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS;
 	}
 	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
