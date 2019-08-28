@@ -26,7 +26,14 @@ import net.minecraft.world.gen.feature.structure.Structure;
 public class EndergeticBiomeProvider extends EndBiomeProvider {
 	private final SimplexNoiseGenerator generator;
 	private final SharedSeedRandom random;
-	private final Biome[] biomes = new Biome[]{Biomes.THE_END, EEBiomes.POISE_FOREST, Biomes.END_MIDLANDS, Biomes.SMALL_END_ISLANDS, Biomes.END_BARRENS};
+	private final Biome[] biomes = new Biome[] {
+		Biomes.THE_END,
+		Biomes.END_HIGHLANDS,
+		Biomes.END_MIDLANDS,
+		Biomes.SMALL_END_ISLANDS,
+		Biomes.END_BARRENS,
+		EEBiomes.POISE_FOREST
+	};
 	
 	public EndergeticBiomeProvider(EndBiomeProviderSettings settings) {
 		super(settings);

@@ -6,6 +6,7 @@ import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.item.ShearsItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -76,12 +78,12 @@ public class BlockPoiseCluster extends Block {
 				cluster.setBlocksToMoveUp(10);
 				worldIn.addEntity(cluster);
 				entityIn.remove();
-				worldIn.destroyBlock(pos, false);
+				worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+				worldIn.playSound(null, pos, EESounds.CLUSTER_BREAK, SoundCategory.BLOCKS, 0.90F, 0.75F);
 			} else {
 				worldIn.setBlockState(pos, getDefaultState());
 			}
 		}
-		
 		super.onEntityCollision(state, worldIn, pos, entityIn);
 	}
 	

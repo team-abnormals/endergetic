@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
+import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.block.Block;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
@@ -22,6 +23,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -203,6 +205,11 @@ public class EntityPoiseCluster extends LivingEntity {
 		}
 		
 		super.damageEntity(damageSrc, damageAmount);
+	}
+	
+	@Override
+	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+		return EESounds.CLUSTER_BREAK;
 	}
 	
 	@Override
