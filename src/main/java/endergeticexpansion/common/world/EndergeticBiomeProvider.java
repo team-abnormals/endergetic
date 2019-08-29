@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Sets;
 
+import endergeticexpansion.common.world.util.EndergeticLayerUtil;
 import endergeticexpansion.core.registry.EEBiomes;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -16,14 +17,18 @@ import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.provider.EndBiomeProvider;
 import net.minecraft.world.biome.provider.EndBiomeProviderSettings;
 import net.minecraft.world.gen.SimplexNoiseGenerator;
 import net.minecraft.world.gen.feature.structure.Structure;
-
+import net.minecraft.world.gen.layer.Layer;
+ 
 public class EndergeticBiomeProvider extends EndBiomeProvider {
+	private final Layer genBiomes;
+	private final Layer biomeFactoryLayer;
 	private final SimplexNoiseGenerator generator;
 	private final SharedSeedRandom random;
 	private final Biome[] biomes = new Biome[] {
@@ -32,7 +37,8 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		Biomes.END_MIDLANDS,
 		Biomes.SMALL_END_ISLANDS,
 		Biomes.END_BARRENS,
-		EEBiomes.POISE_FOREST
+		EEBiomes.POISE_FOREST,
+		EEBiomes.CHORUS_PLAINS,
 	};
 	
 	public EndergeticBiomeProvider(EndBiomeProviderSettings settings) {
@@ -40,6 +46,9 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		this.random = new SharedSeedRandom(settings.getSeed());
 		this.random.skip(17292);
 		this.generator = new SimplexNoiseGenerator(this.random);
+		Layer[] alayer = EndergeticLayerUtil.createGenLayers(settings.getSeed(), WorldType.DEFAULT);
+		this.genBiomes = alayer[0];
+		this.biomeFactoryLayer = alayer[1];
 	}
 
 	public Biome getBiome(int x, int y) {
@@ -49,12 +58,42 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 			return Biomes.THE_END;
 		} else {
 			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
-			if (f > 40.0F) {
-				return EEBiomes.POISE_FOREST;
-			} else if (f >= 0.0F) {
-				return EEBiomes.POISE_FOREST;
+			if (f >= 0.0F) {
+				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
 			} else {
-				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : EEBiomes.POISE_FOREST;
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
+			}
+		}
+	}
+	
+	public Biome getBiomeB(int x, int y) {
+		int i = x >> 4;
+		int j = y >> 4;
+		if ((long)i * (long)i + (long)j * (long)j <= 4096L) {
+			return Biomes.THE_END;
+		} else {
+			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
+			if (f >= 0.0F) {
+				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST;
+			} else {
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST;
+			}
+		}
+	}
+	
+	public Biome getBiomeOriginal(int x, int y) {
+		int i = x >> 4;
+		int j = y >> 4;
+		if ((long)i * (long)i + (long)j * (long)j <= 4096L) {
+			return Biomes.THE_END;
+		} else {
+			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
+			if (f > 40.0F) {
+				return Biomes.END_HIGHLANDS;
+			} else if (f >= 0.0F) {
+				return Biomes.END_MIDLANDS;
+			} else {
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : Biomes.END_BARRENS;
 			}
 		}
 	}
@@ -70,14 +109,17 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 				long i1 = ChunkPos.asLong(k, l);
 				Biome biome = long2objectmap.get(i1);
 				if (biome == null) {
-					biome = this.getBiome(k, l);
+					if(this.getBiomeB(k, l) == EEBiomes.POISE_FOREST) {
+						return this.biomeFactoryLayer.generateBiomes(x, z, width, length);
+					} else {
+						biome = this.getBiome(k, l);
+					}
 					long2objectmap.put(i1, biome);
 				}
 	
 				abiome[i + j * width] = biome;
 			}
 		}
-		
 		return abiome;
 	}
 
@@ -142,6 +184,22 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		}
 
 		return f;
+	}
+	
+	@Override
+	public Biome func_222366_b(int x, int y) {
+		int i = x >> 4;
+		int j = y >> 4;
+		if ((long)i * (long)i + (long)j * (long)j <= 4096L) {
+			return super.func_222366_b(x, y);
+		} else {
+			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
+			if (f >= 0.0F) {
+				return this.genBiomes.func_215738_a(x, y);
+			} else {
+				return f < -20.0F ? super.func_222366_b(x, y) : this.genBiomes.func_215738_a(x, y);
+			}
+		}
 	}
 
 	public boolean hasStructure(Structure<?> structureIn) {

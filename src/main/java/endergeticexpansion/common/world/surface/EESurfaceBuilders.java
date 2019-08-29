@@ -1,5 +1,9 @@
 package endergeticexpansion.common.world.surface;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
@@ -12,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EESurfaceBuilders {
+	private static List<SurfaceBuilder<?>> surfaceBuilders = Lists.newArrayList();
 	/*
 	 * Blockstates for surface builder configs
 	 */
@@ -33,13 +38,14 @@ public class EESurfaceBuilders {
 	
 	private static SurfaceBuilder<SurfaceBuilderConfig> registerSurfaceBuilder(String name, SurfaceBuilder<SurfaceBuilderConfig> builder) {
 		builder.setRegistryName(EndergeticExpansion.MOD_ID, name);
+		surfaceBuilders.add(builder);
 		return builder;
 	}
 	
 	@SubscribeEvent
 	public static void registerSurfaceBuilders(RegistryEvent.Register<SurfaceBuilder<?>> event) {
-		event.getRegistry().registerAll(
-			POISE_SURFACE_BUILDER
-		);
+		for(SurfaceBuilder<?> surfaceBuilders : surfaceBuilders) {
+			event.getRegistry().register(surfaceBuilders);
+		}
 	}
 }
