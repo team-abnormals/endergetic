@@ -4,15 +4,11 @@ import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.EEProperties;
 import endergeticexpansion.common.blocks.*;
 import endergeticexpansion.common.blocks.poise.*;
-import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
-import endergeticexpansion.common.blocks.poise.boof.BlockDispensedBoof;
-import endergeticexpansion.common.blocks.poise.hive.BlockHiveHanger;
-import endergeticexpansion.common.blocks.poise.hive.BlockPuffBugHive;
+import endergeticexpansion.common.blocks.poise.boof.*;
+import endergeticexpansion.common.blocks.poise.hive.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.Block.Properties;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.MaterialColor;
@@ -44,8 +40,8 @@ public class EEBlocks {
 	/*
 	 * Poise Forest
 	 */
-	public static Block EUMUS                = new BlockEumus(Properties.from(Blocks.DIRT)).setRegistryName(EndergeticExpansion.MOD_ID, "eumus");
-	public static Block POISMOSS_EUMUS       = new BlockPoiseEumusGrass(Properties.from(Blocks.GRASS_BLOCK).tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "poismoss_eumus");
+	public static Block EUMUS                = new BlockEumus(EEProperties.EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus");
+	public static Block POISMOSS_EUMUS       = new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "poismoss_eumus");
 	public static Block POISE_GRASS_BLOCK    = new BlockPoiseGrass(EEProperties.POISE_GRASS(false)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_block");
 	public static Block POISE_GRASS          = new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass");
 	public static Block POISE_GRASS_TALL     = new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_tall");

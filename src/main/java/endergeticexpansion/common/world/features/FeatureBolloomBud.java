@@ -28,7 +28,7 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(rand.nextFloat() >= 0.40) {
+		if(rand.nextFloat() >= 0.80) {
 			if(isValidGround(world.getBlockState(pos.down())) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
 				world.setBlockState(pos, BOLLOOM_BUD, 2);
 				return true;

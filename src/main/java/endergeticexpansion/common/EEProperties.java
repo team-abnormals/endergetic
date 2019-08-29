@@ -1,7 +1,6 @@
 package endergeticexpansion.common;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -19,17 +18,19 @@ public class EEProperties {
 		return Block.Properties.create(Material.OCEAN_PLANT, color).lightValue(4).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	
-	@SuppressWarnings("static-access")
 	public static final Block.Properties POISE_GRASS(boolean isPlant) {
 		//Fire you say? Well trust me its safe
-		return !isPlant ? Block.Properties.create(Material.ROCK, MaterialColor.PURPLE).from(Blocks.END_STONE).tickRandomly() : Block.Properties.create(Material.FIRE, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.PLANT).hardnessAndResistance(0F).doesNotBlockMovement();
+		return !isPlant ? Block.Properties.create(Material.ROCK, EEMaterialColors.POISMOSS).hardnessAndResistance(3.0F, 9.0F).tickRandomly() : Block.Properties.create(Material.FIRE, EEMaterialColors.POISMOSS).sound(SoundType.PLANT).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	
-	public static final Block.Properties POISE_CLUSTER     = Block.Properties.create(Material.ORGANIC, MaterialColor.PINK_TERRACOTTA);
-	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.WOOD).hardnessAndResistance(2, 10);
-	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, MaterialColor.PURPLE_TERRACOTTA).sound(SoundType.WOOD).hardnessAndResistance(2, 10).lightValue(15);
+	public static final Block.Properties POISE_CLUSTER     = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISE_PINK);
+	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).hardnessAndResistance(2, 10);
+	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).hardnessAndResistance(2, 10).lightValue(15);
 	public static final Block.Properties BOOF_BLOCK        = Block.Properties.create(Material.WOOL, MaterialColor.YELLOW_TERRACOTTA).sound(SoundType.CLOTH).hardnessAndResistance(0.85F);
-	public static final Block.Properties EUMUS_BRICKS      = Block.Properties.create(Material.ROCK, MaterialColor.PURPLE_TERRACOTTA).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).hardnessAndResistance(2, 30);
+	
+	public static final Block.Properties EUMUS             = Block.Properties.create(Material.EARTH, EEMaterialColors.EUMUS).hardnessAndResistance(0.5F).sound(SoundType.GROUND);
+	public static final Block.Properties POISMOSS_EUMUS    = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISMOSS).tickRandomly().hardnessAndResistance(0.6F).sound(SoundType.PLANT);
+	public static final Block.Properties EUMUS_BRICKS      = Block.Properties.create(Material.ROCK, EEMaterialColors.EUMUS).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).hardnessAndResistance(2, 30);
 	
 	public static final Block.Properties PUFFBUG_HIVE(boolean hanger) {
 		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
