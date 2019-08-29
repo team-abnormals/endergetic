@@ -45,8 +45,11 @@ public class EEBiomes {
 	}
 	
 	public static Biome getRandomBiome(INoiseRandom context) {
-		int totalBiomes = 21;
-		int weight = context.random(totalBiomes);
+		int totalWeight = 0;
+		for(int index = 0; index < biomes.size(); index++) {
+			totalWeight += biomeWeights.get(biomes.toArray()[index]);
+		}
+		int weight = context.random(totalWeight);
 		Iterator<Biome> iterator = biomes.iterator();
 		Biome biome;
 		do {
