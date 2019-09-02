@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBolloomKnot extends Entity {
@@ -30,11 +31,15 @@ public class EntityBolloomKnot extends Entity {
 	}
 	
 	public EntityBolloomKnot(World world, BlockPos pos) {
-		this(EEEntities.ObjectEntites.BOLLOOM_KNOT, world);
+		this(EEEntities.BOLLOOM_KNOT, world);
 		this.setPosition(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
 		this.hangingPosition = pos;
 		this.setMotion(Vec3d.ZERO);
 		this.forceSpawn = true;
+	}
+	
+	public EntityBolloomKnot(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+		this(EEEntities.BOLLOOM_KNOT, world);
 	}
 	
 	@Override

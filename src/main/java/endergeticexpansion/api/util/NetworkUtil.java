@@ -34,7 +34,6 @@ public class NetworkUtil {
 	 * @param stack{ItemStack} - the stack that the message will update the nbt for
 	 * Used for updating the client nbt from the server
 	 */
-	@OnlyIn(Dist.DEDICATED_SERVER)
 	public static void updateCItemNBT(ItemStack stack) {
 		EndergeticExpansion.CHANNEL.send(PacketDistributor.SERVER.noArg(), new MessageCUpdateNBTTag(stack));
 	}

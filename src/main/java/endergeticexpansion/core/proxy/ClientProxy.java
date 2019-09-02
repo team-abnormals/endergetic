@@ -5,6 +5,7 @@ import endergeticexpansion.client.render.tile.*;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityEndergeticBoat;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.EntityPuffBug;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
@@ -33,6 +34,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomKnot.class, RenderBolloomKnot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomBalloon.class, RenderBolloomBalloon::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityEndergeticBoat.class, RenderEndergeticBoat::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
 		
 		KeybindHandler.registerKeys();
 	}
