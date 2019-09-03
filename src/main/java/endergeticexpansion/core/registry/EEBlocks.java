@@ -9,6 +9,9 @@ import endergeticexpansion.common.blocks.poise.hive.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.Block.Properties;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.MaterialColor;
@@ -40,7 +43,6 @@ public class EEBlocks {
 	/*
 	 * Poise Forest
 	 */
-	public static Block EUMUS                = new BlockEumus(EEProperties.EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus");
 	public static Block POISMOSS_EUMUS       = new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "poismoss_eumus");
 	public static Block POISE_GRASS_BLOCK    = new BlockPoiseGrass(EEProperties.POISE_GRASS(false)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_block");
 	public static Block POISE_GRASS          = new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass");
@@ -67,16 +69,22 @@ public class EEBlocks {
 	public static Block BOLLOOM_PARTICLE     = new Block(EEProperties.POISE_WOOD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_particle");
 	public static Block BOOF_BLOCK           = new BlockBoof(EEProperties.BOOF_BLOCK).setRegistryName(EndergeticExpansion.MOD_ID, "boof_block");
 	public static Block BOOF_DISPENSED_BLOCK = new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)).setRegistryName(EndergeticExpansion.MOD_ID, "boof_dispensed_block");
-	public static Block EUMUS_BRICKS         = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_bricks");
-	public static Block EUMUS_BRICKS_CHISELED = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_chiseled_bricks");
-	public static Block EUMUS_BRICK_SLAB     = new SlabBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_slab");
-	public static Block EUMUS_BRICK_STAIRS   = new BlockStairsBase(EUMUS_BRICKS.getDefaultState(), EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_stairs");
 	
 	/*
 	 * Vibra Jungle
 	 */
 	public static Block FRISBLOOM_STEM    = new BlockFrisbloomStem(EEProperties.FRISBLOOM_STEM).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_stem");
 	public static Block FRISBLOOM_BUD     = new BlockFrisbloomBud(EEProperties.FRISBLOOM_BUD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_seeds");
+	
+	/*
+	 * Other
+	 */
+	public static Block EUMUS                = new BlockEumus(EEProperties.EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus");
+	public static Block EUMUS_BRICKS         = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_bricks");
+	public static Block EUMUS_BRICKS_CHISELED = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_chiseled_bricks");
+	public static Block EUMUS_BRICK_SLAB     = new SlabBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_slab");
+	public static Block EUMUS_BRICK_STAIRS   = new BlockStairsBase(EUMUS_BRICKS.getDefaultState(), EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_stairs");
+	public static Block POISE_BUSH_POT       = new FlowerPotBlock(POISE_GRASS, Properties.from(Blocks.POTTED_PINK_TULIP)).setRegistryName(EndergeticExpansion.MOD_ID, "potted_poise_bush");
 	
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
@@ -85,7 +93,7 @@ public class EEBlocks {
 			CORROCK_CROWN_OVERWORLD_WALL, CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_NETHER_WALL, CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_END_WALL, CORROCK_CROWN_END_STANDING,
 			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
 			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
-			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_DISPENSED_BLOCK, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED
+			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_DISPENSED_BLOCK, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, POISE_BUSH_POT
 		};
 		event.getRegistry().registerAll(blocks);
 	}

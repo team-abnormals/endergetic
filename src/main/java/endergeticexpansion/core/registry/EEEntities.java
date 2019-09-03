@@ -34,13 +34,9 @@ public class EEEntities {
 	public static final EntityType<EntityBolloomFruit> BOLLOOM_FRUIT = createEntity(EntityBolloomFruit::new, EntityClassification.MISC, "bolloom_fruit", 0.5F, 0.5F, 0, 0);
 	public static final EntityType<EntityBoofBlock> BOOF_BLOCK = createEntity(EntityBoofBlock::new, EntityClassification.MISC, "boof_block", 1.6F, 1.6F, 0, 0);
 	public static final EntityType<EntityPuffBug> PUFF_BUG = createEntity(EntityPuffBug::new, EntityClassification.CREATURE, "puff_bug", 0.3F, 1.0F, 15660724, 16610303);
-	
-	/*
-	 * Item Entities
-	 */
-	public static final EntityType<EntityEndergeticBoat> POISE_BOAT = createItemEntity(EntityEndergeticBoat::new, EntityEndergeticBoat::new, EntityClassification.MISC, "boat", 1.375F, 0.5625F);
-	public static final EntityType<EntityBolloomBalloon> BOLLOOM_BALLOON = createItemEntity(EntityBolloomBalloon::new, EntityBolloomBalloon::new, EntityClassification.MISC, "bolloom_balloon", 0.5F, 0.5F);
-	public static final EntityType<EntityBolloomKnot> BOLLOOM_KNOT = createItemEntity(EntityBolloomKnot::new, EntityBolloomKnot::new, EntityClassification.MISC, "bolloom_knot", 0.375F, 0.19F);
+	public static final EntityType<EntityEndergeticBoat> BOAT = createBasicEntity(EntityEndergeticBoat::new, EntityEndergeticBoat::new, EntityClassification.MISC, "boat", 1.375F, 0.5625F);
+	public static final EntityType<EntityBolloomBalloon> BOLLOOM_BALLOON = createBasicEntity(EntityBolloomBalloon::new, EntityBolloomBalloon::new, EntityClassification.MISC, "bolloom_balloon", 0.5F, 0.5F);
+	public static final EntityType<EntityBolloomKnot> BOLLOOM_KNOT = createBasicEntity(EntityBolloomKnot::new, EntityBolloomKnot::new, EntityClassification.MISC, "bolloom_knot", 0.375F, 0.19F);
 	
 	private static <T extends Entity> EntityType<T> createEntity(EntityType.IFactory<T> factory, EntityClassification entityClassification, String name, float width, float height, int eggPrimary, int eggSecondary) {
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);
@@ -60,7 +56,7 @@ public class EEEntities {
 		return entity;
 	}
 	
-	private static <T extends Entity> EntityType<T> createItemEntity(EntityType.IFactory<T> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, T> clientFactory, EntityClassification entityClassification, String name, float width, float height) {
+	private static <T extends Entity> EntityType<T> createBasicEntity(EntityType.IFactory<T> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, T> clientFactory, EntityClassification entityClassification, String name, float width, float height) {
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);
 		EntityType<T> entity = EntityType.Builder.create(factory, entityClassification)
 			.size(width, height)

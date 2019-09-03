@@ -82,7 +82,7 @@ public class EntityEndergeticBoat extends BoatEntity {
 	}
 		
 	public EntityEndergeticBoat(World worldIn, double x, double y, double z) {
-		this(EEEntities.POISE_BOAT, worldIn);
+		this(EEEntities.BOAT, worldIn);
 		this.setPosition(x, y, z);
 		this.setMotion(Vec3d.ZERO);
 		this.prevPosX = x;
@@ -91,7 +91,7 @@ public class EntityEndergeticBoat extends BoatEntity {
 	}
 
 	public EntityEndergeticBoat(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		this(EEEntities.POISE_BOAT, world);
+		this(EEEntities.BOAT, world);
 	}
 	
 	@Override

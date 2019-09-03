@@ -242,19 +242,6 @@ public class EntityPoiseCluster extends LivingEntity {
 	}
 	
 	@Override
-	public float getCollisionBorderSize() {
-		return 0.0F;
-	}
-	
-	@Override
-	public void applyEntityCollision(Entity entityIn) {}
-
-	@Override
-	public double getYOffset() {
-		return -0.1F;
-	}
-	
-	@Override
 	public CreatureAttribute getCreatureAttribute() {
 		return CreatureAttribute.ILLAGER;
 	}
@@ -333,5 +320,4 @@ public class EntityPoiseCluster extends LivingEntity {
 	public HandSide getPrimaryHand() {
 		return HandSide.RIGHT;
 	}
-
 }
