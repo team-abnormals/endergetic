@@ -4,6 +4,7 @@ import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
 import endergeticexpansion.common.items.ItemBolloomBalloon;
+import endergeticexpansion.common.items.ItemPuffBugBottle;
 import net.minecraft.block.DispenserBlock;
 
 public class EEDispenserBehaviorRegistry {
@@ -26,6 +27,7 @@ public class EEDispenserBehaviorRegistry {
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GRAY, new ItemBolloomBalloon.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_GRAY, new ItemBolloomBalloon.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLACK, new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE, new ItemPuffBugBottle.PuffBugBottleDispenseBehavior());
 	}
 	
 }

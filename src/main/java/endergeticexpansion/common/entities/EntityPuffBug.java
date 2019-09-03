@@ -210,6 +210,10 @@ public class EntityPuffBug extends FlyingEntity {
 		this.dataManager.set(COLOR, color);
 	}
 	
+	public Set<EffectInstance> getCustomPotionEffects(){
+		return this.customPotionEffects;
+	}
+	
 	private void spawnPotionParticles(int particleCount) {
 		int i = this.getColor();
 		if (i != -1 && particleCount > 0) {
@@ -254,6 +258,9 @@ public class EntityPuffBug extends FlyingEntity {
 				this.setFixedColor(-1);
 				this.customPotionEffects.clear();
 			}
+		}
+		if(this.getColor() == 3694022) {
+			this.setFixedColor(-1);
 		}
 	}
 	

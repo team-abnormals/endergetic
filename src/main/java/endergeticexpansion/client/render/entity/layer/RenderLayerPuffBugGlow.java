@@ -18,7 +18,9 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_overlay.png"),
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay.png"),
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_overlay_grayscale.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay_grayscale.png")
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay_grayscale.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_levitation_overlay.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_levitation_overlay.png"),
 	};
 	
 	public RenderLayerPuffBugGlow(IEntityRenderer<T, M> entityRenderer) {
@@ -39,7 +41,7 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 			(float) ((puffbug.getColor() & 255) / 255.0D),
 		};
 		
-		if(puffbug.getColor() != -1) GlStateManager.color3f(rgb[0] * 1.5F, rgb[1] * 1.5F, rgb[2] * 1.5F);
+		if(puffbug.getColor() != -1 && !isLeviationOnlyEffect(puffbug)) GlStateManager.color3f(rgb[0] * 1.5F, rgb[1] * 1.5F, rgb[2] * 1.5F);
 		
 		GlStateManager.disableLighting();
         
@@ -53,7 +55,17 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 	}
 	
 	private ResourceLocation getTexture(EntityPuffBug puffbug) {
+		if(this.isLeviationOnlyEffect(puffbug)) {
+			return TEXTURES[puffbug.getPuffState() + 3];
+		}
 		return puffbug.getColor() != -1 ? TEXTURES[puffbug.getPuffState() + 1] : TEXTURES[puffbug.getPuffState() - 1];
+	}
+	
+	private boolean isLeviationOnlyEffect(EntityPuffBug bug) {
+		if(bug.getColor() == 13565951) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

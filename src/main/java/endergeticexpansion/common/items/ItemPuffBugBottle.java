@@ -6,9 +6,12 @@ import java.util.Objects;
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
@@ -119,5 +122,21 @@ public class ItemPuffBugBottle extends Item {
 			EquipmentSlotType slot = hand == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND;
 			player.setItemStackToSlot(slot, new ItemStack(Items.GLASS_BOTTLE));
 		}
+	}
+	
+	public static class PuffBugBottleDispenseBehavior extends DefaultDispenseItemBehavior { 
+		
+		public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+			if(source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
+				EntityType<?> entitytype = EEEntities.PUFF_BUG;
+				entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+				stack = new ItemStack(Items.GLASS_BOTTLE);
+			} else {
+				return super.dispenseStack(source, stack);
+			}
+			return stack;
+		}
+		
 	}
 }
