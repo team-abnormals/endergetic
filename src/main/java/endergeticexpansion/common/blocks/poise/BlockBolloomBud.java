@@ -19,8 +19,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -34,7 +36,8 @@ public class BlockBolloomBud extends Block {
 	public static final BooleanProperty HAS_EAST_FRUIT = BooleanProperty.create("east_fruit");
 	public static final BooleanProperty HAS_SOUTH_FRUIT = BooleanProperty.create("south_fruit");
 	public static final BooleanProperty HAS_WEST_FRUIT = BooleanProperty.create("west_fruit");
-	protected static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D);
+	private static final VoxelShape INSIDE = makeCuboidShape(3.5D, 0.0D, 3.5D, 12.5D, 15.0D, 12.5D);
+	protected static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D), VoxelShapes.or(INSIDE), IBooleanFunction.ONLY_FIRST);
 	protected static final VoxelShape SHAPE_OPENED = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D);
 
 	public BlockBolloomBud(Properties properties) {
