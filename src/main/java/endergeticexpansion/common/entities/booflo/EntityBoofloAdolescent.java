@@ -2,16 +2,20 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.client.animation.TimedAnimation;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -19,6 +23,9 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -26,40 +33,44 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityBoofloBaby extends CreatureEntity {
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.VARINT);
-	private float prevTailAnimation;
-	private float tailAnimation;
-	private float tailSpeed;
-	
-	public EntityBoofloBaby(EntityType<? extends EntityBoofloBaby> type, World worldIn) {
+public class EntityBoofloAdolescent extends CreatureEntity {
+	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
+
+	public EntityBoofloAdolescent(EntityType<? extends EntityBoofloAdolescent> type, World worldIn) {
 		super(type, worldIn);
-		this.moveController = new EntityBoofloBaby.BoofloBabyMoveContoller(this);
-		this.lookController = new EntityBoofloBaby.BoofloBabyLookController(this, 10);
-		this.tailAnimation = this.rand.nextFloat();
-		this.prevTailAnimation = this.tailAnimation;
+		this.moveController = new EntityBoofloAdolescent.BoofloAdolescentMoveController(this);
+		this.lookController = new EntityBoofloAdolescent.BoofloAdolescentLookController(this, 10);
 	}
 	
 	@Override
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(MOVING, false);
-		this.getDataManager().register(AGE, 0);
 	}
 	
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
-		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.85D);
-		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(18.0D);
-		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(5.0D);
+		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.7D);
+		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(16.0D);
+		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(9.0D);
 	}
 	
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
-		this.goalSelector.addGoal(5, new EntityBoofloBaby.RandomFlyingGoal(this, 1.1D, 20));
+		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 20));
+	}
+	
+	@Override
+	public void travel(Vec3d vec3d) {
+		if (this.isServerWorld() && !this.isInWater()) {
+			this.moveRelative(0.015F, vec3d);
+			this.move(MoverType.SELF, this.getMotion());
+			this.setMotion(this.getMotion().scale(0.9D));
+		} else {
+			super.travel(vec3d);
+		}
 	}
 	
 	@Override
@@ -69,38 +80,32 @@ public class EntityBoofloBaby extends CreatureEntity {
 			@SuppressWarnings("deprecation")
 			@Override
 			public boolean canEntityStandOnPos(BlockPos pos) {
-				return this.world.getBlockState(pos).isAir();
+				return this.world.getBlockState(pos).isAir() && !this.entity.onGround;
 			}
 			
 		};
 	}
 	
 	@Override
-	public void travel(Vec3d vec3d) {
-		if (this.isServerWorld() && !this.isInWater()) {
-			this.moveRelative(0.01F, vec3d);
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.9D));
-			if(!this.isMoving()) {
-				this.setMotion(this.getMotion().subtract(0, 0.0025D, 0));
-			}
-		} else {
-			super.travel(vec3d);
-		}
+	public int getVerticalFaceSpeed() {
+		return 1;
+	}
+
+	@Override
+	public int getHorizontalFaceSpeed() {
+		return 1;
 	}
 	
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
-		compound.putInt("Age", this.getAge());
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
-		this.setAge(compound.getInt("Age"));
 	}
 	
 	public boolean isMoving() {
@@ -111,48 +116,19 @@ public class EntityBoofloBaby extends CreatureEntity {
 		this.getDataManager().set(MOVING, moving);
 	}
 	
-	public int getAge() {
-		return this.getDataManager().get(AGE);
+	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+		return sizeIn.height * 0.65F;
 	}
 	
-	public void setAge(int age) {
-		this.getDataManager().set(AGE, age);
-	}
-	
-	@OnlyIn(Dist.CLIENT)	
-	public float getTailAnimation(float ptc) {
-		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
-	}
-
-	@Override
-	protected boolean canTriggerWalking() {
-		return false;
-	}
-	
-	public int getVerticalFaceSpeed() {
-		return 1;
-	}
-
-	public int getHorizontalFaceSpeed() {
-		return 1;
+	@OnlyIn(Dist.CLIENT)
+	public float getSquishProgress(float partialTicks) {
+		return MathHelper.lerp(partialTicks, 1, 1);
 	}
 	
 	@Override
 	public void livingTick() {
-		if (this.world.isRemote) {
-			this.prevTailAnimation = this.tailAnimation;
-			if(this.isInWater()) {
-				this.tailSpeed = 1.0F;
-			} else if(this.isMoving()) {
-				if (this.tailSpeed < 0.5F) {
-					this.tailSpeed = 1.0F;
-				} else {
-					this.tailSpeed += (0.25F - this.tailSpeed) * 0.1F;
-				}
-			} else {
-				this.tailSpeed += (0.1875F - this.tailSpeed) * 0.1F;
-			}
-			this.tailAnimation += this.tailSpeed;
+		if(this.onGround) {
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.55F) + 0.45F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 		}
 		super.livingTick();
 	}
@@ -170,10 +146,14 @@ public class EntityBoofloBaby extends CreatureEntity {
 
 		@Nullable
 		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4);
+			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2);
 
-			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.WATER) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4)) {
+			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
 				;
+			}
+			
+			if(vec3d != null && vec3d.distanceTo(this.creature.getPositionVec()) <= 4) {
+				return null;
 			}
 			
 			return vec3d;
@@ -181,7 +161,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 		
 		@Override
 		public boolean shouldExecute() {
-			return super.shouldExecute() && !this.creature.isInWater();
+			return super.shouldExecute() && this.creature.getNavigator().noPath() && !this.creature.isInWater();
 		}
 		
 		@Override
@@ -190,15 +170,19 @@ public class EntityBoofloBaby extends CreatureEntity {
 		}
 	}
 	
-	static class BoofloBabyMoveContoller extends MovementController {
-		private final EntityBoofloBaby booflo;
+	static class BoofloAdolescentMoveController extends MovementController {
+		private final EntityBoofloAdolescent booflo;
 
-		public BoofloBabyMoveContoller(EntityBoofloBaby booflo) {
+		BoofloAdolescentMoveController(EntityBoofloAdolescent booflo) {
 			super(booflo);
 			this.booflo = booflo;
 		}
 
 		public void tick() {
+			if (!this.booflo.areEyesInFluid(FluidTags.WATER)) {
+				this.booflo.setMotion(this.booflo.getMotion().add(0.0D, -0.01D, 0.0D));
+			}
+			
 			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
 				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
 				double d0 = vec3d.length();
@@ -209,7 +193,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 				this.booflo.renderYawOffset = this.booflo.rotationYaw;
 				this.booflo.rotationYawHead = this.booflo.rotationYaw;
 				
-				float f1 = (float)(this.speed * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+				float f1 = (float)(2 * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
 				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
 				
 				this.booflo.setAIMoveSpeed(f2);
@@ -224,7 +208,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 					this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
 				}
 				
-				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.02D, 0));
+				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.015D, 0));
 				
 				this.booflo.setMoving(true);
 			} else {
@@ -234,11 +218,11 @@ public class EntityBoofloBaby extends CreatureEntity {
 		}
 	}
 	
-	class BoofloBabyLookController extends LookController {
+	class BoofloAdolescentLookController extends LookController {
 		private final int angleLimit;
 
-		public BoofloBabyLookController(EntityBoofloBaby baby, int angleLimit) {
-			super(baby);
+		public BoofloAdolescentLookController(EntityBoofloAdolescent booflo, int angleLimit) {
+			super(booflo);
 			this.angleLimit = angleLimit;
 		}
 
@@ -262,5 +246,4 @@ public class EntityBoofloBaby extends CreatureEntity {
 			}
 		}
 	}
-	
 }

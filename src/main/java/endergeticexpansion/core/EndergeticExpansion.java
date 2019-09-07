@@ -41,7 +41,6 @@ public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
 	public static final String NETWORK_PROTOCOL = "1";
-	
 	public static EndergeticExpansion instance;
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 	

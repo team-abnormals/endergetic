@@ -1,24 +1,20 @@
 package endergeticexpansion.core.proxy;
 
 import endergeticexpansion.client.render.entity.*;
+import endergeticexpansion.client.render.entity.booflo.*;
 import endergeticexpansion.client.render.tile.*;
-import endergeticexpansion.common.entities.EntityBoofBlock;
-import endergeticexpansion.common.entities.EntityEndergeticBoat;
-import endergeticexpansion.common.entities.EntityPoiseCluster;
-import endergeticexpansion.common.entities.EntityPuffBug;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
-import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
-import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.common.entities.*;
+import endergeticexpansion.common.entities.bolloom.*;
+import endergeticexpansion.common.entities.booflo.*;
+import endergeticexpansion.common.tileentities.*;
+import endergeticexpansion.common.tileentities.boof.*;
 import endergeticexpansion.core.keybinds.KeybindHandler;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
+@OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
 	
 	@Override
@@ -37,6 +33,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityEndergeticBoat.class, RenderEndergeticBoat::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
 		
 		KeybindHandler.registerKeys();
 	}

@@ -1,4 +1,4 @@
-package endergeticexpansion.client.render.entity;
+package endergeticexpansion.client.render.entity.booflo;
 
 import endergeticexpansion.client.model.booflo.ModelBoofloBaby;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
@@ -18,11 +18,6 @@ public class RenderBoofloBaby extends LivingRenderer<EntityBoofloBaby, ModelBoof
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_baby.png");
 	}
 	
-	@Override
-	protected void applyRotations(EntityBoofloBaby booflo, float ageInTicks, float rotationYaw, float partialTicks) {
-		super.applyRotations(booflo, ageInTicks, rotationYaw, partialTicks);
-	}
-
 	@Override
 	protected boolean canRenderName(EntityBoofloBaby entity) {
 		return entity.hasCustomName() ? super.canRenderName(entity) : false;

@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 
 import endergeticexpansion.common.entities.*;
 import endergeticexpansion.common.entities.bolloom.*;
+import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
@@ -39,6 +40,7 @@ public class EEEntities {
 	public static final EntityType<EntityBolloomBalloon> BOLLOOM_BALLOON = createBasicEntity(EntityBolloomBalloon::new, EntityBolloomBalloon::new, EntityClassification.MISC, "bolloom_balloon", 0.5F, 0.5F);
 	public static final EntityType<EntityBolloomKnot> BOLLOOM_KNOT = createBasicEntity(EntityBolloomKnot::new, EntityBolloomKnot::new, EntityClassification.MISC, "bolloom_knot", 0.375F, 0.19F);
 	public static final EntityType<EntityBoofloBaby> BOOFLO_BABY = createEntity(EntityBoofloBaby::new, EntityClassification.CREATURE, "booflo_baby", 0.375F, 0.325F, 0, 0);
+	public static final EntityType<EntityBoofloAdolescent> BOOFLO_ADOLESCENT = createEntity(EntityBoofloAdolescent::new, EntityClassification.CREATURE, "booflo_adolescent", 0.8F, 0.7F, 0, 0);
 	
 	private static <T extends Entity> EntityType<T> createEntity(EntityType.IFactory<T> factory, EntityClassification entityClassification, String name, float width, float height, int eggPrimary, int eggSecondary) {
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);
