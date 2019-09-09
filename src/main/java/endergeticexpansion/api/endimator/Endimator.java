@@ -129,17 +129,17 @@ public class Endimator {
 		
 		if(animationTick >= this.prevTempTick && animationTick < this.tempTick) {
 			if(stationary) {
-        		for(EndimatorRendererModel box : this.prevBoxValues.keySet()) {
-        			float[] transform = this.prevBoxValues.get(box);
-        			box.rotationPointX += transform[0];
+				for(EndimatorRendererModel box : this.prevBoxValues.keySet()) {
+					float[] transform = this.prevBoxValues.get(box);
+					box.rotationPointX += transform[0];
         			box.rotationPointY += transform[1];
         			box.rotationPointZ += transform[2];
         			box.rotateAngleX += transform[3];
         			box.rotateAngleY += transform[4];
         			box.rotateAngleZ += transform[5];
-        		}
+				}
 			} else {
-        		float tick = (animationTick - this.prevTempTick + ClientInfo.getPartialTicks()) / (this.tempTick - this.prevTempTick);
+				float tick = (animationTick - this.prevTempTick + ClientInfo.getPartialTicks()) / (this.tempTick - this.prevTempTick);
         		float increment = MathHelper.sin((float) (tick * Math.PI / 2.0F));
         		float decrement = 1.0F - increment;
         		for(EndimatorRendererModel box : this.prevBoxValues.keySet()) {
@@ -150,17 +150,17 @@ public class Endimator {
         			box.rotateAngleX += decrement * transform[3];
         			box.rotateAngleY += decrement * transform[4];
         			box.rotateAngleZ += decrement * transform[5];
-                }
+        		}
         		for(EndimatorRendererModel box : this.boxValues.keySet()) {
-                	float[] transform = this.boxValues.get(box);       
-                	box.rotationPointX += increment * transform[0];
+        			float[] transform = this.boxValues.get(box);       
+        			box.rotationPointX += increment * transform[0];
                 	box.rotationPointY += increment * transform[1];
                 	box.rotationPointZ += increment * transform[2];
                 	box.rotateAngleX += increment * transform[3];
                 	box.rotateAngleY += increment * transform[4];
                 	box.rotateAngleZ += increment * transform[5];
         		}
-        	}
+			}
 		}
 		if(!stationary) {
 			this.prevBoxValues.clear();
