@@ -1,5 +1,10 @@
 package endergeticexpansion.api.util;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.common.network.entity.MessageCAnimation;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
 import endergeticexpansion.common.network.entity.MessageSBoofEntity;
 import endergeticexpansion.common.network.entity.MessageSSetCooldown;
@@ -99,4 +104,14 @@ public class NetworkUtil {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, amount));
 	}
 	
+	/**
+	 * Sends an animation message to the clients to update an entity's animations
+	 * @param entity - The Entity to send the packet for
+	 * @param animationToPlay - The animation to play
+	 */
+	public static void setPlayingAnimationMessage(EndimatedEntity entity, Endimation animationToPlay) {
+		if(!entity.isWorldRemote()) {
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCAnimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animationToPlay)));
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package endergeticexpansion.api.client.animation;
+package endergeticexpansion.api.endimator;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;

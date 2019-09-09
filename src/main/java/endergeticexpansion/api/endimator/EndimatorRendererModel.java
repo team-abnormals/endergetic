@@ -1,8 +1,9 @@
-package endergeticexpansion.api.client.animation;
+package endergeticexpansion.api.endimator;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import afu.org.checkerframework.checker.nullness.qual.Nullable;
+import endergeticexpansion.client.model.booflo.ModelAdolescentBooflo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
@@ -24,6 +25,7 @@ public class EndimatorRendererModel extends RendererModel {
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
 	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
 	public int textureOffsetX, textureOffsetY;
+	public boolean scaleChildren = true;
 	public float[] scales = {1.0F, 1.0F, 1.0F};
 	public float opacity = 1.0F;
 	private boolean compiled;
@@ -130,13 +132,12 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * @param scales - An array of values to set the scale of this RendererModel
-	 * ~ Do not exceed a size of 3 array
+	 * @param 
 	 */
-	public void setScale(float[] scales) {
-		for(int i = 0; i < scales.length; i++) {
-			this.scales[i] = scales[i];
-		}
+	public void setScale(float x, float y, float z) {
+		this.scales[0] = x;
+		this.scales[1] = y;
+		this.scales[2] = z;
 	}
 	
 	/**
@@ -179,6 +180,10 @@ public class EndimatorRendererModel extends RendererModel {
 		this.parentRendererModel = parentRendererModel;
 	}
 	
+	public void setShouldScaleChildren(boolean scaleChildren) {
+		this.scaleChildren = scaleChildren;
+	}
+	
 	/**
 	 * Performs the same function as vanilla's setTextureOffset
 	 */
@@ -198,28 +203,18 @@ public class EndimatorRendererModel extends RendererModel {
 		EndimatorRendererModel rendererModelChild = (EndimatorRendererModel) rendererModel;
 		rendererModelChild.setParentRendererModel(this);
 	}
-
-	/**
-	 * Performs the same function as vanilla's removeChild but adjusted to fit EndimatorRendererModel
-	 */
-	@Override
-	public void removeChild(RendererModel rendererModel) {
-		super.removeChild(rendererModel);
-		EndimatorRendererModel rendererModelChild = (EndimatorRendererModel) rendererModel;
-		rendererModelChild.setParentRendererModel(null);
-	}
 	
 	@Override
 	public void render(float scale) {
 		if(!this.isHidden) {
 			if(this.showModel) {
+				GlStateManager.pushMatrix();
 				if(!this.compiled) {
 					this.compileDisplayList(scale);
 				}
-				GlStateManager.pushMatrix();
 				GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
 				GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-					
+				
 				if(this.rotateAngleZ != 0.0F) {
 					GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
 				}
@@ -232,20 +227,21 @@ public class EndimatorRendererModel extends RendererModel {
 				if(this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F) {
 					GlStateManager.scalef(this.scales[0], this.scales[1], this.scales[2]);
 				}
-					
+				
 				if(this.opacity < 1.0F) {
 					GlStateManager.enableBlend();
 					GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 					GlStateManager.color4f(1F, 1F, 1F, this.opacity);
 				}
-					
+				
 				GlStateManager.callList(this.displayList);
-					
+				
 				if(this.opacity < 1.0F) {
 					GlStateManager.disableBlend();
 					GlStateManager.color4f(1F, 1F, 1F, 1F);
 				}
-				if(this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F) {
+				
+				if(!this.scaleChildren && (this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F)) {
 					GlStateManager.popMatrix();
 					GlStateManager.pushMatrix();
 					GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
@@ -260,6 +256,7 @@ public class EndimatorRendererModel extends RendererModel {
 						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
 					}
 				}
+				
 				if(this.childModels != null) {
 					for(RendererModel childModel : this.childModels) {
 						childModel.render(scale);

@@ -1,10 +1,9 @@
 package endergeticexpansion.client.model.booflo;
 
-import endergeticexpansion.api.client.ClientInfo;
-import endergeticexpansion.api.client.animation.EndimatorEntityModel;
-import endergeticexpansion.api.client.animation.EndimatorRendererModel;
+import endergeticexpansion.api.endimator.Endimator;
+import endergeticexpansion.api.endimator.EndimatorEntityModel;
+import endergeticexpansion.api.endimator.EndimatorRendererModel;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * ModelAdolescentBooflo - Endergized
@@ -18,6 +17,8 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     public EndimatorRendererModel ArmRight;
     public EndimatorRendererModel Tail;
     public EndimatorRendererModel Jaw;
+    
+    public Endimator endimator = new Endimator();
 
     public ModelAdolescentBooflo() {
         this.textureWidth = 64;
@@ -54,12 +55,15 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
         this.Head.addChild(this.KneeRight);
         this.Head.addChild(this.Jaw);
         
+        this.createScaleController();
+        
         this.setDefaultBoxValues();
     }
 
     @Override
     public void render(E entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        this.Head.render(f5);
+    	this.animateModel(entity, f, f1, f2, f3, f4, f5);
+    	this.Head.render(f5);
     }
 
     /**
@@ -74,10 +78,41 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     @Override
     public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
-    	this.ArmLeft.rotateAngleZ = 0.275F * MathHelper.sin(0.65F * (ClientInfo.getPartialTicks() + entityIn.ticksExisted)) + 0.17F;
-    	this.ArmRight.rotateAngleZ = -0.275F * MathHelper.sin(0.65F * ageInTicks) - 0.17F;
+    }
+    
+    @Override
+    public void animateModel(E booflo, float f, float f1, float f2, float f3, float f4, float f5) {
+    	super.animateModel(booflo, f, f1, f2, f3, f4, f5);
+    	this.endimator.updateAnimations(booflo);
     	
-    	this.KneeLeft.rotateAngleZ = -0.1F * MathHelper.sin(0.65F * ageInTicks) + 0.349F;
-    	this.KneeRight.rotateAngleZ = -0.1F * -MathHelper.sin(0.65F * ageInTicks) - 0.349F;
+    	if(booflo.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityBoofloAdolescent.BOOF_ANIMATION);
+    		this.endimator.startKeyframe(3);
+    		this.endimator.move(this.getScaleController(), 0.5F, -0.2F, 0.5F);
+    		this.endimator.move(Head, 0.0F, -0.2F, 0.0F);
+    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, -0.4F);
+    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.4F);
+    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.2F);
+    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
+    		this.endimator.endKeyframe();
+    		this.endimator.setStaticKeyframe(3);
+    		this.endimator.startKeyframe(3);
+    		this.endimator.move(this.getScaleController(), -0.0F, 0.0F, -0.0F);
+    		this.endimator.move(Head, 0.0F, 0F, 0.0F);
+    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, 0.6F);
+    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, -0.6F);
+    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, 0.35F);
+    		this.endimator.endKeyframe();
+    		this.endimator.setStaticKeyframe(4);
+    		this.endimator.startKeyframe(4);
+    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, -0.2F);
+    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.2F);
+    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
+    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
+    		this.endimator.endKeyframe();
+    	}
+    	
+    	this.Head.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
     }
 }

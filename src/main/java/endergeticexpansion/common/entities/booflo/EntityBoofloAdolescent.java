@@ -2,7 +2,9 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.client.animation.TimedAnimation;
+import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.api.util.NetworkUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntitySize;
@@ -15,7 +17,6 @@ import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -23,19 +24,18 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityBoofloAdolescent extends CreatureEntity {
+public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
-
+	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
+	public static final Endimation BOOF_ANIMATION = new Endimation(10);
+	public static final Endimation EATING_ANIMATION = new Endimation(20);
+	
 	public EntityBoofloAdolescent(EntityType<? extends EntityBoofloAdolescent> type, World worldIn) {
 		super(type, worldIn);
 		this.moveController = new EntityBoofloAdolescent.BoofloAdolescentMoveController(this);
@@ -46,6 +46,7 @@ public class EntityBoofloAdolescent extends CreatureEntity {
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(MOVING, false);
+		this.getDataManager().register(FALL_SPEED, 0.0F);
 	}
 	
 	@Override
@@ -58,8 +59,8 @@ public class EntityBoofloAdolescent extends CreatureEntity {
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(0, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
-		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 20));
+		this.goalSelector.addGoal(1, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
+		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 10));
 	}
 	
 	@Override
@@ -100,12 +101,14 @@ public class EntityBoofloAdolescent extends CreatureEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
+		compound.putFloat("FallSpeed", this.getFallSpeed());
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
+		this.setFallSpeed(compound.getFloat("FallSpeed"));
 	}
 	
 	public boolean isMoving() {
@@ -116,19 +119,23 @@ public class EntityBoofloAdolescent extends CreatureEntity {
 		this.getDataManager().set(MOVING, moving);
 	}
 	
+	public float getFallSpeed() {
+		return this.getDataManager().get(FALL_SPEED);
+	}
+
+	public void setFallSpeed(float speed) {
+		this.getDataManager().set(FALL_SPEED, speed);
+	}
+	
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	public float getSquishProgress(float partialTicks) {
-		return MathHelper.lerp(partialTicks, 1, 1);
-	}
-	
 	@Override
 	public void livingTick() {
-		if(this.onGround) {
+		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.55F) + 0.45F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
+			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 		}
 		super.livingTick();
 	}
@@ -138,6 +145,13 @@ public class EntityBoofloAdolescent extends CreatureEntity {
 
 	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {}
+	
+	@Override
+	public Endimation[] getAnimations() {
+		return new Endimation[] {
+			BOOF_ANIMATION 
+		};
+	}
 	
 	static class RandomFlyingGoal extends RandomWalkingGoal {
 		public RandomFlyingGoal(CreatureEntity p_i48937_1_, double p_i48937_2_, int p_i48937_4_) {

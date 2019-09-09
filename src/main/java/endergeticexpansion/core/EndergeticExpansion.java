@@ -3,6 +3,7 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import endergeticexpansion.common.network.entity.MessageCAnimation;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
 import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
 import endergeticexpansion.common.network.entity.MessageSBoofEntity;
@@ -128,6 +129,11 @@ public class EndergeticExpansion {
     	CHANNEL.messageBuilder(MessageSSetFallDistance.class, 8)
     	.encoder(MessageSSetFallDistance::serialize).decoder(MessageSSetFallDistance::deserialize)
     	.consumer(MessageSSetFallDistance::handle)
+    	.add();
+    	
+    	CHANNEL.messageBuilder(MessageCAnimation.class, 9)
+    	.encoder(MessageCAnimation::serialize).decoder(MessageCAnimation::deserialize)
+    	.consumer(MessageCAnimation::handle)
     	.add();
     }
     
