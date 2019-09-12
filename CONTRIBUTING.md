@@ -2,7 +2,7 @@
 
 ## The Standards
 
-We are open to all those looking to the project in one way or another, but we have some standards and expectations.
+We are open to all those looking to contribute to the project in one way or another, but we have some standards and expectations.
 
 Examples of a good Contributor include:
 
