@@ -23,29 +23,35 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> WAS_ON_GROUND = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
-	public static final Endimation EATING_ANIMATION = new Endimation(20);
+	private float prevTailAnimation;
+	private float tailAnimation;
+	private float tailSpeed;
 	
 	public EntityBoofloAdolescent(EntityType<? extends EntityBoofloAdolescent> type, World worldIn) {
 		super(type, worldIn);
 		this.moveController = new EntityBoofloAdolescent.BoofloAdolescentMoveController(this);
 		this.lookController = new EntityBoofloAdolescent.BoofloAdolescentLookController(this, 10);
+		this.tailAnimation = this.rand.nextFloat();
+		this.prevTailAnimation = this.tailAnimation;
 	}
 	
 	@Override
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(MOVING, false);
+		this.getDataManager().register(WAS_ON_GROUND, true);
 		this.getDataManager().register(FALL_SPEED, 0.0F);
 	}
 	
@@ -69,6 +75,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.moveRelative(0.015F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.9D));
+			this.setMotion(this.getMotion().subtract(0.0D, 0.005D * this.getFallSpeed(), 0.0D));
 		} else {
 			super.travel(vec3d);
 		}
@@ -88,19 +95,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	@Override
-	public int getVerticalFaceSpeed() {
-		return 1;
-	}
-
-	@Override
-	public int getHorizontalFaceSpeed() {
-		return 1;
-	}
-	
-	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
+		compound.putBoolean("WasOnGround", this.wasOnGround());
 		compound.putFloat("FallSpeed", this.getFallSpeed());
 	}
 
@@ -108,6 +106,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
+		this.setWasOnGround(compound.getBoolean("WasOnGround"));
 		this.setFallSpeed(compound.getFloat("FallSpeed"));
 	}
 	
@@ -119,6 +118,14 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().set(MOVING, moving);
 	}
 	
+	public boolean wasOnGround() {
+		return this.getDataManager().get(WAS_ON_GROUND);
+	}
+
+	public void setWasOnGround(boolean wasOnGround) {
+		this.getDataManager().set(WAS_ON_GROUND, wasOnGround);
+	}
+	
 	public float getFallSpeed() {
 		return this.getDataManager().get(FALL_SPEED);
 	}
@@ -127,16 +134,41 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().set(FALL_SPEED, speed);
 	}
 	
+	@OnlyIn(Dist.CLIENT)	
+	public float getTailAnimation(float ptc) {
+		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
+	}
+	
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
 	
 	@Override
 	public void livingTick() {
-		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
-			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.55F) + 0.45F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
-			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
+		this.setFallSpeed(this.getFallSpeed() + 0.1F);
+		
+		if(this.world.isRemote) {
+			this.prevTailAnimation = this.tailAnimation;
+			if(!this.isInWater()) {
+				this.tailSpeed = 1.0F;
+			} else if(this.isMoving()) {
+				if(this.tailSpeed < 0.5F) {
+					this.tailSpeed = 1.0F;
+				} else {
+					this.tailSpeed += (0.25F - this.tailSpeed) * 0.1F;
+				}
+			} else {
+				this.tailSpeed += (0.1875F - this.tailSpeed) * 0.1F;
+			}
+			this.tailAnimation += this.tailSpeed;
 		}
+		
+		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
+			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
+			this.setFallSpeed(0.0F);
+		}
+		
 		super.livingTick();
 	}
 	
@@ -154,21 +186,13 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	static class RandomFlyingGoal extends RandomWalkingGoal {
-		public RandomFlyingGoal(CreatureEntity p_i48937_1_, double p_i48937_2_, int p_i48937_4_) {
-			super(p_i48937_1_, p_i48937_2_, p_i48937_4_);
+		public RandomFlyingGoal(CreatureEntity booflo, double speed, int chance) {
+			super(booflo, speed, chance);
 		}
 
 		@Nullable
 		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2);
-
-			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
-				;
-			}
-			
-			if(vec3d != null && vec3d.distanceTo(this.creature.getPositionVec()) <= 4) {
-				return null;
-			}
+			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 4, 4);
 			
 			return vec3d;
 		}
@@ -193,14 +217,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		}
 
 		public void tick() {
-			if (!this.booflo.areEyesInFluid(FluidTags.WATER)) {
-				this.booflo.setMotion(this.booflo.getMotion().add(0.0D, -0.01D, 0.0D));
-			}
-			
 			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
 				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
-				double d0 = vec3d.length();
-				double d1 = vec3d.y / d0;
+				//double d0 = vec3d.length();
+				//double d1 = vec3d.y / d0;
 				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 				
 				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
@@ -212,17 +232,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 				
 				this.booflo.setAIMoveSpeed(f2);
 				
-				double d3 = Math.cos((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
-				double d4 = Math.sin((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
-				double d5 = Math.sin((double)(this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
-				
-				if (!this.booflo.isInWater()) {
-					float f3 = -((float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double)(180F / (float)Math.PI)));
-					f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
-					this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
-				}
-				
-				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.015D, 0));
+				this.booflo.setMotion(this.booflo.getMotion().add(0, 0, 0));
 				
 				this.booflo.setMoving(true);
 			} else {

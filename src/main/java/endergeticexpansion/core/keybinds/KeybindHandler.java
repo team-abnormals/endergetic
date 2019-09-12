@@ -33,22 +33,27 @@ import net.minecraftforge.fml.common.Mod;
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public class KeybindHandler {
-    private static List<KeyBinding> keyBinds = Lists.newArrayList();
-    public static KeyBinding BOOF = new KeyBinding("key.endergetic.boof", 32, EndergeticExpansion.MOD_ID);
+	private static List<KeyBinding> keyBinds = Lists.newArrayList();
+	public static KeyBinding BOOF = registerKeybind(new KeyBinding("key.endergetic.boof_vest", 32, "key.categories.movement"));
     
-    public static void registerKeys() {
-        for(KeyBinding keys : keyBinds) {
-            ClientRegistry.registerKeyBinding(keys);
-        }
-    }
-    
-    @SubscribeEvent
-    public static void onKeyPressed(KeyInputEvent event) {
-        if(BOOF.isPressed()) {
-        	PlayerEntity player = Minecraft.getInstance().player;
-        	ItemStack stack = player.inventory.armorItemInSlot(2);
+	public static void registerKeys() {
+		for(KeyBinding keys : keyBinds) {
+			ClientRegistry.registerKeyBinding(keys);
+		}
+	}
+	
+	private static KeyBinding registerKeybind(KeyBinding keybind) {
+		keyBinds.add(keybind);
+		return keybind;
+	}
+    	
+	@SubscribeEvent
+	public static void onKeyPressed(KeyInputEvent event) {
+		if(BOOF.isPressed()) {
+    		PlayerEntity player = Minecraft.getInstance().player;
+    		ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-        	if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
+    		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
         		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
@@ -87,14 +92,13 @@ public class KeybindHandler {
         			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
         		}
         	}
-        }
-    }
-    
-    public static boolean isPlayerOnGroundReal(PlayerEntity player) {
-    	if(player.getEntityWorld().getBlockState(player.getPosition().down()).isSolid()) {
-    		return true;
     	}
-    	return false;
-    }
+	}
     
+	public static boolean isPlayerOnGroundReal(PlayerEntity player) {
+		if(player.getEntityWorld().getBlockState(player.getPosition().down()).isSolid()) {
+			return true;
+    	}
+		return false;
+	}
 }

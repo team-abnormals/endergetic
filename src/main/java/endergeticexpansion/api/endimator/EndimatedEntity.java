@@ -27,12 +27,8 @@ public class EndimatedEntity extends CreatureEntity {
 		if(!this.isAnimationPlaying(BLANK_ANIMATION)) {
 			this.animationTick++;
 			if(this.isWorldRemote()) {
-				if(this.getPlayingAnimation().doesAnimationLoop()) {
-					if(this.getAnimationTick() >= this.getPlayingAnimation().getAnimationTickDuration()) {
-						this.resetPlayingAnimationToDefault();
-					}
-				} else {
-					
+				if(this.getAnimationTick() >= this.getPlayingAnimation().getAnimationTickDuration()) {
+					this.resetPlayingAnimationToDefault();
 				}
 			}
 		}

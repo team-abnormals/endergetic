@@ -84,6 +84,15 @@
 	"entity.endergetic.puff_bug": "Puff Bug",
 	"entity.endergetic.booflo_baby": "Booflo Baby",
 	
+	"_comment": "Biomes",
+	
+	"biome.endergetic.poise_forest": "Poise Forest",
+	"biome.endergetic.chorus_plains": "Chorus Plains(Unused)",
+	
+	"_comment": "Keybinds",
+	
+	"key.endergetic.boof_vest" : "Boof Vest Activate",
+	
 	"_comment": "Tool Tips",
 	"tooltip.endergetic.activePotions": "Active Potion Effects:"
 }

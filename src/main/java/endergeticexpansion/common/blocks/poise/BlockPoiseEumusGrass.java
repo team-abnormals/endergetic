@@ -6,6 +6,7 @@ import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -29,35 +30,36 @@ public class BlockPoiseEumusGrass extends Block implements IGrowable {
 
 	@Override
 	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if (!worldIn.isRemote) {
-            if (!worldIn.isAreaLoaded(pos, 3)) return;
-            if (!func_220257_b(state, worldIn, pos)) {
-                worldIn.setBlockState(pos, EEBlocks.EUMUS.getDefaultState());
-            } else {
-            	for (int i = 0; i < 4; ++i) {
-            		BlockPos blockpos = pos.add(worldIn.rand.nextInt(3) - 1, worldIn.rand.nextInt(5) - 3, worldIn.rand.nextInt(3) - 1);
+		if(!worldIn.isRemote) {
+			if(!worldIn.isAreaLoaded(pos, 3)) return;
+			
+			if(!isLightCoveringPos(state, worldIn, pos)) {
+				worldIn.setBlockState(pos, EEBlocks.EUMUS.getDefaultState());
+			} else {
+				if(worldIn.getLight(pos.up()) >= 9) {
+					BlockState blockstate = this.getDefaultState();
 
-                    if (blockpos.getY() >= 0 && blockpos.getY() < 256 && !worldIn.isBlockLoaded(blockpos)) {
-                    	return;
-                    }
-
-                    BlockState iblockstate = worldIn.getBlockState(blockpos.up());
-                    BlockState iblockstate1 = worldIn.getBlockState(blockpos);
-
-                    if (iblockstate1.getBlock() == EEBlocks.EUMUS && func_220257_b(iblockstate, worldIn, blockpos)) {
-                        worldIn.setBlockState(blockpos, this.getDefaultState());
-                    }
-                }
-            }
-        }
-		super.tick(state, worldIn, pos, random);
+					for(int i = 0; i < 4; ++i) {
+						BlockPos blockpos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
+						if(worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS && shouldGrowOnto(blockstate, worldIn, blockpos)) {
+							worldIn.setBlockState(blockpos, EEBlocks.POISMOSS_EUMUS.getDefaultState());
+						}
+					}
+				}
+			}
+		}
 	}
 	
-	private static boolean func_220257_b(BlockState p_220257_0_, IWorldReader p_220257_1_, BlockPos p_220257_2_) {
+	private static boolean isLightCoveringPos(BlockState p_220257_0_, IWorldReader p_220257_1_, BlockPos p_220257_2_) {
 		BlockPos blockpos = p_220257_2_.up();
 		BlockState blockstate = p_220257_1_.getBlockState(blockpos);
 		int i = LightEngine.func_215613_a(p_220257_1_, p_220257_0_, p_220257_2_, blockstate, blockpos, Direction.UP, blockstate.getOpacity(p_220257_1_, blockpos));
 		return i < p_220257_1_.getMaxLightLevel();
+	}
+	
+	private static boolean shouldGrowOnto(BlockState p_220256_0_, IWorldReader p_220256_1_, BlockPos p_220256_2_) {
+		BlockPos blockpos = p_220256_2_.up();
+		return isLightCoveringPos(p_220256_0_, p_220256_1_, p_220256_2_) && !p_220256_1_.getFluidState(blockpos).isTagged(FluidTags.WATER);
 	}
 	
 	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
@@ -110,6 +112,11 @@ public class BlockPoiseEumusGrass extends Block implements IGrowable {
 	@Override
 	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT_MIPPED;
+	}
+	
+	@Override
+	public boolean isSolid(BlockState state) {
+		return true;
 	}
 	
 }

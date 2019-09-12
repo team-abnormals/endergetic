@@ -1,9 +1,11 @@
 package endergeticexpansion.client.model.booflo;
 
+import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.Endimator;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * ModelAdolescentBooflo - Endergized
@@ -78,6 +80,16 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     @Override
     public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
+    	
+    	this.Tail.rotateAngleY = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
+    	
+    	if(!entityIn.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
+    		this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
+    		this.KneeLeft.rotateAngleZ = 0.1F * -MathHelper.sin(0.6F * ageInTicks) + 0.34F;
+    		this.KneeRight.rotateAngleZ = 0.1F * MathHelper.sin(0.6F * ageInTicks) - 0.34F;
+    		this.ArmLeft.rotateAngleZ = 0.3F * -MathHelper.sin(0.6F * ageInTicks) + 0.17F;
+    		this.ArmRight.rotateAngleZ = 0.3F * MathHelper.sin(0.6F * ageInTicks) - 0.17F;
+    	}
     }
     
     @Override
@@ -96,7 +108,7 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
     		this.endimator.endKeyframe();
     		this.endimator.setStaticKeyframe(3);
-    		this.endimator.startKeyframe(3);
+    		this.endimator.startKeyframe(4);
     		this.endimator.move(this.getScaleController(), -0.0F, 0.0F, -0.0F);
     		this.endimator.move(Head, 0.0F, 0F, 0.0F);
     		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, 0.6F);
