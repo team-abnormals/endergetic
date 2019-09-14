@@ -1,8 +1,9 @@
 package endergeticexpansion.api.endimator;
 
+import javax.annotation.Nullable;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import afu.org.checkerframework.checker.nullness.qual.Nullable;
 import endergeticexpansion.client.model.booflo.ModelAdolescentBooflo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;

@@ -1,3 +1,344 @@
+Build: 1.14.4-28.1.1 - Thu Sep 12 18:10:59 GMT 2019
+	diesieben07:
+		Fix patch for vanilla spawning in WorldEntitySpawner (#6130)
+
+=========
+Build: 1.14.4-28.1.0 - Thu Sep 12 16:14:54 GMT 2019
+	lex:
+		Fix Entity.getPersistentData function name. Closes #6131 Bump spec
+		version for first 1.14.4 RB.
+
+=========
+Build: 1.14.4-28.0.107 - Thu Sep 12 16:01:53 GMT 2019
+	JDLogic:
+		Fix ParticleFactoryRegisterEvent not firing (#6126)
+
+=========
+Build: 1.14.4-28.0.106 - Thu Sep 12 15:43:48 GMT 2019
+	gigaherz:
+		Minor fixes to the fluids (#6150)
+		* Fixed vanilla rendering of fluids to take into account the alpha bits
+		of the color, and fix usages accordingly.
+		* Fixed missing texture derp.
+
+=========
+Build: 1.14.4-28.0.105 - Wed Sep 11 14:00:40 GMT 2019
+	gigaherz:
+		Some (sadly breaking) improvements to the Fluid API (#6110)
+		* Some (sadly breaking) improvements to the API, after feedback and
+		concerns provided by users:
+		 - Moved calculation of the translation key to the FluidAttributes
+		constructor, so that builders can be shared between still & flowing
+		sub-fluids.
+		 - Moved biome-based coloring to a dedicated FluidAttributes.Water
+		variant, which is not used by default.
+		 - Added logic to automatically gather fluid textures into the list of
+		textures to bake.
+		 - Patched BucketItem and FlowingFluidBlock to avoid eager access to the
+		fluid objects.
+		 - Added a ForgeFlowingFluid class, as a more user-friendly way to
+		construct a new FlowingFluid.
+
+=========
+Build: 1.14.4-28.0.104 - Tue Sep 10 23:02:31 GMT 2019
+	lex:
+		Delay Block loot table name generation until needed, as calling early
+		will result in an empty name as the block is not registered yet.
+
+	lex:
+		Add new DeferredRegistry helper, and change RegistryObject to update
+		when overrides are registered.
+
+=========
+Build: 1.14.4-28.0.102 - Mon Sep 09 22:30:19 GMT 2019
+	lex:
+		Fix slimes splitting more times then they should. Closes #6138
+
+=========
+Build: 1.14.4-28.0.101 - Mon Sep 09 03:32:59 GMT 2019
+	tterrag:
+		Fix a couple places not calling forge getLightValue
+
+=========
+Build: 1.14.4-28.0.100 - Sun Sep 08 06:23:38 GMT 2019
+	cpw:
+		Fix problem with network connections timing out frequently. Turns out
+		there's a race condition - and the extra work forge does causes it to
+		happen much more frequently than vanilla (though I'm sure it's a vanilla
+		issue). Closes #6124, #5767 and probably lots more.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	tterrag:
+		Fix SCommandListPacket underflowing buffer when encountering a missing
+		argument type
+
+	tterrag:
+		Remove StructureArgument to work around vanilla issue, clean up custom
+		arguments
+
+	tterrag:
+		Fix vanilla typo causing errors when client is missing entity attributes
+
+	tterrag:
+		Properly fix missing attribute issue, add vanilla bug ID
+
+=========
+Build: 1.14.4-28.0.95 - Sat Sep 07 05:10:08 GMT 2019
+	tterrag:
+		Make /locate command support modded structures
+
+=========
+Build: 1.14.4-28.0.94 - Sat Sep 07 03:42:47 GMT 2019
+	tterrag:
+		Make STRUCTURE_FEATURE registry a slave map of the FEATURE registry
+		Also convert Feature.STRUCTURES to a slave map
+
+=========
+Build: 1.14.4-28.0.93 - Thu Sep 05 22:38:25 GMT 2019
+	lex:
+		Fix REGISTER packet encode/decode issues. Changed ForgeConfig values to
+		return the default value if the config is not loaded, and exposed the
+		value objects as a internal config.
+
+=========
+Build: 1.14.4-28.0.92 - Thu Sep 05 05:33:28 GMT 2019
+	lex:
+		Fix naming conflicts with official names.
+
+=========
+Build: 1.14.4-28.0.91 - Wed Sep 04 02:59:06 GMT 2019
+	lex:
+		Fix item used stat not triggering properly on last item in the stack.
+
+=========
+Build: 1.14.4-28.0.90 - Wed Sep 04 01:51:34 GMT 2019
+	lex:
+		Add a bunch of tags from the omnibus. Fix test imports. And update
+		patches for line numbers.
+
+	bl4ckscor33:
+		Add spawn reason to spawn events (#6096)
+
+=========
+Build: 1.14.4-28.0.88 - Tue Sep 03 21:50:35 GMT 2019
+	6596492+yrsegal:
+		Add collisionExtendsVertically hook to allow modded blocks that extend
+		collision into the block above similar to fences. (#6092)
+
+=========
+Build: 1.14.4-28.0.87 - Tue Sep 03 21:41:54 GMT 2019
+	danielgoossens:
+		Fixed PlayerInteractEvent.LeftClickBlock useItem/useBlock (#6045)
+
+=========
+Build: 1.14.4-28.0.86 - Tue Sep 03 21:31:04 GMT 2019
+	danielgoossens:
+		Readded IForgeItem#getHighlightTip hook. (#6036)
+
+=========
+Build: 1.14.4-28.0.85 - Tue Sep 03 20:20:52 GMT 2019
+	goto.minecraft:
+		Added gravity as attribute to Entities (#5630)
+
+=========
+Build: 1.14.4-28.0.84 - Tue Sep 03 19:59:53 GMT 2019
+	ichttt:
+		Fix CME on chunk unload in FarmlandTicketManager (#5998)
+
+=========
+Build: 1.14.4-28.0.83 - Sun Sep 01 18:42:33 GMT 2019
+	cpw:
+		Add a modfolderfactory. Fix up login payload exposure.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.82 - Sun Sep 01 15:33:27 GMT 2019
+	cpw:
+		Peel IModLocator into the SPI package and extract a small IModFile
+		interface as well. This allows building external IModLocator
+		implementations.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.81 - Sat Aug 31 17:57:15 GMT 2019
+	cpw:
+		Move indexFor and biConsumer into FMLHandshakeHandler and expose them
+		publicly, so mods can add additional login messages. Closes #6087
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	faj10:
+		Added getters for FMLPlayMessages.SpawnEntity
+
+	tobias.hotz:
+		move default log level for debug file to debug instead of trace, and
+		remove millis from console and GUI. Also remove unused config xmls
+
+	cpw:
+		Add in MC REGISTER nonsense. Shut up #5730
+		Tweak network a bit to fix initialization order stupidity. (Constants
+		don't load classes!)
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Add in some client only player connectivity events. Closes #5536
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.76 - Sat Aug 31 12:15:17 GMT 2019
+	gigaherz:
+		Hookup BlockEvent.FluidPlaceBlockEvent (#6103)
+
+=========
+Build: 1.14.4-28.0.75 - Fri Aug 30 03:42:51 GMT 2019
+	cpw:
+		Update libs to 1.0 versions, bump grgit, and fix tag search behaviour
+		that resulted.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.4-28.0.74 - Thu Aug 29 19:09:49 GMT 2019
+	gigaherz:
+		Fluid rework derp fixes. (#6098)
+		* Fix nulls returning from non-null methods, and null-check of
+		non-nullable values.
+		* Fix missed computation of the isEmpty flag in FluidStack
+		* Cleanup getAmount/isEmpty calls.
+		* Remove redundant suppliers. That info is readily available from the
+		vanilla Fluid / FluidState.
+
+=========
+Build: 1.14.4-28.0.73 - Thu Aug 29 04:34:22 GMT 2019
+	daemon.umbra:
+		Change fml.modloading.brokenfile.optifine to not imply that Forge is
+		responsible for Forge-Optifine compatibility. (#6080)
+
+	ichttt:
+		Fix Digging particle sometimes using the wrong block pos to get
+		additional model data (#6077)
+
+	williewillus:
+		Minor model system cleanup/documentation (#6089)
+
+=========
+Build: 1.14.4-28.0.70 - Thu Aug 29 04:28:28 GMT 2019
+	ichttt:
+		Add a config comment that lists the available constants of enums (#6079)
+
+=========
+Build: 1.14.4-28.0.69 - Thu Aug 29 04:18:57 GMT 2019
+	bl4ckscor33:
+		Restore PotionShiftEvent (#6042)
+
+=========
+Build: 1.14.4-28.0.68 - Thu Aug 29 04:13:38 GMT 2019
+	danielgoossens:
+		Added new InputEvent.MouseScrollEvent, fixes #5811 (#6037)
+
+=========
+Build: 1.14.4-28.0.67 - Thu Aug 29 03:34:14 GMT 2019
+	luasmrks:
+		Strip side annotations from CropsBlock.getSeedsItem (#6013)
+
+	Bward7864:
+		Add Villager Trading Events (#6016)
+
+=========
+Build: 1.14.4-28.0.65 - Thu Aug 29 03:14:27 GMT 2019
+	wynprice999:
+		Updated constants to 1.14 (#6012)
+
+	46117728+valoeghese:
+		Added hook to allow biomes to specify custom river variants. (#5969)
+
+=========
+Build: 1.14.4-28.0.63 - Thu Aug 29 01:42:25 GMT 2019
+	williewillus:
+		Add particle factory registration event (#6018)
+
+=========
+Build: 1.14.4-28.0.62 - Thu Aug 29 01:30:04 GMT 2019
+	lex:
+		Recipe system cleanup. (#6014)
+
+	gigaherz:
+		Fluid API rework (#5983) - Moved forge fluids into FluidAttributes
+		companion object to the vanilla Fluid. By gigaherz - Redesigned the
+		Fluid API to be closer to the Items API. By King Lemming Co-authored-by:
+		King Lemming <kinglemming@gmail.com>
+
+	gigaherz:
+		Fix license headers so `gradlew build` is happy.
+
+	gigaherz:
+		Make FluidStacks non-nullable, and implement some TODOs.
+
+=========
+Build: 1.14.4-28.0.58 - Thu Aug 29 01:12:54 GMT 2019
+	bjfccb:
+		Fix regular arrows giving off particles after a world reload (MC-107941)
+		(#6061)
+
+	ichttt:
+		Fix coremod not redirecting to the correct method (#6078)
+
+=========
+Build: 1.14.4-28.0.56 - Wed Aug 28 19:59:19 GMT 2019
+	lex:
+		Fix blocks being placed in adventure mode. Closes #6085 Add early error
+		for setting invalid world directory. Closes #6084 Fix PlayerTickEvent
+		not firing when dead, even if player isn't removed from world yet.
+		Closes #6074 Fix PlayerDestroyItemEvent not firing for some cases.
+		Closes #6067
+
+=========
+Build: 1.14.4-28.0.55 - Tue Aug 20 22:40:50 GMT 2019
+	lex:
+		Fix Javac generics breakage.
+
+	lex:
+		Sort server.properties while writing.
+
+	lex:
+		Add Argument serializer for ModIdArgument. EnumArgument can't as vanilla
+		doesn't support extra data.
+
+	lex:
+		Prevent worlds from unloading while players are in out-of-world states
+		by tracking all worlds references by every player in the server's player
+		list.
+
+=========
+Build: 1.14.4-28.0.51 - Tue Aug 20 02:46:20 GMT 2019
+	lex:
+		Fix Configs not generating correctly on first load Closes #6069
+
+	lex:
+		Fix chunk load failure when entering End portal Closes #6068
+
+=========
+Build: 1.14.4-28.0.49 - Thu Aug 15 18:04:06 GMT 2019
+	williewillus:
+		Add hook to load custom mrls/rls not attached to a block or item. 
+		(#6010)
+
+=========
+Build: 1.14.4-28.0.48 - Thu Aug 15 17:35:07 GMT 2019
+	bl4ckscor33:
+		Cover more cases for RightClickBlock event and restore onItemUseFirst
+		(#6009)
+
+=========
+Build: 1.14.4-28.0.47 - Thu Aug 15 17:17:36 GMT 2019
+	kirderf4:
+		Make DimensionManager.SavedEntry save sky light consistently (#6019)
+
+=========
+Build: 1.14.4-28.0.46 - Wed Aug 14 23:13:25 GMT 2019
+	lex:
+		Fix extract inheritance not using proper classpath and update
+		buildscript for FG asm changes.
+
+=========
 Build: 1.14.4-28.0.45 - Mon Aug 05 12:56:59 GMT 2019
 	cpw:
 		Grrr. Stupid error. Sorry lex: I fixed it.
