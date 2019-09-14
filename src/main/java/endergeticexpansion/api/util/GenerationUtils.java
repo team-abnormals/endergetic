@@ -62,8 +62,8 @@ public class GenerationUtils {
 	
 	public static void fillWithRandomTwoBlocksCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, Random rand, BlockState block, BlockState block2, float chance) {
 		for(int yy = y1; yy <= y2; yy++) {
-			for (int xx = x1; xx <= x2; xx++) {
-				for (int zz = z1; zz <= z2; zz++) {
+			for(int xx = x1; xx <= x2; xx++) {
+				for(int zz = z1; zz <= z2; zz++) {
 					if(world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
 						if(rand.nextFloat() <= chance) {
 							world.setBlockState(new BlockPos(xx, yy, zz), block2, 2);
@@ -78,9 +78,22 @@ public class GenerationUtils {
 	
 	public static boolean isAreaReplacable(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
 		for(int yy = y1; yy <= y2; yy++) {
-			for (int xx = x1; xx <= x2; xx++) {
-				for (int zz = z1; zz <= z2; zz++) {
+			for(int xx = x1; xx <= x2; xx++) {
+				for(int zz = z1; zz <= z2; zz++) {
 					if(!world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	public static boolean isAreaCompletelySolid(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
+		for(int yy = y1; yy <= y2; yy++) {
+			for(int xx = x1; xx <= x2; xx++) {
+				for(int zz = z1; zz <= z2; zz++) {
+					if(world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
 						return false;
 					}
 				}

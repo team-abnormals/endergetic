@@ -171,6 +171,12 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		for(int xW = 1; xW < sideRandValues[3] + 1; xW++) {
 			this.setPoiseLog(world, pos.west().up(xW), rand, true, false);
 		}
+		
+		BlockPos downPos = pos.down(2);
+		
+		if(GenerationUtils.isAreaCompletelySolid(world, downPos.getX() - 1, downPos.getY(), downPos.getZ() - 1, downPos.getX() + 1, downPos.getY(), downPos.getZ() + 1)) {
+			GenerationUtils.fillAreaWithBlockCube(world, downPos.getX() - 1, downPos.getY(), downPos.getZ() - 1, downPos.getX() + 1, downPos.getY() + 1, downPos.getZ() + 1, EEBlocks.POISE_LOG.getDefaultState());
+		}
 	}
 	
 	private void buildStem(IWorld world, BlockPos pos, Random rand, int height) {
