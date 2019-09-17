@@ -3,8 +3,10 @@ package endergeticexpansion.common.entities.booflo;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.entity.util.EndergeticFlyingPathNaviagator;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntitySize;
@@ -21,7 +23,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -38,6 +39,9 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	private float prevTailAnimation;
 	private float tailAnimation;
 	private float tailSpeed;
+	private float prevSwimmingAnimation;
+	private float swimmingAnimation;
+	private float swimmingAnimationSpeed;
 	
 	public EntityBoofloAdolescent(EntityType<? extends EntityBoofloAdolescent> type, World worldIn) {
 		super(type, worldIn);
@@ -66,7 +70,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(1, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
-		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 10));
+		this.goalSelector.addGoal(4, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
 	}
 	
 	@Override
@@ -83,7 +87,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	
 	@Override
 	protected PathNavigator createNavigator(World worldIn) {
-		return new FlyingPathNavigator(this, worldIn) { 
+		return new EndergeticFlyingPathNaviagator(this, worldIn) { 
 			
 			@SuppressWarnings("deprecation")
 			@Override
@@ -139,6 +143,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
 	}
 	
+	@OnlyIn(Dist.CLIENT)	
+	public float getSwimmingAnimation(float ptc) {
+		return MathHelper.lerp(ptc, this.prevSwimmingAnimation, this.swimmingAnimation);
+	}
+	
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
@@ -149,8 +158,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		
 		if(this.world.isRemote) {
 			this.prevTailAnimation = this.tailAnimation;
+			this.prevSwimmingAnimation = this.swimmingAnimation;
 			if(!this.isInWater()) {
 				this.tailSpeed = 1.0F;
+				this.swimmingAnimationSpeed = 1.0F;
 			} else if(this.isMoving()) {
 				if(this.tailSpeed < 0.5F) {
 					this.tailSpeed = 1.0F;
@@ -160,7 +171,18 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			} else {
 				this.tailSpeed += (0.1875F - this.tailSpeed) * 0.1F;
 			}
+			if(this.getFallSpeed() > 0.0F) {
+				if(this.swimmingAnimationSpeed < 0.5F) {
+					this.swimmingAnimationSpeed = 1.0F;
+				} else {
+					this.swimmingAnimationSpeed += ((this.swimmingAnimationSpeed * 2.5F) - this.getFallSpeed()) * 0.1F;
+				}
+			} else {
+				this.swimmingAnimationSpeed = 1.0F;
+			}
 			this.tailAnimation += this.tailSpeed;
+			this.swimmingAnimation += this.swimmingAnimationSpeed;
+			EndergeticExpansion.LOGGER.debug(this.swimmingAnimation);
 		}
 		
 		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
@@ -192,7 +214,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 		@Nullable
 		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 4, 4);
+			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 2);
 			
 			return vec3d;
 		}

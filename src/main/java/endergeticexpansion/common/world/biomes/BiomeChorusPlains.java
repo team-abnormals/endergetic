@@ -20,4 +20,5 @@ public class BiomeChorusPlains extends EndergeticBiome {
 			Type.END
 		};
 	}
+	
 }

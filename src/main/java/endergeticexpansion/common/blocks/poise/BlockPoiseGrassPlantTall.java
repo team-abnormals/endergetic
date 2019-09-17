@@ -60,7 +60,7 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	
 	@Override
 	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
-		return true;
+		return state.get(STAGE) > 0 ? false : true;
 	}
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {

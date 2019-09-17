@@ -14,5 +14,4 @@ public enum EndergeticGenLayerBiome implements IAreaTransformer0, IDimOffset0Tra
 	public int apply(INoiseRandom context, int x, int z) {
 		return Registry.BIOME.getId(EEBiomes.getRandomBiome(context));
 	}
-	
 }

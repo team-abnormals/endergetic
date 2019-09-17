@@ -12,6 +12,8 @@ import net.minecraft.world.gen.placement.NoiseDependant;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.BiomeDictionary.Type;
 
 public class BiomePoiseForest extends EndergeticBiome {
@@ -29,6 +31,7 @@ public class BiomePoiseForest extends EndergeticBiome {
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS, new GrassFeatureConfig(EEBlocks.POISE_GRASS.getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public int getSkyColor() {
 		return 11665571;

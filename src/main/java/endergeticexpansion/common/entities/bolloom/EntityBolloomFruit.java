@@ -369,6 +369,17 @@ public class EntityBolloomFruit extends LivingEntity {
 	}
 	
 	@Override
+	public void applyEntityCollision(Entity entityIn) {
+		if (entityIn instanceof EntityBolloomFruit) {
+			if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
+				super.applyEntityCollision(entityIn);
+			}
+		} else if (entityIn.posY >= this.getBoundingBox().minY) {
+			super.applyEntityCollision(entityIn);
+		}
+	}
+	
+	@Override
 	public boolean hitByEntity(Entity entityIn) {
 		this.remove();
 		return false;

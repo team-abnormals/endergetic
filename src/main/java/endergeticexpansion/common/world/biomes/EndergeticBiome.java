@@ -19,6 +19,10 @@ public class EndergeticBiome extends Biome {
 		return 0;
 	}
 	
+	/*
+	 * Unused getter, will be used for the end's sky later
+	 */
+	@OnlyIn(Dist.CLIENT)
 	public int getSkyColor() {
 		return 0;
 	}

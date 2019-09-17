@@ -37,8 +37,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		Biomes.END_MIDLANDS,
 		Biomes.SMALL_END_ISLANDS,
 		Biomes.END_BARRENS,
-		EEBiomes.POISE_FOREST,
-		EEBiomes.CHORUS_PLAINS,
+		EEBiomes.POISE_FOREST
 	};
 	
 	public EndergeticBiomeProvider(EndBiomeProviderSettings settings) {
@@ -51,6 +50,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		this.biomeFactoryLayer = alayer[1];
 	}
 
+	@Override
 	public Biome getBiome(int x, int y) {
 		int i = x >> 4;
 		int j = y >> 4;
@@ -66,7 +66,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		}
 	}
 	
-	public Biome getBiomeB(int x, int y) {
+	public Biome findBiome(int x, int y) {
 		int i = x >> 4;
 		int j = y >> 4;
 		if ((long)i * (long)i + (long)j * (long)j <= 4096L) {
@@ -109,14 +109,13 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 				long i1 = ChunkPos.asLong(k, l);
 				Biome biome = long2objectmap.get(i1);
 				if (biome == null) {
-					if(this.getBiomeB(k, l) == EEBiomes.POISE_FOREST) {
+					if(this.findBiome(k, l) == EEBiomes.POISE_FOREST) {
 						return this.biomeFactoryLayer.generateBiomes(x, z, width, length);
 					} else {
 						biome = this.getBiome(k, l);
 					}
 					long2objectmap.put(i1, biome);
 				}
-	
 				abiome[i + j * width] = biome;
 			}
 		}

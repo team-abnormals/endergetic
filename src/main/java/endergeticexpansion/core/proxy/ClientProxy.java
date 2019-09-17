@@ -35,7 +35,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
 		
+		//RenderingRegistry.registerEntityRenderingHandler(EnderCrystalEntity.class, EnderCrystalRenderer::new);
+		
 		KeybindHandler.registerKeys();
 	}
-	
 }

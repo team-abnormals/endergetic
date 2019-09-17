@@ -483,16 +483,6 @@ public class EntityBolloomBalloon extends Entity {
 	public AxisAlignedBB getCollisionBox(Entity entityIn) {
 		return entityIn.canBePushed() ? entityIn.getBoundingBox() : null;
 	}
-	
-	public void applyEntityCollision(Entity entityIn) {
-		if (entityIn instanceof EntityBolloomBalloon) {
-			if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
-				super.applyEntityCollision(entityIn);
-			}
-		} else if (entityIn.posY >= this.getBoundingBox().minY) {
-			super.applyEntityCollision(entityIn);
-		}
-	}
     
     @Override
 	public AxisAlignedBB getRenderBoundingBox() {

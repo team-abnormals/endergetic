@@ -105,22 +105,9 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
     @Override
     public void render(EntityBolloomFruit entity, float f, float f1, float f2, float f3, float f4, float f5) {
         int height = entity.getVineHeight();
-        this.vine_x_1.showModel = true;
-		this.vine_z_1.showModel = true;
-		this.vine_x_2.showModel = true;
-		this.vine_z_2.showModel = true;
-		this.vine_x_3.showModel = true;
-		this.vine_z_3.showModel = true;
-		this.vine_x_4.showModel = true;
-		this.vine_z_4.showModel = true;
-		this.vine_x_5.showModel = true;
-		this.vine_z_5.showModel = true;
-		this.vine_x_6.showModel = true;
-		this.vine_z_6.showModel = true;
-		this.vine_x.showModel = true;
-		this.vine_z.showModel = true;
-		this.fruit.showModel = true;
-		this.flap.showModel = true;
+        for(RendererModel boxes : this.boxList) {
+        	boxes.showModel = true;
+        }
         switch(height) {
         	case 1:
         		this.vine_x_1.showModel = false;

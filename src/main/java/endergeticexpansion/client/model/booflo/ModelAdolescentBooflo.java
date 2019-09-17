@@ -85,10 +85,10 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     	
     	if(!entityIn.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
     		this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
-    		this.KneeLeft.rotateAngleZ = 0.1F * -MathHelper.sin(0.6F * ageInTicks) + 0.34F;
-    		this.KneeRight.rotateAngleZ = 0.1F * MathHelper.sin(0.6F * ageInTicks) - 0.34F;
-    		this.ArmLeft.rotateAngleZ = 0.3F * -MathHelper.sin(0.6F * ageInTicks) + 0.17F;
-    		this.ArmRight.rotateAngleZ = 0.3F * MathHelper.sin(0.6F * ageInTicks) - 0.17F;
+    		this.KneeLeft.rotateAngleZ += 0.1F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
+    		this.KneeRight.rotateAngleZ += 0.1F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
+    		this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
+    		this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
     	}
     }
     
