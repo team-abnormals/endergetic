@@ -12,9 +12,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EndergeticFlyingPathNaviagator extends PathNavigator {
+public class EndergeticFlyingPathNavigator extends PathNavigator {
 	
-	public EndergeticFlyingPathNaviagator(MobEntity entitylivingIn, World worldIn) {
+	public EndergeticFlyingPathNavigator(MobEntity entitylivingIn, World worldIn) {
 		super(entitylivingIn, worldIn);
 	}
 

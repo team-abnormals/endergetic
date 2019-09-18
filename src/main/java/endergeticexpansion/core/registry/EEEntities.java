@@ -33,7 +33,7 @@ public class EEEntities {
 	 * Poise Forest
 	 */
 	public static final EntityType<EntityPoiseCluster> POISE_CLUSTER = createEntity(EntityPoiseCluster::new, EntityClassification.MISC, "poise_cluster", 1F, 1F, 0, 0);
-	public static final EntityType<EntityBolloomFruit> BOLLOOM_FRUIT = createEntity(EntityBolloomFruit::new, EntityClassification.MISC, "bolloom_fruit", 0.5F, 0.5F, 0, 0);
+	public static final EntityType<EntityBolloomFruit> BOLLOOM_FRUIT = createBasicEntity(EntityBolloomFruit::new, EntityBolloomFruit::new, EntityClassification.MISC, "bolloom_fruit", 0.5F, 0.5F);
 	public static final EntityType<EntityBoofBlock> BOOF_BLOCK = createEntity(EntityBoofBlock::new, EntityClassification.MISC, "boof_block", 1.6F, 1.6F, 0, 0);
 	public static final EntityType<EntityPuffBug> PUFF_BUG = createEntity(EntityPuffBug::new, EntityClassification.CREATURE, "puff_bug", 0.3F, 1.0F, 15660724, 16610303);
 	public static final EntityType<EntityEndergeticBoat> BOAT = createBasicEntity(EntityEndergeticBoat::new, EntityEndergeticBoat::new, EntityClassification.MISC, "boat", 1.375F, 0.5625F);

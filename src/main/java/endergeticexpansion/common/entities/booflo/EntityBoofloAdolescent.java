@@ -3,7 +3,7 @@ package endergeticexpansion.common.entities.booflo;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
-import endergeticexpansion.api.entity.util.EndergeticFlyingPathNaviagator;
+import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -87,7 +87,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	
 	@Override
 	protected PathNavigator createNavigator(World worldIn) {
-		return new EndergeticFlyingPathNaviagator(this, worldIn) { 
+		return new EndergeticFlyingPathNavigator(this, worldIn) { 
 			
 			@SuppressWarnings("deprecation")
 			@Override

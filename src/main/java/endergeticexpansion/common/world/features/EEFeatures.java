@@ -9,6 +9,7 @@ import net.minecraft.world.gen.feature.DoublePlantConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.GrassFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -28,6 +29,14 @@ public class EEFeatures {
 		feature.setRegistryName(EndergeticExpansion.MOD_ID, name);
 		features.add(feature);
 		return feature;
+	}
+	
+	@SuppressWarnings("unused")
+	private static Structure<?> registerStructure(String name, Structure<?> structure){
+		structure.setRegistryName(EndergeticExpansion.MOD_ID, name);
+		features.add(structure);
+		Feature.STRUCTURES.put(name, structure);
+		return structure;
 	}
 	
 	@SubscribeEvent

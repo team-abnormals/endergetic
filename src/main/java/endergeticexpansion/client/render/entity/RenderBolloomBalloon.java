@@ -39,9 +39,6 @@ public class RenderBolloomBalloon extends EntityRenderer<EntityBolloomBalloon> {
 	
 	@Override
 	public void doRender(EntityBolloomBalloon entity, double x, double y, double z, float entityYaw, float partialTicks) {
-		float[] angles = entity.getVineAnimation(partialTicks);
-		model.x_string.rotateAngleX = angles[0];
-		model.x_string.rotateAngleY = angles[1];
 		GlStateManager.pushMatrix();
 		this.bindTexture(this.getEntityTexture(entity));
 		GlStateManager.translated(x, y + 1.5F, z);

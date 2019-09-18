@@ -53,11 +53,6 @@ public class ModelBolloomBalloon<T extends EntityBolloomBalloon> extends EntityM
         GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, j, k);
         this.x_string.render(f5);
     }
-    
-    @Override
-    public void setLivingAnimations(T entity, float p_212843_2_, float p_212843_3_, float partialTicks) {
-    	super.setLivingAnimations(entity, p_212843_2_, p_212843_3_, partialTicks);
-    }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

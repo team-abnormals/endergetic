@@ -2,6 +2,7 @@ package endergeticexpansion.client.model.bolloom;
 
 import com.mojang.blaze3d.platform.GLX;
 
+import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -150,11 +151,10 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
     }
     
     @Override
-    public void setLivingAnimations(T entity, float p_212843_2_, float p_212843_3_, float partialTicks) {
-    	float[] angles = entity.getVineAnimation(partialTicks);
+    public void setRotationAngles(T fruit, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    	float[] angles = fruit.getVineAnimation(ClientInfo.getPartialTicks());
         this.vine_x.rotateAngleX = angles[0];
         this.vine_x.rotateAngleY = angles[1];
-    	super.setLivingAnimations(entity, p_212843_2_, p_212843_3_, partialTicks);
     }
 
     public void setRotateAngle(RendererModel rendererModel, float x, float y, float z) {
