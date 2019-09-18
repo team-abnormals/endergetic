@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -176,7 +177,7 @@ public class EntityBolloomBalloon extends Entity {
 				);
 			} else {
 				this.move(MoverType.SELF, this.getMotion());
-				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
+				this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
 		if(!this.getDataManager().get(ATTACHED_ENTITY)) {
@@ -368,6 +369,14 @@ public class EntityBolloomBalloon extends Entity {
 	@Nullable
 	public Entity getAttachedEntity() {
 		return ((ServerWorld)world).getEntityByUuid(getAttachedEntityId());
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public float[] getVineAnimation(float partialTicks) {
+		return new float[] {
+			MathHelper.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
+			MathHelper.lerp(partialTicks, this.prevAngle, this.getAngle()),
+		};
 	}
 	
 	public boolean checkForBlocksDown() {

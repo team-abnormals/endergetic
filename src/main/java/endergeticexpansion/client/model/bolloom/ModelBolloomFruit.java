@@ -151,14 +151,9 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
     
     @Override
     public void setLivingAnimations(T entity, float p_212843_2_, float p_212843_3_, float partialTicks) {
-    	float angle1Old = entity.prevVineAngle;
-        float angle2Old = entity.prevAngle;
-        float angle1New = entity.getVineAngle();
-        float angle2New = entity.getAngle();
-        float angle1 = angle1Old * (1 - partialTicks) + angle1New * partialTicks;
-        float angle2 = angle2Old * (1 - partialTicks) + angle2New * partialTicks;
-        this.vine_x.rotateAngleX = angle1;
-        this.vine_x.rotateAngleY = angle2;
+    	float[] angles = entity.getVineAnimation(partialTicks);
+        this.vine_x.rotateAngleX = angles[0];
+        this.vine_x.rotateAngleY = angles[1];
     	super.setLivingAnimations(entity, p_212843_2_, p_212843_3_, partialTicks);
     }
 

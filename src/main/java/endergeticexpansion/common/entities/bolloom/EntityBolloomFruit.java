@@ -28,6 +28,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -155,7 +156,7 @@ public class EntityBolloomFruit extends LivingEntity {
 					this.getDataManager().get(ORIGINAL_Z) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
 				);
 			} else {
-				this.setMotion(Math.sin(this.getVineAngle()) * Math.sin(-this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
+				this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
 		if(!world.isRemote) {
@@ -357,6 +358,14 @@ public class EntityBolloomFruit extends LivingEntity {
 	
 	public void setUntied() {
 		this.dataManager.set(UNTIED, true);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public float[] getVineAnimation(float partialTicks) {
+		return new float[] {
+			MathHelper.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
+			MathHelper.lerp(partialTicks, this.prevAngle, this.getAngle()),
+		};
 	}
 	
 	@Override
