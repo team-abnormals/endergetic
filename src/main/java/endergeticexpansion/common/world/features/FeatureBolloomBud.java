@@ -5,9 +5,11 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.Dynamic;
 
+import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.core.registry.EEBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -29,7 +31,7 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if(rand.nextFloat() >= 0.80) {
-			if(isValidGround(world.getBlockState(pos.down())) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
+			if(GenerationUtils.isProperBlock(world.getBlockState(pos.down()), new Block[] {EEBlocks.POISE_GRASS_BLOCK, EEBlocks.POISMOSS_EUMUS}, false) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
 				world.setBlockState(pos, BOLLOOM_BUD, 2);
 				return true;
 			}
@@ -66,10 +68,6 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_WEST_FRUIT, true), 2);
 		}
 		((TileEntityBolloomBud)IWorld.getTileEntity(pos)).markForSpawning();
-	}
-	
-	private boolean isValidGround(BlockState state) {
-		return state == EEBlocks.POISMOSS_EUMUS.getDefaultState() || state == EEBlocks.POISE_GRASS_BLOCK.getDefaultState();
 	}
 	
 	public boolean isAreaReplacable(IWorld world, BlockPos pos) {

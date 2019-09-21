@@ -24,6 +24,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -214,7 +215,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 		@Nullable
 		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 2);
+			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2);
+			
+			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
+				;
+			}
 			
 			return vec3d;
 		}

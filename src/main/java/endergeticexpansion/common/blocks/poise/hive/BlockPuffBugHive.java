@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
@@ -71,7 +72,7 @@ public class BlockPuffBugHive extends Block {
 		BlockPos blockpos = context.getPos();
 		for(Direction enumfacing : context.getNearestLookingDirections()) {
 			if(enumfacing == Direction.UP) {
-				if(context.getWorld().getBlockState(blockpos.down()).isAir() && context.getWorld().getBlockState(blockpos.up()).isSolid()) {
+				if(context.getWorld().getBlockState(blockpos.down()).isAir() && GenerationUtils.isProperBlock(context.getWorld().getBlockState(blockpos.up()), new Block[] { EEBlocks.POISE_CLUSTER }, true)) {
 					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
 					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
 					if(entities.size() > 0) {

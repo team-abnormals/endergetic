@@ -31,13 +31,13 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	}
 
 	@Override
-	public int func_222859_a(PathPoint[] p_222859_1_, PathPoint p_222859_2_) {
+	public int func_222859_a(PathPoint[] pathPoints, PathPoint pathNode) {
 		int i = 0;
 
 		for(Direction direction : Direction.values()) {
-			PathPoint pathpoint = this.getNode(p_222859_2_.x + direction.getXOffset(), p_222859_2_.y + direction.getYOffset(), p_222859_2_.z + direction.getZOffset());
+			PathPoint pathpoint = this.getNode(pathNode.x + direction.getXOffset(), pathNode.y + direction.getYOffset(), pathNode.z + direction.getZOffset());
 			if(pathpoint != null && !pathpoint.visited) {
-				p_222859_1_[i++] = pathpoint;
+				pathPoints[i++] = pathpoint;
 			}
 		}
 		
@@ -57,9 +57,9 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	}
 
 	@Nullable
-	private PathPoint getNode(int p_186328_1_, int p_186328_2_, int p_186328_3_) {
-		PathNodeType pathnodetype = this.isFree(p_186328_1_, p_186328_2_, p_186328_3_);
-		return (pathnodetype != PathNodeType.BREACH) && pathnodetype != PathNodeType.WALKABLE ? null : this.openPoint(p_186328_1_, p_186328_2_, p_186328_3_);
+	private PathPoint getNode(int x, int y, int z) {
+		PathNodeType pathnodetype = this.isFree(x, y, z);
+		return (pathnodetype != PathNodeType.BREACH) && pathnodetype != PathNodeType.WALKABLE ? null : this.openPoint(x, y, z);
 	}
 	
 	@Nullable
@@ -81,12 +81,12 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private PathNodeType isFree(int p_186327_1_, int p_186327_2_, int p_186327_3_) {
+	private PathNodeType isFree(int x, int y, int z) {
 		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
-		for(int i = p_186327_1_; i < p_186327_1_ + this.entitySizeX; ++i) {
-			for(int j = p_186327_2_; j < p_186327_2_ + this.entitySizeY; ++j) {
-				for(int k = p_186327_3_; k < p_186327_3_ + this.entitySizeZ; ++k) {
+		for(int i = x; i < x + this.entitySizeX; ++i) {
+			for(int j = y; j < y + this.entitySizeY; ++j) {
+				for(int k = z; k < z + this.entitySizeZ; ++k) {
 					IFluidState ifluidstate = this.blockaccess.getFluidState(blockpos$mutableblockpos.setPos(i, j, k));
 					BlockState blockstate = this.blockaccess.getBlockState(blockpos$mutableblockpos.setPos(i, j, k));
 					if(ifluidstate.isEmpty() && blockstate.allowsMovement(this.blockaccess, blockpos$mutableblockpos.down(), PathType.AIR) && blockstate.isAir()) {

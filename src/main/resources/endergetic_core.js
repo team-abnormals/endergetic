@@ -1,23 +1,28 @@
 var Opcodes = org.objectweb.asm.Opcodes;
-var VarInsnNode = org.objectweb.asm.tree.VarInsnNode;
 var FieldInsnNode = org.objectweb.asm.tree.FieldInsnNode;
-var MethodInsnNode = org.objectweb.asm.tree.MethodInsnNode;
-var InsnList = org.objectweb.asm.tree.InsnList;
 
-function initializeCoreMods() {
-    return {
-        "EnderCrystalTransformer": {
-            "target": {
-                "type": "CLASS",
-                "name": "net.minecraft.entity.item.EnderCrystalEntity"
-            },
-            "transformer": patch_ender_crystal_entity
-        }
-    }
-}
+function initializeCoreMod() {
+	return {
+		'coremodmethod': {
+			'target': {
+				'type': 'METHOD',
+				'class': 'net.minecraft.entity.item.EnderCrystalEntity',
+				'methodName': 'func_70071_h_',
+				'methodDesc': '()V'
+			},
+			'transformer': function(method) {
+				var instr = method.instructions;
 
-function patch_ender_crystal_entity(classNode) {
-	var api = Java.type('net.minecraftforge.coremod.api.ASMAPI');
-    
-	return classNode;
+				for(var i = 0; i < instr.size(); i++) {
+					var currentInstr = instr.get(i);
+					if(currentInstr.getOpcode() == Opcodes.GETSTATIC) {
+						instr.set(currentInstr, new FieldInsnNode(Opcodes.GETSTATIC, "endergeticexpansion/core/registry/EEBlocks", "POISMOSS_EUMUS", "Lnet/minecraft/block/Block;"));
+						break;
+					}
+				}
+
+				return method;
+			}
+		}
+	}
 }

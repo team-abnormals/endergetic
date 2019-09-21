@@ -18,9 +18,9 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 		super(entitylivingIn, worldIn);
 	}
 
-	protected PathFinder getPathFinder(int p_179679_1_) {
+	protected PathFinder getPathFinder(int idleTime) {
 		this.nodeProcessor = new EndergeticFlyingNodeProcessor();
-		return new PathFinder(this.nodeProcessor, p_179679_1_);
+		return new PathFinder(this.nodeProcessor, idleTime);
 	}
 	
 	@Override

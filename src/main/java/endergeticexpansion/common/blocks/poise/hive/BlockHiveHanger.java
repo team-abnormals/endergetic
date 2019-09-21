@@ -52,5 +52,4 @@ public class BlockHiveHanger extends Block {
 	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT;
 	}
-	
 }
