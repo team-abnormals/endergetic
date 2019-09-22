@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.world.gen.feature.DoublePlantConfig;
+import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.GrassFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -24,6 +25,8 @@ public class EEFeatures {
 	public static final Feature<NoFeatureConfig> PUFFBUG_HIVE      = registerFeature("puffbug_hive", new FeaturePuffBugHive(NoFeatureConfig::deserialize));
 	public static final Feature<NoFeatureConfig> POISE_DOME        = registerFeature("poise_dome", new FeaturePoiseDome(NoFeatureConfig::deserialize));
 	public static final Feature<NoFeatureConfig> POISE_TREE        = registerFeature("poise_tree", new FeaturePoiseTree(NoFeatureConfig::deserialize));
+	
+	public static final Feature ENDERGETIC_GATEWAY = registerFeature("end_gateway", new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize));
 	
 	private static Feature registerFeature(String name, Feature feature){
 		feature.setRegistryName(EndergeticExpansion.MOD_ID, name);

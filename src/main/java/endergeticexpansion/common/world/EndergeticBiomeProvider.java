@@ -25,7 +25,7 @@ import net.minecraft.world.biome.provider.EndBiomeProviderSettings;
 import net.minecraft.world.gen.SimplexNoiseGenerator;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.layer.Layer;
- 
+
 public class EndergeticBiomeProvider extends EndBiomeProvider {
 	private final Layer genBiomes;
 	private final Layer biomeFactoryLayer;

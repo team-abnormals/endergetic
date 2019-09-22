@@ -1,3 +1,5 @@
 {
-	"endergetic": "endergetic_core.js"
+	"patch_ender_crystal": "coremods/patch_ender_crystal.js",
+	"patch_dragon_fight_manager": "coremods/patch_dragon_fight_manager.js",
+	"patch_end_gateway_tile_entity": "coremods/patch_end_gateway_tile_entity.js"
 }

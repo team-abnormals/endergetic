@@ -3,7 +3,7 @@ var FieldInsnNode = org.objectweb.asm.tree.FieldInsnNode;
 
 function initializeCoreMod() {
 	return {
-		'coremodmethod': {
+		'patch_ender_crystal': {
 			'target': {
 				'type': 'METHOD',
 				'class': 'net.minecraft.entity.item.EnderCrystalEntity',
@@ -11,6 +11,7 @@ function initializeCoreMod() {
 				'methodDesc': '()V'
 			},
 			'transformer': function(method) {
+				print('[Endergetic Expansion]: Patching EnderCrystalEntity#tick');
 				var instr = method.instructions;
 
 				for(var i = 0; i < instr.size(); i++) {
