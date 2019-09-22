@@ -9,15 +9,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
-public class EndergeticEndPodiumFeature extends Feature<NoFeatureConfig> {
+public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
 	private final boolean activePortal;
 
 	public EndergeticEndPodiumFeature(boolean activePortalIn) {
-		super(NoFeatureConfig::deserialize);
+		super(activePortalIn);
 		this.activePortal = activePortalIn;
 	}
 	
@@ -50,7 +50,7 @@ public class EndergeticEndPodiumFeature extends Feature<NoFeatureConfig> {
 		BlockPos blockpos1 = pos.up(2);
 
 		for(Direction direction : Direction.Plane.HORIZONTAL) {
-			this.setBlockState(worldIn, blockpos1.offset(direction), Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.HORIZONTAL_FACING, direction));
+			//this.setBlockState(worldIn, blockpos1.offset(direction), Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.HORIZONTAL_FACING, direction));
 		}
 	      
 		return true;

@@ -24,13 +24,13 @@ function initializeCoreMod() {
 					}
 				}
 				
-//				for(var i = 0; i < instr.size(); i++) {
-//					var currentInstr = instr.get(i);
-//					if(currentInstr.getOpcode() == Opcodes.INVOKESPECIAL) {
-//						instr.set(currentInstr, new MethodInsnNode(Opcodes.INVOKESPECIAL, "endergeticexpansion/common/world/features/EndergeticEndPodiumFeature", "<init>", "(Z)V"));
-//						break;
-//					}
-//				}
+				for(var i = 0; i < instr.size(); i++) {
+					var currentInstr = instr.get(i);
+					if(currentInstr.getOpcode() == Opcodes.INVOKESPECIAL) {
+						instr.set(currentInstr, new MethodInsnNode(Opcodes.INVOKESPECIAL, "endergeticexpansion/common/world/features/EndergeticEndPodiumFeature", "<init>", "(Z)V"));
+						break;
+					}
+				}
 
 				return method;
 			}
