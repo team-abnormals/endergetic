@@ -12,9 +12,13 @@ import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
 
 public class RegistryUtils {
-
+	
 	public static BlockItem createSimpleBlockItem(Block blockForInput, ItemGroup itemGroup) {
 		return (BlockItem) new BlockItem(blockForInput, new Item.Properties().group(itemGroup)).setRegistryName(blockForInput.getRegistryName());
+	}
+	
+	public static BlockItem createNoTabBlockItem(Block blockForInput) {
+		return (BlockItem) new BlockItem(blockForInput, new Item.Properties()).setRegistryName(blockForInput.getRegistryName());
 	}
 	
 	public static BlockItem createWallOrFloorItem(Block floorBlock, Block wallBlock, ItemGroup itemGroup) {

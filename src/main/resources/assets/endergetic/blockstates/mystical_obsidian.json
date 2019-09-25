@@ -1,0 +1,10 @@
+{
+   	"variants": {
+        "": [
+            { "model": "endergetic:block/mystical_obsidian" },
+            { "model": "endergetic:block/mystical_obsidian", "y": 90 },
+            { "model": "endergetic:block/mystical_obsidian", "y": 180 },
+            { "model": "endergetic:block/mystical_obsidian", "y": 270 }
+        ]
+    }
+}

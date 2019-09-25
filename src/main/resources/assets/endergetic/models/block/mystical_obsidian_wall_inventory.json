@@ -1,0 +1,6 @@
+{
+    "parent": "block/wall_inventory",
+    "textures": {
+        "wall": "endergetic:block/mystical_obsidian_top"
+    }
+}

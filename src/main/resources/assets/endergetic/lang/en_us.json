@@ -47,6 +47,12 @@
 	"block.endergetic.eumus_brick_stairs": "Eumus Brick Stairs",
 	"block.endergetic.potted_poise_bush": "Potted Poise Bush",
 	
+	"block.endergetic.mystical_obsidian": "Mystical Obsidian",
+	"block.endergetic.mystical_obsidian_wall": "Mystical Obsidian Wall",
+	"block.endergetic.mystical_obsidian_rune": "Mystical Obsidian Rune",
+	"block.endergetic.mystical_obsidian_activation_rune": "Mystical Obsidian Activation Rune",
+	"block.endergetic.mystical_obsidian_activation_rune_active": "Activated Mystical Obsidian Activation Rune",
+	
 	"_comment": "Items",
 	
 	"item.endergetic.poise_boat": "Poise Boat",

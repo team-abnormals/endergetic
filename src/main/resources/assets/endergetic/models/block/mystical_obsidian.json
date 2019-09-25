@@ -1,0 +1,7 @@
+{
+    "parent": "block/cube_column",
+    "textures": {
+        "end": "endergetic:block/mystical_obsidian_top",
+        "side": "endergetic:block/mystical_obsidian_side"
+    }
+}

@@ -7,7 +7,7 @@ import endergeticexpansion.common.entities.*;
 import endergeticexpansion.common.entities.bolloom.*;
 import endergeticexpansion.common.entities.booflo.*;
 import endergeticexpansion.common.tileentities.*;
-import endergeticexpansion.common.tileentities.boof.*;
+import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,8 +34,6 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
-		
-		//RenderingRegistry.registerEntityRenderingHandler(EnderCrystalEntity.class, EnderCrystalRenderer::new);
 		
 		KeybindHandler.registerKeys();
 	}

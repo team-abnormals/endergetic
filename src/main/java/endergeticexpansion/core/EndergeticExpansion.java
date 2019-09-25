@@ -19,6 +19,8 @@ import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.common.world.EndOverrideHandler;
+import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.ClientProxy;
 import endergeticexpansion.core.proxy.CommonProxy;
 import endergeticexpansion.core.registry.EEBiomes;
@@ -26,6 +28,7 @@ import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
+import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -55,6 +58,7 @@ public class EndergeticExpansion {
 		instance = this;
 		
 		this.setupMessages();
+		this.overrideVanillaFields();
     	
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::registerTileEntities);
@@ -67,11 +71,11 @@ public class EndergeticExpansion {
 		EEBiomes.registerBiomeDictionaryTags();
 	}
     
-    @SubscribeEvent
+	@SubscribeEvent
 	@SuppressWarnings("unchecked")
 	public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-    	event.getRegistry().register(EETileEntities.CORROCK_CROWN = (TileEntityType<TileEntityCorrockCrown>) TileEntityType.Builder.create(TileEntityCorrockCrown::new, 
-    		EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING, EEBlocks.CORROCK_CROWN_OVERWORLD_WALL, EEBlocks.CORROCK_CROWN_NETHER_STANDING, EEBlocks.CORROCK_CROWN_NETHER_WALL,
+		event.getRegistry().register(EETileEntities.CORROCK_CROWN = (TileEntityType<TileEntityCorrockCrown>) TileEntityType.Builder.create(TileEntityCorrockCrown::new, 
+			EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING, EEBlocks.CORROCK_CROWN_OVERWORLD_WALL, EEBlocks.CORROCK_CROWN_NETHER_STANDING, EEBlocks.CORROCK_CROWN_NETHER_WALL,
     		EEBlocks.CORROCK_CROWN_END_STANDING, EEBlocks.CORROCK_CROWN_END_WALL)
     		.build(null).setRegistryName(MOD_ID, "corrock_crown"));
     	
@@ -85,8 +89,8 @@ public class EndergeticExpansion {
     	event.getRegistry().register(EETileEntities.BOOF_DISPENSED = (TileEntityType<TileEntityDispensedBoof>) TileEntityType.Builder.create(TileEntityDispensedBoof::new, EEBlocks.BOOF_DISPENSED_BLOCK).build(null).setRegistryName(MOD_ID, "boof_dispensed_block"));
     }
     
-    void setupMessages() {
-    	CHANNEL.messageBuilder(MessageCUpdatePlayerMotion.class, 0)
+	void setupMessages() {
+		CHANNEL.messageBuilder(MessageCUpdatePlayerMotion.class, 0)
     	.encoder(MessageCUpdatePlayerMotion::serialize).decoder(MessageCUpdatePlayerMotion::deserialize)
     	.consumer(MessageCUpdatePlayerMotion::handle)
     	.add();
@@ -135,6 +139,11 @@ public class EndergeticExpansion {
     	.encoder(MessageCAnimation::serialize).decoder(MessageCAnimation::deserialize)
     	.consumer(MessageCAnimation::handle)
     	.add();
-    }
+	}
     
+	void overrideVanillaFields() {
+		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png");
+		EndOverrideHandler.overrideEndFactory();
+		FeatureOverrideHandler.overrideFeatures();
+	}
 }

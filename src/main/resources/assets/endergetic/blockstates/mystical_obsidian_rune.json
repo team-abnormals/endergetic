@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=south": { "model": "endergetic:block/mystical_obsidian_rune", "y": 90 },
+        "facing=west": { "model": "endergetic:block/mystical_obsidian_rune", "y": 180 },
+        "facing=north": { "model": "endergetic:block/mystical_obsidian_rune", "y": 270 },
+        "facing=east": { "model": "endergetic:block/mystical_obsidian_rune"}
+    }
+}
