@@ -1,8 +1,8 @@
 package endergeticexpansion.common.blocks.poise;
 
 import endergeticexpansion.core.registry.EEBlocks;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.util.Direction;
@@ -15,7 +15,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
-public class BlockPoiseWood extends Block {
+public class BlockPoiseWood extends RotatedPillarBlock {
 
 	public BlockPoiseWood(Properties properties) {
 		super(properties);

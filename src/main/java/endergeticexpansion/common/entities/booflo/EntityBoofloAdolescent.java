@@ -6,7 +6,6 @@ import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
-import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntitySize;
@@ -183,7 +182,6 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			}
 			this.tailAnimation += this.tailSpeed;
 			this.swimmingAnimation += this.swimmingAnimationSpeed;
-			EndergeticExpansion.LOGGER.debug(this.swimmingAnimation);
 		}
 		
 		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {

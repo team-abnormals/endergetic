@@ -57,7 +57,7 @@ public class EndimatedEntity extends CreatureEntity {
 	}
 	
 	/**
-	 * @return - Gets this entities animations
+	 * @return - Gets this entity's animations
 	 */
 	@Nullable
 	public Endimation[] getAnimations() {

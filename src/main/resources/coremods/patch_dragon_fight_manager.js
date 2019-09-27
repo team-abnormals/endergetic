@@ -47,7 +47,8 @@ function initializeCoreMod() {
 			'transformer': function(method) {
 				print('[Endergetic Expansion]: Patching DragonFightManager#generateGateway');
 				var instr = method.instructions;
-
+				var ran = false;
+				
 				for(var i = 0; i < instr.size(); i++) {
 					var currentInstr = instr.get(i);
 					if(currentInstr.getOpcode() == Opcodes.GETSTATIC) {
