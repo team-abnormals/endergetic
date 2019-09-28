@@ -8,7 +8,10 @@ import endergeticexpansion.common.entities.bolloom.*;
 import endergeticexpansion.common.entities.booflo.*;
 import endergeticexpansion.common.tileentities.*;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.keybinds.KeybindHandler;
+import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -37,4 +40,10 @@ public class ClientProxy extends CommonProxy {
 		
 		KeybindHandler.registerKeys();
 	}
+	
+	@Override
+	public void overrideVanillaFields() {
+		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
+	}
+	
 }

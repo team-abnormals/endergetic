@@ -22,7 +22,7 @@ public class RenderTileEntityBoofBlockDispensed extends TileEntityRenderer<TileE
 	
 	@Override
 	public void render(TileEntityDispensedBoof te, double x, double y, double z, float partialTicks, int destroyStage) {
-		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState();
+		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState();
 		GlStateManager.pushMatrix();
 		
 		this.bindTexture(TEXTURE);

@@ -11,56 +11,42 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageDamageItem {
-	private String itemName;
+	private ItemStack itemstack;
 	private int amount;
 	private boolean isVest;
 
 	public MessageDamageItem() {}
 
 	public MessageDamageItem(ItemStack stack, int amount) {
-		if(!stack.isEmpty() && stack.hasTag()){
-			itemName = stack.getTranslationKey();
-		}
+		this.itemstack = stack;
 		this.amount = amount;
-		isVest = stack.getItem() == EEItems.BOOFLO_VEST ? true : false;
+		this.isVest = stack.getItem() == EEItems.BOOFLO_VEST ? true : false;
 	}
 
-	public void fromBytes(PacketBuffer buf) {
-		this.itemName = buf.readString(Integer.MAX_VALUE / 4);
-		this.amount = buf.readInt();
-		this.isVest = buf.readBoolean();
+	public void serialize(PacketBuffer buf) {
+		buf.writeItemStack(this.itemstack);
+		buf.writeInt(this.amount);
 	}
 
-	public void toBytes(PacketBuffer buf) {
-		buf.writeString(itemName);
-		buf.writeInt(amount);
-		buf.writeBoolean(isVest);
-	}
-
-	public static void serialize(MessageDamageItem message, PacketBuffer packet) {
-		message.toBytes(packet);
-	}
-
-	public static MessageDamageItem deserialize(PacketBuffer packet) {
-		MessageDamageItem message = new MessageDamageItem();
-
-		message.fromBytes(packet);
-		return message;
+	public static MessageDamageItem deserialize(PacketBuffer buf) {
+		ItemStack stack = buf.readItemStack();
+		int amount = buf.readInt();
+		return new MessageDamageItem(stack, amount);
 	}
 
 	public static void handle(MessageDamageItem message, Supplier<NetworkEvent.Context> ctx) {
-		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
+		if(ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			ctx.get().enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 				if(message.isVest) {
 					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
-						vest.damageItem(1, player, (p_213341_0_) -> {
-							p_213341_0_.sendBreakAnimation(EquipmentSlotType.CHEST);
+						vest.damageItem(10, player, (onBroken) -> {
+							onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
 						});
 					}
 				} else {
-					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
+					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() == message.itemstack.getItem())
 						player.inventory.getCurrentItem().damageItem(1, player, (p_213341_0_) -> {
 							p_213341_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
 						});

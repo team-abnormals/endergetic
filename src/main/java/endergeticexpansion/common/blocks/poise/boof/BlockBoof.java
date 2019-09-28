@@ -110,9 +110,9 @@ public class BlockBoof extends ContainerBlock {
             if (this.successful) {
             	IFluidState fluidstate = world.getFluidState(blockpos);
             	if(fluidstate.getFluid() == Fluids.WATER) {
-            		world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	} else {
-            		world.setBlockState(blockpos, EEBlocks.BOOF_DISPENSED_BLOCK.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	}
             }
             
