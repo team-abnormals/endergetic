@@ -1,0 +1,7 @@
+{
+    "parent": "block/fire_floor",
+    "textures": {
+        "particle": "endergetic:block/ender_fire_1",
+        "fire": "endergetic:block/ender_fire_1"
+    }
+}

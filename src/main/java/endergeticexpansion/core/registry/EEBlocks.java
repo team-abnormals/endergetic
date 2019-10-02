@@ -92,6 +92,7 @@ public class EEBlocks {
 	public static Block MYSTICAL_OBSIDIAN_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_rune");
 	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune");
 	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN.lightValue(5)).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune_active");
+	public static Block ENDER_FIRE           = new BlockEnderFire(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");
 	
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
@@ -101,7 +102,8 @@ public class EEBlocks {
 			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
 			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
 			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, POISE_BUSH_POT,
-			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE
+			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE,
+			ENDER_FIRE
 		};
 		event.getRegistry().registerAll(blocks);
 	}

@@ -17,7 +17,7 @@ function initializeCoreMod() {
 				for(var i = 0; i < instr.size(); i++) {
 					var currentInstr = instr.get(i);
 					if(currentInstr.getOpcode() == Opcodes.GETSTATIC) {
-						instr.set(currentInstr, new FieldInsnNode(Opcodes.GETSTATIC, "endergeticexpansion/core/registry/EEBlocks", "POISMOSS_EUMUS", "Lnet/minecraft/block/Block;"));
+						instr.set(currentInstr, new FieldInsnNode(Opcodes.GETSTATIC, "endergeticexpansion/core/registry/EEBlocks", "ENDER_FIRE", "Lnet/minecraft/block/Block;"));
 						break;
 					}
 				}
