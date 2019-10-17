@@ -86,24 +86,27 @@ public class EEBlocks {
 	public static Block EUMUS_BRICKS_CHISELED = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_chiseled_bricks");
 	public static Block EUMUS_BRICK_SLAB     = new SlabBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_slab");
 	public static Block EUMUS_BRICK_STAIRS   = new BlockStairsBase(EUMUS_BRICKS.getDefaultState(), EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_stairs");
+	public static Block EUMUS_BRICK_WALL     = new WallBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_wall");
 	public static Block POISE_BUSH_POT       = new FlowerPotBlock(POISE_GRASS, Properties.from(Blocks.POTTED_PINK_TULIP)).setRegistryName(EndergeticExpansion.MOD_ID, "potted_poise_bush"); //Why... is this deprecated
 	public static Block MYSTICAL_OBSIDIAN    = new Block(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian");
 	public static Block MYSTICAL_OBSIDIAN_WALL = new WallBlock(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_wall");
 	public static Block MYSTICAL_OBSIDIAN_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_rune");
 	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune");
 	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN.lightValue(5)).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune_active");
+	public static Block ACIDIAN_LANTERN      = new BlockAcidianLantern(EEProperties.ACIDIAN_LANTERN).setRegistryName(EndergeticExpansion.MOD_ID, "acidian_lantern");
+	public static Block CRYSTAL_HOLDER       = new Block(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "crystal_holder");
 	public static Block ENDER_FIRE           = new BlockEnderFire(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");
 	
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
 		final Block blocks[] = {
-			FRISBLOOM_STEM, FRISBLOOM_BUD, CORROCK_BLOCK_OVERWORLD, CORROCK_BLOCK_NETHER, CORROCK_BLOCK_END, CORROCK_OVERWORLD, CORROCK_NETHER, CORROCK_END,
+			CORROCK_BLOCK_OVERWORLD, CORROCK_BLOCK_NETHER, CORROCK_BLOCK_END, CORROCK_OVERWORLD, CORROCK_NETHER, CORROCK_END,
 			CORROCK_CROWN_OVERWORLD_WALL, CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_NETHER_WALL, CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_END_WALL, CORROCK_CROWN_END_STANDING,
 			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
 			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
-			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, POISE_BUSH_POT,
+			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, EUMUS_BRICK_WALL, POISE_BUSH_POT,
 			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE,
-			ENDER_FIRE
+			ACIDIAN_LANTERN, CRYSTAL_HOLDER, ENDER_FIRE
 		};
 		event.getRegistry().registerAll(blocks);
 	}
@@ -112,7 +115,7 @@ public class EEBlocks {
 	public static void onRegisterItemBlocks(RegistryEvent.Register<Item> event) {
 		final IForgeRegistry<Item> registry = event.getRegistry();
 		
-		registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
+		//registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_OVERWORLD, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_NETHER, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_END, ItemGroup.BUILDING_BLOCKS));
@@ -151,11 +154,16 @@ public class EEBlocks {
 		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_SLAB, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_STAIRS, ItemGroup.BUILDING_BLOCKS));
 		
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN));
 		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_WALL));
+		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_WALL, ItemGroup.DECORATIONS));
+		
+		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN));
+		
 		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_RUNE));
 		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_ACTIVATION_RUNE));
 		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE));
+		registry.register(RegistryUtils.createSimpleBlockItem(ACIDIAN_LANTERN, ItemGroup.DECORATIONS));
+		registry.register(RegistryUtils.createNoTabBlockItem(CRYSTAL_HOLDER));
 		
 		Item.Properties bollom = (new Item.Properties()).group(ItemGroup.DECORATIONS).rarity(Rarity.RARE).setTEISR(() -> EETileEntityItemRenderer::new);
 		registry.register(new BlockItem(BOLLOOM_BUD, bollom).setRegistryName(BOLLOOM_BUD.getRegistryName()));

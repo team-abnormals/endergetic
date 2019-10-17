@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "endergetic:eumus_bricks"
+  },
+  "result": "endergetic:eumus_brick_wall",
+  "count": 1
+}

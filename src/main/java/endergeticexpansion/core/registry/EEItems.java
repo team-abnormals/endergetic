@@ -23,7 +23,7 @@ public class EEItems {
 	/*
 	 * Poise
 	 */
-	public static Item POISE_BOAT                 = new ItemEndergeticBoat(Type.POISE, RegistryUtils.createSimpleItemProperty(64, ItemGroup.TRANSPORTATION)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_boat");
+	public static Item POISE_BOAT                 = new ItemEndergeticBoat(Type.POISE, RegistryUtils.createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_boat");
 	public static Item BOLLOOM_FRUIT              = new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_fruit");
 	public static Item BOOFLO_HIDE                = new Item(RegistryUtils.createSimpleItemProperty(16, ItemGroup.MATERIALS)).setRegistryName(EndergeticExpansion.MOD_ID, "booflo_hide");
 	public static Item PUFFBUG_BOTTLE             = new ItemPuffBugBottle(RegistryUtils.createSimpleItemProperty(1, ItemGroup.MISC)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_bottle");

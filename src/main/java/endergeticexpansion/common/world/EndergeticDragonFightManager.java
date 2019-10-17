@@ -55,5 +55,4 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 			this.respawnDragon(list1);
 		}
 	}
-	
 }

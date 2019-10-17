@@ -2,6 +2,7 @@ package endergeticexpansion.common.world.features;
 
 import java.util.Random;
 
+import endergeticexpansion.common.blocks.BlockAcidianLantern;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -19,6 +20,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.getDefaultState();
 	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.getDefaultState();
 	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.getDefaultState();
+	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.getDefaultState().with(BlockAcidianLantern.FACING, Direction.UP);
 	private static final BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
 		return active ? EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.getDefaultState();
 	}
@@ -69,13 +71,12 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 		}
 		
 		if(this.activePortal) {
-			//this.setBlockState(worldIn, pos.up(3), EEBlocks.MYSTICAL_OBSIDIAN_DRAGON_POST.getDefaultState());
-			//this.setBlockState(worldIn, pos.up(3).north(2).east(2), MYSTICAL_OBSIDIAN_ROD);
-			//this.setBlockState(worldIn, pos.up(3).north(2).west(2), MYSTICAL_OBSIDIAN_ROD);
-			//this.setBlockState(worldIn, pos.up(3).south(2).east(2), MYSTICAL_OBSIDIAN_ROD);
-			//this.setBlockState(worldIn, pos.up(3).south(2).west(2), MYSTICAL_OBSIDIAN_ROD);
+			this.setBlockState(worldIn, pos.up(3).north(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.up(3).north(2).west(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.up(3).south(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.up(3).south(2).west(2), ACIDIAN_LANTERN);
 		}
-	      
+		
 		return true;
 	}
 	

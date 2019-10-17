@@ -45,6 +45,7 @@
 	"block.endergetic.eumus_chiseled_bricks": "Eumus Chiseled Bricks",
 	"block.endergetic.eumus_brick_slab": "Eumus Brick Slab",
 	"block.endergetic.eumus_brick_stairs": "Eumus Brick Stairs",
+	"block.endergetic.eumus_brick_wall": "Eumus Brick Wall",
 	"block.endergetic.potted_poise_bush": "Potted Poise Bush",
 	
 	"block.endergetic.mystical_obsidian": "Mystical Obsidian",
@@ -52,6 +53,8 @@
 	"block.endergetic.mystical_obsidian_rune": "Mystical Obsidian Rune",
 	"block.endergetic.mystical_obsidian_activation_rune": "Mystical Obsidian Activation Rune",
 	"block.endergetic.mystical_obsidian_activation_rune_active": "Activated Mystical Obsidian Activation Rune",
+	"block.endergetic.acidian_lantern": "Acidian Lantern",
+	"block.endergetic.crystal_holder": "Crystal Holder",
 	
 	"_comment": "Items",
 	
@@ -97,7 +100,7 @@
 	
 	"_comment": "Keybinds",
 	
-	"key.endergetic.boof_vest" : "Boof Vest Activate",
+	"key.endergetic.boof_vest" : "Booflo Vest Activate",
 	
 	"_comment": "Tool Tips",
 	"tooltip.endergetic.activePotions": "Active Potion Effects:"

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "endergetic:mystical_obsidian_wall"
+    "endergetic:mystical_obsidian_wall",
+    "endergetic:eumus_brick_wall"
   ]
 }

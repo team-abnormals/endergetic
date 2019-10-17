@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up": { "model": "endergetic:block/acidian_lantern" },
+    "facing=down": { "model": "endergetic:block/acidian_lantern", "x": 180 },
+    "facing=east": { "model": "endergetic:block/acidian_lantern", "y": 90, "x": 90 },
+    "facing=south": { "model": "endergetic:block/acidian_lantern", "y": 180, "x": 90 },
+    "facing=west": { "model": "endergetic:block/acidian_lantern", "y": 270, "x": 90 },
+    "facing=north": { "model": "endergetic:block/acidian_lantern", "y": 0, "x": 90 }
+  }
+}

@@ -8,20 +8,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @author - SmellyModder(Luke Tonon)
  */
 @OnlyIn(Dist.CLIENT)
-public class TimedAnimation {
+public class ControlledAnimation {
 	private int ticksPassed, prevTicksPassed;
 	private int duration;
 	
 	/**
 	 * @param duration - total tick length of animation
 	 */
-	public TimedAnimation(int duration) {
+	public ControlledAnimation(int duration) {
 		this.duration = duration;
 		this.ticksPassed = 0;
 		this.prevTicksPassed = 0;
 	}
 	
-	public TimedAnimation() {
+	public ControlledAnimation() {
 		this.duration = 0;
 		this.ticksPassed = 0;
 		this.prevTicksPassed = 0;

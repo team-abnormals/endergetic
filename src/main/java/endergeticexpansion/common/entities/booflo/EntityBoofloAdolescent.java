@@ -17,13 +17,13 @@ import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -69,13 +69,12 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(1, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
 		this.goalSelector.addGoal(4, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
 	}
 	
 	@Override
 	public void travel(Vec3d vec3d) {
-		if (this.isServerWorld() && !this.isInWater()) {
+		if(this.isServerWorld() && !this.isInWater()) {
 			this.moveRelative(0.015F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.9D));
@@ -184,7 +183,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.swimmingAnimation += this.swimmingAnimationSpeed;
 		}
 		
-		if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
+		if((this.onGround || this.areEyesInFluid(FluidTags.WATER)) && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 			this.setFallSpeed(0.0F);
@@ -207,6 +206,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	static class RandomFlyingGoal extends RandomWalkingGoal {
+		
 		public RandomFlyingGoal(CreatureEntity booflo, double speed, int chance) {
 			super(booflo, speed, chance);
 		}
@@ -231,6 +231,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		public boolean shouldContinueExecuting() {
 			return super.shouldContinueExecuting() && !this.creature.isInWater();
 		}
+		
 	}
 	
 	static class BoofloAdolescentMoveController extends MovementController {
@@ -242,13 +243,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		}
 
 		public void tick() {
-			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
-				//double d0 = vec3d.length();
-				//double d1 = vec3d.y / d0;
-				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+			if(this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
+				Vec3d vec3d = this.booflo.getMoveControllerPathDistance(this.posX, this.posY, this.posZ);
 				
-				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
+				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
 				this.booflo.renderYawOffset = this.booflo.rotationYaw;
 				this.booflo.rotationYawHead = this.booflo.rotationYaw;
 				
@@ -256,8 +254,6 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
 				
 				this.booflo.setAIMoveSpeed(f2);
-				
-				this.booflo.setMotion(this.booflo.getMotion().add(0, 0, 0));
 				
 				this.booflo.setMoving(true);
 			} else {
@@ -276,12 +272,12 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		}
 
 		public void tick() {
-			if (this.isLooking) {
+			if(this.isLooking) {
 				this.isLooking = false;
 				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.func_220678_h() + 20.0F, this.deltaLookYaw);
 				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, this.func_220677_g() + 10.0F, this.deltaLookPitch);
 			} else {
-				if (this.mob.getNavigator().noPath()) {
+				if(this.mob.getNavigator().noPath()) {
 					this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 5.0F);
 				}
 				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);

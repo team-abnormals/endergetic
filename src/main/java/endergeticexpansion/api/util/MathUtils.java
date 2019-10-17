@@ -16,7 +16,7 @@ public class MathUtils {
 		return new Vec3d(bb.minX + (bb.maxX - bb.minX) * xMultiplier, bb.minY + (bb.maxY - bb.minY) * yMultiplier, bb.minZ + (bb.maxZ - bb.minZ) * zMultiplier);
 	}
     
-	public static double distanceBetweenPoints(double x1, double y1, double x2, double y2) {
+	public static double distanceBetweenPoints2d(double x1, double y1, double x2, double y2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
     

@@ -9,11 +9,9 @@ import com.mojang.datafixers.Dynamic;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
@@ -80,7 +78,7 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		endercrystalentity.setInvulnerable(p_214553_3_.func_214669_a());
 		endercrystalentity.setLocationAndAngles((double)((float)p_214553_4_.getCenterX() + 0.5F), (double)(p_214553_4_.getHeight() + 1), (double)((float)p_214553_4_.getCenterZ() + 0.5F), p_214553_2_.nextFloat() * 360.0F, 0.0F);
 		p_214553_1_.addEntity(endercrystalentity);
-		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.byIndex(p_214553_2_.nextInt(4) + 2)));
+		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.getDefaultState());
 	}
 	
 }

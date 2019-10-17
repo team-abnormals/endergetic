@@ -22,8 +22,8 @@ public class EEBiomes {
 	public static final List<EndergeticBiome> BIOMES = Lists.newArrayList();
 	private static final Map<Biome, Integer> WEIGHTS = Maps.newHashMap();
 	
-	public static final Biome POISE_FOREST = registerBiome(new BiomePoiseForest(), "poise_forest", 7);
-	public static final Biome CHORUS_PLAINS = registerBiome(new BiomeChorusPlains(), "chorus_plains", 14);
+	public static final Biome POISE_FOREST = registerBiome(new BiomePoiseForest(), "poise_forest", 6);
+	public static final Biome CHORUS_PLAINS = registerBiome(new BiomeChorusPlains(), "chorus_plains", 15);
 
 	public static void registerBiomeDictionaryTags() {
 		for(EndergeticBiome biomes : BIOMES) {

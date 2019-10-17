@@ -78,14 +78,17 @@ public class EEEntities {
     
 	@SubscribeEvent
 	public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-		for (EntityType entity : entities) {
-			event.getRegistry().register(entity);
+		for(EntityType entity : entities) {
+			//TODO: Remove later
+			if(entity != BOOFLO_ADOLESCENT && entity != PUFF_BUG) {
+				event.getRegistry().register(entity);
+			}
 		}
     }
 	
-	@SubscribeEvent
+	//@SubscribeEvent
 	public static void registerSpawnEggs(RegistryEvent.Register<Item> event) {
-		for (Item spawnEgg : spawnEggs) {
+		for(Item spawnEgg : spawnEggs) {
 			event.getRegistry().register(spawnEgg);
 		}
 	}
