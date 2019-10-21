@@ -3,9 +3,8 @@
     "group": "endergetic",
     "pattern":
     [
-    	"BBB",
-        "BBB",
-        "BBB"
+    	"BB",
+        "BB"
     ],
     "key":
     {
