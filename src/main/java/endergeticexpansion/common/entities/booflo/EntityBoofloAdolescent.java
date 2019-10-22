@@ -6,8 +6,12 @@ import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
@@ -35,7 +39,9 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> WAS_ON_GROUND = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
+	private static final DataParameter<Integer> ATTACK_COOLDOWN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.VARINT);
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
+	private Entity boofloAttackTarget;
 	private float prevTailAnimation;
 	private float tailAnimation;
 	private float tailSpeed;
@@ -57,6 +63,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().register(MOVING, false);
 		this.getDataManager().register(WAS_ON_GROUND, true);
 		this.getDataManager().register(FALL_SPEED, 0.0F);
+		this.getDataManager().register(ATTACK_COOLDOWN, 0);
 	}
 	
 	@Override
@@ -65,11 +72,14 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.7D);
 		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(16.0D);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(9.0D);
+		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 	}
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(4, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
+		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
+		this.targetSelector.addGoal(5, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
+		this.goalSelector.addGoal(4, new AdolescentAttackGoal(this, 1.1D, true));
 	}
 	
 	@Override
@@ -135,6 +145,15 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 	public void setFallSpeed(float speed) {
 		this.getDataManager().set(FALL_SPEED, speed);
+	}
+	
+	@Nullable
+	public Entity getBoofloAttackTarget() {
+		return this.boofloAttackTarget;
+	}
+
+	public void setBoofloAttackTarget(@Nullable Entity entity) {
+		this.boofloAttackTarget = entity;
 	}
 	
 	@OnlyIn(Dist.CLIENT)	
@@ -257,7 +276,6 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 				
 				this.booflo.setMoving(true);
 			} else {
-				this.booflo.setAIMoveSpeed(0F);
 				this.booflo.setMoving(false);
 			}
 		}

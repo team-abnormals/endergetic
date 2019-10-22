@@ -1,7 +1,7 @@
 package endergeticexpansion.common.items;
 
 import java.util.List;
-
+import java.util.Objects;
 
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.core.registry.EEEntities;
@@ -38,7 +38,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-@SuppressWarnings("unused")
 public class ItemPuffBugBottle extends Item {
 	
 	public ItemPuffBugBottle(Properties properties) {
@@ -65,9 +64,9 @@ public class ItemPuffBugBottle extends Item {
 			}
 			
 			EntityType<?> entitytype = EEEntities.PUFF_BUG;
-			//if(entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
-				//this.emptyBottle(context.getPlayer(), context.getHand());
-			//}
+			if(entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
+				this.emptyBottle(context.getPlayer(), context.getHand());
+			}
 			
 			return ActionResultType.SUCCESS;
 		}
@@ -88,17 +87,17 @@ public class ItemPuffBugBottle extends Item {
 				if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
 					return new ActionResult<>(ActionResultType.PASS, itemstack);
 				} else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
-					//EntityType<?> entitytype = EEEntities.PUFF_BUG;
-					//if(entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
-						//return new ActionResult<>(ActionResultType.PASS, itemstack);
-					//} else {
+					EntityType<?> entitytype = EEEntities.PUFF_BUG;
+					if(entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
+						return new ActionResult<>(ActionResultType.PASS, itemstack);
+					} else {
 						if (!playerIn.abilities.isCreativeMode) {
 							this.emptyBottle(playerIn, handIn);
 						}
 
 						playerIn.addStat(Stats.ITEM_USED.get(this));
 						return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
-					//}
+					}
 				} else {
 					return new ActionResult<>(ActionResultType.FAIL, itemstack);
 				}
@@ -132,7 +131,7 @@ public class ItemPuffBugBottle extends Item {
 			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
 			if(source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
 				EntityType<?> entitytype = EEEntities.PUFF_BUG;
-				//entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+				entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
 				stack = new ItemStack(Items.GLASS_BOTTLE);
 			} else {
 				return super.dispenseStack(source, stack);

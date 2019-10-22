@@ -4,6 +4,8 @@
     "endergetic:poise_log",
     "endergetic:poise_log_stripped",
     "endergetic:poise_wood",
-    "endergetic:poise_wood_stripped"
+    "endergetic:poise_wood_stripped",
+    "endergetic:poise_log_glowing",
+    "endergetic:poise_wood_glowing"
   ]
 }

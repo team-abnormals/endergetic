@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "endergetic:mystical_obsidian"
-    "endergetic:mystical_obsidian_wall"
-    "endergetic:mystical_obsidian_rune"
-    "endergetic:mystical_obsidian_activation_rune"
-    "endergetic:mystical_obsidian_activation_rune_active"
-    "endergetic:acidian_lantern"
-    "endergetic:crystal_holder"
+    "endergetic:mystical_obsidian",
+    "endergetic:mystical_obsidian_wall",
+    "endergetic:mystical_obsidian_rune",
+    "endergetic:mystical_obsidian_activation_rune",
+    "endergetic:mystical_obsidian_activation_rune_active",
+    "endergetic:acidian_lantern",
+    "endergetic:crystal_holder",
     "endergetic:ender_fire"
   ]
 }

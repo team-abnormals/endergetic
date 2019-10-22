@@ -96,6 +96,8 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * ageInTicks) - 0.17F;
     		this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * ageInTicks) + 0.17F;
     	}
+    	
+    	//this.Jaw.rotateAngleX += 0.15F * MathHelper.sin(0.3F * ageInTicks) + 0.3F;
     }
     
     @Override
