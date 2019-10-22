@@ -39,12 +39,21 @@
 	"block.endergetic.bolloom_bud": "Cálice de baflor",
 	"block.endergetic.puffbug_hive": "Colméia de pufadeiro",
 	"block.endergetic.hive_hanger": "Suporte de colméia de pufadeiro",
-	"block.endergetic.boof_block": "Bloco puf",
-	"block.endergetic.boof_dispensed_block": "Block buf ejetado",
+	"block.endergetic.boof_block": "Bloco buf",
+	"block.endergetic.boof_dispensed_block": "Bloco buf ejetado",
 	"block.endergetic.eumus_bricks": "Tijolos de eúmus",
 	"block.endergetic.eumus_chiseled_bricks": "Eumus Chiseled Bricks",
 	"block.endergetic.eumus_brick_slab": "Laje de tijolos de eúmus",
 	"block.endergetic.eumus_brick_stairs": "Escadas de tijolos de eúmus",
+	"block.endergetic.potted_poise_bush": "Arbusto pairo envasado",
+	
+	"block.endergetic.mystical_obsidian": "Obsidiana mística",
+	"block.endergetic.mystical_obsidian_wall": "Muro de obsidiana mística",
+	"block.endergetic.mystical_obsidian_rune": "Runa de obsidiana mística",
+	"block.endergetic.mystical_obsidian_activation_rune": "Runa de ativação de obsidiana mística",
+	"block.endergetic.mystical_obsidian_activation_rune_active": "Runa de ativação de obsidiana mística ativa",
+	"block.endergetic.acidian_lantern": "Lanterna acidiana",
+	"block.endergetic.crystal_holder": "Suporte de cristal",
 	
 	"_comment": "Itens",
 	
@@ -69,12 +78,26 @@
 	"item.endergetic.bolloom_balloon_black": "Balão de baflor preto",
 	"item.endergetic.booflo_hide": "Pele de buflu",
 	"item.endergetic.booflo_vest": "Veste de buflu",
+	"item.endergetic.puffbug_bottle": "Frasco com pufador",
+	"item.endergetic.puff_bug_spawn_egg": "Ovo gerador de pufador",
 	
 	"_comment": "Entidades",
 	
 	"entity.endergetic.poise_cluster": "Aglomerado pairo",
 	"entity.endergetic.bolloom_fruit": "Baflor",
-	"entity.endergetic.boof_block": "Bloco puf",
+	"entity.endergetic.boof_block": "Bloco buf",
 	"entity.endergetic.bolloom_knot": "Pedúnculo de baflor",
 	"entity.endergetic.bolloom_balloon": "Balão de baflor"
+	
+	"_comment": "Biomas",
+	
+	"biome.endergetic.poise_forest": "Floresta paira",
+	"biome.endergetic.chorus_plains": "Planícies de coro(Inutilizada)",
+	
+	"_comment": "Controles",
+	
+	"key.endergetic.boof_vest" : "Ativar veste de buflu",
+	
+	"_comment": "Tool Tips",
+	"tooltip.endergetic.activePotions": "Efeitos de poção ativos:"
 }
