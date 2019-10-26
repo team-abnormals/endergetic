@@ -96,8 +96,6 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * ageInTicks) - 0.17F;
     		this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * ageInTicks) + 0.17F;
     	}
-    	
-    	//this.Jaw.rotateAngleX += 0.15F * MathHelper.sin(0.3F * ageInTicks) + 0.3F;
     }
     
     @Override
@@ -115,7 +113,9 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.2F);
     		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
     		this.endimator.endKeyframe();
+    		
     		this.endimator.setStaticKeyframe(3);
+    		
     		this.endimator.startKeyframe(4);
     		this.endimator.move(this.getScaleController(), -0.0F, 0.0F, -0.0F);
     		this.endimator.move(Head, 0.0F, 0F, 0.0F);
@@ -124,7 +124,9 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, -0.35F);
     		this.endimator.rotate(KneeRight, 0.0F, 0.0F, 0.35F);
     		this.endimator.endKeyframe();
+    		
     		this.endimator.setStaticKeyframe(4);
+    		
     		this.endimator.startKeyframe(4);
     		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, -0.2F);
     		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.2F);

@@ -35,11 +35,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+/**
+ * @author - SmellyModder(Luke Tonon)
+ */
 public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> WAS_ON_GROUND = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
 	private static final DataParameter<Integer> ATTACK_COOLDOWN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> BOOF_BOOST_COOLDOWN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.VARINT);
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
 	private Entity boofloAttackTarget;
 	private float prevTailAnimation;
@@ -64,22 +68,24 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().register(WAS_ON_GROUND, true);
 		this.getDataManager().register(FALL_SPEED, 0.0F);
 		this.getDataManager().register(ATTACK_COOLDOWN, 0);
+		this.getDataManager().register(BOOF_BOOST_COOLDOWN, 0);
 	}
 	
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
 		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.7D);
-		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(16.0D);
+		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(25.0D);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(9.0D);
 		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
 	}
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(5, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
-		this.targetSelector.addGoal(5, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
+		this.goalSelector.addGoal(6, new EntityBoofloAdolescent.RandomFlyingGoal(this, 1.1D, 5));
 		this.goalSelector.addGoal(4, new AdolescentAttackGoal(this, 1.1D, true));
+		
+		this.targetSelector.addGoal(4, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
 	}
 	
 	@Override
@@ -113,6 +119,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		compound.putBoolean("Moving", this.isMoving());
 		compound.putBoolean("WasOnGround", this.wasOnGround());
 		compound.putFloat("FallSpeed", this.getFallSpeed());
+		compound.putInt("BoofBoostCooldown", this.getBoofBoostCooldown());
 	}
 
 	@Override
@@ -121,6 +128,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.setMoving(compound.getBoolean("Moving"));
 		this.setWasOnGround(compound.getBoolean("WasOnGround"));
 		this.setFallSpeed(compound.getFloat("FallSpeed"));
+		this.setBoofBoostCooldown(compound.getInt("BoofBoostCooldown"));
 	}
 	
 	public boolean isMoving() {
@@ -145,6 +153,14 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 	public void setFallSpeed(float speed) {
 		this.getDataManager().set(FALL_SPEED, speed);
+	}
+	
+	public int getBoofBoostCooldown() {
+		return this.getDataManager().get(BOOF_BOOST_COOLDOWN);
+	}
+
+	public void setBoofBoostCooldown(int ticks) {
+		this.getDataManager().set(BOOF_BOOST_COOLDOWN, ticks);
 	}
 	
 	@Nullable
@@ -174,7 +190,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	public void livingTick() {
 		this.setFallSpeed(this.getFallSpeed() + 0.1F);
 		
-		if(this.world.isRemote) {
+		if(this.world.isRemote) {	
 			this.prevTailAnimation = this.tailAnimation;
 			this.prevSwimmingAnimation = this.swimmingAnimation;
 			if(!this.isInWater()) {
@@ -202,10 +218,18 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.swimmingAnimation += this.swimmingAnimationSpeed;
 		}
 		
-		if((this.onGround || this.areEyesInFluid(FluidTags.WATER)) && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
+		if(this.getBoofBoostCooldown() > 0) {
+			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
+		}
+		
+		if(this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER)) && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 			this.setFallSpeed(0.0F);
+			//Fixes super boosting underwater
+			if(this.eyesInWater) {
+				this.setBoofBoostCooldown(20);
+			}
 		}
 		
 		super.livingTick();
@@ -220,7 +244,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	@Override
 	public Endimation[] getAnimations() {
 		return new Endimation[] {
-			BOOF_ANIMATION 
+			BOOF_ANIMATION
 		};
 	}
 	
@@ -232,7 +256,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 		@Nullable
 		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2);
+			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0);
 			
 			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
 				;

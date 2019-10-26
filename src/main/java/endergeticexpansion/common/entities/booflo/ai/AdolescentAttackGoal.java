@@ -10,7 +10,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 public class AdolescentAttackGoal extends Goal {
@@ -138,7 +137,6 @@ public class AdolescentAttackGoal extends Goal {
 		double d0 = this.getAttackReachSqr(enemy);
 		if(distToEnemySqr <= d0 && this.attackTick <= 0) {
 			this.attackTick = 20;
-			this.attacker.swingArm(Hand.MAIN_HAND);
 			this.attacker.attackEntityAsMob(enemy);
 		}
 	}
