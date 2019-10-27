@@ -2,13 +2,13 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nullable;
+
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
@@ -24,7 +24,6 @@ public class AdolescentAttackGoal extends Goal {
 	private double targetZ;
 	protected final int attackInterval = 20;
 	private long field_220720_k;
-	private int failedPathFindingPenalty = 0;
 	private boolean canPenalize = false;
 
 	public AdolescentAttackGoal(EntityBoofloAdolescent attacker, double speedIn, boolean useLongMemory) {
@@ -89,9 +88,8 @@ public class AdolescentAttackGoal extends Goal {
 	public void resetTask() {
 		Entity target = this.attacker.getBoofloAttackTarget();
 		if(!EntityPredicates.CAN_AI_TARGET.test(target)) {
-			this.attacker.setAttackTarget((LivingEntity)null);
+			this.attacker.setBoofloAttackTarget(null);
 		}
-
 		this.attacker.setAggroed(false);
 		this.attacker.getNavigator().clearPath();
 	}
@@ -99,25 +97,18 @@ public class AdolescentAttackGoal extends Goal {
 	public void tick() {
 		Entity target = this.attacker.getBoofloAttackTarget();
 		this.attacker.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
+		
 		double d0 = this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
-		--this.delayCounter;
+		
+		this.delayCounter--;
+		
 		if((this.longMemory || this.attacker.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
 			this.targetX = target.posX;
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.posZ;
+			
 			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
-			if(this.canPenalize) {
-				this.delayCounter += failedPathFindingPenalty;
-				if(this.attacker.getNavigator().getPath() != null) {
-					PathPoint finalPathPoint = this.attacker.getNavigator().getPath().getFinalPathPoint();
-					if(finalPathPoint != null && target.getDistanceSq(finalPathPoint.x, finalPathPoint.y, finalPathPoint.z) < 1)
-						failedPathFindingPenalty = 0;
-					else
-						failedPathFindingPenalty += 10;
-				} else {
-					failedPathFindingPenalty += 10;
-				}
-			}
+			
 			if(d0 > 1024.0D) {
 				this.delayCounter += 10;
 			} else if(d0 > 256.0D) {
@@ -143,5 +134,19 @@ public class AdolescentAttackGoal extends Goal {
 
 	protected double getAttackReachSqr(Entity attackTarget) {
 		return (double)(this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
+	}
+	
+	@Nullable
+	public Path getPathToEntity(Entity entity) {
+		BlockPos pos = entity.getPosition();
+		for(int y = 0; y < 8; y++) {
+			pos = pos.down(y);
+			if(!entity.getEntityWorld().isRemote) {
+				if(entity.getEntityWorld().getBlockState(pos).isSolid() || !entity.getEntityWorld().getBlockState(pos).getFluidState().isEmpty()) {
+					return this.attacker.getNavigator().getPathToPos(pos, 0);
+				}
+			}
+		}
+		return this.attacker.getNavigator().getPathToPos(entity.getPosition(), 0);
 	}
 }

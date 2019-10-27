@@ -84,7 +84,9 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     	this.Tail.rotateAngleY = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
     	
     	if(!entityIn.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION) && !entityIn.isInWater()) {
-    		this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
+    		if(entityIn.getRidingEntity() == null) {
+    			this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
+    		}
     		this.KneeLeft.rotateAngleZ += 0.1F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
     		this.KneeRight.rotateAngleZ += 0.1F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
     		this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
@@ -95,6 +97,10 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.KneeRight.rotateAngleZ += 0.1F * MathHelper.sin(0.6F * ageInTicks);
     		this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * ageInTicks) - 0.17F;
     		this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * ageInTicks) + 0.17F;
+    	}
+    	
+    	if(entityIn.isAggressive()) {
+    		this.Jaw.rotateAngleX += 0.2F * MathHelper.sin(0.3F * ageInTicks) + 0.4F;
     	}
     }
     
