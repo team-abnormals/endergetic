@@ -3,7 +3,6 @@ package endergeticexpansion.api.endimator;
 /**
  * A class that tells how long an animation will play and if it's looped
  * @author - SmellyModder(Luke Tonon) 
- * TODO: Looped animations
  */
 public class Endimation {
 	private int tickDuration;

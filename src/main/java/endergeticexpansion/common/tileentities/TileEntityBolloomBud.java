@@ -85,5 +85,4 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	public void markForSpawning() {
 		this.markedForSpawning = true;
 	}
-
 }

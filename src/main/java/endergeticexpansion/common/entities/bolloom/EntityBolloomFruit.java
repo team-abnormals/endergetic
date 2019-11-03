@@ -161,28 +161,32 @@ public class EntityBolloomFruit extends Entity {
 			}
 		}
 		if(!world.isRemote) {
-			if (getTicksExisted() % 45 == 0) {
+			if(this.getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (this.rand.nextDouble() * 2 * Math.PI));
 			}
 			
-			if(getTicksExisted() % 50 == 0 && this.rand.nextInt(5) == 0 && !this.isUntied()) {
+			if(this.getTicksExisted() % 50 == 0 && this.rand.nextInt(5) == 0 && !this.isUntied()) {
 				this.getDataManager().set(GROWN, true);
 			}
 			
-			if(getTicksExisted() % 1200 == 0 && this.isUntied()) {
+			if(!this.isGrown() && this.isUntied()) {
+				this.remove();
+			}
+			
+			if(this.posY >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
 				this.remove();
 			}
 			
 			float dangle = this.getDesiredAngle() - this.getAngle();
-			while (dangle > Math.PI) {
+			while(dangle > Math.PI) {
 			    dangle -= 2 * Math.PI;
 			}
-			while (dangle <= -Math.PI) {
+			while(dangle <= -Math.PI) {
 			    dangle += 2 * Math.PI;
 			}
-			if (Math.abs(dangle) <= 0.1F) {
+			if(Math.abs(dangle) <= 0.1F) {
 			    this.setAngle(this.getAngle() + dangle);
-			} else if (dangle > 0) {
+			} else if(dangle > 0) {
 			    this.setAngle(this.getAngle() + 0.03F);
 			} else {
 			    this.setAngle(this.getAngle() - 0.03F);
@@ -226,7 +230,7 @@ public class EntityBolloomFruit extends Entity {
 		}
 		
 		this.extinguish();
-		incrementTicksExisted();
+		this.incrementTicksExisted();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -243,7 +247,7 @@ public class EntityBolloomFruit extends Entity {
 	}
 	
 	private void doParticles() {
-		if (this.world instanceof ServerWorld) {
+		if(this.world instanceof ServerWorld) {
 			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.getDefaultState()), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 		}
 	}
@@ -325,8 +329,10 @@ public class EntityBolloomFruit extends Entity {
 		};
 	}
 	
-	public void onBroken(@Nullable Entity brokenEntity) {
-		Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT));
+	public void onBroken(@Nullable Entity brokenEntity, boolean dropFruit) {
+		if(dropFruit) {
+			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT));
+		}
 		this.playSound(SoundEvents.BLOCK_WET_GRASS_BREAK, 1.0F, 1.0F);
 		this.doParticles();
 	}
@@ -340,7 +346,7 @@ public class EntityBolloomFruit extends Entity {
 			if (!this.removed && !this.world.isRemote) {
 				this.remove();
 				this.markVelocityChanged();
-				this.onBroken(source.getTrueSource());
+				this.onBroken(source.getTrueSource(), true);
 			}
 			return true;
 		}
@@ -349,6 +355,11 @@ public class EntityBolloomFruit extends Entity {
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
 		return this.isInvulnerable() && source != DamageSource.OUT_OF_WORLD && source != DamageSource.CRAMMING;
+	}
+	
+	@Override
+	public boolean isInvulnerable() {
+		return !this.isGrown() || super.isInvulnerable();
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -37,12 +38,16 @@ public class AdolescentAttackGoal extends Goal {
 		long i = this.attacker.world.getGameTime();
 		if(i - this.field_220720_k < 20L) {
 			return false;
+		} else if(!this.attacker.isHungry()) {
+			return false;
 		} else {
 			this.field_220720_k = i;
 			Entity target = this.attacker.getBoofloAttackTarget();
 			if(target == null) {
 				return false;
 			} else if(!target.isAlive()) {
+				return false;
+			} else if(this.attacker.hasFruit()) {
 				return false;
 			} else {
 				if(canPenalize) {
@@ -69,6 +74,10 @@ public class AdolescentAttackGoal extends Goal {
 		if(target == null) {
 			return false;
 		} else if(!target.isAlive()) {
+			return false;
+		} else if(this.attacker.hasFruit()) {
+			return false;
+		} else if(!this.attacker.isHungry()) {
 			return false;
 		} else if(!this.longMemory) {
 			return !this.attacker.getNavigator().noPath();
@@ -98,7 +107,7 @@ public class AdolescentAttackGoal extends Goal {
 		Entity target = this.attacker.getBoofloAttackTarget();
 		this.attacker.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
 		
-		double d0 = this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+		double distToEnemySqr = this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		
 		this.delayCounter--;
 		
@@ -109,9 +118,9 @@ public class AdolescentAttackGoal extends Goal {
 			
 			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 			
-			if(d0 > 1024.0D) {
+			if(distToEnemySqr > 1024.0D) {
 				this.delayCounter += 10;
-			} else if(d0 > 256.0D) {
+			} else if(distToEnemySqr > 256.0D) {
 	            this.delayCounter += 5;
 			}
 
@@ -121,14 +130,18 @@ public class AdolescentAttackGoal extends Goal {
 		}
 
 		this.attackTick = Math.max(this.attackTick - 1, 0);
-		this.checkAndPerformAttack(target, d0);
+		this.tryToCapturePrey(target, distToEnemySqr);
 	}
 
-	protected void checkAndPerformAttack(Entity enemy, double distToEnemySqr) {
-		double d0 = this.getAttackReachSqr(enemy);
-		if(distToEnemySqr <= d0 && this.attackTick <= 0) {
+	protected void tryToCapturePrey(Entity prey, double distToEnemySqr) {
+		double attackReach = this.getAttackReachSqr(prey);
+		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
-			this.attacker.attackEntityAsMob(enemy);
+			this.attacker.setHasFruit(true);
+			if(prey instanceof EntityBolloomFruit) {
+				((EntityBolloomFruit)prey).onBroken(this.attacker, false);
+				prey.remove();
+			}
 		}
 	}
 

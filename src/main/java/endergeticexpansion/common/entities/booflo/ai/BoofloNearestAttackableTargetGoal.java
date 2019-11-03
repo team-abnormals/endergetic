@@ -41,6 +41,8 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	public boolean shouldExecute() {
 		if(this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0) {
 	         return false;
+		} else if(!((EntityBoofloAdolescent)this.goalOwner).isHungry()) {
+			return false;
 		} else {
 			this.findNearestTarget();
 			return this.nearestTarget != null;
