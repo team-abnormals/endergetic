@@ -106,7 +106,7 @@ public class EEBlocks {
 			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
 			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, EUMUS_BRICK_WALL, POISE_BUSH_POT,
 			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE,
-			ACIDIAN_LANTERN, CRYSTAL_HOLDER, ENDER_FIRE
+			ACIDIAN_LANTERN, CRYSTAL_HOLDER, ENDER_FIRE, FRISBLOOM_STEM, FRISBLOOM_BUD
 		};
 		event.getRegistry().registerAll(blocks);
 	}
@@ -115,7 +115,7 @@ public class EEBlocks {
 	public static void onRegisterItemBlocks(RegistryEvent.Register<Item> event) {
 		final IForgeRegistry<Item> registry = event.getRegistry();
 		
-		//registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
+		registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_OVERWORLD, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_NETHER, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_END, ItemGroup.BUILDING_BLOCKS));
