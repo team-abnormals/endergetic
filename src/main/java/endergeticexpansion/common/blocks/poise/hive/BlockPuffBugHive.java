@@ -134,5 +134,37 @@ public class BlockPuffBugHive extends Block {
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(HAS_HANGER);
 	}
+@Override
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        if (state.getBlock() == this && state.getValue(HALF) == BlockHalf.LOWER && world.getBlockState(pos.up()).getBlock() == this) {
+            world.setBlockToAir(pos.up());
+        }
+
+        return world.setBlockToAir(pos);
+    }
+
+    @Override
+    protected void spread(World world, BlockPos position) {
+        world.setBlockState(position, this.getDefaultState().withProperty(HALF, BlockHalf.LOWER));
+        world.setBlockState(position.up(), this.getDefaultState().withProperty(HALF, BlockHalf.UPPER));
+    }
+
+    @Override
+    protected boolean canPlace(IBlockState down, IBlockState here, IBlockState up) {
+        return super.canPlace(down, here, up) && up.getBlock() == Blocks.AIR;
+    }
+
+    public enum BlockHalf implements IStringSerializable {
+        UPPER, LOWER;
+
+        @Override
+        public String toString() {
+            return this.getName();
+        }
+
+        @Override
+        public String getName() {
+            return this == UPPER ? "upper" : "lower";
+
 	
 }
