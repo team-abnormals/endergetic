@@ -32,7 +32,7 @@ public class BlockPuffBugHive extends Block {
 
 	public BlockPuffBugHive(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(HAS_HANGER, false));
+		this.setDefaultState(this.stateContainer.getBaseState().with(HAS_HANGER, true));
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if(stateIn.get(HAS_HANGER)) {
-			if(worldIn.getWorld().getBlockState(currentPos.up()) != EEBlocks.HIVE_HANGER.getDefaultState()) {
+			if(worldIn.getWorld().getBlockState(currentPos.up()).getBlock() != EEBlocks.HIVE_HANGER) {
 				return Blocks.AIR.getDefaultState();
 			} else {
 				return stateIn;
