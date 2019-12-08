@@ -59,7 +59,7 @@ public class BlockPuffBugHive extends Block {
 		BlockPos blockpos = context.getPos();
 		for(Direction enumfacing : context.getNearestLookingDirections()) {
 			if(enumfacing == Direction.UP) {
-				if(context.getWorld().getBlockState(blockpos.down()).isAir() && GenerationUtils.isProperBlock(context.getWorld().getBlockState(blockpos.up()), new Block[] { EEBlocks.POISE_CLUSTER }, true)) {
+				if(context.getWorld().getBlockState(blockpos.down()).isAir() && GenerationUtils.isProperBlock(context.getWorld().getBlockState(blockpos.up()), new Block[] { this, EEBlocks.POISE_CLUSTER }, true)) {
 					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
 					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
 					if(entities.size() > 0) {
