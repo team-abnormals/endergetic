@@ -80,7 +80,7 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return hasHanger(worldIn, pos) && super.isValidPosition(state, worldIn, pos);
+		return (hasHanger(worldIn, pos) || worldIn.getBlockState(pos.down()).isSolid()) && super.isValidPosition(state, worldIn, pos);
 	}
 	
 	@Override
