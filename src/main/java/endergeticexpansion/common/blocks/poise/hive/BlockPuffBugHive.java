@@ -120,8 +120,7 @@ public class BlockPuffBugHive extends Block {
 		return world.getBlockState(pos.up()).getBlock() instanceof BlockHiveHanger;
 	}
 	
-	private static BlockState destroyBlock(IWorld world, BlockPos pos, @Nullable LivingEntity breaker)
-	{
+	private static BlockState destroyBlock(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
 		if (hasHanger(world, pos)) world.destroyBlock(pos.up(), false);
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityPuffBugHive) {
