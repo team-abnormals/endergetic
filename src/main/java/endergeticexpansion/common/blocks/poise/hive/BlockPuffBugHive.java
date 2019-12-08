@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,6 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockPuffBugHive extends Block {
+	
 	public BlockPuffBugHive(Properties properties) {
 		super(properties);
 	}
@@ -50,7 +50,7 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	@Nonnull
 	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		return !isValidPosition(state, world, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return !isValidPosition(state, world, currentPos) ? Blocks.AIR.getDefaultState() : state;
 	}
 	
 	@Nullable
@@ -118,4 +118,5 @@ public class BlockPuffBugHive extends Block {
 	private static boolean hasHanger(IWorldReader world, BlockPos pos) {
 		return world.getBlockState(pos.up()).getBlock() instanceof BlockHiveHanger;
 	}
+	
 }
