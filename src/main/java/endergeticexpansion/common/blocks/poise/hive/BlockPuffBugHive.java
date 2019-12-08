@@ -135,4 +135,3 @@ public class BlockPuffBugHive extends Block {
 		return Blocks.AIR.getDefaultState();
 	}
 }
-}
