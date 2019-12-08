@@ -6,19 +6,23 @@ import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -41,6 +45,12 @@ public class BlockPuffBugHive extends Block {
 			worldIn.destroyBlock(pos.up(), false);
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
+	}
+	
+	@Override
+	@Nonnull
+	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+		return !isValidPosition(state, world, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
 	}
 	
 	@Nullable
@@ -70,10 +80,7 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		if(worldIn.getBlockState(pos.down()).getMaterial().isReplaceable()) {
-			return false;
-		}
-		return super.isValidPosition(state, worldIn, pos);
+		return hasHanger(worldIn, pos) && super.isValidPosition(state, worldIn, pos);
 	}
 	
 	@Override
@@ -107,8 +114,7 @@ public class BlockPuffBugHive extends Block {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 	
-	private static boolean hasHanger(World world, BlockPos pos)
-	{
+	private static boolean hasHanger(IWorldReader world, BlockPos pos) {
 		return world.getBlockState(pos.up()).getBlock() instanceof BlockHiveHanger;
 	}
 }
