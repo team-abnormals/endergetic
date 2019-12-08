@@ -315,14 +315,6 @@ public class EntityPuffBug extends FlyingEntity {
 	}
 	
 	@Override
-	public void onDeath(DamageSource cause) {
-		if(this.getHivePos() != BlockPos.ZERO && isHiveAtPos(this.getHivePos())) {
-			((TileEntityPuffBugHive)this.getHive()).decrementBugsAtHive();
-		}
-		super.onDeath(cause);
-	}
-	
-	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return !this.isFromBottle() && !this.hasCustomName();
 	}
