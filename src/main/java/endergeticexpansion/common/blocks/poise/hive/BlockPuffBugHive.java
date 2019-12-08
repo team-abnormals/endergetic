@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPuffBugHive extends Block {
+	
 	public BlockPuffBugHive(Properties properties) {
 		super(properties);
 	}
@@ -133,4 +134,5 @@ public class BlockPuffBugHive extends Block {
 		}
 		return Blocks.AIR.getDefaultState();
 	}
+}
 }
