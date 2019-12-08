@@ -1,43 +1,35 @@
 package endergeticexpansion.common.blocks.poise.hive;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
-public class BlockPuffBugHive extends Block {
-	public static final BooleanProperty HAS_HANGER = BooleanProperty.create("hanger");
+import javax.annotation.Nullable;
+import java.util.List;
 
+public class BlockPuffBugHive extends Block {
 	public BlockPuffBugHive(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(HAS_HANGER, true));
 	}
 	
 	@Override
 	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		if(state.get(HAS_HANGER)) {
+		if(hasHanger(worldIn, pos)) {
 			worldIn.destroyBlock(pos.up(), false);
 		}
 		super.harvestBlock(worldIn, player, pos, state, te, stack);
@@ -45,25 +37,10 @@ public class BlockPuffBugHive extends Block {
 	
 	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		if(state.get(HAS_HANGER) && player.isCreative()) {
+		if(hasHanger(worldIn, pos) && player.isCreative()) {
 			worldIn.destroyBlock(pos.up(), false);
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
-	}
-	
-	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(stateIn.get(HAS_HANGER)) {
-			if(worldIn.getWorld().getBlockState(currentPos.up()).getBlock() != EEBlocks.HIVE_HANGER) {
-				return Blocks.AIR.getDefaultState();
-			} else {
-				return stateIn;
-			}
-		}
-		if(!this.isValidPosition(stateIn, worldIn, currentPos)) {
-			return Blocks.AIR.getDefaultState();
-		}
-		return stateIn;
 	}
 	
 	@Nullable
@@ -78,8 +55,7 @@ public class BlockPuffBugHive extends Block {
 					if(entities.size() > 0) {
 						return null;
 					}
-					
-					context.getWorld().setBlockState(blockpos.down(), getDefaultState().with(HAS_HANGER, true));
+					context.getWorld().setBlockState(blockpos.down(), getDefaultState());
 					return EEBlocks.HIVE_HANGER.getDefaultState();
 				} else {
 					return this.getDefaultState();
@@ -131,8 +107,8 @@ public class BlockPuffBugHive extends Block {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 	
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(HAS_HANGER);
+	private static boolean hasHanger(World world, BlockPos pos)
+	{
+		return world.getBlockState(pos.up()).getBlock() instanceof BlockHiveHanger;
 	}
-	
 }
