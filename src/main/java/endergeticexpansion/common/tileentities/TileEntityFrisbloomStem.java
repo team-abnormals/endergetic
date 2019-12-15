@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntityFrisbloomStem extends TileEntity {
 
 	public TileEntityFrisbloomStem() {
-		super(EETileEntities.FRISBLOOM_STEM);
+		super(EETileEntities.FRISBLOOM_STEM.get());
 	}
 	
 }

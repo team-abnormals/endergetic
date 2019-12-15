@@ -16,7 +16,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	boolean markedForSpawning;
 
 	public TileEntityBolloomBud() {
-		super(EETileEntities.BOLLOOM_BUD);
+		super(EETileEntities.BOLLOOM_BUD.get());
 	}
 	
 	@Override

@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntityCorrockCrown extends TileEntity {
 
 	public TileEntityCorrockCrown() {
-		super(EETileEntities.CORROCK_CROWN);
+		super(EETileEntities.CORROCK_CROWN.get());
 	}
 	
 }

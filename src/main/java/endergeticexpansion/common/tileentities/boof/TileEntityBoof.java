@@ -22,7 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 	
 	public TileEntityBoof() {
-		super(EETileEntities.BOOF_BLOCK);
+		super(EETileEntities.BOOF_BLOCK.get());
 	}
 
 	@Override

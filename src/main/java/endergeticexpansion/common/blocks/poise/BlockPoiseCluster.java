@@ -79,7 +79,7 @@ public class BlockPoiseCluster extends Block {
 				worldIn.addEntity(cluster);
 				entityIn.remove();
 				worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
-				worldIn.playSound(null, pos, EESounds.CLUSTER_BREAK, SoundCategory.BLOCKS, 0.90F, 0.75F);
+				worldIn.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
 			} else {
 				worldIn.setBlockState(pos, getDefaultState());
 			}

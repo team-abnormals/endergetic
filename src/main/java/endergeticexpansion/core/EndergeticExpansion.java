@@ -11,6 +11,8 @@ import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.*;
 import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEItems;
+import endergeticexpansion.core.registry.EESounds;
+import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -45,6 +47,8 @@ public class EndergeticExpansion {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	
 		EEItems.ITEMS.register(modEventBus);
+		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
+		EESounds.SOUNDS.register(modEventBus);
 		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 	}

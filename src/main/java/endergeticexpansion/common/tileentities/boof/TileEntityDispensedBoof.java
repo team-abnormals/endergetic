@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
 public class TileEntityDispensedBoof extends TileEntity implements ITickableTileEntity {
 	int ticksExisted;
 	public TileEntityDispensedBoof() {
-		super(EETileEntities.BOOF_BLOCK_DISPENSED);
+		super(EETileEntities.BOOF_BLOCK_DISPENSED.get());
 	}
 
 	@Override

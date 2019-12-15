@@ -209,7 +209,7 @@ public class EntityPoiseCluster extends LivingEntity {
 	
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return EESounds.CLUSTER_BREAK;
+		return EESounds.CLUSTER_BREAK.get();
 	}
 	
 	@Override

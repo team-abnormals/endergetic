@@ -23,7 +23,7 @@ public class TileEntityPuffBugHive extends TileEntity {
 	private List<CompoundNBT> bugsInHive = new ArrayList<>();
 
 	public TileEntityPuffBugHive() {
-		super(EETileEntities.PUFFBUG_HIVE);
+		super(EETileEntities.PUFFBUG_HIVE.get());
 	}
 	
 	public void insertBug(EntityPuffBug entity) {
