@@ -23,7 +23,7 @@ public class MessageSUpdateNBTTag {
 			tag = stack.getTag();
 			itemName = stack.getTranslationKey();
 		}
-		isVest = stack.getItem() == EEItems.BOOFLO_VEST ? true : false;
+		isVest = stack.getItem() == EEItems.BOOFLO_VEST.get() ? true : false;
 	}
 
 	public void fromBytes(PacketBuffer buf) {
@@ -55,7 +55,7 @@ public class MessageSUpdateNBTTag {
 				PlayerEntity player = ctx.get().getSender();
 				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 				if(message.isVest) {
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
 						vest.setTag(message.tag);
 					}
 				} else {

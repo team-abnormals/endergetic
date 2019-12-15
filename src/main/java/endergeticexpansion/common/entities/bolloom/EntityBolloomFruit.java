@@ -331,7 +331,7 @@ public class EntityBolloomFruit extends Entity {
 	
 	public void onBroken(@Nullable Entity brokenEntity, boolean dropFruit) {
 		if(dropFruit) {
-			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT));
+			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
 		}
 		this.playSound(SoundEvents.BLOCK_WET_GRASS_BREAK, 1.0F, 1.0F);
 		this.doParticles();

@@ -1,59 +1,44 @@
 package endergeticexpansion.core.registry;
 
 import endergeticexpansion.common.entities.EntityEndergeticBoat.Type;
-import endergeticexpansion.common.items.ItemBolloomBalloon;
-import endergeticexpansion.common.items.ItemBolloomFruit;
-import endergeticexpansion.common.items.ItemBoofloVest;
-import endergeticexpansion.common.items.ItemEndergeticBoat;
-import endergeticexpansion.common.items.ItemPuffBugBottle;
+import endergeticexpansion.common.items.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EEItems {
+	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, EndergeticExpansion.MOD_ID);
 	
-	public static Item EUMUS_BRICK                = new Item(RegistryUtils.createSimpleItemProperty(64, ItemGroup.MATERIALS)).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick");
+	public static final RegistryObject<Item> EUMUS_BRICK = RegistryUtils.createItem("eumus_brick", () -> new Item(RegistryUtils.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
+	
 	/*
 	 * Poise
 	 */
-	public static Item POISE_BOAT                 = new ItemEndergeticBoat(Type.POISE, RegistryUtils.createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_boat");
-	public static Item BOLLOOM_FRUIT              = new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_fruit");
-	public static Item BOOFLO_HIDE                = new Item(RegistryUtils.createSimpleItemProperty(16, ItemGroup.MATERIALS)).setRegistryName(EndergeticExpansion.MOD_ID, "booflo_hide");
-	public static Item PUFFBUG_BOTTLE             = new ItemPuffBugBottle(RegistryUtils.createSimpleItemProperty(1, ItemGroup.MISC)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_bottle");
-	public static Item BOLLOOM_BALLOON            = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), null).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon");
-	public static Item BOLLOOM_BALLOON_RED        = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_red");
-	public static Item BOLLOOM_BALLOON_ORANGE     = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.ORANGE).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_orange");
-	public static Item BOLLOOM_BALLOON_YELLOW     = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.YELLOW).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_yellow");
-	public static Item BOLLOOM_BALLOON_LIME       = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIME).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_lime");
-	public static Item BOLLOOM_BALLOON_GREEN      = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GREEN).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_green");
-	public static Item BOLLOOM_BALLOON_LIGHT_BLUE = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_BLUE).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_light_blue");
-	public static Item BOLLOOM_BALLOON_CYAN       = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.CYAN).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_cyan");
-	public static Item BOLLOOM_BALLOON_BLUE       = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLUE).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_blue");
-	public static Item BOLLOOM_BALLOON_PINK       = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PINK).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_pink");
-	public static Item BOLLOOM_BALLOON_MAGENTA    = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.MAGENTA).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_magenta");
-	public static Item BOLLOOM_BALLOON_PURPLE     = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PURPLE).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_purple");
-	public static Item BOLLOOM_BALLOON_BROWN      = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BROWN).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_brown");
-	public static Item BOLLOOM_BALLOON_GRAY       = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GRAY).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_gray");
-	public static Item BOLLOOM_BALLOON_LIGHT_GRAY = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_GRAY).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_light_gray");
-	public static Item BOLLOOM_BALLOON_WHITE      = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.WHITE).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_white");
-	public static Item BOLLOOM_BALLOON_BLACK      = new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLACK).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_balloon_black");
-	public static Item BOOFLO_VEST                = new ItemBoofloVest(RegistryUtils.createSimpleItemProperty(1, ItemGroup.COMBAT)).setRegistryName(EndergeticExpansion.MOD_ID, "booflo_vest");
-	
-	@SubscribeEvent
-	public static void onRegisterItems(RegistryEvent.Register<Item> event) {
-		final IForgeRegistry<Item> registry = event.getRegistry();
-		final Item[] items = {
-			EUMUS_BRICK, POISE_BOAT, BOLLOOM_FRUIT, BOOFLO_HIDE, PUFFBUG_BOTTLE, BOLLOOM_BALLOON, BOLLOOM_BALLOON_RED, BOLLOOM_BALLOON_ORANGE, BOLLOOM_BALLOON_YELLOW, BOLLOOM_BALLOON_LIME, BOLLOOM_BALLOON_GREEN, BOLLOOM_BALLOON_LIGHT_BLUE, BOLLOOM_BALLOON_CYAN, 
-			BOLLOOM_BALLOON_BLUE, BOLLOOM_BALLOON_PINK, BOLLOOM_BALLOON_MAGENTA, BOLLOOM_BALLOON_PURPLE, BOLLOOM_BALLOON_BROWN, BOLLOOM_BALLOON_GRAY, BOLLOOM_BALLOON_LIGHT_GRAY, BOLLOOM_BALLOON_WHITE, BOLLOOM_BALLOON_BLACK, BOOFLO_VEST
-		};
-		registry.registerAll(items);
-	}
-	
+	public static final RegistryObject<Item> POISE_BOAT                 = RegistryUtils.createItem("poise_boat", () -> new ItemEndergeticBoat(Type.POISE, RegistryUtils.createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)));
+	public static final RegistryObject<Item> BOLLOOM_FRUIT              = RegistryUtils.createItem("bolloom_fruit", () -> new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)));
+	public static final RegistryObject<Item> BOOFLO_HIDE                = RegistryUtils.createItem("booflo_hide", () -> new Item(RegistryUtils.createSimpleItemProperty(16, ItemGroup.MATERIALS)));
+	public static final RegistryObject<Item> PUFFBUG_BOTTLE             = RegistryUtils.createItem("puffbug_bottle", () -> new ItemPuffBugBottle(RegistryUtils.createSimpleItemProperty(1, ItemGroup.MISC)));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON            = RegistryUtils.createItem("bolloom_balloon", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), null));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED        = RegistryUtils.createItem("bolloom_balloon_red", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_ORANGE     = RegistryUtils.createItem("bolloom_balloon_orange", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.ORANGE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_YELLOW     = RegistryUtils.createItem("bolloom_balloon_yellow", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.YELLOW));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIME       = RegistryUtils.createItem("bolloom_balloon_lime", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIME));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_GREEN      = RegistryUtils.createItem("bolloom_balloon_green", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_BLUE = RegistryUtils.createItem("bolloom_balloon_light_blue", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_CYAN       = RegistryUtils.createItem("bolloom_balloon_cyan", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLUE       = RegistryUtils.createItem("bolloom_balloon_blue", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_PINK       = RegistryUtils.createItem("bolloom_balloon_pink", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_MAGENTA    = RegistryUtils.createItem("bolloom_balloon_magenta", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_PURPLE     = RegistryUtils.createItem("bolloom_balloon_purple", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BROWN      = RegistryUtils.createItem("bolloom_balloon_brown", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_GRAY       = RegistryUtils.createItem("bolloom_balloon_gray", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_GRAY = RegistryUtils.createItem("bolloom_balloon_light_gray", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_GRAY));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_WHITE      = RegistryUtils.createItem("bolloom_balloon_white", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.WHITE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLACK      = RegistryUtils.createItem("bolloom_balloon_black", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLACK));
+	public static final RegistryObject<Item> BOOFLO_VEST                = RegistryUtils.createItem("booflo_vest", () -> new ItemBoofloVest(RegistryUtils.createSimpleItemProperty(1, ItemGroup.COMBAT)));
 }

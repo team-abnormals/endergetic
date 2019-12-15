@@ -10,8 +10,10 @@ import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.*;
 import endergeticexpansion.core.registry.EEBiomes;
+import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.other.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -36,10 +38,14 @@ public class EndergeticExpansion {
 	public EndergeticExpansion() {
 		instance = this;
 		
-		this.setupMessages();
 		proxy.overrideVanillaFields();
+		this.setupMessages();
 		this.overrideVanillaFields();
+		
+		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	
+		EEItems.ITEMS.register(modEventBus);
+		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 	}
     	

@@ -152,7 +152,7 @@ public class EntityEndergeticBoat extends BoatEntity {
 		switch (this.getBoatModel()) {
 			case POISE:
 			default:
-				return EEItems.POISE_BOAT;
+				return EEItems.POISE_BOAT.get();
 		}
 	}
 	

@@ -12,7 +12,7 @@ import endergeticexpansion.core.registry.EEItems;
  * @author - SmellyModder(Luke Tonon)
  */
 public enum EEArmorMaterials implements IArmorMaterial {
-	BOOFLO("booflo_vest", new int[] {85, 85, 85, 85}, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
+	BOOFLO("booflo_vest", new int[] {85, 85, 85, 85}, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE.get(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 	
 	private int[] durabilities;
 	private String name;

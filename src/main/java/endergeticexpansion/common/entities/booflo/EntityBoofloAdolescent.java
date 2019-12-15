@@ -141,7 +141,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		
 		if(this.getPlayingAnimation() == EATING_ANIMATION && this.getAnimationTick() == 9) {
 			if(this.world instanceof ServerWorld) {
-				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT)), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 			}
 			this.playSound(SoundEvents.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
 		}
@@ -346,7 +346,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	
 	public void dropFruit() {
 		if(!this.world.isRemote) {
-			this.entityDropItem(EEItems.BOLLOOM_FRUIT);
+			this.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
 			this.setHasFruit(false);
 		}
 	}

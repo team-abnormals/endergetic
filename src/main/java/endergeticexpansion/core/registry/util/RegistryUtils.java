@@ -1,7 +1,10 @@
 package endergeticexpansion.core.registry.util;
 
+import java.util.function.Supplier;
+
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
 import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
@@ -10,6 +13,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
+import net.minecraftforge.fml.RegistryObject;
 
 public class RegistryUtils {
 	
@@ -43,6 +47,11 @@ public class RegistryUtils {
 	
 	public static Item.Properties createSimpleItemProperty(int stackSize, ItemGroup itemGroup) {
 		return new Item.Properties().group(itemGroup).maxStackSize(stackSize);
+	}
+	
+	public static <I extends Item> RegistryObject<I> createItem(String name, Supplier<? extends I> supplier) {
+		RegistryObject<I> item = EEItems.ITEMS.register(name, supplier);
+		return item;
 	}
 	
 }

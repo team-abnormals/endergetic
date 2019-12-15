@@ -20,7 +20,7 @@ public class MessageDamageItem {
 	public MessageDamageItem(ItemStack stack, int amount) {
 		this.itemstack = stack;
 		this.amount = amount;
-		this.isVest = stack.getItem() == EEItems.BOOFLO_VEST ? true : false;
+		this.isVest = stack.getItem() == EEItems.BOOFLO_VEST.get() ? true : false;
 	}
 
 	public void serialize(PacketBuffer buf) {
@@ -40,7 +40,7 @@ public class MessageDamageItem {
 				PlayerEntity player = ctx.get().getSender();
 				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 				if(message.isVest) {
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
 						vest.damageItem(10, player, (onBroken) -> {
 							onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
 						});

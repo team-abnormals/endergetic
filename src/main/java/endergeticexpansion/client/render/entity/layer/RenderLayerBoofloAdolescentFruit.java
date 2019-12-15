@@ -32,7 +32,7 @@ public class RenderLayerBoofloAdolescentFruit extends LayerRenderer<EntityBooflo
 			GlStateManager.translatef((this.getEntityModel()).Jaw.rotationPointX / 16.0F, (this.getEntityModel()).Jaw.rotationPointY / 16.0F, (this.getEntityModel()).Jaw.rotationPointZ / 16.0F - 0.5F);
 			GlStateManager.rotatef(90F, 1.0F, 0.0F, 0.0F);
 			
-			this.itemRenderer.renderItem(new ItemStack(EEItems.BOLLOOM_FRUIT), booflo, ItemCameraTransforms.TransformType.GROUND, false);
+			this.itemRenderer.renderItem(new ItemStack(EEItems.BOLLOOM_FRUIT.get()), booflo, ItemCameraTransforms.TransformType.GROUND, false);
 			
 			GlStateManager.popMatrix();
 		}

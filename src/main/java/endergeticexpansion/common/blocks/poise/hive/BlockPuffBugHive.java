@@ -52,7 +52,7 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	@Nonnull
 	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		return !isValidPosition(state, world, currentPos) ? destroyBlock(world, currentPos, null) : super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+		return !isValidPosition(state, world, currentPos) ? destroyBlock(world, currentPos, null) : state;
 	}
 	
 	@Nullable

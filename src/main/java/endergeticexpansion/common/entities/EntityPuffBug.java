@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.EntityType;
@@ -270,7 +271,7 @@ public class EntityPuffBug extends FlyingEntity {
         if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive()) {
         	this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
         	itemstack.shrink(1);
-        	ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE);
+        	ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());
         	this.setBottleData(bottle);
         	
         	if(itemstack.isEmpty()) {

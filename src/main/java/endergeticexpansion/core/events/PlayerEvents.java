@@ -55,7 +55,7 @@ public class PlayerEvents {
 		PlayerEntity player = event.player;
     	ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
     	
-    	if(player != null && !stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST) {
+    	if(player != null && !stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get()) {
     		if(stack.hasTag() && !player.onGround) {
     			if(stack.getTag().getBoolean("boofed")) {
     				player.fallDistance = 0;

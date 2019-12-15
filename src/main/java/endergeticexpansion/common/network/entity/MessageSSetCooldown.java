@@ -54,7 +54,7 @@ public class MessageSSetCooldown {
 				PlayerEntity player = ctx.get().getSender();
 				if(message.isVest) {
 					ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST) {
+					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
 						player.getCooldownTracker().setCooldown(vest.getItem(), MessageSSetCooldown.getDelayForBoofedAmount(vest));
 					}
 				}

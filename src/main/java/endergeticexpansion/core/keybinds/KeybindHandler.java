@@ -53,7 +53,7 @@ public class KeybindHandler {
     		PlayerEntity player = Minecraft.getInstance().player;
     		ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-    		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
+    		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
         		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);

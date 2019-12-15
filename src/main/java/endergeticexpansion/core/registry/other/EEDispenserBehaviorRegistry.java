@@ -11,23 +11,23 @@ public class EEDispenserBehaviorRegistry {
 
 	public static void registerAll() {
 		DispenserBlock.registerDispenseBehavior(EEBlocks.BOOF_BLOCK.asItem(), new BlockBoof.BoofDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_RED, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_ORANGE, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_YELLOW, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIME, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GREEN, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_BLUE, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_CYAN, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLUE, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_PINK, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_MAGENTA, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_PURPLE, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BROWN, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GRAY, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_GRAY, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLACK, new ItemBolloomBalloon.BalloonDispenseBehavior());
-		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE, new ItemPuffBugBottle.PuffBugBottleDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_RED.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_ORANGE.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_YELLOW.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIME.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GREEN.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_BLUE.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_CYAN.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLUE.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_PINK.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_MAGENTA.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_PURPLE.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BROWN.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GRAY.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_GRAY.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLACK.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE.get(), new ItemPuffBugBottle.PuffBugBottleDispenseBehavior());
 	}
 	
 }
