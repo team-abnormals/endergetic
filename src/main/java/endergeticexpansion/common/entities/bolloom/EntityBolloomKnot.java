@@ -31,7 +31,7 @@ public class EntityBolloomKnot extends Entity {
 	}
 	
 	public EntityBolloomKnot(World world, BlockPos pos) {
-		this(EEEntities.BOLLOOM_KNOT, world);
+		this(EEEntities.BOLLOOM_KNOT.get(), world);
 		this.setPosition(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
 		this.hangingPosition = pos;
 		this.setMotion(Vec3d.ZERO);
@@ -39,7 +39,7 @@ public class EntityBolloomKnot extends Entity {
 	}
 	
 	public EntityBolloomKnot(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		this(EEEntities.BOLLOOM_KNOT, world);
+		this(EEEntities.BOLLOOM_KNOT.get(), world);
 	}
 	
 	@Override

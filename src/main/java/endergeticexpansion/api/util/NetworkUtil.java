@@ -112,6 +112,7 @@ public class NetworkUtil {
 	public static void setPlayingAnimationMessage(EndimatedEntity entity, Endimation animationToPlay) {
 		if(!entity.isWorldRemote()) {
 			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCAnimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animationToPlay)));
+			entity.setPlayingAnimation(animationToPlay);
 		}
 	}
 }

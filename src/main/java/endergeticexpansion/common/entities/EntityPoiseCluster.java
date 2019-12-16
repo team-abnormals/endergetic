@@ -38,14 +38,14 @@ public class EntityPoiseCluster extends LivingEntity {
 	private static final DataParameter<Boolean> ASCEND = EntityDataManager.createKey(EntityPoiseCluster.class, DataSerializers.BOOLEAN);
 	
 	public EntityPoiseCluster(EntityType<? extends EntityPoiseCluster> cluster, World worldIn) {
-		super(EEEntities.POISE_CLUSTER, worldIn);
+		super(EEEntities.POISE_CLUSTER.get(), worldIn);
 	}
 	
 	/*
 	 * Constructor used for spawning the entity
 	 */
 	public EntityPoiseCluster(World worldIn, BlockPos origin, double x, double y, double z) {
-		this(EEEntities.POISE_CLUSTER, worldIn);
+		this(EEEntities.POISE_CLUSTER.get(), worldIn);
 		this.setHealth(100);
 		this.setOrigin(new BlockPos(origin));
 		// Subtracts 0.5 on x and z due to block positions being whole

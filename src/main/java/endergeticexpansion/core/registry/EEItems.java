@@ -41,4 +41,9 @@ public class EEItems {
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_WHITE      = RegistryUtils.createItem("bolloom_balloon_white", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.WHITE));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLACK      = RegistryUtils.createItem("bolloom_balloon_black", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLACK));
 	public static final RegistryObject<Item> BOOFLO_VEST                = RegistryUtils.createItem("booflo_vest", () -> new ItemBoofloVest(RegistryUtils.createSimpleItemProperty(1, ItemGroup.COMBAT)));
+
+	/*
+	 * Spawn Eggs
+	 */
+	public static final RegistryObject<Item> PUFF_BUG_SPAWN_EGG         = RegistryUtils.createSpawnEggItem("puff_bug", () -> EEEntities.PUFF_BUG.get(), 15660724, 16610303);
 }

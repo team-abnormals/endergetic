@@ -35,7 +35,7 @@ public class TileEntityPuffBugHive extends TileEntity {
 		List<EntityPuffBug> list = new ArrayList<>();
 		if (world != null) {
 			for (int i = 0; i < amount && getBugsInHive() > 0; i++) {
-				EntityPuffBug entity = EEEntities.PUFF_BUG.create(world);
+				EntityPuffBug entity = EEEntities.PUFF_BUG.get().create(this.world);
 				if (entity != null) {
 					entity.deserializeNBT(bugsInHive.remove(i));
 					Direction face = Direction.random(world.rand);

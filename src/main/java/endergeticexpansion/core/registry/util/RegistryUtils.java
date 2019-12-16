@@ -2,6 +2,7 @@ package endergeticexpansion.core.registry.util;
 
 import java.util.function.Supplier;
 
+import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
@@ -52,6 +53,10 @@ public class RegistryUtils {
 	public static <I extends Item> RegistryObject<I> createItem(String name, Supplier<? extends I> supplier) {
 		RegistryObject<I> item = EEItems.ITEMS.register(name, supplier);
 		return item;
+	}
+	
+	public static RegistryObject<Item> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
+		return EEItems.ITEMS.register(entityName + "_spawn_egg", () -> new EndergeticSpawnEgg(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
 	}
 	
 }

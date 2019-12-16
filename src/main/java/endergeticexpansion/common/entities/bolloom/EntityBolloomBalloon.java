@@ -61,14 +61,14 @@ public class EntityBolloomBalloon extends Entity {
 	}
 	
 	public EntityBolloomBalloon(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		this(EEEntities.BOLLOOM_BALLOON, world);
+		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 	}
 	
 	/*
 	 * Used for Adding onto a fence
 	 */
 	public EntityBolloomBalloon(World world, UUID ownerKnot, BlockPos pos, float offset) {
-		this(EEEntities.BOLLOOM_BALLOON, world);
+		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 		float xOffset = this.rand.nextBoolean() ? -offset : offset;
 		float zOffset = this.rand.nextBoolean() ? -offset : offset;
 		this.setPosition(pos.getX() + 0.5F + xOffset, pos.getY() + 3, pos.getZ() + 0.5F + zOffset);
@@ -84,7 +84,7 @@ public class EntityBolloomBalloon extends Entity {
 	 * Used for Dispensers
 	 */
 	public EntityBolloomBalloon(World world, BlockPos pos) {
-		this(EEEntities.BOLLOOM_BALLOON, world);
+		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setOriginalPos(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setUntied();
@@ -99,7 +99,7 @@ public class EntityBolloomBalloon extends Entity {
 	 * Used for attaching to entities
 	 */
 	public EntityBolloomBalloon(World world, Entity entity) {
-		this(EEEntities.BOLLOOM_BALLOON, world);
+		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 		this.setPosition(entity.posX, (entity.posY + 2 + entity.getEyeHeight()), entity.posZ);
 		this.setAttachedEntityId(entity.getUniqueID());
 		if(!world.isRemote) {

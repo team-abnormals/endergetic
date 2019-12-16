@@ -63,7 +63,7 @@ public class ItemPuffBugBottle extends Item {
 				blockpos1 = blockpos.offset(direction);
 			}
 			
-			EntityType<?> entitytype = EEEntities.PUFF_BUG;
+			EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
 			if(entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
 				this.emptyBottle(context.getPlayer(), context.getHand());
 			}
@@ -87,7 +87,7 @@ public class ItemPuffBugBottle extends Item {
 				if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
 					return new ActionResult<>(ActionResultType.PASS, itemstack);
 				} else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
-					EntityType<?> entitytype = EEEntities.PUFF_BUG;
+					EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
 					if(entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
 						return new ActionResult<>(ActionResultType.PASS, itemstack);
 					} else {
@@ -130,7 +130,7 @@ public class ItemPuffBugBottle extends Item {
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
 			if(source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
-				EntityType<?> entitytype = EEEntities.PUFF_BUG;
+				EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
 				entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
 				stack = new ItemStack(Items.GLASS_BOTTLE);
 			} else {

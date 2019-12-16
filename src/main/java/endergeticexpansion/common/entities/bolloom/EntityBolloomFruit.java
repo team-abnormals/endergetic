@@ -48,17 +48,17 @@ public class EntityBolloomFruit extends Entity {
 	public float prevAngle;
 	
 	public EntityBolloomFruit(EntityType<? extends EntityBolloomFruit> type, World world) {
-		super(EEEntities.BOLLOOM_FRUIT, world);
+		super(EEEntities.BOLLOOM_FRUIT.get(), world);
 		this.setNoGravity(true);
 	}
 	
 	public EntityBolloomFruit(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		this(EEEntities.BOLLOOM_FRUIT, world);
+		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 	}
 	
 	// 0 - North, 1 - East...
 	public EntityBolloomFruit(World world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
-		this(EEEntities.BOLLOOM_FRUIT, world);
+		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 		if(direction == Direction.NORTH) {
 			this.setPosition(origin.getX() + 0.5, origin.getY() + 1.15F, origin.getZ() + 0.5 + 0.3F);
 			this.setOriginalSway(origin.getX() + 0.5F, origin.getZ() + 0.5F + 0.2F);

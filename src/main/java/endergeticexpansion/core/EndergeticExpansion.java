@@ -10,6 +10,7 @@ import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.*;
 import endergeticexpansion.core.registry.EEBiomes;
+import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
 import endergeticexpansion.core.registry.EETileEntities;
@@ -48,6 +49,7 @@ public class EndergeticExpansion {
     	
 		EEItems.ITEMS.register(modEventBus);
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
+		EEEntities.ENTITY_TYPES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
 		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);

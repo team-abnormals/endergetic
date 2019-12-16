@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
 
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.EntityType;
@@ -54,12 +53,12 @@ public class EntityPuffBug extends FlyingEntity {
 	}
 	
 	public EntityPuffBug(World worldIn, BlockPos pos) {
-		this(EEEntities.PUFF_BUG, worldIn);
+		this(EEEntities.PUFF_BUG.get(), worldIn);
 		this.setHivePos(pos);
 	}
 	
 	public EntityPuffBug(World worldIn, double x, double y, double z) {
-		this(EEEntities.PUFF_BUG, worldIn);
+		this(EEEntities.PUFF_BUG.get(), worldIn);
 		this.setPosition(x, y, z);
 	}
 	

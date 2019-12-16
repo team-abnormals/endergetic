@@ -34,12 +34,12 @@ public class EntityBoofBlock extends LivingEntity {
 	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(EntityBoofBlock.class, DataSerializers.BOOLEAN);
 	
 	public EntityBoofBlock(EntityType<? extends EntityBoofBlock> type, World world) {
-		super(EEEntities.BOOF_BLOCK, world);
+		super(EEEntities.BOOF_BLOCK.get(), world);
 		this.setNoGravity(true);
 	}
 	
 	public EntityBoofBlock(World world, BlockPos pos) {
-		this(EEEntities.BOOF_BLOCK, world);
+		this(EEEntities.BOOF_BLOCK.get(), world);
 		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setOrigin(pos);
 	}
