@@ -42,7 +42,7 @@ public class BlockPoiseEumusGrass extends Block implements IGrowable {
 					for(int i = 0; i < 4; ++i) {
 						BlockPos blockpos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
 						if(worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS && shouldGrowOnto(blockstate, worldIn, blockpos)) {
-							worldIn.setBlockState(blockpos, EEBlocks.POISMOSS_EUMUS.getDefaultState());
+							worldIn.setBlockState(blockpos, EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
 						}
 					}
 				}

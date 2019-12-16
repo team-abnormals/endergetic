@@ -17,7 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class EETileEntities {
 	public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, EndergeticExpansion.MOD_ID);
 	
-	public static final RegistryObject<TileEntityType<TileEntityCorrockCrown>> CORROCK_CROWN = TILE_ENTITY_TYPES.register("corrock_crown", () -> new TileEntityType<>(TileEntityCorrockCrown::new, Sets.newHashSet(EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING, EEBlocks.CORROCK_CROWN_OVERWORLD_WALL, EEBlocks.CORROCK_CROWN_NETHER_STANDING, EEBlocks.CORROCK_CROWN_NETHER_WALL, EEBlocks.CORROCK_CROWN_END_STANDING, EEBlocks.CORROCK_CROWN_END_WALL), null));
+	public static final RegistryObject<TileEntityType<TileEntityCorrockCrown>> CORROCK_CROWN = TILE_ENTITY_TYPES.register("corrock_crown", () -> new TileEntityType<>(TileEntityCorrockCrown::new, Sets.newHashSet(EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.CORROCK_CROWN_NETHER_STANDING.get(), EEBlocks.CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.CORROCK_CROWN_END_STANDING.get(), EEBlocks.CORROCK_CROWN_END_WALL.get()), null));
 	public static final RegistryObject<TileEntityType<TileEntityFrisbloomStem>> FRISBLOOM_STEM = TILE_ENTITY_TYPES.register("frisbloom_stem", () -> new TileEntityType<>(TileEntityFrisbloomStem::new, Sets.newHashSet(EEBlocks.FRISBLOOM_STEM), null));
 	
 	/*

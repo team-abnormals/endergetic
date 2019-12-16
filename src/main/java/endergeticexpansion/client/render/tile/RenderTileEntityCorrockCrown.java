@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
-
 public class RenderTileEntityCorrockCrown extends TileEntityRenderer<TileEntityCorrockCrown> {
 	public ModelCorrockCrownStanding standingModel;
 	public ModelCorrockCrownWall wallModel;	
@@ -68,13 +67,16 @@ public class RenderTileEntityCorrockCrown extends TileEntityRenderer<TileEntityC
 		}
 		
 		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
+		
+		GlStateManager.disableLighting();
+		
 		if(BlockState.getBlock() instanceof BlockCorrockCrownStanding) {
 			standingModel.renderAll();
-			GlStateManager.disableLighting();
 		} else {
 			wallModel.renderAll();
-			GlStateManager.disableLighting();
 		}
+		
+		GlStateManager.enableLighting();
 		
 		GlStateManager.popMatrix();
 		GlStateManager.popMatrix();
@@ -82,9 +84,9 @@ public class RenderTileEntityCorrockCrown extends TileEntityRenderer<TileEntityC
 	
 	public int getTexture(TileEntityCorrockCrown te) {
 		BlockState BlockState = te.getBlockState();
-		if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_WALL) {
+		if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING.get() | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_WALL.get()) {
 			return 0;
-		} else if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL) {
+		} else if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL.get()) {
 			return 1;
 		} else {
 			return 2;

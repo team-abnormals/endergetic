@@ -1,6 +1,7 @@
 package endergeticexpansion.common.items.itemblocks;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -14,17 +15,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.world.IWorldReader;
 
-public class ItemBlockCorrockCrown extends BlockItem {
-	protected final Block wallBlock;
+public class ItemBlockCorrockCrownS extends BlockItem {
+	protected final Supplier<Block> wallBlock;
 
-	public ItemBlockCorrockCrown(Block floorBlock, Block wallBlockIn, Item.Properties p_i48462_3_) {
+	public ItemBlockCorrockCrownS(Block floorBlock, Supplier<Block> wallBlockIn, Item.Properties p_i48462_3_) {
 		super(floorBlock, p_i48462_3_);
 		this.wallBlock = wallBlockIn;
 	}
 
 	@Nullable
 	protected BlockState getStateForPlacement(BlockItemUseContext context) {
-		BlockState iblockstate = this.wallBlock.getStateForPlacement(context);
+		BlockState iblockstate = this.wallBlock.get().getStateForPlacement(context);
 		BlockState iblockstate1 = null;
 		IWorldReader iworldreaderbase = context.getWorld();
 		BlockPos blockpos = context.getPos();
@@ -42,6 +43,6 @@ public class ItemBlockCorrockCrown extends BlockItem {
 
 	public void addToBlockToItemMap(Map<Block, Item> blockToItemMap, Item itemIn) {
 		super.addToBlockToItemMap(blockToItemMap, itemIn);
-		blockToItemMap.put(this.wallBlock, itemIn);
+		blockToItemMap.put(this.wallBlock.get(), itemIn);
 	}
 }

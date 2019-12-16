@@ -22,30 +22,34 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Rarity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EEBlocks {
-	//Block Init
-	public static Block CORROCK_BLOCK_OVERWORLD = new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_overworld_block");
-	public static Block CORROCK_BLOCK_NETHER    = new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_nether_block");
-	public static Block CORROCK_BLOCK_END       = new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, true)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_end_block");
-	public static Block CORROCK_OVERWORLD       = new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, false)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_overworld");
-	public static Block CORROCK_NETHER          = new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, false)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_nether");
-	public static Block CORROCK_END             = new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_end");
-	public static Block CORROCK_CROWN_OVERWORLD_WALL     = new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_wall_overworld");
-	public static Block CORROCK_CROWN_OVERWORLD_STANDING = new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_standing_overworld");
-	public static Block CORROCK_CROWN_NETHER_WALL        = new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_wall_nether");
-	public static Block CORROCK_CROWN_NETHER_STANDING    = new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_standing_nether");
-	public static Block CORROCK_CROWN_END_WALL           = new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_wall_end");
-	public static Block CORROCK_CROWN_END_STANDING       = new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)).setRegistryName(EndergeticExpansion.MOD_ID, "corrock_crown_standing_end");
+	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, EndergeticExpansion.MOD_ID);
+	
+	public static final RegistryObject<Block> CORROCK_BLOCK_OVERWORLD = RegistryUtils.createBlock("corrock_overworld_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CORROCK_BLOCK_NETHER    = RegistryUtils.createBlock("corrock_nether_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CORROCK_BLOCK_END       = RegistryUtils.createBlock("corrock_end_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CORROCK_OVERWORLD       = RegistryUtils.createBlock("corrock_overworld", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, false)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> CORROCK_NETHER          = RegistryUtils.createBlock("corrock_nether", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, false)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> CORROCK_END             = RegistryUtils.createBlock("corrock_end", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_OVERWORLD_WALL     = RegistryUtils.createBlockNoItem("corrock_crown_wall_overworld", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_OVERWORLD_STANDING     = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_overworld", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)), () -> CORROCK_CROWN_OVERWORLD_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_NETHER_WALL        = RegistryUtils.createBlockNoItem("corrock_crown_wall_nether", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_NETHER_STANDING        = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_nether", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)), () -> CORROCK_CROWN_NETHER_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_END_WALL           = RegistryUtils.createBlockNoItem("corrock_crown_wall_end", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_END_STANDING           = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
 	
 	/*
 	 * Poise Forest
 	 */
-	public static Block POISMOSS_EUMUS       = new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "poismoss_eumus");
+	public static final RegistryObject<BlockPoiseEumusGrass> POISMOSS_EUMUS                    = RegistryUtils.createBlock("poismoss_eumus", () -> new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS), ItemGroup.BUILDING_BLOCKS);
 	public static Block POISE_GRASS_BLOCK    = new BlockPoiseGrass(EEProperties.POISE_GRASS(false)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_block");
 	public static Block POISE_GRASS          = new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass");
 	public static Block POISE_GRASS_TALL     = new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_tall");
@@ -100,9 +104,7 @@ public class EEBlocks {
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
 		final Block blocks[] = {
-			CORROCK_BLOCK_OVERWORLD, CORROCK_BLOCK_NETHER, CORROCK_BLOCK_END, CORROCK_OVERWORLD, CORROCK_NETHER, CORROCK_END,
-			CORROCK_CROWN_OVERWORLD_WALL, CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_NETHER_WALL, CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_END_WALL, CORROCK_CROWN_END_STANDING,
-			EUMUS, POISMOSS_EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
+			EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
 			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
 			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, EUMUS_BRICK_WALL, POISE_BUSH_POT,
 			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE,
@@ -116,19 +118,9 @@ public class EEBlocks {
 		final IForgeRegistry<Item> registry = event.getRegistry();
 		
 		//registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_OVERWORLD, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_NETHER, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_BLOCK_END, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_OVERWORLD, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_NETHER, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createSimpleBlockItem(CORROCK_END, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_OVERWORLD_STANDING, CORROCK_CROWN_OVERWORLD_WALL, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_NETHER_STANDING, CORROCK_CROWN_NETHER_WALL, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createWallOrFloorItemUpsideDownAllowed(CORROCK_CROWN_END_STANDING, CORROCK_CROWN_END_WALL, ItemGroup.DECORATIONS));
 		
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISMOSS_EUMUS, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS_BLOCK, ItemGroup.BUILDING_BLOCKS));
+		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS, ItemGroup.BUILDING_BLOCKS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS, ItemGroup.DECORATIONS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS_TALL, ItemGroup.DECORATIONS));
 		registry.register(RegistryUtils.createSimpleBlockItem(POISE_CLUSTER, ItemGroup.BUILDING_BLOCKS));

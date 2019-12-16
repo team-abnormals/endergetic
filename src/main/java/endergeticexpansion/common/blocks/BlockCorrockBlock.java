@@ -64,13 +64,13 @@ public class BlockCorrockBlock extends Block {
 	}
 
 	public boolean isInProperDimension(World world) {
-		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_OVERWORLD) {
+		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_OVERWORLD.get()) {
 			return (world.getDimension() instanceof OverworldDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_NETHER) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_NETHER.get()) {
 			return (world.getDimension() instanceof NetherDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_END) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_END.get()) {
 			return (world.getDimension() instanceof EndDimension);
 		}
 		return false;
@@ -79,11 +79,11 @@ public class BlockCorrockBlock extends Block {
 	public BlockState getCorrockBlockForDimension(Dimension dimension) {
 		switch(dimension.getType().getId()) {
 			case 0:
-			return EEBlocks.CORROCK_BLOCK_OVERWORLD.getDefaultState();
+			return EEBlocks.CORROCK_BLOCK_OVERWORLD.get().getDefaultState();
 			case 1:
-			return EEBlocks.CORROCK_BLOCK_END.getDefaultState();
+			return EEBlocks.CORROCK_BLOCK_END.get().getDefaultState();
 			case -1:
-			return EEBlocks.CORROCK_BLOCK_NETHER.getDefaultState();
+			return EEBlocks.CORROCK_BLOCK_NETHER.get().getDefaultState();
 		}
 		return null;
 	}

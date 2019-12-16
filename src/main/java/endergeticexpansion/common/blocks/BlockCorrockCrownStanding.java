@@ -20,6 +20,9 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -32,6 +35,11 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	public BlockCorrockCrownStanding(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, Integer.valueOf(0)).with(WATERLOGGED, Boolean.valueOf(false)).with(UPSIDE_DOWN, false));
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
 	}
 	
 	@Override
@@ -52,11 +60,11 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	public BlockState getCorrockBlockForDimension(Dimension dimension) {
 		switch(dimension.getType().getId()) {
 			case 0:
-			return EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get().getDefaultState();
 			case 1:
-			return EEBlocks.CORROCK_CROWN_END_STANDING.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState();
 			case -1:
-			return EEBlocks.CORROCK_CROWN_NETHER_STANDING.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_NETHER_STANDING.get().getDefaultState();
 		}
 		return null;
 	}

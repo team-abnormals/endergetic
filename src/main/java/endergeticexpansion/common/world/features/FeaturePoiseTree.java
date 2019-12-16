@@ -23,7 +23,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
  * @author - SmellyModder(Luke Tonon)
  */
 public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
-
+	
 	public FeaturePoiseTree(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
 	}
@@ -195,7 +195,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			}
 			for(int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
 				for(int z = pos.getZ() - 1; z <= pos.getZ() + 1; z++) {
-					this.setBlockState(world, new BlockPos(x, pos.up(arrivedPos + 1).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState());
+					this.setBlockState(world, new BlockPos(x, pos.up(arrivedPos + 1).getY(), z), EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
 				}
 			}
 			this.setPoiseLog(world, pos.up(arrivedPos).north(2), rand, false, true);
@@ -217,10 +217,10 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseLog(world, pos.up(arrivedPos).west(2).up().north(), rand, false, true);
 			this.setPoiseLog(world, pos.up(arrivedPos).west(2).up().south(), rand, false, true);
 			
-			this.setBlockState(world, pos.up(arrivedPos).north(2).up(), EEBlocks.POISMOSS_EUMUS.getDefaultState());
-			this.setBlockState(world, pos.up(arrivedPos).east(2).up(), EEBlocks.POISMOSS_EUMUS.getDefaultState());
-			this.setBlockState(world, pos.up(arrivedPos).south(2).up(), EEBlocks.POISMOSS_EUMUS.getDefaultState());
-			this.setBlockState(world, pos.up(arrivedPos).west(2).up(), EEBlocks.POISMOSS_EUMUS.getDefaultState());
+			this.setBlockState(world, pos.up(arrivedPos).north(2).up(), EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
+			this.setBlockState(world, pos.up(arrivedPos).east(2).up(), EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
+			this.setBlockState(world, pos.up(arrivedPos).south(2).up(), EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
+			this.setBlockState(world, pos.up(arrivedPos).west(2).up(), EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
 			
 			int[] sideRandValues = new int[] {
 				rand.nextInt(3) + 1,
@@ -311,12 +311,12 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			
 			for(int x = origin.getX() - 2; x <= origin.getX() + 2; x++) {
 				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
-					world.setBlockState(new BlockPos(x, origin.up(2).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+					world.setBlockState(new BlockPos(x, origin.up(2).getY(), z), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 				}
 			}
 			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
 				for(int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
-					world.setBlockState(new BlockPos(x, origin.up(2).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+					world.setBlockState(new BlockPos(x, origin.up(2).getY(), z), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 				}
 			}
 			
@@ -467,7 +467,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseLog(world, origin.up(4).north(2).east(3), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).north(2).east(4), rand, false, true);
 			
-			world.setBlockState(origin.up(4).north(2).east(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			world.setBlockState(origin.up(4).north(2).east(2), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 			
 			this.setPoiseLog(world, origin.up(4).east(3).south(2), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).east(4).south(2), rand, false, true);
@@ -475,7 +475,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseLog(world, origin.up(4).east(2).south(3), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).east(2).south(4), rand, false, true);
 			
-			world.setBlockState(origin.up(4).east(2).south(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			world.setBlockState(origin.up(4).east(2).south(2), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 			
 			this.setPoiseLog(world, origin.up(4).south(3).west(2), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).south(4).west(2), rand, false, true);
@@ -483,7 +483,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseLog(world, origin.up(4).south(2).west(3), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).south(2).west(4), rand, false, true);
 			
-			world.setBlockState(origin.up(4).south(2).west(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			world.setBlockState(origin.up(4).south(2).west(2), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 			
 			this.setPoiseLog(world, origin.up(4).west(3).north(2), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).west(4).north(2), rand, false, true);
@@ -491,16 +491,16 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 			this.setPoiseLog(world, origin.up(4).west(2).north(3), rand, false, true);
 			this.setPoiseLog(world, origin.up(4).west(2).north(4), rand, false, true);
 			
-			world.setBlockState(origin.up(4).west(2).north(2), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+			world.setBlockState(origin.up(4).west(2).north(2), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 			
 			for(int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
 				for(int z = origin.getZ() - 3; z <= origin.getZ() + 3; z++) {
-					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 				}
 			}
 			for(int x = origin.getX() - 3; x <= origin.getX() + 3; x++) {
 				for(int z = origin.getZ() - 1; z <= origin.getZ() + 1; z++) {
-					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.getDefaultState(), 2);
+					world.setBlockState(new BlockPos(x, origin.up(4).getY(), z), EEBlocks.POISMOSS_EUMUS.get().getDefaultState(), 2);
 				}
 			}
 			
@@ -1071,7 +1071,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		for(int i = 2; i >= -3; --i) {
 			BlockPos blockpos = pos.up(i);
 			if(world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS || world.getBlockState(blockpos).getBlock() == Blocks.END_STONE) {
-				BlockState newGround = world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS ? EEBlocks.POISMOSS_EUMUS.getDefaultState() : EEBlocks.POISE_GRASS_BLOCK.getDefaultState();
+				BlockState newGround = world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS ? EEBlocks.POISMOSS_EUMUS.get().getDefaultState() : EEBlocks.POISE_GRASS_BLOCK.getDefaultState();
 				this.setBlockState(reader, blockpos, newGround);
 				break;
 			}
@@ -1162,7 +1162,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isValidGround(IWorld world, BlockPos pos) {
-		return world.getBlockState(pos) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() || world.getBlockState(pos) == EEBlocks.POISMOSS_EUMUS.getDefaultState() || world.getBlockState(pos) == EEBlocks.EUMUS.getDefaultState() || world.getBlockState(pos) == Blocks.END_STONE.getDefaultState();
+		return world.getBlockState(pos) == EEBlocks.POISE_GRASS_BLOCK.getDefaultState() || world.getBlockState(pos) == EEBlocks.POISMOSS_EUMUS.get().getDefaultState() || world.getBlockState(pos) == EEBlocks.EUMUS.getDefaultState() || world.getBlockState(pos) == Blocks.END_STONE.getDefaultState();
 	}
 	
 }

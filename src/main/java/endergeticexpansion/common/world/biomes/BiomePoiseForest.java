@@ -1,7 +1,7 @@
 package endergeticexpansion.common.world.biomes;
 
 import endergeticexpansion.common.world.features.EEFeatures;
-import endergeticexpansion.common.world.surface.EESurfaceBuilders;
+import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.gen.GenerationStage;

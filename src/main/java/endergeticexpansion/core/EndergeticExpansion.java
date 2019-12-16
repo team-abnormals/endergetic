@@ -10,6 +10,7 @@ import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.*;
 import endergeticexpansion.core.registry.EEBiomes;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
@@ -43,23 +44,25 @@ public class EndergeticExpansion {
 		
 		proxy.overrideVanillaFields();
 		this.setupMessages();
-		this.overrideVanillaFields();
 		
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	
 		EEItems.ITEMS.register(modEventBus);
+		EEBlocks.BLOCKS.register(modEventBus);
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
 		EEEntities.ENTITY_TYPES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
 		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 	}
-    	
+	
 	void preInit(final FMLCommonSetupEvent event) {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
 		EEBiomes.registerBiomeDictionaryTags();
+		EndOverrideHandler.overrideEndFactory();
+		FeatureOverrideHandler.overrideFeatures();
 	}
     
 	void setupMessages() {
@@ -113,10 +116,5 @@ public class EndergeticExpansion {
 		.encoder(MessageCAnimation::serialize).decoder(MessageCAnimation::deserialize)
 		.consumer(MessageCAnimation::handle)
 		.add();
-	}
-	
-	void overrideVanillaFields() {
-		EndOverrideHandler.overrideEndFactory();
-		FeatureOverrideHandler.overrideFeatures();
 	}
 }

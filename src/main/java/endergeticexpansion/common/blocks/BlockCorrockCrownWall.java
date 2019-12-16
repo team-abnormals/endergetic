@@ -55,11 +55,11 @@ public class BlockCorrockCrownWall extends BlockCorrockCrown {
 	public BlockState getCorrockBlockForDimension(Dimension dimension) {
 		switch(dimension.getType().getId()) {
 			case 0:
-			return EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get().getDefaultState();
 			case 1:
-			return EEBlocks.CORROCK_CROWN_END_WALL.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState();
 			case -1:
-			return EEBlocks.CORROCK_CROWN_NETHER_WALL.getDefaultState();
+				return EEBlocks.CORROCK_CROWN_NETHER_WALL.get().getDefaultState();
 		}
 		return null;
 	}

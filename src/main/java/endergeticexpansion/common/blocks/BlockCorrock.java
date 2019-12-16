@@ -14,7 +14,9 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -24,11 +26,15 @@ import net.minecraft.world.dimension.NetherDimension;
 import net.minecraft.world.dimension.OverworldDimension;
 
 public class BlockCorrock extends Block {
-	
 	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
 	
 	public BlockCorrock(Properties properties) {
 		super(properties);
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return SHAPE;
 	}
 	
 	@Override
@@ -70,13 +76,13 @@ public class BlockCorrock extends Block {
 	}
 
 	public boolean isInProperDimension(World world) {
-		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_OVERWORLD) {
+		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_OVERWORLD.get()) {
 			return (world.getDimension() instanceof OverworldDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_NETHER) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_NETHER.get()) {
 			return (world.getDimension() instanceof NetherDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_END) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_END.get()) {
 			return (world.getDimension() instanceof EndDimension);
 		}
 		return false;
@@ -85,11 +91,11 @@ public class BlockCorrock extends Block {
 	public BlockState getCorrockBlockForDimension(Dimension dimension) {
 		switch(dimension.getType().getId()) {
 			case 0:
-			return EEBlocks.CORROCK_OVERWORLD.getDefaultState();
+			return EEBlocks.CORROCK_OVERWORLD.get().getDefaultState();
 			case 1:
-			return EEBlocks.CORROCK_END.getDefaultState();
+			return EEBlocks.CORROCK_END.get().getDefaultState();
 			case -1:
-			return EEBlocks.CORROCK_NETHER.getDefaultState();
+			return EEBlocks.CORROCK_NETHER.get().getDefaultState();
 		}
 		return null;
 	}

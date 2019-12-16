@@ -2,15 +2,9 @@ package endergeticexpansion.core.registry;
 
 import java.util.function.BiFunction;
 
-import endergeticexpansion.common.entities.EntityBoofBlock;
-import endergeticexpansion.common.entities.EntityEndergeticBoat;
-import endergeticexpansion.common.entities.EntityPoiseCluster;
-import endergeticexpansion.common.entities.EntityPuffBug;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
-import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
+import endergeticexpansion.common.entities.*;
+import endergeticexpansion.common.entities.bolloom.*;
+import endergeticexpansion.common.entities.booflo.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -19,12 +13,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EEEntities {
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.ENTITIES, EndergeticExpansion.MOD_ID);
 	
@@ -44,12 +36,12 @@ public class EEEntities {
 	private static <T extends LivingEntity> EntityType<T> createLivingEntity(EntityType.IFactory<T> factory, EntityClassification entityClassification, String name, float width, float height){
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);
 		EntityType<T> entity = EntityType.Builder.create(factory, entityClassification)
-        	.size(width, height)
-        	.setTrackingRange(64)
-        	.setShouldReceiveVelocityUpdates(true)
-        	.setUpdateInterval(3)
-        	.build(location.toString()
-        );
+			.size(width, height)
+			.setTrackingRange(64)
+			.setShouldReceiveVelocityUpdates(true)
+			.setUpdateInterval(3)
+			.build(location.toString()
+		);
 		return entity;
 	}
 	
@@ -57,12 +49,12 @@ public class EEEntities {
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);
 		EntityType<T> entity = EntityType.Builder.create(factory, entityClassification)
 			.size(width, height)
-        	.setTrackingRange(64)
-        	.setShouldReceiveVelocityUpdates(true)
-        	.setUpdateInterval(3)
-        	.setCustomClientFactory(clientFactory)
-        	.build(location.toString()
-        );
+			.setTrackingRange(64)
+			.setShouldReceiveVelocityUpdates(true)
+			.setUpdateInterval(3)
+			.setCustomClientFactory(clientFactory)
+			.build(location.toString()
+		);
 		return entity;
 	}
 }

@@ -1329,7 +1329,7 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isProperBlock(IWorld world, BlockPos pos) {
-		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISE_GRASS_BLOCK || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS;
+		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISE_GRASS_BLOCK || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS.get();
 	}
 	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {

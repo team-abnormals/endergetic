@@ -29,7 +29,6 @@ import net.minecraft.world.dimension.OverworldDimension;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 
 public abstract class BlockCorrockCrown extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
-	
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
 	protected BlockCorrockCrown(Properties builder) {
@@ -55,13 +54,13 @@ public abstract class BlockCorrockCrown extends ContainerBlock implements IBucke
 	}
 	
 	public boolean isInProperDimension(World world) {
-		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_WALL) {
+		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get()) {
 			return (world.getDimension() instanceof OverworldDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL.get()) {
 			return (world.getDimension() instanceof NetherDimension);
 		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_WALL) {
+		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_WALL.get()) {
 			return (world.getDimension() instanceof EndDimension);
 		}
 		return false;

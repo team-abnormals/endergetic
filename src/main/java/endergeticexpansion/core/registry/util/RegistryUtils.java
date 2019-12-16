@@ -2,9 +2,13 @@ package endergeticexpansion.core.registry.util;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
+import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrownS;
 import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -59,4 +63,20 @@ public class RegistryUtils {
 		return EEItems.ITEMS.register(entityName + "_spawn_egg", () -> new EndergeticSpawnEgg(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
 	}
 	
+	public static <B extends Block> RegistryObject<B> createBlockNoItem(String name, Supplier<? extends B> supplier) {
+		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
+		return block;
+	}
+	
+	public static <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
+		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	public static <B extends Block> RegistryObject<B> createCorrockStandingBlock(String name, Supplier<? extends B> standingSupplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
+		RegistryObject<B> standingBlock = EEBlocks.BLOCKS.register(name, standingSupplier);
+		EEItems.ITEMS.register(name, () -> new ItemBlockCorrockCrownS(standingBlock.get(), () -> wallSupplier.get(), new Item.Properties().group(group)));
+		return standingBlock;
+	}
 }

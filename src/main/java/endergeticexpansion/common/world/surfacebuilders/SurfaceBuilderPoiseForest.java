@@ -1,4 +1,4 @@
-package endergeticexpansion.common.world.surface;
+package endergeticexpansion.common.world.surfacebuilders;
 
 import java.util.Random;
 import java.util.function.Function;
