@@ -17,6 +17,7 @@ import endergeticexpansion.core.registry.EESounds;
 import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -51,9 +52,10 @@ public class EndergeticExpansion {
 		EEBlocks.BLOCKS.register(modEventBus);
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
 		EEEntities.ENTITY_TYPES.register(modEventBus);
+		EEBiomes.BIOMES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
 		
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::preInit);
 	}
 	
 	void preInit(final FMLCommonSetupEvent event) {

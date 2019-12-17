@@ -7,10 +7,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.BiomeDictionary;
 
-public class EndergeticBiome extends Biome {
+public abstract class EndergeticBiome extends Biome {
 
 	public EndergeticBiome(Builder biomeBuilder) {
 		super(biomeBuilder);
+	}
+	
+	public int getWeight() {
+		return 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)

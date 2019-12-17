@@ -37,7 +37,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		Biomes.END_MIDLANDS,
 		Biomes.SMALL_END_ISLANDS,
 		Biomes.END_BARRENS,
-		EEBiomes.POISE_FOREST
+		EEBiomes.POISE_FOREST.get()
 	};
 	
 	public EndergeticBiomeProvider(EndBiomeProviderSettings settings) {
@@ -59,9 +59,9 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		} else {
 			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
 			if (f >= 0.0F) {
-				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
+				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
 			} else {
-				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? this.getBiomeOriginal(x, y) : this.biomeFactoryLayer.func_215738_a(x, y);
 			}
 		}
 	}
@@ -74,9 +74,9 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		} else {
 			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
 			if (f >= 0.0F) {
-				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST;
+				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST.get();
 			} else {
-				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST;
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? this.getBiomeOriginal(x, y) : EEBiomes.POISE_FOREST.get();
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 				long i1 = ChunkPos.asLong(k, l);
 				Biome biome = long2objectmap.get(i1);
 				if (biome == null) {
-					if(this.findBiome(k, l) == EEBiomes.POISE_FOREST) {
+					if(this.findBiome(k, l) == EEBiomes.POISE_FOREST.get()) {
 						return this.biomeFactoryLayer.generateBiomes(x, z, width, length);
 					} else {
 						biome = this.getBiome(k, l);

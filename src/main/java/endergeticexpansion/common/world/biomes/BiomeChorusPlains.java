@@ -15,6 +15,11 @@ public class BiomeChorusPlains extends EndergeticBiome {
 	}
 	
 	@Override
+	public int getWeight() {
+		return 15;
+	}
+	
+	@Override
 	public Type[] getBiomeTypes() {
 		return new Type[] {
 			Type.END
