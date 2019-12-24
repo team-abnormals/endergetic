@@ -4,8 +4,8 @@
         "category": "block",
         "subtitle": "Cluster Place",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_place_0", "stream": true},
-        	{ "name": "endergetic:block/cluster_place_1", "stream": true}
+        	{ "name": "endergetic:block/cluster_place_0", "stream": false},
+        	{ "name": "endergetic:block/cluster_place_1", "stream": false}
         ]
     },
     "block.cluster.break":
@@ -13,7 +13,7 @@
         "category": "block",
         "subtitle": "Cluster Break",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_break_0", "stream": true}
+        	{ "name": "endergetic:block/cluster_break_0", "stream": false}
         ]
     },
     "block.cluster.step":
@@ -21,9 +21,9 @@
         "category": "block",
         "subtitle": "Cluster Step",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_step_0", "stream": true},
-        	{ "name": "endergetic:block/cluster_step_1", "stream": true},
-        	{ "name": "endergetic:block/cluster_step_2", "stream": true}
+        	{ "name": "endergetic:block/cluster_step_0", "stream": false},
+        	{ "name": "endergetic:block/cluster_step_1", "stream": false},
+        	{ "name": "endergetic:block/cluster_step_2", "stream": false}
         ]
     },
     "block.cluster.hit":
@@ -31,7 +31,7 @@
         "category": "block",
         "subtitle": "Cluster Hit",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_hit", "stream": true}
+        	{ "name": "endergetic:block/cluster_hit", "stream": false}
         ]
     }
 }
