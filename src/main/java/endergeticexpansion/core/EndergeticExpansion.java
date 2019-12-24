@@ -63,6 +63,7 @@ public class EndergeticExpansion {
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
 		EEBiomes.registerBiomeDictionaryTags();
+		EEFireInfo.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
 		FeatureOverrideHandler.overrideFeatures();
 	}

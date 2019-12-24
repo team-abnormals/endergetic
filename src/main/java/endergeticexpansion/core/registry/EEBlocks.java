@@ -101,6 +101,14 @@ public class EEBlocks {
 	public static Block CRYSTAL_HOLDER       = new Block(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "crystal_holder");
 	public static Block ENDER_FIRE           = new BlockEnderFire(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");
 	
+	/*
+	 * Compatibility
+	 */
+	public static final RegistryObject<Block> POISE_VERTICAL_PLANKS = RegistryUtils.createCompatBlock("poise_vertical_planks", "quark", () -> new BlockPoisePlanks(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_VERTICAL_SLAB   = RegistryUtils.createCompatBlock("poise_vertical_slab", "quark", () -> new BlockVerticalSlab(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_BOOKSHELF       = RegistryUtils.createCompatBlock("poise_bookshelf", "quark", () -> new BlockEEBookshelf(Properties.from(Blocks.BOOKSHELF)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_LADDER          = RegistryUtils.createCompatBlock("poise_ladder", "quark", () -> new BlockEELadder(Properties.from(Blocks.LADDER)), ItemGroup.DECORATIONS);
+	
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
 		final Block blocks[] = {

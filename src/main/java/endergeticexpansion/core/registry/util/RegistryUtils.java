@@ -18,6 +18,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.item.TallBlockItem;
 import net.minecraft.item.WallOrFloorItem;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 
 public class RegistryUtils {
@@ -79,4 +80,15 @@ public class RegistryUtils {
 		EEItems.ITEMS.register(name, () -> new ItemBlockCorrockCrownS(standingBlock.get(), () -> wallSupplier.get(), new Item.Properties().group(group)));
 		return standingBlock;
 	}
+	
+	@Nullable
+	public static <B extends Block> RegistryObject<B> createCompatBlock(String name, String modName, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+		if(ModList.get().isLoaded(modName)) {
+			RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
+			EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+			return block;
+		}
+		return null;
+	}
+	
 }

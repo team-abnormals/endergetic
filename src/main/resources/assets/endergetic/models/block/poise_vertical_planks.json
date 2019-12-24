@@ -1,0 +1,6 @@
+{
+    "parent": "endergetic:block/vertical_planks",
+    "textures": {
+        "all": "endergetic:block/poise_planks"
+    }
+}

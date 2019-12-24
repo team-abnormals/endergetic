@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "endergetic:block/poise_ladder" },
+        "facing=east":  { "model": "endergetic:block/poise_ladder", "y": 90 },
+        "facing=south": { "model": "endergetic:block/poise_ladder", "y": 180 },
+        "facing=west":  { "model": "endergetic:block/poise_ladder", "y": 270 }
+    }
+}
