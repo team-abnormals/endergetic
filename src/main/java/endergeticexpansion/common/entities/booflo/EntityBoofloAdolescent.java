@@ -6,11 +6,13 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
+import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
+import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
@@ -188,9 +190,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
 		}
 		
-		if((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER))) {
+		if(!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER)))) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 			this.setPlayingAnimation(BOOF_ANIMATION);
+			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 			this.setFallSpeed(0.0F);
 			//Fixes super boosting underwater
 			if(this.eyesInWater) {
@@ -344,7 +347,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	public void dropFruit() {
-		if(!this.world.isRemote) {
+		if(!this.isWorldRemote()) {
 			this.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
 			this.setHasFruit(false);
 		}

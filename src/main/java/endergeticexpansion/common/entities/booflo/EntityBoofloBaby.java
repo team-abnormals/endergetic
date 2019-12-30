@@ -2,33 +2,47 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.entity.util.EntityItemStackHelper;
+import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.core.registry.EEEntities;
+import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBoofloBaby extends CreatureEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Integer> AGE = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.VARINT);
+	public int growingAge;
+	public int forcedAge;
+	public int forcedAgeTimer;
 	private float prevTailAnimation;
 	private float tailAnimation;
 	private float tailSpeed;
@@ -45,7 +59,6 @@ public class EntityBoofloBaby extends CreatureEntity {
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(MOVING, false);
-		this.getDataManager().register(AGE, 0);
 	}
 	
 	@Override
@@ -93,14 +106,16 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
-		compound.putInt("Age", this.getAge());
+		compound.putInt("Age", this.getGrowingAge());
+		compound.putInt("ForcedAge", this.forcedAge);
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
-		this.setAge(compound.getInt("Age"));
+		this.setGrowingAge(compound.getInt("Age"));
+		this.forcedAge = compound.getInt("ForcedAge");
 	}
 	
 	public boolean isMoving() {
@@ -111,12 +126,24 @@ public class EntityBoofloBaby extends CreatureEntity {
 		this.getDataManager().set(MOVING, moving);
 	}
 	
-	public int getAge() {
-		return this.getDataManager().get(AGE);
+	public int getGrowingAge() {
+		if(this.world.isRemote) {
+			return -1;
+		} else {
+			return this.growingAge;
+		}
 	}
 	
-	public void setAge(int age) {
-		this.getDataManager().set(AGE, age);
+	public void setGrowingAge(int age) {
+		int oldAge = this.growingAge;
+		this.growingAge = age;
+		if(oldAge < 0 && age >= 0 || oldAge > 0 && age < 0) {
+			this.growUp();
+		}
+	}
+	
+	public void addGrowth(int growth) {
+		this.ageUp(growth, false);
 	}
 	
 	@OnlyIn(Dist.CLIENT)	
@@ -139,12 +166,13 @@ public class EntityBoofloBaby extends CreatureEntity {
 	
 	@Override
 	public void livingTick() {
-		if (this.world.isRemote) {
+		super.livingTick();
+		if(this.world.isRemote) {
 			this.prevTailAnimation = this.tailAnimation;
 			if(this.isInWater()) {
 				this.tailSpeed = 1.0F;
 			} else if(this.isMoving()) {
-				if (this.tailSpeed < 0.5F) {
+				if(this.tailSpeed < 0.5F) {
 					this.tailSpeed = 1.0F;
 				} else {
 					this.tailSpeed += (0.25F - this.tailSpeed) * 0.1F;
@@ -154,7 +182,84 @@ public class EntityBoofloBaby extends CreatureEntity {
 			}
 			this.tailAnimation += this.tailSpeed;
 		}
-		super.livingTick();
+		
+		EndergeticExpansion.LOGGER.debug(this.getGrowingAge());
+		EndergeticExpansion.LOGGER.debug(this.forcedAge);
+		
+		if(this.world.isRemote) {
+			if(this.forcedAgeTimer > 0) {
+				if(this.forcedAgeTimer % 4 == 0) {
+					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
+				}
+
+				this.forcedAgeTimer--;
+			}
+		} else if(this.isAlive()) {
+			int growingAge = this.getGrowingAge();
+			if(growingAge < 0) {
+				growingAge++;
+	            this.setGrowingAge(growingAge);
+			} else if(growingAge > 0) {
+				growingAge--;
+				this.setGrowingAge(growingAge);
+			}
+		}
+	}
+	
+	public void growUp() {
+		if(!this.world.isRemote && this.isAlive()) {
+			EntityBoofloAdolescent booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
+			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+			
+			if(booflo.hasCustomName()) {
+    			booflo.setCustomName(booflo.getCustomName());
+    			booflo.setCustomNameVisible(booflo.isCustomNameVisible());
+    		}
+			
+			booflo.setHealth(booflo.getMaxHealth());
+			this.world.addEntity(booflo);
+			
+			this.remove();
+		}
+	}
+	
+	public void ageUp(int growthSeconds, boolean updateForcedAge) {
+		int growingAge = this.getGrowingAge();
+		int j = growingAge;
+		growingAge += growthSeconds * 20;
+		if(growingAge > 0) {
+			growingAge = 0;
+		}
+
+		int k = growingAge - j;
+		
+		this.setGrowingAge(growingAge);
+		if(updateForcedAge) {
+			this.forcedAge += k;
+			if(this.forcedAgeTimer == 0) {
+				this.forcedAgeTimer = 40;
+			}
+		}
+
+		if (this.getGrowingAge() == 0) {
+			this.setGrowingAge(this.forcedAge);
+		}
+	}
+	
+	public boolean processInteract(PlayerEntity player, Hand hand) {
+		ItemStack itemstack = player.getHeldItem(hand);
+		if(itemstack.getItem() == EEItems.BOLLOOM_FRUIT.get()) {
+			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
+			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
+			return true;
+		}
+		return super.processInteract(player, hand);
+	}
+	
+	@Override
+	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+		this.setGrowingAge(-24000);
+		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 	
 	@Override
