@@ -13,7 +13,6 @@ import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
-import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.BlockState;
@@ -156,9 +155,6 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		
-		EndergeticExpansion.LOGGER.debug(this.getGrowingAge());
-		EndergeticExpansion.LOGGER.debug(this.doesWantToGrow());
 		
 		if(this.isAnimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION) && this.getAnimationTick() == 9) {
 			if(this.world instanceof ServerWorld) {
