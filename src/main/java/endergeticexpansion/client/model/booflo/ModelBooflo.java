@@ -97,6 +97,44 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		this.endimator.startKeyframe(5);
     		this.endimator.rotate(this.Jaw, -0.0F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
+    	} else if(booflo.isAnimationPlaying(EntityBooflo.HOP)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.HOP);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.KneeRight, 0.0F, -0.6F, -0.2F);
+    		this.endimator.rotate(this.LegBackRight, 0.0F, 0.0F, 0.5F);
+    		
+    		this.endimator.rotate(this.KneeLeft, 0.0F, 0.6F, 0.2F);
+    		this.endimator.rotate(this.LegBackLeft, 0.0F, 0.0F, -0.5F);
+    		
+    		this.endimator.rotate(this.LegRight, 0.0F, -0.75F, 0.14F);
+    		this.endimator.rotate(this.LegLeft, 0.0F, -0.75F, -0.14F);
+    		
+    		this.endimator.rotate(this.Jaw, -0.02F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.Head, 0.05F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.KneeRight, -0.18F, 0.33F, -0.2F);
+    		this.endimator.rotate(this.LegBackRight, 0.06F, 0.33F, 0.18F);
+    		
+    		this.endimator.rotate(this.KneeLeft, -0.18F, -0.33F, 0.2F);
+    		this.endimator.rotate(this.LegBackLeft, 0.06F, -0.33F, -0.18F);
+    		
+    		this.endimator.rotate(this.LegRight, 0.0F, 0.47F, 0.0F);
+    		this.endimator.rotate(this.LegLeft, 0.0F, 0.47F, 0.0F);
+    		
+    		this.endimator.rotate(this.Jaw, 0.2F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.Head, -0.4F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		/*
+    		 * Brings to Default
+    		 */
+    		this.endimator.startKeyframe(10);
+    		this.endimator.endKeyframe();
     	}
     }
 
