@@ -61,7 +61,9 @@ public class RegistryUtils {
 	}
 	
 	public static RegistryObject<Item> createSpawnEggItem(String entityName, Supplier<EntityType<?>> supplier, int primaryColor, int secondaryColor) {
-		return EEItems.ITEMS.register(entityName + "_spawn_egg", () -> new EndergeticSpawnEgg(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
+		RegistryObject<Item> spawnEgg = EEItems.ITEMS.register(entityName + "_spawn_egg", () -> new EndergeticSpawnEgg(supplier, primaryColor, secondaryColor, new Item.Properties().group(ItemGroup.MISC)));
+		EEItems.SPAWN_EGGS.add(spawnEgg);
+		return spawnEgg;
 	}
 	
 	public static <B extends Block> RegistryObject<B> createBlockNoItem(String name, Supplier<? extends B> supplier) {

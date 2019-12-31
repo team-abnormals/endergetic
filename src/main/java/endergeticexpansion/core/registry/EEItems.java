@@ -1,7 +1,15 @@
 package endergeticexpansion.core.registry;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import endergeticexpansion.common.entities.EntityEndergeticBoat.Type;
-import endergeticexpansion.common.items.*;
+import endergeticexpansion.common.items.ItemBolloomBalloon;
+import endergeticexpansion.common.items.ItemBolloomFruit;
+import endergeticexpansion.common.items.ItemBoofloVest;
+import endergeticexpansion.common.items.ItemEndergeticBoat;
+import endergeticexpansion.common.items.ItemPuffBugBottle;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.item.DyeColor;
@@ -13,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class EEItems {
 	public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, EndergeticExpansion.MOD_ID);
+	public static final List<RegistryObject<Item>> SPAWN_EGGS = Lists.newArrayList();
 	
 	public static final RegistryObject<Item> EUMUS_BRICK = RegistryUtils.createItem("eumus_brick", () -> new Item(RegistryUtils.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
 	
@@ -46,4 +55,5 @@ public class EEItems {
 	 * Spawn Eggs
 	 */
 	public static final RegistryObject<Item> PUFF_BUG_SPAWN_EGG         = RegistryUtils.createSpawnEggItem("puff_bug", () -> EEEntities.PUFF_BUG.get(), 15660724, 16610303);
+	public static final RegistryObject<Item> BOOFLO_SPAWN_EGG           = RegistryUtils.createSpawnEggItem("booflo", () -> EEEntities.BOOFLO.get(), 8143741, 16641190);
 }

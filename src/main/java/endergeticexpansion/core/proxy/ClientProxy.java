@@ -1,12 +1,30 @@
 package endergeticexpansion.core.proxy;
 
-import endergeticexpansion.client.render.entity.*;
+import endergeticexpansion.client.render.entity.RenderBolloomBalloon;
+import endergeticexpansion.client.render.entity.RenderBolloomFruit;
+import endergeticexpansion.client.render.entity.RenderBolloomKnot;
+import endergeticexpansion.client.render.entity.RenderBoofBlock;
+import endergeticexpansion.client.render.entity.RenderEndergeticBoat;
+import endergeticexpansion.client.render.entity.RenderPoiseCluster;
+import endergeticexpansion.client.render.entity.RenderPuffBug;
 import endergeticexpansion.client.render.entity.booflo.*;
-import endergeticexpansion.client.render.tile.*;
-import endergeticexpansion.common.entities.*;
-import endergeticexpansion.common.entities.bolloom.*;
+import endergeticexpansion.client.render.tile.RenderTileEntityBolloomBud;
+import endergeticexpansion.client.render.tile.RenderTileEntityBoofBlockDispensed;
+import endergeticexpansion.client.render.tile.RenderTileEntityCorrockCrown;
+import endergeticexpansion.client.render.tile.RenderTileEntityFrisbloomStem;
+import endergeticexpansion.client.render.tile.RenderTileEntityPuffBugHive;
+import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityEndergeticBoat;
+import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
 import endergeticexpansion.common.entities.booflo.*;
-import endergeticexpansion.common.tileentities.*;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
+import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
+import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.keybinds.KeybindHandler;
@@ -37,6 +55,7 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBooflo.class, RenderBooflo::new);
 		
 		KeybindHandler.registerKeys();
 	}

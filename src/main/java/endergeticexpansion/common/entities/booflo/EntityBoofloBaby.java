@@ -3,11 +3,12 @@ package endergeticexpansion.common.entities.booflo;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
-import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.common.entities.booflo.ai.BabyFollowParentGoal;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MoverType;
@@ -31,6 +32,7 @@ import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
@@ -40,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBoofloBaby extends CreatureEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
+	public boolean isBeingBorn;
 	public int growingAge;
 	public int forcedAge;
 	public int forcedAgeTimer;
@@ -72,6 +75,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
+		this.goalSelector.addGoal(3, new BabyFollowParentGoal(this, 1.2F));
 		this.goalSelector.addGoal(5, new EntityBoofloBaby.RandomFlyingGoal(this, 1.1D, 20));
 	}
 	
@@ -106,6 +110,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
+		compound.putBoolean("IsBeingBorn", this.isBeingBorn);
 		compound.putInt("Age", this.getGrowingAge());
 		compound.putInt("ForcedAge", this.forcedAge);
 	}
@@ -114,6 +119,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
+		this.isBeingBorn = compound.getBoolean("IsBeingBorn");
 		this.setGrowingAge(compound.getInt("Age"));
 		this.forcedAge = compound.getInt("ForcedAge");
 	}
@@ -150,6 +156,11 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public float getTailAnimation(float ptc) {
 		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
 	}
+	
+	@Override
+	public boolean isAIDisabled() {
+		return this.isBeingBorn || super.isAIDisabled();
+	}
 
 	@Override
 	protected boolean canTriggerWalking() {
@@ -167,6 +178,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 	@Override
 	public void livingTick() {
 		super.livingTick();
+		
 		if(this.world.isRemote) {
 			this.prevTailAnimation = this.tailAnimation;
 			if(this.isInWater()) {
@@ -182,9 +194,6 @@ public class EntityBoofloBaby extends CreatureEntity {
 			}
 			this.tailAnimation += this.tailSpeed;
 		}
-		
-		EndergeticExpansion.LOGGER.debug(this.getGrowingAge());
-		EndergeticExpansion.LOGGER.debug(this.forcedAge);
 		
 		if(this.world.isRemote) {
 			if(this.forcedAgeTimer > 0) {
@@ -217,6 +226,7 @@ public class EntityBoofloBaby extends CreatureEntity {
     		}
 			
 			booflo.setHealth(booflo.getMaxHealth());
+			booflo.setGrowingAge(-24000);
 			this.world.addEntity(booflo);
 			
 			this.remove();
@@ -260,6 +270,18 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
 		this.setGrowingAge(-24000);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
+	
+	@Override
+	public ItemStack getPickedResult(RayTraceResult target) {
+		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
+	}
+	
+	@Override
+	protected void collideWithEntity(Entity entityIn) {
+		if(!(entityIn instanceof EntityBooflo)) {
+			super.collideWithEntity(entityIn);
+		}
 	}
 	
 	@Override

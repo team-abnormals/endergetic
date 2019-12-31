@@ -6,12 +6,14 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
+import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
+import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.BlockState;
@@ -19,14 +21,18 @@ import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -37,11 +43,15 @@ import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
@@ -57,6 +67,8 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> DESCENTING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> EATING = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> EATEN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> WANTS_TO_GROW = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
 	private static final DataParameter<Integer> BOOF_BOOST_COOLDOWN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.VARINT);
 	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
@@ -65,6 +77,9 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
 	public static final Endimation EATING_ANIMATION = new Endimation(10);
 	private Entity boofloAttackTarget;
+	public int growingAge;
+	public int forcedAge;
+	public int forcedAgeTimer;
 	private float prevTailAnimation;
 	private float tailAnimation;
 	private float tailSpeed;
@@ -87,6 +102,8 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().register(DESCENTING, false);
 		this.getDataManager().register(EATING, false);
 		this.getDataManager().register(HUNGRY, true);
+		this.getDataManager().register(EATEN, false);
+		this.getDataManager().register(WANTS_TO_GROW, false);
 		this.getDataManager().register(FALL_SPEED, 0.0F);
 		this.getDataManager().register(BOOF_BOOST_COOLDOWN, 0);
 	}
@@ -96,7 +113,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		super.registerAttributes();
 		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.7D);
 		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(25.0D);
-		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(9.0D);
+		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
 	}
 	
 	@Override
@@ -139,6 +156,9 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		
+		EndergeticExpansion.LOGGER.debug(this.getGrowingAge());
+		EndergeticExpansion.LOGGER.debug(this.doesWantToGrow());
 		
 		if(this.isAnimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION) && this.getAnimationTick() == 9) {
 			if(this.world instanceof ServerWorld) {
@@ -190,6 +210,10 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
 		}
 		
+		if(this.onGround && this.doesWantToGrow() && this.world.checkBlockCollision(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
+			this.growUp();
+		}
+		
 		if(!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER)))) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 			this.setPlayingAnimation(BOOF_ANIMATION);
@@ -219,6 +243,30 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		if(this.getBoofloAttackTarget() != null && this.canEntityBeSeen(this.getBoofloAttackTarget())) {
 			this.rotationYaw = this.rotationYawHead;
 		}
+		
+		if(this.world.isRemote) {
+			if(this.forcedAgeTimer > 0) {
+				if(this.forcedAgeTimer % 4 == 0) {
+					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), this.posY + 0.5D + (this.rand.nextFloat() * this.getHeight()), this.posZ + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), 0.0D, 0.0D, 0.0D);
+				}
+
+				this.forcedAgeTimer--;
+			}
+		} else if(this.isAlive() && this.hasEaten()) {
+			int growingAge = this.getGrowingAge();
+			if(growingAge < 0) {
+				growingAge++;
+	            this.setGrowingAge(growingAge);
+			} else if(growingAge > 0) {
+				growingAge--;
+				this.setGrowingAge(growingAge);
+			}
+		}
+	}
+	
+	@Override
+	public ItemStack getPickedResult(RayTraceResult target) {
+		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
 	
 	@Override
@@ -243,8 +291,12 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		compound.putBoolean("Descenting", this.isDescenting());
 		compound.putBoolean("IsEating", this.isEating());
 		compound.putBoolean("IsHungry", this.isHungry());
+		compound.putBoolean("HasEaten", this.hasEaten());
+		compound.putBoolean("WantsToGrow", this.doesWantToGrow());
 		compound.putFloat("FallSpeed", this.getFallSpeed());
 		compound.putInt("BoofBoostCooldown", this.getBoofBoostCooldown());
+		compound.putInt("Age", this.getGrowingAge());
+		compound.putInt("ForcedAge", this.forcedAge);
 	}
 
 	@Override
@@ -255,8 +307,12 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.setDescenting(compound.getBoolean("Descenting"));
 		this.setEating(compound.getBoolean("IsEating"));
 		this.setHungry(compound.getBoolean("IsHungry"));
+		this.setEaten(compound.getBoolean("HasEaten"));
+		this.setWantsToGrow(compound.getBoolean("WantsToGrow"));
 		this.setFallSpeed(compound.getFloat("FallSpeed"));
 		this.setBoofBoostCooldown(compound.getInt("BoofBoostCooldown"));
+		this.setGrowingAge(compound.getInt("Age"));
+		this.forcedAge = compound.getInt("ForcedAge");
 	}
 	
 	public boolean isMoving() {
@@ -299,6 +355,22 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.getDataManager().set(HUNGRY, hungry);
 	}
 	
+	public boolean hasEaten() {
+		return this.getDataManager().get(EATEN);
+	}
+
+	public void setEaten(boolean eaten) {
+		this.getDataManager().set(EATEN, eaten);
+	}
+	
+	public boolean doesWantToGrow() {
+		return this.getDataManager().get(WANTS_TO_GROW);
+	}
+
+	public void setWantsToGrow(boolean wantsToGrow) {
+		this.getDataManager().set(WANTS_TO_GROW, wantsToGrow);
+	}
+	
 	public float getFallSpeed() {
 		return this.getDataManager().get(FALL_SPEED);
 	}
@@ -322,6 +394,66 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 
 	public void setBoofloAttackTarget(@Nullable Entity entity) {
 		this.boofloAttackTarget = entity;
+	}
+	
+	public int getGrowingAge() {
+		if(this.world.isRemote) {
+			return -1;
+		} else {
+			return this.growingAge;
+		}
+	}
+	
+	public void setGrowingAge(int age) {
+		int oldAge = this.growingAge;
+		this.growingAge = age;
+		if((oldAge < 0 && age >= 0 || oldAge > 0 && age < 0) && this.hasEaten()) {
+			this.setWantsToGrow(true);
+		}
+	}
+	
+	public void addGrowth(int growth) {
+		this.ageUp(growth, false);
+	}
+	
+	public void ageUp(int growthSeconds, boolean updateForcedAge) {
+		int growingAge = this.getGrowingAge();
+		int j = growingAge;
+		growingAge += growthSeconds * 20;
+		if(growingAge > 0) {
+			growingAge = 0;
+		}
+
+		int k = growingAge - j;
+		
+		this.setGrowingAge(growingAge);
+		if(updateForcedAge) {
+			this.forcedAge += k;
+			if(this.forcedAgeTimer == 0) {
+				this.forcedAgeTimer = 40;
+			}
+		}
+
+		if (this.getGrowingAge() == 0) {
+			this.setGrowingAge(this.forcedAge);
+		}
+	}
+	
+	public void growUp() {
+		if(!this.world.isRemote && this.isAlive()) {
+			EntityBooflo booflo = EEEntities.BOOFLO.get().create(this.world);
+			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+			
+			if(booflo.hasCustomName()) {
+    			booflo.setCustomName(booflo.getCustomName());
+    			booflo.setCustomNameVisible(booflo.isCustomNameVisible());
+    		}
+			
+			booflo.setHealth(booflo.getMaxHealth());
+			this.world.addEntity(booflo);
+			
+			this.remove();
+		}
 	}
 	
 	@OnlyIn(Dist.CLIENT)	
@@ -355,6 +487,39 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	
 	public boolean isPlayerNear() {
 		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F), IS_SCARED_BY).size() > 0;
+	}
+	
+	@Override
+	protected boolean processInteract(PlayerEntity player, Hand hand) {
+		ItemStack itemstack = player.getHeldItem(hand);
+		Item item = itemstack.getItem();
+		
+		if(item instanceof SpawnEggItem && ((SpawnEggItem)item).hasType(itemstack.getTag(), EEEntities.BOOFLO.get())) {
+			if(!this.world.isRemote) {
+				EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(this.world);
+				baby.setGrowingAge(-24000);
+				baby.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
+				this.world.addEntity(baby);
+				if(itemstack.hasDisplayName()) {
+					baby.setCustomName(itemstack.getDisplayName());
+				}
+				
+				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
+			}
+			return true;
+		} else if(item == EEItems.BOLLOOM_FRUIT.get()) {
+			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
+            this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
+            this.setEaten(true);
+            return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+		this.setGrowingAge(-24000);
+		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 	
 	@Override

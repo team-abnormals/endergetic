@@ -86,6 +86,7 @@
 	"item.endergetic.booflo_vest": "Booflo Vest",
 	"item.endergetic.puffbug_bottle": "Bottle o' Puff Bug",
 	"item.endergetic.puff_bug_spawn_egg": "Puff Bug Spawn Egg",
+	"item.endergetic.booflo_spawn_egg": "Booflo Spawn Egg",
 	
 	"_comment": "Entities",
 	
@@ -96,6 +97,8 @@
 	"entity.endergetic.bolloom_balloon": "Bolloom Balloon",
 	"entity.endergetic.puff_bug": "Puff Bug",
 	"entity.endergetic.booflo_baby": "Booflo Baby",
+	"entity.endergetic.booflo_adolescent": "Booflo Adolescent",
+	"entity.endergetic.booflo": "Booflo",
 	
 	"_comment": "Biomes",
 	

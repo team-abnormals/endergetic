@@ -32,6 +32,7 @@ public class EEEntities {
 	public static final RegistryObject<EntityType<EntityBolloomKnot>> BOLLOOM_KNOT = ENTITY_TYPES.register("bolloom_knot", () -> createEntity(EntityBolloomKnot::new, EntityBolloomKnot::new, EntityClassification.MISC, "bolloom_knot", 0.375F, 0.19F));
 	public static final RegistryObject<EntityType<EntityBoofloBaby>> BOOFLO_BABY = ENTITY_TYPES.register("booflo_baby", () -> createLivingEntity(EntityBoofloBaby::new, EntityClassification.CREATURE, "booflo_baby", 0.375F, 0.325F));
 	public static final RegistryObject<EntityType<EntityBoofloAdolescent>> BOOFLO_ADOLESCENT = ENTITY_TYPES.register("booflo_adolescent", () -> createLivingEntity(EntityBoofloAdolescent::new, EntityClassification.CREATURE, "booflo_adolescent", 0.8F, 0.7F));
+	public static final RegistryObject<EntityType<EntityBooflo>> BOOFLO = ENTITY_TYPES.register("booflo", () -> createLivingEntity(EntityBooflo::new, EntityClassification.CREATURE, "booflo", 1.3F, 1.3F));
 	
 	private static <T extends LivingEntity> EntityType<T> createLivingEntity(EntityType.IFactory<T> factory, EntityClassification entityClassification, String name, float width, float height){
 		ResourceLocation location = new ResourceLocation(EndergeticExpansion.MOD_ID, name);

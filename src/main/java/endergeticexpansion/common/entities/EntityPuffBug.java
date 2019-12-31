@@ -32,6 +32,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
@@ -203,6 +204,11 @@ public class EntityPuffBug extends FlyingEntity {
 	
 	public int getColor() {
 		return this.dataManager.get(COLOR);
+	}
+	
+	@Override
+	public ItemStack getPickedResult(RayTraceResult target) {
+		return new ItemStack(EEItems.PUFF_BUG_SPAWN_EGG.get());
 	}
 	
 	private void setFixedColor(int color) {

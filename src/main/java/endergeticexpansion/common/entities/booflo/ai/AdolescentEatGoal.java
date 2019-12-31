@@ -76,6 +76,7 @@ public class AdolescentEatGoal extends Goal {
 				this.booflo.setHungry(false);
 				this.booflo.setHasFruit(false);
 				this.booflo.setEating(false);
+				this.booflo.setEaten(true);
 			}
 		}
 	}

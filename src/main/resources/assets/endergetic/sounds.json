@@ -1,4 +1,33 @@
 {
+	"entity.booflo.croak":
+    {
+        "category": "entity",
+        "subtitle": "Booflo croaks",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_croak_0", "stream": false },
+        	{ "name": "endergetic:entity/booflo/booflo_croak_1", "stream": false },
+        	{ "name": "endergetic:entity/booflo/booflo_croak_2", "stream": false },
+        	{ "name": "endergetic:entity/booflo/booflo_croak_3", "stream": false }
+        ]
+    },
+    "entity.booflo.hurt":
+    {
+        "category": "entity",
+        "subtitle": "Booflo hurts",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_0", "stream": false },
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_1", "stream": false },
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_2", "stream": false }
+        ]
+    },
+    "entity.booflo.death":
+    {
+        "category": "entity",
+        "subtitle": "Booflo dies",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_death", "stream": false }
+        ]
+    },
 	"block.cluster.place":
     {
         "category": "block",

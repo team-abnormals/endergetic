@@ -3,23 +3,39 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import endergeticexpansion.common.network.entity.*;
-import endergeticexpansion.common.network.item.*;
-import endergeticexpansion.common.network.nbt.*;
+import endergeticexpansion.common.items.EndergeticSpawnEgg;
+import endergeticexpansion.common.network.entity.MessageCAnimation;
+import endergeticexpansion.common.network.entity.MessageCSetVelocity;
+import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
+import endergeticexpansion.common.network.entity.MessageSBoofEntity;
+import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
+import endergeticexpansion.common.network.entity.MessageSSetVelocity;
+import endergeticexpansion.common.network.item.MessageDamageItem;
+import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
+import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
-import endergeticexpansion.core.proxy.*;
+import endergeticexpansion.core.proxy.ClientProxy;
+import endergeticexpansion.core.proxy.CommonProxy;
 import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
 import endergeticexpansion.core.registry.EETileEntities;
-import endergeticexpansion.core.registry.other.*;
+import endergeticexpansion.core.registry.other.EECapabilities;
+import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
+import endergeticexpansion.core.registry.other.EEFireInfo;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -55,10 +71,14 @@ public class EndergeticExpansion {
 		EEBiomes.BIOMES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
 		
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::preInit);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+		});
+		
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::setupCommon);
 	}
 	
-	void preInit(final FMLCommonSetupEvent event) {
+	void setupCommon(final FMLCommonSetupEvent event) {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
@@ -66,6 +86,18 @@ public class EndergeticExpansion {
 		EEFireInfo.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
 		FeatureOverrideHandler.overrideFeatures();
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private void registerItemColors(ColorHandlerEvent.Item event) {
+		for(RegistryObject<Item> items : EEItems.SPAWN_EGGS) {
+			Item item = items.get();
+			if(item instanceof EndergeticSpawnEgg) {
+				event.getItemColors().register((itemColor, itemsIn) -> {
+					return ((EndergeticSpawnEgg) item).getColor(itemsIn);
+				}, item);
+			}
+		}
 	}
     
 	void setupMessages() {
