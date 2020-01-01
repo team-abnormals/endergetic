@@ -36,6 +36,7 @@ public class EntityBooflo extends EndimatedEntity {
 	private static final DataParameter<Boolean> BOOFED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	public static final Endimation CROAK = new Endimation(55);
 	public static final Endimation HOP = new Endimation(25);
+	public static final Endimation HURT = new Endimation(15);
 	public int hopDelay;
 
 	public EntityBooflo(EntityType<? extends EntityBooflo> type, World worldIn) {
@@ -109,6 +110,11 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
+	public Endimation getHurtAnimation() {
+		return HURT;
+	}
+	
+	@Override
 	public PathNavigator getNavigator() {
 		return new GroundPathNavigator(this, world);
 	}
@@ -137,7 +143,8 @@ public class EntityBooflo extends EndimatedEntity {
 	public Endimation[] getAnimations() {
 		return new Endimation[] {
 			CROAK,
-			HOP
+			HOP,
+			HURT
 		};
 	}
 	

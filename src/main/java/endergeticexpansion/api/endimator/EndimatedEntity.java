@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -41,6 +42,14 @@ public class EndimatedEntity extends CreatureEntity {
 				this.resetPlayingAnimationToDefault();
 			}
 		}
+	}
+	
+	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		if(this.getHurtAnimation() != null && this.isAnimationPlaying(BLANK_ANIMATION)) {
+			this.setPlayingAnimation(this.getHurtAnimation());
+		}
+		return super.attackEntityFrom(source, amount);
 	}
 	
 	/**
@@ -102,6 +111,11 @@ public class EndimatedEntity extends CreatureEntity {
 	 */
 	public void resetPlayingAnimationToDefault() {
 		this.animation = BLANK_ANIMATION;
+	}
+	
+	@Nullable
+	public Endimation getHurtAnimation() {
+		return null;
 	}
 	
 	/**
