@@ -1,7 +1,6 @@
 package endergeticexpansion.client.model.booflo;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.Endimator;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
@@ -20,8 +19,6 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     public EndimatorRendererModel Tail;
     public EndimatorRendererModel Jaw;
     
-    public Endimator endimator = new Endimator();
-
     public ModelAdolescentBooflo() {
         this.textureWidth = 64;
         this.textureHeight = 48;

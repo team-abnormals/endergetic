@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class EndimatorEntityModel<E extends EndimatedEntity> extends EntityModel<E> {
 	private EndimatorRendererModel scaleController;
+	protected Endimator endimator = new Endimator();
 	
 	public void setDefaultBoxValues() {
 		for(int i = 0; i < this.boxList.size(); i++) {
