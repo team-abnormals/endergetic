@@ -157,6 +157,18 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		 */
     		this.endimator.startKeyframe(5);
     		this.endimator.endKeyframe();
+    	} else if(booflo.isAnimationPlaying(EntityBooflo.BIRTH)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.BIRTH);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.Head, 0.05F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.setStaticKeyframe(120);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.Head, 0.00F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
     	}
     }
 

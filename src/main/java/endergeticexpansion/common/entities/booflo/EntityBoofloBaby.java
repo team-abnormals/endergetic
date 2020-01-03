@@ -2,6 +2,8 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.common.entities.booflo.ai.BabyFollowParentGoal;
 import endergeticexpansion.core.registry.EEEntities;
@@ -40,9 +42,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityBoofloBaby extends CreatureEntity {
+public class EntityBoofloBaby extends EndimatedEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
-	public boolean isBeingBorn;
+	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
+	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.VARINT);
+	public static final Endimation BIRTH = new Endimation(60);
 	public int growingAge;
 	public int forcedAge;
 	public int forcedAgeTimer;
@@ -62,6 +66,8 @@ public class EntityBoofloBaby extends CreatureEntity {
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(MOVING, false);
+		this.getDataManager().register(BEING_BORN, false);
+		this.getDataManager().register(MOTHER_IMMUNITY_TICKS, 0);
 	}
 	
 	@Override
@@ -110,8 +116,9 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putBoolean("Moving", this.isMoving());
-		compound.putBoolean("IsBeingBorn", this.isBeingBorn);
+		compound.putBoolean("IsBeingBorn", this.isBeingBorn());
 		compound.putInt("Age", this.getGrowingAge());
+		compound.putInt("MotherImmunityTicks", this.getMotherNoClipTicks());
 		compound.putInt("ForcedAge", this.forcedAge);
 	}
 
@@ -119,8 +126,9 @@ public class EntityBoofloBaby extends CreatureEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setMoving(compound.getBoolean("Moving"));
-		this.isBeingBorn = compound.getBoolean("IsBeingBorn");
+		this.setBeingBorn(compound.getBoolean("IsBeingBorn"));
 		this.setGrowingAge(compound.getInt("Age"));
+		this.setMotherNoClipTicks(compound.getInt("MotherImmunityTicks"));
 		this.forcedAge = compound.getInt("ForcedAge");
 	}
 	
@@ -130,6 +138,22 @@ public class EntityBoofloBaby extends CreatureEntity {
 
 	public void setMoving(boolean moving) {
 		this.getDataManager().set(MOVING, moving);
+	}
+	
+	public boolean isBeingBorn() {
+		return this.getDataManager().get(BEING_BORN);
+	}
+
+	public void setBeingBorn(boolean beingBorn) {
+		this.getDataManager().set(BEING_BORN, beingBorn);
+	}
+	
+	public int getMotherNoClipTicks() {
+		return this.getDataManager().get(MOTHER_IMMUNITY_TICKS);
+	}
+
+	public void setMotherNoClipTicks(int ticks) {
+		this.getDataManager().set(MOTHER_IMMUNITY_TICKS, ticks);
 	}
 	
 	public int getGrowingAge() {
@@ -159,7 +183,7 @@ public class EntityBoofloBaby extends CreatureEntity {
 	
 	@Override
 	public boolean isAIDisabled() {
-		return this.isBeingBorn || super.isAIDisabled();
+		return this.isBeingBorn() || super.isAIDisabled();
 	}
 
 	@Override
@@ -212,6 +236,23 @@ public class EntityBoofloBaby extends CreatureEntity {
 				growingAge--;
 				this.setGrowingAge(growingAge);
 			}
+		}
+		
+		if(this.getMotherNoClipTicks() > 0) {
+			this.setMotherNoClipTicks(this.getMotherNoClipTicks() - 1);
+		}
+		
+		if(this.isBeingBorn() && this.isAnimationPlaying(BLANK_ANIMATION)) {
+			this.setPlayingAnimation(BIRTH);
+		}
+		
+		if(this.isAnimationPlaying(BIRTH) && this.getAnimationTick() == 59) {
+			double[] oldPosition = { this.posX, this.posY, this.posZ };
+			this.stopRiding();
+			this.setBeingBorn(false);
+			this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
+			this.rotationPitch = 180;
+			this.setMotherNoClipTicks(50);
 		}
 	}
 	
@@ -282,6 +323,13 @@ public class EntityBoofloBaby extends CreatureEntity {
 		if(!(entityIn instanceof EntityBooflo)) {
 			super.collideWithEntity(entityIn);
 		}
+	}
+	
+	@Override
+	public Endimation[] getAnimations() {
+		return new Endimation[] {
+			BIRTH
+		};
 	}
 	
 	@Override

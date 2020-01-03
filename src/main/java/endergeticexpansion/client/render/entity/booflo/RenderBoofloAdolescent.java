@@ -1,6 +1,7 @@
 package endergeticexpansion.client.render.entity.booflo;
 
 import endergeticexpansion.client.model.booflo.ModelAdolescentBooflo;
+import endergeticexpansion.client.render.entity.layer.RenderLayerAdolescentGlow;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloAdolescentFruit;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -12,6 +13,7 @@ public class RenderBoofloAdolescent extends LivingRenderer<EntityBoofloAdolescen
 
 	public RenderBoofloAdolescent(EntityRendererManager manager) {
 		super(manager, new ModelAdolescentBooflo<>(), 0.5F);
+		this.addLayer(new RenderLayerAdolescentGlow<>(this));
 		this.addLayer(new RenderLayerBoofloAdolescentFruit(this));
 	}
 

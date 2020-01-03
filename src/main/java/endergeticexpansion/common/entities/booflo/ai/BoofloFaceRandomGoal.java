@@ -14,7 +14,7 @@ public class BoofloFaceRandomGoal extends Goal {
 
 	public BoofloFaceRandomGoal(EntityBooflo booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.LOOK));
+		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
 	@Override

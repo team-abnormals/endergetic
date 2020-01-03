@@ -1,6 +1,7 @@
 package endergeticexpansion.client.render.entity.booflo;
 
 import endergeticexpansion.client.model.booflo.ModelBoofloBaby;
+import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloBabyGlow;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -11,6 +12,7 @@ public class RenderBoofloBaby extends LivingRenderer<EntityBoofloBaby, ModelBoof
 
 	public RenderBoofloBaby(EntityRendererManager manager) {
 		super(manager, new ModelBoofloBaby<>(), 0.3F);
+		this.addLayer(new RenderLayerBoofloBabyGlow<>(this));
 	}
 
 	@Override

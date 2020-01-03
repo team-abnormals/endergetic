@@ -2,10 +2,12 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
+import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.util.math.RayTraceResult.Type;
 
 public class BoofloGroundHopGoal extends Goal {
 	private final EntityBooflo booflo;
@@ -13,11 +15,14 @@ public class BoofloGroundHopGoal extends Goal {
 
 	public BoofloGroundHopGoal(EntityBooflo booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.JUMP, Goal.Flag.MOVE));
+		this.setMutexFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
 	}
 
 	@Override
 	public boolean shouldExecute() {
+		if(RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
+			return false;
+		}
 		return this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && !this.booflo.isPassenger() && this.booflo.getPassengers().isEmpty();
 	}
 	
@@ -40,8 +45,6 @@ public class BoofloGroundHopGoal extends Goal {
 	public void tick() {
 		this.ticksPassed++;
 		
-		if(this.ticksPassed == 10) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
-		}
+		((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
 	}
 }
