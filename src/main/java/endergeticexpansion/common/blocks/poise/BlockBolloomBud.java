@@ -4,6 +4,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.util.MathUtils;
+import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.core.registry.EEBlocks;
@@ -157,6 +159,21 @@ public class BlockBolloomBud extends Block {
 				if(chances[3]) {
 					EntityBolloomFruit fruitW = new EntityBolloomFruit(world, pos, pos.west().up(heightw - 1), heightw, Direction.WEST);
 					world.addEntity(fruitW);
+				}
+			}
+			
+			if(world.isRemote) {
+				Random rand = player.getRNG();
+				
+				for(int i = 0; i < 8; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				
+					double x = pos.getX() + 0.5D + offsetX;
+					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
+					double z = pos.getZ() + 0.5D + offsetZ;
+				
+					world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 				}
 			}
 		}

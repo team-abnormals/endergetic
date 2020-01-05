@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel<E>> extends LayerRenderer<E, M> {
 	public static final ResourceLocation BOOFLO_GLOW_LAYER = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_glow_layer.png");
+	public static final ResourceLocation BOOFLO_INFLATED_GLOW_LAYER = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_inflated_glow_layer.png");
 	
 	public RenderLayerBoofloGlow(IEntityRenderer<E, M> entityRenderer) {
 		super(entityRenderer);
@@ -22,7 +23,7 @@ public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel
 	
 	@Override
 	public void render(E booflo, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
-		this.bindTexture(BOOFLO_GLOW_LAYER);
+		this.bindTexture(this.getTexture(booflo));
 		
 		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
 		
@@ -35,6 +36,10 @@ public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel
 		int i = booflo.getBrightnessForRender();
 		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, i % 65536, i / 65536);
 		this.func_215334_a(booflo);
+	}
+	
+	public ResourceLocation getTexture(E booflo) {
+		return booflo.isBoofed() ? BOOFLO_INFLATED_GLOW_LAYER : BOOFLO_GLOW_LAYER;
 	}
 
 	@Override

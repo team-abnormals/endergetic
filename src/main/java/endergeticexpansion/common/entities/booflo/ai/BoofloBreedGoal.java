@@ -31,7 +31,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(!this.booflo.onGround || !this.booflo.isInLove() || this.booflo.isPregnant()) {
+		if(this.booflo.isBoofed() || !this.booflo.onGround || !this.booflo.isInLove() || this.booflo.isPregnant()) {
 			return false;
 		} else {
 			this.mate = this.getNearbyMate();
@@ -41,7 +41,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.mate.isAlive() && this.mate.isInLove() && this.impregnateDelay < 100;
+		return !this.booflo.isBoofed() && this.mate.isAlive() && this.mate.isInLove() && this.impregnateDelay < 100;
 	}
 	
 	public void resetTask() {

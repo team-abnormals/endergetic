@@ -1,5 +1,7 @@
 package endergeticexpansion.api.util;
 
+import java.util.Random;
+
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
@@ -18,6 +20,10 @@ public class MathUtils {
     
 	public static double distanceBetweenPoints2d(double x1, double y1, double x2, double y2) {
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+	
+	public static double makeNegativeRandomly(double value, Random rand) {
+		return rand.nextBoolean() ? -value : value;
 	}
     
 	public interface ComputableEquation {

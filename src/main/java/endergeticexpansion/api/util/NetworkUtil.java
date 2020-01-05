@@ -13,6 +13,7 @@ import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.common.network.particle.MessageSpawnParticle;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
@@ -102,6 +103,10 @@ public class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void damageItem(ItemStack stack, int amount) {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, amount));
+	}
+	
+	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+		EndergeticExpansion.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
 	
 	/**

@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.util.MathUtils;
+import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EESounds;
@@ -102,14 +104,42 @@ public class EntityPoiseCluster extends LivingEntity {
 			if(this.posY > this.getOrigin().getY()) {
 				this.setMotion(0, -Math.toRadians(3), 0);
 			} else if(Math.ceil(this.posY) == this.getOrigin().getY()) {
+				for(int i = 0; i < 8; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				
+					double x = this.getOrigin().getX() + 0.5D + offsetX;
+					double y = this.getOrigin().getY() + 0.5D + (rand.nextFloat() * 0.05F);
+					double z = this.getOrigin().getZ() + 0.5D + offsetZ;
+				
+					if(this.isServerWorld()) {
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+					}
+				}
+				
 				this.getEntityWorld().playSound(posX, posY, posZ, SoundEvents.BLOCK_CHORUS_FLOWER_DEATH, SoundCategory.BLOCKS, 1, 1, true);
 				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.POISE_CLUSTER.getDefaultState());
 				this.remove();
 			}
 			
 			if(!this.getEntityWorld().getBlockState(new BlockPos(Math.ceil(this.posX) - 0.5F, (Math.ceil(this.posY) - 1), Math.ceil(this.posZ) - 0.5F)).isAir()) {
+				BlockPos pos = new BlockPos(posX, posY, posZ);
+				
+				for(int i = 0; i < 8; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				
+					double x = pos.getX() + 0.5D + offsetX;
+					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
+					double z = pos.getZ() + 0.5D + offsetZ;
+				
+					if(this.isServerWorld()) {
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+					}
+				}
+				
 				this.getEntityWorld().playSound(posX, posY, posZ, SoundEvents.BLOCK_CHORUS_FLOWER_DEATH, SoundCategory.BLOCKS, 3F, 1, false);
-				this.getEntityWorld().setBlockState(new BlockPos(posX, posY, posZ), EEBlocks.POISE_CLUSTER.getDefaultState());
+				this.getEntityWorld().setBlockState(pos, EEBlocks.POISE_CLUSTER.getDefaultState());
 				this.remove();
 			}
 		}

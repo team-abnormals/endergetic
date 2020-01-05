@@ -19,6 +19,7 @@ import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -32,9 +33,11 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -42,6 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBooflo extends EndimatedEntity {
+	private static final DataParameter<Boolean> MOVING_IN_AIR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> BOOFED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> PREGNANT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
@@ -50,6 +54,9 @@ public class EntityBooflo extends EndimatedEntity {
 	public static final Endimation HOP = new Endimation(25);
 	public static final Endimation HURT = new Endimation(15);
 	public static final Endimation BIRTH = new Endimation(140);
+	public static final Endimation INFLATE = new Endimation(6);
+	public static final Endimation SWIM = new Endimation(20);
+	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
 	public int hopDelay;
 	private UUID playerInLove;
 
@@ -71,6 +78,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void registerData() {
 		super.registerData();
+		this.getDataManager().register(MOVING_IN_AIR, false);
 		this.getDataManager().register(BOOFED, false);
 		this.getDataManager().register(PREGNANT, false);
 		this.getDataManager().register(LOVE_TICKS, 0);
@@ -83,6 +91,15 @@ public class EntityBooflo extends EndimatedEntity {
 		this.goalSelector.addGoal(1, new BoofloBreedGoal(this));
 		this.goalSelector.addGoal(4, new BoofloFaceRandomGoal(this));
 		this.goalSelector.addGoal(5, new BoofloGroundHopGoal(this));
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		
+		if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() == 7) {
+			//this.addVelocity(x, y, z);
+		}
 	}
 	
 	@Override
@@ -120,6 +137,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
+		compound.putBoolean("IsMovingInAir", this.isMovingInAir());
 		compound.putBoolean("IsBoofed", this.isBoofed());
 		compound.putBoolean("IsPregnant", this.isPregnant());
 		compound.putInt("InLove", this.getInLoveTicks());
@@ -132,11 +150,55 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
+		this.setMovingInAir(compound.getBoolean("IsMovingInAir"));
 		this.setBoofed(compound.getBoolean("IsBoofed"));
 		this.setPregnant(compound.getBoolean("IsPregnant"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBirthYaw(compound.getFloat("BirthYaw"));
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
+	}
+	
+	@Override
+	public void notifyDataManagerChange(DataParameter<?> key) {
+		if(BOOFED.equals(key)) {
+			this.recalculateSize();
+			if(this.isBoofed()) {
+				this.navigator = new FlyingPathNavigator(this, this.world) {
+					
+					@Override
+					public boolean canEntityStandOnPos(BlockPos pos) {
+						return this.world.isAirBlock(pos);
+					}
+				
+				};
+				this.moveController = new MovementController(this);
+			} else {
+				this.navigator = this.createNavigator(this.world);
+				this.moveController = new GroundMoveHelperController(this);
+			}
+		}
+	}
+	
+	@Override
+	public void travel(Vec3d vec3d) {
+		if(this.isServerWorld() && this.isBoofed()) {
+			this.moveRelative(0.01F, vec3d);
+			this.move(MoverType.SELF, this.getMotion());
+			this.setMotion(this.getMotion().scale(0.9D));
+			if(!this.isMovingInAir()) {
+				this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
+			}
+		} else {
+			super.travel(vec3d);
+		}
+	}
+	
+	public boolean isMovingInAir() {
+		return this.getDataManager().get(MOVING_IN_AIR);
+	}
+
+	public void setMovingInAir(boolean moving) {
+		this.getDataManager().set(MOVING_IN_AIR, moving);
 	}
 	
 	public boolean isBoofed() {
@@ -219,7 +281,7 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-		return 0.9F;
+		return this.isBoofed() ? 1.2F : 0.9F;
 	}
 	
 	@Override
@@ -233,7 +295,9 @@ public class EntityBooflo extends EndimatedEntity {
 			CROAK,
 			HOP,
 			HURT,
-			BIRTH
+			BIRTH,
+			INFLATE,
+			SWIM
 		};
 	}
 	
@@ -300,14 +364,19 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
+	protected boolean canFitPassenger(Entity passenger) {
+		int limit = this.isPregnant() ? 3 : 1;
+		return this.getPassengers().size() < limit;
+	}
+	
+	@Override
 	public int getHorizontalFaceSpeed() {
 		return 1;
 	}
 	
 	@Override
-	protected boolean canFitPassenger(Entity passenger) {
-		int limit = this.isPregnant() ? 3 : 1;
-		return this.getPassengers().size() < limit;
+	public EntitySize getSize(Pose poseIn) {
+		return this.isBoofed() ? BOOFED_SIZE : super.getSize(poseIn);
 	}
 	
 	@Override
@@ -400,7 +469,7 @@ public class EntityBooflo extends EndimatedEntity {
 				} else {
 					this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
 				}
-	         }
+			}
 		}
 	}
 }

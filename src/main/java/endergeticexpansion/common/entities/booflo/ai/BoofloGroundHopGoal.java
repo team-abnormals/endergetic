@@ -23,7 +23,7 @@ public class BoofloGroundHopGoal extends Goal {
 		if(RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
-		return this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && !this.booflo.isPassenger() && this.booflo.getPassengers().isEmpty();
+		return !this.booflo.isBoofed() && this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && !this.booflo.isPassenger() && this.booflo.getPassengers().isEmpty();
 	}
 	
 	@Override

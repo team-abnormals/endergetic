@@ -3,6 +3,7 @@ package endergeticexpansion.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.network.entity.MessageCAnimation;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
@@ -14,6 +15,7 @@ import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.common.network.particle.MessageSpawnParticle;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.core.proxy.ClientProxy;
@@ -67,6 +69,7 @@ public class EndergeticExpansion {
 		EEItems.ITEMS.register(modEventBus);
 		EEBlocks.BLOCKS.register(modEventBus);
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
+		EEParticles.PARTICLES.register(modEventBus);
 		EEEntities.ENTITY_TYPES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
@@ -150,6 +153,11 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageCAnimation.class, id++)
 		.encoder(MessageCAnimation::serialize).decoder(MessageCAnimation::deserialize)
 		.consumer(MessageCAnimation::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageSpawnParticle.class, id++)
+		.encoder(MessageSpawnParticle::serialize).decoder(MessageSpawnParticle::deserialize)
+		.consumer(MessageSpawnParticle::handle)
 		.add();
 	}
 }
