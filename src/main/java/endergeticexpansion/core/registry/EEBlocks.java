@@ -67,12 +67,12 @@ public class EEBlocks {
 	public static Block POISE_FENCE          = new BlockFenceBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence");
 	public static Block POISE_FENCE_GATE     = new BlockFenceGateBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence_gate");
 	public static Block POISE_PRESSURE_PLATE = new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_pressure_plate");
-	public static Block POISE_BUTTON         = new BlockButtonBase(Properties.from(EEBlocks.POISE_WOOD).doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "poise_button");
+	public static Block POISE_BUTTON         = new BlockButtonBase(EEProperties.POISE_WOOD_OTHER(false, true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_button");
 	public static Block POISE_TRAPDOOR       = new BlockTrapdoorBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_trapdoor");
-	public static Block BOLLOOM_BUD          = new BlockBolloomBud(EEProperties.POISE_WOOD.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_bud");
+	public static Block BOLLOOM_BUD          = new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_bud");
 	public static Block PUFFBUG_HIVE         = new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_hive");
 	public static Block HIVE_HANGER          = new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)).setRegistryName(EndergeticExpansion.MOD_ID, "hive_hanger");
-	public static Block BOLLOOM_PARTICLE     = new Block(EEProperties.POISE_WOOD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_particle");
+	public static Block BOLLOOM_PARTICLE     = new Block(EEProperties.POISE_WOOD_OTHER(false, true)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_particle");
 	public static Block BOOF_BLOCK           = new BlockBoof(EEProperties.BOOF_BLOCK).setRegistryName(EndergeticExpansion.MOD_ID, "boof_block");
 	public static Block BOOF_BLOCK_DISPENSED = new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)).setRegistryName(EndergeticExpansion.MOD_ID, "boof_dispensed_block");
 	
