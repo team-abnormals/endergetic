@@ -101,7 +101,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	@Override
 	public void travel(Vec3d vec3d) {
 		if (this.isServerWorld() && !this.isInWater()) {
-			this.moveRelative(0.01F, vec3d);
+			this.moveRelative(0.012F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.9D));
 			if(!this.isMoving()) {

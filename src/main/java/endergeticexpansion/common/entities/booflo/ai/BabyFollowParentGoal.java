@@ -18,7 +18,7 @@ public class BabyFollowParentGoal extends Goal {
 	}
 
 	public boolean shouldExecute() {
-		List<EntityBooflo> list = this.baby.world.getEntitiesWithinAABB(EntityBooflo.class, this.baby.getBoundingBox().grow(8.0D, 6.0D, 8.0D));
+		List<EntityBooflo> list = this.baby.world.getEntitiesWithinAABB(EntityBooflo.class, this.baby.getBoundingBox().grow(10.0D, 8.0D, 10.0D));
 		EntityBooflo booflo = null;
 		double d0 = Double.MAX_VALUE;
 

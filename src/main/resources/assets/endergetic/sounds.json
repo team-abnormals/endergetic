@@ -10,6 +10,22 @@
         	{ "name": "endergetic:entity/booflo/booflo_croak_3", "stream": false }
         ]
     },
+    "entity.booflo.inflate":
+    {
+        "category": "entity",
+        "subtitle": "Booflo inflates",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_inflate", "stream": false }
+        ]
+    },
+    "entity.booflo.deflate":
+    {
+        "category": "entity",
+        "subtitle": "Booflo deflates",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_deflate", "stream": false }
+        ]
+    },
     "entity.booflo.hurt":
     {
         "category": "entity",

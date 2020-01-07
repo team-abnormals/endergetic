@@ -8,10 +8,13 @@ import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.common.entities.booflo.ai.BoofloBoofGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloBreedGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloFaceRandomGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloGiveBirthGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloGroundHopGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloSwimGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloSwimmingGoal;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
@@ -19,10 +22,13 @@ import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -38,6 +44,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -54,7 +61,7 @@ public class EntityBooflo extends EndimatedEntity {
 	public static final Endimation HOP = new Endimation(25);
 	public static final Endimation HURT = new Endimation(15);
 	public static final Endimation BIRTH = new Endimation(140);
-	public static final Endimation INFLATE = new Endimation(6);
+	public static final Endimation INFLATE = new Endimation(10);
 	public static final Endimation SWIM = new Endimation(20);
 	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
 	public int hopDelay;
@@ -89,16 +96,41 @@ public class EntityBooflo extends EndimatedEntity {
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new BoofloGiveBirthGoal(this));
 		this.goalSelector.addGoal(1, new BoofloBreedGoal(this));
-		this.goalSelector.addGoal(4, new BoofloFaceRandomGoal(this));
-		this.goalSelector.addGoal(5, new BoofloGroundHopGoal(this));
+		this.goalSelector.addGoal(2, new BoofloBoofGoal(this));
+		this.goalSelector.addGoal(3, new BoofloSwimmingGoal(this));
+		this.goalSelector.addGoal(4, new BoofloSwimGoal(this, 1.0F, 15));
+		this.goalSelector.addGoal(5, new BoofloFaceRandomGoal(this));
+		this.goalSelector.addGoal(6, new BoofloGroundHopGoal(this));
 	}
 	
 	@Override
 	public void tick() {
 		super.tick();
 		
-		if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() == 7) {
-			//this.addVelocity(x, y, z);
+		if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() == 2) {
+			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
+			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			
+			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().scale(0.5D);
+			
+			this.addVelocity(motion.x, motion.y, motion.z);
+		}
+		
+		if(this.isAnimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
+			this.boof();
+		}
+		
+		if(this.isInWater() && !this.isBoofed()) {
+			this.setBoofed(true);
+		}
+		
+		if(this.isInWater() && this.isBoofed() && this.getRNG().nextFloat() < 0.7F) {
+			this.addVelocity(0.0F, 0.05F, 0.0F);
+		}
+		
+		if(this.onGround && this.isBoofed()) {
+			this.setBoofed(false);
 		}
 	}
 	
@@ -124,7 +156,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.isWorldRemote() && this.isAlive() && this.onGround && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION)) {
+		if(!this.isWorldRemote() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION)) {
 			this.livingSoundTime = -this.getTalkInterval();
 			NetworkUtil.setPlayingAnimationMessage(this, CROAK);
 		}
@@ -169,12 +201,22 @@ public class EntityBooflo extends EndimatedEntity {
 					public boolean canEntityStandOnPos(BlockPos pos) {
 						return this.world.isAirBlock(pos);
 					}
-				
+					
 				};
-				this.moveController = new MovementController(this);
+				this.moveController = new FlyingMoveContoller(this);
+				this.lookController = new FlyingLookController(this, 10);
+				
+				if(!this.isWorldRemote() && this.ticksExisted > 5) {
+					this.playSound(this.getInflateSound(), this.getSoundVolume(), this.getSoundPitch());
+				}
 			} else {
 				this.navigator = this.createNavigator(this.world);
 				this.moveController = new GroundMoveHelperController(this);
+				this.lookController = new LookController(this);
+				
+				if(!this.isWorldRemote() && this.ticksExisted > 5) {
+					this.playSound(this.getDeflateSound(), this.getSoundVolume(), this.getSoundPitch());
+				}
 			}
 		}
 	}
@@ -182,7 +224,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void travel(Vec3d vec3d) {
 		if(this.isServerWorld() && this.isBoofed()) {
-			this.moveRelative(0.01F, vec3d);
+			this.moveRelative(0.0F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.9D));
 			if(!this.isMovingInAir()) {
@@ -277,6 +319,17 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	public int getDefaultGroundHopDelay() {
 		return this.isInLove() ? this.rand.nextInt(10) + 25 : this.rand.nextInt(40) + 80;
+	}
+	
+	public void boof() {
+		if(!this.isWorldRemote()) {
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (4F * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (4F * (rand.nextFloat() + 0.1F)) * 0.1F);
+		}
+		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F))) {
+			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity)) {
+				entity.addVelocity(-MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * (8F * (rand.nextFloat() + 0.1F)) * 0.1F, this.rand.nextFloat() * 0.45D + 0.35D, MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * (8F * (rand.nextFloat() + 0.1F)) * 0.1F);
+			}
+		}
 	}
 	
 	@Override
@@ -375,6 +428,11 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
+	public int getMaxSpawnedInChunk() {
+		return 2;
+	}
+	
+	@Override
 	public EntitySize getSize(Pose poseIn) {
 		return this.isBoofed() ? BOOFED_SIZE : super.getSize(poseIn);
 	}
@@ -403,6 +461,14 @@ public class EntityBooflo extends EndimatedEntity {
 	 */
 	@Override
 	public void playAmbientSound() {}
+	
+	protected SoundEvent getInflateSound() {
+		return EESounds.BOOFLO_INFLATE.get();
+	}
+	
+	protected SoundEvent getDeflateSound() {
+		return EESounds.BOOFLO_DEFLATE.get();
+	}
 	
 	@Override
 	protected SoundEvent getAmbientSound() {
@@ -469,6 +535,79 @@ public class EntityBooflo extends EndimatedEntity {
 				} else {
 					this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
 				}
+			}
+		}
+	}
+	
+	public class FlyingMoveContoller extends MovementController {
+		private final EntityBooflo booflo;
+
+		public FlyingMoveContoller(EntityBooflo booflo) {
+			super(booflo);
+			this.booflo = booflo;
+		}
+
+		public void tick() {
+			if(this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
+				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
+				double d0 = vec3d.length();
+				double d1 = vec3d.y / d0;
+				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+				
+				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
+				this.booflo.renderYawOffset = this.booflo.rotationYaw;
+				this.booflo.rotationYawHead = this.booflo.rotationYaw;
+				
+				float f1 = (float)(this.speed * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
+				
+				this.booflo.setAIMoveSpeed(f2);
+				
+				double d3 = Math.cos((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
+				double d4 = Math.sin((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
+				double d5 = Math.sin((double)(this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
+				
+				if (!this.booflo.isInWater()) {
+					float f3 = -((float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double)(180F / (float)Math.PI)));
+					f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
+					this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
+				}
+				
+				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.02D, 0));
+				
+				this.booflo.setMovingInAir(true);
+			} else {
+				this.booflo.setAIMoveSpeed(0F);
+				this.booflo.setMovingInAir(false);
+			}
+		}
+	}
+	
+	class FlyingLookController extends LookController {
+		private final int angleLimit;
+
+		public FlyingLookController(EntityBooflo booflo, int angleLimit) {
+			super(booflo);
+			this.angleLimit = angleLimit;
+		}
+
+		public void tick() {
+			if(this.isLooking) {
+				this.isLooking = false;
+				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.func_220678_h() + 20.0F, this.deltaLookYaw);
+				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, this.func_220677_g() + 10.0F, this.deltaLookPitch);
+			} else {
+				if(this.mob.getNavigator().noPath()) {
+					this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 5.0F);
+				}
+				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
+			}
+
+			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.rotationYawHead - this.mob.renderYawOffset);
+			if(wrappedDegrees < (float)(-this.angleLimit)) {
+				this.mob.renderYawOffset -= 4.0F;
+			} else if (wrappedDegrees > (float)this.angleLimit) {
+				this.mob.renderYawOffset += 4.0F;
 			}
 		}
 	}

@@ -62,11 +62,79 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
         this.Head.addChild(this.LegLeft);
         this.Head.addChild(this.KneeLeft);
         this.KneeRight.addChild(this.LegBackRight);
+        
+        this.createScaleController();
+        
+        this.setDefaultBoxValues();
     }
 
     @Override
-    public void render(E booflo, float f, float f1, float f2, float f3, float f4, float f5) { 
+    public void render(E booflo, float f, float f1, float f2, float f3, float f4, float f5) {
+    	this.animateModel(booflo, f, f1, f2, f3, f4, f5);
         this.Head.render(f5);
+    }
+    
+    @Override
+    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    	this.revertBoxesToDefaultValues();
+    	
+    	this.Head.rotateAngleY = netHeadYaw * (float) (Math.PI / 180F);
+    	this.Head.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+    }
+    
+    
+    @Override
+    public void animateModel(E booflo, float f, float f1, float f2, float f3, float f4, float f5) {
+    	super.animateModel(booflo, f, f1, f2, f3, f4, f5);
+    	
+    	this.endimator.updateAnimations(booflo);
+    	
+    	if(booflo.isAnimationPlaying(EntityBooflo.INFLATE)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.INFLATE);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 0.7F, 0.0F, 0.7F);
+    		
+    		this.endimator.rotate(this.LegRight, 0.0F, 0.0F, 0.6F);
+    		this.endimator.rotate(this.LegLeft, 0.0F, 0.0F, -0.6F);
+    		
+    		this.endimator.rotate(this.KneeRight, 0.0F, 0.0F, 0.4F);
+    		this.endimator.rotate(this.LegBackRight, 0.0F, 0.0F, -0.4F);
+    		
+    		this.endimator.rotate(this.KneeRight, 0.0F, 0.0F, 0.2F);
+    		this.endimator.rotate(this.KneeLeft, 0.0F, 0.0F, -0.2F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 0.0F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    	} else if(booflo.isAnimationPlaying(EntityBooflo.SWIM)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.SWIM);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.LegRight, 0.0F, -1.6F, 0.0F);
+    		this.endimator.rotate(this.LegLeft, 0.0F, -1.6F, 0.0F);
+    		
+    		this.endimator.rotate(this.KneeRight, -0.895F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.KneeLeft, -0.895F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.LegBackRight, 0.8F, 0.8F, 1.6F);
+    		this.endimator.rotate(this.LegBackLeft, 0.8F, -0.8F, -1.6F);
+    		
+    		this.endimator.rotate(this.Jaw, 0.2F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.Head, -0.105F, 0.0F, 0.0F);
+    		this.endimator.move(this.Head, 0.0F, -0.3F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		/*
+    		 * Returns to defaults
+    		 */
+    		this.endimator.startKeyframe(10);
+    		this.endimator.endKeyframe();
+    	}
+    	
+    	this.Head.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
     }
 
     /**

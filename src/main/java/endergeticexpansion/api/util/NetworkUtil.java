@@ -26,9 +26,8 @@ import net.minecraftforge.fml.network.PacketDistributor;
  * This class holds a big list of useful network functions. Most are used in the mod
  */
 public class NetworkUtil {
-	
 	/**
-	 * @param stack{ItemStack} - The stack that the message will update the nbt for
+	 * @param stack - The stack that the message will update the nbt for
 	 * Used for updating the server nbt from the client. For example it's used in booflo vest keybinds
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -37,7 +36,7 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param stack{ItemStack} - the stack that the message will update the nbt for
+	 * @param stack - the stack that the message will update the nbt for
 	 * Used for updating the client nbt from the server
 	 */
 	public static void updateCItemNBT(ItemStack stack) {
@@ -45,9 +44,9 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param stack{ItemStack} - The stack that the message will set the cooldown for
-	 * @param cooldown{Integer} - The amount of time the cooldown will last; measured in ticks. 1 second = 20 ticks
-	 * @param isVest{Boolean} - A boolean that specifies that the cooldown is for the Booflo Vest item
+	 * @param stack - The stack that the message will set the cooldown for
+	 * @param cooldown - The amount of time the cooldown will last; measured in ticks. 1 second = 20 ticks
+	 * @param isVest - A boolean that specifies that the cooldown is for the Booflo Vest item
 	 * Used for updating the client nbt from the server
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -56,8 +55,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param motion{Vec3d} - The vector motion of the entity
-	 * @param id{Integer} - The Player's Entity Id
+	 * @param motion - The vector motion of the entity
+	 * @param id - The Player's Entity Id
 	 * Used for setting the client side Player Velocity from the server side
 	 */
 	@OnlyIn(Dist.DEDICATED_SERVER)
@@ -66,8 +65,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param motion{Vec3d} - The vector motion of the entity
-	 * @param id{Integer} - The Player's Entity Id
+	 * @param motion - The vector motion of the entity
+	 * @param id - The Player's Entity Id
 	 * Used for setting server side Entity Velocity from the client side
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -76,8 +75,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param velX, velY, velZ{Double} - The velocity values for x, y, and z
-	 * @param radius{Integer} - The radius the blast will affect; measured in blocks
+	 * @param velX, velY, velZ - The velocity values for x, y, and z
+	 * @param radius - The radius the blast will affect; measured in blocks
 	 * Used for pushing entities back through the client for the server
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -86,8 +85,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param entityId{Integer} - The entity's id
-	 * @param distance{Integer} - The height of the fall
+	 * @param entityId - The entity's id
+	 * @param distance - The height of the fall
 	 * Used for setting fall distance in booflo vests
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -96,8 +95,8 @@ public class NetworkUtil {
 	}
 	
 	/**
-	 * @param stack{itemstack} - The stack do damage
-	 * @param amount{Integer} - The amount to damage
+	 * @param stack - The stack do damage
+	 * @param amount - The amount to damage
 	 * Used for damaging items from the client side
 	 */
 	@OnlyIn(Dist.CLIENT)
@@ -105,6 +104,11 @@ public class NetworkUtil {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, amount));
 	}
 	
+	/**
+	 * @param name - The registry name of the particle
+	 * All other parameters work same as world#addParticle
+	 * Used for adding particles to the world from the server side
+	 */
 	public static void spawnParticle(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
 		EndergeticExpansion.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
