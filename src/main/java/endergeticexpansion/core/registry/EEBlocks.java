@@ -67,7 +67,7 @@ public class EEBlocks {
 	public static Block POISE_FENCE          = new BlockFenceBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence");
 	public static Block POISE_FENCE_GATE     = new BlockFenceGateBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence_gate");
 	public static Block POISE_PRESSURE_PLATE = new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_pressure_plate");
-	public static Block POISE_BUTTON         = new BlockButtonBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_button");
+	public static Block POISE_BUTTON         = new BlockButtonBase(Properties.from(EEBlocks.POISE_WOOD).doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "poise_button");
 	public static Block POISE_TRAPDOOR       = new BlockTrapdoorBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_trapdoor");
 	public static Block BOLLOOM_BUD          = new BlockBolloomBud(EEProperties.POISE_WOOD.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_bud");
 	public static Block PUFFBUG_HIVE         = new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_hive");
