@@ -36,6 +36,10 @@
 	"block.endergetic.poise_button": "Пуазовая кнопка",
 	"block.endergetic.poise_door": "Пуазовая дверь",
 	"block.endergetic.poise_trapdoor": "Пуазовый люк",
+	"block.endergetic.poise_vertical_planks": "Пуазовые вертикальные доски",
+	"block.endergetic.poise_vertical_slab": "Пуазовая вертикальная плита",
+	"block.endergetic.poise_bookshelf": "Пуазовая книжная полка",
+	"block.endergetic.poise_ladder": "Пуазовая лестница",
 	"block.endergetic.bolloom_bud": "Бутон булума",
 	"block.endergetic.puffbug_hive": "Улей пуфмитов",
 	"block.endergetic.hive_hanger": "Подвеска улья",
@@ -82,6 +86,7 @@
 	"item.endergetic.booflo_vest": "Пуфлу-жилет",
 	"item.endergetic.puffbug_bottle": "Пузырек с пуфмитом",
 	"item.endergetic.puff_bug_spawn_egg": "Яйцо призыва пуфмита",
+	"item.endergetic.booflo_spawn_egg": "Яйцо призыва пуфлу",
 	
 	"_comment": "Сущности",
 	
@@ -92,6 +97,8 @@
 	"entity.endergetic.bolloom_balloon": "Булум-шар",
 	"entity.endergetic.puff_bug": "Пуфмит",
 	"entity.endergetic.booflo_baby": "Малыш-пуфлу",
+	"entity.endergetic.booflo_adolescent": "Подросток пуфлу",
+	"entity.endergetic.booflo": "Пуфлу",
 	
 	"_comment": "Биомы",
 	
