@@ -21,7 +21,7 @@ public class BoofloGiveBirthGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		return !this.mother.isBoofed() && this.mother.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.mother.isPregnant() && this.mother.onGround;
+		return !this.mother.hasCaughtFruit() && !this.mother.isBoofed() && this.mother.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.mother.isPregnant() && this.mother.onGround;
 	}
 	
 	@Override

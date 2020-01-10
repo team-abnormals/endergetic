@@ -44,7 +44,7 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 			this.y = vec3d.y;
 			this.z = vec3d.z;
 			this.mustUpdate = false;
-			return !this.creature.hasPath() && !this.creature.isInWater();
+			return !this.creature.isInWater();
 		}
 	}
 	

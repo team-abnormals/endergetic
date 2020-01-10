@@ -102,6 +102,7 @@ public class EndimatedEntity extends CreatureEntity {
 	 * @param animationToPlay - The animation to play
 	 */
 	public void setPlayingAnimation(Endimation animationToPlay) {
+		this.onEndimationEnd(this.animation);
 		this.animation = animationToPlay;
 		this.setAnimationTick(0);
 	}
@@ -110,8 +111,10 @@ public class EndimatedEntity extends CreatureEntity {
 	 * Resets the current animation to a blank one
 	 */
 	public void resetPlayingAnimationToDefault() {
-		this.animation = BLANK_ANIMATION;
+		this.setPlayingAnimation(BLANK_ANIMATION);
 	}
+	
+	protected void onEndimationEnd(Endimation animation) {}
 	
 	@Nullable
 	public Endimation getHurtAnimation() {

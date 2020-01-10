@@ -1,7 +1,5 @@
 package endergeticexpansion.common.entities.booflo;
 
-import java.util.function.Predicate;
-
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
@@ -70,9 +68,6 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	private static final DataParameter<Boolean> WANTS_TO_GROW = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.FLOAT);
 	private static final DataParameter<Integer> BOOF_BOOST_COOLDOWN = EntityDataManager.createKey(EntityBoofloAdolescent.class, DataSerializers.VARINT);
-	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
-		return !(entity instanceof PlayerEntity) || !entity.isSpectator() && !((PlayerEntity)entity).isCreative();
-	};
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
 	public static final Endimation EATING_ANIMATION = new Endimation(10);
 	private Entity boofloAttackTarget;
@@ -170,7 +165,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		
 		if(this.getRidingEntity() == null) this.setFallSpeed(this.getFallSpeed() + 0.1F);
 		
-		if(!this.isHungry() && this.getRNG().nextInt(300) == 0) {
+		if(this.getRNG().nextInt(50000) < 10 && !this.isHungry() && !this.hasFruit()) {
 			this.setHungry(true);
 		}
 		
@@ -482,7 +477,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	public boolean isPlayerNear() {
-		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F), IS_SCARED_BY).size() > 0;
+		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F), EntityBooflo.IS_SCARED_BY).size() > 0;
 	}
 	
 	@Override

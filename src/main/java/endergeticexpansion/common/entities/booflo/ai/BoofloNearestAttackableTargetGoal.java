@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -27,21 +27,23 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	public BoofloNearestAttackableTargetGoal(MobEntity attacker, Class<E> targetClass, boolean p_i50314_3_, boolean p_i50314_4_) {
-		this(attacker, targetClass, 10, p_i50314_3_, p_i50314_4_);
+		this(attacker, targetClass, 5, p_i50314_3_, p_i50314_4_);
 	}
 
 	public BoofloNearestAttackableTargetGoal(MobEntity p_i50315_1_, Class<E> p_i50315_2_, int p_i50315_3_, boolean p_i50315_4_, boolean p_i50315_5_) {
 		super(p_i50315_1_, p_i50315_4_, p_i50315_5_);
 		this.targetClass = p_i50315_2_;
 		this.targetChance = p_i50315_3_;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.TARGET));
+		this.setMutexFlags(EnumSet.of(Flag.TARGET));
 		this.targetEntitySelector = EntityPredicate.DEFAULT.setDistance(this.getTargetDistance());
 	}
 
 	public boolean shouldExecute() {
 		if(this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0) {
 	         return false;
-		} else if(!((EntityBoofloAdolescent)this.goalOwner).isHungry()) {
+		} else if(this.goalOwner instanceof EntityBoofloAdolescent && !((EntityBoofloAdolescent)this.goalOwner).isHungry()) {
+			return false;
+		} else if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo)this.goalOwner).getBoofloAttackTarget() != null || !((EntityBooflo)this.goalOwner).isBoofed() || !((EntityBooflo)this.goalOwner).isHungry())) {
 			return false;
 		} else {
 			this.findNearestTarget();
@@ -62,7 +64,11 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	public void startExecuting() {
-		((EntityBoofloAdolescent) this.goalOwner).setBoofloAttackTarget(this.nearestTarget);
+		if(this.goalOwner instanceof EntityBooflo) {
+			((EntityBooflo) this.goalOwner).setBoofloAttackTargetId(this.nearestTarget.getEntityId());
+		} else {
+			((EntityBoofloAdolescent) this.goalOwner).setBoofloAttackTarget(this.nearestTarget);
+		}
 		super.startExecuting();
 	}
 	

@@ -105,7 +105,7 @@ public class AdolescentAttackGoal extends Goal {
 
 	public void tick() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		this.attacker.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
+		this.attacker.getLookController().setLookPositionWithEntity(target, 10.0F, 10.0F);
 		
 		double distToEnemySqr = this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		

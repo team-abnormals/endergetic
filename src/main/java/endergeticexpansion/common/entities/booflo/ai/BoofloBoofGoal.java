@@ -25,7 +25,7 @@ public class BoofloBoofGoal extends Goal {
 				return true;
 			}
 		}
-		return !onGround && this.booflo.getRNG().nextFloat() < 0.3F && this.booflo.isAnimationPlaying(EntityBooflo.HOP) && this.booflo.getAnimationTick() == 20;
+		return !onGround && this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.isAnimationPlaying(EntityBooflo.HOP) && this.booflo.getAnimationTick() == 20;
 	}
 	
 	@Override

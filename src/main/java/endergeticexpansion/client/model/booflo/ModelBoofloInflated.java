@@ -75,11 +75,13 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
     }
     
     @Override
-    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(E booflo, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
     	
     	this.Head.rotateAngleY = netHeadYaw * (float) (Math.PI / 180F);
     	this.Head.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+    	
+    	this.Jaw.rotateAngleX += 0.4F * booflo.OPEN_JAW.getAnimationProgress();
     }
     
     
