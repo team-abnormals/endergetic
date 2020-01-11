@@ -1,5 +1,6 @@
 package endergeticexpansion.common.entities.booflo;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -12,7 +13,16 @@ import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.booflo.ai.*;
+import endergeticexpansion.common.entities.booflo.ai.BoofloBoofGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloBreedGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloEatGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloFaceRandomGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloGiveBirthGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloGroundHopGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloHuntGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloSinkGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloSwimGoal;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
@@ -20,10 +30,12 @@ import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.item.ItemEntity;
@@ -46,8 +58,11 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -318,6 +333,17 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 	}
 	
+	@Override
+	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+		if(reason == SpawnReason.NATURAL) {
+			Random rand = new Random();
+			if(rand.nextFloat() < 0.2F) {
+				this.setPregnant(true);
+			}
+		}
+		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
+	
 	public boolean isMovingInAir() {
 		return this.getDataManager().get(MOVING_IN_AIR);
 	}
@@ -450,8 +476,13 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 	}
 	
-	public boolean isPlayerNear() {
-		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(7.0F, 4.0F, 7.0F), IS_SCARED_BY).size() > 0;
+	@Override
+	public boolean isNotColliding(IWorldReader worldIn) {
+		return true;
+	}
+	
+	public boolean isPlayerNear(float multiplier) {
+		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(8.0F * multiplier, 4.0F, 8.0F * multiplier), IS_SCARED_BY).size() > 0;
 	}
 	
 	public void findNearbyPlayers() {
@@ -553,7 +584,7 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public int getMaxSpawnedInChunk() {
-		return 2;
+		return 4;
 	}
 	
 	@Override
@@ -585,6 +616,10 @@ public class EntityBooflo extends EndimatedEntity {
 	 */
 	@Override
 	public void playAmbientSound() {}
+	
+	public SoundEvent getGrowlSound() {
+		return EESounds.BOOFLO_GROWL.get();
+	}
 	
 	protected SoundEvent getInflateSound() {
 		return EESounds.BOOFLO_INFLATE.get();

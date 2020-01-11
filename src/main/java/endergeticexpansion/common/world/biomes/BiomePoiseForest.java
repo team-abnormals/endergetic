@@ -37,6 +37,12 @@ public class BiomePoiseForest extends EndergeticBiome {
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS, new GrassFeatureConfig(EEBlocks.POISE_GRASS.getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
 	}
 	
+	
+	@Override
+	public float getSpawningChance() {
+		return 0.5F;
+	}
+	
 	@Override
 	public int getWeight() {
 		return 6;

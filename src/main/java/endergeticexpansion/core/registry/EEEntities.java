@@ -1,22 +1,42 @@
 package endergeticexpansion.core.registry;
 
+import java.util.Random;
 import java.util.function.BiFunction;
 
-import endergeticexpansion.common.entities.*;
-import endergeticexpansion.common.entities.bolloom.*;
-import endergeticexpansion.common.entities.booflo.*;
+import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityEndergeticBoat;
+import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class EEEntities {
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.ENTITIES, EndergeticExpansion.MOD_ID);
 	
@@ -57,5 +77,18 @@ public class EEEntities {
 			.build(location.toString()
 		);
 		return entity;
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+		EntitySpawnPlacementRegistry.register(BOOFLO.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, EEEntities::endIslandCondition);
+		EntitySpawnPlacementRegistry.register(BOOFLO_ADOLESCENT.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, EEEntities::endIslandCondition);
+	
+		EEBiomes.POISE_FOREST.get().getSpawns(EntityClassification.CREATURE).add(new SpawnListEntry(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2));
+		EEBiomes.POISE_FOREST.get().getSpawns(EntityClassification.CREATURE).add(new SpawnListEntry(EEEntities.BOOFLO.get(), 15, 1, 3));
+	}
+	
+	private static boolean endIslandCondition(EntityType<? extends CreatureEntity> entityType, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
+		return pos.getY() >= 40;
 	}
 }
