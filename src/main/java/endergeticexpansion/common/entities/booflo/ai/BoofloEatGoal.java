@@ -35,6 +35,7 @@ public class BoofloEatGoal extends Goal {
 			}
 		}
 		if(this.booflo.isPlayerNear(0.6F)) {
+			this.booflo.hopDelay = 0;
 			return false;
 		}
 		return this.booflo.isAnimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.onGround;

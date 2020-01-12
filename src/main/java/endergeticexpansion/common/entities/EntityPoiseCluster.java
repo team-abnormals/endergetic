@@ -10,10 +10,12 @@ import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -29,6 +31,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -195,6 +198,23 @@ public class EntityPoiseCluster extends LivingEntity {
 		this.extinguish();
 		
 		if(this.getHealth() != 0) this.setHealth(100);
+		
+		if(this.getMotion().length() > 0 && this.isAscending()) {
+			AxisAlignedBB clusterBB = this.getBoundingBox().offset(0.0F, 0.01F, 0.0F);
+			List<Entity> entitiesAbove = this.world.getEntitiesWithinAABBExcludingEntity(null, clusterBB);
+			if(!entitiesAbove.isEmpty()) {
+				for(int i = 0; i < entitiesAbove.size(); i++) {
+					Entity entity = entitiesAbove.get(i);
+					if(!(entity instanceof EntityPoiseCluster) && entity.getPushReaction() != PushReaction.IGNORE) {
+						AxisAlignedBB entityBB = entity.getBoundingBox();
+						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
+
+						entity.move(MoverType.SELF, new Vec3d(0.0F, distanceMotion, 0.0F));
+						entity.onGround = true;
+					}
+				}
+			}
+		}
 		
 		super.tick();
 	}
