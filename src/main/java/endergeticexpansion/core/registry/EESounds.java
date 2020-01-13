@@ -18,6 +18,7 @@ public class EESounds {
 	
 	public static final RegistryObject<SoundEvent> BOOFLO_CROAK   = createSoundEvent("entity.booflo.croak");
 	public static final RegistryObject<SoundEvent> BOOFLO_GROWL   = createSoundEvent("entity.booflo.growl");
+	public static final RegistryObject<SoundEvent> BOOFLO_SLAM   = createSoundEvent("entity.booflo.slam");
 	public static final RegistryObject<SoundEvent> BOOFLO_INFLATE = createSoundEvent("entity.booflo.inflate");
 	public static final RegistryObject<SoundEvent> BOOFLO_DEFLATE = createSoundEvent("entity.booflo.deflate");
 	public static final RegistryObject<SoundEvent> BOOFLO_HURT    = createSoundEvent("entity.booflo.hurt");

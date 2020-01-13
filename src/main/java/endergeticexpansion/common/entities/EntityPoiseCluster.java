@@ -205,11 +205,15 @@ public class EntityPoiseCluster extends LivingEntity {
 			if(!entitiesAbove.isEmpty()) {
 				for(int i = 0; i < entitiesAbove.size(); i++) {
 					Entity entity = entitiesAbove.get(i);
-					if(!(entity instanceof EntityPoiseCluster) && entity.getPushReaction() != PushReaction.IGNORE) {
+					if(!entity.isPassenger() && !(entity instanceof EntityPoiseCluster) && entity.getPushReaction() != PushReaction.IGNORE) {
 						AxisAlignedBB entityBB = entity.getBoundingBox();
 						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
 
-						entity.move(MoverType.SELF, new Vec3d(0.0F, distanceMotion, 0.0F));
+						if(entity instanceof PlayerEntity) {
+							entity.move(MoverType.PISTON, new Vec3d(0.0F, distanceMotion, 0.0F));
+						} else {
+							entity.move(MoverType.SELF, new Vec3d(0.0F, distanceMotion, 0.0F));
+						}
 						entity.onGround = true;
 					}
 				}

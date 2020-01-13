@@ -7,6 +7,7 @@ import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -112,7 +113,11 @@ public class AdolescentEatGoal extends Goal {
 	private void alertNearbyAdults() {
 		World world = this.adolescent.world;
 		for(EntityBooflo booflos : world.getEntitiesWithinAABB(EntityBooflo.class, this.adolescent.getBoundingBox().expand(24.0F, 12.0F, 24.0F))) {
-			booflos.findNearbyPlayers();
+			for(PlayerEntity players : booflos.getNearbyPlayers(1.5F)) {
+				if(!booflos.hasAggressiveAttackTarget() && !world.getEntitiesWithinAABB(PlayerEntity.class, this.adolescent.getBoundingBox().expand(24.0F, 12.0F, 24.0F), (entity) -> entity == players).isEmpty()) {
+					booflos.setBoofloAttackTargetId(players.getEntityId());
+				}
+			}
 		}
 	}
 }

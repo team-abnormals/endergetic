@@ -1,5 +1,6 @@
 package endergeticexpansion.common.entities.booflo;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -9,10 +10,13 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
+import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.booflo.ai.BoofloAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloBoofGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloBreedGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloEatGoal;
@@ -22,6 +26,7 @@ import endergeticexpansion.common.entities.booflo.ai.BoofloGroundHopGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloHuntGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTargetGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloSinkGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloSlamGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloSwimGoal;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -70,7 +75,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityBooflo extends EndimatedEntity {
 	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
-		return !(entity instanceof PlayerEntity) || !entity.isSpectator() && !((PlayerEntity)entity).isCreative();
+		if(entity instanceof PlayerEntity) {
+			return !entity.isSpectator() && !((PlayerEntity)entity).isCreative();
+		}
+		return false;
 	};
 	private static final DataParameter<Boolean> MOVING_IN_AIR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> BOOFED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
@@ -87,14 +95,18 @@ public class EntityBooflo extends EndimatedEntity {
 	public static final Endimation INFLATE = new Endimation(10);
 	public static final Endimation SWIM = new Endimation(20);
 	public static final Endimation EAT = new Endimation(160);
+	public static final Endimation CHARGE = new Endimation(75);
+	public static final Endimation SLAM = new Endimation(10);
 	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
 	public final ControlledEndimation OPEN_JAW = new ControlledEndimation(25, 0);
 	public final ControlledEndimation FRUIT_HOVER = new ControlledEndimation(8, 0);
+	private final EndergeticFlyingPathNavigator attackingNavigator;
 	public int hopDelay;
 	private UUID playerInLove;
 
-	public EntityBooflo(EntityType<? extends EntityBooflo> type, World worldIn) {
-		super(type, worldIn);
+	public EntityBooflo(EntityType<? extends EntityBooflo> type, World world) {
+		super(type, world);
+		this.attackingNavigator = new EndergeticFlyingPathNavigator(this, this.world);
 		this.moveController = new GroundMoveHelperController(this);
 		this.hopDelay = this.getDefaultGroundHopDelay();
 	}
@@ -102,6 +114,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
+		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.0D);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D);
 		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.05D);
 		this.getAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(2.0D);
@@ -125,13 +138,15 @@ public class EntityBooflo extends EndimatedEntity {
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new BoofloEatGoal(this));
 		this.goalSelector.addGoal(0, new BoofloGiveBirthGoal(this));
+		this.goalSelector.addGoal(1, new BoofloSlamGoal(this));
 		this.goalSelector.addGoal(1, new BoofloBreedGoal(this));
 		this.goalSelector.addGoal(2, new BoofloSinkGoal(this));
 		this.goalSelector.addGoal(3, new BoofloBoofGoal(this));
-		this.goalSelector.addGoal(4, new BoofloHuntGoal(this, 1.0F, true));
-		this.goalSelector.addGoal(5, new BoofloSwimGoal(this, 1.0F, 15));
-		this.goalSelector.addGoal(6, new BoofloFaceRandomGoal(this));
-		this.goalSelector.addGoal(7, new BoofloGroundHopGoal(this));
+		this.goalSelector.addGoal(4, new BoofloAttackGoal(this, true));
+		this.goalSelector.addGoal(5, new BoofloHuntGoal(this, 1.0F, true));
+		this.goalSelector.addGoal(6, new BoofloSwimGoal(this, 1.0F, 15));
+		this.goalSelector.addGoal(7, new BoofloFaceRandomGoal(this));
+		this.goalSelector.addGoal(8, new BoofloGroundHopGoal(this));
 		
 		this.targetSelector.addGoal(2, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
 	}
@@ -140,8 +155,25 @@ public class EntityBooflo extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
+		if(this.isBoofed()) {
+			if(this.hasAggressiveAttackTarget()) {
+				this.navigator = this.attackingNavigator;
+			} else {
+				if(this.navigator instanceof EndergeticFlyingPathNavigator) {
+					this.navigator = new FlyingPathNavigator(this, this.world) {
+						
+						@Override
+						public boolean canEntityStandOnPos(BlockPos pos) {
+							return this.world.isAirBlock(pos);
+						}
+						
+					};
+				}
+			}
+		}
+		
 		if(!this.isWorldRemote()) {
-			if(this.hasPath() && this.isBoofed() && this.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.isMovingInAir()) {
+			if(this.isBoofed() && this.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.isMovingInAir()) {
 				if(RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK) {
 					NetworkUtil.setPlayingAnimationMessage(this, EntityBooflo.SWIM);
 				}
@@ -167,25 +199,42 @@ public class EntityBooflo extends EndimatedEntity {
 			float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
 			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			
-			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().scale(0.5D);
+			double motionScale = this.hasAggressiveAttackTarget() ? 0.85F : 0.5D;
+			
+			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			
 			this.addVelocity(motion.x, motion.y, motion.z);
 		}
 		
 		if(this.isAnimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
-			this.boof();
+			this.boof(1.0F, 1.0F);
+		}
+		
+		if(this.isAnimationPlaying(SLAM) && this.getAnimationTick() == 3) {
+			this.boof(1.2F, 2.2F);
+			this.playSound(this.getSlamSound(), 0.75F, 1.0F);
 		}
 		
 		if(this.isInWater() && !this.isBoofed()) {
-			this.setBoofed(true);
-		}
-		
-		if(this.isInWater() && this.isBoofed() && this.getRNG().nextFloat() < 0.7F) {
-			this.addVelocity(0.0F, 0.05F, 0.0F);
+			if(!this.isBoofed()) {
+				this.setBoofed(true);
+			} else if(this.isBoofed() && this.getRNG().nextFloat() < 0.7F) {
+				this.addVelocity(0.0F, 0.05F, 0.0F);
+			}
 		}
 		
 		if(this.onGround && this.isBoofed()) {
-			this.setBoofed(false);
+			if(this.hasAggressiveAttackTarget()) {
+				if(!this.isWorldRemote()) {
+					if(this.isAnimationPlaying(BLANK_ANIMATION)) {
+						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
+					} else if(this.isAnimationPlaying(CHARGE)) {
+						NetworkUtil.setPlayingAnimationMessage(this, SLAM);
+					}
+				}
+			} else {
+				this.setBoofed(false);
+			}
 		}
 		
 		if(this.getRNG().nextInt(40000) < 10 && !this.hasCaughtFruit()) {
@@ -196,7 +245,7 @@ public class EntityBooflo extends EndimatedEntity {
 			this.FRUIT_HOVER.update();
 			
 			if(this.isBoofed()) {
-				this.OPEN_JAW.setDecrementing(this.getBoofloAttackTarget() == null);
+				this.OPEN_JAW.setDecrementing(this.getBoofloAttackTarget() == null || this.hasAggressiveAttackTarget());
 				
 				this.OPEN_JAW.update();
 					
@@ -250,6 +299,10 @@ public class EntityBooflo extends EndimatedEntity {
 		
 		if(this.isAnimationPlaying(CROAK) && this.getAnimationTick() == 5 && !this.isWorldRemote()) {
 			this.playSound(this.getAmbientSound(), this.getSoundVolume(), this.getSoundPitch());
+		}
+		
+		if(this.hasAggressiveAttackTarget() && this.canEntityBeSeen(this.getBoofloAttackTarget())) {
+			this.rotationYaw = this.rotationYawHead;
 		}
 	}
 	
@@ -405,6 +458,10 @@ public class EntityBooflo extends EndimatedEntity {
 		return this.getBoofloAttackTargetId() > 0 ? entity : null;
 	}
 	
+	public boolean hasAggressiveAttackTarget() {
+		return this.getBoofloAttackTarget() instanceof LivingEntity;
+	}
+	
 	public void setBoofloAttackTargetId(int id) {
 		this.dataManager.set(ATTACK_TARGET, id);
 	}
@@ -463,15 +520,34 @@ public class EntityBooflo extends EndimatedEntity {
 		return this.isInLove() ? this.rand.nextInt(10) + 25 : this.rand.nextInt(40) + 80;
 	}
 	
-	public void boof() {
+	public void boof(float internalStrength, float offensiveStrength) {
 		if(!this.isWorldRemote()) {
-			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (4F * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (4F * (rand.nextFloat() + 0.1F)) * 0.1F);
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4F * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4F * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
+			
+			if(offensiveStrength > 2.0F) {
+				for(int i = 0; i < 12; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+			
+					double x = this.posX + 0.5D + offsetX;
+					double y = this.posY + 0.5D + (rand.nextFloat() * 0.05F);
+					double z = this.posZ + 0.5D + offsetZ;
+			
+					if(this.isServerWorld()) {
+						NetworkUtil.spawnParticle("endergetic:poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+					}
+				}
+			}
 		}
-		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F))) {
+		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F * MathHelper.clamp(offensiveStrength / 2, 1.0F, offensiveStrength / 2)))) {
 			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity)) {
-				float amount = 0.2F;
+				if(offensiveStrength > 2.0F) {
+					entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
+					entity.velocityChanged = false;
+				}
+				float amount = 0.2F * offensiveStrength;
 				Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
-				entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
+				entity.addVelocity(result.x * amount, (this.rand.nextFloat() * 0.75D + 0.25D) * offensiveStrength, result.z * amount);
 			}
 		}
 	}
@@ -481,14 +557,12 @@ public class EntityBooflo extends EndimatedEntity {
 		return true;
 	}
 	
-	public boolean isPlayerNear(float multiplier) {
-		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(8.0F * multiplier, 4.0F, 8.0F * multiplier), IS_SCARED_BY).size() > 0;
+	public List<PlayerEntity> getNearbyPlayers(float multiplier) {
+		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(8.0F * multiplier, 4.0F, 8.0F * multiplier), IS_SCARED_BY);
 	}
 	
-	public void findNearbyPlayers() {
-		for(PlayerEntity players : this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(24.0F), EntityBooflo.IS_SCARED_BY)) {
-			//TODO: Make booflos get aggroed towards players
-		}
+	public boolean isPlayerNear(float multiplier) {
+		return !this.getNearbyPlayers(multiplier).isEmpty();
 	}
 	
 	@Override
@@ -510,7 +584,9 @@ public class EntityBooflo extends EndimatedEntity {
 			BIRTH,
 			INFLATE,
 			SWIM,
-			EAT
+			EAT,
+			CHARGE,
+			SLAM
 		};
 	}
 	
@@ -578,6 +654,36 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		Entity entitySource = source.getTrueSource();
+		if(entitySource instanceof LivingEntity) {
+			if(entitySource instanceof PlayerEntity) {
+				if(!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
+					this.setBoofloAttackTargetId(entitySource.getEntityId());
+				}
+			} else {
+				this.setBoofloAttackTargetId(entitySource.getEntityId());
+			}
+		}
+		return super.attackEntityFrom(source, amount);
+	}
+	
+	@Override
+	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
+		Entity entitySource = damageSrc.getTrueSource();
+		if(entitySource instanceof LivingEntity) {
+			if(entitySource instanceof PlayerEntity) {
+				if(!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
+					this.setBoofloAttackTargetId(entitySource.getEntityId());
+				}
+			} else {
+				this.setBoofloAttackTargetId(entitySource.getEntityId());
+			}
+		}
+		super.damageEntity(damageSrc, damageAmount);
+	}
+	
+	@Override
 	public int getHorizontalFaceSpeed() {
 		return 1;
 	}
@@ -619,6 +725,10 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	public SoundEvent getGrowlSound() {
 		return EESounds.BOOFLO_GROWL.get();
+	}
+	
+	public SoundEvent getSlamSound() {
+		return EESounds.BOOFLO_SLAM.get();
 	}
 	
 	protected SoundEvent getInflateSound() {
@@ -708,32 +818,44 @@ public class EntityBooflo extends EndimatedEntity {
 
 		public void tick() {
 			if(this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
-				double d0 = vec3d.length();
-				double d1 = vec3d.y / d0;
-				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+				if(this.booflo.hasAggressiveAttackTarget()) {
+					Vec3d vec3d = this.booflo.getMoveControllerPathDistance(this.posX, this.posY, this.posZ);
+					
+					this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
+					this.booflo.renderYawOffset = this.booflo.rotationYaw;
+					this.booflo.rotationYawHead = this.booflo.rotationYaw;
+					
+					float f1 = (float)(2 * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+					float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
+					
+					this.booflo.setAIMoveSpeed(f2);
+				} else {
+					Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
+					double d0 = vec3d.length();
+					double d1 = vec3d.y / d0;
+					float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 				
-				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
-				this.booflo.renderYawOffset = this.booflo.rotationYaw;
-				this.booflo.rotationYawHead = this.booflo.rotationYaw;
+					this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
+					this.booflo.renderYawOffset = this.booflo.rotationYaw;
+					this.booflo.rotationYawHead = this.booflo.rotationYaw;
 				
-				float f1 = (float)(this.speed * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
-				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
+					float f1 = (float)(this.speed * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+					float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
 				
-				this.booflo.setAIMoveSpeed(f2);
+					this.booflo.setAIMoveSpeed(f2);
 				
-				double d3 = Math.cos((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
-				double d4 = Math.sin((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
-				double d5 = Math.sin((double)(this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
+					double d3 = Math.cos((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
+					double d4 = Math.sin((double)(this.booflo.rotationYaw * ((float)Math.PI / 180F)));
+					double d5 = Math.sin((double)(this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
 				
-				if (!this.booflo.isInWater()) {
-					float f3 = -((float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double)(180F / (float)Math.PI)));
-					f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
-					this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
+					if (!this.booflo.isInWater()) {
+						float f3 = -((float)(MathHelper.atan2(vec3d.y, (double)MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double)(180F / (float)Math.PI)));
+						f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
+						this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
+					}
+				
+					this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.02D, 0));
 				}
-				
-				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double)f2 * d1 * 0.02D, 0));
-				
 				this.booflo.setMovingInAir(true);
 			} else {
 				this.booflo.setAIMoveSpeed(0F);
@@ -767,6 +889,10 @@ public class EntityBooflo extends EndimatedEntity {
 				this.mob.renderYawOffset -= 4.0F;
 			} else if (wrappedDegrees > (float)this.angleLimit) {
 				this.mob.renderYawOffset += 4.0F;
+			}
+			
+			if(((EntityBooflo) this.mob).isAnimationPlaying(CHARGE)) {
+				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 10.0F);
 			}
 		}
 	}

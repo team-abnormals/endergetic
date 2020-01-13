@@ -18,6 +18,14 @@
         	{ "name": "endergetic:entity/booflo/booflo_growl", "stream": false }
         ]
     },
+    "entity.booflo.slam":
+    {
+        "category": "entity",
+        "subtitle": "Booflo slams",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_slam", "stream": false }
+        ]
+    },
     "entity.booflo.inflate":
     {
         "category": "entity",

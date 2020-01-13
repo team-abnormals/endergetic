@@ -2,6 +2,7 @@ package endergeticexpansion.api.endimator;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.util.NetworkUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.datasync.DataParameter;
@@ -46,8 +47,8 @@ public class EndimatedEntity extends CreatureEntity {
 	
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(this.getHurtAnimation() != null && this.isAnimationPlaying(BLANK_ANIMATION)) {
-			this.setPlayingAnimation(this.getHurtAnimation());
+		if(!this.isWorldRemote() && this.getHurtAnimation() != null && this.isAnimationPlaying(BLANK_ANIMATION)) {
+			NetworkUtil.setPlayingAnimationMessage(this, this.getHurtAnimation());
 		}
 		return super.attackEntityFrom(source, amount);
 	}

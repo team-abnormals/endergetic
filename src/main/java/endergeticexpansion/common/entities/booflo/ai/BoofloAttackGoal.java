@@ -1,8 +1,10 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
+import java.util.Random;
 
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import javax.annotation.Nullable;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -11,49 +13,46 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
-public class BoofloHuntGoal extends Goal {
+public class BoofloAttackGoal extends Goal {
 	private final EntityBooflo booflo;
 	protected int attackTick;
-	private final double speedTowardsTarget;
 	private final boolean longMemory;
 	private Path path;
 	private int delayCounter;
 	private double targetX;
 	private double targetY;
 	private double targetZ;
-	private long field_220720_k;
-	
-	public BoofloHuntGoal(EntityBooflo booflo, double speed, boolean useLongMemory) {
+	private BlockPos upperAirPos;
+
+	public BoofloAttackGoal(EntityBooflo booflo, boolean useLongMemory) {
 		this.booflo = booflo;
-		this.speedTowardsTarget = speed;
 		this.longMemory = useLongMemory;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 	
 	public boolean shouldExecute() {
-		long i = this.booflo.world.getGameTime();
-		if(i - this.field_220720_k < 20L) {
+		Entity target = this.booflo.getBoofloAttackTarget();
+		if(target == null) {
+			return false;
+		} else if(!target.isAlive()) {
+			return false;
+		} else if(!this.booflo.hasAggressiveAttackTarget()) {
+			return false;
+		} else if(!this.booflo.isBoofed()) {
 			return false;
 		} else {
-			this.field_220720_k = i;
-			Entity target = this.booflo.getBoofloAttackTarget();
-			if(target == null) {
+			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRNG());
+			if(upperAirPos == null) {
 				return false;
-			} else if(!target.isAlive()) {
-				return false;
-			} else if(this.booflo.hasAggressiveAttackTarget()) {
-				return false;
-			} else if(!this.booflo.isBoofed()) {
-				return false;
-			} else {
-				this.path = this.booflo.getNavigator().getPathToPos(new BlockPos(target), 0);
-				if(this.path != null) {
-					return true;
-				} else {
-					return this.getAttackReachSqr(target) >= this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
-	            }
+			}
+			
+			this.path = this.booflo.getNavigator().getPathToPos(this.upperAirPos, 0);
+			
+			if(this.path != null && this.booflo.hasAggressiveAttackTarget()) {
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public boolean shouldContinueExecuting() {
@@ -66,7 +65,7 @@ public class BoofloHuntGoal extends Goal {
 			return false;
 		} else if(!this.longMemory) {
 			return !this.booflo.getNavigator().noPath();
-		} else if(!this.booflo.isWithinHomeDistanceFromPosition(new BlockPos(target))) {
+		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > 12) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -74,7 +73,7 @@ public class BoofloHuntGoal extends Goal {
 	}
 
 	public void startExecuting() {
-		this.booflo.getNavigator().setPath(this.path, 1.0F);
+		this.booflo.getNavigator().setPath(this.path, 1.35F);
 		this.booflo.setAggroed(true);
 		this.delayCounter = 0;
 	}
@@ -90,6 +89,8 @@ public class BoofloHuntGoal extends Goal {
 
 	public void tick() {
 		Entity target = this.booflo.getBoofloAttackTarget();
+		
+		this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
 		
 		double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		
@@ -108,29 +109,29 @@ public class BoofloHuntGoal extends Goal {
 	            this.delayCounter += 5;
 			}
 
-			if(!this.booflo.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
+			if(!this.booflo.getNavigator().tryMoveToXYZ(path.func_224770_k().getX(), path.func_224770_k().getY(), path.func_224770_k().getZ(), 1.35F)) {
 				this.delayCounter += 5;
 			}
 		}
 
 		this.attackTick = Math.max(this.attackTick - 1, 0);
-		this.tryToCapturePrey(target, distToEnemySqr);
 	}
-
-	protected void tryToCapturePrey(Entity prey, double distToEnemySqr) {
-		double attackReach = this.getAttackReachSqr(prey);
-		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
-			this.attackTick = 20;
-			if(prey instanceof EntityBolloomFruit) {
-				((EntityBolloomFruit)prey).onBroken(this.booflo, false);
-				this.booflo.setCaughtFruit(true);
-				this.booflo.setHungry(false);
-				prey.remove();
+	
+	@Nullable
+	private BlockPos getUpperPosToTarget(Entity target, Random rand) {
+		BlockPos startingPos = target.getPosition();
+		BlockPos targetPos = BlockPos.ZERO;
+		boolean isOpenBelow = true;
+		int randHeight = 9;
+		for(int y = 0; y < 16; y++) {
+			if(!target.world.getBlockState(startingPos.up(y)).getCollisionShape(target.world, startingPos.up(y)).isEmpty()) {
+				isOpenBelow = false;
+			}
+			
+			if(target.world.getBlockState(startingPos.up(y)).getCollisionShape(target.world, startingPos.up(y)).isEmpty() && y > randHeight) {
+				targetPos = startingPos.up(y);
 			}
 		}
-	}
-
-	protected double getAttackReachSqr(Entity attackTarget) {
-		return (this.booflo.getWidth() * 2.0F * this.booflo.getWidth() * 2.0F + attackTarget.getWidth()) * 0.85F;
+		return isOpenBelow ? targetPos : null;
 	}
 }

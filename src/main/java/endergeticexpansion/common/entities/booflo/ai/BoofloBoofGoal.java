@@ -20,12 +20,18 @@ public class BoofloBoofGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		boolean onGround = this.booflo.onGround;
+		boolean flagChance = !this.booflo.hasAggressiveAttackTarget() ? this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.getAnimationTick() == 20 : this.booflo.getAnimationTick() >= 20;
+		
+		if(this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
+			return this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION);
+		}
+		
 		if(!onGround) {
 			if(this.shouldJumpForFall() && !this.booflo.isBoofed()) {
 				return true;
 			}
 		}
-		return !onGround && this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.isAnimationPlaying(EntityBooflo.HOP) && this.booflo.getAnimationTick() == 20;
+		return !onGround && flagChance && this.booflo.isAnimationPlaying(EntityBooflo.HOP);
 	}
 	
 	@Override

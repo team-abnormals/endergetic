@@ -126,10 +126,9 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 		return this.world.rayTraceBlocks(new RayTraceContext(posVec31, vec3d, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this.entity)).getType() == RayTraceResult.Type.MISS;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean canEntityStandOnPos(BlockPos pos) {
-		return !this.world.getBlockState(pos).isAir();
+		return world.isAirBlock(pos);
 	}
 
 }

@@ -29,6 +29,8 @@ public class BoofloFaceRandomGoal extends Goal {
 			this.chosenDegrees = this.booflo.getRNG().nextInt(360);
 		}
 
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(this.chosenDegrees, false);
+		if(booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(this.chosenDegrees, false);
+		}
 	}
 }

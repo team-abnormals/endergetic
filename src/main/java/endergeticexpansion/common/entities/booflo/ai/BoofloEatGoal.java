@@ -6,6 +6,7 @@ import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class BoofloEatGoal extends Goal {
@@ -36,6 +37,11 @@ public class BoofloEatGoal extends Goal {
 		}
 		if(this.booflo.isPlayerNear(0.6F)) {
 			this.booflo.hopDelay = 0;
+			for(PlayerEntity players : this.booflo.getNearbyPlayers(0.6F)) {
+				if(!this.booflo.hasAggressiveAttackTarget()) {
+					this.booflo.setBoofloAttackTargetId(players.getEntityId());
+				}
+			}
 			return false;
 		}
 		return this.booflo.isAnimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.onGround;
