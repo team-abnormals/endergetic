@@ -45,7 +45,7 @@ public class BoofloSlamGoal extends Goal {
 		this.booflo.rotationPitch = 0.0F;
 		
 		if(this.booflo.isAnimationPlaying(EntityBooflo.CHARGE) && this.booflo.getAnimationTick() >= 15) {
-			this.booflo.addVelocity(0.0F, -0.2F, 0.0F);
+			this.booflo.addVelocity(0.0F, -0.225F, 0.0F);
 		}
 	}
 	
@@ -59,6 +59,10 @@ public class BoofloSlamGoal extends Goal {
 	}
 	
 	private boolean isSolidUnderTarget() {
-		return this.booflo.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.booflo.getBoofloAttackTarget().getPosition().down()), this.world, this.booflo.getBoofloAttackTarget().getPosition().down(), Direction.UP);
+		boolean isSomewhatSolidUnder = false;
+		for(int y = 1; y < 4; y++) {
+			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.booflo.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.booflo.getBoofloAttackTarget().getPosition().down(y)), this.world, this.booflo.getBoofloAttackTarget().getPosition().down(y), Direction.UP) : true;
+		}
+		return isSomewhatSolidUnder;
 	}
 }

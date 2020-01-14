@@ -22,7 +22,9 @@ public class BoofloEatGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		if(this.booflo.isPlayerNear(1.0F)) {
-			return false;
+			if(!this.booflo.isTamed()) {
+				return false;
+			}
 		}
 		return this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.booflo.hasCaughtFruit() && !this.booflo.isBoofed() && this.booflo.onGround && !this.booflo.isInLove();
 	}
@@ -35,14 +37,17 @@ public class BoofloEatGoal extends Goal {
 				flag = false;
 			}
 		}
+		
 		if(this.booflo.isPlayerNear(0.6F)) {
-			this.booflo.hopDelay = 0;
-			for(PlayerEntity players : this.booflo.getNearbyPlayers(0.6F)) {
-				if(!this.booflo.hasAggressiveAttackTarget()) {
-					this.booflo.setBoofloAttackTargetId(players.getEntityId());
+			if(!this.booflo.isTamed()) {
+				this.booflo.hopDelay = 0;
+				for(PlayerEntity players : this.booflo.getNearbyPlayers(0.6F)) {
+					if(!this.booflo.hasAggressiveAttackTarget()) {
+						this.booflo.setBoofloAttackTargetId(players.getEntityId());
+					}
 				}
+				return false;
 			}
-			return false;
 		}
 		return this.booflo.isAnimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.onGround;
 	}
@@ -71,8 +76,10 @@ public class BoofloEatGoal extends Goal {
 		this.booflo.prevRotationYaw = this.originalYaw;
 		
 		if(this.booflo.isPlayerNear(1.0F) && this.soundDelay == 0) {
-			this.booflo.playSound(this.booflo.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.booflo.getRNG().nextFloat() * 1.0, 0.95F, 1.0F));
-			this.soundDelay = 50;
+			if(!this.booflo.isTamed()) {
+				this.booflo.playSound(this.booflo.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.booflo.getRNG().nextFloat() * 1.0, 0.95F, 1.0F));
+				this.soundDelay = 50;
+			}
 		}
 	}
 }

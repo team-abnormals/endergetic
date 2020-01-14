@@ -1,6 +1,7 @@
 package endergeticexpansion.common.entities.booflo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -28,10 +29,12 @@ import endergeticexpansion.common.entities.booflo.ai.BoofloNearestAttackableTarg
 import endergeticexpansion.common.entities.booflo.ai.BoofloSinkGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloSlamGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloSwimGoal;
+import endergeticexpansion.common.entities.booflo.ai.BoofloTemptGoal;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -43,6 +46,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,9 +57,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
+import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -80,11 +86,15 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		return false;
 	};
+	private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final DataParameter<Optional<UUID>> LAST_FED_UNIQUE_ID = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING_IN_AIR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> BOOFED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> PREGNANT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Integer> FRUITS_NEEDED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> ATTACK_TARGET = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> BIRTH_YAW = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
@@ -97,12 +107,14 @@ public class EntityBooflo extends EndimatedEntity {
 	public static final Endimation EAT = new Endimation(160);
 	public static final Endimation CHARGE = new Endimation(75);
 	public static final Endimation SLAM = new Endimation(10);
+	public static final Endimation GROWL = new Endimation(60);
 	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
 	public final ControlledEndimation OPEN_JAW = new ControlledEndimation(25, 0);
 	public final ControlledEndimation FRUIT_HOVER = new ControlledEndimation(8, 0);
 	private final EndergeticFlyingPathNavigator attackingNavigator;
-	public int hopDelay;
 	private UUID playerInLove;
+	public int hopDelay;
+	private int croakDelay;
 
 	public EntityBooflo(EntityType<? extends EntityBooflo> type, World world) {
 		super(type, world);
@@ -124,11 +136,15 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void registerData() {
 		super.registerData();
+		this.getDataManager().register(OWNER_UNIQUE_ID, Optional.empty());
+		this.getDataManager().register(LAST_FED_UNIQUE_ID, Optional.empty());
+		this.getDataManager().register(TAMED, false);
 		this.getDataManager().register(MOVING_IN_AIR, false);
 		this.getDataManager().register(BOOFED, false);
 		this.getDataManager().register(PREGNANT, false);
 		this.getDataManager().register(HUNGRY, true);
 		this.getDataManager().register(HAS_FRUIT, false);
+		this.getDataManager().register(FRUITS_NEEDED, this.getRNG().nextInt(3) + 2);
 		this.getDataManager().register(LOVE_TICKS, 0);
 		this.getDataManager().register(ATTACK_TARGET, 0);
 		this.getDataManager().register(BIRTH_YAW, 0.0F);
@@ -140,13 +156,14 @@ public class EntityBooflo extends EndimatedEntity {
 		this.goalSelector.addGoal(0, new BoofloGiveBirthGoal(this));
 		this.goalSelector.addGoal(1, new BoofloSlamGoal(this));
 		this.goalSelector.addGoal(1, new BoofloBreedGoal(this));
-		this.goalSelector.addGoal(2, new BoofloSinkGoal(this));
-		this.goalSelector.addGoal(3, new BoofloBoofGoal(this));
-		this.goalSelector.addGoal(4, new BoofloAttackGoal(this, true));
-		this.goalSelector.addGoal(5, new BoofloHuntGoal(this, 1.0F, true));
-		this.goalSelector.addGoal(6, new BoofloSwimGoal(this, 1.0F, 15));
-		this.goalSelector.addGoal(7, new BoofloFaceRandomGoal(this));
-		this.goalSelector.addGoal(8, new BoofloGroundHopGoal(this));
+		this.goalSelector.addGoal(3, new BoofloSinkGoal(this));
+		this.goalSelector.addGoal(4, new BoofloBoofGoal(this));
+		this.goalSelector.addGoal(5, new BoofloTemptGoal(this));
+		this.goalSelector.addGoal(6, new BoofloAttackGoal(this, true));
+		this.goalSelector.addGoal(7, new BoofloHuntGoal(this, 1.0F, true));
+		this.goalSelector.addGoal(8, new BoofloSwimGoal(this, 1.0F, 15));
+		this.goalSelector.addGoal(9, new BoofloFaceRandomGoal(this));
+		this.goalSelector.addGoal(10, new BoofloGroundHopGoal(this));
 		
 		this.targetSelector.addGoal(2, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
 	}
@@ -154,6 +171,8 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		
+		if(this.croakDelay > 0) this.croakDelay--;
 		
 		if(this.isBoofed()) {
 			if(this.hasAggressiveAttackTarget()) {
@@ -188,7 +207,7 @@ public class EntityBooflo extends EndimatedEntity {
 					}
 					if(this.getAnimationTick() == 140) {
 						this.setCaughtFruit(false);
-						this.heal(2.0F);
+						this.heal(5.0F);
 					}
 				}
 			}
@@ -210,12 +229,25 @@ public class EntityBooflo extends EndimatedEntity {
 			this.boof(1.0F, 1.0F);
 		}
 		
+		if(!this.isWorldRemote() && this.isAnimationPlaying(GROWL)) {
+			if(this.getAnimationTick() == 10) {
+				this.playSound(this.getGrowlSound(), 0.75F, this.getSoundPitch());
+			}
+			if(this.getAnimationTick() >= 20) {
+				for(PlayerEntity players : this.getNearbyPlayers(0.4F)) {
+					if(!this.hasAggressiveAttackTarget()) {
+						this.setBoofloAttackTargetId(players.getEntityId());
+					}
+				}
+			}
+		}
+		
 		if(this.isAnimationPlaying(SLAM) && this.getAnimationTick() == 3) {
 			this.boof(1.2F, 2.2F);
 			this.playSound(this.getSlamSound(), 0.75F, 1.0F);
 		}
 		
-		if(this.isInWater() && !this.isBoofed()) {
+		if(this.isInWater()) {
 			if(!this.isBoofed()) {
 				this.setBoofed(true);
 			} else if(this.isBoofed() && this.getRNG().nextFloat() < 0.7F) {
@@ -292,7 +324,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.isWorldRemote() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION)) {
+		if(!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION)) {
 			this.livingSoundTime = -this.getTalkInterval();
 			NetworkUtil.setPlayingAnimationMessage(this, CROAK);
 		}
@@ -314,11 +346,25 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putBoolean("IsPregnant", this.isPregnant());
 		compound.putBoolean("IsHungry", this.isHungry());
 		compound.putBoolean("HasFruit", this.hasCaughtFruit());
+		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
 		compound.putInt("InLove", this.getInLoveTicks());
 		compound.putInt("BoofloTargetId", this.getBoofloAttackTargetId());
 		compound.putFloat("BirthYaw", this.getBirthYaw());
+		
 		if(this.playerInLove != null) {
 			compound.putUniqueId("LoveCause", this.playerInLove);
+		}
+		
+		if(this.getOwnerId() == null) {
+			compound.putString("OwnerUUID", "");
+		} else {
+			compound.putString("OwnerUUID", this.getOwnerId().toString());
+		}
+		
+		if(this.getLastFedId() == null) {
+			compound.putString("LastFedUUID", "");
+		} else {
+			compound.putString("LastFedUUID", this.getLastFedId().toString());
 		}
 	}
 	
@@ -330,10 +376,29 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setPregnant(compound.getBoolean("IsPregnant"));
 		this.setHungry(compound.getBoolean("IsHungry"));
 		this.setCaughtFruit(compound.getBoolean("HasFruit"));
+		this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBoofloAttackTargetId(compound.getInt("BoofloTargetId"));
 		this.setBirthYaw(compound.getFloat("BirthYaw"));
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
+		
+		String ownerUUID = compound.contains("OwnerUUID", 8) ? compound.getString("OwnerUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
+		String lastFedUUID = compound.contains("LastFedUUID", 8) ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("LastFed"));
+		
+		if(!ownerUUID.isEmpty()) {
+			try {
+				this.setOwnerId(UUID.fromString(ownerUUID));
+				this.setTamed(true);
+			} catch (Throwable exception) {
+				this.setTamed(false);
+			}
+		}
+		
+		if(!lastFedUUID.isEmpty()) {
+			try {
+				this.setLastFedId(UUID.fromString(lastFedUUID));
+			} catch (Throwable exception) {}
+		}
 	}
 	
 	@Override
@@ -393,8 +458,36 @@ public class EntityBooflo extends EndimatedEntity {
 			if(rand.nextFloat() < 0.2F) {
 				this.setPregnant(true);
 			}
+			
+			this.setFruitsNeeded(rand.nextInt(3) + 2);
 		}
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	}
+	
+	@Nullable
+	public UUID getOwnerId() {
+		return this.dataManager.get(OWNER_UNIQUE_ID).orElse(null);
+	}  
+
+	public void setOwnerId(@Nullable UUID ownerId) {
+		this.dataManager.set(OWNER_UNIQUE_ID, Optional.ofNullable(ownerId));
+	}
+	
+	@Nullable
+	public UUID getLastFedId() {
+		return this.dataManager.get(LAST_FED_UNIQUE_ID).orElse(null);
+	}  
+
+	public void setLastFedId(@Nullable UUID ownerId) {
+		this.dataManager.set(LAST_FED_UNIQUE_ID, Optional.ofNullable(ownerId));
+	}
+	
+	public boolean isTamed() {
+		return this.dataManager.get(TAMED);
+	}
+
+	public void setTamed(boolean tamed) {
+		this.dataManager.set(TAMED, tamed);
 	}
 	
 	public boolean isMovingInAir() {
@@ -452,7 +545,11 @@ public class EntityBooflo extends EndimatedEntity {
 	@Nullable
 	public Entity getBoofloAttackTarget() {
 		Entity entity = this.world.getEntityByID(this.getBoofloAttackTargetId());
-		if(entity == null || entity != null && !entity.isAlive()) {
+		if(entity == null || entity != null && !entity.isAlive() || entity instanceof EntityBooflo) {
+			this.setBoofloAttackTargetId(0);
+		}
+		
+		if(this.getOwner() != null && this.getOwner() == entity) {
 			this.setBoofloAttackTargetId(0);
 		}
 		return this.getBoofloAttackTargetId() > 0 ? entity : null;
@@ -474,6 +571,14 @@ public class EntityBooflo extends EndimatedEntity {
 
 		this.world.setEntityState(this, (byte) 18);
 	}
+	
+	public void setFruitsNeeded(int fruitsNeeded) {
+		this.dataManager.set(FRUITS_NEEDED, fruitsNeeded);
+	}
+	
+	public int getFruitsNeededTillTamed() {
+		return this.dataManager.get(FRUITS_NEEDED);
+	}
 
 	public void setInLove(int ticks) {
 		this.dataManager.set(LOVE_TICKS, ticks);
@@ -484,7 +589,7 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	public boolean canBreed() {
-		return this.getInLoveTicks() <= 0 && !this.isPregnant();
+		return this.isTamed() && this.getInLoveTicks() <= 0 && !this.isPregnant();
 	}
 	
 	public boolean isInLove() {
@@ -505,6 +610,35 @@ public class EntityBooflo extends EndimatedEntity {
 		} else {
 			PlayerEntity playerentity = this.world.getPlayerByUuid(this.playerInLove);
 			return playerentity instanceof ServerPlayerEntity ? (ServerPlayerEntity) playerentity : null;
+		}
+	}
+	
+	public void setTamedBy(PlayerEntity player) {
+		this.setTamed(true);
+		this.setOwnerId(player.getUniqueID());
+		if(player instanceof ServerPlayerEntity) {
+			//Creates wolf to still trigger tamed - as booflo isn't an AnimalEntity
+			CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity)player, EntityType.WOLF.create(this.world));
+		}
+	}
+	
+	@Nullable
+	public LivingEntity getOwner() {
+		try {
+			UUID uuid = this.getOwnerId();
+			return uuid == null ? null : this.world.getPlayerByUuid(uuid);
+		} catch (IllegalArgumentException exception) {
+			return null;
+		}
+	}
+	
+	@Nullable
+	public LivingEntity getLastFedPlayer() {
+		try {
+			UUID uuid = this.getLastFedId();
+			return uuid == null ? null : this.world.getPlayerByUuid(uuid);
+		} catch (IllegalArgumentException exception) {
+			return null;
 		}
 	}
 	
@@ -542,7 +676,7 @@ public class EntityBooflo extends EndimatedEntity {
 		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F * MathHelper.clamp(offensiveStrength / 2, 1.0F, offensiveStrength / 2)))) {
 			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity)) {
 				if(offensiveStrength > 2.0F) {
-					entity.attackEntityFrom(DamageSource.causeMobDamage(this), 5.0F);
+					entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue());
 					entity.velocityChanged = false;
 				}
 				float amount = 0.2F * offensiveStrength;
@@ -553,8 +687,22 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
+	public boolean canDespawn(double distanceToClosestPlayer) {
+		return !this.isTamed();
+	}
+	
+	@Override
 	public boolean isNotColliding(IWorldReader worldIn) {
 		return true;
+	}
+	
+	public boolean isTempted() {
+		for(Object goals : this.goalSelector.getRunningGoals().toArray()) {
+			if(goals instanceof PrioritizedGoal) {
+				return ((PrioritizedGoal) goals).getGoal() instanceof BoofloTemptGoal;
+			}
+		}
+		return false;
 	}
 	
 	public List<PlayerEntity> getNearbyPlayers(float multiplier) {
@@ -586,7 +734,8 @@ public class EntityBooflo extends EndimatedEntity {
 			SWIM,
 			EAT,
 			CHARGE,
-			SLAM
+			SLAM,
+			GROWL
 		};
 	}
 	
@@ -615,7 +764,7 @@ public class EntityBooflo extends EndimatedEntity {
 		Item item = itemstack.getItem();
 		
 		if(item instanceof SpawnEggItem && ((SpawnEggItem)item).hasType(itemstack.getTag(), this.getType())) {
-			if(!this.world.isRemote) {
+			if(!this.isWorldRemote()) {
 				EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(this.world);
 				baby.setGrowingAge(-24000);
 				baby.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
@@ -630,6 +779,41 @@ public class EntityBooflo extends EndimatedEntity {
 		} else if(item == EEBlocks.POISE_CLUSTER.asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
+			
+			return true;
+		} else if(item == EEItems.BOLLOOM_FRUIT.get() && !this.isAggressive() && !this.hasCaughtFruit() && this.onGround) {
+			IParticleData particle = ParticleTypes.HEART;
+			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
+			this.setCaughtFruit(true);
+			this.setHungry(false);
+			
+			if(!this.isTamed()) {
+				if(this.getFruitsNeededTillTamed() >= 1) {
+					this.setFruitsNeeded(this.getFruitsNeededTillTamed() - 1);
+					this.setLastFedId(player.getUniqueID());
+					particle = ParticleTypes.SMOKE;
+				
+					if(!this.isWorldRemote()) {
+						NetworkUtil.setPlayingAnimationMessage(this, GROWL);
+					}
+				} else {
+					if(player == this.getLastFedPlayer()) {
+						this.setFruitsNeeded(0);
+						this.setTamedBy(player);
+						this.croakDelay = 40;
+					}
+				}
+			}
+			
+			if(this.isWorldRemote()) {
+				for(int i = 0; i < 7; ++i) {
+					double d0 = this.rand.nextGaussian() * 0.02D;
+					double d1 = this.rand.nextGaussian() * 0.02D;
+					double d2 = this.rand.nextGaussian() * 0.02D;
+					this.world.addParticle(particle, this.posX + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
+				}
+			}
+			return true;
 		}
 		return false;
 	}
