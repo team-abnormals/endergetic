@@ -40,7 +40,10 @@ public class EndimatedEntity extends CreatureEntity {
 		if(!this.isAnimationPlaying(BLANK_ANIMATION)) {
 			this.setAnimationTick(this.getAnimationTick() + 1);
 			if(this.getAnimationTick() >= this.getPlayingAnimation().getAnimationTickDuration()) {
+				this.onEndimationEnd(this.animation);
 				this.resetPlayingAnimationToDefault();
+			} else if(this.getAnimationTick() == 1) {
+				this.onEndimationStart(this.animation);
 			}
 		}
 	}
@@ -102,9 +105,9 @@ public class EndimatedEntity extends CreatureEntity {
 	 * Sets an animation to play
 	 * @param animationToPlay - The animation to play
 	 */
-	public void setPlayingAnimation(Endimation animationToPlay) {
+	public void setPlayingAnimation(Endimation endimationToPlay) {
 		this.onEndimationEnd(this.animation);
-		this.animation = animationToPlay;
+		this.animation = endimationToPlay;
 		this.setAnimationTick(0);
 	}
 	
@@ -115,7 +118,9 @@ public class EndimatedEntity extends CreatureEntity {
 		this.setPlayingAnimation(BLANK_ANIMATION);
 	}
 	
-	protected void onEndimationEnd(Endimation animation) {}
+	protected void onEndimationStart(Endimation endimation) {}
+	
+	protected void onEndimationEnd(Endimation endimation) {}
 	
 	@Nullable
 	public Endimation getHurtAnimation() {

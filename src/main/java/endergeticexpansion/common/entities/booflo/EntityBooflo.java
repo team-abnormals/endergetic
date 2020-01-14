@@ -115,6 +115,8 @@ public class EntityBooflo extends EndimatedEntity {
 	private UUID playerInLove;
 	public int hopDelay;
 	private int croakDelay;
+	private boolean shouldPlayLandSound;
+	private boolean wasOnGround;
 
 	public EntityBooflo(EntityType<? extends EntityBooflo> type, World world) {
 		super(type, world);
@@ -197,6 +199,7 @@ public class EntityBooflo extends EndimatedEntity {
 					NetworkUtil.setPlayingAnimationMessage(this, EntityBooflo.SWIM);
 				}
 			}
+			
 			if(this.isAnimationPlaying(EAT)) {
 				if((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if(this.getAnimationTick() % 18 == 0) {
@@ -210,6 +213,18 @@ public class EntityBooflo extends EndimatedEntity {
 						this.heal(5.0F);
 					}
 				}
+			}
+			
+			if(this.isAnimationPlaying(HOP)) {
+				if(this.getAnimationTick() == 10) {
+					this.playSound(this.getHopSound(false), 0.95F, this.getSoundPitch());
+					this.shouldPlayLandSound = true;
+				}
+			}
+			
+			if(this.shouldPlayLandSound && this.onGround && !this.wasOnGround) {
+				this.playSound(this.getHopSound(true), 0.95F, this.getSoundPitch());
+				this.shouldPlayLandSound = false;
 			}
 		}
 		
@@ -300,6 +315,8 @@ public class EntityBooflo extends EndimatedEntity {
 			
 			this.FRUIT_HOVER.tick();
 		}
+		
+		this.wasOnGround = this.onGround;
 	}
 	
 	@Override
@@ -906,6 +923,10 @@ public class EntityBooflo extends EndimatedEntity {
 	 */
 	@Override
 	public void playAmbientSound() {}
+	
+	public SoundEvent getHopSound(boolean landing) {
+		return landing ? EESounds.BOOFLO_HOP_LAND.get() : EESounds.BOOFLO_HOP.get();
+	}
 	
 	public SoundEvent getGrowlSound() {
 		return EESounds.BOOFLO_GROWL.get();

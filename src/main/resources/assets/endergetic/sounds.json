@@ -18,6 +18,22 @@
         	{ "name": "endergetic:entity/booflo/booflo_growl", "stream": false }
         ]
     },
+    "entity.booflo.hop":
+    {
+        "category": "entity",
+        "subtitle": "Booflo hops",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_hop", "stream": false }
+        ]
+    },
+    "entity.booflo.hop_land":
+    {
+        "category": "entity",
+        "subtitle": "Booflo lands from hop",
+        "sounds": [
+        	{ "name": "endergetic:entity/booflo/booflo_land", "stream": false }
+        ]
+    },
     "entity.booflo.slam":
     {
         "category": "entity",
