@@ -774,11 +774,12 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F * MathHelper.clamp(offensiveStrength / 2, 1.0F, offensiveStrength / 2)))) {
 			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity)) {
-				if(offensiveStrength > 2.0F) {
+				float resistancy = this.isResistantToBoof(entity) ? 0.15F : 1.0F;
+				float amount = (0.2F * offensiveStrength) * resistancy;
+				if(offensiveStrength > 2.0F && resistancy > 0.15F) {
 					entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue());
 					entity.velocityChanged = false;
 				}
-				float amount = 0.2F * offensiveStrength;
 				Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
 				entity.addVelocity(result.x * amount, (this.rand.nextFloat() * 0.75D + 0.25D) * offensiveStrength, result.z * amount);
 			}
