@@ -258,6 +258,8 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	
 	public void growUp() {
 		if(!this.world.isRemote && this.isAlive()) {
+			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
+			
 			EntityBoofloAdolescent booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
 			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
 			

@@ -33,7 +33,7 @@ public class BoofloBoofGoal extends Goal {
 				return true;
 			}
 		}
-		return !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isAnimationPlaying(EntityBooflo.HOP);
+		return this.booflo.getPassengers().isEmpty() && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isAnimationPlaying(EntityBooflo.HOP);
 	}
 	
 	@Override

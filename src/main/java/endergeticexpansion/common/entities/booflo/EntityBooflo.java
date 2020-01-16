@@ -73,7 +73,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -95,6 +94,7 @@ public class EntityBooflo extends EndimatedEntity {
 	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> FRUITS_NEEDED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> RIDE_CONTROL_DELAY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> ATTACK_TARGET = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> BIRTH_YAW = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
@@ -147,6 +147,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.getDataManager().register(HUNGRY, true);
 		this.getDataManager().register(HAS_FRUIT, false);
 		this.getDataManager().register(FRUITS_NEEDED, this.getRNG().nextInt(3) + 2);
+		this.getDataManager().register(RIDE_CONTROL_DELAY, 0);
 		this.getDataManager().register(LOVE_TICKS, 0);
 		this.getDataManager().register(ATTACK_TARGET, 0);
 		this.getDataManager().register(BIRTH_YAW, 0.0F);
@@ -173,6 +174,8 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		
+		if(this.getRideControlDelay() > 0) this.setRideControlDelay(this.getRideControlDelay() - 1);
 		
 		if(this.croakDelay > 0) this.croakDelay--;
 		
@@ -228,16 +231,28 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() == 2) {
-			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-			float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
-			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+		if(this.isAnimationPlaying(SWIM)) {
+			if(this.getAnimationTick() == 2) {
+				float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+				float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
+				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			
-			double motionScale = this.hasAggressiveAttackTarget() ? 0.85F : 0.5D;
+				double motionScale;
+				
+				if(this.hasAggressiveAttackTarget()) {
+					motionScale = 0.85F;
+				} else {
+					motionScale = this.getPassengers().isEmpty() ? 0.5 : 0.8F;
+				}
 			
-			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
+				Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			
-			this.addVelocity(motion.x, motion.y, motion.z);
+				this.addVelocity(motion.x, motion.y, motion.z);
+			}
+			
+			if(!this.isWorldRemote() && this.getAnimationTick() <= 15) {
+				this.setMovingInAir(true);
+			}
 		}
 		
 		if(this.isAnimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
@@ -248,6 +263,7 @@ public class EntityBooflo extends EndimatedEntity {
 			if(this.getAnimationTick() == 10) {
 				this.playSound(this.getGrowlSound(), 0.75F, this.getSoundPitch());
 			}
+			
 			if(this.getAnimationTick() >= 20) {
 				for(PlayerEntity players : this.getNearbyPlayers(0.4F)) {
 					if(!this.hasAggressiveAttackTarget()) {
@@ -323,9 +339,7 @@ public class EntityBooflo extends EndimatedEntity {
 	public void livingTick() {
 		super.livingTick();
 		
-		if(this.hopDelay > 0) {
-			this.hopDelay--;
-		}
+		if(this.hopDelay > 0) this.hopDelay--;
 		
 		if(this.isPregnant()) {
 			this.resetInLove();
@@ -341,7 +355,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION)) {
+		if(!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION) && this.getPassengers().isEmpty()) {
 			this.livingSoundTime = -this.getTalkInterval();
 			NetworkUtil.setPlayingAnimationMessage(this, CROAK);
 		}
@@ -364,6 +378,7 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putBoolean("IsHungry", this.isHungry());
 		compound.putBoolean("HasFruit", this.hasCaughtFruit());
 		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
+		compound.putInt("RideControlDelay", this.getRideControlDelay());
 		compound.putInt("InLove", this.getInLoveTicks());
 		compound.putInt("BoofloTargetId", this.getBoofloAttackTargetId());
 		compound.putFloat("BirthYaw", this.getBirthYaw());
@@ -394,6 +409,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setHungry(compound.getBoolean("IsHungry"));
 		this.setCaughtFruit(compound.getBoolean("HasFruit"));
 		this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
+		this.setRideControlDelay(compound.getInt("RideControlDelay"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBoofloAttackTargetId(compound.getInt("BoofloTargetId"));
 		this.setBirthYaw(compound.getFloat("BirthYaw"));
@@ -456,15 +472,67 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public void travel(Vec3d vec3d) {
-		if(this.isServerWorld() && this.isBoofed()) {
-			this.moveRelative(0.0F, vec3d);
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.9D));
-			if(!this.isMovingInAir()) {
-				this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
+		if(this.isBeingRidden() && this.canBeSteered()) {
+			PlayerEntity player = (PlayerEntity) this.getControllingPassenger();
+			this.rotationYaw = player.rotationYaw;
+			this.prevRotationYaw = this.rotationYaw;
+			this.rotationPitch = 0.0F;
+			this.renderYawOffset = this.rotationYaw;
+			this.rotationYawHead = this.renderYawOffset;
+			
+			float playerMoveFoward = player.moveForward;
+			
+			if(!this.isWorldRemote() && playerMoveFoward > 0.0F) {
+				if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
+					NetworkUtil.setPlayingAnimationMessage(this, HOP);
+					this.setRideControlDelay(25);
+				} else if(!this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && this.isBoofed()) {
+					NetworkUtil.setPlayingAnimationMessage(this, SWIM);
+				}
+			}
+			
+			if(this.isBoofed()) {
+				if(this.hasPath()) {
+					this.getNavigator().clearPath();
+				}
+				
+				if(this.getBoofloAttackTarget() != null) {
+					this.setBoofloAttackTargetId(0);
+				}
+				
+				this.moveRelative(0.0F, vec3d);
+				this.move(MoverType.SELF, this.getMotion());
+				this.setMotion(this.getMotion().scale(0.9D));
+				if(playerMoveFoward <= 0.0F) {
+					this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
+				}
+			} else {
+				if(this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
+					Vec3d motion = this.getMotion();
+					this.setMotion(motion.x, 0.55F, motion.z);
+					this.isAirBorne = true;
+					this.hopDelay = 0;
+					
+					float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+				
+					Vec3d jumpFowardForce = new Vec3d(xMotion, 1.0F, zMotion).normalize().scale(1.225F);
+			
+					this.setMotion(this.getMotion().add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
+				}
+				super.travel(vec3d);
 			}
 		} else {
-			super.travel(vec3d);
+			if(this.isServerWorld() && this.isBoofed()) {
+				this.moveRelative(0.0F, vec3d);
+				this.move(MoverType.SELF, this.getMotion());
+				this.setMotion(this.getMotion().scale(0.9D));
+				if(!this.isMovingInAir()) {
+					this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
+				}
+			} else {
+				super.travel(vec3d);
+			}
 		}
 	}
 	
@@ -596,6 +664,14 @@ public class EntityBooflo extends EndimatedEntity {
 	public int getFruitsNeededTillTamed() {
 		return this.dataManager.get(FRUITS_NEEDED);
 	}
+	
+	public void setRideControlDelay(int ticks) {
+		this.dataManager.set(RIDE_CONTROL_DELAY, ticks);
+	}
+	
+	public int getRideControlDelay() {
+		return this.dataManager.get(RIDE_CONTROL_DELAY);
+	}
 
 	public void setInLove(int ticks) {
 		this.dataManager.set(LOVE_TICKS, ticks);
@@ -706,11 +782,6 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return !this.isTamed();
-	}
-	
-	@Override
-	public boolean isNotColliding(IWorldReader worldIn) {
-		return true;
 	}
 	
 	public boolean isTempted() {
@@ -831,6 +902,13 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			}
 			return true;
+		} else {
+			if(this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
+				if(!this.world.isRemote) {
+					player.startRiding(this);
+				}
+				return true;
+			}
 		}
 		return false;
 	}
@@ -838,14 +916,29 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public void updatePassenger(Entity passenger) {
 		if(this.isPassenger(passenger)) {
-			int passengerIndex = this.getPassengers().indexOf(passenger);
-			
-			double xOffset = passengerIndex == 0 ? 0.25F : -0.25F;
-			double zOffset = passengerIndex == 0 ? 0.0F : passengerIndex == 1 ? -0.25F : 0.25F;
-			Vec3d ridingOffset = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-this.getBirthYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-			
-			passenger.setPosition(this.posX + ridingOffset.x, this.posY + 0.9F, this.posZ + ridingOffset.z);
+			if(passenger instanceof EntityBoofloBaby) {
+				int passengerIndex = this.getPassengers().indexOf(passenger);
+				
+				double xOffset = passengerIndex == 0 ? 0.25F : -0.25F;
+				double zOffset = passengerIndex == 0 ? 0.0F : passengerIndex == 1 ? -0.25F : 0.25F;
+				Vec3d ridingOffset = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-this.getBirthYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+				
+				passenger.setPosition(this.posX + ridingOffset.x, this.posY + 0.9F, this.posZ + ridingOffset.z);
+			} else {
+				super.updatePassenger(passenger);
+			}
 		}
+	}
+	
+	@Override
+	public double getMountedYOffset() {
+		double original = super.getMountedYOffset();
+		return this.isBoofed() ? original + 0.15F : original;
+	}
+	
+	@Override
+	public boolean canBeSteered() {
+		return this.getControllingPassenger() instanceof PlayerEntity;
 	}
 	
 	@Override
@@ -897,6 +990,16 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public EntitySize getSize(Pose poseIn) {
 		return this.isBoofed() ? BOOFED_SIZE : super.getSize(poseIn);
+	}
+	
+	@Nullable
+	public Entity getControllingPassenger() {
+		return this.getPassengers().isEmpty() ? null : !(this.getPassengers().get(0) instanceof PlayerEntity) ? null : this.getPassengers().get(0);
+	}
+	
+	@Override
+	public boolean shouldRiderFaceForward(PlayerEntity player) {
+		return true;
 	}
 	
 	@Override
@@ -975,7 +1078,7 @@ public class EntityBooflo extends EndimatedEntity {
 			this.booflo = booflo;
 			this.yRot = (float) (180.0F * booflo.rotationYaw / Math.PI);
 		}
-
+		
 		public void setDirection(float yRot, boolean aggressive) {
 			this.yRot = yRot;
 			this.isAggressive = aggressive;
