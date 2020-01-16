@@ -332,6 +332,13 @@ public class EntityBooflo extends EndimatedEntity {
 			this.FRUIT_HOVER.tick();
 		}
 		
+		/**
+		 * Fix Boof
+		 */
+		if(!this.isWorldRemote() && this.moveController instanceof FlyingMoveController && this.isBoofed()) {
+			this.setBoofed(true);
+		}
+		
 		this.wasOnGround = this.onGround;
 	}
 	
@@ -447,7 +454,7 @@ public class EntityBooflo extends EndimatedEntity {
 					}
 					
 				};
-				this.moveController = new FlyingMoveContoller(this);
+				this.moveController = new FlyingMoveController(this);
 				this.lookController = new FlyingLookController(this, 10);
 				
 				if(!this.isWorldRemote() && this.ticksExisted > 5) {
@@ -996,6 +1003,10 @@ public class EntityBooflo extends EndimatedEntity {
 		return this.getPassengers().isEmpty() ? null : !(this.getPassengers().get(0) instanceof PlayerEntity) ? null : this.getPassengers().get(0);
 	}
 	
+	protected boolean isResistantToBoof(Entity entity) {
+		return entity instanceof EntityBooflo || entity instanceof EntityBoofloAdolescent || entity instanceof EntityBoofloBaby;
+	}
+	
 	@Override
 	public boolean shouldRiderFaceForward(PlayerEntity player) {
 		return true;
@@ -1123,10 +1134,10 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 	}
 	
-	public class FlyingMoveContoller extends MovementController {
+	public class FlyingMoveController extends MovementController {
 		private final EntityBooflo booflo;
 
-		public FlyingMoveContoller(EntityBooflo booflo) {
+		public FlyingMoveController(EntityBooflo booflo) {
 			super(booflo);
 			this.booflo = booflo;
 		}
