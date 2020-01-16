@@ -511,12 +511,11 @@ public class EntityBooflo extends EndimatedEntity {
 					Vec3d motion = this.getMotion();
 					this.setMotion(motion.x, 0.55F, motion.z);
 					this.isAirBorne = true;
-					this.hopDelay = 0;
 					
 					float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 					float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 				
-					Vec3d jumpFowardForce = new Vec3d(xMotion, 1.0F, zMotion).normalize().scale(1.225F);
+					Vec3d jumpFowardForce = new Vec3d(xMotion, 1.0F, zMotion).normalize().scale(1.4F);
 			
 					this.setMotion(this.getMotion().add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
 				}
@@ -1099,7 +1098,9 @@ public class EntityBooflo extends EndimatedEntity {
 			} else {
 				this.action = MovementController.Action.WAIT;
 				if(this.mob.onGround) {
-					this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+					if(!this.isPlayerRiding()) {
+						this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+					}
 					if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
 						this.booflo.getJumpController().setJumping();
 						
@@ -1110,9 +1111,15 @@ public class EntityBooflo extends EndimatedEntity {
 						this.mob.setAIMoveSpeed(0.0F);
 					}
 				} else {
-					this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+					if(!this.isPlayerRiding()) {
+						this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+					}
 				}
 			}
+		}
+		
+		private boolean isPlayerRiding() {
+			return !this.booflo.getPassengers().isEmpty() && this.booflo.getPassengers().get(0) instanceof PlayerEntity;
 		}
 	}
 	
