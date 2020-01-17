@@ -1,0 +1,9 @@
+{
+    "variants": {
+ 		"type=north": { "model": "endergetic:block/eumus_brick_vertical_slab", "y": 0, "uvlock": true },
+ 		"type=south": { "model": "endergetic:block/eumus_brick_vertical_slab", "y": 180, "uvlock": true },
+  		"type=east": { "model": "endergetic:block/eumus_brick_vertical_slab", "y": 90, "uvlock": true },
+ 		"type=west": { "model": "endergetic:block/eumus_brick_vertical_slab", "y": 270, "uvlock": true },
+ 		"type=double": { "model": "endergetic:block/eumus_bricks" }
+    }
+}

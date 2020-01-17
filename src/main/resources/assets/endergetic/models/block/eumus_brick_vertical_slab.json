@@ -1,0 +1,8 @@
+{
+    "parent": "endergetic:block/vertical_slab",
+    "textures": {
+        "bottom": "endergetic:block/eumus_bricks",
+        "top": "endergetic:block/eumus_bricks",
+        "side": "endergetic:block/eumus_bricks"
+    }
+}

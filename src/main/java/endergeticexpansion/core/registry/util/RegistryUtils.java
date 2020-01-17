@@ -85,7 +85,7 @@ public class RegistryUtils {
 	
 	@Nullable
 	public static <B extends Block> RegistryObject<B> createCompatBlock(String name, String modName, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
-		if(ModList.get().isLoaded(modName)) {
+		if(ModList.get().isLoaded(modName) || modName == "indev") {
 			RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
 			EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
 			return block;
