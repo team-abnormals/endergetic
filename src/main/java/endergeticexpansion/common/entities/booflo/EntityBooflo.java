@@ -516,15 +516,17 @@ public class EntityBooflo extends EndimatedEntity {
 			} else {
 				if(this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					Vec3d motion = this.getMotion();
-					this.setMotion(motion.x, 0.55F, motion.z);
+					this.setMotion(motion.getX(), 0.55F, motion.getZ());
 					this.isAirBorne = true;
 					
-					float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+					float xMotion = -MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float) Math.PI / 180F));
 				
-					Vec3d jumpFowardForce = new Vec3d(xMotion, 1.0F, zMotion).normalize().scale(1.4F);
-			
-					this.setMotion(this.getMotion().add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
+					Vec3d jumpFowardForce = new Vec3d(xMotion, motion.getY(), zMotion).normalize().scale(1.4F);
+					
+					Vec3d jumpedMotion = this.getMotion();
+					
+					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
 				}
 				super.travel(vec3d);
 			}
@@ -1107,7 +1109,9 @@ public class EntityBooflo extends EndimatedEntity {
 			this.mob.renderYawOffset = this.mob.rotationYaw;
 			
 			if(this.action != MovementController.Action.MOVE_TO) {
-				this.mob.setMoveForward(0.0F);
+				if(!this.isPlayerRiding()) {
+					this.mob.setMoveForward(0.0F);
+				}
 			} else {
 				this.action = MovementController.Action.WAIT;
 				if(this.mob.onGround) {
