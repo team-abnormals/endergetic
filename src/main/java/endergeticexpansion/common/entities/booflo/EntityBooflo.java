@@ -423,7 +423,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
 		
 		String ownerUUID = compound.contains("OwnerUUID", 8) ? compound.getString("OwnerUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
-		String lastFedUUID = compound.contains("LastFedUUID", 8) ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("LastFed"));
+		String lastFedUUID = compound.contains("LastFedUUID") ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
 		
 		if(!ownerUUID.isEmpty()) {
 			try {
@@ -773,7 +773,8 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F * MathHelper.clamp(offensiveStrength / 2, 1.0F, offensiveStrength / 2)))) {
-			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity)) {
+			boolean flyingPlayerFlag = !(entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative() && ((PlayerEntity) entity).abilities.isFlying);
+			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && flyingPlayerFlag) {
 				float resistancy = this.isResistantToBoof(entity) ? 0.15F : 1.0F;
 				float amount = (0.2F * offensiveStrength) * resistancy;
 				if(offensiveStrength > 2.0F && resistancy > 0.15F) {

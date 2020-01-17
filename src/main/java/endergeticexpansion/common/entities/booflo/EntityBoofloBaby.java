@@ -246,13 +246,18 @@ public class EntityBoofloBaby extends EndimatedEntity {
 			this.setPlayingAnimation(BIRTH);
 		}
 		
-		if(this.isAnimationPlaying(BIRTH) && this.getAnimationTick() == 59) {
-			double[] oldPosition = { this.posX, this.posY, this.posZ };
-			this.stopRiding();
-			this.setBeingBorn(false);
-			this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
-			this.rotationPitch = 180;
-			this.setMotherNoClipTicks(50);
+		if(this.isAnimationPlaying(BIRTH)) {
+			if(this.getAnimationTick() == 59) {
+				double[] oldPosition = { this.posX, this.posY, this.posZ };
+				this.stopRiding();
+				this.setBeingBorn(false);
+				this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
+				this.rotationPitch = 180;
+				this.setMotherNoClipTicks(50);
+			} else if(this.ticksExisted > 260) {
+				this.stopRiding();
+				this.setBeingBorn(false);
+			}
 		}
 	}
 	
