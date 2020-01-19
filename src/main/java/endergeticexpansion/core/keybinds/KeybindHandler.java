@@ -100,7 +100,7 @@ public class KeybindHandler {
 		if(BOOFLO_INFLATE.isPressed() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(ridingEntity instanceof EntityBooflo && !ridingEntity.onGround) {
+			if(KeybindHandler.checkRidden(player) && !ridingEntity.onGround) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(booflo.getRideControlDelay() <= 0) {
@@ -112,7 +112,7 @@ public class KeybindHandler {
 		if(BOOFLO_INFLATE.isKeyDown() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(ridingEntity instanceof EntityBooflo && !ridingEntity.onGround) {
+			if(KeybindHandler.checkRidden(player) && !ridingEntity.onGround) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
@@ -126,14 +126,12 @@ public class KeybindHandler {
 			}
 		} else {
 			PlayerEntity player = Minecraft.getInstance().player;
-			if(player.isPassenger() && Minecraft.getInstance().currentScreen == null) {
+			if(KeybindHandler.checkRidden(player) && Minecraft.getInstance().currentScreen == null) {
 				Entity ridingEntity = player.getRidingEntity();
-				if(ridingEntity instanceof EntityBooflo) {
-					EntityBooflo booflo = (EntityBooflo) ridingEntity;
-					if(booflo.isBoofed()) {
-						if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
-							NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
-						}
+				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				if(booflo.isBoofed()) {
+					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
+						NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
 					}
 				}
 			}
@@ -141,7 +139,7 @@ public class KeybindHandler {
 		if(BOOFLO_SLAM.isPressed() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(ridingEntity instanceof EntityBooflo) {
+			if(KeybindHandler.checkRidden(player)) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed()) {
 					if(booflo.getRideControlDelay() <= 0 && booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION)) {
@@ -150,6 +148,10 @@ public class KeybindHandler {
 				}
 			}
 		}
+	}
+	
+	public static boolean checkRidden(PlayerEntity player) {
+		return player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
 	}
     
 	public static boolean isPlayerOnGroundReal(PlayerEntity player) {
