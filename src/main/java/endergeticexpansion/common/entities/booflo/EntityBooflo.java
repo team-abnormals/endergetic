@@ -51,6 +51,8 @@ import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
@@ -103,6 +105,7 @@ public class EntityBooflo extends EndimatedEntity {
 	private static final DataParameter<Integer> RIDE_CONTROL_DELAY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> ATTACK_TARGET = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> BRACELETS_COLOR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> BOOST_POWER = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> BIRTH_YAW = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
 	public static final Endimation CROAK = new Endimation(55);
@@ -162,6 +165,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.getDataManager().register(RIDE_CONTROL_DELAY, 0);
 		this.getDataManager().register(LOVE_TICKS, 0);
 		this.getDataManager().register(ATTACK_TARGET, 0);
+		this.getDataManager().register(BRACELETS_COLOR, DyeColor.YELLOW.getId());
 		this.getDataManager().register(BOOST_POWER, 0.0F);
 		this.getDataManager().register(BIRTH_YAW, 0.0F);
 	}
@@ -440,6 +444,7 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putInt("RideControlDelay", this.getRideControlDelay());
 		compound.putInt("InLove", this.getInLoveTicks());
 		compound.putInt("BoofloTargetId", this.getBoofloAttackTargetId());
+		compound.putByte("BraceletsColor", (byte) this.getBraceletsColor().getId());
 		compound.putFloat("BoostPower", this.getBoostPower());
 		compound.putFloat("BirthYaw", this.getBirthYaw());
 		
@@ -482,6 +487,10 @@ public class EntityBooflo extends EndimatedEntity {
 		
 		String ownerUUID = compound.contains("OwnerUUID", 8) ? compound.getString("OwnerUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
 		String lastFedUUID = compound.contains("LastFedUUID") ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
+		
+		if(compound.contains("BraceletsColor", 99)) {
+			this.setBraceletsColor(DyeColor.byId(compound.getInt("BraceletsColor")));
+		}
 		
 		if(!ownerUUID.isEmpty()) {
 			try {
@@ -787,6 +796,14 @@ public class EntityBooflo extends EndimatedEntity {
 	public int getRideControlDelay() {
 		return this.dataManager.get(RIDE_CONTROL_DELAY);
 	}
+	
+	public DyeColor getBraceletsColor() {
+		return DyeColor.byId(this.dataManager.get(BRACELETS_COLOR));
+	}
+
+	public void setBraceletsColor(DyeColor color) {
+		this.dataManager.set(BRACELETS_COLOR, color.getId());
+	}
 
 	public void setInLove(int ticks) {
 		this.dataManager.set(LOVE_TICKS, ticks);
@@ -1038,7 +1055,16 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			}
 			return true;
-		} else {
+		} else if(item instanceof DyeItem && this.isTamed()) {
+			DyeColor dyecolor = ((DyeItem) item).getDyeColor();
+			if(dyecolor != this.getBraceletsColor()) {
+				this.setBraceletsColor(dyecolor);
+				if(!player.abilities.isCreativeMode) {
+					itemstack.shrink(1);
+				}
+				return true;
+			}
+         } else {
 			if(this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
 				if(!this.world.isRemote) {
 					player.startRiding(this);

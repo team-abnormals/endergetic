@@ -2,6 +2,7 @@ package endergeticexpansion.client.render.entity.booflo;
 
 import endergeticexpansion.client.model.booflo.ModelBooflo;
 import endergeticexpansion.client.model.booflo.ModelBoofloInflated;
+import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloBracelets;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloFruit;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloGlow;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
@@ -19,6 +20,7 @@ public class RenderBooflo extends LivingRenderer<EntityBooflo, EntityModel<Entit
 	public RenderBooflo(EntityRendererManager manager) {
 		super(manager, new ModelBooflo<>(), 1.25F);
 		this.addLayer(new RenderLayerBoofloGlow<>(this));
+		this.addLayer(new RenderLayerBoofloBracelets<>(this));
 		this.addLayer(new RenderLayerBoofloFruit(this));
 	}
 	
