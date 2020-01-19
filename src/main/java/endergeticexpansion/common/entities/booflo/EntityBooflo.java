@@ -926,7 +926,7 @@ public class EntityBooflo extends EndimatedEntity {
 					entity.velocityChanged = false;
 				}
 				Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
-				entity.addVelocity(result.x * amount, (this.rand.nextFloat() * 0.75D + 0.25D) * offensiveStrength, result.z * amount);
+				entity.addVelocity(result.x * amount, (this.rand.nextFloat() * 0.75D + 0.25D) * (offensiveStrength * 0.75F), result.z * amount);
 			}
 		}
 		this.setBoostPower(0.0F);
