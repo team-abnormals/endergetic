@@ -93,10 +93,15 @@ public class EntityBooflo extends EndimatedEntity {
 	private static final DataParameter<Boolean> PREGNANT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> DELAY_DECREMENTING = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> IS_EXPANDING_DELAY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> PREV_PLAYER_BOOSTING = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> PLAYER_BOOSTING = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> FRUITS_NEEDED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> RIDE_CONTROL_DELAY = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> ATTACK_TARGET = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
+	private static final DataParameter<Float> BOOST_POWER = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> BIRTH_YAW = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
 	public static final Endimation CROAK = new Endimation(55);
 	public static final Endimation HOP = new Endimation(25);
@@ -146,10 +151,15 @@ public class EntityBooflo extends EndimatedEntity {
 		this.getDataManager().register(PREGNANT, false);
 		this.getDataManager().register(HUNGRY, true);
 		this.getDataManager().register(HAS_FRUIT, false);
+		this.getDataManager().register(DELAY_DECREMENTING, false);
+		this.getDataManager().register(IS_EXPANDING_DELAY, false);
+		this.getDataManager().register(PREV_PLAYER_BOOSTING, false);
+		this.getDataManager().register(PLAYER_BOOSTING, false);
 		this.getDataManager().register(FRUITS_NEEDED, this.getRNG().nextInt(3) + 2);
 		this.getDataManager().register(RIDE_CONTROL_DELAY, 0);
 		this.getDataManager().register(LOVE_TICKS, 0);
 		this.getDataManager().register(ATTACK_TARGET, 0);
+		this.getDataManager().register(BOOST_POWER, 0.0F);
 		this.getDataManager().register(BIRTH_YAW, 0.0F);
 	}
 	
@@ -175,7 +185,22 @@ public class EntityBooflo extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
-		if(this.getRideControlDelay() > 0) this.setRideControlDelay(this.getRideControlDelay() - 1);
+		if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
+			this.setRideControlDelay(this.getRideControlDelay() - 2);
+		} else if(this.isDelayExpanding()) {
+			if(this.getRideControlDelay() < 182) {
+				this.setRideControlDelay(this.getRideControlDelay() + 10);
+			}
+		}
+		
+		if(this.getRideControlDelay() >= 182 && this.isDelayExpanding()) {
+			this.setDelayDecrementing(true);
+			this.setDelayExpanding(false);
+		}
+		
+		if(this.isDelayDecrementing() && this.getRideControlDelay() <= 0) {
+			this.setDelayDecrementing(false);
+		}
 		
 		if(this.croakDelay > 0) this.croakDelay--;
 		
@@ -248,6 +273,7 @@ public class EntityBooflo extends EndimatedEntity {
 				Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			
 				this.addVelocity(motion.x, motion.y, motion.z);
+				this.markVelocityChanged();
 			}
 			
 			if(!this.isWorldRemote() && this.getAnimationTick() <= 15) {
@@ -298,6 +324,10 @@ public class EntityBooflo extends EndimatedEntity {
 			} else {
 				this.setBoofed(false);
 			}
+		} 
+		
+		if(this.onGround && !this.isBoofed() && !this.isDelayDecrementing()) {
+			this.setDelayDecrementing(true);
 		}
 		
 		if(this.getRNG().nextInt(40000) < 10 && !this.hasCaughtFruit()) {
@@ -340,6 +370,7 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		
 		this.wasOnGround = this.onGround;
+		this.setPlayerWasBoosting(this.isPlayerBoosting());
 	}
 	
 	@Override
@@ -384,10 +415,13 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putBoolean("IsPregnant", this.isPregnant());
 		compound.putBoolean("IsHungry", this.isHungry());
 		compound.putBoolean("HasFruit", this.hasCaughtFruit());
+		compound.putBoolean("WasPlayerBoosting", this.wasPlayerBoosting());
+		compound.putBoolean("PlayerBoosting", this.isPlayerBoosting());
 		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
 		compound.putInt("RideControlDelay", this.getRideControlDelay());
 		compound.putInt("InLove", this.getInLoveTicks());
 		compound.putInt("BoofloTargetId", this.getBoofloAttackTargetId());
+		compound.putFloat("BoostPower", this.getBoostPower());
 		compound.putFloat("BirthYaw", this.getBirthYaw());
 		
 		if(this.playerInLove != null) {
@@ -415,10 +449,13 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setPregnant(compound.getBoolean("IsPregnant"));
 		this.setHungry(compound.getBoolean("IsHungry"));
 		this.setCaughtFruit(compound.getBoolean("HasFruit"));
+		this.setPlayerWasBoosting(compound.getBoolean("WasPlayerBoosting"));
+		this.setPlayerBoosting(compound.getBoolean("PlayerBoosting"));
 		this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		this.setRideControlDelay(compound.getInt("RideControlDelay"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBoofloAttackTargetId(compound.getInt("BoofloTargetId"));
+		this.setBoostPower(compound.getFloat("BoostPower"));
 		this.setBirthYaw(compound.getFloat("BirthYaw"));
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
 		
@@ -492,13 +529,13 @@ public class EntityBooflo extends EndimatedEntity {
 			if(!this.isWorldRemote() && playerMoveFoward > 0.0F) {
 				if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, HOP);
-					this.setRideControlDelay(25);
 				} else if(!this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, SWIM);
 				}
 			}
 			
 			if(this.isBoofed()) {
+				float gravity = this.getRideControlDelay() > 0 ? 0.01F : 0.035F;
 				if(this.hasPath()) {
 					this.getNavigator().clearPath();
 				}
@@ -510,9 +547,7 @@ public class EntityBooflo extends EndimatedEntity {
 				this.moveRelative(0.0F, vec3d);
 				this.move(MoverType.SELF, this.getMotion());
 				this.setMotion(this.getMotion().scale(0.9D));
-				if(playerMoveFoward <= 0.0F) {
-					this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
-				}
+				this.setMotion(this.getMotion().subtract(0, gravity, 0));
 			} else {
 				if(this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					Vec3d motion = this.getMotion();
@@ -623,12 +658,52 @@ public class EntityBooflo extends EndimatedEntity {
 		this.dataManager.set(HAS_FRUIT, hasCaughtFruit);
 	}
 	
+	public boolean isDelayDecrementing() {
+		return this.dataManager.get(DELAY_DECREMENTING);
+	}
+	
+	public void setDelayDecrementing(boolean decrementing) {
+		this.dataManager.set(DELAY_DECREMENTING, decrementing);
+	}
+	
+	public boolean isDelayExpanding() {
+		return this.dataManager.get(IS_EXPANDING_DELAY);
+	}
+	
+	public void setDelayExpanding(boolean expandingDelay) {
+		this.dataManager.set(IS_EXPANDING_DELAY, expandingDelay);
+	}
+	
+	public boolean wasPlayerBoosting() {
+		return this.dataManager.get(PREV_PLAYER_BOOSTING);
+	}
+	
+	public void setPlayerWasBoosting(boolean wasBoosting) {
+		this.dataManager.set(PREV_PLAYER_BOOSTING, wasBoosting);
+	}
+	
+	public boolean isPlayerBoosting() {
+		return this.dataManager.get(PLAYER_BOOSTING);
+	}
+	
+	public void setPlayerBoosting(boolean isBoosting) {
+		this.dataManager.set(PLAYER_BOOSTING, isBoosting);
+	}
+	
 	public float getBirthYaw() {
 		return this.dataManager.get(BIRTH_YAW);
 	}
 	
 	public void setBirthYaw(float yaw) {
 		this.dataManager.set(BIRTH_YAW, yaw);
+	}
+	
+	public float getBoostPower() {
+		return this.dataManager.get(BOOST_POWER);
+	}
+	
+	public void setBoostPower(float boostPower) {
+		this.dataManager.set(BOOST_POWER, boostPower);
 	}
 	
 	public int getBoofloAttackTargetId() {
@@ -756,8 +831,29 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	public void boof(float internalStrength, float offensiveStrength) {
+		float verticalStrength = 1.0F;
+		
+		if(this.getBoostPower() > 0.0F) {
+			internalStrength *= this.getBoostPower();
+			offensiveStrength *= MathHelper.clamp((this.getBoostPower() / 2), 0.5F, 1.85F);
+			verticalStrength *= MathHelper.clamp(this.getBoostPower(), 0.35F, 1.5F);
+		}
+		
 		if(!this.isWorldRemote()) {
-			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4F * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4F * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
+			if(this.getBoostPower() > 0.0F) {
+				float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			
+				Vec3d boostFowardForce = new Vec3d(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(1.0F);
+				
+				if(this.getBoostPower() < 0.45F) {
+					this.addVelocity(-boostFowardForce.getX() / 2, 0.0F, -boostFowardForce.getZ() / 2);
+				}
+				
+				this.addVelocity(boostFowardForce.getX(), 1.3F * verticalStrength, boostFowardForce.getZ());
+			} else {
+				this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
+			}
 			
 			if(offensiveStrength > 2.0F) {
 				for(int i = 0; i < 12; i++) {
@@ -774,6 +870,7 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			}
 		}
+		
 		for(Entity entity : this.world.getEntitiesWithinAABB(Entity.class, this.getBoundingBox().grow(3.5F * MathHelper.clamp(offensiveStrength / 2, 1.0F, offensiveStrength / 2)))) {
 			boolean flyingPlayerFlag = !(entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative() && ((PlayerEntity) entity).abilities.isFlying);
 			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && flyingPlayerFlag) {
@@ -787,6 +884,7 @@ public class EntityBooflo extends EndimatedEntity {
 				entity.addVelocity(result.x * amount, (this.rand.nextFloat() * 0.75D + 0.25D) * offensiveStrength, result.z * amount);
 			}
 		}
+		this.setBoostPower(0.0F);
 	}
 	
 	@Override
@@ -1053,7 +1151,7 @@ public class EntityBooflo extends EndimatedEntity {
 		return EESounds.BOOFLO_SLAM.get();
 	}
 	
-	protected SoundEvent getInflateSound() {
+	public SoundEvent getInflateSound() {
 		return EESounds.BOOFLO_INFLATE.get();
 	}
 	

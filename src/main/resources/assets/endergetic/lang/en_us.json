@@ -109,6 +109,8 @@
 	"_comment": "Keybinds",
 	
 	"key.endergetic.boof_vest" : "Booflo Vest Activate",
+	"key.endergetic.booflo_inflate" : "Booflo Ride Inflate",
+	"key.endergetic.booflo_slam" : "Booflo Slam",
 	
 	"_comment": "Tool Tips",
 	"tooltip.endergetic.activePotions": "Active Potion Effects:"

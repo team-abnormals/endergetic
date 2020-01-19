@@ -9,6 +9,7 @@ import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.items.ItemBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
@@ -26,16 +27,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public class KeybindHandler {
 	private static List<KeyBinding> keyBinds = Lists.newArrayList();
-	public static KeyBinding BOOF = registerKeybind(new KeyBinding("key.endergetic.boof_vest", 32, "key.categories.movement"));
-    
+	public static KeyBinding BOOF_VEST = registerKeybind(new KeyBinding("key.endergetic.boof_vest", 32, "key.categories.movement"));
+	public static KeyBinding BOOFLO_INFLATE = registerKeybind(new KeyBinding("key.endergetic.booflo_inflate", 32, "key.categories.gameplay"));
+	public static KeyBinding BOOFLO_SLAM = registerKeybind(new KeyBinding("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
+	
 	public static void registerKeys() {
 		for(KeyBinding keys : keyBinds) {
 			ClientRegistry.registerKeyBinding(keys);
@@ -49,7 +52,7 @@ public class KeybindHandler {
     	
 	@SubscribeEvent
 	public static void onKeyPressed(KeyInputEvent event) {
-		if(BOOF.isPressed()) {
+		if(BOOF_VEST.isPressed()) {
     		PlayerEntity player = Minecraft.getInstance().player;
     		ItemStack stack = player.inventory.armorItemInSlot(2);
         	
@@ -93,6 +96,45 @@ public class KeybindHandler {
         		}
         	}
     	}
+		if(BOOFLO_INFLATE.isPressed()) {
+			PlayerEntity player = Minecraft.getInstance().player;
+			Entity ridingEntity = player.getRidingEntity();
+			if(ridingEntity instanceof EntityBooflo && !ridingEntity.onGround) {
+				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
+					if(booflo.getRideControlDelay() <= 0) {
+						NetworkUtil.inflateBooflo(booflo.getEntityId());
+					}
+				}
+			}
+		}
+		if(BOOFLO_INFLATE.isKeyDown()) {
+			PlayerEntity player = Minecraft.getInstance().player;
+			Entity ridingEntity = player.getRidingEntity();
+			if(ridingEntity instanceof EntityBooflo && !ridingEntity.onGround) {
+				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				if(booflo.isBoofed() && booflo.canPassengerSteer()) {
+					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
+						if(booflo.getRideControlDelay() >= 182) {
+							NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+						} else {
+							NetworkUtil.incrementBoofloBoostTimer(booflo.getEntityId());
+						}
+					}
+				}
+			}
+		} else {
+			PlayerEntity player = Minecraft.getInstance().player;
+			Entity ridingEntity = player.getRidingEntity();
+			if(ridingEntity instanceof EntityBooflo) {
+				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				if(booflo.isBoofed()) {
+					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
+						NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+					}
+				}
+			}
+		}
 	}
     
 	public static boolean isPlayerOnGroundReal(PlayerEntity player) {

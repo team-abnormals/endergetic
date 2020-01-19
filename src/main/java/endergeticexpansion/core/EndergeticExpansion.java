@@ -12,6 +12,9 @@ import endergeticexpansion.common.network.entity.MessageSBoofEntity;
 import endergeticexpansion.common.network.entity.MessageSSetCooldown;
 import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
 import endergeticexpansion.common.network.entity.MessageSSetVelocity;
+import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
+import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
+import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
@@ -158,6 +161,21 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageSpawnParticle.class, id++)
 		.encoder(MessageSpawnParticle::serialize).decoder(MessageSpawnParticle::deserialize)
 		.consumer(MessageSpawnParticle::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageSInflate.class, id++)
+		.encoder(MessageSInflate::serialize).decoder(MessageSInflate::deserialize)
+		.consumer(MessageSInflate::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageSIncrementBoostDelay.class, id++)
+		.encoder(MessageSIncrementBoostDelay::serialize).decoder(MessageSIncrementBoostDelay::deserialize)
+		.consumer(MessageSIncrementBoostDelay::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageSSetPlayerNotBoosting.class, id++)
+		.encoder(MessageSSetPlayerNotBoosting::serialize).decoder(MessageSSetPlayerNotBoosting::deserialize)
+		.consumer(MessageSSetPlayerNotBoosting::handle)
 		.add();
 	}
 }

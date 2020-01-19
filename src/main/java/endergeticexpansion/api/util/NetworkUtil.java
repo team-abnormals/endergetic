@@ -3,18 +3,24 @@ package endergeticexpansion.api.util;
 import org.apache.commons.lang3.ArrayUtils;
 
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.network.entity.MessageCAnimation;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
 import endergeticexpansion.common.network.entity.MessageSBoofEntity;
 import endergeticexpansion.common.network.entity.MessageSSetCooldown;
 import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
 import endergeticexpansion.common.network.entity.MessageSSetVelocity;
+import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
+import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
+import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -82,6 +88,45 @@ public class NetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void SBoofEntity(double velX, double velY, double velZ, int radius) {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(velX, velY, velZ, radius));
+	}
+	
+	/**
+	 * @param entityId - Entity ID of the booflo
+	 * Sends a message to the server to play the animation and inflate the booflo
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void inflateBooflo(int entityId) {
+		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
+		if(entity instanceof EntityBooflo) {
+			EndergeticExpansion.CHANNEL.sendToServer(new MessageSInflate(entityId));
+			((EntityBooflo) entity).setBoofed(true);
+			((EntityBooflo) entity).setDelayDecrementing(false);
+			((EntityBooflo) entity).setDelayExpanding(true);
+		}
+	}
+	
+	/**
+	 * @param entityId - Entity ID of the booflo
+	 * Sends a message to the server to increment the booflo bar
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void incrementBoofloBoostTimer(int entityId) {
+		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
+		if(entity instanceof EntityBooflo) {
+			EndergeticExpansion.CHANNEL.sendToServer(new MessageSIncrementBoostDelay(entityId));
+		}
+	}
+	
+	/**
+	 * @param entityId - Entity ID of the booflo
+	 * Sends a message to the server to set the player not boosting
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void setPlayerNotBoosting(int entityId) {
+		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
+		if(entity instanceof EntityBooflo) {
+			EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetPlayerNotBoosting(entityId));
+		}
 	}
 	
 	/**
