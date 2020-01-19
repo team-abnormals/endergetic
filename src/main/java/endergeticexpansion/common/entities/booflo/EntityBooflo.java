@@ -192,6 +192,8 @@ public class EntityBooflo extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
+		if(this.croakDelay > 0) this.croakDelay--;
+		
 		if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
 			this.setRideControlDelay(this.getRideControlDelay() - 2);
 		} else if(this.isDelayExpanding()) {
@@ -212,8 +214,6 @@ public class EntityBooflo extends EndimatedEntity {
 		if(this.isDelayDecrementing() && this.getRideControlDelay() <= 0) {
 			this.setDelayDecrementing(false);
 		}
-		
-		if(this.croakDelay > 0) this.croakDelay--;
 		
 		if(this.isBoofed()) {
 			if(this.hasAggressiveAttackTarget()) {
@@ -381,13 +381,6 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 			
 			this.FRUIT_HOVER.tick();
-		}
-		
-		/**
-		 * Fix Boof
-		 */
-		if(!this.isWorldRemote() && this.moveController instanceof FlyingMoveController && this.isBoofed()) {
-			this.setBoofed(true);
 		}
 		
 		this.wasOnGround = this.onGround;
