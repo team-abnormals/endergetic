@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.entity.util.AdvancedAxisAllignedBB;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
@@ -87,6 +88,7 @@ public class EntityBooflo extends EndimatedEntity {
 	};
 	private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<Optional<UUID>> LAST_FED_UNIQUE_ID = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final DataParameter<Boolean> ON_GROUND = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING_IN_AIR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> BOOFED = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.BOOLEAN);
@@ -145,6 +147,7 @@ public class EntityBooflo extends EndimatedEntity {
 		super.registerData();
 		this.getDataManager().register(OWNER_UNIQUE_ID, Optional.empty());
 		this.getDataManager().register(LAST_FED_UNIQUE_ID, Optional.empty());
+		this.getDataManager().register(ON_GROUND, false);
 		this.getDataManager().register(TAMED, false);
 		this.getDataManager().register(MOVING_IN_AIR, false);
 		this.getDataManager().register(BOOFED, false);
@@ -193,6 +196,10 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
+		if(!this.isWorldRemote()) {
+			this.setOnGround(!this.world.areCollisionShapesEmpty(AdvancedAxisAllignedBB.checkOnGround(this.getBoundingBox())));
+		}
+		
 		if(this.getRideControlDelay() >= 182 && this.isDelayExpanding()) {
 			this.setDelayDecrementing(true);
 			this.setDelayExpanding(false);
@@ -219,6 +226,10 @@ public class EntityBooflo extends EndimatedEntity {
 					};
 				}
 			}
+		}
+		
+		if(!this.isWorldRemote() && this.isAnimationPlaying(EntityBooflo.CHARGE) && this.getAnimationTick() >= 15) {
+			this.addVelocity(0.0F, -0.225F, 0.0F);
 		}
 		
 		if(!this.isWorldRemote()) {
@@ -312,7 +323,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(this.onGround && this.isBoofed()) {
+		if(this.isOnGround() && this.isBoofed()) {
 			if(this.hasAggressiveAttackTarget()) {
 				if(!this.isWorldRemote()) {
 					if(this.isAnimationPlaying(BLANK_ANIMATION)) {
@@ -322,11 +333,17 @@ public class EntityBooflo extends EndimatedEntity {
 					}
 				}
 			} else {
-				this.setBoofed(false);
+				if(this.isBeingRidden() && this.isAnimationPlaying(CHARGE)) {
+					NetworkUtil.setPlayingAnimationMessage(this, SLAM);
+				} else {
+					if(!this.isAnimationPlaying(SLAM)) {
+						this.setBoofed(false);
+					}
+				}
 			}
-		} 
+		}
 		
-		if(this.onGround && !this.isBoofed() && !this.isDelayDecrementing()) {
+		if(this.isOnGround() && !this.isBoofed() && !this.isDelayDecrementing()) {
 			this.setDelayDecrementing(true);
 		}
 		
@@ -415,6 +432,8 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putBoolean("IsPregnant", this.isPregnant());
 		compound.putBoolean("IsHungry", this.isHungry());
 		compound.putBoolean("HasFruit", this.hasCaughtFruit());
+		compound.putBoolean("IsDecrementingBoostTimer", this.isDelayDecrementing());
+		compound.putBoolean("IsDelayExpanding", this.isDelayExpanding());
 		compound.putBoolean("WasPlayerBoosting", this.wasPlayerBoosting());
 		compound.putBoolean("PlayerBoosting", this.isPlayerBoosting());
 		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
@@ -449,6 +468,8 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setPregnant(compound.getBoolean("IsPregnant"));
 		this.setHungry(compound.getBoolean("IsHungry"));
 		this.setCaughtFruit(compound.getBoolean("HasFruit"));
+		this.setDelayDecrementing(compound.getBoolean("IsDecrementingBoostTimer"));
+		this.setDelayExpanding(compound.getBoolean("IsDelayExpanding"));
 		this.setPlayerWasBoosting(compound.getBoolean("WasPlayerBoosting"));
 		this.setPlayerBoosting(compound.getBoolean("PlayerBoosting"));
 		this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
@@ -527,15 +548,16 @@ public class EntityBooflo extends EndimatedEntity {
 			float playerMoveFoward = player.moveForward;
 			
 			if(!this.isWorldRemote() && playerMoveFoward > 0.0F) {
-				if(this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
+				if(this.isOnGround() && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, HOP);
-				} else if(!this.onGround && this.isAnimationPlaying(BLANK_ANIMATION) && this.isBoofed()) {
+				} else if(!this.isOnGround() && this.isAnimationPlaying(BLANK_ANIMATION) && this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, SWIM);
 				}
 			}
 			
 			if(this.isBoofed()) {
 				float gravity = this.getRideControlDelay() > 0 ? 0.01F : 0.035F;
+				
 				if(this.hasPath()) {
 					this.getNavigator().clearPath();
 				}
@@ -544,7 +566,6 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setBoofloAttackTargetId(0);
 				}
 				
-				this.moveRelative(0.0F, vec3d);
 				this.move(MoverType.SELF, this.getMotion());
 				this.setMotion(this.getMotion().scale(0.9D));
 				this.setMotion(this.getMotion().subtract(0, gravity, 0));
@@ -608,6 +629,17 @@ public class EntityBooflo extends EndimatedEntity {
 
 	public void setLastFedId(@Nullable UUID ownerId) {
 		this.dataManager.set(LAST_FED_UNIQUE_ID, Optional.ofNullable(ownerId));
+	}
+	
+	/*
+	 * Minecraft's onGround boolean isn't synced correctly so this has its own
+	 */
+	public boolean isOnGround() {
+		return this.dataManager.get(ON_GROUND);
+	}
+
+	public void setOnGround(boolean onGround) {
+		this.dataManager.set(ON_GROUND, onGround);
 	}
 	
 	public boolean isTamed() {
@@ -833,40 +865,36 @@ public class EntityBooflo extends EndimatedEntity {
 	public void boof(float internalStrength, float offensiveStrength) {
 		float verticalStrength = 1.0F;
 		
-		if(this.getBoostPower() > 0.0F) {
+		if(this.getBoostPower() > 0.0F && !this.isAnimationPlaying(SLAM)) {
 			internalStrength *= this.getBoostPower();
 			offensiveStrength *= MathHelper.clamp((this.getBoostPower() / 2), 0.5F, 1.85F);
 			verticalStrength *= MathHelper.clamp(this.getBoostPower(), 0.35F, 1.5F);
 		}
 		
-		if(!this.isWorldRemote()) {
-			if(this.getBoostPower() > 0.0F) {
-				float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+		if(this.getBoostPower() > 0.0F && !this.isAnimationPlaying(SLAM)) {
+			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			
-				Vec3d boostFowardForce = new Vec3d(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(1.0F);
+			float multiplier = this.getBoostPower() > 0.35 ? this.getBoostPower() * 2F : this.getBoostPower();
 				
-				if(this.getBoostPower() < 0.45F) {
-					this.addVelocity(-boostFowardForce.getX() / 2, 0.0F, -boostFowardForce.getZ() / 2);
-				}
+			Vec3d boostFowardForce = new Vec3d(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(multiplier);
 				
-				this.addVelocity(boostFowardForce.getX(), 1.3F * verticalStrength, boostFowardForce.getZ());
-			} else {
-				this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
-			}
+			this.setMotion(boostFowardForce.getX(), 1.3F * verticalStrength, boostFowardForce.getZ());
+		} else {
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
+		}
 			
-			if(offensiveStrength > 2.0F) {
-				for(int i = 0; i < 12; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		if(offensiveStrength > 2.0F) {
+			for(int i = 0; i < 12; i++) {
+				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 			
-					double x = this.posX + 0.5D + offsetX;
-					double y = this.posY + 0.5D + (rand.nextFloat() * 0.05F);
-					double z = this.posZ + 0.5D + offsetZ;
+				double x = this.posX + 0.5D + offsetX;
+				double y = this.posY + 0.5D + (rand.nextFloat() * 0.05F);
+				double z = this.posZ + 0.5D + offsetZ;
 			
-					if(this.isServerWorld()) {
-						NetworkUtil.spawnParticle("endergetic:poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
-					}
+				if(this.isServerWorld()) {
+					NetworkUtil.spawnParticle("endergetic:poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 				}
 			}
 		}
@@ -876,7 +904,7 @@ public class EntityBooflo extends EndimatedEntity {
 			if(entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && flyingPlayerFlag) {
 				float resistancy = this.isResistantToBoof(entity) ? 0.15F : 1.0F;
 				float amount = (0.2F * offensiveStrength) * resistancy;
-				if(offensiveStrength > 2.0F && resistancy > 0.15F) {
+				if(offensiveStrength > 2.0F && resistancy > 0.15F && entity != this.getControllingPassenger()) {
 					entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue());
 					entity.velocityChanged = false;
 				}

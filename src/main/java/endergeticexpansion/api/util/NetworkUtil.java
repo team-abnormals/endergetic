@@ -15,6 +15,7 @@ import endergeticexpansion.common.network.entity.MessageSSetVelocity;
 import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
 import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
 import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
+import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
 import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
@@ -102,6 +103,18 @@ public class NetworkUtil {
 			((EntityBooflo) entity).setBoofed(true);
 			((EntityBooflo) entity).setDelayDecrementing(false);
 			((EntityBooflo) entity).setDelayExpanding(true);
+		}
+	}
+	
+	/**
+	 * @param entityId - Entity ID of the booflo
+	 * Sends a message to the server to set the booflo to slam
+	 */
+	@OnlyIn(Dist.CLIENT)
+	public static void slamBooflo(int entityId) {
+		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
+		if(entity instanceof EntityBooflo) {
+			EndergeticExpansion.CHANNEL.sendToServer(new MessageSSlam(entityId));
 		}
 	}
 	

@@ -25,6 +25,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -50,7 +51,7 @@ public class KeybindHandler {
 		return keybind;
 	}
     	
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onKeyPressed(KeyInputEvent event) {
 		if(BOOF_VEST.isPressed()) {
     		PlayerEntity player = Minecraft.getInstance().player;
@@ -125,12 +126,26 @@ public class KeybindHandler {
 			}
 		} else {
 			PlayerEntity player = Minecraft.getInstance().player;
+			if(player.isPassenger()) {
+				Entity ridingEntity = player.getRidingEntity();
+				if(ridingEntity instanceof EntityBooflo) {
+					EntityBooflo booflo = (EntityBooflo) ridingEntity;
+					if(booflo.isBoofed()) {
+						if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
+							NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+						}
+					}
+				}
+			}
+		}
+		if(BOOFLO_SLAM.isPressed()) {
+			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
 			if(ridingEntity instanceof EntityBooflo) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed()) {
-					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
-						NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+					if(booflo.getRideControlDelay() <= 0 && booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION)) {
+						NetworkUtil.slamBooflo(booflo.getEntityId());
 					}
 				}
 			}

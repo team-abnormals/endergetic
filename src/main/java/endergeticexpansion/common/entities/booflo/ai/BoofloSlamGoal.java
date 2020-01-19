@@ -43,10 +43,6 @@ public class BoofloSlamGoal extends Goal {
 		this.booflo.setAIMoveSpeed(0.0F);
 		
 		this.booflo.rotationPitch = 0.0F;
-		
-		if(this.booflo.isAnimationPlaying(EntityBooflo.CHARGE) && this.booflo.getAnimationTick() >= 15) {
-			this.booflo.addVelocity(0.0F, -0.225F, 0.0F);
-		}
 	}
 	
 	private boolean isEntityUnder() {
