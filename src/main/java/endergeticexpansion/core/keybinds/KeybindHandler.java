@@ -100,7 +100,7 @@ public class KeybindHandler {
 		if(BOOFLO_INFLATE.isPressed() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(KeybindHandler.checkRidden(player) && !ridingEntity.onGround) {
+			if(KeybindHandler.checkRidden(player) && !((EntityBooflo) ridingEntity).isOnGround()) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(booflo.getRideControlDelay() <= 0) {
@@ -112,7 +112,7 @@ public class KeybindHandler {
 		if(BOOFLO_INFLATE.isKeyDown() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(KeybindHandler.checkRidden(player) && !ridingEntity.onGround) {
+			if(KeybindHandler.checkRidden(player) && !((EntityBooflo) ridingEntity).isOnGround()) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
@@ -151,7 +151,7 @@ public class KeybindHandler {
 	}
 	
 	public static boolean checkRidden(PlayerEntity player) {
-		return player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
+		return player != null && player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
 	}
     
 	public static boolean isPlayerOnGroundReal(PlayerEntity player) {

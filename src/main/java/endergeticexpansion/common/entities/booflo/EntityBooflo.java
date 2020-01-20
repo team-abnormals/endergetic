@@ -470,7 +470,6 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setDelayExpanding(compound.getBoolean("IsDelayExpanding"));
 		this.setPlayerWasBoosting(compound.getBoolean("WasPlayerBoosting"));
 		this.setPlayerBoosting(compound.getBoolean("PlayerBoosting"));
-		this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		this.setRideControlDelay(compound.getInt("RideControlDelay"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBoofloAttackTargetId(compound.getInt("BoofloTargetId"));
@@ -483,6 +482,10 @@ public class EntityBooflo extends EndimatedEntity {
 		
 		if(compound.contains("BraceletsColor", 99)) {
 			this.setBraceletsColor(DyeColor.byId(compound.getInt("BraceletsColor")));
+		}
+		
+		if(compound.contains("FruitsNeededTillTamed")) {
+			this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		}
 		
 		if(!ownerUUID.isEmpty()) {

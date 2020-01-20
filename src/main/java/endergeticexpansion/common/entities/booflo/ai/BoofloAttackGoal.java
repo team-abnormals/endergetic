@@ -42,8 +42,10 @@ public class BoofloAttackGoal extends Goal {
 			return false;
 		} else {
 			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRNG());
-			if(upperAirPos == null) {
-				return false;
+			if(this.upperAirPos == null) {
+				Path newPath = this.booflo.getNavigator().getPathToEntityLiving(target, 0);
+				this.upperAirPos = newPath != null ? newPath.func_224770_k() : null;
+				return upperAirPos != null;
 			}
 			
 			this.path = this.booflo.getNavigator().getPathToPos(this.upperAirPos, 0);
