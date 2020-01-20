@@ -133,6 +133,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.attackingNavigator = new EndergeticFlyingPathNavigator(this, this.world);
 		this.moveController = new GroundMoveHelperController(this);
 		this.hopDelay = this.getDefaultGroundHopDelay();
+		this.stepHeight = 1.0F;
 	}
 	
 	@Override
