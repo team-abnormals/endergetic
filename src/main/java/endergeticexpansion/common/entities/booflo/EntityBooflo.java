@@ -580,8 +580,8 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setMotion(motion.getX(), 0.55F, motion.getZ());
 					this.isAirBorne = true;
 					
-					float xMotion = -MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(player.rotationPitch * ((float) Math.PI / 180F));
+					float xMotion = -MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 				
 					Vec3d jumpFowardForce = new Vec3d(xMotion, motion.getY(), zMotion).normalize().scale(1.4F);
 					
@@ -1108,7 +1108,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		Entity entitySource = source.getTrueSource();
-		if(entitySource instanceof LivingEntity) {
+		if(entitySource instanceof LivingEntity && !this.isBeingRidden()) {
 			if(entitySource instanceof PlayerEntity) {
 				if(!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
 					this.setBoofloAttackTargetId(entitySource.getEntityId());
@@ -1123,7 +1123,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
 		Entity entitySource = damageSrc.getTrueSource();
-		if(entitySource instanceof LivingEntity) {
+		if(entitySource instanceof LivingEntity && !this.isBeingRidden()) {
 			if(entitySource instanceof PlayerEntity) {
 				if(!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
 					this.setBoofloAttackTargetId(entitySource.getEntityId());
