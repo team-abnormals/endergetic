@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.common.capability.balloons.BalloonProvider;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -394,10 +395,10 @@ public class EntityBolloomBalloon extends Entity {
 	@Override
 	public final boolean processInitialInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
-		if (itemstack.getItem() instanceof DyeItem) {
-			if(!world.isRemote) {
-				this.setColor(((DyeItem)itemstack.getItem()).getDyeColor());
-				itemstack.shrink(1);
+		if (itemstack.getItem() instanceof DyeItem && this.getColor() != ((DyeItem) itemstack.getItem()).getDyeColor()) {
+			if(!this.world.isRemote) {
+				this.setColor(((DyeItem) itemstack.getItem()).getDyeColor());
+				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 		}
 		return super.processInitialInteract(player, hand);
