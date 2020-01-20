@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:poise_vertical_slab"
+    }
+  },
+  "result": {
+    "item": "\endergetic:poise_slab",
+    "count": 1
+  }
+}

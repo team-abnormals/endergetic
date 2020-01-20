@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
   "pattern": [
     "#",
     "#",
@@ -7,11 +8,11 @@
   ],
   "key": {
     "#": {
-      "item": "endergetic:eumus_brick_slab"
+      "item": "endergetic:poise_slab"
     }
   },
   "result": {
-    "item": "endergetic:eumus_brick_slab_vertical_slab",
+    "item": "endergetic:poise_vertical_slab",
     "count": 3
   }
 }
