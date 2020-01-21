@@ -65,6 +65,7 @@ public class BoofloGiveBirthGoal extends Goal {
 			baby.setGrowingAge(-24000);
 			baby.setPosition(this.mother.posX + dx, this.mother.posY + 0.9F + (rand.nextFloat() * 0.05F), this.mother.posZ + dz);
 			baby.startRiding(this.mother, true);
+			baby.wasBred = true;
 			
 			world.addEntity(baby);
 		}

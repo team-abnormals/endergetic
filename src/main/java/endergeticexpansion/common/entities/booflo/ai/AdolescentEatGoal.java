@@ -3,14 +3,11 @@ package endergeticexpansion.common.entities.booflo.ai;
 import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class AdolescentEatGoal extends Goal {
 	private EntityBoofloAdolescent adolescent;
@@ -23,7 +20,6 @@ public class AdolescentEatGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		if(this.adolescent.isPlayerNear()) {
-			this.alertNearbyAdults();
 			return false;
 		}
 		return this.adolescent.getRNG().nextInt(40) == 0 && this.adolescent.hasFruit() && this.isSafePos();
@@ -32,7 +28,6 @@ public class AdolescentEatGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		if(this.adolescent.isPlayerNear()) {
-			this.alertNearbyAdults();
 			return false;
 		}
 		
@@ -41,6 +36,7 @@ public class AdolescentEatGoal extends Goal {
 		} else if(this.adolescent.isEating()) {
 			return this.adolescent.onGround && this.adolescent.hasFruit() && this.eatingTicks < 61;
 		}
+		
 		return false;
 	}
 	
@@ -60,9 +56,6 @@ public class AdolescentEatGoal extends Goal {
 			this.adolescent.setEating(false);
 			this.adolescent.dropFruit();
 			this.adolescent.setPlayingAnimation(EntityBoofloAdolescent.BLANK_ANIMATION);
-		}
-		if(this.adolescent.isPlayerNear()) {
-			this.alertNearbyAdults();
 		}
 		this.eatingTicks = 0;
 	}
@@ -108,16 +101,5 @@ public class AdolescentEatGoal extends Goal {
 			}
 		}
 		return false;
-	}
-	
-	private void alertNearbyAdults() {
-		World world = this.adolescent.world;
-		for(EntityBooflo booflos : world.getEntitiesWithinAABB(EntityBooflo.class, this.adolescent.getBoundingBox().expand(24.0F, 12.0F, 24.0F))) {
-			for(PlayerEntity players : booflos.getNearbyPlayers(1.5F)) {
-				if(!booflos.hasAggressiveAttackTarget() && !world.getEntitiesWithinAABB(PlayerEntity.class, this.adolescent.getBoundingBox().expand(24.0F, 12.0F, 24.0F), (entity) -> entity == players).isEmpty()) {
-					booflos.setBoofloAttackTargetId(players.getEntityId());
-				}
-			}
-		}
 	}
 }

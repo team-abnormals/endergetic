@@ -96,7 +96,7 @@ public class BoofloAttackGoal extends Goal {
 			this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
 			double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		
-			if(this.delayCounter <= 0 && this.booflo.canEntityBeSeen(target)) {
+			if(this.delayCounter <= 0 && !target.isInvisible()) {
 				this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 				
 				if(distToEnemySqr > 1024.0D) {

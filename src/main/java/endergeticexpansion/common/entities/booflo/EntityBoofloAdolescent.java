@@ -80,6 +80,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	private float prevSwimmingAnimation;
 	private float swimmingAnimation;
 	private float swimmingAnimationSpeed;
+	public boolean wasBred;
 	
 	public EntityBoofloAdolescent(EntityType<? extends EntityBoofloAdolescent> type, World worldIn) {
 		super(type, worldIn);
@@ -288,6 +289,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		compound.putInt("BoofBoostCooldown", this.getBoofBoostCooldown());
 		compound.putInt("Age", this.getGrowingAge());
 		compound.putInt("ForcedAge", this.forcedAge);
+		compound.putBoolean("WasBred", this.wasBred);
 	}
 
 	@Override
@@ -304,6 +306,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		this.setBoofBoostCooldown(compound.getInt("BoofBoostCooldown"));
 		this.setGrowingAge(compound.getInt("Age"));
 		this.forcedAge = compound.getInt("ForcedAge");
+		this.wasBred = compound.getBoolean("WasBred");
 	}
 	
 	public boolean isMoving() {
@@ -442,6 +445,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
     			booflo.setCustomNameVisible(booflo.isCustomNameVisible());
     		}
 			
+			if(this.getRidingEntity() != null) {
+				booflo.startRiding(this.getRidingEntity());
+			}
+			
+			booflo.wasBred = this.wasBred;
 			booflo.setHealth(booflo.getMaxHealth());
 			this.world.addEntity(booflo);
 			
@@ -521,6 +529,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			BOOF_ANIMATION,
 			EATING_ANIMATION
 		};
+	}
+	
+	@Override
+	public boolean canDespawn(double distanceToClosestPlayer) {
+		return !this.wasBred;
 	}
 	
 	static class RandomFlyingGoal extends RandomWalkingGoal {

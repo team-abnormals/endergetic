@@ -124,7 +124,10 @@ public class EntityBooflo extends EndimatedEntity {
 	private final EndergeticFlyingPathNavigator attackingNavigator;
 	private UUID playerInLove;
 	public int hopDelay;
+	public int breedDelay;
 	private int croakDelay;
+	private int deflateDelay;
+	public boolean wasBred;
 	private boolean shouldPlayLandSound;
 	private boolean wasOnGround;
 
@@ -173,12 +176,12 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(0, new BoofloEatGoal(this));
 		this.goalSelector.addGoal(0, new BoofloGiveBirthGoal(this));
+		this.goalSelector.addGoal(1, new BoofloBoofGoal(this));
 		this.goalSelector.addGoal(1, new BoofloSlamGoal(this));
 		this.goalSelector.addGoal(1, new BoofloBreedGoal(this));
+		this.goalSelector.addGoal(2, new BoofloEatGoal(this));
 		this.goalSelector.addGoal(3, new BoofloSinkGoal(this));
-		this.goalSelector.addGoal(4, new BoofloBoofGoal(this));
 		this.goalSelector.addGoal(5, new BoofloTemptGoal(this));
 		this.goalSelector.addGoal(6, new BoofloAttackGoal(this, true));
 		this.goalSelector.addGoal(7, new BoofloHuntGoal(this, 1.0F, true));
@@ -193,6 +196,8 @@ public class EntityBooflo extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
+		if(this.breedDelay > 0) this.breedDelay--;
+		if(this.deflateDelay > 0) this.deflateDelay--;
 		if(this.croakDelay > 0) this.croakDelay--;
 		
 		if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
@@ -341,7 +346,7 @@ public class EntityBooflo extends EndimatedEntity {
 				if(this.isBeingRidden() && this.isAnimationPlaying(CHARGE)) {
 					NetworkUtil.setPlayingAnimationMessage(this, SLAM);
 				} else {
-					if(!this.isAnimationPlaying(SLAM)) {
+					if(this.deflateDelay <= 0 && (!this.isAnimationPlaying(SLAM) && !this.isInWater())) {
 						this.setBoofed(false);
 					}
 				}
@@ -394,10 +399,6 @@ public class EntityBooflo extends EndimatedEntity {
 		
 		if(this.hopDelay > 0) this.hopDelay--;
 		
-		if(this.isPregnant()) {
-			this.resetInLove();
-		}
-		
 		if(this.getInLoveTicks() > 0) {
 			this.setInLove(this.getInLoveTicks() - 1);
 			if(this.getInLoveTicks() % 10 == 0) {
@@ -417,7 +418,7 @@ public class EntityBooflo extends EndimatedEntity {
 			this.playSound(this.getAmbientSound(), this.getSoundVolume(), this.getSoundPitch());
 		}
 		
-		if(this.hasAggressiveAttackTarget() && this.canEntityBeSeen(this.getBoofloAttackTarget())) {
+		if(this.hasAggressiveAttackTarget() && !this.getBoofloAttackTarget().isInvisible()) {
 			this.rotationYaw = this.rotationYawHead;
 		}
 	}
@@ -434,6 +435,7 @@ public class EntityBooflo extends EndimatedEntity {
 		compound.putBoolean("IsDelayExpanding", this.isDelayExpanding());
 		compound.putBoolean("WasPlayerBoosting", this.wasPlayerBoosting());
 		compound.putBoolean("PlayerBoosting", this.isPlayerBoosting());
+		compound.putBoolean("WasBred", this.wasBred);
 		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
 		compound.putInt("RideControlDelay", this.getRideControlDelay());
 		compound.putInt("InLove", this.getInLoveTicks());
@@ -477,6 +479,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setBoostPower(compound.getFloat("BoostPower"));
 		this.setBirthYaw(compound.getFloat("BirthYaw"));
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
+		this.wasBred = compound.getBoolean("WasBred");
 		
 		String ownerUUID = compound.contains("OwnerUUID", 8) ? compound.getString("OwnerUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
 		String lastFedUUID = compound.contains("LastFedUUID") ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
@@ -524,6 +527,8 @@ public class EntityBooflo extends EndimatedEntity {
 				if(!this.isWorldRemote() && this.ticksExisted > 5) {
 					this.playSound(this.getInflateSound(), this.getSoundVolume(), this.getSoundPitch());
 				}
+				
+				this.deflateDelay = 10;
 			} else {
 				this.navigator = this.createNavigator(this.world);
 				this.moveController = new GroundMoveHelperController(this);
@@ -574,7 +579,9 @@ public class EntityBooflo extends EndimatedEntity {
 				
 				this.move(MoverType.SELF, this.getMotion());
 				this.setMotion(this.getMotion().scale(0.9D));
-				this.setMotion(this.getMotion().subtract(0, gravity, 0));
+				if(!this.isInWater()) {
+					this.setMotion(this.getMotion().subtract(0, gravity, 0));
+				}
 			} else {
 				if(this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					Vec3d motion = this.getMotion();
@@ -811,7 +818,7 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	public boolean canBreed() {
-		return this.isTamed() && this.getInLoveTicks() <= 0 && !this.isPregnant();
+		return this.isTamed() && this.getInLoveTicks() <= 0 && !this.isPregnant() && this.breedDelay <= 0;
 	}
 	
 	public boolean isInLove() {
@@ -1069,7 +1076,7 @@ public class EntityBooflo extends EndimatedEntity {
 				return true;
 			}
 		}
-		return super.processInitialInteract(player, hand);
+		return super.processInteract(player, hand);
 	}
 	
 	@Override

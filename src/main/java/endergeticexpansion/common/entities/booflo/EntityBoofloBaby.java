@@ -47,6 +47,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.createKey(EntityBoofloBaby.class, DataSerializers.VARINT);
 	public static final Endimation BIRTH = new Endimation(60);
+	public boolean wasBred;
 	public int growingAge;
 	public int forcedAge;
 	public int forcedAgeTimer;
@@ -120,6 +121,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		compound.putInt("Age", this.getGrowingAge());
 		compound.putInt("MotherImmunityTicks", this.getMotherNoClipTicks());
 		compound.putInt("ForcedAge", this.forcedAge);
+		compound.putBoolean("WasBred", this.wasBred);
 	}
 
 	@Override
@@ -130,6 +132,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		this.setGrowingAge(compound.getInt("Age"));
 		this.setMotherNoClipTicks(compound.getInt("MotherImmunityTicks"));
 		this.forcedAge = compound.getInt("ForcedAge");
+		this.wasBred = compound.getBoolean("WasBred");
 	}
 	
 	public boolean isMoving() {
@@ -184,6 +187,11 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	@Override
 	public boolean isAIDisabled() {
 		return this.isBeingBorn() || super.isAIDisabled();
+	}
+	
+	@Override
+	public boolean canDespawn(double distanceToClosestPlayer) {
+		return !this.wasBred;
 	}
 
 	@Override
@@ -273,8 +281,13 @@ public class EntityBoofloBaby extends EndimatedEntity {
     			booflo.setCustomNameVisible(booflo.isCustomNameVisible());
     		}
 			
+			if(this.getRidingEntity() != null) {
+				booflo.startRiding(this.getRidingEntity());
+			}
+			
 			booflo.setHealth(booflo.getMaxHealth());
 			booflo.setGrowingAge(-24000);
+			booflo.wasBred = this.wasBred;
 			this.world.addEntity(booflo);
 			
 			this.remove();

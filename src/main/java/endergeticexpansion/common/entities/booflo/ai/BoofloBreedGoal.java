@@ -95,6 +95,8 @@ public class BoofloBreedGoal extends Goal {
 		
 		this.booflo.resetInLove();
 		this.mate.resetInLove();
+		this.booflo.breedDelay = 1400;
+		this.mate.breedDelay = 1400;
         
 		this.booflo.world.setEntityState(this.booflo, (byte) 18);
 		if(this.booflo.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
