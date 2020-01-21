@@ -1069,7 +1069,7 @@ public class EntityBooflo extends EndimatedEntity {
 				return true;
 			}
 		}
-		return false;
+		return super.processInitialInteract(player, hand);
 	}
 	
 	@Override

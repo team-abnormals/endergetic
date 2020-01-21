@@ -19,9 +19,6 @@ public class BoofloAttackGoal extends Goal {
 	private final boolean longMemory;
 	private Path path;
 	private int delayCounter;
-	private double targetX;
-	private double targetY;
-	private double targetZ;
 	private BlockPos upperAirPos;
 
 	public BoofloAttackGoal(EntityBooflo booflo, boolean useLongMemory) {
@@ -90,29 +87,27 @@ public class BoofloAttackGoal extends Goal {
 	}
 
 	public void tick() {
-		Entity target = this.booflo.getBoofloAttackTarget();
-		
-		this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
-		
-		double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
-		
 		this.delayCounter--;
 		
-		if((this.longMemory || this.booflo.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F)) {
-			this.targetX = target.posX;
-			this.targetY = target.getBoundingBox().minY;
-			this.targetZ = target.posZ;
-			
-			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
-			
-			if(distToEnemySqr > 1024.0D) {
-				this.delayCounter += 5;
-			} else if(distToEnemySqr > 256.0D) {
-	            this.delayCounter += 5;
-			}
+		Entity target = this.booflo.getBoofloAttackTarget();
+		boolean isNull = target == null;
+		
+		if(!isNull) {
+			this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
+			double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+		
+			if(this.delayCounter <= 0 && this.booflo.canEntityBeSeen(target)) {
+				this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
+				
+				if(distToEnemySqr > 1024.0D) {
+					this.delayCounter += 5;
+				} else if(distToEnemySqr > 256.0D) {
+		            this.delayCounter += 5;
+				}
 
-			if(!this.booflo.getNavigator().tryMoveToXYZ(path.func_224770_k().getX(), path.func_224770_k().getY(), path.func_224770_k().getZ(), 1.35F)) {
-				this.delayCounter += 5;
+				if(!this.booflo.getNavigator().tryMoveToXYZ(path.func_224770_k().getX(), path.func_224770_k().getY(), path.func_224770_k().getZ(), 1.35F)) {
+					this.delayCounter += 5;
+				}
 			}
 		}
 
