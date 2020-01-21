@@ -1125,7 +1125,8 @@ public class EntityBooflo extends EndimatedEntity {
 				this.setBoofloAttackTargetId(entitySource.getEntityId());
 			}
 		}
-		return super.attackEntityFrom(source, amount);
+		float newCalculatedDamage = source == DamageSource.IN_WALL ? 0.5F : amount;
+		return super.attackEntityFrom(source, newCalculatedDamage);
 	}
 	
 	@Override

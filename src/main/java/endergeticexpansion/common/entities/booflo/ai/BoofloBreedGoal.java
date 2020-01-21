@@ -31,7 +31,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(this.booflo.isBoofed() || !this.booflo.onGround || !this.booflo.isInLove() || this.booflo.isPregnant()) {
+		if(this.booflo.isBoofed() || (!this.booflo.onGround && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
 			return false;
 		} else {
 			this.mate = this.getNearbyMate();
@@ -54,19 +54,23 @@ public class BoofloBreedGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
 		}
 		
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
+		}
 		
 		double dx = this.mate.posX - this.booflo.posX;
 		double dz = this.mate.posZ - this.booflo.posZ;
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		}
 		
 		this.booflo.getNavigator().tryMoveToEntityLiving(this.mate, 1.0D);
 		
 		this.impregnateDelay++;
-		if(this.impregnateDelay >= 60 && this.booflo.getDistanceSq(this.mate) < 9.0D) {
+		if(this.impregnateDelay >= 60 && this.booflo.getDistanceSq(this.mate) < 10.0D) {
 			this.impregnateBooflo();
 		}
 	}
