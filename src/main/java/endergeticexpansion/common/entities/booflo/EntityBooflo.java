@@ -283,13 +283,7 @@ public class EntityBooflo extends EndimatedEntity {
 				float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
 				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			
-				double motionScale;
-				
-				if(this.hasAggressiveAttackTarget()) {
-					motionScale = 0.85F;
-				} else {
-					motionScale = this.getPassengers().isEmpty() ? 0.5 : 0.8F;
-				}
+				double motionScale = this.hasAggressiveAttackTarget() || !this.getPassengers().isEmpty() ? 0.85F : 0.5F;
 			
 				Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			

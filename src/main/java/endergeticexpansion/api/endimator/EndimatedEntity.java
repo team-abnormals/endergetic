@@ -5,9 +5,6 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.NetworkUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -19,7 +16,7 @@ import net.minecraft.world.World;
  */
 public class EndimatedEntity extends CreatureEntity {
 	public int frame;
-	private static final DataParameter<Integer> ANIMATION_TICK = EntityDataManager.createKey(EndimatedEntity.class, DataSerializers.VARINT);
+	private int animationTick;
 	public static final Endimation BLANK_ANIMATION = new Endimation();
 	private Endimation animation = BLANK_ANIMATION;
 
@@ -30,7 +27,6 @@ public class EndimatedEntity extends CreatureEntity {
 	@Override
 	protected void registerData() {
 		super.registerData();
-		this.dataManager.register(ANIMATION_TICK, 0);
 	}
 	
 	@Override
@@ -90,7 +86,7 @@ public class EndimatedEntity extends CreatureEntity {
 	 * @return  - The progress; measured in ticks, of the current playing animation
 	 */
 	public int getAnimationTick() {
-		return this.dataManager.get(ANIMATION_TICK);
+		return this.animationTick;
 	}
 	
 	/**
@@ -98,7 +94,7 @@ public class EndimatedEntity extends CreatureEntity {
 	 * @param animationTick - Progress; measured in ticks
 	 */
 	public void setAnimationTick(int animationTick) {
-		this.dataManager.set(ANIMATION_TICK, animationTick);
+		this.animationTick = animationTick;
 	}
 	
 	/**
