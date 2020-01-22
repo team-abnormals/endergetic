@@ -36,7 +36,7 @@
 	"block.endergetic.poise_button": "Пуазовая кнопка",
 	"block.endergetic.poise_door": "Пуазовая дверь",
 	"block.endergetic.poise_trapdoor": "Пуазовый люк",
-	"block.endergetic.poise_vertical_planks": "Пуазовые вертикальные доски",
+	"block.endergetic.poise_vertical_planks": "Пуазовые горизонтальные доски",
 	"block.endergetic.poise_vertical_slab": "Пуазовая вертикальная плита",
 	"block.endergetic.poise_bookshelf": "Пуазовая книжная полка",
 	"block.endergetic.poise_ladder": "Пуазовая лестница",
@@ -48,6 +48,7 @@
 	"block.endergetic.eumus_bricks": "Юмусовые кирпичи",
 	"block.endergetic.eumus_chiseled_bricks": "Резные юмусовые кирпичи",
 	"block.endergetic.eumus_brick_slab": "Плита из юмусового кирпича",
+	"block.endergetic.eumus_brick_vertical_slab": "Вертикальная плита из юмусового кирпича",
 	"block.endergetic.eumus_brick_stairs": "Ступени из юмусового кирпича",
 	"block.endergetic.eumus_brick_wall": "Стена из юмусового кирпича",
 	"block.endergetic.potted_poise_bush": "Пуазовый кустарник в горшке",
@@ -108,6 +109,8 @@
 	"_comment": "Комбинации клавиш",
 	
 	"key.endergetic.boof_vest" : "Активация пуфлу-жилета",
+	"key.endergetic.booflo_inflate" : "Вздуть пуфлу",
+	"key.endergetic.booflo_slam" : "Удар пуфлу",
 	
 	"_comment": "Подсказки",
 	"tooltip.endergetic.activePotions": "Активные эффекты зелий:"
