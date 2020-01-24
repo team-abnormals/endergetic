@@ -21,6 +21,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -32,17 +33,16 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraft.world.World;
 
 public class EntityBolloomFruit extends Entity {
+	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
-	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
+	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
-	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
 	public float prevVineAngle;
 	public float prevAngle;
 	
@@ -55,68 +55,39 @@ public class EntityBolloomFruit extends Entity {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 	}
 	
-	// 0 - North, 1 - East...
 	public EntityBolloomFruit(World world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
-		if(direction == Direction.NORTH) {
-			this.setPosition(origin.getX() + 0.5, origin.getY() + 1.15F, origin.getZ() + 0.5 + 0.3F);
-			this.setOriginalSway(origin.getX() + 0.5F, origin.getZ() + 0.5F + 0.2F);
-			this.setDirection(0);
-		} else if(direction == Direction.SOUTH) {
-			this.setPosition(origin.getX() + 0.5, origin.getY() + 1.15F, origin.getZ() + 0.5 - 0.3F);
-			this.setOriginalSway(origin.getX() + 0.5F, origin.getZ() + 0.5F - 0.2F);
-			this.setDirection(2);
-		} else if(direction == Direction.WEST) {
-			this.setPosition(origin.getX() + 0.5 + 0.4F, origin.getY() + 1.15F, origin.getZ() + 0.5);
-			this.setOriginalSway(origin.getX() + 0.5F + 0.2F, origin.getZ() + 0.5F);
-			this.setDirection(3);
-		} else if(direction == Direction.EAST) {
-			this.setPosition(origin.getX() + 0.5 + 0.4F, origin.getY() + 1.15F, origin.getZ() + 0.5);
-			this.setOriginalSway(origin.getX() + 0.5F - 0.2F, origin.getZ() + 0.5F);
-			this.setDirection(1);
-		}
+		
+		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getOffset());
+		float zPos = origin.getZ() + 0.5F + (direction.getAxis() == Axis.X ? 0.0F : -0.2F * direction.getAxisDirection().getOffset());
+		float yPos = origin.getY() + 1.15F;
+		
+		this.setPosition(xPos, yPos, zPos);
+		this.setOriginalPositions(xPos, yPos, zPos);
+		this.setOrigin(budPos);
+		this.setVineHeight(height);
+		
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-		this.getDataManager().set(BUD_POS, budPos);
-		this.setVineHeight(height);
-		this.getDataManager().set(ORIGINAL_Y, origin.getY() + 1.15F);
-		this.getDataManager().set(TICKSEXISTED, 0);
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT nbt) {
 		nbt.putLong("BudPosition", this.getDataManager().get(BUD_POS).toLong());
-		nbt.putBoolean("Untied", this.getDataManager().get(UNTIED));
-		nbt.putFloat("OriginalPosX", this.getDataManager().get(ORIGINAL_X));
-		nbt.putFloat("OriginalPosY", this.getDataManager().get(ORIGINAL_Y));
-		nbt.putFloat("OriginalPosZ", this.getDataManager().get(ORIGINAL_Z));
+		nbt.putBoolean("Untied", this.isUntied());
+		nbt.putFloat("OriginalPosX", this.getOriginalPos()[0]);
+		nbt.putFloat("OriginalPosY", this.getOriginalPos()[1]);
+		nbt.putFloat("OriginalPosZ", this.getOriginalPos()[2]);
 		nbt.putInt("VineHeight", this.getVineHeight());
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT nbt) {
 		this.getDataManager().set(BUD_POS, BlockPos.fromLong(nbt.getLong("BudPosition")));
-		this.getDataManager().set(UNTIED, nbt.getBoolean("Untied"));
-		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("OriginalPosX"));
-		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("OriginalPosY"));
-		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("OriginalPosZ"));
-		this.getDataManager().set(VINE_HEIGHT, nbt.getInt("VineHeight"));
-	}
-	
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().grow(5);
-	}
-	
-	@Override
-	public boolean isInRangeToRenderDist(double distance) {
-		return true;
-	}
-	
-	@Override
-	public boolean isInRangeToRender3d(double x, double y, double z) {
-		return true;
+		this.setUntied(nbt.getBoolean("Untied"));
+		this.setOriginalPositions(nbt.getFloat("OriginalPosX"), nbt.getFloat("OriginalPosY"), nbt.getFloat("OriginalPosZ"));
+		this.setVineHeight(nbt.getInt("VineHeight"));
 	}
 	
 	@Override
@@ -128,10 +99,9 @@ public class EntityBolloomFruit extends Entity {
 		this.getDataManager().register(SWAY, 0F);
 		this.getDataManager().register(DESIRED_ANGLE, 0F);
 		this.getDataManager().register(VINE_HEIGHT, 0);
-		this.getDataManager().register(DIRECTION, 0);
 		this.getDataManager().register(BUD_POS, BlockPos.ZERO);
 		this.getDataManager().register(UNTIED, false);
-		this.getDataManager().register(TICKSEXISTED, 0);
+		this.getDataManager().register(TICKS_EXISTED, 0);
 	}
 	
 	@Override
@@ -139,26 +109,30 @@ public class EntityBolloomFruit extends Entity {
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
+		
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		if(world.isAreaLoaded(this.getOrigin(), 1) && !this.world.isRemote) {
-			this.dataManager.set(SWAY, (float) Math.sin((2 * Math.PI / 100 * getTicksExisted())) * 0.5F);
+		
+		if(this.world.isAreaLoaded(this.getOrigin(), 1)) {
+			this.setSway((float) Math.sin((2 * Math.PI / 100 * getTicksExisted())) * 0.5F);
 		}
-		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+		
+		if(this.world.isAreaLoaded(this.getOrigin(), 1)) {
 			if(!this.isUntied()) {
 				this.setPosition(
-					this.getDataManager().get(ORIGINAL_X) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
-					this.getSetY(),
-					this.getDataManager().get(ORIGINAL_Z) + this.dataManager.get(SWAY) * Math.cos(-this.getAngle())
+					this.getOriginalPos()[0] + this.getSway() * Math.sin(-this.getAngle()),
+					this.getOriginalY(),
+					this.getOriginalPos()[2] + this.getSway() * Math.cos(-this.getAngle())
 				);
 			} else {
 				this.move(MoverType.SELF, this.getMotion());
 				this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
+		
 		if(!this.world.isRemote) {
 			if(this.getTicksExisted() % 45 == 0) {
-			    this.getDataManager().set(DESIRED_ANGLE, (float) (this.rand.nextDouble() * 2 * Math.PI));
+				this.setDesiredAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
 			}
 			
 			if(this.posY >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
@@ -183,12 +157,12 @@ public class EntityBolloomFruit extends Entity {
 		
 		if(this.world.isAreaLoaded(this.getOrigin(), 1)) {
 			if(this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() != EEBlocks.BOLLOOM_BUD || !this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
-				this.setUntied();
+				this.setUntied(true);
 			}
 		}
 		
 		if(!this.isOpenPathBelowFruit()) {
-			this.setUntied();
+			this.setUntied(true);
 		}
 		
 		this.extinguish();
@@ -214,28 +188,30 @@ public class EntityBolloomFruit extends Entity {
 		}
 	}
 	
-	public float getDirection() {
-		return this.getDataManager().get(DIRECTION);
-	}
-	
-	public void setDirection(int dir) {
-		this.getDataManager().set(DIRECTION, dir);
-	}
-	
-	public float getSetY() {
+	public float getOriginalY() {
 		return this.getDataManager().get(ORIGINAL_Y);
 	}
 	
+	public void setOriginalPositions(float x, float y, float z) {
+		this.dataManager.set(ORIGINAL_X, x);
+		this.dataManager.set(ORIGINAL_Y, y);
+		this.dataManager.set(ORIGINAL_Z, z);
+	}
+	
 	public int getTicksExisted() {
-		return this.getDataManager().get(TICKSEXISTED);
+		return this.getDataManager().get(TICKS_EXISTED);
+	}
+	
+	public void setTicksExisted(int ticks) {
+		this.getDataManager().set(TICKS_EXISTED, ticks);
 	}
 
 	public void incrementTicksExisted() {
-		this.getDataManager().set(TICKSEXISTED, getTicksExisted() + 1);
+		this.getDataManager().set(TICKS_EXISTED, this.getTicksExisted() + 1);
 	}
 
 	public float getVineAngle() {
-		return (float) Math.atan(this.dataManager.get(SWAY) / (this.getVineHeight()));
+		return (float) Math.atan(this.getSway() / (this.getVineHeight()));
 	}
 	
 	public void setVineHeight(int height) {
@@ -246,12 +222,24 @@ public class EntityBolloomFruit extends Entity {
 		return this.getDataManager().get(VINE_HEIGHT);
 	}
 	
+	public void setSway(float degree) {
+		this.getDataManager().set(SWAY, degree);
+	}
+	
+	public float getSway() {
+		return this.getDataManager().get(SWAY);
+	}
+	
 	public void setAngle(float degree) {
 		this.getDataManager().set(ANGLE, degree);
 	}
 	
 	public float getAngle() {
 		return this.getDataManager().get(ANGLE);
+	}
+	
+	public void setDesiredAngle(float angle) {
+		this.getDataManager().set(DESIRED_ANGLE, angle);
 	}
 	
 	public float getDesiredAngle() {
@@ -262,21 +250,20 @@ public class EntityBolloomFruit extends Entity {
 		return this.getDataManager().get(BUD_POS);
 	}
 	
+	public void setOrigin(BlockPos budPos) {
+		this.getDataManager().set(BUD_POS, budPos);
+	}
+	
 	public boolean isUntied() {
 		return this.getDataManager().get(UNTIED);
 	}
 	
-	public float[] getOrigins() {
-		return new float[] { this.getDataManager().get(ORIGINAL_X), this.getDataManager().get(ORIGINAL_Z) };
+	public float[] getOriginalPos() {
+		return new float[] { this.getDataManager().get(ORIGINAL_X), this.getDataManager().get(ORIGINAL_Y), this.getDataManager().get(ORIGINAL_Z) };
 	}
 	
-	public void setOriginalSway(float x, float z) {
-		this.getDataManager().set(ORIGINAL_Z, (float) z);
-		this.getDataManager().set(ORIGINAL_X, (float) x);
-	}
-	
-	public void setUntied() {
-		this.dataManager.set(UNTIED, true);
+	public void setUntied(boolean untied) {
+		this.dataManager.set(UNTIED, untied);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -289,19 +276,18 @@ public class EntityBolloomFruit extends Entity {
 	
 	public void onBroken(@Nullable Entity brokenEntity, boolean dropFruit) {
 		if(dropFruit) {
-			Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
+			Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
 		}
 		this.playSound(SoundEvents.BLOCK_WET_GRASS_BREAK, 1.0F, 1.0F);
 		this.doParticles();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		if (this.isInvulnerableTo(source)) {
 			return false;
 		} else {
-			if (!this.removed && !this.world.isRemote) {
+			if (this.isAlive() && !this.world.isRemote) {
 				this.remove();
 				this.markVelocityChanged();
 				this.onBroken(source.getTrueSource(), true);
@@ -317,7 +303,7 @@ public class EntityBolloomFruit extends Entity {
 	
 	@Override
 	public boolean hitByEntity(Entity entityIn) {
-		return entityIn instanceof PlayerEntity ? this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)entityIn), 0.0F) : false;
+		return entityIn instanceof PlayerEntity ? this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) entityIn), 0.0F) : false;
 	}
 	
 	@Override
@@ -332,9 +318,23 @@ public class EntityBolloomFruit extends Entity {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
+	public AxisAlignedBB getRenderBoundingBox() {
+		return super.getRenderBoundingBox().grow(5);
+	}
+	
+	@Override
+	public boolean isInRangeToRenderDist(double distance) {
+		return true;
+	}
+	
+	@Override
+	public boolean isInRangeToRender3d(double x, double y, double z) {
+		return true;
+	}
+	
+	@Override
 	public boolean canBePushed() {
-		return !removed;
+		return this.isAlive();
 	}
 	
 	@Override

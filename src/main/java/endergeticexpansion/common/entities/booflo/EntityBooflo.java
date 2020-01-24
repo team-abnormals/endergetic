@@ -1264,6 +1264,11 @@ public class EntityBooflo extends EndimatedEntity {
 			this.mob.rotationYawHead = this.mob.rotationYaw;
 			this.mob.renderYawOffset = this.mob.rotationYaw;
 			
+			if(this.isPlayerRiding()) {
+				this.action = MovementController.Action.WAIT;
+				return;
+			}
+			
 			if(this.action != MovementController.Action.MOVE_TO) {
 				if(!this.isPlayerRiding()) {
 					this.mob.setMoveForward(0.0F);
@@ -1279,9 +1284,11 @@ public class EntityBooflo extends EndimatedEntity {
 						
 						this.booflo.hopDelay = this.booflo.getDefaultGroundHopDelay();
 					} else {
-						this.booflo.moveStrafing = 0.0F;
-						this.booflo.moveForward = 0.0F;
-						this.mob.setAIMoveSpeed(0.0F);
+						if(!this.isPlayerRiding()) {
+							this.booflo.moveStrafing = 0.0F;
+							this.booflo.moveForward = 0.0F;
+							this.mob.setAIMoveSpeed(0.0F);
+						}
 					}
 				} else {
 					if(!this.isPlayerRiding()) {
