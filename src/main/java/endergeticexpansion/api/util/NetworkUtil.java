@@ -64,11 +64,10 @@ public class NetworkUtil {
 	/**
 	 * @param motion - The vector motion of the entity
 	 * @param id - The Player's Entity Id
-	 * Used for setting the client side Player Velocity from the server side
+	 * Used for applying motion to the client from the server
 	 */
-	@OnlyIn(Dist.DEDICATED_SERVER)
-	public static void setCVelocity(Vec3d motion, int id) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageCSetVelocity(motion, id));
+	public static void setCVelocity(Entity entity, Vec3d motion) {
+		EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCSetVelocity(motion, entity.getEntityId()));
 	}
 	
 	/**

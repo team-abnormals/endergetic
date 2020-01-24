@@ -45,6 +45,7 @@ public class MessageCSetVelocity {
 		Entity entity = Minecraft.getInstance().player.world.getEntityByID(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
+				entity.isAirBorne = true;
 				entity.setVelocity(message.vecX, message.vecY, message.vecZ);
 			});
 			context.setPacketHandled(true);

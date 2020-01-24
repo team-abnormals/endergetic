@@ -563,7 +563,7 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setMotion(this.getMotion().subtract(0, gravity, 0));
 				}
 			} else {
-				if(this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
+				if(!this.isWorldRemote() && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					Vec3d motion = this.getMotion();
 					this.setMotion(motion.getX(), 0.55F, motion.getZ());
 					this.isAirBorne = true;
@@ -575,6 +575,7 @@ public class EntityBooflo extends EndimatedEntity {
 					Vec3d jumpedMotion = this.getMotion();
 					
 					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
+					NetworkUtil.setCVelocity(this, this.getMotion());
 				}
 				super.travel(vec3d);
 			}
