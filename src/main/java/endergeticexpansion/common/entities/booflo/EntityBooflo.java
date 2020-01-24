@@ -1062,7 +1062,11 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 				return true;
 			}
-         } else {
+		} else {
+			if(itemstack.interactWithEntity(player, this, hand)) {
+				return true;
+			}
+        	 
 			if(this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
 				if(!this.world.isRemote) {
 					player.startRiding(this);
