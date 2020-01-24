@@ -18,7 +18,7 @@ public class EndimatedEntity extends CreatureEntity {
 	public int frame;
 	private int animationTick;
 	public static final Endimation BLANK_ANIMATION = new Endimation();
-	private Endimation animation = BLANK_ANIMATION;
+	private Endimation endimation = BLANK_ANIMATION;
 
 	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -34,12 +34,13 @@ public class EndimatedEntity extends CreatureEntity {
 		super.tick();
 		this.frame++;
 		if(!this.isAnimationPlaying(BLANK_ANIMATION)) {
+			if(this.getAnimationTick() == 0) {
+				this.onEndimationStart(this.endimation);
+			}
 			this.setAnimationTick(this.getAnimationTick() + 1);
 			if(this.getAnimationTick() >= this.getPlayingAnimation().getAnimationTickDuration()) {
-				this.onEndimationEnd(this.animation);
+				this.onEndimationEnd(this.endimation);
 				this.resetPlayingAnimationToDefault();
-			} else if(this.getAnimationTick() == 1) {
-				this.onEndimationStart(this.animation);
 			}
 		}
 	}
@@ -71,7 +72,7 @@ public class EndimatedEntity extends CreatureEntity {
 	 * @return - Gets the playing animation
 	 */
 	public Endimation getPlayingAnimation() {
-		return this.animation;
+		return this.endimation;
 	}
 	
 	/**
@@ -102,8 +103,8 @@ public class EndimatedEntity extends CreatureEntity {
 	 * @param animationToPlay - The animation to play
 	 */
 	public void setPlayingAnimation(Endimation endimationToPlay) {
-		this.onEndimationEnd(this.animation);
-		this.animation = endimationToPlay;
+		this.onEndimationEnd(this.endimation);
+		this.endimation = endimationToPlay;
 		this.setAnimationTick(0);
 	}
 	

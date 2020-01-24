@@ -29,8 +29,8 @@ public class BoofloBoofGoal extends Goal {
 		}
 		
 		if(!onGround) {
-			if(this.shouldJumpForFall() && !this.booflo.isBoofed()) {
-				if(this.booflo.isBeingRidden() && this.booflo.getRideControlDelay() <= 0) {
+			if(this.shouldJumpForFall() && !this.booflo.isBoofed() && this.booflo.getRideControlDelay() <= 0) {
+				if(this.booflo.isBeingRidden()) {
 					this.booflo.setDelayExpanding(true);
 					this.booflo.setDelayDecrementing(false);
 				}

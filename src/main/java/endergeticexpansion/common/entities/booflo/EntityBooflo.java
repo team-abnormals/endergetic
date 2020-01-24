@@ -201,25 +201,29 @@ public class EntityBooflo extends EndimatedEntity {
 		if(this.deflateDelay > 0) this.deflateDelay--;
 		if(this.croakDelay > 0) this.croakDelay--;
 		
-		if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
-			this.setRideControlDelay(this.getRideControlDelay() - 2);
-		} else if(this.isDelayExpanding()) {
-			if(this.getRideControlDelay() < 182) {
-				this.setRideControlDelay(this.getRideControlDelay() + 10);
-			}
-		}
-		
 		if(!this.isWorldRemote()) {
 			this.setOnGround(!this.world.areCollisionShapesEmpty(AdvancedAxisAllignedBB.checkOnGround(this.getBoundingBox())));
-		}
 		
-		if(this.getRideControlDelay() >= 182 && this.isDelayExpanding()) {
-			this.setDelayDecrementing(true);
-			this.setDelayExpanding(false);
-		}
-		
-		if(this.isDelayDecrementing() && this.getRideControlDelay() <= 0) {
-			this.setDelayDecrementing(false);
+			if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
+				this.setRideControlDelay(this.getRideControlDelay() - 2);
+			} else if(this.isDelayExpanding()) {
+				if(this.getRideControlDelay() < 182) {
+					this.setRideControlDelay(this.getRideControlDelay() + 10);
+				}
+			}
+			
+			if(this.getRideControlDelay() >= 182 && this.isDelayExpanding()) {
+				this.setDelayDecrementing(true);
+				this.setDelayExpanding(false);
+			}
+			
+			if(this.isDelayDecrementing() && this.getRideControlDelay() <= 0) {
+				this.setDelayDecrementing(false);
+			}
+			
+			if(this.isOnGround() && !this.isBoofed() && !this.isDelayDecrementing()) {
+				this.setDelayDecrementing(true);
+			}
 		}
 		
 		if(this.isBoofed()) {
@@ -250,11 +254,15 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			}
 			
+			if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() <= 15) {
+				this.setMovingInAir(true);
+			}
+			
 			if(this.isAnimationPlaying(EAT)) {
 				if((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if(this.getAnimationTick() % 18 == 0) {
 						if(this.world instanceof ServerWorld && this.hasCaughtFruit()) {
-							((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+							((ServerWorld) this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 						}
 						this.playSound(SoundEvents.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
 					}
@@ -275,24 +283,6 @@ public class EntityBooflo extends EndimatedEntity {
 			if(this.shouldPlayLandSound && this.onGround && !this.wasOnGround) {
 				this.playSound(this.getHopSound(true), 0.95F, this.getSoundPitch());
 				this.shouldPlayLandSound = false;
-			}
-		}
-		
-		if(this.isAnimationPlaying(SWIM)) {
-			if(this.getAnimationTick() == 1) {
-				float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-				float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
-				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-			
-				double motionScale = this.hasAggressiveAttackTarget() || !this.getPassengers().isEmpty() ? 0.85F : 0.5F;
-			
-				Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
-			
-				this.addVelocity(motion.x, motion.y, motion.z);
-			}
-			
-			if(!this.isWorldRemote() && this.getAnimationTick() <= 15) {
-				this.setMovingInAir(true);
 			}
 		}
 		
@@ -345,10 +335,6 @@ public class EntityBooflo extends EndimatedEntity {
 					}
 				}
 			}
-		}
-		
-		if(this.isOnGround() && !this.isBoofed() && !this.isDelayDecrementing()) {
-			this.setDelayDecrementing(true);
 		}
 		
 		if(this.getRNG().nextInt(40000) < 10 && !this.hasCaughtFruit()) {
@@ -980,6 +966,21 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	public Endimation getHurtAnimation() {
 		return HURT;
+	}
+	
+	@Override
+	protected void onEndimationStart(Endimation endimation) {
+		if(endimation == SWIM) {
+			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
+			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			
+			double motionScale = this.hasAggressiveAttackTarget() || !this.getPassengers().isEmpty() ? 0.85F : 0.5F;
+			
+			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
+			
+			this.addVelocity(motion.x, motion.y, motion.z);
+		}
 	}
 	
 	@Override
