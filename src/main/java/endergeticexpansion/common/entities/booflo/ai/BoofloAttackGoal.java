@@ -16,14 +16,12 @@ import net.minecraft.util.math.BlockPos;
 public class BoofloAttackGoal extends Goal {
 	private final EntityBooflo booflo;
 	protected int attackTick;
-	private final boolean longMemory;
 	private Path path;
 	private int delayCounter;
 	private BlockPos upperAirPos;
 
-	public BoofloAttackGoal(EntityBooflo booflo, boolean useLongMemory) {
+	public BoofloAttackGoal(EntityBooflo booflo) {
 		this.booflo = booflo;
-		this.longMemory = useLongMemory;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 	
@@ -62,9 +60,7 @@ public class BoofloAttackGoal extends Goal {
 			return false;
 		} else if(!this.booflo.isBoofed()) {
 			return false;
-		} else if(!this.longMemory) {
-			return !this.booflo.getNavigator().noPath();
-		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > 12) {
+		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > 16) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -90,22 +86,19 @@ public class BoofloAttackGoal extends Goal {
 		this.delayCounter--;
 		
 		Entity target = this.booflo.getBoofloAttackTarget();
-		boolean isNull = target == null;
 		
-		if(!isNull) {
+		if(target != null) {
 			this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
 			double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		
 			if(this.delayCounter <= 0 && !target.isInvisible()) {
 				this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 				
-				if(distToEnemySqr > 1024.0D) {
-					this.delayCounter += 5;
-				} else if(distToEnemySqr > 256.0D) {
+				if(distToEnemySqr > 256.0D) {
 		            this.delayCounter += 5;
 				}
 
-				if(!this.booflo.getNavigator().tryMoveToXYZ(path.func_224770_k().getX(), path.func_224770_k().getY(), path.func_224770_k().getZ(), 1.35F)) {
+				if(this.path != null && !this.booflo.getNavigator().tryMoveToXYZ(this.path.func_224770_k().getX(), this.path.func_224770_k().getY(), this.path.func_224770_k().getZ(), 1.35F)) {
 					this.delayCounter += 5;
 				}
 			}

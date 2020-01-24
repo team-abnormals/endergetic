@@ -38,36 +38,11 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 		} else {
 			if(world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK && this.isAreaReplacable(world, pos) && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
 				world.setBlockState(pos, BOLLOOM_BUD.with(BlockBolloomBud.OPENED, true), 2);
-				this.setBud(world, pos, rand);
+				((TileEntityBolloomBud) world.getTileEntity(pos)).markForSpawning();
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	private void setBud(IWorld IWorld, BlockPos pos, Random rand) {
-		boolean[] chances = {
-			rand.nextBoolean(),
-			rand.nextBoolean(),
-			rand.nextBoolean(),
-			rand.nextBoolean(),
-		};
-		if(!chances[0] && !chances[1] && !chances[2] && !chances[3]) {
-			chances[rand.nextInt(4)] = true;
-		}
-		if(chances[0]) {
-			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_NORTH_FRUIT, true), 2);
-		}
-		if(chances[1]) {
-			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_SOUTH_FRUIT, true), 2);
-		}
-		if(chances[2]) {
-			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_EAST_FRUIT, true), 2);
-		}
-		if(chances[3]) {
-			IWorld.setBlockState(pos, IWorld.getBlockState(pos).with(BlockBolloomBud.HAS_WEST_FRUIT, true), 2);
-		}
-		((TileEntityBolloomBud)IWorld.getTileEntity(pos)).markForSpawning();
 	}
 	
 	public boolean isAreaReplacable(IWorld world, BlockPos pos) {

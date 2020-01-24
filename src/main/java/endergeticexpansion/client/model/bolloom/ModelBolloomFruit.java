@@ -135,11 +135,6 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
         		this.vine_z_6.showModel = false;
         		break;
         }
-        if(!entity.isGrown()) {
-        	this.vine_x.showModel = false;
-        	this.fruit.showModel = false;
-        	this.flap.showModel = false;
-        }
         GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
         this.fruit.render(f5);
         

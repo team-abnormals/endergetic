@@ -40,7 +40,6 @@ public class EntityBolloomFruit extends Entity {
 	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
-	public static final DataParameter<Boolean> GROWN = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(EntityBolloomFruit.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
@@ -88,7 +87,6 @@ public class EntityBolloomFruit extends Entity {
 	@Override
 	public void writeAdditional(CompoundNBT nbt) {
 		nbt.putLong("BudPosition", this.getDataManager().get(BUD_POS).toLong());
-		nbt.putBoolean("Grown", this.getDataManager().get(GROWN));
 		nbt.putBoolean("Untied", this.getDataManager().get(UNTIED));
 		nbt.putFloat("OriginalPosX", this.getDataManager().get(ORIGINAL_X));
 		nbt.putFloat("OriginalPosY", this.getDataManager().get(ORIGINAL_Y));
@@ -99,7 +97,6 @@ public class EntityBolloomFruit extends Entity {
 	@Override
 	public void readAdditional(CompoundNBT nbt) {
 		this.getDataManager().set(BUD_POS, BlockPos.fromLong(nbt.getLong("BudPosition")));
-		this.getDataManager().set(GROWN, nbt.getBoolean("Grown"));
 		this.getDataManager().set(UNTIED, nbt.getBoolean("Untied"));
 		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("OriginalPosX"));
 		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("OriginalPosY"));
@@ -134,7 +131,6 @@ public class EntityBolloomFruit extends Entity {
 		this.getDataManager().register(DIRECTION, 0);
 		this.getDataManager().register(BUD_POS, BlockPos.ZERO);
 		this.getDataManager().register(UNTIED, false);
-		this.getDataManager().register(GROWN, false);
 		this.getDataManager().register(TICKSEXISTED, 0);
 	}
 	
@@ -145,7 +141,7 @@ public class EntityBolloomFruit extends Entity {
 		this.prevPosZ = this.posZ;
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
-		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+		if(world.isAreaLoaded(this.getOrigin(), 1) && !this.world.isRemote) {
 			this.dataManager.set(SWAY, (float) Math.sin((2 * Math.PI / 100 * getTicksExisted())) * 0.5F);
 		}
 		if(world.isAreaLoaded(this.getOrigin(), 1)) {
@@ -160,17 +156,9 @@ public class EntityBolloomFruit extends Entity {
 				this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
 		}
-		if(!world.isRemote) {
+		if(!this.world.isRemote) {
 			if(this.getTicksExisted() % 45 == 0) {
 			    this.getDataManager().set(DESIRED_ANGLE, (float) (this.rand.nextDouble() * 2 * Math.PI));
-			}
-			
-			if(this.getTicksExisted() % 50 == 0 && this.rand.nextInt(5) == 0 && !this.isUntied()) {
-				this.getDataManager().set(GROWN, true);
-			}
-			
-			if(!this.isGrown() && this.isUntied()) {
-				this.remove();
 			}
 			
 			if(this.posY >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
@@ -193,35 +181,9 @@ public class EntityBolloomFruit extends Entity {
 			}
 		}
 		
-		if(world.isAreaLoaded(this.getOrigin(), 1)) {
+		if(this.world.isAreaLoaded(this.getOrigin(), 1)) {
 			if(this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() != EEBlocks.BOLLOOM_BUD || !this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
 				this.setUntied();
-			}
-			
-			if(this.isUntied() && this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() == EEBlocks.BOLLOOM_BUD) {
-				if(this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
-					if(this.getDirection() == 0) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_NORTH_FRUIT, false));
-					} else if(this.getDirection() == 1) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_EAST_FRUIT, false));
-					} else if(this.getDirection() == 2) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_SOUTH_FRUIT, false));
-					} else {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_WEST_FRUIT, false));
-					}
-				}
-			} else if(!this.isUntied() && this.getEntityWorld().getBlockState(this.getOrigin()).getBlock() == EEBlocks.BOLLOOM_BUD) {
-				if(this.getEntityWorld().getBlockState(this.getOrigin()).get(BlockBolloomBud.OPENED)) {
-					if(this.getDirection() == 0) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_NORTH_FRUIT, true));
-					} else if(this.getDirection() == 1) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_EAST_FRUIT, true));
-					} else if(this.getDirection() == 2) {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_SOUTH_FRUIT, true));
-					} else {
-						this.getEntityWorld().setBlockState(this.getOrigin(), this.getEntityWorld().getBlockState(this.getOrigin()).with(BlockBolloomBud.HAS_WEST_FRUIT, true));
-					}
-				}
 			}
 		}
 		
@@ -264,10 +226,6 @@ public class EntityBolloomFruit extends Entity {
 		return this.getDataManager().get(ORIGINAL_Y);
 	}
 	
-	public boolean isGrown() {
-		return this.getDataManager().get(GROWN);
-	}
-
 	public int getTicksExisted() {
 		return this.getDataManager().get(TICKSEXISTED);
 	}
@@ -358,11 +316,6 @@ public class EntityBolloomFruit extends Entity {
 	}
 	
 	@Override
-	public boolean isInvulnerable() {
-		return !this.isGrown() || super.isInvulnerable();
-	}
-	
-	@Override
 	public boolean hitByEntity(Entity entityIn) {
 		return entityIn instanceof PlayerEntity ? this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)entityIn), 0.0F) : false;
 	}
@@ -381,17 +334,17 @@ public class EntityBolloomFruit extends Entity {
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean canBePushed() {
-		return !removed && this.isGrown();
+		return !removed;
 	}
 	
 	@Override
 	public boolean canBeCollidedWith() {
-		return this.isGrown();
+		return true;
 	}
 	
 	@Nullable
 	public AxisAlignedBB getCollisionBoundingBox() {
-		return this.isGrown() ? this.getBoundingBox() : null;
+		return this.getBoundingBox();
 	}
 	
 	@Nullable

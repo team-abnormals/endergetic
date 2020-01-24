@@ -52,7 +52,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
-	public static final String NETWORK_PROTOCOL = "99";
+	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 	

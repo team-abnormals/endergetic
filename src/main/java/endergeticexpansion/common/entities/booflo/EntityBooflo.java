@@ -17,6 +17,7 @@ import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.BoofloAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloBoofGoal;
@@ -183,7 +184,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.goalSelector.addGoal(2, new BoofloEatGoal(this));
 		this.goalSelector.addGoal(3, new BoofloSinkGoal(this));
 		this.goalSelector.addGoal(5, new BoofloTemptGoal(this));
-		this.goalSelector.addGoal(6, new BoofloAttackGoal(this, true));
+		this.goalSelector.addGoal(6, new BoofloAttackGoal(this));
 		this.goalSelector.addGoal(7, new BoofloHuntGoal(this, 1.0F, true));
 		this.goalSelector.addGoal(8, new BoofloSwimGoal(this, 1.0F, 15));
 		this.goalSelector.addGoal(9, new BoofloFaceRandomGoal(this));
@@ -278,7 +279,7 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		
 		if(this.isAnimationPlaying(SWIM)) {
-			if(this.getAnimationTick() == 2) {
+			if(this.getAnimationTick() == 1) {
 				float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 				float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
 				float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
@@ -288,7 +289,6 @@ public class EntityBooflo extends EndimatedEntity {
 				Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			
 				this.addVelocity(motion.x, motion.y, motion.z);
-				this.markVelocityChanged();
 			}
 			
 			if(!this.isWorldRemote() && this.getAnimationTick() <= 15) {
@@ -586,7 +586,6 @@ public class EntityBooflo extends EndimatedEntity {
 					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 				
 					Vec3d jumpFowardForce = new Vec3d(xMotion, motion.getY(), zMotion).normalize().scale(1.4F);
-					
 					Vec3d jumpedMotion = this.getMotion();
 					
 					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
@@ -908,8 +907,8 @@ public class EntityBooflo extends EndimatedEntity {
 				double y = this.posY + 0.5D + (rand.nextFloat() * 0.05F);
 				double z = this.posZ + 0.5D + offsetZ;
 			
-				if(this.isServerWorld()) {
-					NetworkUtil.spawnParticle("endergetic:poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+				if(this.isWorldRemote()) {
+					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 				}
 			}
 		}
