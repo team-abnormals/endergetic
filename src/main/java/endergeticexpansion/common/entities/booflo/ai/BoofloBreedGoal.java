@@ -50,11 +50,11 @@ public class BoofloBreedGoal extends Goal {
 	}
 	
 	public void tick() {
-		if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION)) {
+		if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && !this.isBeingRidenOrRiding()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
 		}
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
 		}
 		
@@ -63,7 +63,7 @@ public class BoofloBreedGoal extends Goal {
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
 		}
 		
@@ -122,5 +122,9 @@ public class BoofloBreedGoal extends Goal {
 		}
 		
 		return booflo;
+	}
+	
+	private boolean isBeingRidenOrRiding() {
+		return this.booflo.isPassenger() || this.booflo.isBeingRidden();
 	}
 }

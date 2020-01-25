@@ -48,14 +48,18 @@ public class BoofloTemptGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
 		}
 		
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.0D);
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.0D);
+		}
 		
 		double dx = this.tempter.posX - this.booflo.posX;
 		double dz = this.tempter.posZ - this.booflo.posZ;
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		}
 		
 		this.booflo.getNavigator().tryMoveToEntityLiving(this.booflo, 1.0D);
 	}

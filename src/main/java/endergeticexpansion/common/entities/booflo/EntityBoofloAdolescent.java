@@ -202,7 +202,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
 		}
 		
-		if(this.onGround && this.doesWantToGrow() && this.world.checkBlockCollision(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
+		if((this.onGround || this.isPassenger()) && this.doesWantToGrow() && this.world.checkBlockCollision(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
 			this.growUp();
 		}
 		

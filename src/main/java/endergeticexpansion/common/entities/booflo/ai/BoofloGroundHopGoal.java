@@ -45,6 +45,8 @@ public class BoofloGroundHopGoal extends Goal {
 	public void tick() {
 		this.ticksPassed++;
 		
-		((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
+		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
+		}
 	}
 }

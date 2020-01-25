@@ -42,6 +42,7 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -223,6 +224,13 @@ public class EntityBooflo extends EndimatedEntity {
 			
 			if(this.isOnGround() && !this.isBoofed() && !this.isDelayDecrementing()) {
 				this.setDelayDecrementing(true);
+			}
+			
+			/*
+			 * Resends data to clients
+			 */
+			if(this.isBoofed() && !this.isOnGround()) {
+				this.setBoofed(true);
 			}
 		}
 		
@@ -528,15 +536,16 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public void travel(Vec3d vec3d) {
-		if(this.isBeingRidden() && this.canBeSteered()) {
-			PlayerEntity player = (PlayerEntity) this.getControllingPassenger();
-			this.rotationYaw = player.rotationYaw;
+		if(this.isAlive() && this.isBeingRidden() && this.canBeSteered()) {
+			LivingEntity rider = (LivingEntity) this.getControllingPassenger();
+			this.rotationYaw = rider.rotationYaw;
 			this.prevRotationYaw = this.rotationYaw;
 			this.rotationPitch = 0.0F;
+			this.setRotation(this.rotationYaw, this.rotationPitch);
 			this.renderYawOffset = this.rotationYaw;
-			this.rotationYawHead = this.renderYawOffset;
+			this.rotationYawHead = this.rotationYaw;
 			
-			float playerMoveFoward = player.moveForward;
+			float playerMoveFoward = rider.moveForward;
 			
 			if(!this.isWorldRemote() && playerMoveFoward > 0.0F) {
 				if(this.isOnGround() && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
@@ -565,16 +574,18 @@ public class EntityBooflo extends EndimatedEntity {
 			} else {
 				if(!this.isWorldRemote() && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					this.setMotion(0.0F, 0.55F, 0.0F);
-					this.isAirBorne = true;
+					vec3d = this.getMotion();
+					NetworkUtil.setCVelocity(this, this.getMotion());
 					
-					float xMotion = -MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+					float xMotion = -MathHelper.sin(rider.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(rider.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
 				
-					Vec3d jumpFowardForce = new Vec3d(xMotion, this.getMotion().getY(), zMotion).normalize().scale(1.4F);
+					Vec3d jumpFowardForce = new Vec3d(xMotion, 0.55F, zMotion).normalize().scale(1.4F);
 					Vec3d jumpedMotion = this.getMotion();
 					
 					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
 					NetworkUtil.setCVelocity(this, this.getMotion());
+					vec3d = this.getMotion();
 				}
 				super.travel(vec3d);
 			}
@@ -971,9 +982,10 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void onEndimationStart(Endimation endimation) {
 		if(endimation == SWIM) {
-			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
-			float yMotion = -MathHelper.sin(this.rotationPitch * ((float) Math.PI / 180F));
-			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
+			float pitch = this.isBeingRidden() ? 1.0F : this.rotationPitch;
+			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
+			float yMotion = -MathHelper.sin(pitch * ((float) Math.PI / 180F));
+			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 			
 			double motionScale = this.hasAggressiveAttackTarget() || !this.getPassengers().isEmpty() ? 0.85F : 0.5F;
 			
@@ -1002,7 +1014,7 @@ public class EntityBooflo extends EndimatedEntity {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		
-		if(item instanceof SpawnEggItem && ((SpawnEggItem)item).hasType(itemstack.getTag(), this.getType())) {
+		if(item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), this.getType())) {
 			if(!this.isWorldRemote()) {
 				EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(this.world);
 				baby.setGrowingAge(-24000);
@@ -1015,7 +1027,7 @@ public class EntityBooflo extends EndimatedEntity {
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 			return true;
-		} else if(item == EEBlocks.POISE_CLUSTER.asItem() && this.canBreed()) {
+		} else if(!this.isWorldRemote() && item == EEBlocks.POISE_CLUSTER.asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
 			
@@ -1069,6 +1081,8 @@ public class EntityBooflo extends EndimatedEntity {
         	 
 			if(this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
 				if(!this.world.isRemote) {
+					player.rotationYaw = this.rotationYaw;
+					player.rotationPitch = this.rotationPitch;
 					player.startRiding(this);
 				}
 				return true;
@@ -1090,6 +1104,9 @@ public class EntityBooflo extends EndimatedEntity {
 				passenger.setPosition(this.posX + ridingOffset.x, this.posY + 0.9F, this.posZ + ridingOffset.z);
 			} else {
 				super.updatePassenger(passenger);
+				if(passenger instanceof MobEntity) {
+					this.renderYawOffset = ((MobEntity) passenger).renderYawOffset;
+				}
 			}
 		}
 	}
@@ -1102,7 +1119,17 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public boolean canBeSteered() {
-		return this.getControllingPassenger() instanceof PlayerEntity;
+		return this.getControllingPassenger() instanceof LivingEntity;
+	}
+	
+	@Override
+	public boolean isOnLadder() {
+		return false;
+	}
+	
+	@Override
+	public boolean canBePushed() {
+		return !this.isBeingRidden();
 	}
 	
 	@Override
@@ -1157,18 +1184,14 @@ public class EntityBooflo extends EndimatedEntity {
 		return this.isBoofed() ? BOOFED_SIZE : super.getSize(poseIn);
 	}
 	
+	@Override
 	@Nullable
 	public Entity getControllingPassenger() {
-		return this.getPassengers().isEmpty() ? null : !(this.getPassengers().get(0) instanceof PlayerEntity) ? null : this.getPassengers().get(0);
+		return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
 	}
 	
 	protected boolean isResistantToBoof(Entity entity) {
 		return entity instanceof EntityBooflo || entity instanceof EntityBoofloAdolescent || entity instanceof EntityBoofloBaby;
-	}
-	
-	@Override
-	public boolean shouldRiderFaceForward(PlayerEntity player) {
-		return true;
 	}
 	
 	@Override
@@ -1262,11 +1285,6 @@ public class EntityBooflo extends EndimatedEntity {
 			this.mob.rotationYaw = this.limitAngle(this.mob.rotationYaw, this.yRot, 90.0F);
 			this.mob.rotationYawHead = this.mob.rotationYaw;
 			this.mob.renderYawOffset = this.mob.rotationYaw;
-			
-			if(this.isPlayerRiding()) {
-				this.action = MovementController.Action.WAIT;
-				return;
-			}
 			
 			if(this.action != MovementController.Action.MOVE_TO) {
 				if(!this.isPlayerRiding()) {
