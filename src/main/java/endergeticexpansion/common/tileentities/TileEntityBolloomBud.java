@@ -7,8 +7,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import org.codehaus.plexus.util.StringUtils;
-
+import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.core.registry.EETileEntities;
@@ -110,7 +109,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		super.read(compound);
 		this.markedForSpawning = compound.getBoolean("MarkedForSpawning");
 		this.sideData.forEach((side, sideData) -> {
-			String sideName = StringUtils.capitalise(side.direction.toString());
+			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
 			String sideUUID = compound.contains(sideName + "FruitUUID", 8) ? compound.getString(sideName + "FruitUUID") : "";
 			
 			sideData.fruitUUID = !sideUUID.isEmpty() ? UUID.fromString(sideUUID) : null;
@@ -126,7 +125,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		compound.putBoolean("MarkedForSpawning", this.isMarkedForSpawning());
 		
 		this.sideData.forEach((side, sideData) -> {
-			String sideName = StringUtils.capitalise(side.direction.toString());
+			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
 			
 			if(sideData.fruitUUID == null) {
 				compound.putString(sideName + "FruitUUID", "");
