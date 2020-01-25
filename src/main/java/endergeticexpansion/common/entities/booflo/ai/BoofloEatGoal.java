@@ -26,7 +26,7 @@ public class BoofloEatGoal extends Goal {
 				return false;
 			}
 		}
-		return this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.booflo.hasCaughtFruit() && !this.booflo.isBoofed() && this.booflo.onGround && !this.booflo.isInLove();
+		return this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.booflo.hasCaughtFruit() && !this.booflo.isBoofed() && this.booflo.isOnGround() && !this.booflo.isInLove();
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public class BoofloEatGoal extends Goal {
 				return false;
 			}
 		}
-		return this.booflo.isAnimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.onGround;
+		return this.booflo.isAnimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.isOnGround();
 	}
 	
 	@Override

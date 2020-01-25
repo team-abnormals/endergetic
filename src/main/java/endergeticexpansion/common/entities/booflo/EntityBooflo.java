@@ -564,14 +564,13 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			} else {
 				if(!this.isWorldRemote() && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
-					Vec3d motion = this.getMotion();
-					this.setMotion(motion.getX(), 0.55F, motion.getZ());
+					this.setMotion(0.0F, 0.55F, 0.0F);
 					this.isAirBorne = true;
 					
 					float xMotion = -MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 					float zMotion = MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 				
-					Vec3d jumpFowardForce = new Vec3d(xMotion, motion.getY(), zMotion).normalize().scale(1.4F);
+					Vec3d jumpFowardForce = new Vec3d(xMotion, this.getMotion().getY(), zMotion).normalize().scale(1.4F);
 					Vec3d jumpedMotion = this.getMotion();
 					
 					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
