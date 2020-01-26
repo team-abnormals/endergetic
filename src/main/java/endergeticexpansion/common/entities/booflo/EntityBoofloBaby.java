@@ -276,9 +276,9 @@ public class EntityBoofloBaby extends EndimatedEntity {
 			EntityBoofloAdolescent booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
 			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
 			
-			if(booflo.hasCustomName()) {
-    			booflo.setCustomName(booflo.getCustomName());
-    			booflo.setCustomNameVisible(booflo.isCustomNameVisible());
+			if(this.hasCustomName()) {
+    			booflo.setCustomName(this.getCustomName());
+    			booflo.setCustomNameVisible(this.isCustomNameVisible());
     		}
 			
 			if(this.getRidingEntity() != null) {

@@ -66,6 +66,8 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -572,22 +574,27 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setMotion(this.getMotion().subtract(0, gravity, 0));
 				}
 			} else {
-				if(!this.isWorldRemote() && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
-					this.setMotion(0.0F, 0.55F, 0.0F);
-					vec3d = this.getMotion();
-					NetworkUtil.setCVelocity(this, this.getMotion());
+				if(this.onGround && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
+					Vec3d motion = this.getMotion();
+					EffectInstance jumpBoost = this.getActivePotionEffect(Effects.JUMP_BOOST);
+					float boostPower = jumpBoost == null ? 1.0F : (float) (jumpBoost.getAmplifier() + 1);
 					
-					float xMotion = -MathHelper.sin(rider.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(rider.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-				
-					Vec3d jumpFowardForce = new Vec3d(xMotion, 0.55F, zMotion).normalize().scale(1.4F);
-					Vec3d jumpedMotion = this.getMotion();
+					this.setMotion(motion.x, 0.55F * boostPower, motion.z);
+					this.isAirBorne = true;
 					
-					this.setMotion(jumpedMotion.add(jumpFowardForce.getX(), 0.0F, jumpFowardForce.getZ()));
-					NetworkUtil.setCVelocity(this, this.getMotion());
-					vec3d = this.getMotion();
+					float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					
+					float multiplier = 0.35F + (float) this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue();
+					
+					this.setMotion(this.getMotion().add(xMotion * multiplier, 0.0F, zMotion * multiplier));
 				}
-				super.travel(vec3d);
+				
+				if(this.canPassengerSteer()) {
+					super.travel(new Vec3d(0.0F, vec3d.y, 0.0F));
+				} else {
+					this.setMotion(Vec3d.ZERO);
+				}
 			}
 		} else {
 			if(this.isServerWorld() && this.isBoofed()) {
@@ -1075,7 +1082,7 @@ public class EntityBooflo extends EndimatedEntity {
 				return true;
 			}
 		} else {
-			if(itemstack.interactWithEntity(player, this, hand)) {
+			if(itemstack.interactWithEntity(player, this, hand) || (!this.isWorldRemote() && !this.canBreed() && item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.asItem())) {
 				return true;
 			}
         	 
@@ -1287,36 +1294,24 @@ public class EntityBooflo extends EndimatedEntity {
 			this.mob.renderYawOffset = this.mob.rotationYaw;
 			
 			if(this.action != MovementController.Action.MOVE_TO) {
-				if(!this.isPlayerRiding()) {
-					this.mob.setMoveForward(0.0F);
-				}
+				this.mob.setMoveForward(0.0F);
 			} else {
 				this.action = MovementController.Action.WAIT;
 				if(this.mob.onGround) {
-					if(!this.isPlayerRiding()) {
-						this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
-					}
+					this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
 					if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
 						this.booflo.getJumpController().setJumping();
 						
 						this.booflo.hopDelay = this.booflo.getDefaultGroundHopDelay();
 					} else {
-						if(!this.isPlayerRiding()) {
-							this.booflo.moveStrafing = 0.0F;
-							this.booflo.moveForward = 0.0F;
-							this.mob.setAIMoveSpeed(0.0F);
-						}
+						this.booflo.moveStrafing = 0.0F;
+						this.booflo.moveForward = 0.0F;
+						this.mob.setAIMoveSpeed(0.0F);
 					}
 				} else {
-					if(!this.isPlayerRiding()) {
-						this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
-					}
+					this.mob.setAIMoveSpeed(0.0F);
 				}
 			}
-		}
-		
-		private boolean isPlayerRiding() {
-			return !this.booflo.getPassengers().isEmpty() && this.booflo.getPassengers().get(0) instanceof PlayerEntity;
 		}
 	}
 	
