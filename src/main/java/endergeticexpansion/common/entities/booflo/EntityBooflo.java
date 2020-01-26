@@ -998,7 +998,7 @@ public class EntityBooflo extends EndimatedEntity {
 			
 			Vec3d motion = new Vec3d(xMotion, yMotion, zMotion).normalize().mul(motionScale, 0.5D, motionScale);
 			
-			this.addVelocity(motion.x, motion.y, motion.z);
+			this.addVelocity(motion.x * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.05F), motion.y * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.05F), motion.z * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.05F));
 		}
 	}
 	
