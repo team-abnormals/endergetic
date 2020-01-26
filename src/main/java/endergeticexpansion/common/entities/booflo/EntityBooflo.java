@@ -1082,7 +1082,7 @@ public class EntityBooflo extends EndimatedEntity {
 				return true;
 			}
 		} else {
-			if(itemstack.interactWithEntity(player, this, hand) || (!this.isWorldRemote() && !this.canBreed() && item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.asItem())) {
+			if(itemstack.interactWithEntity(player, this, hand) || item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.asItem()) {
 				return true;
 			}
         	 
