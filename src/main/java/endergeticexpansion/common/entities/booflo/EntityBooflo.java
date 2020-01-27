@@ -674,6 +674,7 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	public void setBoofed(boolean boofed) {
 		this.dataManager.set(BOOFED, boofed);
+		this.shouldPlayLandSound = false;
 	}
 	
 	public boolean isPregnant() {
