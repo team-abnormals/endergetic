@@ -22,6 +22,7 @@ import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -156,9 +157,11 @@ public class NetworkUtil {
 	 * @param amount - The amount to damage
 	 * Used for damaging items from the client side
 	 */
-	@OnlyIn(Dist.CLIENT)
-	public static void damageItem(ItemStack stack, int amount) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, amount));
+	public static void damageItem(ItemStack stack, EquipmentSlotType type, int amount) {
+		stack.damageItem(1, ClientInfo.getClientPlayer(), (onBroken) -> {
+			onBroken.sendBreakAnimation(type);
+		});
+		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, type, amount));
 	}
 	
 	/**

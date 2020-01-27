@@ -1005,6 +1005,7 @@ public class EntityBooflo extends EndimatedEntity {
 	@Override
 	protected void jump() {
 		Vec3d vec3d = this.getMotion();
+		
 		this.setMotion(vec3d.x, 0.55D, vec3d.z);
 		this.isAirBorne = true;
 	}

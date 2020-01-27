@@ -12,20 +12,21 @@ import endergeticexpansion.core.registry.EEItems;
  * @author - SmellyModder(Luke Tonon)
  */
 public enum EEArmorMaterials implements IArmorMaterial {
-	BOOFLO("booflo_vest", new int[] {85, 85, 85, 85}, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE.get(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
+	BOOFLO("booflo_vest", 10, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE.get(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 	
-	private int[] durabilities;
+	private static final int[] MAX_DAMAGE_ARRAY = new int[] {13, 15, 16, 11};
 	private String name;
 	private SoundEvent equipSound;
-	private int enchantability;
 	private Item repairItem;
 	private int[] damageReductionAmounts;
+	private int enchantability;
+	private int maxDamageFactor;
 	private float toughness;
 	
-	private EEArmorMaterials(String name, int[] durabilities, int[] damageReductionAmounts, int enchantability, Item repairItem, SoundEvent equipSound, float toughness) {
+	private EEArmorMaterials(String name, int maxDamageFactor, int[] damageReductionAmounts, int enchantability, Item repairItem, SoundEvent equipSound, float toughness) {
 		this.name = name;
 		this.equipSound = equipSound;
-		this.durabilities = durabilities;
+		this.maxDamageFactor = maxDamageFactor;
 		this.enchantability = enchantability;
 		this.repairItem = repairItem;
 		this.damageReductionAmounts = damageReductionAmounts;
@@ -37,9 +38,8 @@ public enum EEArmorMaterials implements IArmorMaterial {
 		return this.damageReductionAmounts[slot.getIndex()];
 	}
 
-	@Override
-	public int getDurability(EquipmentSlotType slot) {
-		return durabilities[slot.getIndex()];
+	public int getDurability(EquipmentSlotType slotIn) {
+		return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
 	}
 
 	@Override
@@ -66,5 +66,4 @@ public enum EEArmorMaterials implements IArmorMaterial {
 	public float getToughness() {
 		return this.toughness;
 	}
-	
 }

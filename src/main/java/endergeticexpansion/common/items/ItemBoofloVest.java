@@ -41,6 +41,20 @@ public class ItemBoofloVest extends ArmorItem {
 		}
 	}
 	
+	@Override
+	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
+		if(stack.getTag().getInt("ticksBoofed") == 10) {
+			player.getItemStackFromSlot(EquipmentSlotType.CHEST).damageItem(2, player, (onBroken) -> {
+				onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
+			});
+		}
+	}
+	
+	@Override
+	public boolean isDamageable() {
+		return true;
+	}
+	
 	public boolean hasTag(ItemStack stack) {
 		if(!stack.hasTag()) {
 			stack.setTag(new CompoundNBT());

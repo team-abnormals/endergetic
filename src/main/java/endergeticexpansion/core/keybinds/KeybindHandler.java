@@ -61,8 +61,7 @@ public class KeybindHandler {
         		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
-        			((ItemBoofloVest)stack.getItem()).setDelayForBoofedAmount(stack, player);
-        			NetworkUtil.damageItem(stack, 1);
+        			((ItemBoofloVest) stack.getItem()).setDelayForBoofedAmount(stack, player);
         			NetworkUtil.updateSItemNBT(stack);
         			
         			double[] vars = {4D, player.rotationYaw, Math.PI, 180D};

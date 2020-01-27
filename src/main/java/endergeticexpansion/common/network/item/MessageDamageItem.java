@@ -2,7 +2,6 @@ package endergeticexpansion.common.network.item;
 
 import java.util.function.Supplier;
 
-import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -13,46 +12,37 @@ import net.minecraftforge.fml.network.NetworkEvent;
 public class MessageDamageItem {
 	private ItemStack itemstack;
 	private int amount;
-	private boolean isVest;
+	private EquipmentSlotType slotType;
 
-	public MessageDamageItem() {}
-
-	public MessageDamageItem(ItemStack stack, int amount) {
+	public MessageDamageItem(ItemStack stack, EquipmentSlotType slotType, int amount) {
 		this.itemstack = stack;
 		this.amount = amount;
-		this.isVest = stack.getItem() == EEItems.BOOFLO_VEST.get() ? true : false;
+		this.slotType = slotType;
 	}
 
 	public void serialize(PacketBuffer buf) {
 		buf.writeItemStack(this.itemstack);
 		buf.writeInt(this.amount);
+		buf.writeString(this.slotType.getName());
 	}
 
 	public static MessageDamageItem deserialize(PacketBuffer buf) {
 		ItemStack stack = buf.readItemStack();
 		int amount = buf.readInt();
-		return new MessageDamageItem(stack, amount);
+		EquipmentSlotType slotType = EquipmentSlotType.fromString(buf.readString());
+		return new MessageDamageItem(stack, slotType, amount);
 	}
 
 	public static void handle(MessageDamageItem message, Supplier<NetworkEvent.Context> ctx) {
-		if(ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
-			ctx.get().enqueueWork(() -> {
-				PlayerEntity player = ctx.get().getSender();
-				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-				if(message.isVest) {
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
-						vest.damageItem(10, player, (onBroken) -> {
-							onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
-						});
-					}
-				} else {
-					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() == message.itemstack.getItem())
-						player.inventory.getCurrentItem().damageItem(1, player, (p_213341_0_) -> {
-							p_213341_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-						});
-				}
+		NetworkEvent.Context context = ctx.get();
+		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			context.enqueueWork(() -> {
+				PlayerEntity player = context.getSender();
+				player.getItemStackFromSlot(message.slotType).damageItem(1, player, (onBroken) -> {
+					onBroken.sendBreakAnimation(message.slotType);
+				});
 			});
-			ctx.get().setPacketHandled(true);
+			context.setPacketHandled(true);
 		}
 	}
 }
