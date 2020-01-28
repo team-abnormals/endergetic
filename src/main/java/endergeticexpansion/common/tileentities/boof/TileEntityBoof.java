@@ -27,8 +27,8 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 
 	@Override
 	public void tick() {
-		AxisAlignedBB bb = new AxisAlignedBB(this.getPos()).grow(0.05F, 0.05F, 0.05F);
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, bb);
+		AxisAlignedBB bb = new AxisAlignedBB(this.getPos()).grow(0.05F);
+		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
 		
 		for(int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
@@ -41,15 +41,14 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				!(entity instanceof ItemFrameEntity) &&
 				!(entity instanceof ShulkerEntity) &&
 				!(entity instanceof EntityBolloomBalloon) &&
-				!world.getBlockState(pos).get(BlockBoof.BOOFED)) {
-				
+				!(this.world.getBlockState(this.pos).get(BlockBoof.BOOFED))) {
 				if(entity instanceof PlayerEntity) {
 					if(!((PlayerEntity)entity).isSneaking()){
-						BlockBoof.doBoof(world, pos);
+						BlockBoof.doBoof(this.world, this.pos);
 					}
 					((PlayerEntity)entity).fallDistance = 0;
 				} else {
-					BlockBoof.doBoof(world, pos);
+					BlockBoof.doBoof(this.world, this.pos);
 				}
 			} else if((entity instanceof AbstractArrowEntity)) {
 				String fieldName = this.isDeveloperWorkspace() ? "inGround" : "field_70254_i";
@@ -59,7 +58,7 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
-				BlockBoof.doBoof(getWorld(), getPos());
+				BlockBoof.doBoof(this.world, this.pos);
 			}
 		}
 	}
@@ -87,6 +86,6 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
         private UnableToFindFieldException(Exception e) {
             super(e);
         }
-    }
+	}
 	
 }

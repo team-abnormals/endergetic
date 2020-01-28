@@ -1185,7 +1185,7 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public int getMaxSpawnedInChunk() {
-		return 4;
+		return 3;
 	}
 	
 	@Override
