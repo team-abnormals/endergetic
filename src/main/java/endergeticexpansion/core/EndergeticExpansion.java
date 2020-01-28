@@ -16,7 +16,6 @@ import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDe
 import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
 import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
 import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
-import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
@@ -137,11 +136,6 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageSSetVelocity.class, id++)
 		.encoder(MessageSSetVelocity::serialize).decoder(MessageSSetVelocity::deserialize)
 		.consumer(MessageSSetVelocity::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageDamageItem.class, id++)
-		.encoder(MessageDamageItem::serialize).decoder(MessageDamageItem::deserialize)
-		.consumer(MessageDamageItem::handle)
 		.add();
     	
 		CHANNEL.messageBuilder(MessageSBoofEntity.class, id++)

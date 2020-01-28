@@ -16,7 +16,6 @@ import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDe
 import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
 import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
 import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
-import endergeticexpansion.common.network.item.MessageDamageItem;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
@@ -157,12 +156,7 @@ public class NetworkUtil {
 	 * @param amount - The amount to damage
 	 * Used for damaging items from the client side
 	 */
-	public static void damageItem(ItemStack stack, EquipmentSlotType type, int amount) {
-		stack.damageItem(1, ClientInfo.getClientPlayer(), (onBroken) -> {
-			onBroken.sendBreakAnimation(type);
-		});
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageDamageItem(stack, type, amount));
-	}
+	public static void damageItem(ItemStack stack, EquipmentSlotType type, int amount) {}
 	
 	/**
 	 * @param name - The registry name of the particle
