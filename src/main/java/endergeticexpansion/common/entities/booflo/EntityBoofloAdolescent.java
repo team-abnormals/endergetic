@@ -445,6 +445,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
     			booflo.setCustomNameVisible(this.isCustomNameVisible());
     		}
 			
+			if(this.getLeashed()) {
+				booflo.setLeashHolder(this.getLeashHolder(), true);
+				this.clearLeashed(true, false);
+			}
+			
 			if(this.getRidingEntity() != null) {
 				booflo.startRiding(this.getRidingEntity());
 			}
