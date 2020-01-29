@@ -1,7 +1,9 @@
 package endergeticexpansion.common.items;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Map.Entry;
 
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.core.registry.EEEntities;
@@ -14,6 +16,8 @@ import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -22,6 +26,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectUtils;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
@@ -109,13 +114,27 @@ public class ItemPuffBugBottle extends Item {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		CompoundNBT nbt = stack.getTag();
 		if(nbt != null && nbt.contains("CustomPotionEffects")) {
-			TextFormatting[] atextformatting = new TextFormatting[] {TextFormatting.DARK_PURPLE};
-			TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, TextFormatting.BLUE};
-			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").applyTextStyles(atextformatting));
-			for(EffectInstance effectinstance : PotionUtils.getFullEffectsFromTag(nbt)) {
-				tooltip.add(new StringTextComponent(I18n.format(effectinstance.getEffectName()) + " " + StringUtils.intToRomanNumerals(effectinstance.getAmplifier() + 1)).applyTextStyles(potionTextFormat));
+			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").applyTextStyles(TextFormatting.DARK_PURPLE));
+			for(EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
+				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + StringUtils.intToRomanNumerals(effects.getAmplifier() + 1) + " (" + EffectUtils.getPotionDurationString(effects, 1.0F) + ")").applyTextStyles(potionTextFormat));
 			}
 		}
+	}
+	
+	private TextFormatting getEffectTextColor(EffectInstance effect) {
+		Map<IAttribute, AttributeModifier> map = effect.getPotion().getAttributeModifierMap();
+		if(!map.isEmpty()) {
+        	for(Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
+        		AttributeModifier entryValue = entry.getValue();
+        		AttributeModifier modifier = new AttributeModifier(entryValue.getName(), effect.getPotion().getAttributeModifierAmount(effect.getAmplifier(), entryValue), entryValue.getOperation());
+        		
+        		if(modifier.getAmount() <= 0.0F) {
+        			return TextFormatting.RED;
+        		}
+        	}
+		}
+		return effect.getPotion().isBeneficial() ? TextFormatting.BLUE : TextFormatting.RED;
 	}
 	
 	private void emptyBottle(PlayerEntity player, Hand hand) {
