@@ -204,9 +204,30 @@ public class EntityBooflo extends EndimatedEntity {
 		if(this.deflateDelay > 0) this.deflateDelay--;
 		if(this.croakDelay > 0) this.croakDelay--;
 		
+		if(this.isBoofed()) {
+			if(this.hasAggressiveAttackTarget()) {
+				this.navigator = this.attackingNavigator;
+			} else {
+				if(this.navigator instanceof EndergeticFlyingPathNavigator) {
+					this.navigator = new FlyingPathNavigator(this, this.world) {
+						
+						@Override
+						public boolean canEntityStandOnPos(BlockPos pos) {
+							return this.world.isAirBlock(pos);
+						}
+						
+					};
+				}
+			}
+		}
+		
+		if(!this.isWorldRemote() && this.isAnimationPlaying(EntityBooflo.CHARGE) && this.getAnimationTick() >= 15) {
+			this.addVelocity(0.0F, -0.225F, 0.0F);
+		}
+		
 		if(!this.isWorldRemote()) {
 			this.setOnGround(!this.world.areCollisionShapesEmpty(AdvancedAxisAllignedBB.checkOnGround(this.getBoundingBox())));
-		
+			
 			if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
 				this.setRideControlDelay(this.getRideControlDelay() - 2);
 			} else if(this.isDelayExpanding()) {
@@ -234,30 +255,7 @@ public class EntityBooflo extends EndimatedEntity {
 			if(this.isBoofed() && !this.isOnGround()) {
 				this.setBoofed(true);
 			}
-		}
-		
-		if(this.isBoofed()) {
-			if(this.hasAggressiveAttackTarget()) {
-				this.navigator = this.attackingNavigator;
-			} else {
-				if(this.navigator instanceof EndergeticFlyingPathNavigator) {
-					this.navigator = new FlyingPathNavigator(this, this.world) {
-						
-						@Override
-						public boolean canEntityStandOnPos(BlockPos pos) {
-							return this.world.isAirBlock(pos);
-						}
-						
-					};
-				}
-			}
-		}
-		
-		if(!this.isWorldRemote() && this.isAnimationPlaying(EntityBooflo.CHARGE) && this.getAnimationTick() >= 15) {
-			this.addVelocity(0.0F, -0.225F, 0.0F);
-		}
-		
-		if(!this.isWorldRemote()) {
+			
 			if(this.isBoofed() && this.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.isMovingInAir()) {
 				if(RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK) {
 					NetworkUtil.setPlayingAnimationMessage(this, EntityBooflo.SWIM);
@@ -408,8 +406,11 @@ public class EntityBooflo extends EndimatedEntity {
 			this.playSound(this.getAmbientSound(), this.getSoundVolume(), this.getSoundPitch());
 		}
 		
-		if(this.hasAggressiveAttackTarget() && !this.getBoofloAttackTarget().isInvisible()) {
+		if(this.hasAggressiveAttackTarget()) {
 			this.rotationYaw = this.rotationYawHead;
+			if(!this.isWorldRemote() && this.getDistanceSq(this.getBoofloAttackTarget()) > 1152.0D || this.getBoofloAttackTarget().isInvisible()) {
+				this.setBoofloAttackTargetId(0);
+			}
 		}
 	}
 	
@@ -888,9 +889,7 @@ public class EntityBooflo extends EndimatedEntity {
 			internalStrength *= this.getBoostPower();
 			offensiveStrength *= MathHelper.clamp((this.getBoostPower() / 2), 0.5F, 1.85F);
 			verticalStrength *= MathHelper.clamp(this.getBoostPower(), 0.35F, 1.5F);
-		}
-		
-		if(this.getBoostPower() > 0.0F && !this.isAnimationPlaying(SLAM)) {
+			
 			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(this.rotationPitch * ((float) Math.PI / 180F));
 			
