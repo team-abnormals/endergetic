@@ -17,12 +17,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.*;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPuffBugHive extends Block {
@@ -47,6 +47,14 @@ public class BlockPuffBugHive extends Block {
 	public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
 		destroyBlock(world, pos, explosion.getExplosivePlacedBy());
 		super.onExplosionDestroy(world, pos, explosion);
+	}
+	
+	@Override
+	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+		TileEntity tileEntity = world.getTileEntity(hit.getPos());
+		if(tileEntity instanceof TileEntityPuffBugHive) {
+			((TileEntityPuffBugHive) tileEntity).alertPuffBugs(null);
+		}
 	}
 	
 	@Override
@@ -122,14 +130,15 @@ public class BlockPuffBugHive extends Block {
 	}
 	
 	private static BlockState destroyBlock(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
-		if (hasHanger(world, pos)) world.destroyBlock(pos.up(), false);
+		if(hasHanger(world, pos)) {
+			world.destroyBlock(pos.up(), false);
+		}
+		
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityPuffBugHive) {
+		if(tile instanceof TileEntityPuffBugHive) {
 			TileEntityPuffBugHive hive = (TileEntityPuffBugHive) tile;
-			List<EntityPuffBug> toAggro = new ArrayList<>(hive.exportBugs(hive.getBugsInHive()));
-			if (breaker != null) {
-				for (EntityPuffBug entity : world.getEntitiesWithinAABB(EntityPuffBug.class, new AxisAlignedBB(pos).grow(32))) if (entity.getHivePos().equals(hive.getPos())) toAggro.add(entity);
-				for (EntityPuffBug entity : toAggro) entity.setAttackTarget(breaker);
+			if(breaker != null && EntityPuffBug.CAN_ANGER.test(breaker)) {
+				hive.alertPuffBugs(breaker);
 			}
 		}
 		return Blocks.AIR.getDefaultState();

@@ -2,6 +2,7 @@ package endergeticexpansion.common.entities;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -11,10 +12,14 @@ import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.core.registry.EEEntities;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEItems;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +38,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -40,29 +46,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityPuffBug extends EndimatedEntity {
+	public static final Predicate<LivingEntity> CAN_ANGER = (entity) -> {
+		if(entity instanceof PlayerEntity) {
+			return !entity.isSpectator() && !((PlayerEntity)entity).isCreative();
+		}
+		return !entity.isSpectator() && !entity.isInvisible();
+	};
 	private static final DataParameter<Optional<BlockPos>> HIVE_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
+	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> PUFF_STATE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
-	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
-		this.experienceValue = 5;
-	}
-	
-	public EntityPuffBug(World worldIn, BlockPos pos) {
-		this(EEEntities.PUFF_BUG.get(), worldIn);
-		this.setHivePos(pos);
-	}
-	
-	public EntityPuffBug(World worldIn, double x, double y, double z) {
-		this(EEEntities.PUFF_BUG.get(), worldIn);
-		this.setPosition(x, y, z);
+		this.experienceValue = 2;
 	}
 	
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
+		this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.75F);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
 	}
 	
@@ -114,18 +117,18 @@ public class EntityPuffBug extends EndimatedEntity {
 		this.getDataManager().set(HIVE_POS, Optional.ofNullable(pos));
 	}
 	
-	public boolean isHiveAtPos(@Nullable BlockPos pos) {
-		if(pos == null) {
-			return false;
-		}
-		return this.world.getTileEntity(pos).getTileEntity() instanceof TileEntityPuffBugHive;
-	}
-	
 	@Nullable
-	private TileEntity getHive() {
+	private TileEntityPuffBugHive getHive() {
 		BlockPos hivePos = this.getHivePos();
-		if(this.isHiveAtPos(hivePos)) {
-			return this.world.getTileEntity(hivePos).getTileEntity();
+		if(hivePos != null) {
+			try {
+				TileEntity tileEntity = this.world.getTileEntity(hivePos).getTileEntity();
+				if(tileEntity instanceof TileEntityPuffBugHive) {
+					return (TileEntityPuffBugHive) tileEntity;
+				}
+			} catch(Exception e) {
+				return null;
+			}
 		}
 		return null;
 	}
@@ -162,9 +165,62 @@ public class EntityPuffBug extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
-		if(this.getHive() == null && this.getHivePos() != null) {
-			this.setHivePos(null);
+		if(!this.isWorldRemote()) {
+			if(this.getHivePos() == null) {
+				if(this.getRNG().nextFloat() <= 0.05F) {
+					TileEntityPuffBugHive hive = this.findNewNearbyHive();
+					if(hive != null) {
+						this.addToHive(hive);
+					}
+				}
+			} else {
+				if(this.getHive() == null) {
+					this.setHivePos(null);
+				}
+			}
 		}
+	}
+	
+	@Override
+	public void travel(Vec3d moveDirection) {
+		if(this.isServerWorld() && this.getPuffState() != PuffState.DEFLATED) {
+			this.moveRelative(0.0F, moveDirection);
+			this.move(MoverType.SELF, this.getMotion());
+			this.setMotion(this.getMotion().scale(0.75D));
+			this.setMotion(this.getMotion().subtract(0, 0.005D, 0));
+		} else {
+			super.travel(moveDirection);
+		}
+	}
+	
+	@Override
+	public void fall(float distance, float damageMultiplier) {}
+	
+	@Override
+	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+		return sizeIn.height * 0.275F;
+	}
+	
+	public void addToHive(TileEntityPuffBugHive hive) {
+		hive.addBugToHive(this);
+		this.setHivePos(hive.getPos());
+	}
+	
+	@Nullable
+	public TileEntityPuffBugHive findNewNearbyHive() {
+		BlockPos pos = this.getPosition();
+		double xyDistance = 16.0D;
+		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-xyDistance, -6.0D, -xyDistance), pos.add(xyDistance, 6.0D, xyDistance))) {
+			if(blockpos.withinDistance(this.getPositionVec(), xyDistance)) {
+            	if(this.world.getBlockState(blockpos).getBlock() == EEBlocks.PUFFBUG_HIVE && this.world.getTileEntity(blockpos) instanceof TileEntityPuffBugHive) {
+            		TileEntityPuffBugHive hive = (TileEntityPuffBugHive) this.world.getTileEntity(blockpos);
+            		if(!hive.isHiveFull() && this.getHive() == null) {
+            			return hive;
+            		}
+            	}
+			}
+		}
+		return null;
 	}
 	
 	protected void setBottleData(ItemStack bottle) {
