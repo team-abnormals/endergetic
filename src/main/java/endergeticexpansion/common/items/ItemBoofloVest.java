@@ -17,9 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * 
  * @author - SmellyModder(Luke Tonon)
- *
  */
 public class ItemBoofloVest extends ArmorItem {
 

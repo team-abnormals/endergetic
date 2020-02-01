@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
-import endergeticexpansion.common.blocks.poise.BlockPoiseLog;
+import endergeticexpansion.common.blocks.poise.BlockGlowingPoiseLog;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -1106,7 +1106,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 	}
 	
 	private void setPoiseLogWithDirection(IWorld world, BlockPos pos, Random rand, Direction direction) {
-		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.getDefaultState().with(BlockPoiseLog.AXIS, direction.getAxis()) : EEBlocks.POISE_LOG_GLOWING.getDefaultState().with(BlockPoiseLog.AXIS, direction.getAxis());
+		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.getDefaultState().with(BlockGlowingPoiseLog.AXIS, direction.getAxis()) : EEBlocks.POISE_LOG_GLOWING.getDefaultState().with(BlockGlowingPoiseLog.AXIS, direction.getAxis());
 		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}

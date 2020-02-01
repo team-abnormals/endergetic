@@ -54,14 +54,14 @@ public class EEBlocks {
 	public static Block POISE_GRASS          = new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass");
 	public static Block POISE_GRASS_TALL     = new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_tall");
 	public static Block POISE_CLUSTER        = new BlockPoiseCluster(EEProperties.POISE_CLUSTER.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "poise_cluster");
-	public static Block POISE_LOG            = new BlockPoiseLog(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log");
-	public static Block POISE_WOOD           = new BlockPoiseWood(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood");
-	public static Block POISE_LOG_GLOWING    = new BlockPoiseLog(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_glowing");
-	public static Block POISE_WOOD_GLOWING   = new BlockPoiseWood(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_glowing");
-	public static Block POISE_LOG_STRIPPED   = new BlockPoiseLog(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_stripped");
-	public static Block POISE_WOOD_STRIPPED  = new BlockPoiseWood(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_stripped");
-	public static Block POISE_PLANKS         = new BlockPoisePlanks(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_planks");
-	public static Block POISE_DOOR           = new BlockPoiseDoor(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_door");
+	public static Block POISE_LOG_STRIPPED   = new BlockLogBase(EEProperties.POISE_WOOD, null).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_stripped");
+	public static Block POISE_WOOD_STRIPPED  = new BlockLogBase(EEProperties.POISE_WOOD, null).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_stripped");
+	public static Block POISE_LOG            = new BlockLogBase(EEProperties.POISE_WOOD, EEBlocks.POISE_LOG_STRIPPED).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log");
+	public static Block POISE_WOOD           = new BlockLogBase(EEProperties.POISE_WOOD, EEBlocks.POISE_WOOD_STRIPPED).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood");
+	public static Block POISE_LOG_GLOWING    = new BlockGlowingPoiseLog(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_glowing");
+	public static Block POISE_WOOD_GLOWING   = new BlockGlowingPoiseWood(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_glowing");
+	public static Block POISE_PLANKS         = new Block(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_planks");
+	public static Block POISE_DOOR           = new BlockDoorBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_door");
 	public static Block POISE_SLAB           = new BlockSlabBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_slab");
 	public static Block POISE_STAIRS         = new BlockStairsBase(POISE_PLANKS.getDefaultState(), EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_stairs");
 	public static Block POISE_FENCE          = new BlockFenceBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence");
@@ -104,7 +104,7 @@ public class EEBlocks {
 	/*
 	 * Compatibility
 	 */
-	public static final RegistryObject<Block> POISE_VERTICAL_PLANKS = RegistryUtils.createCompatBlock("poise_vertical_planks", "quark", () -> new BlockPoisePlanks(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_VERTICAL_PLANKS = RegistryUtils.createCompatBlock("poise_vertical_planks", "quark", () -> new Block(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_VERTICAL_SLAB   = RegistryUtils.createCompatBlock("poise_vertical_slab", "quark", () -> new BlockVerticalSlab(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_BOOKSHELF       = RegistryUtils.createCompatBlock("poise_bookshelf", "quark", () -> new BlockEEBookshelf(Properties.from(Blocks.BOOKSHELF)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_LADDER          = RegistryUtils.createCompatBlock("poise_ladder", "quark", () -> new BlockEELadder(Properties.from(Blocks.LADDER)), ItemGroup.DECORATIONS);

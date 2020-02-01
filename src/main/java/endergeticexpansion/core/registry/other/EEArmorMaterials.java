@@ -12,7 +12,7 @@ import endergeticexpansion.core.registry.EEItems;
  * @author - SmellyModder(Luke Tonon)
  */
 public enum EEArmorMaterials implements IArmorMaterial {
-	BOOFLO("booflo_vest", 15, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE.get(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
+	BOOFLO("booflo_vest", 32, new int[] {3, 3, 3, 3}, 8, EEItems.BOOFLO_HIDE.get(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0f);
 	
 	private static final int[] MAX_DAMAGE_ARRAY = new int[] {13, 15, 16, 11};
 	private String name;

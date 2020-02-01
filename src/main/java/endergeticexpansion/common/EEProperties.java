@@ -35,8 +35,8 @@ public class EEProperties {
 	}
 	
 	public static final Block.Properties POISE_CLUSTER     = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISE_PINK);
-	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).hardnessAndResistance(2, 10);
-	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).hardnessAndResistance(2, 10).lightValue(15);
+	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2, 10);
+	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2, 10).lightValue(15);
 	public static final Block.Properties BOOF_BLOCK        = Block.Properties.create(Material.WOOL, MaterialColor.YELLOW_TERRACOTTA).sound(SoundType.CLOTH).hardnessAndResistance(0.85F);
 	public static final Block.Properties EUMUS             = Block.Properties.create(Material.EARTH, EEMaterialColors.EUMUS).hardnessAndResistance(0.5F).sound(SoundType.GROUND);
 	public static final Block.Properties POISMOSS_EUMUS    = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISMOSS).tickRandomly().hardnessAndResistance(0.6F).sound(SoundType.PLANT);
