@@ -1,5 +1,6 @@
 package endergeticexpansion.client.model.bolloom;
 
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
 
@@ -71,6 +72,27 @@ public class ModelBolloomBud extends Model {
         this.Pedal_3_open.render(0.0625F);
         this.Pedal_1_open.render(0.0625F);
         this.Pedal_2_open.render(0.0625F);
+        this.Center.render(0.0625F);
+    }
+    
+    public void renderAll(TileEntityBolloomBud bud) {
+    	float angle = 1.78F * bud.PEDAL_PROGRESS.getAnimationProgress();
+    	
+    	this.Pedal.rotateAngleX = angle;
+    	this.Pedal_1.rotateAngleX = angle;
+    	this.Pedal_2.rotateAngleX = angle;
+    	this.Pedal_3.rotateAngleX = angle;
+    	
+    	this.Pedal.render(0.0625F);
+    	this.Pedal_1.render(0.0625F);
+    	this.Pedal_2.render(0.0625F);
+    	this.Pedal_3.render(0.0625F);
+    	
+    	this.Pedal.rotateAngleX = 0.0F;
+    	this.Pedal_1.rotateAngleX = 0.0F;
+    	this.Pedal_2.rotateAngleX = 0.0F;
+    	this.Pedal_3.rotateAngleX = 0.0F;
+        
         this.Center.render(0.0625F);
     }
 

@@ -1,6 +1,7 @@
 package endergeticexpansion.api.endimator;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -43,7 +44,7 @@ public class ControlledEndimation {
 		return this.shouldDecrement;
 	}
 	
-	public float getTick() {
+	public int getTick() {
 		return this.tick;
 	}
 	
@@ -65,6 +66,21 @@ public class ControlledEndimation {
 	}
 	
 	public float getAnimationProgress() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevTick, this.tick) / tickDuration;
+		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevTick, this.tick) / this.tickDuration;
+	}
+	
+	public CompoundNBT write(CompoundNBT compound) {
+		compound.putInt("Tick", this.tick);
+		compound.putInt("PrevTick", this.prevTick);
+		compound.putBoolean("ShouldDecrement", this.shouldDecrement);
+		compound.putBoolean("IsPaused", this.isPaused);
+		return compound;
+	}
+	
+	public void read(CompoundNBT nbt) {
+		this.tick = nbt.getInt("Tick");
+		this.prevTick = nbt.getInt("PrevTick");
+		this.shouldDecrement = nbt.getBoolean("ShouldDecrement");
+		this.isPaused = nbt.getBoolean("IsPaused");	
 	}
 }

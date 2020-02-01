@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
@@ -24,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class TileEntityBolloomBud extends TileEntity implements ITickableTileEntity {
+	public final ControlledEndimation PEDAL_PROGRESS = new ControlledEndimation(20, 20);
 	private EnumMap<BudSide, SideData> sideData = Util.make(new EnumMap<>(BudSide.class), (side) -> {
 		side.put(BudSide.NORTH, new SideData());
 		side.put(BudSide.EAST, new SideData());
@@ -50,9 +52,11 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	public void tick() {
 		Random rand = new Random();
 		
-		if(this.isMarkedForSpawning() && !world.isRemote()) {
-			this.startGrowing(true);
-			this.markedForSpawning = false;
+		if(this.isMarkedForSpawning()) {
+			if(!this.world.isRemote) {
+				this.markedForSpawning = false;
+				this.startGrowing(true);
+			}
 		}
 		
 		this.sideData.forEach((side, sideData) -> {
@@ -76,6 +80,18 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 				this.resetGrowing();
 			}
 		}
+		
+		this.PEDAL_PROGRESS.update();
+			
+		this.PEDAL_PROGRESS.tick();
+			
+		if(this.world.isAreaLoaded(this.pos, 1)) {
+			if(this.PEDAL_PROGRESS.isDescrementing() != this.getBlockState().get(BlockBolloomBud.OPENED)) {
+				this.PEDAL_PROGRESS.setDecrementing(this.getBlockState().get(BlockBolloomBud.OPENED));
+			}
+		}
+		
+		System.out.println(this.PEDAL_PROGRESS.getTick());
 	}
 	
 	public void startGrowing(boolean instant) {
@@ -107,7 +123,9 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
+		
 		this.markedForSpawning = compound.getBoolean("MarkedForSpawning");
+		
 		this.sideData.forEach((side, sideData) -> {
 			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
 			String sideUUID = compound.contains(sideName + "FruitUUID", 8) ? compound.getString(sideName + "FruitUUID") : "";
@@ -117,11 +135,14 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			sideData.growing = compound.getBoolean("Is" + sideName + "Growing");
 			sideData.growTimer = compound.getInt(sideName + "GrowTime");
 		});
+		
+		this.PEDAL_PROGRESS.read(compound);
 	}
 	
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
+		
 		compound.putBoolean("MarkedForSpawning", this.isMarkedForSpawning());
 		
 		this.sideData.forEach((side, sideData) -> {
@@ -136,11 +157,19 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			compound.putBoolean("Is" + sideName + "Growing", sideData.growing);
 			compound.putInt(sideName + "GrowTime", sideData.growTimer);
 		});
+		
+		this.PEDAL_PROGRESS.write(compound);
+		
 		return compound;
 	}
 	
+	@Nullable
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.pos, 11, this.getUpdateTag());
+		return new SUpdateTileEntityPacket(this.pos, 100, this.getUpdateTag());
+	}
+	
+	public CompoundNBT getUpdateTag() {
+		return this.write(new CompoundNBT());
 	}
 	
 	@Override
