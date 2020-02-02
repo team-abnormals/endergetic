@@ -268,7 +268,7 @@ public class EntityBooflo extends EndimatedEntity {
 			
 			if(this.isAnimationPlaying(EAT)) {
 				if((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
-					if(this.getAnimationTick() % 18 == 0) {
+					if(this.getAnimationTick() % 20 == 0) {
 						if(this.world instanceof ServerWorld && this.hasCaughtFruit()) {
 							((ServerWorld) this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 						}
