@@ -90,8 +90,6 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 				this.PEDAL_PROGRESS.setDecrementing(this.getBlockState().get(BlockBolloomBud.OPENED));
 			}
 		}
-		
-		System.out.println(this.PEDAL_PROGRESS.getTick());
 	}
 	
 	public void startGrowing(boolean instant) {

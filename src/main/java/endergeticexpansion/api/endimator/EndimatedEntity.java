@@ -15,18 +15,13 @@ import net.minecraft.world.World;
  * @author - SmellyModder(Luke Tonon)
  */
 public class EndimatedEntity extends CreatureEntity {
-	public int frame;
-	private int animationTick;
 	public static final Endimation BLANK_ANIMATION = new Endimation();
 	private Endimation endimation = BLANK_ANIMATION;
-
+	public int frame;
+	private int animationTick;
+	
 	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
 		super(type, worldIn);
-	}
-	
-	@Override
-	protected void registerData() {
-		super.registerData();
 	}
 	
 	@Override
