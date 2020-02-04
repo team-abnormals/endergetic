@@ -1,5 +1,7 @@
 package endergeticexpansion.client.render.tile;
 
+import java.util.function.Supplier;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import endergeticexpansion.client.model.ModelBoofBlockDispenser;
@@ -22,21 +24,21 @@ public class RenderTileEntityBoofBlockDispensed extends TileEntityRenderer<TileE
 	
 	@Override
 	public void render(TileEntityDispensedBoof te, double x, double y, double z, float partialTicks, int destroyStage) {
-		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState();
+		Supplier<BlockState> state = te.hasWorld() ? () -> te.getBlockState() : () -> (BlockState) EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState();
 		GlStateManager.pushMatrix();
 		
 		this.bindTexture(TEXTURE);
 		GlStateManager.translatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		if(state.get(BlockDispensedBoof.FACING) == Direction.NORTH) {
+		if(state.get().get(BlockDispensedBoof.FACING) == Direction.NORTH) {
 			GlStateManager.rotatef(180.0F, 0, 1F, 0);
-		} else if(state.get(BlockDispensedBoof.FACING) == Direction.EAST) {
+		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.EAST) {
 			GlStateManager.rotatef(90.0F, 0, 1F, 0);
-		} else if(state.get(BlockDispensedBoof.FACING) == Direction.WEST) {
+		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.WEST) {
 			GlStateManager.rotatef(-90.0F, 0, 1F, 0);
-		} else if(state.get(BlockDispensedBoof.FACING) == Direction.UP) {
+		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.UP) {
 			GlStateManager.rotatef(-90.0F, 1F, 0, 0);
 			GlStateManager.translatef(0.0F, 1.125F, -1.0F);
-		} else if(state.get(BlockDispensedBoof.FACING) == Direction.DOWN) {
+		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.DOWN) {
 			GlStateManager.rotatef(90.0F, 1F, 0, 0);
 			GlStateManager.translatef(0.0F, 1.125F, 1.0F);
 		}

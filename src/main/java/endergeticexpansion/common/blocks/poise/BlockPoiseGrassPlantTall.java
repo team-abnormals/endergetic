@@ -82,7 +82,7 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == EEBlocks.POISE_GRASS_BLOCK || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS;
+		return block == EEBlocks.POISE_GRASS_BLOCK.get() || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS.get();
 	}
 	   
 	@SuppressWarnings("deprecation")

@@ -1,6 +1,5 @@
 package endergeticexpansion.core.registry;
 
-import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.EEProperties;
 import endergeticexpansion.common.blocks.*;
 import endergeticexpansion.common.blocks.poise.*;
@@ -16,19 +15,14 @@ import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Rarity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
-@SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EEBlocks {
 	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, EndergeticExpansion.MOD_ID);
@@ -49,56 +43,56 @@ public class EEBlocks {
 	/*
 	 * Poise Forest
 	 */
-	public static final RegistryObject<BlockPoiseEumusGrass> POISMOSS_EUMUS                    = RegistryUtils.createBlock("poismoss_eumus", () -> new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS), ItemGroup.BUILDING_BLOCKS);
-	public static Block POISE_GRASS_BLOCK    = new BlockPoiseGrass(EEProperties.POISE_GRASS(false)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_block");
-	public static Block POISE_GRASS          = new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass");
-	public static Block POISE_GRASS_TALL     = new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_grass_tall");
-	public static Block POISE_CLUSTER        = new BlockPoiseCluster(EEProperties.POISE_CLUSTER.tickRandomly()).setRegistryName(EndergeticExpansion.MOD_ID, "poise_cluster");
-	public static Block POISE_LOG_STRIPPED   = new BlockLogBase(EEProperties.POISE_WOOD, null).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_stripped");
-	public static Block POISE_WOOD_STRIPPED  = new BlockLogBase(EEProperties.POISE_WOOD, null).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_stripped");
-	public static Block POISE_LOG            = new BlockLogBase(EEProperties.POISE_WOOD, EEBlocks.POISE_LOG_STRIPPED).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log");
-	public static Block POISE_WOOD           = new BlockLogBase(EEProperties.POISE_WOOD, EEBlocks.POISE_WOOD_STRIPPED).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood");
-	public static Block POISE_LOG_GLOWING    = new BlockGlowingPoiseLog(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_log_glowing");
-	public static Block POISE_WOOD_GLOWING   = new BlockGlowingPoiseWood(EEProperties.POISE_LOG_GLOWING).setRegistryName(EndergeticExpansion.MOD_ID, "poise_wood_glowing");
-	public static Block POISE_PLANKS         = new Block(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_planks");
-	public static Block POISE_DOOR           = new BlockDoorBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_door");
-	public static Block POISE_SLAB           = new BlockSlabBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_slab");
-	public static Block POISE_STAIRS         = new BlockStairsBase(POISE_PLANKS.getDefaultState(), EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_stairs");
-	public static Block POISE_FENCE          = new BlockFenceBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence");
-	public static Block POISE_FENCE_GATE     = new BlockFenceGateBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_fence_gate");
-	public static Block POISE_PRESSURE_PLATE = new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_pressure_plate");
-	public static Block POISE_BUTTON         = new BlockButtonBase(EEProperties.POISE_WOOD_OTHER(false, true)).setRegistryName(EndergeticExpansion.MOD_ID, "poise_button");
-	public static Block POISE_TRAPDOOR       = new BlockTrapdoorBase(EEProperties.POISE_WOOD).setRegistryName(EndergeticExpansion.MOD_ID, "poise_trapdoor");
-	public static Block BOLLOOM_BUD          = new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_bud");
-	public static Block PUFFBUG_HIVE         = new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)).setRegistryName(EndergeticExpansion.MOD_ID, "puffbug_hive");
-	public static Block HIVE_HANGER          = new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)).setRegistryName(EndergeticExpansion.MOD_ID, "hive_hanger");
-	public static Block BOLLOOM_PARTICLE     = new Block(EEProperties.POISE_WOOD_OTHER(false, true)).setRegistryName(EndergeticExpansion.MOD_ID, "bolloom_particle");
-	public static Block BOOF_BLOCK           = new BlockBoof(EEProperties.BOOF_BLOCK).setRegistryName(EndergeticExpansion.MOD_ID, "boof_block");
-	public static Block BOOF_BLOCK_DISPENSED = new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)).setRegistryName(EndergeticExpansion.MOD_ID, "boof_dispensed_block");
+	public static final RegistryObject<BlockPoiseEumusGrass> POISMOSS_EUMUS       = RegistryUtils.createBlock("poismoss_eumus", () -> new BlockPoiseEumusGrass(EEProperties.POISMOSS_EUMUS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockPoiseGrass> POISE_GRASS_BLOCK         = RegistryUtils.createBlock("poise_grass_block", () -> new BlockPoiseGrass(EEProperties.POISE_GRASS(false)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockPoiseGrassPlant> POISE_GRASS          = RegistryUtils.createBlock("poise_grass", () -> new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockPoiseGrassPlantTall> POISE_GRASS_TALL = RegistryUtils.createBlock("poise_grass_tall", () -> new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockPoiseCluster> POISE_CLUSTER           = RegistryUtils.createBlock("poise_cluster", () -> new BlockPoiseCluster(EEProperties.POISE_CLUSTER.tickRandomly()), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockLogBase> POISE_LOG_STRIPPED           = RegistryUtils.createBlock("poise_log_stripped", () -> new BlockLogBase(EEProperties.POISE_WOOD, null), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockLogBase> POISE_WOOD_STRIPPED          = RegistryUtils.createBlock("poise_wood_stripped", () -> new BlockLogBase(EEProperties.POISE_WOOD, null), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockLogBase> POISE_LOG                    = RegistryUtils.createBlock("poise_log", () -> new BlockLogBase(EEProperties.POISE_WOOD, () -> EEBlocks.POISE_LOG_STRIPPED.get()), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockLogBase> POISE_WOOD                   = RegistryUtils.createBlock("poise_wood", () -> new BlockLogBase(EEProperties.POISE_WOOD, () -> EEBlocks.POISE_WOOD_STRIPPED.get()), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockGlowingPoiseLog> POISE_LOG_GLOWING    = RegistryUtils.createBlock("poise_log_glowing", () -> new BlockGlowingPoiseLog(EEProperties.POISE_LOG_GLOWING), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockGlowingPoiseWood> POISE_WOOD_GLOWING  = RegistryUtils.createBlock("poise_wood_glowing", () -> new BlockGlowingPoiseWood(EEProperties.POISE_LOG_GLOWING), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_PLANKS                        = RegistryUtils.createBlock("poise_planks", () -> new Block(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockDoorBase> POISE_DOOR                  = RegistryUtils.createTallBlock("poise_door", () -> new BlockDoorBase(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockSlabBase> POISE_SLAB                  = RegistryUtils.createBlock("poise_slab", () -> new BlockSlabBase(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockStairsBase> POISE_STAIRS              = RegistryUtils.createBlock("poise_stairs", () -> new BlockStairsBase(() -> POISE_PLANKS.get().getDefaultState(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockFenceBase> POISE_FENCE                = RegistryUtils.createBlock("poise_fence", () -> new BlockFenceBase(EEProperties.POISE_WOOD), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockFenceGateBase> POISE_FENCE_GATE       = RegistryUtils.createBlock("poise_fence_gate", () -> new BlockFenceGateBase(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockPressurePlateBase> POISE_PRESSURE_PLATE = RegistryUtils.createBlock("poise_pressure_plate", () -> new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockButtonBase> POISE_BUTTON              = RegistryUtils.createBlock("poise_button", () -> new BlockButtonBase(EEProperties.POISE_WOOD_OTHER(false, true)), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockTrapdoorBase> POISE_TRAPDOOR          = RegistryUtils.createBlock("poise_trapdoor", () -> new BlockTrapdoorBase(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockBolloomBud> BOLLOOM_BUD               = RegistryUtils.createBlockWithTESIR("bolloom_bud", () -> new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockPuffBugHive> PUFFBUG_HIVE             = RegistryUtils.createBlockWithTESIR("puffbug_hive", () -> new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockHiveHanger> HIVE_HANGER               = RegistryUtils.createBlockNoItem("hive_hanger", () -> new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)));
+	public static final RegistryObject<Block> BOLLOOM_PARTICLE                    = RegistryUtils.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
+	public static final RegistryObject<BlockBoof> BOOF_BLOCK                      = RegistryUtils.createBlock("boof_block", () -> new BlockBoof(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockDispensedBoof> BOOF_BLOCK_DISPENSED   = RegistryUtils.createBlockNoItem("boof_dispensed_block", () -> new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)));
 	
 	/*
-	 * Vibra Jungle
+	 * Vibra Jungle(Unused)
 	 */
 	public static Block FRISBLOOM_STEM    = new BlockFrisbloomStem(EEProperties.FRISBLOOM_STEM).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_stem");
 	public static Block FRISBLOOM_BUD     = new BlockFrisbloomBud(EEProperties.FRISBLOOM_BUD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_seeds");
 	
 	/*
-	 * Other
+	 * Misc
 	 */
-	public static Block EUMUS                = new BlockEumus(EEProperties.EUMUS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus");
-	public static Block EUMUS_BRICKS         = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_bricks");
-	public static Block EUMUS_BRICKS_CHISELED = new Block(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_chiseled_bricks");
-	public static Block EUMUS_BRICK_SLAB     = new SlabBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_slab");
-	public static Block EUMUS_BRICK_STAIRS   = new BlockStairsBase(EUMUS_BRICKS.getDefaultState(), EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_stairs");
-	public static Block EUMUS_BRICK_WALL     = new WallBlock(EEProperties.EUMUS_BRICKS).setRegistryName(EndergeticExpansion.MOD_ID, "eumus_brick_wall");
-	public static Block POISE_BUSH_POT       = new FlowerPotBlock(POISE_GRASS, Properties.from(Blocks.POTTED_PINK_TULIP)).setRegistryName(EndergeticExpansion.MOD_ID, "potted_poise_bush"); //Why... is this deprecated
-	public static Block MYSTICAL_OBSIDIAN    = new Block(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian");
-	public static Block MYSTICAL_OBSIDIAN_WALL = new WallBlock(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_wall");
-	public static Block MYSTICAL_OBSIDIAN_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_rune");
-	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune");
-	public static Block MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN.lightValue(5)).setRegistryName(EndergeticExpansion.MOD_ID, "mystical_obsidian_activation_rune_active");
-	public static Block ACIDIAN_LANTERN      = new BlockAcidianLantern(EEProperties.ACIDIAN_LANTERN).setRegistryName(EndergeticExpansion.MOD_ID, "acidian_lantern");
-	public static Block CRYSTAL_HOLDER       = new Block(EEProperties.MYSTICAL_OBSIDIAN).setRegistryName(EndergeticExpansion.MOD_ID, "crystal_holder");
+	public static final RegistryObject<BlockEumus> EUMUS                         = RegistryUtils.createBlock("eumus", () -> new BlockEumus(EEProperties.EUMUS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> EUMUS_BRICKS                       = RegistryUtils.createBlock("eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> EUMUS_BRICKS_CHISELED              = RegistryUtils.createBlock("eumus_chiseled_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<SlabBlock> EUMUS_BRICK_SLAB               = RegistryUtils.createBlock("eumus_brick_slab", () -> new SlabBlock(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockStairsBase> EUMUS_BRICK_STAIRS       = RegistryUtils.createBlock("eumus_brick_stairs", () -> new BlockStairsBase(() -> EUMUS_BRICKS.get().getDefaultState(), EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<WallBlock> EUMUS_BRICK_WALL               = RegistryUtils.createBlock("eumus_brick_wall", () -> new WallBlock(EEProperties.EUMUS_BRICKS), ItemGroup.DECORATIONS);
+	public static final RegistryObject<FlowerPotBlock> POISE_BUSH_POT            = RegistryUtils.createBlockNoItem("potted_poise_bush", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT.delegate.get(), () -> POISE_GRASS.get(), Properties.from(Blocks.POTTED_PINK_TULIP)));
+	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN                  = RegistryUtils.createBlock("mystical_obsidian", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
+	public static final RegistryObject<WallBlock> MYSTICAL_OBSIDIAN_WALL         = RegistryUtils.createBlock("mystical_obsidian_wall", () -> new WallBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
+	public static final RegistryObject<BlockRotatable> MYSTICAL_OBSIDIAN_RUNE    = RegistryUtils.createBlock("mystical_obsidian_rune", () -> new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN), null);
+	public static final RegistryObject<BlockRotatable> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = RegistryUtils.createBlock("mystical_obsidian_activation_rune", () -> new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN), null);
+	public static final RegistryObject<BlockRotatable> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = RegistryUtils.createBlock("mystical_obsidian_activation_rune_active", () -> new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN.lightValue(5)), null);
+	public static final RegistryObject<BlockAcidianLantern> ACIDIAN_LANTERN      = RegistryUtils.createBlock("acidian_lantern", () ->  new BlockAcidianLantern(EEProperties.ACIDIAN_LANTERN), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> CRYSTAL_HOLDER                     = RegistryUtils.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static Block ENDER_FIRE           = new BlockEnderFire(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");
 	
 	/*
@@ -113,66 +107,9 @@ public class EEBlocks {
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
 		final Block blocks[] = {
-			EUMUS, POISE_GRASS_BLOCK, POISE_GRASS, POISE_GRASS_TALL, POISE_CLUSTER, POISE_LOG, POISE_LOG_GLOWING, POISE_LOG_STRIPPED, POISE_WOOD, POISE_WOOD_GLOWING, POISE_WOOD_STRIPPED,
-			POISE_PLANKS, POISE_STAIRS, EUMUS_BRICK_STAIRS, POISE_SLAB,  EUMUS_BRICK_SLAB, POISE_DOOR, POISE_FENCE, POISE_FENCE_GATE, POISE_PRESSURE_PLATE, POISE_BUTTON, POISE_TRAPDOOR,
-			BOLLOOM_BUD, PUFFBUG_HIVE, HIVE_HANGER, BOLLOOM_PARTICLE, BOOF_BLOCK, BOOF_BLOCK_DISPENSED, EUMUS_BRICKS, EUMUS_BRICKS_CHISELED, EUMUS_BRICK_WALL, POISE_BUSH_POT,
-			MYSTICAL_OBSIDIAN, MYSTICAL_OBSIDIAN_WALL, MYSTICAL_OBSIDIAN_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE, MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE,
-			ACIDIAN_LANTERN, CRYSTAL_HOLDER, ENDER_FIRE
+			ENDER_FIRE
 		};
 		event.getRegistry().registerAll(blocks);
-	}
-	
-	@SubscribeEvent
-	public static void onRegisterItemBlocks(RegistryEvent.Register<Item> event) {
-		final IForgeRegistry<Item> registry = event.getRegistry();
-		
-		//registry.register(RegistryUtils.createSimpleBlockItem(FRISBLOOM_BUD, ItemGroup.MISC));
-		
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS_BLOCK, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_GRASS_TALL, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_CLUSTER, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG_GLOWING, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_LOG_STRIPPED, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD_GLOWING, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_WOOD_STRIPPED, ItemGroup.BUILDING_BLOCKS));
-		
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_PLANKS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_SLAB, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_STAIRS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_FENCE_GATE, ItemGroup.REDSTONE));
-		registry.register(RegistryUtils.createTallItemBlock(POISE_DOOR, ItemGroup.REDSTONE));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_PRESSURE_PLATE, ItemGroup.REDSTONE));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_BUTTON, ItemGroup.REDSTONE));
-		registry.register(RegistryUtils.createSimpleBlockItem(POISE_TRAPDOOR, ItemGroup.REDSTONE));
-		
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICKS, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICKS_CHISELED, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_SLAB, ItemGroup.BUILDING_BLOCKS));
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_STAIRS, ItemGroup.BUILDING_BLOCKS));
-		
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_WALL));
-		registry.register(RegistryUtils.createSimpleBlockItem(EUMUS_BRICK_WALL, ItemGroup.DECORATIONS));
-		
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN));
-		
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_RUNE));
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_ACTIVATION_RUNE));
-		registry.register(RegistryUtils.createNoTabBlockItem(MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE));
-		registry.register(RegistryUtils.createSimpleBlockItem(ACIDIAN_LANTERN, ItemGroup.DECORATIONS));
-		registry.register(RegistryUtils.createNoTabBlockItem(CRYSTAL_HOLDER));
-		
-		Item.Properties bollom = (new Item.Properties()).group(ItemGroup.DECORATIONS).rarity(Rarity.RARE).setTEISR(() -> EETileEntityItemRenderer::new);
-		registry.register(new BlockItem(BOLLOOM_BUD, bollom).setRegistryName(BOLLOOM_BUD.getRegistryName()));
-		
-		Item.Properties hive = (new Item.Properties()).group(ItemGroup.DECORATIONS).rarity(Rarity.RARE).setTEISR(() -> EETileEntityItemRenderer::new);
-		registry.register(new BlockItem(PUFFBUG_HIVE, hive).setRegistryName(PUFFBUG_HIVE.getRegistryName()));
-		
-		registry.register(RegistryUtils.createSimpleBlockItem(BOOF_BLOCK, ItemGroup.DECORATIONS));
 	}
 	
 }

@@ -22,7 +22,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
  * @author - SmellyModder(Luke Tonon)
  */
 public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
-	protected static final BlockState BOLLOOM_BUD = EEBlocks.BOLLOOM_BUD.getDefaultState();
+	protected static final BlockState BOLLOOM_BUD = EEBlocks.BOLLOOM_BUD.get().getDefaultState();
 
 	public FeatureBolloomBud(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
@@ -31,12 +31,12 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if(rand.nextFloat() >= 0.80) {
-			if(GenerationUtils.isProperBlock(world.getBlockState(pos.down()), new Block[] {EEBlocks.POISE_GRASS_BLOCK, EEBlocks.POISMOSS_EUMUS.get()}, false) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
+			if(GenerationUtils.isProperBlock(world.getBlockState(pos.down()), new Block[] {EEBlocks.POISE_GRASS_BLOCK.get(), EEBlocks.POISMOSS_EUMUS.get()}, false) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get()) {
 				world.setBlockState(pos, BOLLOOM_BUD, 2);
 				return true;
 			}
 		} else {
-			if(world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK && this.isAreaReplacable(world, pos) && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
+			if(world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK.get() && this.isAreaReplacable(world, pos) && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get()) {
 				world.setBlockState(pos, BOLLOOM_BUD.with(BlockBolloomBud.OPENED, true), 2);
 				((TileEntityBolloomBud) world.getTileEntity(pos)).markForSpawning();
 				return true;
@@ -60,7 +60,7 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 	
 	@SuppressWarnings("deprecation")
 	public boolean canFitCross(IWorld world, BlockPos pos) {
-		if(world.getBlockState(pos.north().up()).getBlock() != EEBlocks.POISE_GRASS_TALL && world.getBlockState(pos.north()).isAir() && world.getBlockState(pos.east().up()).getBlock() != EEBlocks.POISE_GRASS_TALL && world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.south().up()).getBlock() != EEBlocks.POISE_GRASS_TALL && world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.west().up()).getBlock() != EEBlocks.POISE_GRASS_TALL && world.getBlockState(pos.west()).isAir()) {
+		if(world.getBlockState(pos.north().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.north()).isAir() && world.getBlockState(pos.east().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.south().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.west().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.west()).isAir()) {
 			return true;
 		}
 		return false;

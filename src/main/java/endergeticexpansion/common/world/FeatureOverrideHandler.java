@@ -15,7 +15,6 @@ import net.minecraft.world.gen.placement.Placement;
 
 public class FeatureOverrideHandler {
 
-	@SuppressWarnings("unchecked")
 	public static void overrideFeatures() {
 		Biomes.END_HIGHLANDS.getFeatures(Decoration.SURFACE_STRUCTURES).set(0, Biome.createDecoratedFeature(EEFeatures.ENDERGETIC_GATEWAY, EndGatewayConfig.func_214702_a(EndDimension.SPAWN, true), Placement.END_GATEWAY, IPlacementConfig.NO_PLACEMENT_CONFIG));
 		Biomes.THE_END.getFeatures(Decoration.SURFACE_STRUCTURES).set(0, Biome.createDecoratedFeature(EEFeatures.ENDERGETIC_END_SPIKE, new EndSpikeFeatureConfig(false, ImmutableList.of(), (BlockPos)null), Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG));

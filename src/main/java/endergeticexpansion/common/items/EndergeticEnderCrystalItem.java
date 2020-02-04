@@ -27,7 +27,7 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 		World world = context.getWorld();
 		BlockPos blockpos = context.getPos();
 		BlockState blockstate = world.getBlockState(blockpos);
-		if(blockstate.getBlock() != Blocks.OBSIDIAN && blockstate.getBlock() != Blocks.BEDROCK && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE) {
+		if(blockstate.getBlock() != Blocks.OBSIDIAN && blockstate.getBlock() != Blocks.BEDROCK && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get()) {
 			return ActionResultType.FAIL;
 		} else {
 			BlockPos blockpos1 = blockpos.up();

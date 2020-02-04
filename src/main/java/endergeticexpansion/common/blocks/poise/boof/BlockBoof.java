@@ -80,7 +80,7 @@ public class BlockBoof extends ContainerBlock {
 			EntityBoofBlock boofBlock = new EntityBoofBlock(world, pos);
 			world.addEntity(boofBlock);
 		}
-		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.getDefaultState().with(BOOFED, true));
+		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BOOFED, true));
 	}
 	
 	@Override
@@ -110,9 +110,9 @@ public class BlockBoof extends ContainerBlock {
             if (this.successful) {
             	IFluidState fluidstate = world.getFluidState(blockpos);
             	if(fluidstate.getFluid() == Fluids.WATER) {
-            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(BlockDispensedBoof.WATERLOGGED, true).with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	} else {
-            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
+            		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	}
             }
             

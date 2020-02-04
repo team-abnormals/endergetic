@@ -25,7 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -83,9 +82,6 @@ public class EEEntities {
 	public static void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
 		EntitySpawnPlacementRegistry.register(BOOFLO.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, EEEntities::endIslandCondition);
 		EntitySpawnPlacementRegistry.register(BOOFLO_ADOLESCENT.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, EEEntities::endIslandCondition);
-	
-		EEBiomes.POISE_FOREST.get().getSpawns(EntityClassification.CREATURE).add(new SpawnListEntry(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2));
-		EEBiomes.POISE_FOREST.get().getSpawns(EntityClassification.CREATURE).add(new SpawnListEntry(EEEntities.BOOFLO.get(), 15, 1, 3));
 	}
 	
 	private static boolean endIslandCondition(EntityType<? extends CreatureEntity> entityType, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

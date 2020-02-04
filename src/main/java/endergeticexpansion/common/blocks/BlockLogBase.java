@@ -1,5 +1,7 @@
 package endergeticexpansion.common.blocks;
 
+import java.util.function.Supplier;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -18,9 +20,9 @@ import net.minecraft.world.World;
 
 public class BlockLogBase extends RotatedPillarBlock {
 	@Nullable
-	private Block strippedState;
+	private Supplier<Block> strippedState;
 	
-	public BlockLogBase(Properties properties, Block strippedState) {
+	public BlockLogBase(Properties properties, @Nullable Supplier<Block> strippedState) {
 		super(properties);
 		this.strippedState = strippedState;
 	}
@@ -34,7 +36,7 @@ public class BlockLogBase extends RotatedPillarBlock {
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if(state.getBlock() == this && player.getHeldItemMainhand().getItem() instanceof AxeItem && this.strippedState != null) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 2.0F, 1.0F);
-			world.setBlockState(pos, this.strippedState.getDefaultState().with(AXIS, state.get(AXIS)));
+			world.setBlockState(pos, this.strippedState.get().getDefaultState().with(AXIS, state.get(AXIS)));
 			return true;
 		}
 		return false;

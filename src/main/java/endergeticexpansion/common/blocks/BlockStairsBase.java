@@ -1,5 +1,7 @@
 package endergeticexpansion.common.blocks;
 
+import java.util.function.Supplier;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.tags.BlockTags;
@@ -9,8 +11,7 @@ import net.minecraft.world.IBlockReader;
 
 public class BlockStairsBase extends StairsBlock {
 
-	@SuppressWarnings("deprecation") //No, :gru_no_face:
-	public BlockStairsBase(BlockState state, Properties properties) {
+	public BlockStairsBase(Supplier<BlockState> state, Properties properties) {
 		super(state, properties);
 	}
 

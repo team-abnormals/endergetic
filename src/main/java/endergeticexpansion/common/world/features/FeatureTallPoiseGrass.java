@@ -38,8 +38,8 @@ public class FeatureTallPoiseGrass extends Feature<DoublePlantConfig> {
 	}
 	
 	protected boolean isNearBolloomBud(IWorld world, BlockPos pos) {
-		if(world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD
-			|| world.getBlockState(pos.north().up()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.east().up()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.south().up()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.west().up()).getBlock() == EEBlocks.BOLLOOM_BUD) {
+		if(world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD.get()
+			|| world.getBlockState(pos.north().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
 			return true;
 		}
 		return false;

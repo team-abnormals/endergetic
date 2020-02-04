@@ -1,51 +1,26 @@
 package endergeticexpansion.common.world.surfacebuilders;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.function.Supplier;
 
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EESurfaceBuilders {
-	private static List<SurfaceBuilder<?>> surfaceBuilders = Lists.newArrayList();
-	/*
-	 * Blockstates for surface builder configs
-	 */
-	public static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
-	public static final BlockState EUMUS     = EEBlocks.EUMUS.getDefaultState();
-	public static final BlockState POISMOSS  = EEBlocks.POISE_GRASS_BLOCK.getDefaultState();
+	public static final DeferredRegister<SurfaceBuilder<?>> SURFACE_BUILDERS = new DeferredRegister<>(ForgeRegistries.SURFACE_BUILDERS, EndergeticExpansion.MOD_ID);
 	
-	/*
-	 * Surface Builder Configs
-	 */
-	public static final SurfaceBuilderConfig END_STONE_CONFIG = new SurfaceBuilderConfig(END_STONE, END_STONE, END_STONE);
-	public static final SurfaceBuilderConfig EUMUS_CONFIG     = new SurfaceBuilderConfig(EUMUS, EUMUS, EUMUS);
-	public static final SurfaceBuilderConfig POISMOSS_CONFIG  = new SurfaceBuilderConfig(POISMOSS, END_STONE, EUMUS);
+	public static final Supplier<SurfaceBuilderConfig> END_STONE_CONFIG = () -> new SurfaceBuilderConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
+	public static final Supplier<SurfaceBuilderConfig> EUMUS_CONFIG     = () -> new SurfaceBuilderConfig(EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
+	public static final Supplier<SurfaceBuilderConfig> POISMOSS_CONFIG  = () -> new SurfaceBuilderConfig(EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState(), Blocks.END_STONE.getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
 	
-	/*
-	 * Surface Builders
-	 */
-	public static final SurfaceBuilder<SurfaceBuilderConfig> POISE_SURFACE_BUILDER = registerSurfaceBuilder("poise_forest", new SurfaceBuilderPoiseForest(SurfaceBuilderConfig::deserialize));
+	public static final RegistryObject<SurfaceBuilder<SurfaceBuilderConfig>> POISE_SURFACE_BUILDER = createSurfaceBuilder("poise_forest", () -> new SurfaceBuilderPoiseForest(SurfaceBuilderConfig::deserialize));
 	
-	private static SurfaceBuilder<SurfaceBuilderConfig> registerSurfaceBuilder(String name, SurfaceBuilder<SurfaceBuilderConfig> builder) {
-		builder.setRegistryName(EndergeticExpansion.MOD_ID, name);
-		surfaceBuilders.add(builder);
-		return builder;
-	}
-	
-	@SubscribeEvent
-	public static void registerSurfaceBuilders(RegistryEvent.Register<SurfaceBuilder<?>> event) {
-		for(SurfaceBuilder<?> surfaceBuilders : surfaceBuilders) {
-			event.getRegistry().register(surfaceBuilders);
-		}
+	private static <S extends SurfaceBuilder<?>> RegistryObject<S> createSurfaceBuilder(String name, Supplier<S> sup) {
+		return SURFACE_BUILDERS.register(name, sup);
 	}
 }

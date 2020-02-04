@@ -63,7 +63,7 @@ public class BlockPoiseGrassPlant extends Block implements IGrowable {
 	
 	@Override
 	public void grow(World world, Random rand, BlockPos pos, BlockState state) {
-		BlockPoiseGrassPlantTall plant = (BlockPoiseGrassPlantTall) EEBlocks.POISE_GRASS_TALL;
+		BlockPoiseGrassPlantTall plant = (BlockPoiseGrassPlantTall) EEBlocks.POISE_GRASS_TALL.get();
 		if(plant.getDefaultState().isValidPosition(world, pos) && world.isAirBlock(pos.up())) {
 			plant.placeAt(world, pos, 2);
 		}
@@ -88,7 +88,7 @@ public class BlockPoiseGrassPlant extends Block implements IGrowable {
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == EEBlocks.POISE_GRASS_BLOCK || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS;
+		return block == EEBlocks.POISE_GRASS_BLOCK.get() || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS.get();
 	}
 	
 	@SuppressWarnings("deprecation")

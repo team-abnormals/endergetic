@@ -60,7 +60,7 @@ public class BlockBolloomBud extends Block {
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == EEBlocks.POISE_GRASS_BLOCK || block == Blocks.END_STONE || block == EEBlocks.EUMUS || block == EEBlocks.POISMOSS_EUMUS.get();
+		return block == EEBlocks.POISE_GRASS_BLOCK.get() || block == Blocks.END_STONE.getBlock() || block == EEBlocks.EUMUS.get() || block == EEBlocks.POISMOSS_EUMUS.get();
 	}
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {

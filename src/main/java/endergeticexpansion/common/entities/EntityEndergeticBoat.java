@@ -731,7 +731,7 @@ public class EntityEndergeticBoat extends BoatEntity {
 	}
 	
 	public enum Type {
-		POISE(EEBlocks.POISE_PLANKS, "poise");
+		POISE(EEBlocks.POISE_PLANKS.get(), "poise");
 
 		private final String name;
 		private final Block block;

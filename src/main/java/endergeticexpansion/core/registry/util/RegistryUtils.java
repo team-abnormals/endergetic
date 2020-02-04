@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrownS;
@@ -74,6 +75,18 @@ public class RegistryUtils {
 	public static <B extends Block> RegistryObject<B> createBlock(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
 		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group)));
+		return block;
+	}
+	
+	public static <B extends Block> RegistryObject<B> createBlockWithTESIR(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
+		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setTEISR(() -> EETileEntityItemRenderer::new)));
+		return block;
+	}
+	
+	public static <B extends Block> RegistryObject<B> createTallBlock(String name, Supplier<? extends B> supplier, ItemGroup group) {
+		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
+		EEItems.ITEMS.register(name, () -> new TallBlockItem(block.get(), new Item.Properties().group(group)));
 		return block;
 	}
 	

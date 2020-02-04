@@ -17,12 +17,12 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
-	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.getDefaultState();
-	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.getDefaultState();
-	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.getDefaultState();
-	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.getDefaultState().with(BlockAcidianLantern.FACING, Direction.UP);
+	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.get().getDefaultState();
+	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.get().getDefaultState();
+	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().getDefaultState();
+	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(BlockAcidianLantern.FACING, Direction.UP);
 	private static final BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
-		return active ? EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.getDefaultState();
+		return active ? EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
 	}
 	private final boolean activePortal;
 

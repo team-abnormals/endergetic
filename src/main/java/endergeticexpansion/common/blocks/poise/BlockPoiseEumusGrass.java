@@ -34,14 +34,14 @@ public class BlockPoiseEumusGrass extends Block implements IGrowable {
 			if(!worldIn.isAreaLoaded(pos, 3)) return;
 			
 			if(!isLightCoveringPos(state, worldIn, pos)) {
-				worldIn.setBlockState(pos, EEBlocks.EUMUS.getDefaultState());
+				worldIn.setBlockState(pos, EEBlocks.EUMUS.get().getDefaultState());
 			} else {
 				if(worldIn.getLight(pos.up()) >= 9) {
 					BlockState blockstate = this.getDefaultState();
 
 					for(int i = 0; i < 4; ++i) {
 						BlockPos blockpos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-						if(worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS && shouldGrowOnto(blockstate, worldIn, blockpos)) {
+						if(worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() && shouldGrowOnto(blockstate, worldIn, blockpos)) {
 							worldIn.setBlockState(blockpos, EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
 						}
 					}
@@ -69,7 +69,7 @@ public class BlockPoiseEumusGrass extends Block implements IGrowable {
 	@Override
 	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.up();
-		BlockState blockstate = EEBlocks.POISE_GRASS.getDefaultState();
+		BlockState blockstate = EEBlocks.POISE_GRASS.get().getDefaultState();
 
 		for(int i = 0; i < 128; ++i) {
 			BlockPos blockpos1 = blockpos;

@@ -43,7 +43,7 @@ public class FeaturePoiseGrass extends Feature<GrassFeatureConfig> {
 	}
 	
 	protected boolean isNearBolloomBud(IWorld world, BlockPos pos) {
-		if(world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD) {
+		if(world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
 			return true;
 		}
 		return false;

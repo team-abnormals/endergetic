@@ -21,6 +21,8 @@ import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
+import endergeticexpansion.common.world.features.EEFeatures;
+import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.proxy.ClientProxy;
 import endergeticexpansion.core.proxy.CommonProxy;
 import endergeticexpansion.core.registry.EEBiomes;
@@ -74,6 +76,8 @@ public class EndergeticExpansion {
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
 		EEEntities.ENTITY_TYPES.register(modEventBus);
+		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
+		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
 		EESounds.SOUNDS.register(modEventBus);
 		
@@ -81,14 +85,14 @@ public class EndergeticExpansion {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 		});
 		
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::setupCommon);
+		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
 		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
-		EEBiomes.registerBiomeDictionaryTags();
+		EEBiomes.applyBiomeInfo();
 		EEFireInfo.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
 		FeatureOverrideHandler.overrideFeatures();

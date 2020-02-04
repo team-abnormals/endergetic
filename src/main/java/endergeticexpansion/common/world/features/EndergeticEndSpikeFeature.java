@@ -78,7 +78,7 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		endercrystalentity.setInvulnerable(p_214553_3_.func_214669_a());
 		endercrystalentity.setLocationAndAngles((double)((float)p_214553_4_.getCenterX() + 0.5F), (double)(p_214553_4_.getHeight() + 1), (double)((float)p_214553_4_.getCenterZ() + 0.5F), p_214553_2_.nextFloat() * 360.0F, 0.0F);
 		p_214553_1_.addEntity(endercrystalentity);
-		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.getDefaultState());
+		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().getDefaultState());
 	}
 	
 }

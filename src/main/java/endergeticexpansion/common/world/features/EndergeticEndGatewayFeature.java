@@ -2,6 +2,7 @@ package endergeticexpansion.common.world.features;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.Dynamic;
 
@@ -22,9 +23,9 @@ import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
-	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.getDefaultState();
-	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.getDefaultState();
-	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.getDefaultState();
+	private static final Supplier<BlockState> MYSTICAL_OBSIDIAN = () -> EEBlocks.MYSTICAL_OBSIDIAN.get().getDefaultState();
+	private static final Supplier<BlockState> MYSTICAL_OBSIDIAN_WALL = () -> EEBlocks.MYSTICAL_OBSIDIAN_WALL.get().getDefaultState();
+	private static final Supplier<BlockState> ACIDIAN_LANTERN = () -> EEBlocks.ACIDIAN_LANTERN.get().getDefaultState();
 	
 	public EndergeticEndGatewayFeature(Function<Dynamic<?>, ? extends EndGatewayConfig> config) {
 		super(config);
@@ -52,9 +53,9 @@ public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 			} else if (flag1) {
 				this.setBlockState(worldIn, blockpos, Blocks.AIR.getDefaultState());
 			} else if (flag3 && flag && flag2) {
-				this.setBlockState(worldIn, blockpos, MYSTICAL_OBSIDIAN);
+				this.setBlockState(worldIn, blockpos, MYSTICAL_OBSIDIAN.get());
 			} else if ((flag || flag2) && !flag3) {
-				this.setBlockState(worldIn, blockpos, MYSTICAL_OBSIDIAN);
+				this.setBlockState(worldIn, blockpos, MYSTICAL_OBSIDIAN.get());
 			} else {
 				this.setBlockState(worldIn, blockpos, Blocks.AIR.getDefaultState());
 			}
@@ -68,13 +69,13 @@ public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 		this.placeWall(worldIn, pos.south().east().up());
 		this.placeWall(worldIn, pos.south().west().up());
 		
-		this.setBlockState(worldIn, pos.up(4), ACIDIAN_LANTERN.with(BlockAcidianLantern.FACING, Direction.UP));
-		this.setBlockState(worldIn, pos.down(4), ACIDIAN_LANTERN.with(BlockAcidianLantern.FACING, Direction.DOWN));
+		this.setBlockState(worldIn, pos.up(4), ACIDIAN_LANTERN.get().with(BlockAcidianLantern.FACING, Direction.UP));
+		this.setBlockState(worldIn, pos.down(4), ACIDIAN_LANTERN.get().with(BlockAcidianLantern.FACING, Direction.DOWN));
 
 		return true;
 	}
 	
 	private void placeWall(IWorld world, BlockPos pos) {
-		world.setBlockState(pos, GenerationUtils.getWallPlaceState(MYSTICAL_OBSIDIAN_WALL, world, pos), 2);
+		world.setBlockState(pos, GenerationUtils.getWallPlaceState(MYSTICAL_OBSIDIAN_WALL.get(), world, pos), 2);
 	}
 }

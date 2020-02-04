@@ -121,7 +121,7 @@ public class EntityPoiseCluster extends LivingEntity {
 				}
 				
 				this.getEntityWorld().playSound(posX, posY, posZ, SoundEvents.BLOCK_CHORUS_FLOWER_DEATH, SoundCategory.BLOCKS, 1, 1, true);
-				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.POISE_CLUSTER.getDefaultState());
+				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.POISE_CLUSTER.get().getDefaultState());
 				this.remove();
 			}
 			
@@ -142,7 +142,7 @@ public class EntityPoiseCluster extends LivingEntity {
 				}
 				
 				this.getEntityWorld().playSound(posX, posY, posZ, SoundEvents.BLOCK_CHORUS_FLOWER_DEATH, SoundCategory.BLOCKS, 3F, 1, false);
-				this.getEntityWorld().setBlockState(pos, EEBlocks.POISE_CLUSTER.getDefaultState());
+				this.getEntityWorld().setBlockState(pos, EEBlocks.POISE_CLUSTER.get().getDefaultState());
 				this.remove();
 			}
 		}
@@ -228,7 +228,7 @@ public class EntityPoiseCluster extends LivingEntity {
 		this.dataManager.set(TIMES_HIT, this.dataManager.get(TIMES_HIT) + 1);
 		if(this.dataManager.get(TIMES_HIT) == 3) {
 			if(!this.getEntityWorld().isRemote) {
-				Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER));
+				Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 			}
 			this.remove();
 			return true;
@@ -245,7 +245,7 @@ public class EntityPoiseCluster extends LivingEntity {
 			
 			if(this.dataManager.get(TIMES_HIT) == 3) {
 				if(!this.getEntityWorld().isRemote) {
-					Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER));
+					Block.spawnAsEntity(getEntityWorld(), this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 				}
 				this.remove();
 			}

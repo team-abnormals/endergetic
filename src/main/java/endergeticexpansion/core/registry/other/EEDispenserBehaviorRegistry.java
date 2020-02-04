@@ -34,7 +34,7 @@ public class EEDispenserBehaviorRegistry {
 
 
 	public static void registerAll() {
-		DispenserBlock.registerDispenseBehavior(EEBlocks.BOOF_BLOCK.asItem(), new BlockBoof.BoofDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEBlocks.BOOF_BLOCK.get().asItem(), new BlockBoof.BoofDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_RED.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_ORANGE.get(), new ItemBolloomBalloon.BalloonDispenseBehavior());

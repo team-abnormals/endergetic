@@ -32,7 +32,7 @@ public class BlockHiveHanger extends Block {
 	
 	@Override
 	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-		return new ItemStack(EEBlocks.PUFFBUG_HIVE);
+		return new ItemStack(EEBlocks.PUFFBUG_HIVE.get());
 	}
 
 	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {

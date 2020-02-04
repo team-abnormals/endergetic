@@ -87,10 +87,10 @@ public class EntityBoofBlock extends LivingEntity {
 			}
 		}
 		if(this.ticksExisted >= 10) {
-			if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.getEntityWorld().getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK && !this.isForProjectile()) {
-				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.getDefaultState());
+			if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.getEntityWorld().getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK.get() && !this.isForProjectile()) {
+				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
 			} else if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
-				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.getDefaultState());
+				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
 			}
 			this.remove();
 		}

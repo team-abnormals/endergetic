@@ -16,7 +16,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 	private BlockState HIVE_STATE(boolean hanger) {
-		return hanger ? EEBlocks.HIVE_HANGER.getDefaultState() : EEBlocks.PUFFBUG_HIVE.getDefaultState();
+		return hanger ? EEBlocks.HIVE_HANGER.get().getDefaultState() : EEBlocks.PUFFBUG_HIVE.get().getDefaultState();
 	}
 
 	public FeaturePuffBugHive(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
@@ -25,14 +25,14 @@ public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 	
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG || world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG_GLOWING) {
+		if(world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG_GLOWING.get()) {
 			if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 				world.setBlockState(pos, this.HIVE_STATE(true), 2);
 				world.setBlockState(pos.down(), this.HIVE_STATE(false), 2);
 				return true;
 			}
 		} else {
-			if(world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_CLUSTER && world.getHeight() > 90) {
+			if(world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_CLUSTER.get() && world.getHeight() > 90) {
 				if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 					world.setBlockState(pos, this.HIVE_STATE(true), 2);
 					world.setBlockState(pos.down(), this.HIVE_STATE(false), 2);

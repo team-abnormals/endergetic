@@ -1035,7 +1035,7 @@ public class EntityBooflo extends EndimatedEntity {
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 			return true;
-		} else if(!this.isWorldRemote() && item == EEBlocks.POISE_CLUSTER.asItem() && this.canBreed()) {
+		} else if(!this.isWorldRemote() && item == EEBlocks.POISE_CLUSTER.get().asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
 			
@@ -1083,7 +1083,7 @@ public class EntityBooflo extends EndimatedEntity {
 				return true;
 			}
 		} else {
-			if(itemstack.interactWithEntity(player, this, hand) || item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.asItem()) {
+			if(itemstack.interactWithEntity(player, this, hand) || item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.get().asItem()) {
 				return true;
 			}
         	 

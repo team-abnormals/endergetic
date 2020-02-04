@@ -55,7 +55,7 @@ public class BlockPoiseGrass extends Block implements IGrowable {
 	@Override
 	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.up();
-		BlockState blockstate = EEBlocks.POISE_GRASS.getDefaultState();
+		BlockState blockstate = EEBlocks.POISE_GRASS.get().getDefaultState();
 
 		for(int i = 0; i < 128; ++i) {
 			BlockPos blockpos1 = blockpos;

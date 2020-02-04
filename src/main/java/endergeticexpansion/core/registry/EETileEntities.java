@@ -23,8 +23,8 @@ public class EETileEntities {
 	/*
 	 * Poise Forest
 	 */
-	public static final RegistryObject<TileEntityType<TileEntityBolloomBud>> BOLLOOM_BUD = TILE_ENTITY_TYPES.register("bolloom_bud", () -> new TileEntityType<>(TileEntityBolloomBud::new, Sets.newHashSet(EEBlocks.BOLLOOM_BUD), null));
-	public static final RegistryObject<TileEntityType<TileEntityPuffBugHive>> PUFFBUG_HIVE = TILE_ENTITY_TYPES.register("puffbug_hive", () -> new TileEntityType<>(TileEntityPuffBugHive::new, Sets.newHashSet(EEBlocks.PUFFBUG_HIVE), null));
-	public static final RegistryObject<TileEntityType<TileEntityBoof>> BOOF_BLOCK = TILE_ENTITY_TYPES.register("boof_block", () -> new TileEntityType<>(TileEntityBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK), null));
-	public static final RegistryObject<TileEntityType<TileEntityDispensedBoof>> BOOF_BLOCK_DISPENSED = TILE_ENTITY_TYPES.register("boof_block_dispensed", () -> new TileEntityType<>(TileEntityDispensedBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK_DISPENSED), null));
+	public static final RegistryObject<TileEntityType<TileEntityBolloomBud>> BOLLOOM_BUD = TILE_ENTITY_TYPES.register("bolloom_bud", () -> new TileEntityType<>(TileEntityBolloomBud::new, Sets.newHashSet(EEBlocks.BOLLOOM_BUD.get()), null));
+	public static final RegistryObject<TileEntityType<TileEntityPuffBugHive>> PUFFBUG_HIVE = TILE_ENTITY_TYPES.register("puffbug_hive", () -> new TileEntityType<>(TileEntityPuffBugHive::new, Sets.newHashSet(EEBlocks.PUFFBUG_HIVE.get()), null));
+	public static final RegistryObject<TileEntityType<TileEntityBoof>> BOOF_BLOCK = TILE_ENTITY_TYPES.register("boof_block", () -> new TileEntityType<>(TileEntityBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK.get()), null));
+	public static final RegistryObject<TileEntityType<TileEntityDispensedBoof>> BOOF_BLOCK_DISPENSED = TILE_ENTITY_TYPES.register("boof_block_dispensed", () -> new TileEntityType<>(TileEntityDispensedBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK_DISPENSED.get()), null));
 }

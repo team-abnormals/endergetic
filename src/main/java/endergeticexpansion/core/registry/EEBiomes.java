@@ -19,11 +19,14 @@ public class EEBiomes {
 	public static final RegistryObject<EndergeticBiome> POISE_FOREST = createEndBiome("poise_forest", BiomePoiseForest::new);
 	public static final RegistryObject<EndergeticBiome> CHORUS_PLAINS = createEndBiome("chorus_plains", BiomeChorusPlains::new);
 
-	public static void registerBiomeDictionaryTags() {
+	public static void applyBiomeInfo() {
 		BIOMES.getEntries().forEach((biome) -> {
 			Biome endBiome = biome.get();
 			if(endBiome instanceof EndergeticBiome) {
-				if(endBiome != null) BiomeDictionary.addTypes(endBiome, ((EndergeticBiome) endBiome).getBiomeTypes());
+				if(endBiome != null) {
+					BiomeDictionary.addTypes(endBiome, ((EndergeticBiome) endBiome).getBiomeTypes());
+					((EndergeticBiome) endBiome).addSpawnsAndFeatures();
+				}
 			}
 		});
 	}

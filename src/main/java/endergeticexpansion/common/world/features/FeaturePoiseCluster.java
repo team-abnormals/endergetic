@@ -18,8 +18,8 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
  * @author - SmellyModder(Luke Tonon)
  */
 public class FeaturePoiseCluster extends Feature<NoFeatureConfig> {
-	protected static final BlockState GLOWING_POISE_LOG = EEBlocks.POISE_WOOD_GLOWING.getDefaultState();
-	protected static final BlockState POISE_CLUSTER = EEBlocks.POISE_CLUSTER.getDefaultState();
+	protected static final BlockState GLOWING_POISE_LOG = EEBlocks.POISE_WOOD_GLOWING.get().getDefaultState();
+	protected static final BlockState POISE_CLUSTER = EEBlocks.POISE_CLUSTER.get().getDefaultState();
 
 	public FeaturePoiseCluster(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
@@ -27,7 +27,7 @@ public class FeaturePoiseCluster extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK) {
+		if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK.get()) {
 			this.createGlob(rand.nextInt(12), world, pos, rand);
 			return true;
 		}
@@ -97,7 +97,7 @@ public class FeaturePoiseCluster extends Feature<NoFeatureConfig> {
 	
 	private void setBlockIfReplacable(IWorld world, BlockPos pos, BlockState newState) {
 		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
-			if(world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL && world.getBlockState(pos.down()).getBlock() != EEBlocks.POISE_GRASS_TALL) {
+			if(world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.down()).getBlock() != EEBlocks.POISE_GRASS_TALL.get()) {
 				world.setBlockState(pos, newState, 2);
 			}
 		}
