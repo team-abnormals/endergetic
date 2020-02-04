@@ -1,6 +1,5 @@
 package endergeticexpansion.common.blocks.poise.hive;
 
-import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.entities.EntityPuffBug;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
@@ -64,18 +63,18 @@ public class BlockPuffBugHive extends Block {
 	}
 	
 	@Nullable
-	@SuppressWarnings("deprecation")
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockPos blockpos = context.getPos();
+		World world = context.getWorld();
 		for(Direction enumfacing : context.getNearestLookingDirections()) {
 			if(enumfacing == Direction.UP) {
-				if(context.getWorld().getBlockState(blockpos.down()).isAir() && GenerationUtils.isProperBlock(context.getWorld().getBlockState(blockpos.up()), new Block[] { this, EEBlocks.POISE_CLUSTER.get() }, true)) {
+				if(world.isAirBlock(blockpos.down()) && Block.hasSolidSide(world.getBlockState(blockpos.up()), world, blockpos, Direction.DOWN)) {
 					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
 					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
 					if(entities.size() > 0) {
 						return null;
 					}
-					context.getWorld().setBlockState(blockpos.down(), getDefaultState());
+					world.setBlockState(blockpos.down(), this.getDefaultState());
 					return EEBlocks.HIVE_HANGER.get().getDefaultState();
 				} else {
 					return this.getDefaultState();

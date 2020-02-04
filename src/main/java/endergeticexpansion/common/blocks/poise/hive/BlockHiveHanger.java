@@ -19,7 +19,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class BlockHiveHanger extends Block {
-	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D);
+	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 
 	public BlockHiveHanger(Properties properties) {
 		super(properties);
@@ -42,7 +42,7 @@ public class BlockHiveHanger extends Block {
 	@Override
 	@SuppressWarnings("deprecation")
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(worldIn.getBlockState(currentPos.up()).isAir()) {
+		if(worldIn.getBlockState(currentPos.up()).isAir() || worldIn.getBlockState(currentPos.down()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
 			return Blocks.AIR.getDefaultState();
 		}
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
