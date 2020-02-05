@@ -1,6 +1,5 @@
 package endergeticexpansion.api.endimator;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,13 +15,13 @@ public class EndimatorEntityModel<E extends EndimatedEntity> extends EntityModel
 	
 	public void setDefaultBoxValues() {
 		for(int i = 0; i < this.boxList.size(); i++) {
-			((EndimatorRendererModel)this.boxList.get(i)).setDefaultBoxValues();
+			((EndimatorRendererModel) this.boxList.get(i)).setDefaultBoxValues();
 		}
 	}
 	
 	public void revertBoxesToDefaultValues() {
 		for(int i = 0; i < this.boxList.size(); i++) {
-			((EndimatorRendererModel)this.boxList.get(i)).revertToDefaultBoxValues();
+			((EndimatorRendererModel) this.boxList.get(i)).revertToDefaultBoxValues();
 		}
 	}
 	
@@ -38,9 +37,5 @@ public class EndimatorEntityModel<E extends EndimatedEntity> extends EntityModel
 	
 	public void animateModel(E endimatedEntity, float f, float f1, float f2, float f3, float f4, float f5) {
 		this.setRotationAngles(endimatedEntity, f, f1, f2, f3, f4, f5);
-	}
-	
-	public float getAnimationFrame(E endimatedEntity) {
-		return endimatedEntity.frame + ClientInfo.getPartialTicks();
 	}
 }

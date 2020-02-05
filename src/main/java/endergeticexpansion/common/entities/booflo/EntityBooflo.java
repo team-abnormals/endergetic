@@ -365,7 +365,7 @@ public class EntityBooflo extends EndimatedEntity {
 					if(this.getAnimationTick() % 10 == 0) {
 						if(this.getAnimationTick() == 20) {
 							this.FRUIT_HOVER.setDecrementing(false);
-							this.FRUIT_HOVER.setValue(0);
+							this.FRUIT_HOVER.setTick(0);
 						}
 						this.FRUIT_HOVER.setDecrementing(!this.FRUIT_HOVER.isDescrementing());
 					}
@@ -530,7 +530,7 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 				
 				if(this.isWorldRemote()) {
-					this.OPEN_JAW.setValue(0);
+					this.OPEN_JAW.setTick(0);
 					this.setBoofloAttackTargetId(0);
 				}
 			}
