@@ -34,6 +34,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -53,6 +54,7 @@ public class EntityPuffBug extends EndimatedEntity {
 		return !entity.isSpectator() && !entity.isInvisible();
 	};
 	private static final DataParameter<Optional<BlockPos>> HIVE_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
+	private static final DataParameter<Direction> ATTACHED_HIVE_SIDE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.DIRECTION);
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> PUFF_STATE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
@@ -73,6 +75,7 @@ public class EntityPuffBug extends EndimatedEntity {
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(HIVE_POS, Optional.empty());
+		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
 		this.getDataManager().register(PUFF_STATE, 1);
 		this.getDataManager().register(FROM_BOTTLE, false);
@@ -82,6 +85,7 @@ public class EntityPuffBug extends EndimatedEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		
+		this.setAttachedHiveSide(Direction.byIndex(compound.getByte("AttachedHiveSide")));
 		this.setFromBottle(compound.getBoolean("FromBottle"));
 		
 		if(compound.contains("PuffState")) {
@@ -97,6 +101,7 @@ public class EntityPuffBug extends EndimatedEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		
+		compound.putByte("AttachedHiveSide", (byte) this.getAttachedHiveSide().getIndex());
 		compound.putBoolean("FromBottle", this.isFromBottle());
 		
 		if(compound.contains("PuffState")) {
@@ -133,25 +138,43 @@ public class EntityPuffBug extends EndimatedEntity {
 		return null;
 	}
 	
+	public boolean canAttachToSide(Direction direction) {
+		if(direction == Direction.UP) {
+			return false;
+		}
+		return this.getHive() != null && TileEntityPuffBugHive.HiveOccupantData.isHiveSideEmpty(this.getHive(), direction);
+	}
+	
+	/*
+	 * Up is considered null
+	 */
+	public Direction getAttachedHiveSide() {
+		return this.dataManager.get(ATTACHED_HIVE_SIDE);
+	}
+	
+	public void setAttachedHiveSide(Direction side) {
+		this.dataManager.set(ATTACHED_HIVE_SIDE, side);
+	}
+	
 	public PuffState getPuffState() {
 		return PuffState.getPuffStateById(this.getPuffStateId());
 	}
 	
 	public int getPuffStateId() {
-		return this.getDataManager().get(PUFF_STATE);
+		return this.dataManager.get(PUFF_STATE);
 	}
 	
 	public void setPuffState(PuffState state) {
-		this.getDataManager().set(PUFF_STATE, state.getStateId());
+		this.dataManager.set(PUFF_STATE, state.getStateId());
 	}
 	
 	public boolean isFromBottle() {
-        return this.getDataManager().get(FROM_BOTTLE);
-    }
+		return this.dataManager.get(FROM_BOTTLE);
+	}
 
-    public void setFromBottle(boolean value) {
-        this.getDataManager().set(FROM_BOTTLE, value);
-    }
+	public void setFromBottle(boolean value) {
+		this.dataManager.set(FROM_BOTTLE, value);
+	}
 	
 	public int getColor() {
 		return this.dataManager.get(COLOR);
@@ -212,12 +235,12 @@ public class EntityPuffBug extends EndimatedEntity {
 		double xyDistance = 16.0D;
 		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-xyDistance, -6.0D, -xyDistance), pos.add(xyDistance, 6.0D, xyDistance))) {
 			if(blockpos.withinDistance(this.getPositionVec(), xyDistance)) {
-            	if(this.world.getBlockState(blockpos).getBlock() == EEBlocks.PUFFBUG_HIVE && this.world.getTileEntity(blockpos) instanceof TileEntityPuffBugHive) {
-            		TileEntityPuffBugHive hive = (TileEntityPuffBugHive) this.world.getTileEntity(blockpos);
-            		if(!hive.isHiveFull() && this.getHive() == null) {
-            			return hive;
-            		}
-            	}
+				if(this.world.getBlockState(blockpos).getBlock() == EEBlocks.PUFFBUG_HIVE.get() && this.world.getTileEntity(blockpos) instanceof TileEntityPuffBugHive) {
+					TileEntityPuffBugHive hive = (TileEntityPuffBugHive) this.world.getTileEntity(blockpos);
+					if(!hive.isHiveFull() && this.getHive() == null) {
+						return hive;
+					}
+				}
 			}
 		}
 		return null;
@@ -243,7 +266,7 @@ public class EntityPuffBug extends EndimatedEntity {
 
 			nbt.put("CustomPotionEffects", listnbt);
 		}
-    }
+	}
 	
 	@Override
 	protected void updatePotionMetadata() {
@@ -265,21 +288,21 @@ public class EntityPuffBug extends EndimatedEntity {
 	@Override
 	protected boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
-        if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive()) {
-        	this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
-        	itemstack.shrink(1);
-        	ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());
-        	this.setBottleData(bottle);
+		if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive()) {
+			this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
+			itemstack.shrink(1);
+			ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());
+			this.setBottleData(bottle);
         	
-        	if(itemstack.isEmpty()) {
-        		player.setHeldItem(hand, bottle);
-        	} else if(!player.inventory.addItemStackToInventory(bottle)) {
-        		player.dropItem(bottle, false);
-        	}
+			if(itemstack.isEmpty()) {
+				player.setHeldItem(hand, bottle);
+			} else if(!player.inventory.addItemStackToInventory(bottle)) {
+				player.dropItem(bottle, false);
+			}
 
-            this.remove();
-            return true;
-        } else {
+			this.remove();
+			return true;
+		} else {
 			return super.processInteract(player, hand);
 		}
 	}
@@ -303,10 +326,10 @@ public class EntityPuffBug extends EndimatedEntity {
 		return !this.isFromBottle() && !this.hasCustomName();
 	}
 
-    @Override
-    public boolean preventDespawn() {
+	@Override
+	public boolean preventDespawn() {
     	return this.isFromBottle();
-    }
+	}
 	
 	@Override
 	public boolean isOnLadder() {

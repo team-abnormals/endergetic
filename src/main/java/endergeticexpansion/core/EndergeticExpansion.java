@@ -4,6 +4,31 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import endergeticexpansion.client.particle.EEParticles;
+import endergeticexpansion.client.render.entity.RenderBolloomBalloon;
+import endergeticexpansion.client.render.entity.RenderBolloomFruit;
+import endergeticexpansion.client.render.entity.RenderBolloomKnot;
+import endergeticexpansion.client.render.entity.RenderBoofBlock;
+import endergeticexpansion.client.render.entity.RenderEndergeticBoat;
+import endergeticexpansion.client.render.entity.RenderPoiseCluster;
+import endergeticexpansion.client.render.entity.RenderPuffBug;
+import endergeticexpansion.client.render.entity.booflo.RenderBooflo;
+import endergeticexpansion.client.render.entity.booflo.RenderBoofloAdolescent;
+import endergeticexpansion.client.render.entity.booflo.RenderBoofloBaby;
+import endergeticexpansion.client.render.tile.RenderTileEntityBolloomBud;
+import endergeticexpansion.client.render.tile.RenderTileEntityBoofBlockDispensed;
+import endergeticexpansion.client.render.tile.RenderTileEntityCorrockCrown;
+import endergeticexpansion.client.render.tile.RenderTileEntityFrisbloomStem;
+import endergeticexpansion.client.render.tile.RenderTileEntityPuffBugHive;
+import endergeticexpansion.common.entities.EntityBoofBlock;
+import endergeticexpansion.common.entities.EntityEndergeticBoat;
+import endergeticexpansion.common.entities.EntityPoiseCluster;
+import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.network.entity.MessageCAnimation;
 import endergeticexpansion.common.network.entity.MessageCSetVelocity;
@@ -19,12 +44,16 @@ import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
 import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
 import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.network.particle.MessageSpawnParticle;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
+import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
+import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
-import endergeticexpansion.core.proxy.ClientProxy;
-import endergeticexpansion.core.proxy.CommonProxy;
+import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -34,6 +63,7 @@ import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import endergeticexpansion.core.registry.other.EEFireInfo;
+import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +73,10 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -55,7 +88,6 @@ public class EndergeticExpansion {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
 	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
-	public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 	
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
 		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -66,7 +98,6 @@ public class EndergeticExpansion {
 	public EndergeticExpansion() {
 		instance = this;
 		
-		proxy.overrideVanillaFields();
 		this.setupMessages();
 		
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -83,19 +114,43 @@ public class EndergeticExpansion {
 		
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
+			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
-		proxy.preInit();
 		EEDispenserBehaviorRegistry.registerAll();
 		EECapabilities.registerAll();
 		EEBiomes.applyBiomeInfo();
 		EEFireInfo.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
 		FeatureOverrideHandler.overrideFeatures();
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	void setupClient(final FMLClientSetupEvent event) {
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFrisbloomStem.class, new RenderTileEntityFrisbloomStem());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCorrockCrown.class, new RenderTileEntityCorrockCrown());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBolloomBud.class, new RenderTileEntityBolloomBud());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPuffBugHive.class, new RenderTileEntityPuffBugHive());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDispensedBoof.class, new RenderTileEntityBoofBlockDispensed());
+	
+		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomFruit.class, RenderBolloomFruit::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityPoiseCluster.class, RenderPoiseCluster::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBoofBlock.class, RenderBoofBlock::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomKnot.class, RenderBolloomKnot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomBalloon.class, RenderBolloomBalloon::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityEndergeticBoat.class, RenderEndergeticBoat::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityBooflo.class, RenderBooflo::new);
+		
+		KeybindHandler.registerKeys();
+		
+		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
 	}
 	
 	@OnlyIn(Dist.CLIENT)

@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEntity {
-	private final List<HiveOccupentData> hiveOccupents = Lists.newArrayList();
+	private final List<HiveOccupantData> hiveOccupants = Lists.newArrayList();
 
 	public TileEntityPuffBugHive() {
 		super(EETileEntities.PUFFBUG_HIVE.get());
@@ -34,14 +34,14 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	public void tick() {
 		World world = this.world;
 		
-		if(!world.isRemote && !this.hiveOccupents.isEmpty()) {
-			for(int i = 0; i < this.hiveOccupents.size(); i++) {
-				HiveOccupentData hiveOccupent = this.hiveOccupents.get(i);
+		if(!world.isRemote && !this.hiveOccupants.isEmpty()) {
+			for(int i = 0; i < this.hiveOccupants.size(); i++) {
+				HiveOccupantData hiveOccupant = this.hiveOccupants.get(i);
 				
-				if(hiveOccupent.occupent == null) {
-					this.hiveOccupents.remove(i);
+				if(hiveOccupant.Occupant == null) {
+					this.hiveOccupants.remove(i);
 				} else {
-					hiveOccupent.tick(world);
+					hiveOccupant.tick(world);
 				}
 			};
 		}
@@ -49,13 +49,13 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	
 	public void addBugToHive(EntityPuffBug puffBug) {
 		if(!this.isHiveFull()) {
-			this.hiveOccupents.add(new HiveOccupentData(puffBug.getUniqueID()));
+			this.hiveOccupants.add(new HiveOccupantData(puffBug.getUniqueID()));
 		}
 	}
 	
 	public void alertPuffBugs(@Nullable LivingEntity breaker) {
-		this.hiveOccupents.forEach((occupent) -> {
-			EntityPuffBug puffBug = occupent.getOccupent(this.world);
+		this.hiveOccupants.forEach((Occupant) -> {
+			EntityPuffBug puffBug = Occupant.getOccupant(this.world);
 			if(puffBug != null) {
 				if(breaker == null) {
 					LivingEntity target = this.world.func_225318_b(LivingEntity.class, new EntityPredicate().setDistance(16.0D).setCustomPredicate(EntityPuffBug.CAN_ANGER), puffBug, puffBug.posX, puffBug.posY + puffBug.getEyeHeight(), puffBug.posZ, new AxisAlignedBB(this.pos).grow(16.0D));
@@ -70,8 +70,12 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 		});
 	}
 	
+	public List<HiveOccupantData> getHiveOccupants() {
+		return this.hiveOccupants;
+	}
+	
 	public int getTotalBugsInHive() {
-		return this.hiveOccupents.size();
+		return this.hiveOccupants.size();
 	}
 	
 	public boolean isHiveFull() {
@@ -81,21 +85,21 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	@Override
 	@Nonnull
 	public CompoundNBT write(CompoundNBT compound) {
-		compound.put("HiveOccupents", HiveOccupentData.createCompoundList(this));
+		compound.put("HiveOccupants", HiveOccupantData.createCompoundList(this));
 		return super.write(compound);
 	}
 	
 	@Override
 	public void read(CompoundNBT compound) {
-		this.hiveOccupents.clear();
-		ListNBT occupents = compound.getList("HiveOccupents", 10);
+		this.hiveOccupants.clear();
+		ListNBT Occupants = compound.getList("HiveOccupants", 10);
 	
-		for(int i = 0; i < occupents.size(); i++) {
-			CompoundNBT occupent = occupents.getCompound(i);
-			String occupentUUID = occupent.contains("OccupentUUID", 8) ? occupent.getString("OccupentUUID") : "";
+		for(int i = 0; i < Occupants.size(); i++) {
+			CompoundNBT Occupant = Occupants.getCompound(i);
+			String OccupantUUID = Occupant.contains("OccupantUUID", 8) ? Occupant.getString("OccupantUUID") : "";
 			
-			UUID foundUUID = !occupentUUID.isEmpty() ? UUID.fromString(occupentUUID) : null;
-			this.hiveOccupents.add(new HiveOccupentData(foundUUID));
+			UUID foundUUID = !OccupantUUID.isEmpty() ? UUID.fromString(OccupantUUID) : null;
+			this.hiveOccupants.add(new HiveOccupantData(foundUUID));
 		}
 		
 		super.read(compound);
@@ -126,24 +130,24 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 		return 16384.0D;
 	}
 	
-	static class HiveOccupentData {
+	public static class HiveOccupantData {
 		@Nullable
-		private UUID occupent;
+		private UUID Occupant;
 		
-		public HiveOccupentData(@Nullable UUID occupent) {
-			this.occupent = occupent;
+		public HiveOccupantData(@Nullable UUID Occupant) {
+			this.Occupant = Occupant;
 		}
 		
 		public void tick(World world) {
-			if(this.getOccupent(world) == null) {
-				this.occupent = null;
+			if(this.getOccupant(world) == null) {
+				this.Occupant = null;
 			}
 		}
 		
 		@Nullable
-		public EntityPuffBug getOccupent(World world) {
+		public EntityPuffBug getOccupant(World world) {
 			if(!world.isRemote) {
-				Entity entity = ((ServerWorld) world).getEntityByUuid(this.occupent);
+				Entity entity = ((ServerWorld) world).getEntityByUuid(this.Occupant);
 				if(entity instanceof EntityPuffBug) {
 					return (EntityPuffBug) entity;
 				}
@@ -154,13 +158,13 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 		public static ListNBT createCompoundList(TileEntityPuffBugHive hive) {
 			ListNBT listnbt = new ListNBT();
 
-			for(HiveOccupentData occuptentData : hive.hiveOccupents) {
+			for(HiveOccupantData occuptentData : hive.hiveOccupants) {
 				CompoundNBT compound = new CompoundNBT();
 				
-				if(occuptentData.occupent == null) {
-					compound.putString("OccupentUUID", "");
+				if(occuptentData.Occupant == null) {
+					compound.putString("OccupantUUID", "");
 				} else {
-					compound.putString("OccupentUUID", occuptentData.occupent.toString());
+					compound.putString("OccupantUUID", occuptentData.Occupant.toString());
 				}
 				
 				listnbt.add(compound);
@@ -168,31 +172,15 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 
 			return listnbt;
 		}
-	}
-	
-	enum HiveSide {
-		NORTH(Direction.NORTH, 1),
-		EAST(Direction.EAST, 2),
-		SOUTH(Direction.SOUTH, 3),
-		WEST(Direction.WEST, 4),
-		DOWN(Direction.DOWN, 5);
 		
-		public Direction direction;
-		public int id;
-		
-		HiveSide(Direction direction, int id) {
-			this.direction = direction;
-			this.id = id;
-		}
-		
-		@Nullable
-		public static HiveSide getById(int id) {
-			for(HiveSide sides : values()) {
-				if(sides.id == id) {
-					return sides;
+		public static boolean isHiveSideEmpty(TileEntityPuffBugHive hive, Direction direction) {
+			for(int i = 0; i < hive.getTotalBugsInHive(); i++) {
+				EntityPuffBug bug = hive.getHiveOccupants().get(i).getOccupant(hive.world);
+				if(bug != null && bug.getAttachedHiveSide() == direction) {
+					return false;
 				}
 			}
-			return null;
+			return true;
 		}
 	}
 }
