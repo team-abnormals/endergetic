@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -60,7 +60,7 @@ public class BlockBolloomBud extends Block {
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == EEBlocks.POISE_GRASS_BLOCK.get() || block == Blocks.END_STONE.getBlock() || block == EEBlocks.EUMUS.get() || block == EEBlocks.POISMOSS_EUMUS.get();
+		return block == Blocks.END_STONE.getBlock() || block.isIn(EETags.Blocks.END_PLANTABLE) || block.isIn(EETags.Blocks.POISE_PLANTABLE);
 	}
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {

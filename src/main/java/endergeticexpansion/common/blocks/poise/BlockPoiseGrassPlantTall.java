@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.world.other.PoiseTree;
-import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -82,7 +82,7 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == EEBlocks.POISE_GRASS_BLOCK.get() || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS.get();
+		return block.isIn(EETags.Blocks.POISE_PLANTABLE) || block.isIn(EETags.Blocks.END_PLANTABLE);
 	}
 	   
 	@SuppressWarnings("deprecation")

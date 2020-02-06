@@ -17,9 +17,9 @@ import net.minecraft.world.lighting.LightEngine;
 import net.minecraftforge.common.ToolType;
 
 @SuppressWarnings("deprecation")
-public class BlockPoiseEumusGrass extends Block implements IGrowable {
+public class BlockPoismossEumus extends Block implements IGrowable {
 
-	public BlockPoiseEumusGrass(Properties properties) {
+	public BlockPoismossEumus(Properties properties) {
 		super(properties);
 	}
 	

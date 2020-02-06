@@ -8,6 +8,8 @@ import com.mojang.datafixers.Dynamic;
 import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.blocks.poise.BlockGlowingPoiseLog;
 import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.other.EETags;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
@@ -1162,7 +1164,8 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isValidGround(IWorld world, BlockPos pos) {
-		return world.getBlockState(pos) == EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState() || world.getBlockState(pos) == EEBlocks.POISMOSS_EUMUS.get().getDefaultState() || world.getBlockState(pos) == EEBlocks.EUMUS.get().getDefaultState() || world.getBlockState(pos) == Blocks.END_STONE.getDefaultState();
+		Block block = world.getBlockState(pos).getBlock();
+		return block == Blocks.END_STONE.getBlock() || block.isIn(EETags.Blocks.END_PLANTABLE) || block.isIn(EETags.Blocks.POISE_PLANTABLE);
 	}
 	
 }
