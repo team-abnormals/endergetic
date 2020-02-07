@@ -30,7 +30,7 @@ public class EEItems {
 	 */
 	public static final RegistryObject<Item> POISE_BOAT                 = RegistryUtils.createItem("poise_boat", () -> new ItemEndergeticBoat(Type.POISE, RegistryUtils.createSimpleItemProperty(1, ItemGroup.TRANSPORTATION)));
 	public static final RegistryObject<Item> BOLLOOM_FRUIT              = RegistryUtils.createItem("bolloom_fruit", () -> new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)));
-	public static final RegistryObject<Item> BOOFLO_HIDE                = RegistryUtils.createItem("booflo_hide", () -> new Item(RegistryUtils.createSimpleItemProperty(16, ItemGroup.MATERIALS)));
+	public static final RegistryObject<Item> BOOFLO_HIDE                = RegistryUtils.createItem("booflo_hide", () -> new Item(RegistryUtils.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
 	public static final RegistryObject<Item> PUFFBUG_BOTTLE             = RegistryUtils.createItem("puffbug_bottle", () -> new ItemPuffBugBottle(RegistryUtils.createSimpleItemProperty(1, ItemGroup.MISC)));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON            = RegistryUtils.createItem("bolloom_balloon", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), null));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED        = RegistryUtils.createItem("bolloom_balloon_red", () -> new ItemBolloomBalloon(RegistryUtils.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
