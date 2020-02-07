@@ -36,7 +36,7 @@ public class BiomePoiseForest extends EndergeticBiome {
 		
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_CLUSTER.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 4, 22)));
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.PUFFBUG_HIVE.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 9, 25)));
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.BOLLOOM_BUD.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_EXTRA_HEIGHTMAP, new AtSurfaceWithExtraConfig(2, 0.05F, 1)));
+		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.BOLLOOM_BUD.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.9D, 90, 90)));
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_TALLGRASS.get(), new DoublePlantConfig(EEBlocks.POISE_GRASS_TALL.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 0, 7)));
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS.get(), new GrassFeatureConfig(EEBlocks.POISE_GRASS.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
 		

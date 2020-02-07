@@ -25,6 +25,17 @@ public class MathUtils {
 	public static double makeNegativeRandomly(double value, Random rand) {
 		return rand.nextBoolean() ? -value : value;
 	}
+	
+	public static int getLowestValueInIntArray(int[] array) {
+		int currentLowest = Integer.MAX_VALUE;
+		
+		for(int i = 0; i < array.length; i++) {
+			if(array[i] <= currentLowest) {
+				currentLowest = array[i];
+			}
+		}
+		return currentLowest;
+	}
     
 	public interface ComputableEquation {
 		public double compute(double theta);

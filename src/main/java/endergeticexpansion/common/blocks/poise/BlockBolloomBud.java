@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -72,7 +73,7 @@ public class BlockBolloomBud extends Block {
 	
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		BlockPos blockpos = pos.down();
-		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !this.isAcrossOrAdjacentToBud(worldIn, pos);
+		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !isAcrossOrAdjacentToBud(worldIn, pos);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -91,7 +92,7 @@ public class BlockBolloomBud extends Block {
 			world.setBlockState(pos, getDefaultState().with(OPENED, true));
 			
 			if(world.getTileEntity(pos) instanceof TileEntityBolloomBud) {
-				((TileEntityBolloomBud) world.getTileEntity(pos)).startGrowing(false);
+				((TileEntityBolloomBud) world.getTileEntity(pos)).startGrowing(player.getRNG(), 7, false);
 			}
 			
 			if(world.isRemote) {
@@ -112,11 +113,18 @@ public class BlockBolloomBud extends Block {
 		return true;
 	}
 	
-	public boolean isAcrossOrAdjacentToBud(IWorldReader world, BlockPos pos) {
-		if(world.getBlockState(pos.north(2)).getBlock() == this || world.getBlockState(pos.east(2)).getBlock() == this
-			|| world.getBlockState(pos.south(2)).getBlock() == this || world.getBlockState(pos.west(2)).getBlock() == this
-			|| world.getBlockState(pos.north().east()).getBlock() == this || world.getBlockState(pos.north().west()).getBlock() == this
-			|| world.getBlockState(pos.south().east()).getBlock() == this || world.getBlockState(pos.south().west()).getBlock() == this) {
+	public static boolean isAcrossOrAdjacentToBud(IWorldReader world, BlockPos pos) {
+		Block block = EEBlocks.BOLLOOM_BUD.get();
+		for(Direction directions : Direction.values()) {
+			if(world.getBlockState(pos.offset(directions, 2)).getBlock() == block) {
+				return true;
+			}
+		}
+		
+		BlockPos north = pos.offset(Direction.NORTH);
+		BlockPos south = pos.offset(Direction.SOUTH);
+		
+		if(world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block) {
 			return true;
 		}
 		return false;

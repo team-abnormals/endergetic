@@ -63,6 +63,8 @@ public class ModelPuffBugInflatedMedium<E extends EntityPuffBug> extends Endimat
     	
     	this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     	this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    	
+    	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
     }
 
     /**

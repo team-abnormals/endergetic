@@ -21,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -32,8 +33,8 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		side.put(BudSide.SOUTH, new SideData());
 		side.put(BudSide.WEST, new SideData());
 	});
-	private boolean markedForSpawning;
-
+	int maxFruitHeight = 7;
+	
 	public TileEntityBolloomBud() {
 		super(EETileEntities.BOLLOOM_BUD.get());
 	}
@@ -52,19 +53,12 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	public void tick() {
 		Random rand = new Random();
 		
-		if(this.isMarkedForSpawning()) {
-			if(!this.world.isRemote) {
-				this.markedForSpawning = false;
-				this.startGrowing(true);
-			}
-		}
-		
 		this.sideData.forEach((side, sideData) -> {
 			if(sideData.growTimer > 0 && sideData.growing) sideData.growTimer--;
 			
 			if(sideData.growing && sideData.growTimer <= 0) {
 				if(!this.world.isRemote()) {
-					int height = rand.nextInt(7) + 1;
+					int height = rand.nextInt(this.maxFruitHeight) + 1;
 					EntityBolloomFruit fruit = new EntityBolloomFruit(this.world, this.pos, side.offsetPosition(this.pos).up(height - 1), height, side.direction);
 					this.world.addEntity(fruit);
 					sideData.fruitUUID = fruit.getUniqueID();
@@ -92,21 +86,26 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		}
 	}
 	
-	public void startGrowing(boolean instant) {
+	public void startGrowing(Random rand, int maxHeight, boolean instant) {
 		boolean didOneGrow = false;
+		this.maxFruitHeight = maxHeight;
+		
+		if(instant) {
+			this.PEDAL_PROGRESS.setTick(0);
+		}
 		
 		for(Entry<BudSide, SideData> data : this.sideData.entrySet()) {
-			if(this.world.rand.nextBoolean()) {
+			if(rand.nextBoolean()) {
 				data.getValue().growing = true;
-				data.getValue().growTimer = instant ? 0 : this.world.rand.nextInt(220) + 60;
+				data.getValue().growTimer = instant ? 0 : rand.nextInt(220) + 60;
 				didOneGrow = true;
 			}
 		}
 		
 		if(!didOneGrow) {
-			SideData sideData = this.sideData.get(BudSide.random(this.world.rand));
+			SideData sideData = this.sideData.get(BudSide.random(rand));
 			sideData.growing = true;
-			sideData.growTimer = instant ? 0 : this.world.rand.nextInt(220) + 60;
+			sideData.growTimer = instant ? 0 : rand.nextInt(220) + 60;
 		}
 	}
 	
@@ -116,13 +115,14 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			sideData.growing = false;
 			sideData.growTimer = 0;
 		});
+		this.maxFruitHeight = 7;
 	}
 	
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
 		
-		this.markedForSpawning = compound.getBoolean("MarkedForSpawning");
+		this.maxFruitHeight = compound.contains("MaxFruitHeight") ? MathHelper.clamp(compound.getInt("MaxFruitHeight"), 1, 7) : 7;
 		
 		this.sideData.forEach((side, sideData) -> {
 			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
@@ -141,7 +141,9 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		
-		compound.putBoolean("MarkedForSpawning", this.isMarkedForSpawning());
+		if(compound.contains("MaxFruitHeight")) {
+			compound.putInt("MaxFruitHeight", this.maxFruitHeight);
+		}
 		
 		this.sideData.forEach((side, sideData) -> {
 			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
@@ -174,14 +176,6 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 	public boolean onlyOpsCanSetNbt() {
 		return true;
 	}
-
-	public boolean isMarkedForSpawning() {
-		return this.markedForSpawning;
-	}
-	
-	public void markForSpawning() {
-		this.markedForSpawning = true;
-	}
 	
 	private boolean shouldShutBud() {
 		boolean hasAFruit = false;
@@ -193,16 +187,18 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		return !hasAFruit;
 	}
 	
-	enum BudSide {
-		NORTH(Direction.NORTH),
-		EAST(Direction.EAST),
-		SOUTH(Direction.SOUTH),
-		WEST(Direction.WEST);
+	public enum BudSide {
+		NORTH(Direction.NORTH, 0),
+		EAST(Direction.EAST, 1),
+		SOUTH(Direction.SOUTH, 2),
+		WEST(Direction.WEST, 3);
 		
 		private final Direction direction;
+		public final int id;
 		
-		BudSide(Direction direction) {
+		BudSide(Direction direction, int id) {
 			this.direction = direction;
+			this.id = id;
 		}
 		
 		public BlockPos offsetPosition(BlockPos pos) {

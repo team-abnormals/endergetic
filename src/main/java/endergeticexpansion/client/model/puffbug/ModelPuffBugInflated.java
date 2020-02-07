@@ -64,6 +64,8 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     	
     	this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     	this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    	
+    	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
     }
     
     /**

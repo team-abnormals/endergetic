@@ -2,15 +2,19 @@ package endergeticexpansion.common.world.features;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
+import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud.BudSide;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -22,7 +26,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
  * @author - SmellyModder(Luke Tonon)
  */
 public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
-	protected static final BlockState BOLLOOM_BUD = EEBlocks.BOLLOOM_BUD.get().getDefaultState();
+	protected static final Supplier<BlockState> BOLLOOM_BUD = () -> EEBlocks.BOLLOOM_BUD.get().getDefaultState();
 
 	public FeatureBolloomBud(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
@@ -30,39 +34,53 @@ public class FeatureBolloomBud extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(rand.nextFloat() >= 0.80) {
-			if(GenerationUtils.isProperBlock(world.getBlockState(pos.down()), new Block[] {EEBlocks.POISE_GRASS_BLOCK.get(), EEBlocks.POISMOSS_EUMUS.get()}, false) && world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get()) {
-				world.setBlockState(pos, BOLLOOM_BUD, 2);
+		if(rand.nextFloat() > 0.75) {
+			if(this.isValidPos(world, pos)) {
+				world.setBlockState(pos, BOLLOOM_BUD.get(), 2);
 				return true;
 			}
 		} else {
-			if(world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK.get() && this.isAreaReplacable(world, pos) && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get()) {
-				world.setBlockState(pos, BOLLOOM_BUD.with(BlockBolloomBud.OPENED, true), 2);
-				((TileEntityBolloomBud) world.getTileEntity(pos)).markForSpawning();
+			int maxHeight = this.calculateFruitMaxHeight(world, pos);
+			if(this.isValidPos(world, pos) && this.canFitCross(world, pos) && GenerationUtils.isAreaAir(world, pos.getX() - 1, pos.getY() + 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1) && maxHeight > 1) {
+				world.setBlockState(pos, BOLLOOM_BUD.get().with(BlockBolloomBud.OPENED, true), 2);
+				TileEntity te = world.getTileEntity(pos);
+				if(te instanceof TileEntityBolloomBud) {
+					((TileEntityBolloomBud) te).startGrowing(rand, maxHeight, true);
+				}
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean isAreaReplacable(IWorld world, BlockPos pos) {
-		for(int y = pos.getY() + 1; y < pos.getY() + 7; y++) {
-			for(int x = pos.getX() - 1; x < pos.getX() + 1; x++) {
-				for(int z = pos.getZ() - 1; z < pos.getZ() + 1; z++) {
-					if(!world.getBlockState(new BlockPos(x, y, z)).getMaterial().isReplaceable() || !canFitCross(world, pos)) {
-						return false;
-					}
+	private boolean isValidPos(IWorld world, BlockPos pos) {
+		Block block = world.getBlockState(pos.down()).getBlock();
+		return world.isAirBlock(pos) && world.isAirBlock(pos.up()) && block == EEBlocks.POISE_GRASS_BLOCK.get() || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS.get();
+	}
+	
+	private int calculateFruitMaxHeight(IWorld world, BlockPos pos) {
+		int[] maxHeights = new int[4];
+		
+		for(BudSide sides : BudSide.values()) {
+			for(int y = 1; y < 7; y++) {
+				if(world.isAirBlock(sides.offsetPosition(pos.up(y)))) {
+					maxHeights[sides.id] = y;
+					continue;
+				} else {
+					break;
 				}
 			}
 		}
-		return true;
+		
+		return MathUtils.getLowestValueInIntArray(maxHeights);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public boolean canFitCross(IWorld world, BlockPos pos) {
-		if(world.getBlockState(pos.north().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.north()).isAir() && world.getBlockState(pos.east().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.south().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.west().up()).getBlock() != EEBlocks.POISE_GRASS_TALL.get() && world.getBlockState(pos.west()).isAir()) {
-			return true;
+	private boolean canFitCross(IWorld world, BlockPos pos) {
+		for(BudSide sides : BudSide.values()) {
+			if(!world.isAirBlock(sides.offsetPosition(pos))) {
+				return false;
+			}
 		}
-		return false;
+		return !BlockBolloomBud.isAcrossOrAdjacentToBud(world, pos);
 	}
 }
