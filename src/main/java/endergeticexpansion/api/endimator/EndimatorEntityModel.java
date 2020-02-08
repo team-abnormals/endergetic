@@ -1,7 +1,8 @@
 package endergeticexpansion.api.endimator;
 
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -10,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @param <E> - The Entity for the Model; Vanilla needs this by default so it will be used here as well
  */
 @OnlyIn(Dist.CLIENT)
-public class EndimatorEntityModel<E extends EndimatedEntity> extends EntityModel<E> {
+public class EndimatorEntityModel<E extends Entity & IEndimatedEntity> extends EntityModel<E> {
 	private EndimatorRendererModel scaleController;
 	protected Endimator endimator = new Endimator();
 	

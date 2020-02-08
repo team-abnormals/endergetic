@@ -987,7 +987,7 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
-	protected void onEndimationStart(Endimation endimation) {
+	public void onEndimationStart(Endimation endimation) {
 		if(endimation == SWIM) {
 			float pitch = this.isBeingRidden() ? 1.0F : this.rotationPitch;
 			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));

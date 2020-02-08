@@ -8,13 +8,15 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -23,6 +25,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -47,10 +50,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EntityPuffBug extends EndimatedEntity {
+public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Predicate<LivingEntity> CAN_ANGER = (entity) -> {
 		if(entity instanceof PlayerEntity) {
-			return !entity.isSpectator() && !((PlayerEntity)entity).isCreative();
+			return !entity.isSpectator() && !((PlayerEntity) entity).isCreative();
 		}
 		return !entity.isSpectator() && !entity.isInvisible();
 	};
@@ -59,6 +62,8 @@ public class EntityPuffBug extends EndimatedEntity {
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> PUFF_STATE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
+	private Endimation endimation = BLANK_ANIMATION;
+	private int animationTick;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
@@ -80,6 +85,29 @@ public class EntityPuffBug extends EndimatedEntity {
 		this.getDataManager().register(COLOR, -1);
 		this.getDataManager().register(PUFF_STATE, 2);
 		this.getDataManager().register(FROM_BOTTLE, false);
+	}
+	
+	@Override
+	public void tick() {
+		super.tick();
+		this.endimateTick();
+		
+		if(!this.world.isRemote) {
+			if(this.getHivePos() == null) {
+				if(this.getRNG().nextFloat() <= 0.05F) {
+					TileEntityPuffBugHive hive = this.findNewNearbyHive();
+					if(hive != null) {
+						this.addToHive(hive);
+					}
+				}
+			} else {
+				if(this.getHive() == null) {
+					this.setHivePos(null);
+				}
+			}
+		}
+		
+		System.out.println(this.growingAge);
 	}
 	
 	@Override
@@ -191,26 +219,6 @@ public class EntityPuffBug extends EndimatedEntity {
 	}
 	
 	@Override
-	public void tick() {
-		super.tick();
-		
-		if(!this.isWorldRemote()) {
-			if(this.getHivePos() == null) {
-				if(this.getRNG().nextFloat() <= 0.05F) {
-					TileEntityPuffBugHive hive = this.findNewNearbyHive();
-					if(hive != null) {
-						this.addToHive(hive);
-					}
-				}
-			} else {
-				if(this.getHive() == null) {
-					this.setHivePos(null);
-				}
-			}
-		}
-	}
-	
-	@Override
 	public void travel(Vec3d moveDirection) {
 		if(this.isServerWorld() && this.getPuffState() != PuffState.DEFLATED) {
 			this.moveRelative(0.0F, moveDirection);
@@ -272,6 +280,8 @@ public class EntityPuffBug extends EndimatedEntity {
 
 			nbt.put("CustomPotionEffects", listnbt);
 		}
+		
+		nbt.putBoolean("IsChild", this.isChild());
 	}
 	
 	@Override
@@ -292,7 +302,12 @@ public class EntityPuffBug extends EndimatedEntity {
 	}
 	
 	@Override
-	protected boolean processInteract(PlayerEntity player, Hand hand) {
+	public boolean isBreedingItem(ItemStack stack) {
+		return stack.getItem() == EEBlocks.POISE_GRASS_TALL.get().asItem();
+	}
+	
+	@Override
+	public boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive() && !this.isAggressive()) {
 			this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
@@ -315,8 +330,14 @@ public class EntityPuffBug extends EndimatedEntity {
 	
 	@Override
 	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
-		if(dataTag != null && dataTag.contains("ColorTag", 3)) {
-			this.setColor(dataTag.getInt("ColorTag"));
+		if(dataTag != null) {
+			int age = dataTag.getBoolean("IsChild") ? -24000 : 0;
+			
+			this.setGrowingAge(age);
+			
+			if(dataTag.contains("ColorTag", 3)) {
+				this.setColor(dataTag.getInt("ColorTag"));
+			}
 			
 			if(dataTag.contains("CustomPotionEffects")) {
 				for(EffectInstance effectinstance : PotionUtils.getFullEffectsFromTag(dataTag)) {
@@ -382,5 +403,30 @@ public class EntityPuffBug extends EndimatedEntity {
 					return INFLATED_MODEL;
 			}
 		}
+	}
+
+	@Override
+	public AgeableEntity createChild(AgeableEntity ageable) {
+		return EEEntities.PUFF_BUG.get().create(this.world);
+	}
+
+	@Override
+	public Endimation getPlayingEndimation() {
+		return this.endimation;
+	}
+
+	@Override
+	public void setPlayingEndimation(Endimation endimationToPlay) {
+		this.endimation = endimationToPlay;
+	}
+
+	@Override
+	public int getAnimationTick() {
+		return this.animationTick;
+	}
+
+	@Override
+	public void setAnimationTick(int animationTick) {
+		this.animationTick = animationTick;
 	}
 }

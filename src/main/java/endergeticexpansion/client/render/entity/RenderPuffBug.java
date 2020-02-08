@@ -1,5 +1,7 @@
 package endergeticexpansion.client.render.entity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
 import endergeticexpansion.client.render.entity.layer.RenderLayerPuffBugGlow;
 import endergeticexpansion.common.entities.EntityPuffBug;
@@ -24,6 +26,10 @@ public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<Ent
 	
 	@Override
 	public void doRender(EntityPuffBug entity, double x, double y, double z, float entityYaw, float partialTicks) {
+		if(entity.isChild()) {
+			this.shadowSize *= 0.5F;
+		}
+		
 		this.entityModel = PuffState.getModel(entity.getPuffState());
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
@@ -36,5 +42,13 @@ public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<Ent
 	@Override
 	protected boolean canRenderName(EntityPuffBug entity) {
 		return entity.hasCustomName() ? super.canRenderName(entity) : false;
+	}
+	
+	@Override
+	protected void preRenderCallback(EntityPuffBug puffbug, float partialTickTime) {
+		GlStateManager.scalef(1.0F, 1.0F, 1.0F);
+		if(puffbug.isChild()) {
+			GlStateManager.scalef(0.5F, 0.5F, 0.5F);
+		}
 	}
 }

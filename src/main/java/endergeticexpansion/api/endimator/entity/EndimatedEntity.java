@@ -26,16 +26,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	@Override
 	public void tick() {
 		super.tick();
-		if(!this.isNoEndimationPlaying()) {
-			if(this.getAnimationTick() == 0) {
-				this.onEndimationStart(this.endimation);
-			}
-			this.setAnimationTick(this.getAnimationTick() + 1);
-			if(this.getAnimationTick() >= this.getPlayingEndimation().getAnimationTickDuration()) {
-				this.onEndimationEnd(this.endimation);
-				this.resetEndimation();
-			}
-		}
+		this.endimateTick();
 	}
 	
 	@Override
@@ -74,8 +65,9 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	}
 	
 	/**
-	 * @return  - The progress; measured in ticks, of the current playing animation
+	 * @return - The progress; measured in ticks, of the current playing animation
 	 */
+	@Override
 	public int getAnimationTick() {
 		return this.animationTick;
 	}
@@ -84,6 +76,7 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	 * Sets the progress of the current playing animation
 	 * @param animationTick - Progress; measured in ticks
 	 */
+	@Override
 	public void setAnimationTick(int animationTick) {
 		this.animationTick = animationTick;
 	}
@@ -94,10 +87,6 @@ public abstract class EndimatedEntity extends CreatureEntity implements IEndimat
 	public void resetEndimation() {
 		this.setPlayingEndimation(BLANK_ANIMATION);
 	}
-	
-	protected void onEndimationStart(Endimation endimation) {}
-	
-	protected void onEndimationEnd(Endimation endimation) {}
 	
 	@Nullable
 	public Endimation getHurtAnimation() {
