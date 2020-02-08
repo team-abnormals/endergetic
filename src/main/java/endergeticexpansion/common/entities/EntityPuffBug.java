@@ -6,8 +6,9 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
@@ -77,7 +78,7 @@ public class EntityPuffBug extends EndimatedEntity {
 		this.getDataManager().register(HIVE_POS, Optional.empty());
 		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
-		this.getDataManager().register(PUFF_STATE, 1);
+		this.getDataManager().register(PUFF_STATE, 2);
 		this.getDataManager().register(FROM_BOTTLE, false);
 	}
 	
@@ -111,6 +112,11 @@ public class EntityPuffBug extends EndimatedEntity {
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
 		}
+	}
+	
+	@Override
+	public Endimation[] getEndimations() {
+		return new Endimation[] {BLANK_ANIMATION};
 	}
 	
 	@Nullable
@@ -288,7 +294,7 @@ public class EntityPuffBug extends EndimatedEntity {
 	@Override
 	protected boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
-		if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive()) {
+		if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive() && !this.isAggressive()) {
 			this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
 			itemstack.shrink(1);
 			ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());

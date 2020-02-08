@@ -27,7 +27,7 @@ public class RenderLayerBoofloFruit extends LayerRenderer<EntityBooflo, EntityMo
 	
 	@Override
 	public void render(EntityBooflo booflo, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float f, float f1, float p_212842_8_) {
-		if(booflo.hasCaughtFruit() && booflo.isAnimationPlaying(EntityBooflo.EAT) && booflo.getAnimationTick() > 20) {
+		if(booflo.hasCaughtFruit() && booflo.isEndimationPlaying(EntityBooflo.EAT) && booflo.getAnimationTick() > 20) {
 			GlStateManager.pushMatrix();
 			
 			EntityModel<EntityBooflo> boofloModel = this.getBoofloModel(booflo);

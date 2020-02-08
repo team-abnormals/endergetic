@@ -20,7 +20,7 @@ public class BoofloSlamGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.booflo.isAnimationPlaying(EntityBooflo.SWIM) && !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class BoofloSlamGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.INFLATE);
 			return false;
 		}
-		return !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.booflo.isAnimationPlaying(EntityBooflo.CHARGE);
+		return !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.booflo.isEndimationPlaying(EntityBooflo.CHARGE);
 	}
 	
 	@Override

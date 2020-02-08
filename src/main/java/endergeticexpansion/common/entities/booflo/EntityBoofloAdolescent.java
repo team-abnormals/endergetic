@@ -3,10 +3,10 @@ package endergeticexpansion.common.entities.booflo;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.util.NetworkUtil;
-import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;
@@ -152,7 +152,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	public void tick() {
 		super.tick();
 		
-		if(this.isAnimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION) && this.getAnimationTick() == 9) {
+		if(this.isEndimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION) && this.getAnimationTick() == 9) {
 			if(this.world instanceof ServerWorld) {
 				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 			}
@@ -208,7 +208,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		
 		if(!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER)))) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
-			this.setPlayingAnimation(BOOF_ANIMATION);
+			this.setPlayingEndimation(BOOF_ANIMATION);
 			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 			this.setFallSpeed(0.0F);
 			//Fixes super boosting underwater
@@ -224,7 +224,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			
 			if(this.posY <= 50) {
 				this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
-				this.setPlayingAnimation(BOOF_ANIMATION);
+				this.setPlayingEndimation(BOOF_ANIMATION);
 			}
 		}
 		
@@ -529,7 +529,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	@Override
-	public Endimation[] getAnimations() {
+	public Endimation[] getEndimations() {
 		return new Endimation[] {
 			BOOF_ANIMATION,
 			EATING_ANIMATION

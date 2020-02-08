@@ -50,7 +50,7 @@ public class BoofloBreedGoal extends Goal {
 	}
 	
 	public void tick() {
-		if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && !this.isBeingRidenOrRiding()) {
+		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.isBeingRidenOrRiding()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
 		}
 		

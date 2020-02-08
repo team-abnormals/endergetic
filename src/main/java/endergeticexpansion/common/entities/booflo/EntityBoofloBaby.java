@@ -2,8 +2,8 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.common.entities.booflo.ai.BabyFollowParentGoal;
 import endergeticexpansion.core.registry.EEEntities;
@@ -250,11 +250,11 @@ public class EntityBoofloBaby extends EndimatedEntity {
 			this.setMotherNoClipTicks(this.getMotherNoClipTicks() - 1);
 		}
 		
-		if(this.isBeingBorn() && this.isAnimationPlaying(BLANK_ANIMATION)) {
-			this.setPlayingAnimation(BIRTH);
+		if(this.isBeingBorn() && this.isNoEndimationPlaying()) {
+			this.setPlayingEndimation(BIRTH);
 		}
 		
-		if(this.isAnimationPlaying(BIRTH)) {
+		if(this.isEndimationPlaying(BIRTH)) {
 			if(this.getAnimationTick() == 59) {
 				double[] oldPosition = { this.posX, this.posY, this.posZ };
 				this.stopRiding();
@@ -351,7 +351,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	}
 	
 	@Override
-	public Endimation[] getAnimations() {
+	public Endimation[] getEndimations() {
 		return new Endimation[] {
 			BIRTH
 		};

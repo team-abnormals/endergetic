@@ -88,7 +88,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     	super.animateModel(booflo, f, f1, f2, f3, f4, f5);
     	this.endimator.updateAnimations(booflo);
     	
-    	if(booflo.isAnimationPlaying(EntityBooflo.CROAK)) {
+    	if(booflo.isEndimationPlaying(EntityBooflo.CROAK)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.CROAK);
     		
     		this.endimator.startKeyframe(5);
@@ -100,7 +100,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		this.endimator.startKeyframe(5);
     		this.endimator.rotate(this.Jaw, -0.0F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.HOP)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.HOP)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.HOP);
     		
     		this.endimator.startKeyframe(10);
@@ -138,7 +138,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		 */
     		this.endimator.startKeyframe(10);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.HURT)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.HURT)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.HURT);
     		
     		this.endimator.startKeyframe(5);
@@ -163,7 +163,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		 */
     		this.endimator.startKeyframe(5);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.BIRTH)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.BIRTH)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.BIRTH);
     		
     		this.endimator.startKeyframe(10);
@@ -175,7 +175,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		this.endimator.startKeyframe(10);
     		this.endimator.rotate(this.Head, 0.00F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.EAT)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.EAT)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.EAT);
     		
     		/*
@@ -318,7 +318,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		 * End
     		 */
     		this.endimator.resetKeyframe(20);
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.GROWL)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.GROWL)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.GROWL);
     		
     		this.endimator.startKeyframe(10);

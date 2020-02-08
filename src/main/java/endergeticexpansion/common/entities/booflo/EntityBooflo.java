@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.ControlledEndimation;
-import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import endergeticexpansion.api.entity.util.AdvancedAxisAllignedBB;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
@@ -221,7 +221,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.isWorldRemote() && this.isAnimationPlaying(EntityBooflo.CHARGE) && this.getAnimationTick() >= 15) {
+		if(!this.isWorldRemote() && this.isEndimationPlaying(EntityBooflo.CHARGE) && this.getAnimationTick() >= 15) {
 			this.addVelocity(0.0F, -0.225F, 0.0F);
 		}
 		
@@ -256,17 +256,17 @@ public class EntityBooflo extends EndimatedEntity {
 				this.setBoofed(true);
 			}
 			
-			if(this.isBoofed() && this.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.isMovingInAir()) {
+			if(this.isBoofed() && this.isNoEndimationPlaying() && this.isMovingInAir()) {
 				if(RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK) {
 					NetworkUtil.setPlayingAnimationMessage(this, EntityBooflo.SWIM);
 				}
 			}
 			
-			if(this.isAnimationPlaying(SWIM) && this.getAnimationTick() <= 15) {
+			if(this.isEndimationPlaying(SWIM) && this.getAnimationTick() <= 15) {
 				this.setMovingInAir(true);
 			}
 			
-			if(this.isAnimationPlaying(EAT)) {
+			if(this.isEndimationPlaying(EAT)) {
 				if((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if(this.getAnimationTick() % 20 == 0) {
 						if(this.world instanceof ServerWorld && this.hasCaughtFruit()) {
@@ -281,7 +281,7 @@ public class EntityBooflo extends EndimatedEntity {
 				}
 			}
 			
-			if(this.isAnimationPlaying(HOP)) {
+			if(this.isEndimationPlaying(HOP)) {
 				if(this.getAnimationTick() == 10) {
 					this.playSound(this.getHopSound(false), 0.95F, this.getSoundPitch());
 					this.shouldPlayLandSound = true;
@@ -294,11 +294,11 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(this.isAnimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
+		if(this.isEndimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
 			this.boof(1.0F, 1.0F);
 		}
 		
-		if(!this.isWorldRemote() && this.isAnimationPlaying(GROWL)) {
+		if(!this.isWorldRemote() && this.isEndimationPlaying(GROWL)) {
 			if(this.getAnimationTick() == 10) {
 				this.playSound(this.getGrowlSound(), 0.75F, this.getSoundPitch());
 			}
@@ -312,7 +312,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(this.isAnimationPlaying(SLAM) && this.getAnimationTick() == 3) {
+		if(this.isEndimationPlaying(SLAM) && this.getAnimationTick() == 3) {
 			this.boof(1.2F, 2.2F);
 			this.playSound(this.getSlamSound(), 0.75F, 1.0F);
 		}
@@ -328,17 +328,17 @@ public class EntityBooflo extends EndimatedEntity {
 		if(this.isOnGround() && this.isBoofed()) {
 			if(this.hasAggressiveAttackTarget()) {
 				if(!this.isWorldRemote()) {
-					if(this.isAnimationPlaying(BLANK_ANIMATION)) {
+					if(this.isNoEndimationPlaying()) {
 						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
-					} else if(this.isAnimationPlaying(CHARGE)) {
+					} else if(this.isEndimationPlaying(CHARGE)) {
 						NetworkUtil.setPlayingAnimationMessage(this, SLAM);
 					}
 				}
 			} else {
-				if(this.isBeingRidden() && this.isAnimationPlaying(CHARGE)) {
+				if(this.isBeingRidden() && this.isEndimationPlaying(CHARGE)) {
 					NetworkUtil.setPlayingAnimationMessage(this, SLAM);
 				} else {
-					if(this.deflateDelay <= 0 && (!this.isAnimationPlaying(SLAM) && !this.isInWater())) {
+					if(this.deflateDelay <= 0 && (!this.isEndimationPlaying(SLAM) && !this.isInWater())) {
 						this.setBoofed(false);
 					}
 				}
@@ -360,7 +360,7 @@ public class EntityBooflo extends EndimatedEntity {
 				this.OPEN_JAW.tick();
 			}
 			
-			if(this.isAnimationPlaying(EAT)) {
+			if(this.isEndimationPlaying(EAT)) {
 				if((this.getAnimationTick() >= 20) && this.getAnimationTick() < 140) {
 					if(this.getAnimationTick() % 10 == 0) {
 						if(this.getAnimationTick() == 20) {
@@ -397,12 +397,12 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isAnimationPlaying(BLANK_ANIMATION) && this.getPassengers().isEmpty()) {
+		if(!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.rand.nextInt(1000) < this.livingSoundTime++ && this.isNoEndimationPlaying() && this.getPassengers().isEmpty()) {
 			this.livingSoundTime = -this.getTalkInterval();
 			NetworkUtil.setPlayingAnimationMessage(this, CROAK);
 		}
 		
-		if(this.isAnimationPlaying(CROAK) && this.getAnimationTick() == 5 && !this.isWorldRemote()) {
+		if(this.isEndimationPlaying(CROAK) && this.getAnimationTick() == 5 && !this.isWorldRemote()) {
 			this.playSound(this.getAmbientSound(), this.getSoundVolume(), this.getSoundPitch());
 		}
 		
@@ -551,9 +551,9 @@ public class EntityBooflo extends EndimatedEntity {
 			float playerMoveFoward = rider.moveForward;
 			
 			if(!this.isWorldRemote() && playerMoveFoward > 0.0F) {
-				if(this.isOnGround() && this.isAnimationPlaying(BLANK_ANIMATION) && !this.isBoofed()) {
+				if(this.isOnGround() && this.isNoEndimationPlaying() && !this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, HOP);
-				} else if(!this.isOnGround() && this.isAnimationPlaying(BLANK_ANIMATION) && this.isBoofed()) {
+				} else if(!this.isOnGround() && this.isNoEndimationPlaying() && this.isBoofed()) {
 					NetworkUtil.setPlayingAnimationMessage(this, SWIM);
 				}
 			}
@@ -575,7 +575,7 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setMotion(this.getMotion().subtract(0, gravity, 0));
 				}
 			} else {
-				if(this.onGround && this.isAnimationPlaying(HOP) && this.getAnimationTick() == 10) {
+				if(this.onGround && this.isEndimationPlaying(HOP) && this.getAnimationTick() == 10) {
 					Vec3d motion = this.getMotion();
 					EffectInstance jumpBoost = this.getActivePotionEffect(Effects.JUMP_BOOST);
 					float boostPower = jumpBoost == null ? 1.0F : (float) (jumpBoost.getAmplifier() + 1);
@@ -885,7 +885,7 @@ public class EntityBooflo extends EndimatedEntity {
 	public void boof(float internalStrength, float offensiveStrength) {
 		float verticalStrength = 1.0F;
 		
-		if(this.getBoostPower() > 0.0F && !this.isAnimationPlaying(SLAM)) {
+		if(this.getBoostPower() > 0.0F && !this.isEndimationPlaying(SLAM)) {
 			internalStrength *= this.getBoostPower();
 			offensiveStrength *= MathHelper.clamp((this.getBoostPower() / 2), 0.5F, 1.85F);
 			verticalStrength *= MathHelper.clamp(this.getBoostPower(), 0.35F, 1.5F);
@@ -966,7 +966,7 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
-	public Endimation[] getAnimations() {
+	public Endimation[] getEndimations() {
 		return new Endimation[] {
 			CROAK,
 			HOP,
@@ -1300,7 +1300,7 @@ public class EntityBooflo extends EndimatedEntity {
 				this.action = MovementController.Action.WAIT;
 				if(this.mob.onGround) {
 					this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
-					if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
+					if(this.booflo.hopDelay == 0 && this.booflo.isEndimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
 						this.booflo.getJumpController().setJumping();
 						
 						this.booflo.hopDelay = this.booflo.getDefaultGroundHopDelay();
@@ -1399,7 +1399,7 @@ public class EntityBooflo extends EndimatedEntity {
 				this.mob.renderYawOffset += 4.0F;
 			}
 			
-			if(((EntityBooflo) this.mob).isAnimationPlaying(CHARGE)) {
+			if(((EntityBooflo) this.mob).isEndimationPlaying(CHARGE)) {
 				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 10.0F);
 			}
 		}

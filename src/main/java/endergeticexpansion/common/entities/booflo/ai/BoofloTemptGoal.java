@@ -44,7 +44,7 @@ public class BoofloTemptGoal extends Goal {
 	
 	@Override
 	public void tick() {
-		if(this.booflo.hopDelay == 0 && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION)) {
+		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
 		}
 		

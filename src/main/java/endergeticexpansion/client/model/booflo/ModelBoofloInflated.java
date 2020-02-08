@@ -91,7 +91,7 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
     	
     	this.endimator.updateAnimations(booflo);
     	
-    	if(booflo.isAnimationPlaying(EntityBooflo.INFLATE)) {
+    	if(booflo.isEndimationPlaying(EntityBooflo.INFLATE)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.INFLATE);
     		
     		this.endimator.startKeyframe(5);
@@ -110,7 +110,7 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
     		this.endimator.startKeyframe(5);
     		this.endimator.move(this.getScaleController(), 0.0F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.SWIM)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.SWIM)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.SWIM);
     		
     		this.endimator.startKeyframe(10);
@@ -134,7 +134,7 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
     		 */
     		this.endimator.startKeyframe(10);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.CHARGE)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.CHARGE)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.CHARGE);
     		
     		this.endimator.startKeyframe(15);
@@ -149,7 +149,7 @@ public class ModelBoofloInflated<E extends EntityBooflo> extends EndimatorEntity
     		this.endimator.endKeyframe();
     		
     		this.endimator.setStaticKeyframe(60);
-    	} else if(booflo.isAnimationPlaying(EntityBooflo.SLAM)) {
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.SLAM)) {
     		this.endimator.setAnimationToPlay(EntityBooflo.SLAM);
     		
     		this.endimator.startKeyframe(4);

@@ -1,6 +1,5 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
-import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
 
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
@@ -55,7 +54,7 @@ public class AdolescentEatGoal extends Goal {
 		if(this.adolescent.isEating()) {
 			this.adolescent.setEating(false);
 			this.adolescent.dropFruit();
-			this.adolescent.setPlayingAnimation(EntityBoofloAdolescent.BLANK_ANIMATION);
+			this.adolescent.resetEndimation();
 		}
 		this.eatingTicks = 0;
 	}
@@ -76,12 +75,12 @@ public class AdolescentEatGoal extends Goal {
 			if(this.eatingTicks % 10 == 0) {
 				NetworkUtil.setPlayingAnimationMessage(this.adolescent, EntityBoofloAdolescent.EATING_ANIMATION);
 				if(this.eatingTicks < 60) {
-					this.adolescent.setPlayingAnimation(EntityBoofloAdolescent.EATING_ANIMATION);
+					this.adolescent.setPlayingEndimation(EntityBoofloAdolescent.EATING_ANIMATION);
 				}
 			}
 			
 			if(this.eatingTicks == 60) {
-				this.adolescent.setPlayingAnimation(EndimatedEntity.BLANK_ANIMATION);
+				this.adolescent.resetEndimation();
 				this.adolescent.setHungry(false);
 				this.adolescent.setHasFruit(false);
 				this.adolescent.setEating(false);

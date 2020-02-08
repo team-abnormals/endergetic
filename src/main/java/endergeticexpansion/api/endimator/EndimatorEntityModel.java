@@ -1,5 +1,6 @@
 package endergeticexpansion.api.endimator;
 
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

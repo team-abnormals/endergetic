@@ -25,7 +25,7 @@ public class BoofloBoofGoal extends Goal {
 		boolean flagChance = !this.booflo.hasAggressiveAttackTarget() ? this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.getAnimationTick() == 20 : this.booflo.getAnimationTick() >= 20;
 		
 		if(this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
-			return this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION);
+			return this.booflo.isNoEndimationPlaying();
 		}
 		
 		if(!onGround) {
@@ -37,12 +37,12 @@ public class BoofloBoofGoal extends Goal {
 				return true;
 			}
 		}
-		return this.booflo.getPassengers().isEmpty() && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isAnimationPlaying(EntityBooflo.HOP);
+		return this.booflo.getPassengers().isEmpty() && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(EntityBooflo.HOP);
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.isAnimationPlaying(EntityBooflo.INFLATE);
+		return this.booflo.isEndimationPlaying(EntityBooflo.INFLATE);
 	}
 	
 	@Override

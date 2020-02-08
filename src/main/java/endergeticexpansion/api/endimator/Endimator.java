@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,7 +38,7 @@ public class Endimator {
 	 */
 	public boolean setAnimationToPlay(Endimation animationToPlay) {
 		this.tempTick = this.prevTempTick = 0;
-		this.correctAnimation = this.endimatedEntity.getPlayingAnimation() == animationToPlay;
+		this.correctAnimation = this.endimatedEntity.isEndimationPlaying(animationToPlay);
 		this.prevBoxValues.clear();
 		this.prevBoxValues.putAll(this.boxValues);
 		this.boxValues.clear();

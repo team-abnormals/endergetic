@@ -21,12 +21,12 @@ public class BoofloGiveBirthGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		return !this.mother.hasCaughtFruit() && !this.mother.isBoofed() && this.mother.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.mother.isPregnant() && (this.mother.onGround || this.mother.isPassenger());
+		return !this.mother.hasCaughtFruit() && !this.mother.isBoofed() && this.mother.isNoEndimationPlaying() && this.mother.isPregnant() && (this.mother.onGround || this.mother.isPassenger());
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.mother.isPregnant() && this.mother.isAnimationPlaying(EntityBooflo.BIRTH);
+		return this.mother.isPregnant() && this.mother.isEndimationPlaying(EntityBooflo.BIRTH);
 	}
 	
 	@Override

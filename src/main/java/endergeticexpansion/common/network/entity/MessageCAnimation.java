@@ -3,7 +3,8 @@ package endergeticexpansion.common.network.entity;
 import java.util.function.Supplier;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.EndimatedEntity;
+import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -34,16 +35,15 @@ public class MessageCAnimation {
 	
 	public static void handle(MessageCAnimation message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		EndimatedEntity endimatedEntity = (EndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
+		IEndimatedEntity endimatedEntity = (EndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if(endimatedEntity != null) {
 					if(message.animationIndex == -1) {
-						endimatedEntity.resetPlayingAnimationToDefault();
+						endimatedEntity.setPlayingEndimation(IEndimatedEntity.BLANK_ANIMATION);
 					} else {
-						endimatedEntity.setPlayingAnimation(endimatedEntity.getAnimations()[message.animationIndex]);
+						endimatedEntity.setPlayingEndimation(endimatedEntity.getEndimations()[message.animationIndex]);
 					}
-					endimatedEntity.setAnimationTick(0);
 				}
 			});
 			context.setPacketHandled(true);

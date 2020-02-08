@@ -141,7 +141,7 @@ public class KeybindHandler {
 			if(KeybindHandler.checkRidden(player)) {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed()) {
-					if(booflo.getRideControlDelay() <= 0 && booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION)) {
+					if(booflo.getRideControlDelay() <= 0 && booflo.isNoEndimationPlaying()) {
 						NetworkUtil.slamBooflo(booflo.getEntityId());
 					}
 				}

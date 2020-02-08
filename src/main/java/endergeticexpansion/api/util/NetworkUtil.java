@@ -3,22 +3,13 @@ package endergeticexpansion.api.util;
 import org.apache.commons.lang3.ArrayUtils;
 
 import endergeticexpansion.api.endimator.Endimation;
+import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.EndimatedEntity;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.network.entity.MessageCAnimation;
-import endergeticexpansion.common.network.entity.MessageCSetVelocity;
-import endergeticexpansion.common.network.entity.MessageSBoofEntity;
-import endergeticexpansion.common.network.entity.MessageSSetCooldown;
-import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
-import endergeticexpansion.common.network.entity.MessageSSetVelocity;
-import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
-import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
-import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
-import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
-import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
-import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
-import endergeticexpansion.common.network.particle.MessageSpawnParticle;
+import endergeticexpansion.common.network.entity.*;
+import endergeticexpansion.common.network.entity.booflo.*;
+import endergeticexpansion.common.network.nbt.*;
+import endergeticexpansion.common.network.particle.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -170,12 +161,12 @@ public class NetworkUtil {
 	/**
 	 * Sends an animation message to the clients to update an entity's animations
 	 * @param entity - The Entity to send the packet for
-	 * @param animationToPlay - The animation to play
+	 * @param endimationToPlay - The endimation to play
 	 */
-	public static void setPlayingAnimationMessage(EndimatedEntity entity, Endimation animationToPlay) {
-		if(!entity.isWorldRemote()) {
-			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCAnimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animationToPlay)));
-			entity.setPlayingAnimation(animationToPlay);
+	public static <E extends Entity & IEndimatedEntity> void setPlayingAnimationMessage(E entity, Endimation endimationToPlay) {
+		if(!entity.world.isRemote) {
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCAnimation(entity.getEntityId(), ArrayUtils.indexOf(entity.getEndimations(), endimationToPlay)));
+			entity.setPlayingEndimation(endimationToPlay);
 		}
 	}
 }

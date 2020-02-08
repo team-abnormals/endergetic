@@ -80,7 +80,7 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     	
     	this.Tail.rotateAngleY = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
     	
-    	if(!entityIn.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION) && !entityIn.isInWater()) {
+    	if(!entityIn.isEndimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION) && !entityIn.isInWater()) {
     		if(entityIn.getRidingEntity() == null && !entityIn.isEating()) {
     			this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     			this.Jaw.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
@@ -91,7 +91,7 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     			this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
     			this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
     		}
-    	} else if(!entityIn.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION) && entityIn.isInWater()) {
+    	} else if(!entityIn.isEndimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION) && entityIn.isInWater()) {
     		this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     		this.Jaw.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     		this.KneeLeft.rotateAngleZ += 0.1F * -MathHelper.sin(0.6F * ageInTicks);
@@ -110,7 +110,7 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     	super.animateModel(booflo, f, f1, f2, f3, f4, f5);
     	this.endimator.updateAnimations(booflo);
     	
-    	if(booflo.isAnimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
+    	if(booflo.isEndimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
     		this.endimator.setAnimationToPlay(EntityBoofloAdolescent.BOOF_ANIMATION);
     		
     		this.endimator.startKeyframe(3);
@@ -143,7 +143,7 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
     		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
     		this.endimator.endKeyframe();
-    	} else if(booflo.isAnimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION)) {
+    	} else if(booflo.isEndimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION)) {
     		this.endimator.setAnimationToPlay(EntityBoofloAdolescent.EATING_ANIMATION);
     		
     		this.endimator.startKeyframe(5);

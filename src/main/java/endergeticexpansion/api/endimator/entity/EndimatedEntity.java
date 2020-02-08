@@ -1,7 +1,8 @@
-package endergeticexpansion.api.endimator;
+package endergeticexpansion.api.endimator.entity;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.util.NetworkUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
@@ -14,10 +15,8 @@ import net.minecraft.world.World;
  * Skeleton class for Endimator entities
  * @author - SmellyModder(Luke Tonon)
  */
-public class EndimatedEntity extends CreatureEntity {
-	public static final Endimation BLANK_ANIMATION = new Endimation();
+public abstract class EndimatedEntity extends CreatureEntity implements IEndimatedEntity {
 	private Endimation endimation = BLANK_ANIMATION;
-	public int frame;
 	private int animationTick;
 	
 	public EndimatedEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
@@ -27,33 +26,44 @@ public class EndimatedEntity extends CreatureEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		this.frame++;
-		if(!this.isAnimationPlaying(BLANK_ANIMATION)) {
+		if(!this.isNoEndimationPlaying()) {
 			if(this.getAnimationTick() == 0) {
 				this.onEndimationStart(this.endimation);
 			}
 			this.setAnimationTick(this.getAnimationTick() + 1);
-			if(this.getAnimationTick() >= this.getPlayingAnimation().getAnimationTickDuration()) {
+			if(this.getAnimationTick() >= this.getPlayingEndimation().getAnimationTickDuration()) {
 				this.onEndimationEnd(this.endimation);
-				this.resetPlayingAnimationToDefault();
+				this.resetEndimation();
 			}
 		}
 	}
 	
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(!this.isWorldRemote() && this.getHurtAnimation() != null && this.isAnimationPlaying(BLANK_ANIMATION)) {
+		if(!this.isWorldRemote() && this.getHurtAnimation() != null && this.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimationMessage(this, this.getHurtAnimation());
 		}
 		return super.attackEntityFrom(source, amount);
 	}
 	
+	@Override
+	public void setPlayingEndimation(Endimation endimationToPlay) {
+		this.onEndimationEnd(this.endimation);
+		this.endimation = endimationToPlay;
+		this.setAnimationTick(0);
+	}
+
+	@Override
+	public Endimation getPlayingEndimation() {
+		return this.endimation;
+	}
+	
 	/**
-	 * @param animation - The animation to check
-	 * @return - Is the animation playing
+	 * @param endimation - The endimation to check
+	 * @return - Is the endimation playing
 	 */
-	public boolean isAnimationPlaying(Endimation animation) {
-		return this.getPlayingAnimation() == animation;
+	public boolean isEndimationPlaying(Endimation endimation) {
+		return this.getPlayingEndimation() == endimation;
 	}
 	
 	/**
@@ -61,21 +71,6 @@ public class EndimatedEntity extends CreatureEntity {
 	 */
 	public boolean isWorldRemote() {
 		return this.getEntityWorld().isRemote;
-	}
-	
-	/**
-	 * @return - Gets the playing animation
-	 */
-	public Endimation getPlayingAnimation() {
-		return this.endimation;
-	}
-	
-	/**
-	 * @return - Gets this entity's animations
-	 */
-	@Nullable
-	public Endimation[] getAnimations() {
-		return null;
 	}
 	
 	/**
@@ -94,20 +89,10 @@ public class EndimatedEntity extends CreatureEntity {
 	}
 	
 	/**
-	 * Sets an animation to play
-	 * @param animationToPlay - The animation to play
-	 */
-	public void setPlayingAnimation(Endimation endimationToPlay) {
-		this.onEndimationEnd(this.endimation);
-		this.endimation = endimationToPlay;
-		this.setAnimationTick(0);
-	}
-	
-	/**
 	 * Resets the current animation to a blank one
 	 */
-	public void resetPlayingAnimationToDefault() {
-		this.setPlayingAnimation(BLANK_ANIMATION);
+	public void resetEndimation() {
+		this.setPlayingEndimation(BLANK_ANIMATION);
 	}
 	
 	protected void onEndimationStart(Endimation endimation) {}

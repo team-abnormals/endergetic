@@ -21,12 +21,12 @@ public class BoofloSwimmingGoal extends Goal {
 		if(RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
-		return this.booflo.hasPath() && this.booflo.isAnimationPlaying(EntityBooflo.BLANK_ANIMATION) && this.booflo.isMovingInAir() && this.booflo.isBoofed();
+		return this.booflo.hasPath() && this.booflo.isNoEndimationPlaying() && this.booflo.isMovingInAir() && this.booflo.isBoofed();
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.isAnimationPlaying(EntityBooflo.SWIM) && this.booflo.isBoofed();
+		return this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && this.booflo.isBoofed();
 	}
 	
 	@Override
