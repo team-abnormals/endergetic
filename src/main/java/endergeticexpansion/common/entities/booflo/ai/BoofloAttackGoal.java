@@ -14,11 +14,11 @@ import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
 public class BoofloAttackGoal extends Goal {
+	private final int UPPER_DISTANCE = 16;
 	private final EntityBooflo booflo;
-	protected int attackTick;
 	private Path path;
-	private int delayCounter;
 	private BlockPos upperAirPos;
+	private int delayCounter;
 
 	public BoofloAttackGoal(EntityBooflo booflo) {
 		this.booflo = booflo;
@@ -60,7 +60,7 @@ public class BoofloAttackGoal extends Goal {
 			return false;
 		} else if(!this.booflo.isBoofed()) {
 			return false;
-		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > 16) {
+		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > UPPER_DISTANCE) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -103,8 +103,6 @@ public class BoofloAttackGoal extends Goal {
 				}
 			}
 		}
-
-		this.attackTick = Math.max(this.attackTick - 1, 0);
 	}
 	
 	@Nullable
@@ -112,13 +110,12 @@ public class BoofloAttackGoal extends Goal {
 		BlockPos startingPos = target.getPosition();
 		BlockPos targetPos = BlockPos.ZERO;
 		boolean isOpenBelow = true;
-		int randHeight = 9;
-		for(int y = 0; y < 16; y++) {
+		for(int y = 0; y < UPPER_DISTANCE; y++) {
 			if(!target.world.getBlockState(startingPos.up(y)).getCollisionShape(target.world, startingPos.up(y)).isEmpty()) {
 				isOpenBelow = false;
 			}
 			
-			if(target.world.getBlockState(startingPos.up(y)).getCollisionShape(target.world, startingPos.up(y)).isEmpty() && y > randHeight) {
+			if(target.world.getBlockState(startingPos.up(y)).getCollisionShape(target.world, startingPos.up(y)).isEmpty() && y > 9) {
 				targetPos = startingPos.up(y);
 			}
 		}
