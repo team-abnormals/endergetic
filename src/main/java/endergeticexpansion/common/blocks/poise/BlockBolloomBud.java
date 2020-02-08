@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud.BudSide;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Block;
@@ -53,12 +54,6 @@ public class BlockBolloomBud extends Block {
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-		super.onReplaced(state, worldIn, pos, newState, isMoving);
-	}
-	
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
 		return block == Blocks.END_STONE.getBlock() || block.isIn(EETags.Blocks.END_PLANTABLE) || block.isIn(EETags.Blocks.POISE_PLANTABLE);
@@ -66,7 +61,8 @@ public class BlockBolloomBud extends Block {
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
 		if(stateIn.isValidPosition(world, currentPos)) {
-			return this.placePedals(world.getWorld(), currentPos) && stateIn.get(OPENED) ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
+			boolean opened = stateIn.get(OPENED);
+			return this.placePedals(world.getWorld(), currentPos, opened) && opened ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
 		}
 		return Blocks.AIR.getDefaultState();
 	}
@@ -76,11 +72,18 @@ public class BlockBolloomBud extends Block {
 		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !isAcrossOrAdjacentToBud(worldIn, pos);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public boolean placePedals(World world, BlockPos pos) {
-		if(!world.getBlockState(pos).get(OPENED) && world.getBlockState(pos.north()).isAir() && world.getBlockState(pos.south()).isAir() && world.getBlockState(pos.east()).isAir() && world.getBlockState(pos.west()).isAir()) {
+	public boolean placePedals(World world, BlockPos pos, boolean opened) {
+		if(!world.getBlockState(pos).get(OPENED) && this.canPutDownPedals(world, pos)) {
+			if(opened) {
+				for(BudSide side : BudSide.values()) {
+					BlockPos sidePos = side.offsetPosition(pos);
+					if(world.getBlockState(sidePos).getCollisionShape(world, pos).isEmpty()) {
+						world.destroyBlock(sidePos, true);
+					}
+				}
+			}
 			return true;
-		} else if(world.getBlockState(pos).get(OPENED)) {
+		} else if(opened) {
 			return false;
 		}
 		return false;
@@ -88,7 +91,7 @@ public class BlockBolloomBud extends Block {
 	
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand p_220051_5_, BlockRayTraceResult p_220051_6_) {
-		if(this.placePedals(world, pos)) {
+		if(this.placePedals(world, pos, true)) {
 			world.setBlockState(pos, getDefaultState().with(OPENED, true));
 			
 			if(world.getTileEntity(pos) instanceof TileEntityBolloomBud) {
@@ -128,6 +131,16 @@ public class BlockBolloomBud extends Block {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean canPutDownPedals(World world, BlockPos pos) {
+		for(BudSide sides : BudSide.values()) {
+			BlockPos sidePos = sides.offsetPosition(pos);
+			if(!world.getFluidState(sidePos).isEmpty() || !world.getBlockState(sidePos).getCollisionShape(world, sidePos).isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private BlockState resetBud(IWorld world, BlockPos pos) {
