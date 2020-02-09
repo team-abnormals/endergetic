@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
+import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
@@ -36,6 +37,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -62,6 +64,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> PUFF_STATE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
+	public static final Endimation POLLINATE_ANIMATION = new Endimation(10);
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
@@ -73,6 +76,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
+		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
 		this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.75F);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
 	}
@@ -98,6 +102,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					TileEntityPuffBugHive hive = this.findNewNearbyHive();
 					if(hive != null) {
 						this.addToHive(hive);
+						NetworkUtil.setPlayingAnimationMessage(this, POLLINATE_ANIMATION);
 					}
 				}
 			} else {
@@ -106,8 +111,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				}
 			}
 		}
-		
-		System.out.println(this.growingAge);
 	}
 	
 	@Override
@@ -140,11 +143,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
 		}
-	}
-	
-	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[] {BLANK_ANIMATION};
 	}
 	
 	@Nullable
@@ -189,6 +187,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public void setAttachedHiveSide(Direction side) {
 		this.dataManager.set(ATTACHED_HIVE_SIDE, side);
 	}
+
 	
 	public PuffState getPuffState() {
 		return PuffState.getPuffStateById(this.getPuffStateId());
@@ -219,12 +218,28 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	@Override
+	public Endimation[] getEndimations() {
+		return new Endimation[] {
+			POLLINATE_ANIMATION
+		};
+	}
+	
+	@Override
+	public void onEndimationEnd(Endimation endimation) {
+		if(!this.world.isRemote && endimation == POLLINATE_ANIMATION) {
+			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 1200));
+		}
+	}
+	
+	@Override
 	public void travel(Vec3d moveDirection) {
 		if(this.isServerWorld() && this.getPuffState() != PuffState.DEFLATED) {
+			double gravity = this.getActivePotionEffect(Effects.LEVITATION) != null ? -0.005D : 0.005D;
+			
 			this.moveRelative(0.0F, moveDirection);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.75D));
-			this.setMotion(this.getMotion().subtract(0, 0.005D, 0));
+			this.setMotion(this.getMotion().subtract(0, gravity, 0));
 		} else {
 			super.travel(moveDirection);
 		}
@@ -417,7 +432,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 
 	@Override
 	public void setPlayingEndimation(Endimation endimationToPlay) {
+		this.onEndimationEnd(this.endimation);
 		this.endimation = endimationToPlay;
+		this.setAnimationTick(0);
 	}
 
 	@Override

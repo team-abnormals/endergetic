@@ -55,4 +55,8 @@ public interface IEndimatedEntity {
 	default boolean isNoEndimationPlaying() {
 		return this.getPlayingEndimation() == BLANK_ANIMATION;
 	}
+	
+	default boolean isEndimationPlaying(Endimation endimation) {
+		return this.getPlayingEndimation() == endimation;
+	}
 }

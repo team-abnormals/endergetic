@@ -5,7 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,7 +19,7 @@ public class Endimator {
 	private int tempTick;
 	private int prevTempTick;
 	private boolean correctAnimation;
-	public EndimatedEntity endimatedEntity;
+	public IEndimatedEntity endimatedEntity;
 	private Map<EndimatorRendererModel, float[]> boxValues;
 	private Map<EndimatorRendererModel, float[]> prevBoxValues;
     
@@ -49,7 +49,7 @@ public class Endimator {
 	 * Updates the entity for this endimator instance
 	 * @param endimatedEntity - The entity to update
 	 */
-	public void updateAnimations(EndimatedEntity endimatedEntity) {
+	public void updateAnimations(IEndimatedEntity endimatedEntity) {
 		this.endimatedEntity = endimatedEntity;
 	}
 	

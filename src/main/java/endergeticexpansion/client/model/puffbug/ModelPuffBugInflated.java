@@ -49,6 +49,10 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
         this.Body.addChild(this.Neck);
         this.Head.addChild(this.Sensor2);
         
+        this.Body.setShouldScaleChildren(false);
+        
+        this.createScaleController();
+        
         this.setDefaultBoxValues();
     }
 
@@ -59,13 +63,35 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     }
     
     @Override
-    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(E puffBug, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
     	
     	this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     	this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     	
     	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
+    	
+    	this.Body.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+    }
+    
+    @Override
+    public void animateModel(E puffbug, float f, float f1, float f2, float f3, float f4, float f5) {
+    	super.animateModel(puffbug, f, f1, f2, f3, f4, f5);
+    	
+    	this.endimator.updateAnimations(puffbug);
+    	
+    	if(puffbug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.POLLINATE_ANIMATION);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 0.5F, 0.5F, 0.5F);
+    		this.endimator.rotate(this.Head, -0.4F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    	}
+    	
+    	this.Body.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
     }
     
     /**

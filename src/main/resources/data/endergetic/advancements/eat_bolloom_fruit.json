@@ -1,0 +1,33 @@
+{
+  "parent": "endergetic:poise_forest",
+  "display": {
+    "icon": {
+      "item": "endergetic:bolloom_fruit"
+    },
+    "title": {
+      "translate": "advancements.endergetic.eat_bolloom_fruit.title"
+    },
+    "description": {
+      "translate": "advancements.endergetic.eat_bolloom_fruit.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "bolloom_fruit": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "item": "endergetic:bolloom_fruit"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "bolloom_fruit"
+    ]
+  ]
+}

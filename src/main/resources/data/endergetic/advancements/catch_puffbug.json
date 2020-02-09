@@ -1,0 +1,35 @@
+{
+  "parent": "endergetic:poise_forest",
+  "display": {
+    "icon": {
+      "item": "endergetic:puffbug_bottle"
+    },
+    "title": {
+      "translate": "advancements.endergetic.catch_puffbug.title"
+    },
+    "description": {
+      "translate": "advancements.endergetic.catch_puffbug.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "puffbug_bottle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "endergetic:puffbug_bottle"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "puffbug_bottle"
+    ]
+  ]
+}

@@ -106,6 +106,16 @@
 	"biome.endergetic.poise_forest": "Poise Forest",
 	"biome.endergetic.chorus_plains": "Chorus Plains(Unused)",
 	
+	"_comment": "Advancements",
+	"advancements.endergetic.find_poise_forest.title": "A Poised Place",
+	"advancements.endergetic.find_poise_forest.description": "Find a Poise Forest",
+	"advancements.endergetic.catch_puffbug.title": "Alien Bug Catcher",
+	"advancements.endergetic.catch_puffbug.description": "Catch a Puff Bug in a bottle",
+	"advancements.endergetic.booflo_vest.title": "Boofing Power",
+	"advancements.endergetic.booflo_vest.description": "Acquire a Booflo Vest",
+	"advancements.endergetic.eat_bolloom_fruit.title": "Feelin' Floaty",
+	"advancements.endergetic.eat_bolloom_fruit.description": "Eat a Bolloom Fruit",
+	
 	"_comment": "Keybinds",
 	
 	"key.endergetic.boof_vest" : "Booflo Vest Activate",

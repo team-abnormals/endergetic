@@ -3,7 +3,6 @@ package endergeticexpansion.common.network.entity;
 import java.util.function.Supplier;
 
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
@@ -35,7 +34,7 @@ public class MessageCAnimation {
 	
 	public static void handle(MessageCAnimation message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		IEndimatedEntity endimatedEntity = (EndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
+		IEndimatedEntity endimatedEntity = (IEndimatedEntity) ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				if(endimatedEntity != null) {

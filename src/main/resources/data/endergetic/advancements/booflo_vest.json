@@ -1,0 +1,35 @@
+{
+  "parent": "endergetic:poise_forest",
+  "display": {
+    "icon": {
+      "item": "endergetic:booflo_vest"
+    },
+    "title": {
+      "translate": "advancements.endergetic.booflo_vest.title"
+    },
+    "description": {
+      "translate": "advancements.endergetic.booflo_vest.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "booflo_vest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "endergetic:booflo_vest"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "booflo_vest"
+    ]
+  ]
+}
