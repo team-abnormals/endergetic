@@ -87,7 +87,7 @@ public class BoofloAttackGoal extends Goal {
 		
 		Entity target = this.booflo.getBoofloAttackTarget();
 		
-		if(target != null) {
+		if(target != null && this.upperAirPos != null) {
 			this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
 			double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
 		

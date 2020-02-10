@@ -18,6 +18,7 @@ import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.client.particle.EEParticles;
+import endergeticexpansion.common.advancement.EECriteriaTriggers;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.BoofloAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.BoofloBoofGoal;
@@ -845,8 +846,12 @@ public class EntityBooflo extends EndimatedEntity {
 		this.setTamed(true);
 		this.setOwnerId(player.getUniqueID());
 		if(player instanceof ServerPlayerEntity) {
+			ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
 			//Creates wolf to still trigger tamed - as booflo isn't an AnimalEntity
-			CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity)player, EntityType.WOLF.create(this.world));
+			CriteriaTriggers.TAME_ANIMAL.trigger(serverPlayer, EntityType.WOLF.create(this.world));
+			if(!this.isWorldRemote()) {
+				EECriteriaTriggers.TAME_BOOFLO.trigger(serverPlayer); 
+			}
 		}
 	}
 	

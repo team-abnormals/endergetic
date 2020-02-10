@@ -1,0 +1,26 @@
+{
+  "parent": "endergetic:poise_forest",
+  "display": {
+    "icon": {
+      "item": "endergetic:booflo_spawn_egg"
+    },
+    "title": {
+      "translate": "advancements.endergetic.tame_booflo.title"
+    },
+    "description": {
+      "translate": "advancements.endergetic.tame_booflo.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 15
+  },
+  "criteria": {
+    "tamed": {
+      "trigger": "endergetic:tamed_booflo"
+    }
+  }
+}
