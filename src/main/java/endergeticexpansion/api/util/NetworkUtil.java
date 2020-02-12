@@ -159,6 +159,14 @@ public class NetworkUtil {
 	}
 	
 	/**
+	 * @param name - The registry name of the particle
+	 * Used for adding particles to all the clients from the client
+	 */
+	public static void spawnParticleC2S2C(String name, double posX, double posY, double posZ, double motionX, double motionY, double motionZ) {
+		EndergeticExpansion.CHANNEL.sendToServer(new MessageC2S2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
+	}
+	
+	/**
 	 * Sends an animation message to the clients to update an entity's animations
 	 * @param entity - The Entity to send the packet for
 	 * @param endimationToPlay - The endimation to play

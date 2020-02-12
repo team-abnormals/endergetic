@@ -1,9 +1,11 @@
 package endergeticexpansion.core.keybinds;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
@@ -55,10 +57,11 @@ public class KeybindHandler {
 	public static void onKeyPressed(KeyInputEvent event) {
 		if(BOOF_VEST.isPressed()) {
     		PlayerEntity player = Minecraft.getInstance().player;
+    		Random rand = player.getRNG();
     		ItemStack stack = player.inventory.armorItemInSlot(2);
         	
     		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
-        		if(((ItemBoofloVest)stack.getItem()).canBoof(stack, player)) {
+        		if(((ItemBoofloVest) stack.getItem()).canBoof(stack, player)) {
         			stack.getTag().putBoolean("boofed", true);
         			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
         			((ItemBoofloVest) stack.getItem()).setDelayForBoofedAmount(stack, player);
@@ -92,6 +95,18 @@ public class KeybindHandler {
         					}
         				}
         			}
+        			
+        			for(int i = 0; i < 8; i++) {
+        				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+        				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+        			
+        				double x = player.posX + offsetX;
+        				double y = player.posY + (rand.nextFloat() * 0.05F) + 1.25F;
+        				double z = player.posZ + offsetZ;
+        			
+        				NetworkUtil.spawnParticleC2S2C("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+        			}
+        			
         			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
         		}
         	}

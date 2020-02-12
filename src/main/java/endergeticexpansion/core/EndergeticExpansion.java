@@ -4,62 +4,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import endergeticexpansion.client.particle.EEParticles;
-import endergeticexpansion.client.render.entity.RenderBolloomBalloon;
-import endergeticexpansion.client.render.entity.RenderBolloomFruit;
-import endergeticexpansion.client.render.entity.RenderBolloomKnot;
-import endergeticexpansion.client.render.entity.RenderBoofBlock;
-import endergeticexpansion.client.render.entity.RenderEndergeticBoat;
-import endergeticexpansion.client.render.entity.RenderPoiseCluster;
-import endergeticexpansion.client.render.entity.RenderPuffBug;
-import endergeticexpansion.client.render.entity.booflo.RenderBooflo;
-import endergeticexpansion.client.render.entity.booflo.RenderBoofloAdolescent;
-import endergeticexpansion.client.render.entity.booflo.RenderBoofloBaby;
-import endergeticexpansion.client.render.tile.RenderTileEntityBolloomBud;
-import endergeticexpansion.client.render.tile.RenderTileEntityBoofBlockDispensed;
-import endergeticexpansion.client.render.tile.RenderTileEntityCorrockCrown;
-import endergeticexpansion.client.render.tile.RenderTileEntityFrisbloomStem;
-import endergeticexpansion.client.render.tile.RenderTileEntityPuffBugHive;
-import endergeticexpansion.common.entities.EntityBoofBlock;
-import endergeticexpansion.common.entities.EntityEndergeticBoat;
-import endergeticexpansion.common.entities.EntityPoiseCluster;
-import endergeticexpansion.common.entities.EntityPuffBug;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomKnot;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
-import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
+import endergeticexpansion.client.render.entity.*;
+import endergeticexpansion.client.render.entity.booflo.*;
+import endergeticexpansion.client.render.tile.*;
+import endergeticexpansion.common.entities.*;
+import endergeticexpansion.common.entities.bolloom.*;
+import endergeticexpansion.common.entities.booflo.*;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
-import endergeticexpansion.common.network.entity.MessageCAnimation;
-import endergeticexpansion.common.network.entity.MessageCSetVelocity;
-import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
-import endergeticexpansion.common.network.entity.MessageSBoofEntity;
-import endergeticexpansion.common.network.entity.MessageSSetCooldown;
-import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
-import endergeticexpansion.common.network.entity.MessageSSetVelocity;
-import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
-import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
-import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
-import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
-import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
-import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
-import endergeticexpansion.common.network.particle.MessageSpawnParticle;
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
-import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.common.network.entity.*;
+import endergeticexpansion.common.network.entity.booflo.*;
+import endergeticexpansion.common.network.nbt.*;
+import endergeticexpansion.common.network.particle.*;
+import endergeticexpansion.common.tileentities.*;
+import endergeticexpansion.common.tileentities.boof.*;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
-import endergeticexpansion.core.registry.EEBiomes;
-import endergeticexpansion.core.registry.EEBlocks;
-import endergeticexpansion.core.registry.EEEntities;
-import endergeticexpansion.core.registry.EEItems;
-import endergeticexpansion.core.registry.EESounds;
-import endergeticexpansion.core.registry.EETileEntities;
+import endergeticexpansion.core.registry.*;
 import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
 import endergeticexpansion.core.registry.other.EEFireInfo;
@@ -215,6 +178,11 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageSpawnParticle.class, id++)
 		.encoder(MessageSpawnParticle::serialize).decoder(MessageSpawnParticle::deserialize)
 		.consumer(MessageSpawnParticle::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageC2S2CSpawnParticle.class, id++)
+		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
+		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
 		
 		CHANNEL.messageBuilder(MessageSInflate.class, id++)
