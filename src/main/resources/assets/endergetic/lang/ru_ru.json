@@ -106,6 +106,18 @@
 	"biome.endergetic.poise_forest": "Лес-пуаз",
 	"biome.endergetic.chorus_plains": "Хорусовые поля(Не используется)",
 	
+	"_comment": "Достижения",
+	"advancements.endergetic.find_poise_forest.title": "Вязкое местечко",
+	"advancements.endergetic.find_poise_forest.description": "Найдите Лес-пуаз",
+	"advancements.endergetic.catch_puffbug.title": "Ловец чужестранных жуков",
+	"advancements.endergetic.catch_puffbug.description": "Поймайте пуфмита в пузырёк",
+	"advancements.endergetic.booflo_vest.title": "Буйная сила",
+	"advancements.endergetic.booflo_vest.description": "Добудьте пуфлу-жилет",
+	"advancements.endergetic.eat_bolloom_fruit.title": "Чувство воздушности",
+	"advancements.endergetic.eat_bolloom_fruit.description": "Съешьте фрукт булума",
+	"advancements.endergetic.tame_booflo.title": "Надувной друг!",
+	"advancements.endergetic.tame_booflo.description": "Приручите Буффало, скармливая ему фрукты булума и отступив, чтобы дать ему съесть",
+	
 	"_comment": "Комбинации клавиш",
 	
 	"key.endergetic.boof_vest" : "Активация пуфлу-жилета",
