@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import endergeticexpansion.common.entities.EntityPuffBug;
-import endergeticexpansion.common.entities.EntityPuffBug.PuffState;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -15,12 +14,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityModel<T>> extends LayerRenderer<T, M> { 
-	private final ResourceLocation[] TEXTURES = new ResourceLocation[] {
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_overlay.png"),
+	private static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_overlay_grayscale.png"),
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay_grayscale.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_medium_inflated_levitation_overlay.png"),
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_levitation_overlay.png"),
 	};
 	
@@ -30,7 +26,7 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 	
 	@Override
 	public void render(T puffbug, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
-		if(puffbug.getPuffState() == PuffState.DEFLATED) return;
+		if(!puffbug.isInflated()) return;
 		
 		this.bindTexture(this.getTexture(puffbug));
 		
@@ -57,9 +53,9 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 	
 	private ResourceLocation getTexture(EntityPuffBug puffbug) {
 		if(this.isLeviationOnlyEffect(puffbug)) {
-			return TEXTURES[puffbug.getPuffStateId() + 3];
+			return TEXTURES[2];
 		}
-		return puffbug.getColor() != -1 ? TEXTURES[puffbug.getPuffStateId() + 1] : TEXTURES[puffbug.getPuffStateId() - 1];
+		return puffbug.getColor() != -1 ? TEXTURES[1] : TEXTURES[0];
 	}
 	
 	private boolean isLeviationOnlyEffect(EntityPuffBug bug) {

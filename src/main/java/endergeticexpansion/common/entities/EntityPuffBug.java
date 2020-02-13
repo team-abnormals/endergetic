@@ -7,12 +7,8 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
-import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import endergeticexpansion.api.util.NetworkUtil;
-import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
-import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
-import endergeticexpansion.client.model.puffbug.ModelPuffBugInflatedMedium;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -49,8 +45,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Predicate<LivingEntity> CAN_ANGER = (entity) -> {
@@ -62,9 +56,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private static final DataParameter<Optional<BlockPos>> HIVE_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
 	private static final DataParameter<Direction> ATTACHED_HIVE_SIDE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.DIRECTION);
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> INFLATED = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
-	private static final DataParameter<Integer> PUFF_STATE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
-	public static final Endimation POLLINATE_ANIMATION = new Endimation(10);
+	public static final Endimation CLAIM_HIVE_ANIMATION = new Endimation(20);
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
@@ -87,7 +81,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.getDataManager().register(HIVE_POS, Optional.empty());
 		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
-		this.getDataManager().register(PUFF_STATE, 2);
+		this.getDataManager().register(INFLATED, true);
 		this.getDataManager().register(FROM_BOTTLE, false);
 	}
 	
@@ -102,7 +96,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					TileEntityPuffBugHive hive = this.findNewNearbyHive();
 					if(hive != null) {
 						this.addToHive(hive);
-						NetworkUtil.setPlayingAnimationMessage(this, POLLINATE_ANIMATION);
+						if(this.isNoEndimationPlaying()) {
+							NetworkUtil.setPlayingAnimationMessage(this, CLAIM_HIVE_ANIMATION);
+						}
 					}
 				}
 			} else {
@@ -119,10 +115,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		this.setAttachedHiveSide(Direction.byIndex(compound.getByte("AttachedHiveSide")));
 		this.setFromBottle(compound.getBoolean("FromBottle"));
-		
-		if(compound.contains("PuffState")) {
-			this.setPuffState(PuffState.getPuffStateById(compound.getInt("PuffState")));
-		}
+		this.setInflated(compound.getBoolean("IsInflated"));
 		
 		if(compound.contains("HivePos", 10)) {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
@@ -135,10 +128,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		compound.putByte("AttachedHiveSide", (byte) this.getAttachedHiveSide().getIndex());
 		compound.putBoolean("FromBottle", this.isFromBottle());
-		
-		if(compound.contains("PuffState")) {
-			compound.putInt("PuffState", this.getPuffStateId());
-		}
+		compound.putBoolean("IsInflated", this.isInflated());
 		
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
@@ -187,19 +177,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public void setAttachedHiveSide(Direction side) {
 		this.dataManager.set(ATTACHED_HIVE_SIDE, side);
 	}
-
-	
-	public PuffState getPuffState() {
-		return PuffState.getPuffStateById(this.getPuffStateId());
-	}
-	
-	public int getPuffStateId() {
-		return this.dataManager.get(PUFF_STATE);
-	}
-	
-	public void setPuffState(PuffState state) {
-		this.dataManager.set(PUFF_STATE, state.getStateId());
-	}
 	
 	public boolean isFromBottle() {
 		return this.dataManager.get(FROM_BOTTLE);
@@ -207,6 +184,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 
 	public void setFromBottle(boolean value) {
 		this.dataManager.set(FROM_BOTTLE, value);
+	}
+	
+	public boolean isInflated() {
+		return this.dataManager.get(INFLATED);
+	}
+
+	public void setInflated(boolean inflated) {
+		this.dataManager.set(INFLATED, inflated);
 	}
 	
 	public int getColor() {
@@ -220,20 +205,18 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public Endimation[] getEndimations() {
 		return new Endimation[] {
-			POLLINATE_ANIMATION
+			CLAIM_HIVE_ANIMATION
 		};
 	}
 	
 	@Override
 	public void onEndimationEnd(Endimation endimation) {
-		if(!this.world.isRemote && endimation == POLLINATE_ANIMATION) {
-			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 1200));
-		}
+		
 	}
 	
 	@Override
 	public void travel(Vec3d moveDirection) {
-		if(this.isServerWorld() && this.getPuffState() != PuffState.DEFLATED) {
+		if(this.isServerWorld() && this.isInflated()) {
 			double gravity = this.getActivePotionEffect(Effects.LEVITATION) != null ? -0.005D : 0.005D;
 			
 			this.moveRelative(0.0F, moveDirection);
@@ -376,48 +359,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public boolean isOnLadder() {
 		return false;
-	}
-	
-	public static enum PuffState {
-		DEFLATED(0),
-		MEDIUM_INFLATION(1),
-		FULL_INFLATION(2);
-		
-		private final int stateId;
-		
-		PuffState(int stateId) {
-			this.stateId = stateId;
-		}
-		
-		public int getStateId() {
-			return this.stateId;
-		}
-		
-		public static PuffState getPuffStateById(int stateId) {
-			for(PuffState states : values()) {
-				if(states.getStateId() == stateId) {
-					return states;
-				}
-			}
-			return PuffState.MEDIUM_INFLATION;
-		}
-		
-		@OnlyIn(Dist.CLIENT)
-		public static EndimatorEntityModel<EntityPuffBug> getModel(PuffState state) {
-			final ModelPuffBugDeflated<EntityPuffBug> DEFLATED_MODEL = new ModelPuffBugDeflated<>();
-			final ModelPuffBugInflatedMedium<EntityPuffBug> MEDIUM_INFLATED_MODEL = new ModelPuffBugInflatedMedium<>();
-			final ModelPuffBugInflated<EntityPuffBug> INFLATED_MODEL = new ModelPuffBugInflated<>();
-			
-			switch(state) {
-				default:
-				case MEDIUM_INFLATION:
-					return MEDIUM_INFLATED_MODEL;
-				case DEFLATED:
-					return DEFLATED_MODEL;
-				case FULL_INFLATION:
-					return INFLATED_MODEL;
-			}
-		}
 	}
 
 	@Override

@@ -80,12 +80,19 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     	
     	this.endimator.updateAnimations(puffbug);
     	
-    	if(puffbug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION)) {
-    		this.endimator.setAnimationToPlay(EntityPuffBug.POLLINATE_ANIMATION);
+    	if(puffbug.isEndimationPlaying(EntityPuffBug.CLAIM_HIVE_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.CLAIM_HIVE_ANIMATION);
     		
     		this.endimator.startKeyframe(5);
-    		this.endimator.move(this.getScaleController(), 0.5F, 0.5F, 0.5F);
-    		this.endimator.rotate(this.Head, -0.4F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, 0.45F);
+    		this.endimator.rotate(this.Sensor2, 0.45F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, 0.45F);
+    		this.endimator.rotate(this.Sensor2, 0.45F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
     		
     		this.endimator.resetKeyframe(5);
