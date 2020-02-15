@@ -3,7 +3,7 @@ package endergeticexpansion.client.render.entity.layer;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;

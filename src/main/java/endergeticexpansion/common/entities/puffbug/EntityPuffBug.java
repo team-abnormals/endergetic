@@ -1,4 +1,4 @@
-package endergeticexpansion.common.entities;
+package endergeticexpansion.common.entities.puffbug;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -8,7 +8,10 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
+import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
+import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.common.entities.puffbug.ai.PuffBugBoostGoal;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -22,6 +25,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,6 +36,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.potion.PotionUtils;
@@ -40,8 +45,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -57,13 +64,16 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private static final DataParameter<Direction> ATTACHED_HIVE_SIDE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.DIRECTION);
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> INFLATED = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> BOOSTING = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
 	public static final Endimation CLAIM_HIVE_ANIMATION = new Endimation(20);
+	public static final Endimation PUFF_ANIMATION = new Endimation(20);
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
+		this.moveController = new PuffBugMoveController(this);
 		this.experienceValue = 2;
 	}
 	
@@ -81,8 +91,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.getDataManager().register(HIVE_POS, Optional.empty());
 		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
-		this.getDataManager().register(INFLATED, true);
 		this.getDataManager().register(FROM_BOTTLE, false);
+		this.getDataManager().register(INFLATED, true);
+		this.getDataManager().register(BOOSTING, false);
+	}
+	
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(5, new PuffBugBoostGoal(this));
 	}
 	
 	@Override
@@ -90,7 +106,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		super.tick();
 		this.endimateTick();
 		
+		this.fallDistance = 0;
+		
 		if(!this.world.isRemote) {
+			if(this.isInflated() && this.isBoosting() && this.isNoEndimationPlaying() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK) {
+				NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
+			}
+			
 			if(this.getHivePos() == null) {
 				if(this.getRNG().nextFloat() <= 0.05F) {
 					TileEntityPuffBugHive hive = this.findNewNearbyHive();
@@ -115,7 +137,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		this.setAttachedHiveSide(Direction.byIndex(compound.getByte("AttachedHiveSide")));
 		this.setFromBottle(compound.getBoolean("FromBottle"));
-		this.setInflated(compound.getBoolean("IsInflated"));
+		
+		if(compound.contains("IsInflated")) {
+			this.setInflated(compound.getBoolean("IsInflated"));
+		}
 		
 		if(compound.contains("HivePos", 10)) {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
@@ -194,6 +219,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.dataManager.set(INFLATED, inflated);
 	}
 	
+	public boolean isBoosting() {
+		return this.dataManager.get(BOOSTING);
+	}
+
+	public void setBoosting(boolean boosting) {
+		this.dataManager.set(BOOSTING, boosting);
+	}
+	
 	public int getColor() {
 		return this.dataManager.get(COLOR);
 	}
@@ -205,13 +238,22 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public Endimation[] getEndimations() {
 		return new Endimation[] {
-			CLAIM_HIVE_ANIMATION
+			CLAIM_HIVE_ANIMATION,
+			PUFF_ANIMATION
 		};
 	}
 	
 	@Override
-	public void onEndimationEnd(Endimation endimation) {
-		
+	public void onEndimationStart(Endimation endimation) {
+		if(endimation == PUFF_ANIMATION) {
+			float pitch = this.isBeingRidden() ? 1.0F : this.rotationPitch;
+			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
+			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
+			
+			Vec3d motion = new Vec3d(xMotion, 0.65F, zMotion).normalize();
+			
+			this.addVelocity(motion.getX() * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.1F), motion.getY(), motion.getZ() * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.1F));
+		}
 	}
 	
 	@Override
@@ -219,21 +261,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(this.isServerWorld() && this.isInflated()) {
 			double gravity = this.getActivePotionEffect(Effects.LEVITATION) != null ? -0.005D : 0.005D;
 			
-			this.moveRelative(0.0F, moveDirection);
+			this.moveRelative(0.025F, moveDirection);
 			this.move(MoverType.SELF, this.getMotion());
 			this.setMotion(this.getMotion().scale(0.75D));
 			this.setMotion(this.getMotion().subtract(0, gravity, 0));
 		} else {
 			super.travel(moveDirection);
 		}
-	}
-	
-	@Override
-	public void fall(float distance, float damageMultiplier) {}
-	
-	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-		return sizeIn.height * 0.275F;
 	}
 	
 	public void addToHive(TileEntityPuffBugHive hive) {
@@ -280,6 +314,19 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		nbt.putBoolean("IsChild", this.isChild());
+	}
+	
+	@Override
+	protected PathNavigator createNavigator(World worldIn) {
+		return new EndergeticFlyingPathNavigator(this, worldIn);
+	}
+	
+	@Override
+	public void fall(float distance, float damageMultiplier) {}
+	
+	@Override
+	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+		return sizeIn.height * 0.275F;
 	}
 	
 	@Override
@@ -386,5 +433,43 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public void setAnimationTick(int animationTick) {
 		this.animationTick = animationTick;
+	}
+	
+	static class PuffBugMoveController extends MovementController {
+		private final EntityPuffBug puffbug;
+
+		PuffBugMoveController(EntityPuffBug puffbug) {
+			super(puffbug);
+			this.puffbug = puffbug;
+		}
+
+		public void tick() {
+			if(this.action == MovementController.Action.MOVE_TO && !this.puffbug.getNavigator().noPath()) {
+				double xDistance = this.posX - this.puffbug.posX;
+				double yDistance = this.posY - this.puffbug.posY;
+				double zDistance = this.posZ - this.puffbug.posZ;
+				double totalDistance = (double)MathHelper.sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
+				
+				double verticalVelocity = yDistance / totalDistance;
+				
+				float angle = (float) (MathHelper.atan2(zDistance, xDistance) * (180F / Math.PI)) - 90.0F;
+				
+				this.puffbug.rotationYaw = this.limitAngle(this.puffbug.rotationYaw, angle, 20.0F);
+				this.puffbug.renderYawOffset = this.puffbug.rotationYaw;
+				
+				float speed = (float) (this.speed * this.puffbug.getAttribute(SharedMonsterAttributes.FLYING_SPEED).getValue());
+				
+				if(verticalVelocity < 0.0F) {
+					this.puffbug.setAIMoveSpeed(MathHelper.lerp(0.125F, this.puffbug.getAIMoveSpeed(), speed));
+					this.puffbug.setMotion(this.puffbug.getMotion().add(0.0D, (double) this.puffbug.getAIMoveSpeed() * verticalVelocity * 0.05D, 0.0D));
+					this.puffbug.setBoosting(false);
+				} else {
+					this.puffbug.setBoosting(true);
+				}
+			} else { 
+				this.puffbug.setAIMoveSpeed(0.0F);
+				this.puffbug.setBoosting(false);
+			}
+		}
 	}
 }

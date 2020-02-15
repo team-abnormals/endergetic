@@ -10,6 +10,7 @@ import endergeticexpansion.client.render.tile.*;
 import endergeticexpansion.common.entities.*;
 import endergeticexpansion.common.entities.bolloom.*;
 import endergeticexpansion.common.entities.booflo.*;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.network.entity.*;
 import endergeticexpansion.common.network.entity.booflo.*;

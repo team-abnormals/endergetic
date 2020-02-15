@@ -1272,6 +1272,10 @@ public class EntityBooflo extends EndimatedEntity {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
 	
+	public boolean isCooflo() {
+		return this.hasCustomName() && this.getName().getString().toLowerCase().trim().equals("cameron");
+	}
+	
 	public static class GroundMoveHelperController extends MovementController {
 		private final EntityBooflo booflo;
 		private float yRot;

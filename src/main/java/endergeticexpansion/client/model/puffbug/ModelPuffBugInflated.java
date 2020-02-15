@@ -2,7 +2,7 @@ package endergeticexpansion.client.model.puffbug;
 
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -66,8 +66,10 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     public void setRotationAngles(E puffBug, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
     	
-    	this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
-    	this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    	if(!puffBug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION)) {
+    		this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    		this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    	}
     	
     	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
     	
@@ -96,6 +98,22 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     		this.endimator.endKeyframe();
     		
     		this.endimator.resetKeyframe(5);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.PUFF_ANIMATION);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.Neck, 0.4F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.Head, 0.55F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.5F);
+    		this.endimator.rotate(this.Sensor2, -0.5F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.Body, 0.25F, 0.0F, 0.0F);
+    		
+    		this.endimator.move(this.getScaleController(), 0.4F, 0.4F, 0.4F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(10);
     	}
     	
     	this.Body.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);

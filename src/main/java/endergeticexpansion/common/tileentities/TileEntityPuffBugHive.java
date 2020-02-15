@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;

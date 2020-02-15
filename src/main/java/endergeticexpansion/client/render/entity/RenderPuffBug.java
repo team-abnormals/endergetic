@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
 import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
 import endergeticexpansion.client.render.entity.layer.RenderLayerPuffBugGlow;
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;

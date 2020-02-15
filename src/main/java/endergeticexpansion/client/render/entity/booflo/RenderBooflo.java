@@ -32,7 +32,8 @@ public class RenderBooflo extends LivingRenderer<EntityBooflo, EntityModel<Entit
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityBooflo booflo) {
-		return booflo.isBoofed() ? new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_inflated.png") : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo.png");
+		String camPrefix = booflo.isCooflo() ? "_cam" : "";
+		return booflo.isBoofed() ? new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + "_inflated.png") : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + ".png");
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package endergeticexpansion.common.blocks.poise.hive;
 
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;

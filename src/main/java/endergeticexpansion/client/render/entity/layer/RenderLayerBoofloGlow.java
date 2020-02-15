@@ -14,8 +14,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel<E>> extends LayerRenderer<E, M> {
-	public static final ResourceLocation BOOFLO_GLOW_LAYER = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_glow_layer.png");
-	public static final ResourceLocation BOOFLO_INFLATED_GLOW_LAYER = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_inflated_glow_layer.png");
 	
 	public RenderLayerBoofloGlow(IEntityRenderer<E, M> entityRenderer) {
 		super(entityRenderer);
@@ -39,11 +37,13 @@ public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel
 	}
 	
 	public ResourceLocation getTexture(E booflo) {
-		return booflo.isBoofed() ? BOOFLO_INFLATED_GLOW_LAYER : BOOFLO_GLOW_LAYER;
+		String camPrefix = booflo.isCooflo() ? "_cam" : "";
+		return booflo.isBoofed() ? new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + "_inflated_glow_layer.png") : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + "_glow_layer.png");
 	}
 
 	@Override
 	public boolean shouldCombineTextures() {
 		return false;
 	}
+	
 }

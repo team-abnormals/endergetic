@@ -2,7 +2,7 @@ package endergeticexpansion.client.model.puffbug;
 
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
-import endergeticexpansion.common.entities.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import net.minecraft.util.math.MathHelper;
 
 /**
