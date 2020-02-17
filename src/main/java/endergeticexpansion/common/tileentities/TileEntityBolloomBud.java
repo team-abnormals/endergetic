@@ -11,7 +11,10 @@ import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EETileEntities;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -33,7 +36,8 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		side.put(BudSide.SOUTH, new SideData());
 		side.put(BudSide.WEST, new SideData());
 	});
-	int maxFruitHeight = 7;
+	private int maxFruitHeight = 7;
+	private UUID teleportingBug;
 	
 	public TileEntityBolloomBud() {
 		super(EETileEntities.BOLLOOM_BUD.get());
@@ -84,6 +88,17 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 				this.PEDAL_PROGRESS.setDecrementing(this.getBlockState().get(BlockBolloomBud.OPENED));
 			}
 		}
+		
+		if(!this.world.isRemote) {
+			if(this.teleportingBug != null) {
+				Entity entity = ((ServerWorld) this.world).getEntityByUuid(this.teleportingBug);
+				if(entity != null && !entity.isAlive()) {
+					this.teleportingBug = null;
+				} else if(entity == null) {
+					this.teleportingBug = null;
+				}
+			}
+		}
 	}
 	
 	public void startGrowing(Random rand, int maxHeight, boolean instant) {
@@ -116,6 +131,40 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			sideData.growTimer = 0;
 		});
 		this.maxFruitHeight = 7;
+	}
+	
+	public void setTeleportingBug(@Nullable EntityPuffBug puffbug) {
+		this.teleportingBug = puffbug != null ? puffbug.getUniqueID() : null;
+	}
+	
+	public boolean hasTeleportingBug() {
+		return this.teleportingBug != null;
+	}
+	
+	public boolean canBeOpened() {
+		Block block = EEBlocks.BOLLOOM_BUD.get();
+		
+		for(Direction directions : Direction.values()) {
+			if(this.world.getBlockState(this.pos.offset(directions, 2)).getBlock() == block) {
+				return false;
+			}
+		}
+		
+		BlockPos north = this.pos.offset(Direction.NORTH);
+		BlockPos south = this.pos.offset(Direction.SOUTH);
+		
+		if(this.world.getBlockState(north.east()).getBlock() == block || this.world.getBlockState(south.east()).getBlock() == block || this.world.getBlockState(north.west()).getBlock() == block || this.world.getBlockState(south.west()).getBlock() == block) {
+			return false;
+		}
+		
+		for(BudSide sides : BudSide.values()) {
+			BlockPos sidePos = sides.offsetPosition(this.pos);
+			if(!this.world.getFluidState(sidePos).isEmpty() || !this.world.getBlockState(sidePos).getCollisionShape(this.world, sidePos).isEmpty()) {
+				return false;
+			}
+		}
+		
+		return !this.getBlockState().get(BlockBolloomBud.OPENED);
 	}
 	
 	@Override

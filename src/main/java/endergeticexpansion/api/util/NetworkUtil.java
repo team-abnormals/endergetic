@@ -166,6 +166,11 @@ public class NetworkUtil {
 		EndergeticExpansion.CHANNEL.sendToServer(new MessageC2S2CSpawnParticle(name, posX, posY, posZ, motionX, motionY, motionZ));
 	}
 	
+	public static void teleportEntity(Entity entity, double posX, double posY, double posZ) {
+		entity.setLocationAndAngles(posX, posY, posZ, entity.rotationYaw, entity.rotationPitch);
+		EndergeticExpansion.CHANNEL.send(PacketDistributor.ALL.with(() -> null), new MessageTeleport(entity.getEntityId(), posX, posY, posZ));
+	}
+	
 	/**
 	 * Sends an animation message to the clients to update an entity's animations
 	 * @param entity - The Entity to send the packet for

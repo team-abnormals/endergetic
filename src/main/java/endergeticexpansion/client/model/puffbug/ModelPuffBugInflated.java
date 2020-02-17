@@ -1,5 +1,6 @@
 package endergeticexpansion.client.model.puffbug;
 
+import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
@@ -49,8 +50,6 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
         this.Body.addChild(this.Neck);
         this.Head.addChild(this.Sensor2);
         
-        this.Body.setShouldScaleChildren(false);
-        
         this.createScaleController();
         
         this.setDefaultBoxValues();
@@ -64,6 +63,8 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     
     @Override
     public void setRotationAngles(E puffBug, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    	this.Body.setShouldScaleChildren(false);
+    	
     	this.revertBoxesToDefaultValues();
     	
     	if(!puffBug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION)) {
@@ -73,7 +74,8 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     	
     	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
     	
-    	this.Body.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+    	this.Body.rotateAngleY = puffBug.getRotationController().getRotations(ClientInfo.getPartialTicks())[0] * (float) (Math.PI / 180F);
+    	this.Body.rotateAngleX = puffBug.getRotationController().getRotations(ClientInfo.getPartialTicks())[1] * (float) (Math.PI / 180F);
     }
     
     @Override
@@ -111,6 +113,40 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     		this.endimator.rotate(this.Body, 0.25F, 0.0F, 0.0F);
     		
     		this.endimator.move(this.getScaleController(), 0.4F, 0.4F, 0.4F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(10);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_TO_ANIMATION)) {
+    		this.Body.setShouldScaleChildren(true);
+    		
+    		this.endimator.setAnimationToPlay(EntityPuffBug.TELEPORT_TO_ANIMATION);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 1.3F, 1.3F, 1.3F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(3);
+    		this.endimator.move(this.getScaleController(), -1.0F, -1.0F, -1.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.setStaticKeyframe(7);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_FROM_ANIMATION)) {
+    		this.Body.setShouldScaleChildren(true);
+    		
+    		this.endimator.setAnimationToPlay(EntityPuffBug.TELEPORT_FROM_ANIMATION);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 1.3F, 1.3F, 1.3F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.ROTATE_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.ROTATE_ANIMATION);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.Head, -0.5F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.Neck, -0.5F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.Stinger, 0.4F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
     		
     		this.endimator.resetKeyframe(10);

@@ -76,6 +76,80 @@
         	{ "name": "endergetic:entity/booflo/booflo_death", "stream": false }
         ]
     },
+    "entity.puffbug.puff":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug puffs",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_puff", "stream": false }
+        ]
+    },
+    "entity.puffbug.teleport_to":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug teleports",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_to", "stream": false }
+        ]
+    },
+    "entity.puffbug.teleport_from":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug teleports",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_from", "stream": false }
+        ]
+    },
+    "entity.puffbug.pollinate":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug pollinates",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_pollinates", "stream": false }
+        ]
+    },
+    "entity.puffbug.create_hive":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug builds hive",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_creates_hive", "stream": false }
+        ]
+    },
+    "entity.puffbug.launch":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug launches",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_launch", "stream": false }
+        ]
+    },
+    "entity.puffbug.lands":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug lands",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_land", "stream": false }
+        ]
+    },
+    "entity.puffbug.hurt":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug hurts",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_0", "stream": false },
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_1", "stream": false },
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_2", "stream": false }
+        ]
+    },
+    "entity.puffbug.death":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug dies",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_death", "stream": false }
+        ]
+    },
 	"block.cluster.place":
     {
         "category": "block",

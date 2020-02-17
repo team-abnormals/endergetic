@@ -14,6 +14,7 @@ import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.network.entity.*;
 import endergeticexpansion.common.network.entity.booflo.*;
+import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
 import endergeticexpansion.common.network.nbt.*;
 import endergeticexpansion.common.network.particle.*;
 import endergeticexpansion.common.tileentities.*;
@@ -176,6 +177,11 @@ public class EndergeticExpansion {
 		.consumer(MessageCAnimation::handle)
 		.add();
 		
+		CHANNEL.messageBuilder(MessageTeleport.class, id++)
+		.encoder(MessageTeleport::serialize).decoder(MessageTeleport::deserialize)
+		.consumer(MessageTeleport::handle)
+		.add();
+		
 		CHANNEL.messageBuilder(MessageSpawnParticle.class, id++)
 		.encoder(MessageSpawnParticle::serialize).decoder(MessageSpawnParticle::deserialize)
 		.consumer(MessageSpawnParticle::handle)
@@ -204,6 +210,11 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageSSlam.class, id++)
 		.encoder(MessageSSlam::serialize).decoder(MessageSSlam::deserialize)
 		.consumer(MessageSSlam::handle)
+		.add();
+		
+		CHANNEL.messageBuilder(MessageRotate.class, id++)
+		.encoder(MessageRotate::serialize).decoder(MessageRotate::deserialize)
+		.consumer(MessageRotate::handle)
 		.add();
 	}
 }

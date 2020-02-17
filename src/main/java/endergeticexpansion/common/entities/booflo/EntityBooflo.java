@@ -904,20 +904,20 @@ public class EntityBooflo extends EndimatedEntity {
 				
 			this.setMotion(boostFowardForce.getX(), 1.3F * verticalStrength, boostFowardForce.getZ());
 		} else {
-			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (rand.nextFloat() + 0.1F)) * 0.1F);
+			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.rand.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.rand.nextFloat() + 0.1F)) * 0.1F);
 		}
-			
+		
 		if(offensiveStrength > 2.0F) {
 			for(int i = 0; i < 12; i++) {
-				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+				double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 			
 				double x = this.posX + 0.5D + offsetX;
-				double y = this.posY + 0.5D + (rand.nextFloat() * 0.05F);
+				double y = this.posY + 0.5D + (this.rand.nextFloat() * 0.05F);
 				double z = this.posZ + 0.5D + offsetZ;
 			
 				if(this.isWorldRemote()) {
-					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F);
 				}
 			}
 		}
