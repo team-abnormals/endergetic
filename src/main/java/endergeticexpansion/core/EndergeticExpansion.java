@@ -131,15 +131,6 @@ public class EndergeticExpansion {
 			}
 		}
 	}
-	
-	/*
-	 * TODO: Experiment with this
-	 */
-	private void gatherData(GatherDataEvent event) {
-		if(event.includeClient()) {
-			
-		}
-	}
     
 	private void setupMessages() {
 		int id = -1;
