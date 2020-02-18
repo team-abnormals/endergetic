@@ -84,7 +84,6 @@ public class EndergeticExpansion {
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
-		modEventBus.addListener(this::gatherData);
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
