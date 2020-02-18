@@ -14,5 +14,11 @@
   "result": {
     "item": "endergetic:poise_vertical_planks",
     "count": 3
-  }
+  },
+  "conditions": [
+  	{
+       "type": "forge:mod_loaded",
+       "modid": "quark"
+    }
+  ]
 }

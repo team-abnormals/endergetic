@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.ControlledEndimation;
+import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
@@ -164,7 +165,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			}
 		}
 		
-		return !this.getBlockState().get(BlockBolloomBud.OPENED);
+		return !this.getBlockState().get(BlockBolloomBud.OPENED) && this.calculateFruitMaxHeight() >= 3;
 	}
 	
 	@Override
@@ -234,6 +235,23 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			}
 		}
 		return !hasAFruit;
+	}
+	
+	public int calculateFruitMaxHeight() {
+		int[] maxHeights = new int[4];
+		
+		for(BudSide sides : BudSide.values()) {
+			for(int y = 1; y < 7; y++) {
+				if(this.world.isAirBlock(sides.offsetPosition(this.pos.up(y)))) {
+					maxHeights[sides.id] = y;
+					continue;
+				} else {
+					break;
+				}
+			}
+		}
+		
+		return MathUtils.getLowestValueInIntArray(maxHeights);
 	}
 	
 	public enum BudSide {

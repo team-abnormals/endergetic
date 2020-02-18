@@ -9,7 +9,13 @@
     }
   },
   "result": {
-    "item": "\endergetic:eumus_brick_slab",
+    "item": "endergetic:eumus_brick_slab",
     "count": 1
-  }
+  },
+  "conditions": [
+  	{
+       "type": "forge:mod_loaded",
+       "modid": "quark"
+    }
+  ]
 }

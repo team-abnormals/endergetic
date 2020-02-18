@@ -43,6 +43,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -83,6 +84,7 @@ public class EndergeticExpansion {
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
+		modEventBus.addListener(this::gatherData);
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
@@ -129,8 +131,17 @@ public class EndergeticExpansion {
 			}
 		}
 	}
+	
+	/*
+	 * TODO: Experiment with this
+	 */
+	private void gatherData(GatherDataEvent event) {
+		if(event.includeClient()) {
+			
+		}
+	}
     
-	void setupMessages() {
+	private void setupMessages() {
 		int id = -1;
 		CHANNEL.messageBuilder(MessageCUpdatePlayerMotion.class, id++)
 		.encoder(MessageCUpdatePlayerMotion::serialize).decoder(MessageCUpdatePlayerMotion::deserialize)

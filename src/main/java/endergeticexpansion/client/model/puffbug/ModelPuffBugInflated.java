@@ -67,7 +67,7 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     	
     	this.revertBoxesToDefaultValues();
     	
-    	if(!puffBug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION)) {
+    	if(!puffBug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION) && !puffBug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION)) {
     		this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     		this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
     	}
@@ -147,6 +147,104 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     		this.endimator.rotate(this.Head, -0.5F, 0.0F, 0.0F);
     		this.endimator.rotate(this.Neck, -0.5F, 0.0F, 0.0F);
     		this.endimator.rotate(this.Stinger, 0.4F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(10);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.POLLINATE_ANIMATION);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, 0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, 0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, -0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, 0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, 0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, -0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, 0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, 0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, -0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, 0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, 0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, -0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, 0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, 0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.Neck, 0.0F, 0.0F, -0.17F);
+    		this.endimator.rotate(this.Head, 0.0F, 0.0F, -0.35F);
+    		this.endimator.rotate(this.Sensor1, 0.0F, 0.0F, -0.65F);
+    		this.endimator.rotate(this.Sensor2, 0.0F, 0.0F, 0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(5);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.move(this.getScaleController(), 0.4F, 0.4F, 0.4F);
     		this.endimator.endKeyframe();
     		
     		this.endimator.resetKeyframe(10);

@@ -14,9 +14,12 @@ import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.client.particle.EEParticles;
+import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.puffbug.ai.*;
 import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud.BudSide;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
@@ -72,6 +75,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	};
 	private static final DataParameter<Optional<BlockPos>> HIVE_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
 	private static final DataParameter<Optional<BlockPos>> BUD_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
+	private static final DataParameter<Optional<BlockPos>> POLLINATION_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
 	private static final DataParameter<Direction> ATTACHED_HIVE_SIDE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.DIRECTION);
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> INFLATED = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
@@ -82,11 +86,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Endimation TELEPORT_TO_ANIMATION = new Endimation(15);
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
 	public static final Endimation ROTATE_ANIMATION = new Endimation(20);
+	public static final Endimation POLLINATE_ANIMATION = new Endimation(120);
 	private TeleportController teleportController;
 	private RotationController rotationController;
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	private int teleportCooldown;
+	public int puffCooldown;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
@@ -109,6 +115,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		super.registerData();
 		this.getDataManager().register(HIVE_POS, Optional.empty());
 		this.getDataManager().register(BUD_POS, Optional.empty());
+		this.getDataManager().register(POLLINATION_POS, Optional.empty());
 		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
 		this.getDataManager().register(FROM_BOTTLE, false);
@@ -119,6 +126,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(1, new PuffBugTeleportToBudGoal(this));
+		this.goalSelector.addGoal(2, new PuffBugPollinateGoal(this));
 		this.goalSelector.addGoal(3, new PuffBugDescentGoal(this));
 		this.goalSelector.addGoal(5, new PuffBugBoostGoal(this));
 	}
@@ -136,8 +144,12 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.teleportCooldown--;
 			}
 			
+			if(this.puffCooldown > 0) {
+				this.puffCooldown--;
+			}
+			
 			if(this.isInflated() && !this.getRotationController().rotating && this.isNoEndimationPlaying()) {
-				if(this.isBoosting() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK || this.onGround) {
+				if(this.isBoosting() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK || (this.onGround && this.puffCooldown <= 0 && this.getPollinationPos() == null)) {
 					NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
 					this.playSound(this.getPuffSound(), 0.15F, this.getSoundPitch());
 				}
@@ -224,6 +236,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(compound.contains("HivePos", 10)) {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
 		}
+		
+		this.rotationController = this.getRotationController().read(this, compound);
 	}
 	
 	@Override
@@ -239,6 +253,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
 		}
+		
+		this.getRotationController().write(compound);
 	}
 	
 	@Nullable
@@ -273,6 +289,15 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	public void setBudPos(@Nullable BlockPos pos) {
 		this.getDataManager().set(BUD_POS, Optional.ofNullable(pos));
+	}
+	
+	@Nullable
+	public BlockPos getPollinationPos() {
+		return this.getDataManager().get(POLLINATION_POS).orElse(null);
+	}
+	
+	public void setPollinationPos(@Nullable BlockPos pos) {
+		this.getDataManager().set(POLLINATION_POS, Optional.ofNullable(pos));
 	}
 	
 	public boolean canAttachToSide(Direction direction) {
@@ -325,6 +350,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.dataManager.set(COLOR, color);
 	}
 	
+	public boolean hasLevitation() {
+		return this.isPotionActive(Effects.LEVITATION);
+	}
+	
 	public TeleportController getTeleportController() {
 		return this.teleportController;
 	}
@@ -340,7 +369,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			PUFF_ANIMATION,
 			TELEPORT_TO_ANIMATION,
 			TELEPORT_FROM_ANIMATION,
-			ROTATE_ANIMATION
+			ROTATE_ANIMATION,
+			POLLINATE_ANIMATION
 		};
 	}
 	
@@ -363,13 +393,32 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			if(!this.world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
 			}
+		} else if(endimation == POLLINATE_ANIMATION) {
+			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 1260));
+			if(this.getPollinationPos() != null) {
+				TileEntity te = this.world.getTileEntity(this.getPollinationPos());
+				if(te instanceof TileEntityBolloomBud) {
+					TileEntityBolloomBud bud = (TileEntityBolloomBud) te;
+					if(bud.canBeOpened()) {
+						for(BudSide side : BudSide.values()) {
+							BlockPos sidePos = side.offsetPosition(this.getPollinationPos());
+							if(this.world.getBlockState(sidePos).getCollisionShape(world, this.getPollinationPos()).isEmpty()) {
+								this.world.destroyBlock(sidePos, true);
+							}
+						}
+					
+						this.world.setBlockState(this.getPollinationPos(), world.getBlockState(this.getPollinationPos()).with(BlockBolloomBud.OPENED, true));
+						bud.startGrowing(this.getRNG(), bud.calculateFruitMaxHeight(), false);
+					}
+				}
+			}
 		}
 	}
 	
 	@Override
 	public void travel(Vec3d moveDirection) {
 		if(this.isServerWorld() && this.isInflated()) {
-			double gravity = this.getActivePotionEffect(Effects.LEVITATION) != null ? -0.005D : 0.005D;
+			double gravity = this.hasLevitation() ? -0.005D : 0.005D;
 			float speed = this.onGround ? 0.01F : 0.025F;
 			
 			this.moveRelative(speed, moveDirection);
@@ -749,6 +798,34 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			if(!this.puffbug.world.isRemote) {
 				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.puffbug), new MessageRotate(this.puffbug.getEntityId(), tickLength, yaw, pitch));
 			}
+		}
+		
+		protected CompoundNBT write(CompoundNBT compound) {
+			compound.putFloat("Yaw", this.yaw);
+			compound.putFloat("Pitch", this.pitch);
+			compound.putFloat("SetYaw", this.setYaw);
+			compound.putFloat("SetPitch", this.setPitch);
+			compound.putFloat("StartingYaw", this.startingYaw);
+			compound.putFloat("StartingPitch", this.startingPitch);
+			compound.putInt("TickLength", this.tickLength);
+			compound.putBoolean("Rotating", this.rotating);
+			return compound;
+		}
+		
+		protected RotationController read(EntityPuffBug puffbug, CompoundNBT compound) {
+			RotationController rotationController = new RotationController(puffbug);
+			
+			rotationController.yaw = rotationController.prevYaw = compound.getFloat("Yaw");
+			rotationController.pitch = rotationController.prevPitch = compound.getFloat("Pitch");
+			rotationController.setYaw = compound.getFloat("SetYaw");
+			rotationController.setPitch = compound.getFloat("SetPitch");
+			rotationController.startingYaw = compound.getFloat("StartingYaw");
+			rotationController.startingPitch = compound.getFloat("StartingPitch");
+			rotationController.tickLength = compound.getInt("TickLength");
+			rotationController.rotating = compound.getBoolean("Rotating");
+			rotationController.ticksSinceNotRotating = 0;
+			
+			return rotationController;
 		}
 		
 		public float[] getRotations(float ptc) {
