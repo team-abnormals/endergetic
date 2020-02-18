@@ -28,14 +28,14 @@ public class PuffBugTeleportToBudGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.isNoEndimationPlaying() && this.puffbug.getRNG().nextInt(100) == 0 && !this.puffbug.hasLevitation() && this.puffbug.getTeleportController().canTeleport()) {
+		if(this.puffbug.isNoEndimationPlaying() && this.puffbug.getRNG().nextInt(100) == 0 && !this.puffbug.hasLevitation() && !this.puffbug.isInLove() && this.puffbug.getTeleportController().canTeleport()) {
 			TileEntityBolloomBud bud = this.findNearbyBud();
 			if(bud != null) {
 				BlockPos pos = this.createUpperPosition(bud.getPos());
 				if(pos != null && this.puffbug.getTeleportController().tryToCreateDesinationTo(pos)) {
 					bud.setTeleportingBug(this.puffbug);
 					this.puffbug.setBudPos(bud.getPos());
-					return !this.puffbug.isInLove();
+					return true;
 				}
 			}
 		}
@@ -55,7 +55,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_TO_ANIMATION);
+		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_TO_ANIMATION);
 	}
 	
 	@Nullable

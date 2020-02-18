@@ -36,6 +36,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -130,6 +131,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.goalSelector.addGoal(2, new PuffBugPollinateGoal(this));
 		this.goalSelector.addGoal(3, new PuffBugDescentGoal(this));
 		this.goalSelector.addGoal(4, new BreedGoal(this, 1.0F));
+		this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.5F));
 		this.goalSelector.addGoal(5, new PuffBugBoostGoal(this));
 	}
 	

@@ -62,7 +62,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 			if(sideData.growTimer > 0 && sideData.growing) sideData.growTimer--;
 			
 			if(sideData.growing && sideData.growTimer <= 0) {
-				if(!this.world.isRemote()) {
+				if(!this.world.isRemote() && this.getBlockState().get(BlockBolloomBud.OPENED)) {
 					int height = rand.nextInt(this.maxFruitHeight) + 1;
 					EntityBolloomFruit fruit = new EntityBolloomFruit(this.world, this.pos, side.offsetPosition(this.pos).up(height - 1), height, side.direction);
 					this.world.addEntity(fruit);
