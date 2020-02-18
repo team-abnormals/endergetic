@@ -35,6 +35,7 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -128,6 +129,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.goalSelector.addGoal(1, new PuffBugTeleportToBudGoal(this));
 		this.goalSelector.addGoal(2, new PuffBugPollinateGoal(this));
 		this.goalSelector.addGoal(3, new PuffBugDescentGoal(this));
+		this.goalSelector.addGoal(4, new BreedGoal(this, 1.0F));
 		this.goalSelector.addGoal(5, new PuffBugBoostGoal(this));
 	}
 	
@@ -394,7 +396,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
 			}
 		} else if(endimation == POLLINATE_ANIMATION) {
-			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 1260));
+			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 3000));
 			if(this.getPollinationPos() != null) {
 				TileEntity te = this.world.getTileEntity(this.getPollinationPos());
 				if(te instanceof TileEntityBolloomBud) {
@@ -481,6 +483,11 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected PathNavigator createNavigator(World worldIn) {
 		return new EndergeticFlyingPathNavigator(this, worldIn);
+	}
+	
+	@Override
+	public boolean canBreed() {
+		return super.canBreed() && this.isInflated();
 	}
 	
 	@Override

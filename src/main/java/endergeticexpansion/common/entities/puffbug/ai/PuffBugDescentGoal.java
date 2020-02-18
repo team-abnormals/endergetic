@@ -34,7 +34,7 @@ public class PuffBugDescentGoal extends Goal {
 		if(!(te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened())) {
 			return false;
 		}
-		return !this.puffbug.hasLevitation() && this.puffbug.posX == this.originalPosX && this.puffbug.posZ == this.originalPosZ && !this.puffbug.onGround;
+		return this.ticksPassed < 160 && !this.puffbug.hasLevitation() && this.puffbug.posX == this.originalPosX && this.puffbug.posZ == this.originalPosZ && !this.puffbug.onGround;
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 				if(pos != null && this.puffbug.getTeleportController().tryToCreateDesinationTo(pos)) {
 					bud.setTeleportingBug(this.puffbug);
 					this.puffbug.setBudPos(bud.getPos());
-					return true;
+					return !this.puffbug.isInLove();
 				}
 			}
 		}
