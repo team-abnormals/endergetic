@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderLayerBoofloBracelets<E extends EntityBooflo, M extends EntityModel<E>> extends LayerRenderer<E, M> {
+	
 	public RenderLayerBoofloBracelets(IEntityRenderer<E, M> entityRenderer) {
 		super(entityRenderer);
 	}
@@ -38,11 +39,12 @@ public class RenderLayerBoofloBracelets<E extends EntityBooflo, M extends Entity
 	}
 	
 	public ResourceLocation getTexture(E booflo) {
-		return booflo.isBoofed() ? new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/bracelets/booflo_ring_" + booflo.getBraceletsColor().getTranslationKey() + "_inflated.png") : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/bracelets/booflo_ring_" + booflo.getBraceletsColor().getTranslationKey() + ".png");
+		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/bracelets/booflo_ring_" + booflo.getBraceletsColor().getTranslationKey() + ".png");
 	}
 
 	@Override
 	public boolean shouldCombineTextures() {
 		return false;
 	}
+	
 }

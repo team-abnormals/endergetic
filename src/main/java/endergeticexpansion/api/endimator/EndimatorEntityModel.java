@@ -15,16 +15,24 @@ public class EndimatorEntityModel<E extends Entity & IEndimatedEntity> extends E
 	private EndimatorRendererModel scaleController;
 	protected Endimator endimator = new Endimator();
 	
+	public void animateModel(E endimatedEntity, float f, float f1, float f2, float f3, float f4, float f5) {
+		this.setRotationAngles(endimatedEntity, f, f1, f2, f3, f4, f5);
+	}
+	
 	public void setDefaultBoxValues() {
-		for(int i = 0; i < this.boxList.size(); i++) {
-			((EndimatorRendererModel) this.boxList.get(i)).setDefaultBoxValues();
-		}
+		this.boxList.forEach((rendererModel) -> {
+			if(rendererModel instanceof EndimatorRendererModel) {
+				((EndimatorRendererModel) rendererModel).setDefaultBoxValues();
+			}
+		});
 	}
 	
 	public void revertBoxesToDefaultValues() {
-		for(int i = 0; i < this.boxList.size(); i++) {
-			((EndimatorRendererModel) this.boxList.get(i)).revertToDefaultBoxValues();
-		}
+		this.boxList.forEach((rendererModel) -> {
+			if(rendererModel instanceof EndimatorRendererModel) {
+				((EndimatorRendererModel) rendererModel).revertToDefaultBoxValues();
+			}
+		});
 	}
 	
 	public void createScaleController() {
@@ -35,9 +43,5 @@ public class EndimatorEntityModel<E extends Entity & IEndimatedEntity> extends E
 	
 	public EndimatorRendererModel getScaleController() {
 		return this.scaleController;
-	}
-	
-	public void animateModel(E endimatedEntity, float f, float f1, float f2, float f3, float f4, float f5) {
-		this.setRotationAngles(endimatedEntity, f, f1, f2, f3, f4, f5);
 	}
 }

@@ -87,7 +87,7 @@
     "entity.puffbug.teleport_to":
     {
         "category": "entity",
-        "subtitle": "Puffbug teleports",
+        "subtitle": "Puffbug teleports to",
         "sounds": [
         	{ "name": "endergetic:entity/puffbug/puffbug_teleport_to", "stream": false }
         ]
@@ -95,7 +95,7 @@
     "entity.puffbug.teleport_from":
     {
         "category": "entity",
-        "subtitle": "Puffbug teleports",
+        "subtitle": "Puffbug teleports from",
         "sounds": [
         	{ "name": "endergetic:entity/puffbug/puffbug_teleport_from", "stream": false }
         ]
@@ -153,7 +153,7 @@
 	"block.cluster.place":
     {
         "category": "block",
-        "subtitle": "Cluster Place",
+        "subtitle": "Cluster place",
         "sounds": [
         	{ "name": "endergetic:block/cluster_place_0", "stream": false},
         	{ "name": "endergetic:block/cluster_place_1", "stream": false}
@@ -162,7 +162,7 @@
     "block.cluster.break":
     {
         "category": "block",
-        "subtitle": "Cluster Break",
+        "subtitle": "Cluster break",
         "sounds": [
         	{ "name": "endergetic:block/cluster_break_0", "stream": false}
         ]
@@ -170,7 +170,7 @@
     "block.cluster.step":
     {
         "category": "block",
-        "subtitle": "Cluster Step",
+        "subtitle": "Cluster step",
         "sounds": [
         	{ "name": "endergetic:block/cluster_step_0", "stream": false},
         	{ "name": "endergetic:block/cluster_step_1", "stream": false},
@@ -180,9 +180,28 @@
     "block.cluster.hit":
     {
         "category": "block",
-        "subtitle": "Cluster Hit",
+        "subtitle": "Cluster hit",
         "sounds": [
         	{ "name": "endergetic:block/cluster_hit", "stream": false}
+        ]
+    },
+    "block.poise_bush.ambient":
+    {
+        "category": "block",
+        "subtitle": "Poise bush bubbles",
+        "sounds": [
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_0", "stream": false},
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_1", "stream": false},
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_2", "stream": false}
+        ]
+    },
+    "block.poise_bush.ambient_long":
+    {
+        "category": "block",
+        "subtitle": "Poise bush bubbles",
+        "sounds": [
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_0", "stream": false},
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_1", "stream": false}
         ]
     }
 }

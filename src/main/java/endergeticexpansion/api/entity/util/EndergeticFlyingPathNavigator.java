@@ -128,6 +128,6 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 	
 	@Override
 	public boolean canEntityStandOnPos(BlockPos pos) {
-		return world.isAirBlock(pos);
+		return this.world.isAirBlock(pos);
 	}
 }

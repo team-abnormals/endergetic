@@ -26,7 +26,7 @@ import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.*;
 import endergeticexpansion.core.registry.other.EECapabilities;
-import endergeticexpansion.core.registry.other.EEDispenserBehaviorRegistry;
+import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
 import endergeticexpansion.core.registry.other.EEFireInfo;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.item.Item;
@@ -43,7 +43,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -87,7 +86,7 @@ public class EndergeticExpansion {
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
-		EEDispenserBehaviorRegistry.registerAll();
+		EEDispenserBehaviors.registerAll();
 		EECapabilities.registerAll();
 		EEBiomes.applyBiomeInfo();
 		EEFireInfo.registerFireInfo();

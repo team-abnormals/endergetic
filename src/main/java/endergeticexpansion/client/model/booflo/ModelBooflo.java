@@ -22,8 +22,17 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     public EndimatorRendererModel LegBackRight;
     public EndimatorRendererModel FruitPos;
     
+    public EndimatorRendererModel HeadInflated;
+    public EndimatorRendererModel KneeLeftInflated;
+    public EndimatorRendererModel KneeRightInflated;
+    public EndimatorRendererModel LegLeftInflated;
+    public EndimatorRendererModel LegRightInflated;
+    public EndimatorRendererModel JawInflated;
+    public EndimatorRendererModel LegBackLeftInflated;
+    public EndimatorRendererModel LegBackRightInflated;
+    
     public ModelBooflo() {
-        this.textureWidth = 100;
+        this.textureWidth = 150;
         this.textureHeight = 150;
         this.Jaw = new EndimatorRendererModel(this, 0, 0);
         this.Jaw.setRotationPoint(0.0F, 4.0F, 8.0F);
@@ -69,18 +78,71 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
         this.KneeLeft.addChild(this.LegBackLeft);
         this.LegRight.addChild(this.FruitPos);
         
+        this.LegRightInflated = new EndimatorRendererModel(this, 28, 66);
+        this.LegRightInflated.setRotationPoint(-8.5F, 2.0F, -3.0F);
+        this.LegRightInflated.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
+        this.setRotateAngle(LegRightInflated, 0.0F, 0.5235987755982988F, 3.141592653589794F);
+        this.LegBackLeftInflated = new EndimatorRendererModel(this, 0, 81);
+        this.LegBackLeftInflated.setRotationPoint(1.5F, -7.5F, -0.5F);
+        this.LegBackLeftInflated.addBox(0.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
+        this.setRotateAngle(LegBackLeftInflated, 0.0F, -0.3490658503988659F, 0.3490658503988658F);
+        this.JawInflated = new EndimatorRendererModel(this, 0, 97);
+        this.JawInflated.setRotationPoint(0.0F, 4.0F, 8.0F);
+        this.JawInflated.addBox(-16.0F, 0.0F, -24.0F, 32, 16, 32, 0.0F);
+        this.KneeRightInflated = new EndimatorRendererModel(this, 0, 58);
+        this.KneeRightInflated.setRotationPoint(-5.5F, -2.0F, 5.5F);
+        this.KneeRightInflated.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
+        this.setRotateAngle(KneeRightInflated, 0.0F, 0.17453292519943295F, -0.5585053606381855F);
+        this.LegLeftInflated = new EndimatorRendererModel(this, 28, 59);
+        this.LegLeftInflated.setRotationPoint(8.5F, 2.0F, -3.0F);
+        this.LegLeftInflated.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
+        this.setRotateAngle(LegLeftInflated, 0.0F, 0.5235987755982988F, -2.4802620430283604E-16F);
+        this.HeadInflated = new EndimatorRendererModel(this, 0, 29);
+        this.HeadInflated.setRotationPoint(0.0F, 3.9999999999999947F, 0.0F);
+        this.HeadInflated.addBox(-9.0F, -4.0F, -9.0F, 18, 8, 18, 0.0F);
+        this.setRotateAngle(HeadInflated, 3.1003275537854505E-17F, 0.0F, 0.0F);
+        this.KneeLeftInflated = new EndimatorRendererModel(this, 0, 58);
+        this.KneeLeftInflated.setRotationPoint(5.5F, -2.0F, 5.5F);
+        this.KneeLeftInflated.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
+        this.setRotateAngle(KneeLeftInflated, 0.0F, -0.17453292519943295F, 0.558505360638178F);
+        this.LegBackRightInflated = new EndimatorRendererModel(this, 0, 89);
+        this.LegBackRightInflated.setRotationPoint(-1.5F, -7.5F, 0.0F);
+        this.LegBackRightInflated.addBox(-25.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
+        this.setRotateAngle(LegBackRightInflated, 0.0F, 0.3490658503988659F, -0.3490658503988659F);
+        this.HeadInflated.addChild(this.LegRightInflated);
+        this.KneeLeftInflated.addChild(this.LegBackLeftInflated);
+        this.HeadInflated.addChild(this.JawInflated);
+        this.HeadInflated.addChild(this.KneeRightInflated);
+        this.HeadInflated.addChild(this.LegLeftInflated);
+        this.HeadInflated.addChild(this.KneeLeftInflated);
+        this.KneeRightInflated.addChild(this.LegBackRightInflated);
+        
+        this.createScaleController();
+        
         this.setDefaultBoxValues();
     }
 
     @Override
     public void render(E booflo, float f, float f1, float f2, float f3, float f4, float f5) {
     	this.animateModel(booflo, f, f1, f2, f3, f4, f5);
-        this.Head.render(f5);
+    	
+    	if(booflo.isBoofed()) {
+    		this.HeadInflated.render(f5);
+    	} else {
+    		this.Head.render(f5);
+    	}
     }
     
     @Override
-    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(E booflo, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
     	this.revertBoxesToDefaultValues();
+    	
+    	if(booflo.isBoofed()) {
+    		this.HeadInflated.rotateAngleY = netHeadYaw * (float) (Math.PI / 180F);
+    		this.HeadInflated.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+    	
+    		this.JawInflated.rotateAngleX += 0.4F * booflo.OPEN_JAW.getAnimationProgress();
+    	}
     }
     
     @Override
@@ -330,7 +392,99 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     		this.endimator.startKeyframe(5);
     		this.endimator.rotate(this.Jaw, -0.0F, 0.0F, 0.0F);
     		this.endimator.endKeyframe();
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.INFLATE)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.INFLATE);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 0.7F, 0.0F, 0.7F);
+    		
+    		this.endimator.rotate(this.LegRightInflated, 0.0F, 0.0F, 0.6F);
+    		this.endimator.rotate(this.LegLeftInflated, 0.0F, 0.0F, -0.6F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, 0.0F, 0.0F, 0.4F);
+    		this.endimator.rotate(this.LegBackRightInflated, 0.0F, 0.0F, -0.4F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, 0.0F, 0.0F, 0.2F);
+    		this.endimator.rotate(this.KneeLeftInflated, 0.0F, 0.0F, -0.2F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.move(this.getScaleController(), 0.0F, 0.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.SWIM)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.SWIM);
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.LegRightInflated, 0.0F, -1.6F, 0.0F);
+    		this.endimator.rotate(this.LegLeftInflated, 0.0F, -1.6F, 0.0F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, -0.895F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.KneeLeftInflated, -0.895F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.LegBackRightInflated, 0.8F, 0.8F, 1.6F);
+    		this.endimator.rotate(this.LegBackLeftInflated, 0.8F, -0.8F, -1.6F);
+    		
+    		this.endimator.rotate(this.JawInflated, 0.2F, 0.0F, 0.0F);
+    		
+    		this.endimator.rotate(this.HeadInflated, -0.105F, 0.0F, 0.0F);
+    		this.endimator.move(this.HeadInflated, 0.0F, -0.3F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		/*
+    		 * Returns to defaults
+    		 */
+    		this.endimator.startKeyframe(10);
+    		this.endimator.endKeyframe();
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.CHARGE)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.CHARGE);
+    		
+    		this.endimator.startKeyframe(15);
+    		this.endimator.rotate(this.LegRightInflated, 0.0F, 0.0F, 0.5F);
+    		this.endimator.rotate(this.LegLeftInflated, 0.0F, 0.0F, -0.5F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, 0.0F, 0.0F, 0.4F);
+    		this.endimator.rotate(this.KneeLeftInflated, 0.0F, 0.0F, -0.4F);
+    		
+    		this.endimator.rotate(this.LegBackRightInflated, 0.0F, 0.0F, 0.5F);
+    		this.endimator.rotate(this.LegBackLeftInflated, 0.0F, 0.0F, -0.5F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.setStaticKeyframe(60);
+    	} else if(booflo.isEndimationPlaying(EntityBooflo.SLAM)) {
+    		this.endimator.setAnimationToPlay(EntityBooflo.SLAM);
+    		
+    		this.endimator.startKeyframe(4);
+    		this.endimator.move(this.HeadInflated, 0.0F, 9.9F, 0.0F);
+    		this.endimator.move(this.getScaleController(), -0.2F, -0.5F, -0.2F);
+    		
+    		this.endimator.rotate(this.LegRightInflated, 0.0F, 0.0F, -0.5F);
+    		this.endimator.rotate(this.LegLeftInflated, 0.0F, 0.0F, 0.5F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, 0.0F, 0.0F, -0.5F);
+    		this.endimator.rotate(this.KneeLeftInflated, 0.0F, 0.0F, 0.5F);
+    		
+    		this.endimator.rotate(this.LegBackRightInflated, 0.0F, 0.0F, -0.2F);
+    		this.endimator.rotate(this.LegBackLeftInflated, 0.0F, 0.0F, 0.2F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(3);
+    		this.endimator.move(this.HeadInflated, 0.0F, 1.9F, 0.0F);
+    		this.endimator.move(this.getScaleController(), 0.8F, 1.5F, 0.8F);
+    		
+    		this.endimator.rotate(this.LegRightInflated, 0.0F, 0.0F, 0.5F);
+    		this.endimator.rotate(this.LegLeftInflated, 0.0F, 0.0F, -0.5F);
+    		
+    		this.endimator.rotate(this.KneeRightInflated, 0.0F, 0.0F, 0.7F);
+    		this.endimator.rotate(this.KneeLeftInflated, 0.0F, 0.0F, -0.7F);
+    		
+    		this.endimator.rotate(this.LegBackRightInflated, 0.0F, 0.0F, 0.1F);
+    		this.endimator.rotate(this.LegBackLeftInflated, 0.0F, 0.0F, -0.1F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(3);
     	}
+    	
+    	this.HeadInflated.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
     }
 
     /**

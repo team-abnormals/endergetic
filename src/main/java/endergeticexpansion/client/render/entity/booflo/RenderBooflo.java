@@ -1,7 +1,6 @@
 package endergeticexpansion.client.render.entity.booflo;
 
 import endergeticexpansion.client.model.booflo.ModelBooflo;
-import endergeticexpansion.client.model.booflo.ModelBoofloInflated;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloBracelets;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloFruit;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloGlow;
@@ -26,14 +25,14 @@ public class RenderBooflo extends LivingRenderer<EntityBooflo, EntityModel<Entit
 	
 	public void doRender(EntityBooflo booflo, double x, double y, double z, float entityYaw, float partialTicks) {
 		this.shadowSize = booflo.isBoofed() ? 2.0F : 1.25F;
-		this.entityModel = booflo.isBoofed() ? new ModelBoofloInflated<>() : new ModelBooflo<>();
+		
 		super.doRender(booflo, x, y, z, entityYaw, partialTicks);
 	}
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityBooflo booflo) {
-		String camPrefix = booflo.isCooflo() ? "_cam" : "";
-		return booflo.isBoofed() ? new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + "_inflated.png") : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camPrefix + ".png");
+		String camSuffix = booflo.isCooflo() ? "_cam" : "";
+		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camSuffix + ".png");
 	}
 	
 	@Override

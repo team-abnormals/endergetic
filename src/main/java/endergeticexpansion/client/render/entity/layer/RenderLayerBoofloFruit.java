@@ -3,7 +3,6 @@ package endergeticexpansion.client.render.entity.layer;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import endergeticexpansion.client.model.booflo.ModelBooflo;
-import endergeticexpansion.client.model.booflo.ModelBoofloInflated;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.client.Minecraft;
@@ -30,10 +29,8 @@ public class RenderLayerBoofloFruit extends LayerRenderer<EntityBooflo, EntityMo
 		if(booflo.hasCaughtFruit() && booflo.isEndimationPlaying(EntityBooflo.EAT) && booflo.getAnimationTick() > 20) {
 			GlStateManager.pushMatrix();
 			
-			EntityModel<EntityBooflo> boofloModel = this.getBoofloModel(booflo);
-			
-			if(boofloModel instanceof ModelBooflo) {
-				GlStateManager.translatef(((ModelBooflo<EntityBooflo>) (boofloModel)).FruitPos.rotationPointX / 16 - 1.25F, ((ModelBooflo<EntityBooflo>) (boofloModel)).FruitPos.rotationPointY / 16 + 1.45F + this.getFruitPosOffset(booflo), ((ModelBooflo<EntityBooflo>) (boofloModel)).FruitPos.rotationPointZ / 16 - 1.2F);
+			if(!booflo.isBoofed()) {
+				GlStateManager.translatef(((ModelBooflo<EntityBooflo>) this.getEntityModel()).FruitPos.rotationPointX / 16 - 1.25F, ((ModelBooflo<EntityBooflo>) this.getEntityModel()).FruitPos.rotationPointY / 16 + 1.45F + this.getFruitPosOffset(booflo), ((ModelBooflo<EntityBooflo>) this.getEntityModel()).FruitPos.rotationPointZ / 16 - 1.2F);
 			}
 			
 			GlStateManager.rotatef(90F, 1.0F, 0.0F, 0.0F);
@@ -47,10 +44,6 @@ public class RenderLayerBoofloFruit extends LayerRenderer<EntityBooflo, EntityMo
 	
 	private float getFruitPosOffset(EntityBooflo booflo) {
 		return 0.22F * booflo.FRUIT_HOVER.getAnimationProgress();
-	}
-	
-	private EntityModel<EntityBooflo> getBoofloModel(EntityBooflo booflo) {
-		return booflo.isBoofed() ? new ModelBoofloInflated<>() : new ModelBooflo<>();
 	}
 	
 	@Override

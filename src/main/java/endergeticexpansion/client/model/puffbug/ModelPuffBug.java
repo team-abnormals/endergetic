@@ -10,15 +10,22 @@ import net.minecraft.util.math.MathHelper;
  * ModelPuffBugInflated - Endergized
  * Created using Tabula 7.0.0
  */
-public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEntityModel<E> {
+public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<E> {
     public EndimatorRendererModel Body;
     public EndimatorRendererModel Stinger;
     public EndimatorRendererModel Neck;
     public EndimatorRendererModel Head;
     public EndimatorRendererModel Sensor1;
     public EndimatorRendererModel Sensor2;
+    
+    public EndimatorRendererModel BodyDeflated;
+    public EndimatorRendererModel StingerDeflated;
+    public EndimatorRendererModel NeckDeflated;
+    public EndimatorRendererModel HeadDeflated;
+    public EndimatorRendererModel Sensor1Deflated;
+    public EndimatorRendererModel Sensor2Deflated;
 
-    public ModelPuffBugInflated() {
+    public ModelPuffBug() {
         this.textureWidth = 32;
         this.textureHeight = 16;
         this.Head = new EndimatorRendererModel(this, 0, 0);
@@ -50,15 +57,47 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
         this.Body.addChild(this.Neck);
         this.Head.addChild(this.Sensor2);
         
+        this.BodyDeflated = new EndimatorRendererModel(this, 10, 7);
+        this.BodyDeflated.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.BodyDeflated.addBox(-1.0F, -3.0F, -1.0F, 2, 6, 2, 0.0F);
+        this.Sensor1Deflated = new EndimatorRendererModel(this, 18, 1);
+        this.Sensor1Deflated.setRotationPoint(-2.0F, 3.0F, 0.5F);
+        this.Sensor1Deflated.addBox(0.0F, 0.0F, 0.0F, 1, 4, 0, 0.0F);
+        this.setRotateAngle(Sensor1Deflated, 0.0F, 1.5707963267948966F, 0.7330382858376184F);
+        this.HeadDeflated = new EndimatorRendererModel(this, 0, 0);
+        this.HeadDeflated.setRotationPoint(0.0F, 3.7F, 0.0F);
+        this.HeadDeflated.addBox(-2.0F, 0.0F, -1.5F, 4, 3, 3, 0.0F);
+        this.setRotateAngle(HeadDeflated, -0.13962634015954636F, 0.0F, 0.0F);
+        this.Sensor2Deflated = new EndimatorRendererModel(this, 18, 1);
+        this.Sensor2Deflated.setRotationPoint(2.0F, 3.0F, 0.5F);
+        this.Sensor2Deflated.addBox(-0.1F, 0.0F, 0.0F, 1, 4, 0, 0.0F);
+        this.setRotateAngle(Sensor2Deflated, 0.7330382858376184F, 1.5707963267948966F, 0.0F);
+        this.StingerDeflated = new EndimatorRendererModel(this, 15, 1);
+        this.StingerDeflated.setRotationPoint(-0.5F, -3.0F, 0.0F);
+        this.StingerDeflated.addBox(0.0F, -4.0F, 0.0F, 1, 4, 0, 0.0F);
+        this.NeckDeflated = new EndimatorRendererModel(this, 0, 6);
+        this.NeckDeflated.setRotationPoint(0.0F, 3.0F, 0.0F);
+        this.NeckDeflated.addBox(-1.0F, 0.0F, -1.0F, 2, 4, 2, 0.0F);
+        this.setRotateAngle(NeckDeflated, -0.13962634015954636F, 0.0F, 0.0F);
+        this.HeadDeflated.addChild(this.Sensor1Deflated);
+        this.NeckDeflated.addChild(this.HeadDeflated);
+        this.HeadDeflated.addChild(this.Sensor2Deflated);
+        this.BodyDeflated.addChild(this.StingerDeflated);
+        this.BodyDeflated.addChild(this.NeckDeflated);
+        
         this.createScaleController();
         
         this.setDefaultBoxValues();
     }
 
     @Override
-    public void render(E entity, float f, float f1, float f2, float f3, float f4, float f5) {
-    	this.animateModel(entity, f, f1, f2, f3, f4, f5);
-        this.Body.render(f5);
+    public void render(E puffbug, float f, float f1, float f2, float f3, float f4, float f5) {
+    	this.animateModel(puffbug, f, f1, f2, f3, f4, f5);
+    	if(puffbug.isInflated()) {
+    		this.Body.render(f5);
+    	} else {
+    		this.BodyDeflated.render(f5);
+    	}
     }
     
     @Override
@@ -68,14 +107,22 @@ public class ModelPuffBugInflated<E extends EntityPuffBug> extends EndimatorEnti
     	this.revertBoxesToDefaultValues();
     	
     	if(!puffBug.isEndimationPlaying(EntityPuffBug.PUFF_ANIMATION) && !puffBug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION)) {
-    		this.Sensor1.rotateAngleZ += 0.1F * MathHelper.sin(0.25F * ageInTicks);
-    		this.Sensor2.rotateAngleX += 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    		float angle = 0.1F * MathHelper.sin(0.25F * ageInTicks);
+    		this.Sensor1.rotateAngleZ += angle;
+    		this.Sensor2.rotateAngleX += angle;
+    		this.Sensor1Deflated.rotateAngleZ += angle;
+    		this.Sensor2Deflated.rotateAngleX += angle;
     	}
     	
     	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
+    	this.HeadDeflated.rotateAngleX = this.Head.rotateAngleX;
     	
-    	this.Body.rotateAngleY = puffBug.getRotationController().getRotations(ClientInfo.getPartialTicks())[0] * (float) (Math.PI / 180F);
-    	this.Body.rotateAngleX = puffBug.getRotationController().getRotations(ClientInfo.getPartialTicks())[1] * (float) (Math.PI / 180F);
+    	float[] rotations = puffBug.getRotationController().getRotations(ClientInfo.getPartialTicks());
+    	
+    	this.Body.rotateAngleY = rotations[0] * (float) (Math.PI / 180F);
+    	this.Body.rotateAngleX = rotations[1] * (float) (Math.PI / 180F);
+    	this.BodyDeflated.rotateAngleY = this.Body.rotateAngleY;
+    	this.BodyDeflated.rotateAngleX = this.Body.rotateAngleX;
     }
     
     @Override

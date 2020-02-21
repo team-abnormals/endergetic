@@ -18,7 +18,7 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fml.RegistryObject;
 
-public class EEDispenserBehaviorRegistry {
+public class EEDispenserBehaviors {
 	
 	static DefaultDispenseItemBehavior spawnEggItemBehavior = new DefaultDispenseItemBehavior() {
     	

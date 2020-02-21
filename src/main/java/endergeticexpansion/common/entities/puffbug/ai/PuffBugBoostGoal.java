@@ -42,7 +42,7 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 	protected Vec3d getPosition() {
 		Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5);
 
-		for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.WATER) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
+		for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
 			;
 		}
 		

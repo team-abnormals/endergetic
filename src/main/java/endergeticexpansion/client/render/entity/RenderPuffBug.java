@@ -2,8 +2,7 @@ package endergeticexpansion.client.render.entity;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
-import endergeticexpansion.client.model.puffbug.ModelPuffBugDeflated;
-import endergeticexpansion.client.model.puffbug.ModelPuffBugInflated;
+import endergeticexpansion.client.model.puffbug.ModelPuffBug;
 import endergeticexpansion.client.render.entity.layer.RenderLayerPuffBugGlow;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -17,7 +16,7 @@ public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<Ent
 	private static final ResourceLocation INFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated.png");
 	
 	public RenderPuffBug(EntityRendererManager manager) {
-		super(manager, new ModelPuffBugInflated<>(), 0.3F);
+		super(manager, new ModelPuffBug<>(), 0.3F);
 		this.addLayer(new RenderLayerPuffBugGlow<>(this));
 	}
 	
@@ -27,7 +26,6 @@ public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<Ent
 			this.shadowSize *= 0.5F;
 		}
 		
-		this.entityModel = puffbug.isInflated() ? new ModelPuffBugInflated<>() : new ModelPuffBugDeflated<>();
 		super.doRender(puffbug, x, y, z, entityYaw, partialTicks);
 	}
 	

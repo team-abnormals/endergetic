@@ -66,6 +66,8 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
@@ -76,8 +78,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		return !entity.isSpectator() && !entity.isInvisible();
 	};
 	private static final DataParameter<Optional<BlockPos>> HIVE_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
-	private static final DataParameter<Optional<BlockPos>> BUD_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
-	private static final DataParameter<Optional<BlockPos>> POLLINATION_POS = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.OPTIONAL_BLOCK_POS);
 	private static final DataParameter<Direction> ATTACHED_HIVE_SIDE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.DIRECTION);
 	private static final DataParameter<Boolean> FROM_BOTTLE = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> INFLATED = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
@@ -92,6 +92,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private TeleportController teleportController;
 	private RotationController rotationController;
 	private Endimation endimation = BLANK_ANIMATION;
+	@Nullable
+	private BlockPos budPos, pollinationPos;
 	private int animationTick;
 	private int teleportCooldown;
 	public int puffCooldown;
@@ -116,14 +118,12 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	protected void registerData() {
 		super.registerData();
 		this.getDataManager().register(HIVE_POS, Optional.empty());
-		this.getDataManager().register(BUD_POS, Optional.empty());
-		this.getDataManager().register(POLLINATION_POS, Optional.empty());
 		this.getDataManager().register(ATTACHED_HIVE_SIDE, Direction.UP);
 		this.getDataManager().register(COLOR, -1);
 		this.getDataManager().register(FROM_BOTTLE, false);
 		this.getDataManager().register(INFLATED, true);
 		this.getDataManager().register(BOOSTING, false);
-	}	
+	}
 	
 	@Override
 	protected void registerGoals() {
@@ -163,6 +163,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.getTeleportController().bringToDestination();
 			} else if(this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
 				this.setMotion(Vec3d.ZERO);
+				if(this.getAnimationTick() == 5) {
+					
+				}
 			}
 			
 			if(this.getHivePos() == null) {
@@ -188,9 +191,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			Random rand = this.getRNG();
 			
 			if(this.isEndimationPlaying(PUFF_ANIMATION) && this.getAnimationTick() == 5) {
-				for(int i = 0; i < 4; i++) {
+				for(int i = 0; i < 3; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-    				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
     			
     				double x = this.posX + offsetX;
     				double y = this.posY + (rand.nextFloat() * 0.05F) + 0.7F;
@@ -199,7 +202,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F, (rand.nextFloat() * 0.05F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F);
 				}
 			} else if(this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 8) {
-				for(int i = 0; i < 10; i++) {
+				for(int i = 0; i < 6; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 				
@@ -210,7 +213,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
 			} else if(this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && this.getAnimationTick() == 5) {
-				for(int i = 0; i < 10; i++) {
+				for(int i = 0; i < 6; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 			
@@ -288,20 +291,20 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Nullable
 	public BlockPos getBudPos() {
-		return this.getDataManager().get(BUD_POS).orElse(null);
+		return this.budPos;
 	}
 	
 	public void setBudPos(@Nullable BlockPos pos) {
-		this.getDataManager().set(BUD_POS, Optional.ofNullable(pos));
+		this.budPos = pos;
 	}
 	
 	@Nullable
 	public BlockPos getPollinationPos() {
-		return this.getDataManager().get(POLLINATION_POS).orElse(null);
+		return this.pollinationPos;
 	}
 	
 	public void setPollinationPos(@Nullable BlockPos pos) {
-		this.getDataManager().set(POLLINATION_POS, Optional.ofNullable(pos));
+		this.pollinationPos = pos;
 	}
 	
 	public boolean canAttachToSide(Direction direction) {
@@ -388,6 +391,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			Vec3d motion = new Vec3d(xMotion, 0.65F, zMotion).normalize();
 			
 			this.addVelocity(motion.getX() * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.1F), motion.getY(), motion.getZ() * (this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() - 0.1F));
+		} else if(endimation == TELEPORT_TO_ANIMATION) {
+			if(!this.world.isRemote) {
+				this.playSound(this.getTeleportSound(false), 0.65F, this.getSoundPitch());
+			}
 		}
 	}
 	
@@ -396,6 +403,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(endimation == TELEPORT_TO_ANIMATION) {
 			if(!this.world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
+				this.playSound(this.getTeleportSound(true), 0.65F, this.getSoundPitch());
 			}
 		} else if(endimation == POLLINATE_ANIMATION) {
 			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 3000));
@@ -490,6 +498,18 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public boolean canBreed() {
 		return super.canBreed() && this.isInflated();
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public boolean isInRangeToRenderDist(double distance) {
+		double boundingBoxLength = this.getBoundingBox().getAverageEdgeLength() * 2.5D;
+		if(Double.isNaN(boundingBoxLength)) {
+			boundingBoxLength = 1.0D;
+		}
+
+		boundingBoxLength = boundingBoxLength * 64.0D * getRenderDistanceWeight();
+		return distance < boundingBoxLength * boundingBoxLength;
 	}
 	
 	@Override

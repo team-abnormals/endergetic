@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.world.other.PoiseTree;
+import endergeticexpansion.core.registry.EESounds;
 import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,6 +25,8 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -48,7 +51,7 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, World world, BlockPos pos, Random rand) {
 		if(stateIn.get(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
 		
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -58,7 +61,12 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
 		double z = pos.getZ() + 0.5D + offsetZ;
 		
-		worldIn.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
+		world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
+		
+		if(rand.nextInt(8) == 0) {
+			SoundEvent soundToPlay = rand.nextFloat() > 0.9F ? EESounds.POISE_BUSH_AMBIENT_LONG.get() : EESounds.POISE_BUSH_AMBIENT.get();
+			world.playSound(pos.getX(), pos.getY(), pos.getZ(), soundToPlay, SoundCategory.BLOCKS, 0.05F + rand.nextFloat() * 0.05F, 0.9F + rand.nextFloat() * 0.15F, false);
+		}
 	}
 	
 	@Override
