@@ -49,7 +49,7 @@ public class PuffBugPollinateGoal extends Goal {
 	
 	@Override
 	public void tick() {
-		this.puffbug.getRotationController().rotate(0.0F, 180.0F, 20);
+		this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 		this.puffbug.puffCooldown = 10;
 		
 		this.puffbug.setBoosting(false);

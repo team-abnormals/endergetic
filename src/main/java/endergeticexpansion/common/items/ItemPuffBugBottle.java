@@ -26,7 +26,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectUtils;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
@@ -117,7 +116,7 @@ public class ItemPuffBugBottle extends Item {
 			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").applyTextStyles(TextFormatting.DARK_PURPLE));
 			for(EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + StringUtils.intToRomanNumerals(effects.getAmplifier() + 1) + " (" + EffectUtils.getPotionDurationString(effects, 1.0F) + ")").applyTextStyles(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + StringUtils.intToRomanNumerals(effects.getAmplifier() + 1)).applyTextStyles(potionTextFormat));
 			}
 		}
 	}

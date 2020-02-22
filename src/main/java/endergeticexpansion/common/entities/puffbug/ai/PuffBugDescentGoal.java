@@ -58,7 +58,7 @@ public class PuffBugDescentGoal extends Goal {
 		this.ticksPassed++;
 		
 		if(this.ticksPassed > 20) {
-			this.puffbug.getRotationController().rotate(0.0F, 180.0F, 20);
+			this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 			this.puffbug.puffCooldown = 25;
 		}
 		

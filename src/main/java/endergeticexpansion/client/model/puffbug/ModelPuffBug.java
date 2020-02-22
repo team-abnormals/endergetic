@@ -121,8 +121,10 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     	
     	this.Body.rotateAngleY = rotations[0] * (float) (Math.PI / 180F);
     	this.Body.rotateAngleX = rotations[1] * (float) (Math.PI / 180F);
+    	this.Body.rotateAngleZ = rotations[2] * (float) (Math.PI / 180F);
     	this.BodyDeflated.rotateAngleY = this.Body.rotateAngleY;
     	this.BodyDeflated.rotateAngleX = this.Body.rotateAngleX;
+    	this.BodyDeflated.rotateAngleZ = this.Body.rotateAngleZ;
     }
     
     @Override

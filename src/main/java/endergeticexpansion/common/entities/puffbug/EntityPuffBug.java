@@ -1,6 +1,7 @@
 package endergeticexpansion.common.entities.puffbug;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -48,6 +49,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.potion.PotionUtils;
@@ -89,13 +91,17 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
 	public static final Endimation ROTATE_ANIMATION = new Endimation(20);
 	public static final Endimation POLLINATE_ANIMATION = new Endimation(120);
+	
 	private TeleportController teleportController;
 	private RotationController rotationController;
 	private Endimation endimation = BLANK_ANIMATION;
+	
 	@Nullable
 	private BlockPos budPos, pollinationPos;
+	
 	private int animationTick;
 	private int teleportCooldown;
+	public int ticksAwayFromHive;
 	public int puffCooldown;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
@@ -140,6 +146,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		super.tick();
 		this.endimateTick();
 		this.getRotationController().tick();
+		this.keepEffectsAbsorbed();
 		
 		this.fallDistance = 0;
 		
@@ -182,8 +189,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				if(this.getHive() == null) {
 					this.setHivePos(null);
 				} else {
-					if(this.getAttachedHiveSide() == null){
-						
+					if(this.getAttachedHiveSide() == null) {
+						this.ticksAwayFromHive++;
 					}
 				}
 			}
@@ -235,6 +242,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.setFromBottle(compound.getBoolean("FromBottle"));
 		
 		this.teleportCooldown = compound.getInt("TeleportCooldown");
+		this.ticksAwayFromHive = compound.getInt("TicksAwayFromHive");
 		
 		if(compound.contains("IsInflated")) {
 			this.setInflated(compound.getBoolean("IsInflated"));
@@ -244,7 +252,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
 		}
 		
-		this.rotationController = this.getRotationController().read(this, compound);
+		this.rotationController = this.getRotationController().read(this, compound.getCompound("Orientation"));
 	}
 	
 	@Override
@@ -256,12 +264,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		compound.putBoolean("IsInflated", this.isInflated());
 		
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
+		compound.putInt("TicksAwayFromHive", this.ticksAwayFromHive);
 		
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
 		}
 		
-		this.getRotationController().write(compound);
+		compound.put("Orientation", this.getRotationController().write(new CompoundNBT()));
 	}
 	
 	@Nullable
@@ -488,6 +497,17 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		nbt.putBoolean("IsChild", this.isChild());
+	}
+	
+	private void keepEffectsAbsorbed() {
+		Iterator<Effect> iterator = this.getActivePotionMap().keySet().iterator();
+		while(iterator.hasNext()) {
+            Effect effect = iterator.next();
+            if(effect != Effects.LEVITATION) {
+            	EffectInstance effectInstance = this.getActivePotionMap().get(effect);
+            	this.getActivePotionMap().put(effect, new EffectInstance(effect, 100, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.doesShowParticles()));
+            }
+		}
 	}
 	
 	@Override
@@ -757,7 +777,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		private EntityPuffBug puffbug;
 		private float prevYaw, yaw, startingYaw;
 		private float prevPitch, pitch, startingPitch;
-		private float setYaw, setPitch;
+		private float prevRoll, roll, startingRoll;
+		private float setYaw, setPitch, setRoll;
 		private int tickLength;
 		private int ticksSinceNotRotating;
 		private boolean rotating;
@@ -769,6 +790,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		protected void tick() {
 			this.prevYaw = this.yaw;
 			this.prevPitch = this.pitch;
+			this.prevRoll = this.roll;
 			
 			if(!this.rotating) {
 				if(this.ticksSinceNotRotating > 5) {
@@ -782,9 +804,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 							NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.ROTATE_ANIMATION);
 						}
 					}
+					
+					if(this.setRoll != 0.0F) {
+						this.startingRoll = this.roll;
+					}
 				
 					this.setYaw = 0.0F;
 					this.setPitch = 0.0F;
+					this.setRoll = 0.0F;
 					this.tickLength = 20;	
 				}
 				this.ticksSinceNotRotating++;
@@ -792,6 +819,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			
 			this.yaw = this.clamp((this.setYaw - this.startingYaw) <= 0, this.yaw + ((this.setYaw - this.startingYaw) / this.tickLength), this.startingYaw, this.setYaw);
 			this.pitch = this.clamp((this.setPitch - this.startingPitch) <= 0, this.pitch + ((this.setPitch - this.startingPitch) / this.tickLength), this.startingPitch, this.setPitch);
+			this.roll = this.clamp((this.setRoll - this.startingRoll) <= 0, this.roll + ((this.setRoll - this.startingRoll) / this.tickLength), this.startingRoll, this.setRoll);
 			
 			this.rotating = false;
 		}
@@ -808,34 +836,44 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 		}
 		
-		public void rotate(float yaw, float pitch, int tickLength) {
+		public void rotate(float yaw, float pitch, float roll, int tickLength) {
 			if(this.setYaw != yaw) {
 				this.startingYaw = this.yaw;
 			}
 			
 			if(this.setPitch != pitch) {
 				this.startingPitch = this.pitch;
-				NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.ROTATE_ANIMATION);
+				if(tickLength >= 20) {
+					NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.ROTATE_ANIMATION);
+				}
+			}
+			
+			if(this.setRoll != roll) {
+				this.startingRoll = this.roll;
 			}
 			
 			this.setYaw = yaw;
 			this.setPitch = pitch;
+			this.setRoll = roll;
 			this.tickLength = tickLength;
 			this.rotating = true;
 			this.ticksSinceNotRotating = 0;
 			
 			if(!this.puffbug.world.isRemote) {
-				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.puffbug), new MessageRotate(this.puffbug.getEntityId(), tickLength, yaw, pitch));
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.puffbug), new MessageRotate(this.puffbug.getEntityId(), tickLength, yaw, pitch, roll));
 			}
 		}
 		
 		protected CompoundNBT write(CompoundNBT compound) {
 			compound.putFloat("Yaw", this.yaw);
 			compound.putFloat("Pitch", this.pitch);
+			compound.putFloat("Roll", this.roll);
 			compound.putFloat("SetYaw", this.setYaw);
 			compound.putFloat("SetPitch", this.setPitch);
+			compound.putFloat("SetRoll", this.roll);
 			compound.putFloat("StartingYaw", this.startingYaw);
 			compound.putFloat("StartingPitch", this.startingPitch);
+			compound.putFloat("StartingRoll", this.startingRoll);
 			compound.putInt("TickLength", this.tickLength);
 			compound.putBoolean("Rotating", this.rotating);
 			return compound;
@@ -846,19 +884,21 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			
 			rotationController.yaw = rotationController.prevYaw = compound.getFloat("Yaw");
 			rotationController.pitch = rotationController.prevPitch = compound.getFloat("Pitch");
+			rotationController.roll = rotationController.prevRoll = compound.getFloat("Roll");
 			rotationController.setYaw = compound.getFloat("SetYaw");
 			rotationController.setPitch = compound.getFloat("SetPitch");
+			rotationController.setRoll = compound.getFloat("SetRoll");
 			rotationController.startingYaw = compound.getFloat("StartingYaw");
 			rotationController.startingPitch = compound.getFloat("StartingPitch");
+			rotationController.startingRoll = compound.getFloat("StartingRoll");
 			rotationController.tickLength = compound.getInt("TickLength");
 			rotationController.rotating = compound.getBoolean("Rotating");
-			rotationController.ticksSinceNotRotating = 0;
 			
 			return rotationController;
 		}
 		
 		public float[] getRotations(float ptc) {
-			return new float[] {MathHelper.lerp(ptc, this.prevYaw, this.yaw), MathHelper.lerp(ptc, this.prevPitch, this.pitch)}; 
+			return new float[] {MathHelper.lerp(ptc, this.prevYaw, this.yaw), MathHelper.lerp(ptc, this.prevPitch, this.pitch), MathHelper.lerp(ptc, this.prevRoll, this.roll)}; 
 		}
 	}
 }

@@ -18,12 +18,14 @@ public class MessageRotate {
 	private int tickLength;
 	private float yaw;
 	private float pitch;
+	private float roll;
 	
-	public MessageRotate(int entityId, int tickLength, float yaw, float pitch) {
+	public MessageRotate(int entityId, int tickLength, float yaw, float pitch, float roll) {
         this.entityId = entityId;
         this.tickLength = tickLength;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.roll = roll;
     }
 	
 	public void serialize(PacketBuffer buf) {
@@ -31,10 +33,11 @@ public class MessageRotate {
 		buf.writeInt(this.tickLength);
 		buf.writeFloat(this.yaw);
 		buf.writeFloat(this.pitch);
+		buf.writeFloat(this.roll);
 	}
 	
 	public static MessageRotate deserialize(PacketBuffer buf) {
-		return new MessageRotate(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat());
+		return new MessageRotate(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(), buf.readFloat());
 	}
 	
 	public static void handle(MessageRotate message, Supplier<NetworkEvent.Context> ctx) {
@@ -43,7 +46,7 @@ public class MessageRotate {
 			context.enqueueWork(() -> {
 				Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
 				if(entity instanceof EntityPuffBug) {
-					((EntityPuffBug) entity).getRotationController().rotate(message.yaw, message.pitch, message.tickLength);
+					((EntityPuffBug) entity).getRotationController().rotate(message.yaw, message.pitch, message.roll, message.tickLength);
 				}
 			});
 			context.setPacketHandled(true);
