@@ -64,8 +64,10 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 		world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
 		
 		if(rand.nextInt(8) == 0) {
-			SoundEvent soundToPlay = rand.nextFloat() > 0.9F ? EESounds.POISE_BUSH_AMBIENT_LONG.get() : EESounds.POISE_BUSH_AMBIENT.get();
-			world.playSound(pos.getX(), pos.getY(), pos.getZ(), soundToPlay, SoundCategory.BLOCKS, 0.05F + rand.nextFloat() * 0.05F, 0.9F + rand.nextFloat() * 0.15F, false);
+			float rngFloat = rand.nextFloat();
+			SoundEvent soundToPlay = rngFloat > 0.9F ? EESounds.POISE_BUSH_AMBIENT_LONG.get() : EESounds.POISE_BUSH_AMBIENT.get();
+			float volume = rngFloat < 0.9F ? 0.1F + rand.nextFloat() * 0.075F : 0.05F + rand.nextFloat() * 0.05F;
+			world.playSound(pos.getX(), pos.getY(), pos.getZ(), soundToPlay, SoundCategory.BLOCKS, volume, 0.9F + rand.nextFloat() * 0.15F, false);
 		}
 	}
 	

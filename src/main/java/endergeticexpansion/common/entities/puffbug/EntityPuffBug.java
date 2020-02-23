@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
@@ -27,6 +28,7 @@ import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -56,6 +58,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -91,6 +94,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
 	public static final Endimation ROTATE_ANIMATION = new Endimation(20);
 	public static final Endimation POLLINATE_ANIMATION = new Endimation(120);
+	public final ControlledEndimation HIVE_LANDING = new ControlledEndimation(20, 0);
+	public final ControlledEndimation HIVE_SLEEP = new ControlledEndimation(25, 0);
 	
 	private TeleportController teleportController;
 	private RotationController rotationController;
@@ -98,11 +103,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Nullable
 	private BlockPos budPos, pollinationPos;
+	@Nullable
+	private Direction teleportHiveSide, desiredHiveSide;
 	
 	private int animationTick;
 	private int teleportCooldown;
 	public int ticksAwayFromHive;
 	public int puffCooldown;
+	public int ticksRested;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
@@ -133,12 +141,15 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(1, new PuffBugTeleportToBudGoal(this));
-		this.goalSelector.addGoal(2, new PuffBugPollinateGoal(this));
-		this.goalSelector.addGoal(3, new PuffBugDescentGoal(this));
-		this.goalSelector.addGoal(4, new BreedGoal(this, 1.0F));
-		this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.5F));
-		this.goalSelector.addGoal(5, new PuffBugBoostGoal(this));
+		this.goalSelector.addGoal(0, new PuffBugRestOnHiveGoal(this));
+		this.goalSelector.addGoal(1, new PuffBugAttachToHiveGoal(this));
+		this.goalSelector.addGoal(2, new PuffBugTeleportToRestGoal(this));
+		this.goalSelector.addGoal(3, new PuffBugPollinateGoal(this));
+		this.goalSelector.addGoal(4, new PuffBugDescentGoal(this));
+		this.goalSelector.addGoal(5, new PuffBugTeleportToBudGoal(this));
+		this.goalSelector.addGoal(6, new BreedGoal(this, 1.0F));
+		this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.5F));
+		this.goalSelector.addGoal(8, new PuffBugBoostGoal(this));
 	}
 	
 	@Override
@@ -170,9 +181,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.getTeleportController().bringToDestination();
 			} else if(this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
 				this.setMotion(Vec3d.ZERO);
-				if(this.getAnimationTick() == 5) {
-					
-				}
 			}
 			
 			if(this.getHivePos() == null) {
@@ -185,14 +193,23 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 						}
 					}
 				}
+				this.ticksAwayFromHive = 0;
 			} else {
 				if(this.getHive() == null) {
 					this.setHivePos(null);
 				} else {
-					if(this.getAttachedHiveSide() == null) {
+					if(this.getAttachedHiveSide() == Direction.UP) {
 						this.ticksAwayFromHive++;
+					} else {
+						this.ticksAwayFromHive = 0;
 					}
 				}
+			}
+			
+			if(this.getAttachedHiveSide() != Direction.UP) {
+				this.setInflated(false);
+			} else if(!this.isInflated()) {
+				this.setInflated(true);
 			}
 		} else {
 			Random rand = this.getRNG();
@@ -229,6 +246,55 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					double z = this.posZ + offsetZ;
 				
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+				}
+			}
+			
+			this.HIVE_LANDING.update();
+			this.HIVE_SLEEP.update();
+			
+			this.HIVE_LANDING.tick();
+			this.HIVE_SLEEP.tick();
+			
+			this.HIVE_LANDING.setDecrementing(this.getAttachedHiveSide() == Direction.UP);
+			
+			if(this.HIVE_LANDING.isAtMax()) {
+				if(this.HIVE_SLEEP.isDescrementing() && this.HIVE_SLEEP.getTick() == 0) {
+					this.HIVE_SLEEP.setDecrementing(false);
+				} else if(this.HIVE_SLEEP.isAtMax()) {
+					this.HIVE_SLEEP.setDecrementing(true);
+				}
+			} else {
+				this.HIVE_SLEEP.setDecrementing(true);
+			}
+		}
+		
+		if(this.getDesiredHiveSide() != null) {
+			if(this.getHive() != null && this.getDesiredHiveSide() != Direction.DOWN) {
+				float degrees = (this.getDesiredHiveSide() == Direction.SOUTH ? 0 : this.getDesiredHiveSide().getAxisDirection().getOffset()) * (this.getDesiredHiveSide().getAxis() == Axis.Z ? 180.0F : -90.0F);
+				this.rotationYaw = this.prevRotationYaw = degrees;
+				this.rotationYawHead = this.prevRotationYawHead = degrees;
+				this.renderYawOffset = this.prevRenderYawOffset = degrees;
+			}
+		}
+		
+		if(this.getAttachedHiveSide() != Direction.UP) {
+			if(this.getHive() != null) {
+				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
+				this.getNavigator().clearPath();
+				this.setAIMoveSpeed(0.0F);
+				
+				this.addVelocity(0.0F, 0.0025F, 0.0F);
+				
+				this.rotationYaw = this.prevRotationYaw;
+				this.rotationYawHead = this.prevRotationYawHead;
+				this.renderYawOffset = this.prevRenderYawOffset;
+				
+				if(!this.world.isRemote && !this.isAtCorrectRestLocation(this.getAttachedHiveSide())) {
+					this.setAttachedHiveSide(Direction.UP);
+				}
+			} else {
+				if(!this.world.isRemote) {
+					this.setAttachedHiveSide(Direction.UP);
 				}
 			}
 		}
@@ -283,7 +349,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	@Nullable
-	private TileEntityPuffBugHive getHive() {
+	public TileEntityPuffBugHive getHive() {
 		BlockPos hivePos = this.getHivePos();
 		if(hivePos != null) {
 			try {
@@ -334,6 +400,24 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.dataManager.set(ATTACHED_HIVE_SIDE, side);
 	}
 	
+	@Nullable
+	public Direction getTeleportHiveSide() {
+		return this.teleportHiveSide;
+	}
+	
+	public void setTeleportHiveSide(@Nullable Direction side) {
+		this.teleportHiveSide = side;
+	}
+	
+	@Nullable
+	public Direction getDesiredHiveSide() {
+		return this.desiredHiveSide;
+	}
+	
+	public void setDesiredHiveSide(@Nullable Direction side) {
+		this.desiredHiveSide = side;
+	}
+	
 	public boolean isFromBottle() {
 		return this.dataManager.get(FROM_BOTTLE);
 	}
@@ -368,6 +452,11 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	public boolean hasLevitation() {
 		return this.isPotionActive(Effects.LEVITATION);
+	}
+	
+	@Override
+	public boolean hasNoGravity() {
+		return super.hasNoGravity() || this.getAttachedHiveSide() != Direction.UP;
 	}
 	
 	public TeleportController getTeleportController() {
@@ -447,7 +536,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			this.setMotion(this.getMotion().scale(0.75D));
 			this.setMotion(this.getMotion().subtract(0, gravity, 0));
 		} else {
-			super.travel(moveDirection);
+			if(!this.isInflated()) {
+				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
+			}
+			super.travel(Vec3d.ZERO);
+			if(!this.isInflated()) {
+				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
+			}
 		}
 	}
 	
@@ -507,6 +602,29 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
             	EffectInstance effectInstance = this.getActivePotionMap().get(effect);
             	this.getActivePotionMap().put(effect, new EffectInstance(effect, 100, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.doesShowParticles()));
             }
+		}
+	}
+	
+	public boolean wantsToRest() {
+		return this.ticksAwayFromHive >= 200;
+	}
+	
+	public boolean isAtCorrectRestLocation(Direction side) {
+		TileEntity te = side == Direction.DOWN ? this.isChild() ? this.world.getTileEntity(this.getPosition().up(1)) : this.world.getTileEntity(this.getPosition().up(2)) : this.isChild() ? this.world.getTileEntity(this.getPosition().offset(side.getOpposite())) : this.world.getTileEntity(this.getPosition().up(1).offset(side.getOpposite()));
+		if(te != this.getHive()) {
+			return false;
+		}
+		
+		switch(side) {
+			case UP:
+				return false;
+			case DOWN:
+				float yOffsetDown = this.isChild() ? 0.45F : -0.15F;
+				return new Vec3d(this.getHivePos().down()).add(0.5F, yOffsetDown, 0.5F).distanceTo(this.getPositionVec()) < 0.25F;
+			default:
+				float yOffset = this.isChild() ? 0.2F : -0.2F;
+				return this.world.isAirBlock(this.getHivePos().offset(side).up()) && this.world.isAirBlock(this.getHivePos().offset(side).down())
+					&& new Vec3d(this.getHivePos().offset(side)).add(this.getTeleportController().getOffsetForDirection(side)[0], yOffset, this.getTeleportController().getOffsetForDirection(side)[1]).distanceTo(this.getPositionVec()) < (this.isChild() ? 0.1F : 0.25F);
 		}
 	}
 	
@@ -636,37 +754,41 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	public SoundEvent getPuffSound() {
-		return EESounds.PUFBUG_PUFF.get();
+		return EESounds.PUFFBUG_PUFF.get();
 	}
 	
 	public SoundEvent getTeleportSound(boolean from) {
-		return from ? EESounds.PUFBUG_TELEPORT_FROM.get() : EESounds.PUFBUG_TELEPORT_TO.get();
+		return from ? EESounds.PUFFBUG_TELEPORT_FROM.get() : EESounds.PUFFBUG_TELEPORT_TO.get();
 	}
 	
 	public SoundEvent getPollinateSound() {
-		return EESounds.PUFBUG_POLLINATE.get();
+		return EESounds.PUFFBUG_POLLINATE.get();
+	}
+	
+	public SoundEvent getSleepSound() {
+		return EESounds.PUFFBUG_SLEEP.get();
 	}
 	
 	public SoundEvent getHiveCreationSound() {
-		return EESounds.PUFBUG_CREATE_HIVE.get();
+		return EESounds.PUFFBUG_CREATE_HIVE.get();
 	}
 	
 	public SoundEvent getLaunchSound() {
-		return EESounds.PUFBUG_LAUNCH.get();
+		return EESounds.PUFFBUG_LAUNCH.get();
 	}
 	
 	public SoundEvent getLandSound() {
-		return EESounds.PUFBUG_LAND.get();
+		return EESounds.PUFFBUG_LAND.get();
 	}
 	
 	@Override
 	protected SoundEvent getDeathSound() {
-		return EESounds.PUFBUG_DEATH.get();
+		return EESounds.PUFFBUG_DEATH.get();
 	}
 	
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSource) {
-		return EESounds.PUFBUG_HURT.get();
+		return EESounds.PUFFBUG_HURT.get();
 	}
 	
 	@Override
@@ -750,16 +872,45 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		protected void bringToDestination() {
 			if(!this.world.isRemote) {
-				NetworkUtil.teleportEntity(this.puffbug, this.destination.getX() + 0.5F, this.destination.getY() + 0.5F, this.destination.getZ() + 0.5F);
+				Direction side = this.puffbug.getTeleportHiveSide();
+				
+				float xOffset = side == null || side == Direction.DOWN ? 0.5F : this.getOffsetForDirection(side)[0];
+				float yOffset = side == Direction.DOWN ? this.puffbug.isChild() ? 0.45F : -0.15F : this.puffbug.isChild() ? 0.2F : -0.2F;
+				float zOffset = side == null || side == Direction.DOWN ? 0.5F : this.getOffsetForDirection(side)[1];
+				
+				if(side == null) {
+					NetworkUtil.teleportEntity(this.puffbug, this.destination.getX() + 0.5F, this.destination.getY() + 0.5F, this.destination.getZ() + 0.5F);
+				} else {
+					NetworkUtil.teleportEntity(this.puffbug, this.destination.getX() + xOffset, this.destination.getY() + yOffset, this.destination.getZ() + zOffset);
+				}
+				
 				this.destination = null;
+			
+				this.puffbug.getNavigator().clearPath();
+				this.puffbug.setMotion(Vec3d.ZERO);
+				
+				if(side != null) {
+					this.puffbug.setDesiredHiveSide(side);
+					this.puffbug.setTeleportHiveSide(null);
+				}
 			}
 		}
 		
 		@Nullable
-		public boolean tryToCreateDesinationTo(BlockPos pos) {
-			if(this.puffbug.ticksExisted > 5 && this.world.getBlockState(pos).getCollisionShape(this.world, pos).isEmpty() && this.hasNoDestination()) {
-				this.destination = pos;
-				return true;
+		public boolean tryToCreateDesinationTo(BlockPos pos, @Nullable Direction direction) {
+			boolean directionFlag = direction != null ? this.world.isAirBlock(pos.offset(direction)) : true;
+			
+			if(direction != null && direction != Direction.DOWN) {
+				if(!this.world.isAirBlock(pos.up()) || !this.world.isAirBlock(pos.down())) {
+					directionFlag = false;
+				}
+			}
+			
+			if(this.puffbug.ticksExisted > 5 && this.world.isAirBlock(pos) && directionFlag && this.hasNoDestination()) {
+				if(this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos)).isEmpty()) {
+					this.destination = pos;
+					return true;
+				}
 			}
 			return false;
 		}
@@ -770,6 +921,20 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		public boolean canTeleport() {
 			return this.destination == null && this.puffbug.teleportCooldown <= 0;
+		}
+		
+		protected float[] getOffsetForDirection(Direction side) {
+			switch(side) {
+				default:
+				case NORTH:
+					return this.puffbug.isChild() ? new float[] {0.5F, 0.85F} : new float[] {0.5F, 0.75F};
+				case SOUTH:
+					return this.puffbug.isChild() ? new float[] {0.5F, 0.15F} : new float[] {0.5F, 0.25F};
+				case EAST:
+					return this.puffbug.isChild() ? new float[] {0.15F, 0.5F} : new float[] {0.25F, 0.5F};
+				case WEST:
+					return this.puffbug.isChild() ? new float[] {0.85F, 0.5F} : new float[] {0.75F, 0.5F};
+			}
 		}
 	}
 	

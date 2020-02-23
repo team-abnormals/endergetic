@@ -59,6 +59,10 @@ public class PuffBugPollinateGoal extends Goal {
 	
 	@Override
 	public void startExecuting() {
+		this.puffbug.setBoosting(false);
+		this.puffbug.setAIMoveSpeed(0.0F);
+		this.puffbug.getNavigator().clearPath();
+		
 		this.originalPosX = (float) this.puffbug.posX;
 		this.originalPosY = (float) this.puffbug.posY;
 		this.originalPosZ = (float) this.puffbug.posZ;

@@ -56,6 +56,10 @@ public class ControlledEndimation {
 		return this.shouldDecrement;
 	}
 	
+	public boolean isAtMax() {
+		return this.tick == this.tickDuration;
+	}
+	
 	public int getTick() {
 		return this.tick;
 	}

@@ -108,6 +108,16 @@
         	{ "name": "endergetic:entity/puffbug/puffbug_pollinates", "stream": false }
         ]
     },
+    "entity.puffbug.sleep":
+    {
+        "category": "entity",
+        "subtitle": "Puffbug snores",
+        "sounds": [
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_0", "stream": false },
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_1", "stream": false },
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_2", "stream": false }
+        ]
+    },
     "entity.puffbug.create_hive":
     {
         "category": "entity",

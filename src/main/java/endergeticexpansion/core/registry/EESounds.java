@@ -29,15 +29,16 @@ public class EESounds {
 	public static final RegistryObject<SoundEvent> BOOFLO_HURT     = createSoundEvent("entity.booflo.hurt");
 	public static final RegistryObject<SoundEvent> BOOFLO_DEATH    = createSoundEvent("entity.booflo.death");
 	
-	public static final RegistryObject<SoundEvent> PUFBUG_PUFF          = createSoundEvent("entity.puffbug.puff");
-	public static final RegistryObject<SoundEvent> PUFBUG_TELEPORT_TO   = createSoundEvent("entity.puffbug.teleport_to");
-	public static final RegistryObject<SoundEvent> PUFBUG_TELEPORT_FROM = createSoundEvent("entity.puffbug.teleport_from");
-	public static final RegistryObject<SoundEvent> PUFBUG_POLLINATE     = createSoundEvent("entity.puffbug.pollinate");
-	public static final RegistryObject<SoundEvent> PUFBUG_CREATE_HIVE   = createSoundEvent("entity.puffbug.create_hive");
-	public static final RegistryObject<SoundEvent> PUFBUG_LAUNCH        = createSoundEvent("entity.puffbug.launch");
-	public static final RegistryObject<SoundEvent> PUFBUG_LAND          = createSoundEvent("entity.puffbug.land");
-	public static final RegistryObject<SoundEvent> PUFBUG_HURT          = createSoundEvent("entity.puffbug.hurt");
-	public static final RegistryObject<SoundEvent> PUFBUG_DEATH         = createSoundEvent("entity.puffbug.death");
+	public static final RegistryObject<SoundEvent> PUFFBUG_PUFF          = createSoundEvent("entity.puffbug.puff");
+	public static final RegistryObject<SoundEvent> PUFFBUG_TELEPORT_TO   = createSoundEvent("entity.puffbug.teleport_to");
+	public static final RegistryObject<SoundEvent> PUFFBUG_TELEPORT_FROM = createSoundEvent("entity.puffbug.teleport_from");
+	public static final RegistryObject<SoundEvent> PUFFBUG_POLLINATE     = createSoundEvent("entity.puffbug.pollinate");
+	public static final RegistryObject<SoundEvent> PUFFBUG_SLEEP         = createSoundEvent("entity.puffbug.sleep");
+	public static final RegistryObject<SoundEvent> PUFFBUG_CREATE_HIVE   = createSoundEvent("entity.puffbug.create_hive");
+	public static final RegistryObject<SoundEvent> PUFFBUG_LAUNCH        = createSoundEvent("entity.puffbug.launch");
+	public static final RegistryObject<SoundEvent> PUFFBUG_LAND          = createSoundEvent("entity.puffbug.land");
+	public static final RegistryObject<SoundEvent> PUFFBUG_HURT          = createSoundEvent("entity.puffbug.hurt");
+	public static final RegistryObject<SoundEvent> PUFFBUG_DEATH         = createSoundEvent("entity.puffbug.death");
 	
 	public static class EESoundTypes {
 		public static final SoundType CLUSTER = new SoundType(1.0F, 1.0F, EESounds.CLUSTER_BREAK.get(), EESounds.CLUSTER_STEP.get(), EESounds.CLUSTER_PLACE.get(), EESounds.CLUSTER_HIT.get(), EESounds.CLUSTER_PLACE.get());

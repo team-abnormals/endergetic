@@ -110,8 +110,6 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     		float angle = 0.1F * MathHelper.sin(0.25F * ageInTicks);
     		this.Sensor1.rotateAngleZ += angle;
     		this.Sensor2.rotateAngleX += angle;
-    		this.Sensor1Deflated.rotateAngleZ += angle;
-    		this.Sensor2Deflated.rotateAngleX += angle;
     	}
     	
     	this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
@@ -125,6 +123,19 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     	this.BodyDeflated.rotateAngleY = this.Body.rotateAngleY;
     	this.BodyDeflated.rotateAngleX = this.Body.rotateAngleX;
     	this.BodyDeflated.rotateAngleZ = this.Body.rotateAngleZ;
+    	
+    	this.NeckDeflated.rotateAngleX += -0.56F * puffBug.HIVE_LANDING.getAnimationProgress();
+    	this.HeadDeflated.rotateAngleX += -0.42F * puffBug.HIVE_LANDING.getAnimationProgress();
+    	this.Sensor1Deflated.rotateAngleZ += 1.7F * puffBug.HIVE_LANDING.getAnimationProgress();
+    	this.Sensor2Deflated.rotateAngleX += 1.7F * puffBug.HIVE_LANDING.getAnimationProgress();
+    	
+    	this.NeckDeflated.rotateAngleX += 0.3F * puffBug.HIVE_SLEEP.getAnimationProgress();
+    	this.HeadDeflated.rotateAngleX += 0.25F * puffBug.HIVE_SLEEP.getAnimationProgress();
+    		
+    	this.Neck.rotateAngleX = this.HeadDeflated.rotateAngleX;
+    	this.Head.rotateAngleX = this.HeadDeflated.rotateAngleX;
+    	this.Sensor1.rotateAngleZ = this.Sensor1Deflated.rotateAngleZ;
+    	this.Sensor2.rotateAngleX = this.Sensor2Deflated.rotateAngleX;
     }
     
     @Override

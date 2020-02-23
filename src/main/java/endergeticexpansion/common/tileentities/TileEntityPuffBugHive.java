@@ -25,6 +25,8 @@ import net.minecraft.world.server.ServerWorld;
 
 public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEntity {
 	private final List<HiveOccupantData> hiveOccupants = Lists.newArrayList();
+	private int ticksTillResetTeleport;
+	private boolean shouldReset;
 
 	public TileEntityPuffBugHive() {
 		super(EETileEntities.PUFFBUG_HIVE.get());
@@ -35,10 +37,17 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 		World world = this.world;
 		
 		if(!world.isRemote && !this.hiveOccupants.isEmpty()) {
+			if(this.ticksTillResetTeleport > 0) {
+				this.ticksTillResetTeleport--;
+			} else if(this.shouldReset) {
+				this.hiveOccupants.forEach(occupent -> occupent.teleportSide = null);
+				this.shouldReset = false;
+			}
+			
 			for(int i = 0; i < this.hiveOccupants.size(); i++) {
 				HiveOccupantData hiveOccupant = this.hiveOccupants.get(i);
 				
-				if(hiveOccupant.Occupant == null) {
+				if(hiveOccupant.occupant == null) {
 					this.hiveOccupants.remove(i);
 				} else {
 					hiveOccupant.tick(world);
@@ -80,6 +89,34 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	
 	public boolean isHiveFull() {
 		return this.getTotalBugsInHive() >= 5;
+	}
+	
+	@Nullable
+	private HiveOccupantData getOccupentByUUID(UUID uuid) {
+		for(HiveOccupantData occupents : this.hiveOccupants) {
+			if(occupents.occupant == uuid) {
+				return occupents;
+			}
+		}
+		return null;
+	}
+	
+	public void setBeingTeleportedToBy(EntityPuffBug puffbug, Direction side) {
+		HiveOccupantData occupentData = this.getOccupentByUUID(puffbug.getUniqueID());
+		if(occupentData != null) {
+			occupentData.teleportSide = side;
+			this.ticksTillResetTeleport = 100;
+			this.shouldReset = true;
+		}
+	}
+	
+	public boolean isSideBeingTeleportedTo(Direction side) {
+		for(HiveOccupantData occupents : this.hiveOccupants) {
+			if(occupents.teleportSide == side) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -132,22 +169,24 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	
 	public static class HiveOccupantData {
 		@Nullable
-		private UUID Occupant;
+		private UUID occupant;
+		@Nullable
+		private Direction teleportSide;
 		
-		public HiveOccupantData(@Nullable UUID Occupant) {
-			this.Occupant = Occupant;
+		public HiveOccupantData(@Nullable UUID occupant) {
+			this.occupant = occupant;
 		}
 		
 		public void tick(World world) {
 			if(this.getOccupant(world) == null) {
-				this.Occupant = null;
+				this.occupant = null;
 			}
 		}
 		
 		@Nullable
 		public EntityPuffBug getOccupant(World world) {
 			if(!world.isRemote) {
-				Entity entity = ((ServerWorld) world).getEntityByUuid(this.Occupant);
+				Entity entity = ((ServerWorld) world).getEntityByUuid(this.occupant);
 				if(entity instanceof EntityPuffBug) {
 					return (EntityPuffBug) entity;
 				}
@@ -161,10 +200,10 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 			for(HiveOccupantData occuptentData : hive.hiveOccupants) {
 				CompoundNBT compound = new CompoundNBT();
 				
-				if(occuptentData.Occupant == null) {
+				if(occuptentData.occupant == null) {
 					compound.putString("OccupantUUID", "");
 				} else {
-					compound.putString("OccupantUUID", occuptentData.Occupant.toString());
+					compound.putString("OccupantUUID", occuptentData.occupant.toString());
 				}
 				
 				listnbt.add(compound);
