@@ -110,7 +110,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private int teleportCooldown;
 	public int ticksAwayFromHive;
 	public int puffCooldown;
-	public int ticksRested;
 	
 	public EntityPuffBug(EntityType<? extends EntityPuffBug> type, World worldIn) {
 		super(type, worldIn);
@@ -606,7 +605,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	public boolean wantsToRest() {
-		return this.ticksAwayFromHive >= 200;
+		return this.ticksAwayFromHive >= 3000;
 	}
 	
 	public boolean isAtCorrectRestLocation(Direction side) {
