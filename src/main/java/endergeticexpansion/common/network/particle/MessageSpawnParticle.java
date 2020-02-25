@@ -51,9 +51,9 @@ public class MessageSpawnParticle {
 		return new MessageSpawnParticle(particleName, posX, posY, posZ, motionX, motionY, motionZ);
 	}
 	
-	public static void handle(MessageSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
+	public static boolean handle(MessageSpawnParticle message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
-		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+		if(context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				World world = ClientInfo.getClientPlayerWorld();
 				BasicParticleType particleType = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(message.particleName));
@@ -63,5 +63,7 @@ public class MessageSpawnParticle {
 				}
 			});
 		}
+		
+		return true;
 	}
 }

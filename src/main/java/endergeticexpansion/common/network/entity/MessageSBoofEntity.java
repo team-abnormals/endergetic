@@ -17,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class MessageSBoofEntity {
 	private double velX;
@@ -47,8 +48,9 @@ public class MessageSBoofEntity {
 	}
 	
 	public static void handle(MessageSBoofEntity message, Supplier<NetworkEvent.Context> ctx) {
-		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
-			ctx.get().enqueueWork(() -> {
+		Context context = ctx.get();
+		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			context.enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				
 				AxisAlignedBB bb = player.getBoundingBox().grow(message.radius);
@@ -77,10 +79,9 @@ public class MessageSBoofEntity {
     					}
     				}
     			}
-    			ctx.get().setPacketHandled(true);
+    			
 			});
 		}
-		
-		
+		context.setPacketHandled(true);
 	}
 }

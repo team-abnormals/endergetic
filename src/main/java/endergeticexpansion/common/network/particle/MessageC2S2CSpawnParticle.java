@@ -53,7 +53,7 @@ public class MessageC2S2CSpawnParticle {
 			context.enqueueWork(() -> {
 				NetworkUtil.spawnParticle(message.particleName, message.posX, message.posY, message.posZ, message.motionX, message.motionY, message.motionZ);
 			});
-			context.setPacketHandled(true);
 		}
+		context.setPacketHandled(true);
 	}
 }

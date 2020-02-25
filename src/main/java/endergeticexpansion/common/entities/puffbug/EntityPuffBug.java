@@ -199,6 +199,21 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				} else {
 					if(this.getAttachedHiveSide() == Direction.UP) {
 						this.ticksAwayFromHive++;
+						
+						if(this.ticksAwayFromHive < 1500) {
+							if(this.getRNG().nextInt(7500) == 0 && !this.isInLove() && !this.getHive().isHiveFull()) {
+								for(EntityPuffBug nearbyHiveMembers : this.world.getEntitiesWithinAABB(EntityPuffBug.class, this.getBoundingBox().grow(9.0F), puffbug -> (puffbug.getHive() != null && puffbug.getHive() == this.getHive()) && this.getDistance(puffbug) < 12.0F)) {
+									
+									this.setInLove(1000);
+									this.world.setEntityState(this, (byte) 18);
+									
+									nearbyHiveMembers.setInLove(1000);
+									this.world.setEntityState(nearbyHiveMembers, (byte) 18);
+									
+									if(this.isInLove() || nearbyHiveMembers.isInLove()) break;
+								}
+							}
+						}
 					} else {
 						this.ticksAwayFromHive = 0;
 					}
@@ -709,6 +724,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+		Random rng = this.getRNG();
+		
 		if(dataTag != null) {
 			int age = dataTag.getBoolean("IsChild") ? -24000 : 0;
 			
@@ -726,6 +743,29 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				}
 			}
 		}
+		
+		if(reason == SpawnReason.STRUCTURE) {
+			this.ticksAwayFromHive = rng.nextInt(1500) + 1500;
+			
+			if(rng.nextFloat() < 0.1F) {
+				this.growingAge = -24000;
+			}
+		} else if(reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
+			if(rng.nextFloat() < 0.2F && this.world.areCollisionShapesEmpty(this.getBoundingBox().grow(6.0D))) {
+				int swarmSize = rng.nextInt(11) + 8;
+				for(int i = 0; i < swarmSize; i++) {
+					Vec3d spawnPos = new Vec3d(this.getPosition()).add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
+					
+					EntityPuffBug swarmChild = EEEntities.PUFF_BUG.get().create(this.world);
+					swarmChild.setLocationAndAngles(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0.0F, 0.0F);
+					swarmChild.onInitialSpawn(this.world, this.world.getDifficultyForLocation(new BlockPos(spawnPos)), SpawnReason.EVENT, null, null);
+					swarmChild.setGrowingAge(-24000);
+					
+					this.world.addEntity(swarmChild);
+				}
+			}
+		}
+		
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 	

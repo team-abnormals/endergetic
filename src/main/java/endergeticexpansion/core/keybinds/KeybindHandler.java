@@ -24,8 +24,12 @@ import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -62,10 +66,15 @@ public class KeybindHandler {
     		ItemStack stack = player.inventory.armorItemInSlot(2);
         	
     		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
-        		if(((ItemBoofloVest) stack.getItem()).canBoof(stack, player)) {
-        			stack.getTag().putBoolean("boofed", true);
-        			stack.getTag().putInt("timesBoofed", stack.getTag().getInt("timesBoofed") + 1);
-        			((ItemBoofloVest) stack.getItem()).setDelayForBoofedAmount(stack, player);
+        		ItemBoofloVest vest = (ItemBoofloVest) stack.getItem();
+    			if(vest.canBoof(stack, player)) {
+    				CompoundNBT tag = stack.getTag();
+    				
+        			tag.putBoolean("boofed", true);
+        			tag.putInt("timesBoofed", tag.getInt("timesBoofed") + 1);
+        			
+        			vest.setDelayForBoofedAmount(stack, player);
+        			
         			NetworkUtil.updateSItemNBT(stack);
         			
         			double[] vars = {4D, player.rotationYaw, Math.PI, 180D};
@@ -108,7 +117,7 @@ public class KeybindHandler {
         				NetworkUtil.spawnParticleC2S2C("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
         			}
         			
-        			player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (stack.getTag().getInt("timesBoofed") * 0.15F), 0.25F, 1.0F));
+        			player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (tag.getInt("timesBoofed") * 0.15F), 0.25F, 1.0F));
         			
         			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
         		}
@@ -172,9 +181,8 @@ public class KeybindHandler {
 	}
     
 	public static boolean isPlayerOnGroundReal(PlayerEntity player) {
-		if(player.getEntityWorld().getBlockState(player.getPosition().down()).isSolid()) {
-			return true;
-    	}
-		return false;
+		World world = player.world;
+		BlockPos pos = player.getPosition().down();
+		return world.getBlockState(pos).getCollisionShape(world, pos).project(Direction.UP).isEmpty();
 	}
 }

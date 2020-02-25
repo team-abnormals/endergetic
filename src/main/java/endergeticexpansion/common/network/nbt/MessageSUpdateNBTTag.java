@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class MessageSUpdateNBTTag {
 	private CompoundNBT tag;
@@ -49,9 +50,10 @@ public class MessageSUpdateNBTTag {
 		return message;
 	}
 
-	public static void handle(MessageSUpdateNBTTag message, Supplier<NetworkEvent.Context> ctx) {
-		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
-			ctx.get().enqueueWork(() -> {
+	public static boolean handle(MessageSUpdateNBTTag message, Supplier<NetworkEvent.Context> ctx) {
+		Context context = ctx.get();
+		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			context.enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 				if(message.isVest) {
@@ -63,7 +65,8 @@ public class MessageSUpdateNBTTag {
 						player.inventory.getCurrentItem().setTag(message.tag);
 				}
 			});
-			ctx.get().setPacketHandled(true);
 		}
+		
+		return true;
 	}
 }
