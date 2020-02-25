@@ -42,11 +42,12 @@ public class BiomePoiseForest extends EndergeticBiome {
 		
 		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2));
 		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.BOOFLO.get(), 15, 1, 3));
+		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.PUFF_BUG.get(), 10, 2, 4));
 	}
 	
 	@Override
 	public float getSpawningChance() {
-		return 0.5F;
+		return 0.75F;
 	}
 	
 	@Override

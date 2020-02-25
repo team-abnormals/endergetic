@@ -149,7 +149,7 @@ public class ItemPuffBugBottle extends Item {
 			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
 			if(source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
 				EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-				entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+				entitytype.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
 				stack = new ItemStack(Items.GLASS_BOTTLE);
 			} else {
 				return super.dispenseStack(source, stack);

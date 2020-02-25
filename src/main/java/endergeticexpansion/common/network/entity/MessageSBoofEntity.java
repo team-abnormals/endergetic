@@ -77,9 +77,10 @@ public class MessageSBoofEntity {
     					}
     				}
     			}
+    			ctx.get().setPacketHandled(true);
 			});
 		}
 		
-		ctx.get().setPacketHandled(true);
+		
 	}
 }

@@ -15,6 +15,7 @@ import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.items.ItemBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
+import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -106,6 +107,8 @@ public class KeybindHandler {
         			
         				NetworkUtil.spawnParticleC2S2C("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
         			}
+        			
+        			player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (stack.getTag().getInt("timesBoofed") * 0.15F), 0.25F, 1.0F));
         			
         			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
         		}

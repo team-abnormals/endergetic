@@ -47,6 +47,10 @@ public class BlockPoiseCluster extends Block {
 		double z = pos.getZ() + 0.5D + offsetZ;
 		
 		worldIn.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
+		
+		if(rand.nextInt(200) == 0) {
+			worldIn.playSound(x, y, z, EESounds.POISE_CLUSTER_AMBIENT.get(), SoundCategory.BLOCKS, 0.1F, 0.85F + rand.nextFloat() * 0.25F, true);
+		}
 	}
 	
 	@SuppressWarnings("deprecation")

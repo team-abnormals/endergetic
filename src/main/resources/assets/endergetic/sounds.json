@@ -213,5 +213,21 @@
         	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_0", "stream": false},
         	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_1", "stream": false}
         ]
+    },
+    "block.poise_cluster.ambient":
+    {
+        "category": "block",
+        "subtitle": "Poise cluster bubbles",
+        "sounds": [
+        	{ "name": "endergetic:block/ambient/poise_cluster_ambient", "stream": false}
+        ]
+    },
+    "item.booflo_vest.inflate":
+    {
+        "category": "item",
+        "subtitle": "Booflo vest inflates",
+        "sounds": [
+        	{ "name": "endergetic:item/booflo_vest_inflate", "stream": false}
+        ]
     }
 }

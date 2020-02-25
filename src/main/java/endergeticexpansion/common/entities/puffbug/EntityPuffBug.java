@@ -590,6 +590,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			nbt.put("CustomPotionEffects", listnbt);
 		}
 		
+		nbt.putBoolean("IsFromBottle", true);
 		nbt.putBoolean("IsChild", this.isChild());
 	}
 	
@@ -713,6 +714,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			
 			this.setGrowingAge(age);
 			this.teleportCooldown = dataTag.getInt("TeleportCooldown");
+			this.setFromBottle(dataTag.getBoolean("IsFromBottle"));
 			
 			if(dataTag.contains("ColorTag", 3)) {
 				this.setColor(dataTag.getInt("ColorTag"));
@@ -729,7 +731,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
-		return this.getHive() != null && !this.isFromBottle() && !this.hasCustomName();
+		return this.getHive() == null && !this.isFromBottle() && !this.hasCustomName();
 	}
 
 	@Override

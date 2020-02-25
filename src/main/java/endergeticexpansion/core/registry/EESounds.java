@@ -18,6 +18,9 @@ public class EESounds {
 	
 	public static final RegistryObject<SoundEvent> POISE_BUSH_AMBIENT = createSoundEvent("block.poise_bush.ambient");
 	public static final RegistryObject<SoundEvent> POISE_BUSH_AMBIENT_LONG = createSoundEvent("block.poise_bush.ambient_long");
+	public static final RegistryObject<SoundEvent> POISE_CLUSTER_AMBIENT = createSoundEvent("block.poise_cluster.ambient");
+	
+	public static final RegistryObject<SoundEvent> BOOFLO_VEST_INFLATE = createSoundEvent("item.booflo_vest.inflate");
 	
 	public static final RegistryObject<SoundEvent> BOOFLO_CROAK    = createSoundEvent("entity.booflo.croak");
 	public static final RegistryObject<SoundEvent> BOOFLO_GROWL    = createSoundEvent("entity.booflo.growl");
