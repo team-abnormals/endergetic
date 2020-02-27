@@ -47,7 +47,7 @@ public class BiomePoiseForest extends EndergeticBiome {
 	
 	@Override
 	public float getSpawningChance() {
-		return 0.75F;
+		return 1.0F;
 	}
 	
 	@Override

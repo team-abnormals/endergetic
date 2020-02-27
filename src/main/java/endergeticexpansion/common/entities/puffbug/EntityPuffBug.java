@@ -42,6 +42,7 @@ import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -88,12 +89,15 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private static final DataParameter<Boolean> INFLATED = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> BOOSTING = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityPuffBug.class, DataSerializers.VARINT);
+	
 	public static final Endimation CLAIM_HIVE_ANIMATION = new Endimation(20);
 	public static final Endimation PUFF_ANIMATION = new Endimation(20);
 	public static final Endimation TELEPORT_TO_ANIMATION = new Endimation(15);
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
 	public static final Endimation ROTATE_ANIMATION = new Endimation(20);
 	public static final Endimation POLLINATE_ANIMATION = new Endimation(120);
+	public static final Endimation MAKE_ITEM_ANIMATION = new Endimation(100);
+	
 	public final ControlledEndimation HIVE_LANDING = new ControlledEndimation(20, 0);
 	public final ControlledEndimation HIVE_SLEEP = new ControlledEndimation(25, 0);
 	
@@ -105,6 +109,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private BlockPos budPos, pollinationPos;
 	@Nullable
 	private Direction teleportHiveSide, desiredHiveSide;
+	
+	@Nullable
+	private ItemStack stackToCreate; 
 	
 	private int animationTick;
 	private int teleportCooldown;
@@ -142,13 +149,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new PuffBugRestOnHiveGoal(this));
 		this.goalSelector.addGoal(1, new PuffBugAttachToHiveGoal(this));
-		this.goalSelector.addGoal(2, new PuffBugTeleportToRestGoal(this));
-		this.goalSelector.addGoal(3, new PuffBugPollinateGoal(this));
-		this.goalSelector.addGoal(4, new PuffBugDescentGoal(this));
-		this.goalSelector.addGoal(5, new PuffBugTeleportToBudGoal(this));
-		this.goalSelector.addGoal(6, new BreedGoal(this, 1.0F));
-		this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.5F));
-		this.goalSelector.addGoal(8, new PuffBugBoostGoal(this));
+		this.goalSelector.addGoal(2, new PuffBugCreateItemGoal(this));
+		this.goalSelector.addGoal(3, new PuffBugTeleportToRestGoal(this));
+		this.goalSelector.addGoal(4, new PuffBugPollinateGoal(this));
+		this.goalSelector.addGoal(5, new PuffBugDescentGoal(this));
+		this.goalSelector.addGoal(6, new PuffBugTeleportToBudGoal(this));
+		this.goalSelector.addGoal(7, new BreedGoal(this, 1.0F));
+		this.goalSelector.addGoal(8, new FollowParentGoal(this, 1.5F));
+		this.goalSelector.addGoal(9, new PuffBugBoostGoal(this));
 	}
 	
 	@Override
@@ -332,6 +340,15 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
 		}
 		
+		CompoundNBT stackToCreate = compound.getCompound("ItemStackToCreate");
+		
+		if(stackToCreate != null) {
+			ItemStack newStackToCreate = ItemStack.read(stackToCreate);
+			if(!newStackToCreate.isEmpty()) {
+				this.setStackToCreate(newStackToCreate);
+			}
+		}
+		
 		this.rotationController = this.getRotationController().read(this, compound.getCompound("Orientation"));
 	}
 	
@@ -348,6 +365,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		
 		if(this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
+		}
+		
+		if(this.hasStackToCreate()) {
+			compound.put("ItemStackToCreate", this.getStackToCreate().write(new CompoundNBT()));
 		}
 		
 		compound.put("Orientation", this.getRotationController().write(new CompoundNBT()));
@@ -464,6 +485,19 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		this.dataManager.set(COLOR, color);
 	}
 	
+	public void setStackToCreate(@Nullable ItemStack stack) {
+		this.stackToCreate = stack;
+	}
+	
+	@Nullable
+	public ItemStack getStackToCreate() {
+		return this.stackToCreate;
+	}
+	
+	public boolean hasStackToCreate() {
+		return this.getStackToCreate() != null;
+	}
+	
 	public boolean hasLevitation() {
 		return this.isPotionActive(Effects.LEVITATION);
 	}
@@ -489,7 +523,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			TELEPORT_TO_ANIMATION,
 			TELEPORT_FROM_ANIMATION,
 			ROTATE_ANIMATION,
-			POLLINATE_ANIMATION
+			POLLINATE_ANIMATION,
+			MAKE_ITEM_ANIMATION
 		};
 	}
 	
@@ -703,7 +738,11 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
-		if(itemstack.getItem() == Items.GLASS_BOTTLE && this.isAlive() && !this.isAggressive()) {
+		Item item = itemstack.getItem();
+		
+		if(!this.isAlive() || this.isAggressive()) return false;
+	
+		if(item == Items.GLASS_BOTTLE) {
 			this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
 			itemstack.shrink(1);
 			ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());
@@ -717,6 +756,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 
 			this.remove();
 			return true;
+		} else if(!this.hasStackToCreate() && this.hasLevitation()) {
+			ItemStack newStackToCreate = item == EEItems.BOLLOOM_FRUIT.get() ? new ItemStack(EEBlocks.BOLLOOM_BUD.get()) : this.isBreedingItem(itemstack) ? new ItemStack(EEBlocks.PUFFBUG_HIVE.get()) : null;
+			if(newStackToCreate != null) {
+				this.setStackToCreate(newStackToCreate);
+				this.consumeItemFromStack(player, itemstack);
+				return true;
+			}
+			return false;
 		} else {
 			return super.processInteract(player, hand);
 		}

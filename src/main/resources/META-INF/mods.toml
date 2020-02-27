@@ -9,7 +9,7 @@ issueTrackerURL="https://github.com/minecraftabnormals/Upgrade-Aquatic/issues"
     version="1.1.2"
     displayName="The Endergetic Expansion"
     authors="SmellyModder, Endergized, Timinations, Minecraft Abnormals"
-    description='''Ever since the end was first introduced to the game it's always been a dull place; and it has great potential to be something greater. This mod expands the end greatly by adding tons of new biomes, mobs, bosses, items, blocks, etc to the end! Venture to new places like the Poise Forest or explore old places like the chorus biome which have been revamped! Check Out Server.pro for a free MC Server: http://bit.ly/EndergeticServerPro'''
+    description='''Ever since the end was first introduced to the game it's always been a dull place; and it has great potential to be something greater. This mod expands the end greatly by adding tons of new biomes, mobs, bosses, items, blocks, etc to the end! Venture to new places like the Poise Forest or explore old places like the chorus biome which have been revamped!'''
     displayURL=""
     [[dependencies.eep]]
         modId="forge"
