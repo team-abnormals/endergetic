@@ -68,7 +68,7 @@ public class BlockVerticalSlab extends Block implements IWaterLoggable {
 			return face;
 		}
 		Vec3d difference = context.getHitVec().subtract(new Vec3d(context.getPos())).subtract(0.5, 0, 0.5);
-        return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
+		return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
 	}
 	
 	@Override
