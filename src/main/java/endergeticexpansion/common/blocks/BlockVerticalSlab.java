@@ -18,6 +18,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -58,13 +59,22 @@ public class BlockVerticalSlab extends Block implements IWaterLoggable {
 		if(state.getBlock() == this) {
 			return state.with(TYPE, VerticalSlabType.DOUBLE).with(WATERLOGGED, false);
 		}
-		return this.getDefaultState().with(TYPE, VerticalSlabType.getSlabTypeByDirection(context.getPlacementHorizontalFacing().getOpposite())).with(WATERLOGGED, world.getFluidState(pos).getFluid().isIn(FluidTags.WATER));
+		return this.getDefaultState().with(TYPE, VerticalSlabType.getSlabTypeByDirection(this.calculateDirectionForPlacement(context))).with(WATERLOGGED, world.getFluidState(pos).getFluid().isIn(FluidTags.WATER));
+	}
+	
+	protected Direction calculateDirectionForPlacement(BlockItemUseContext context) {
+		Direction face = context.getFace();
+		if(face.getAxis() != Direction.Axis.Y) {
+			return face;
+		}
+		Vec3d difference = context.getHitVec().subtract(new Vec3d(context.getPos())).subtract(0.5, 0, 0.5);
+        return Direction.fromAngle(-Math.toDegrees(Math.atan2(difference.getX(), difference.getZ()))).getOpposite();
 	}
 	
 	@Override
 	public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
 		VerticalSlabType slabtype = state.get(TYPE);
-		return slabtype != VerticalSlabType.DOUBLE && context.getItem().getItem() == this.asItem() && context.replacingClickedOnBlock() && (context.getFace() == slabtype.slabDirection && context.getPlacementHorizontalFacing().getOpposite() == slabtype.slabDirection);
+		return slabtype != VerticalSlabType.DOUBLE && context.getItem().getItem() == this.asItem() && context.replacingClickedOnBlock() && (context.getFace() == slabtype.slabDirection && this.calculateDirectionForPlacement(context) == slabtype.slabDirection);
 	}
 
 	@Override
