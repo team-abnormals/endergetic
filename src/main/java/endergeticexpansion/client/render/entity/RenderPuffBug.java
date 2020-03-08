@@ -7,11 +7,11 @@ import endergeticexpansion.client.render.entity.layer.RenderLayerPuffBugGlow;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<EntityPuffBug>> {
+public class RenderPuffBug extends MobRenderer<EntityPuffBug, EntityModel<EntityPuffBug>> {
 	private static final ResourceLocation DEFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_deflated.png");
 	private static final ResourceLocation INFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated.png");
 	
@@ -32,11 +32,6 @@ public class RenderPuffBug extends LivingRenderer<EntityPuffBug, EntityModel<Ent
 	@Override
 	protected ResourceLocation getEntityTexture(EntityPuffBug puffbug) {
 		return puffbug.isInflated() ? INFLATED : DEFLATED;
-	}
-	
-	@Override
-	protected boolean canRenderName(EntityPuffBug entity) {
-		return entity.hasCustomName() ? super.canRenderName(entity) : false;
 	}
 	
 	@Override

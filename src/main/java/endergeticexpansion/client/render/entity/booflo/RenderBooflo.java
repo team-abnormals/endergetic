@@ -7,14 +7,14 @@ import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloGlow;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBooflo extends LivingRenderer<EntityBooflo, EntityModel<EntityBooflo>> {
+public class RenderBooflo extends MobRenderer<EntityBooflo, EntityModel<EntityBooflo>> {
 	
 	public RenderBooflo(EntityRendererManager manager) {
 		super(manager, new ModelBooflo<>(), 1.25F);
@@ -34,10 +34,4 @@ public class RenderBooflo extends LivingRenderer<EntityBooflo, EntityModel<Entit
 		String camSuffix = booflo.isCooflo() ? "_cam" : "";
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camSuffix + ".png");
 	}
-	
-	@Override
-	protected boolean canRenderName(EntityBooflo entity) {
-		return entity.hasCustomName() ? super.canRenderName(entity) : false;
-	}
-
 }
