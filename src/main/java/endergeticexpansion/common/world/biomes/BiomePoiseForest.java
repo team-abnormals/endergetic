@@ -4,7 +4,6 @@ import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.GenerationStage.Decoration;
@@ -40,9 +39,9 @@ public class BiomePoiseForest extends EndergeticBiome {
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_TALLGRASS.get(), new DoublePlantConfig(EEBlocks.POISE_GRASS_TALL.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 0, 7)));
 		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS.get(), new GrassFeatureConfig(EEBlocks.POISE_GRASS.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
 		
-		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2));
-		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.BOOFLO.get(), 15, 1, 3));
-		this.addSpawn(EntityClassification.CREATURE, new SpawnListEntry(EEEntities.PUFF_BUG.get(), 10, 2, 4));
+		this.addCreatureSpawn(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2);
+		this.addCreatureSpawn(EEEntities.BOOFLO.get(), 15, 1, 3);
+		this.addCreatureSpawn(EEEntities.PUFF_BUG.get(), 10, 2, 4);
 	}
 	
 	@Override

@@ -88,4 +88,8 @@ public class EEEntities {
 	private static boolean endIslandCondition(EntityType<? extends CreatureEntity> entityType, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
 		return pos.getY() >= 40;
 	}
+	
+	public static class EEEntityClassifications {
+		public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "END_CREATURE", 20, false, true);
+	}
 }

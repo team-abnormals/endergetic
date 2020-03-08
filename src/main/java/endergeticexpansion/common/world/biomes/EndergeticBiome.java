@@ -5,7 +5,9 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import endergeticexpansion.core.registry.EEEntities.EEEntityClassifications;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
@@ -42,6 +44,10 @@ public abstract class EndergeticBiome extends Biome {
 	 * Used for adding spawns and features to the biome using DeferredRegister; gets called in common setup
 	 */
 	public void addSpawnsAndFeatures() {}
+	
+	protected void addCreatureSpawn(EntityType<?> entity, int weight, int minGroupCount, int maxGroupCount) {
+		this.addSpawn(EEEntityClassifications.END_CREATURE, new SpawnListEntry(entity, weight, minGroupCount, maxGroupCount));
+	}
 	
 	public int getWeight() {
 		return 0;
