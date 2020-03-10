@@ -3,6 +3,7 @@ package endergeticexpansion.common.blocks.poise.boof;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
 import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -67,11 +69,12 @@ public class BlockBoof extends ContainerBlock {
 	}
 	
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-		if(entityIn instanceof PlayerEntity) {
-			((PlayerEntity)entityIn).entityCollisionReduction = Float.MAX_VALUE;
-			((PlayerEntity)entityIn).onGround = false;
-			((PlayerEntity)entityIn).fallDistance = 0;
+	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+		if(entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
+			player.entityCollisionReduction = Float.MAX_VALUE;
+			player.onGround = false;
+			player.fallDistance = 0;
 		}
 	}
 	
@@ -79,6 +82,8 @@ public class BlockBoof extends ContainerBlock {
 		if(!world.isRemote) {
 			EntityBoofBlock boofBlock = new EntityBoofBlock(world, pos);
 			world.addEntity(boofBlock);
+			
+			world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
 		}
 		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BOOFED, true));
 	}
@@ -114,6 +119,7 @@ public class BlockBoof extends ContainerBlock {
             	} else {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(BlockDispensedBoof.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	}
+            	world.playSound(null, blockpos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.rand.nextFloat() * 0.15F);
             }
             
             return stack;
