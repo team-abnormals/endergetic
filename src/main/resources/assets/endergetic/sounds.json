@@ -160,6 +160,14 @@
         	{ "name": "endergetic:entity/puffbug/puffbug_death", "stream": false }
         ]
     },
+    "entity.boof_block.inflate":
+    {
+        "category": "entity",
+        "subtitle": "Boof Block inflates",
+        "sounds": [
+        	{ "name": "endergetic:entity/block/boof_block_inflate", "stream": false }
+        ]
+    },
 	"block.cluster.place":
     {
         "category": "block",
@@ -228,6 +236,32 @@
         "subtitle": "Booflo vest inflates",
         "sounds": [
         	{ "name": "endergetic:item/booflo_vest_inflate", "stream": false}
+        ]
+    },
+    "ambient.poise_forest.loop":
+    {
+        "category": "ambient",
+        "sounds": [
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience", "stream": false }
+        ]
+    },
+    "ambient.poise_forest.additions":
+    {
+        "category": "ambient",
+        "sounds": [
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_1", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2", "stream": false }
+        ]
+    },
+    "ambient.poise_forest.mood":
+    {
+        "category": "ambient",
+        "sounds": [
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0", "stream": false }
         ]
     }
 }

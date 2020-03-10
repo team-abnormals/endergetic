@@ -8,13 +8,13 @@ import com.google.common.collect.Lists;
 
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBiomes;
+import endergeticexpansion.core.registry.EESounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
@@ -33,7 +33,7 @@ public class EEAmbientSoundHandlers {
 	private static final List<IAmbientSoundHandler> SOUND_HANDLERS = Lists.newArrayList();
 	
 	static {
-		registerBiomeAmbientSoundPlayer(() -> EEBiomes.POISE_FOREST.get(), SoundEvents.AMBIENT_UNDERWATER_LOOP, SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS, SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE);
+		registerBiomeAmbientSoundPlayer(() -> EEBiomes.POISE_FOREST.get(), () -> EESounds.POISE_FOREST_LOOP.get(), () -> EESounds.POISE_FOREST_ADDITIONS.get(), () -> EESounds.POISE_FOREST_MOOD.get());
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class EEAmbientSoundHandlers {
 	 * @param additionSound - The common ambient sound(s) for the biome
 	 * @param moodSound - The rare/long(plays every 6000-17999 ticks) ambient sound(s) for the biome
 	 */
-	private static void registerBiomeAmbientSoundPlayer(Supplier<Biome> biome, SoundEvent loopSound, SoundEvent additionSound, SoundEvent moodSound) {
+	public static void registerBiomeAmbientSoundPlayer(Supplier<Biome> biome, Supplier<SoundEvent> loopSound, Supplier<SoundEvent> additionSound, Supplier<SoundEvent> moodSound) {
 		SOUND_HANDLERS.add(new BiomeAmbientSoundPlayer(biome, loopSound, additionSound, moodSound));
 	}
 	
@@ -65,17 +65,17 @@ public class EEAmbientSoundHandlers {
 	
 	private static class BiomeAmbientSoundPlayer implements IAmbientSoundHandler {
 		private final Supplier<Biome> biomeToPlayIn;
-		private final SoundEvent[] soundsToPlay = new SoundEvent[3];
+		private final List<Supplier<SoundEvent>> soundsToPlay = Lists.newArrayList();
 		private int delay = 0;
 		private int ticksInBiome;
 		private int ticksTillNextMood = this.generateTicksTillNextMood();
 		private boolean isInBiome;
 		
-		public BiomeAmbientSoundPlayer(Supplier<Biome> biomeToPlayIn, SoundEvent loopSound, SoundEvent additionSound, SoundEvent moodSound) {
+		public BiomeAmbientSoundPlayer(Supplier<Biome> biomeToPlayIn, Supplier<SoundEvent> loopSound, Supplier<SoundEvent> additionSound, Supplier<SoundEvent> moodSound) {
 			this.biomeToPlayIn = biomeToPlayIn;
-			this.soundsToPlay[0] = loopSound;
-			this.soundsToPlay[1] = additionSound;
-			this.soundsToPlay[2] = moodSound;
+			this.soundsToPlay.add(loopSound);
+			this.soundsToPlay.add(additionSound);
+			this.soundsToPlay.add(moodSound);
 		}
 		
 		@Override
@@ -84,7 +84,7 @@ public class EEAmbientSoundHandlers {
 			boolean isInBiome = this.updateIsInBiome(player);
 			
 			if(!wasInBiome && isInBiome) {
-				soundHandler.play(new BiomeAmbienceSound(player, this.soundsToPlay[0], this.getBiome()));
+				soundHandler.play(new BiomeAmbienceSound(player, this.soundsToPlay.get(0).get(), this.getBiome()));
 			}
 		}
 		
@@ -96,14 +96,15 @@ public class EEAmbientSoundHandlers {
 				
 				if(this.delay <= 0 && !Minecraft.getInstance().isGamePaused()) {
 					if(player.getRNG().nextFloat() < 0.01F) {
-						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay[1]));
-						this.delay = 10;
+						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay.get(1).get()));
+						this.delay = 60;
 					}
 					
 					if(this.ticksTillNextMood <= this.ticksInBiome) {
-						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay[2]));
+						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay.get(2).get()));
 						this.delay = 20;
 						this.ticksTillNextMood = this.generateTicksTillNextMood();
+						this.ticksInBiome = 0;
 					}
 				}
 			} else {
@@ -166,7 +167,7 @@ public class EEAmbientSoundHandlers {
 				this.player = player;
 				this.repeat = false;
 				this.repeatDelay = 0;
-				this.volume = 1.0F;
+				this.volume = 0.5F;
 				this.priority = true;
 				this.global = true;
 			}

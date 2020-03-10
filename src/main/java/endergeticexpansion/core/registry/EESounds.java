@@ -11,6 +11,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class EESounds {
 	public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, EndergeticExpansion.MOD_ID);
 	
+	public static final RegistryObject<SoundEvent> POISE_FOREST_LOOP = createSoundEvent("ambient.poise_forest.loop");
+	public static final RegistryObject<SoundEvent> POISE_FOREST_ADDITIONS = createSoundEvent("ambient.poise_forest.additions");
+	public static final RegistryObject<SoundEvent> POISE_FOREST_MOOD = createSoundEvent("ambient.poise_forest.mood");
+	
 	public static final RegistryObject<SoundEvent> CLUSTER_PLACE   = createSoundEvent("block.cluster.place");
 	public static final RegistryObject<SoundEvent> CLUSTER_BREAK   = createSoundEvent("block.cluster.break");
 	public static final RegistryObject<SoundEvent> CLUSTER_STEP    = createSoundEvent("block.cluster.step");
@@ -42,6 +46,8 @@ public class EESounds {
 	public static final RegistryObject<SoundEvent> PUFFBUG_LAND          = createSoundEvent("entity.puffbug.land");
 	public static final RegistryObject<SoundEvent> PUFFBUG_HURT          = createSoundEvent("entity.puffbug.hurt");
 	public static final RegistryObject<SoundEvent> PUFFBUG_DEATH         = createSoundEvent("entity.puffbug.death");
+	
+	public static final RegistryObject<SoundEvent> BOOF_BLOCK_INFLATE    = createSoundEvent("entity.boof_block.inflate");
 	
 	public static class EESoundTypes {
 		public static final SoundType CLUSTER = new SoundType(1.0F, 1.0F, EESounds.CLUSTER_BREAK.get(), EESounds.CLUSTER_STEP.get(), EESounds.CLUSTER_PLACE.get(), EESounds.CLUSTER_HIT.get(), EESounds.CLUSTER_PLACE.get());
