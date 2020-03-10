@@ -16,9 +16,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -47,33 +47,17 @@ public class BlockPoiseCluster extends Block {
 		double z = pos.getZ() + 0.5D + offsetZ;
 		
 		worldIn.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
-		
-		if(rand.nextInt(200) == 0) {
-			worldIn.playSound(x, y, z, EESounds.POISE_CLUSTER_AMBIENT.get(), SoundCategory.BLOCKS, 0.1F, 0.85F + rand.nextFloat() * 0.25F, true);
-		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
-	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		if(stack.getItem() instanceof ShearsItem) {
-			super.harvestBlock(worldIn, player, pos, state, te, stack);
-		} else {
-			AxisAlignedBB bb = new AxisAlignedBB(pos).offset(0, 1, 0);
-			List<Entity> entities = worldIn.getEntitiesWithinAABB(Entity.class, bb);
-			boolean isBlocked = false;
-			for(int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
-				
-				if(entity instanceof EntityPoiseCluster) {
-					isBlocked = true;
-				}
-			}
-			if(worldIn.getBlockState(pos.up()).isAir() && !isBlocked) {
-				if (!worldIn.isRemote) {
-					EntityPoiseCluster cluster = new EntityPoiseCluster(worldIn, pos, pos.getX(), pos.getY(), pos.getZ());
+	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+		Item item = player.getHeldItemMainhand().getItem();
+		if(!(item instanceof ShearsItem)) {
+			if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(EntityPoiseCluster.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
+				if(!world.isRemote) {
+					EntityPoiseCluster cluster = new EntityPoiseCluster(world, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
-					worldIn.addEntity(cluster);
+					world.addEntity(cluster);
 					
 					Random rand = player.getRNG();
 					
@@ -88,14 +72,14 @@ public class BlockPoiseCluster extends Block {
 						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 					}
 				}
-				worldIn.removeBlock(pos, false);
-			} else {
-				worldIn.setBlockState(pos, getDefaultState());
+				world.removeBlock(pos, false);
 			}
+		} else {
+			world.destroyBlock(pos, false);
+			spawnAsEntity(world, pos, new ItemStack(this.asItem()));
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
 		if(entityIn instanceof AbstractArrowEntity || entityIn instanceof TridentEntity) {
@@ -109,7 +93,7 @@ public class BlockPoiseCluster extends Block {
 					isBlocked = true;
 				}
 			}
-			if(worldIn.getBlockState(pos.up()).isAir() && !isBlocked) {
+			if(worldIn.isAirBlock(pos.up()) && !isBlocked) {
 				if(!worldIn.isRemote) {
 					EntityPoiseCluster cluster = new EntityPoiseCluster(worldIn, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
@@ -135,7 +119,6 @@ public class BlockPoiseCluster extends Block {
 				worldIn.setBlockState(pos, getDefaultState());
 			}
 		}
-		super.onEntityCollision(state, worldIn, pos, entityIn);
 	}
 	
 	@Override
