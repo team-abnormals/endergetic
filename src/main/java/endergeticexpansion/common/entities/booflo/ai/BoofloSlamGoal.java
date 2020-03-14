@@ -1,6 +1,6 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
-import endergeticexpansion.api.entity.util.AdvancedAxisAllignedBB;
+import endergeticexpansion.api.entity.util.DetectionHelper;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.block.Block;
@@ -46,7 +46,7 @@ public class BoofloSlamGoal extends Goal {
 	}
 	
 	private boolean isEntityUnder() {
-		for(LivingEntity entity : this.world.getEntitiesWithinAABB(LivingEntity.class, AdvancedAxisAllignedBB.expandDownwards(this.booflo.getBoundingBox().grow(1.0F), 12.0F))) {
+		for(LivingEntity entity : this.world.getEntitiesWithinAABB(LivingEntity.class, DetectionHelper.expandDownwards(this.booflo.getBoundingBox().grow(1.0F), 12.0F))) {
 			if(entity == this.booflo.getBoofloAttackTarget()) {
 				return true;
 			}

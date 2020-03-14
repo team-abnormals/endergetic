@@ -8,10 +8,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import endergeticexpansion.api.entity.util.DetectionHelper;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -20,12 +20,14 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEntity {
 	private final List<HiveOccupantData> hiveOccupants = Lists.newArrayList();
 	private int ticksTillResetTeleport;
+	private int teleportCooldown;
 	private boolean shouldReset;
 
 	public TileEntityPuffBugHive() {
@@ -42,6 +44,10 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 			} else if(this.shouldReset) {
 				this.hiveOccupants.forEach(occupent -> occupent.teleportSide = null);
 				this.shouldReset = false;
+			}
+			
+			if(this.teleportCooldown > 0) {
+				this.teleportCooldown--;
 			}
 			
 			for(int i = 0; i < this.hiveOccupants.size(); i++) {
@@ -65,10 +71,16 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	public void alertPuffBugs(@Nullable LivingEntity breaker) {
 		this.hiveOccupants.forEach((Occupant) -> {
 			EntityPuffBug puffBug = Occupant.getOccupant(this.world);
+			BlockPos hivePos = this.pos;
 			if(puffBug != null) {
+				if(puffBug.getAttackTarget() == null) {
+					puffBug.setAttachedHiveSide(Direction.UP);
+					puffBug.tryToTeleportToHive(hivePos);
+				}
+				
 				if(breaker == null) {
-					LivingEntity target = this.world.func_225318_b(LivingEntity.class, new EntityPredicate().setDistance(16.0D).setCustomPredicate(EntityPuffBug.CAN_ANGER), puffBug, puffBug.posX, puffBug.posY + puffBug.getEyeHeight(), puffBug.posZ, new AxisAlignedBB(this.pos).grow(16.0D));
-					if(target != null) {
+					LivingEntity target = DetectionHelper.getClosestEntity(this.world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(hivePos).grow(12.0D), EntityPuffBug.CAN_ANGER), hivePos.getX(), hivePos.getY(), hivePos.getZ());
+					if(target != null && puffBug.getAttackTarget() == null) {
 						puffBug.setAttackTarget(target);
 					}
 				} else {
@@ -77,6 +89,8 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 				}
 			}
 		});
+		
+		this.addTeleportCooldown();
 	}
 	
 	public List<HiveOccupantData> getHiveOccupants() {
@@ -89,6 +103,14 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	
 	public boolean isHiveFull() {
 		return this.getTotalBugsInHive() >= 5;
+	}
+	
+	public boolean canTeleportTo() {
+		return this.teleportCooldown <= 0;
+	}
+	
+	public void addTeleportCooldown() {
+		this.teleportCooldown = 500;
 	}
 	
 	@Nullable
@@ -105,7 +127,7 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 		HiveOccupantData occupentData = this.getOccupentByUUID(puffbug.getUniqueID());
 		if(occupentData != null) {
 			occupentData.teleportSide = side;
-			this.ticksTillResetTeleport = 100;
+			this.ticksTillResetTeleport = 250;
 			this.shouldReset = true;
 		}
 	}
@@ -123,6 +145,9 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 	@Nonnull
 	public CompoundNBT write(CompoundNBT compound) {
 		compound.put("HiveOccupants", HiveOccupantData.createCompoundList(this));
+		
+		compound.putInt("TeleportCooldown", this.teleportCooldown);
+		
 		return super.write(compound);
 	}
 	
@@ -138,6 +163,8 @@ public class TileEntityPuffBugHive extends TileEntity implements ITickableTileEn
 			UUID foundUUID = !OccupantUUID.isEmpty() ? UUID.fromString(OccupantUUID) : null;
 			this.hiveOccupants.add(new HiveOccupantData(foundUUID));
 		}
+		
+		this.teleportCooldown = compound.getInt("TeleportCooldown");
 		
 		super.read(compound);
 	}

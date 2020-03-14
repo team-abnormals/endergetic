@@ -57,6 +57,14 @@ public class BlockPuffBugHive extends Block {
 	}
 	
 	@Override
+	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if(tileEntity instanceof TileEntityPuffBugHive) {
+			((TileEntityPuffBugHive) tileEntity).alertPuffBugs(null);
+		}
+	}
+	
+	@Override
 	@Nonnull
 	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
 		return !isValidPosition(state, world, currentPos) ? destroyBlock(world, currentPos, null) : state;

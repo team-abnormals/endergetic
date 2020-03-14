@@ -25,7 +25,7 @@ public class PuffBugDescentGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(!this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
+		if(this.puffbug.getAttackTarget() == null && !this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
 			this.budPos = new BlockPos(this.puffbug.posX - 0.5F, this.puffbug.posY - 0.5F, this.puffbug.posZ - 0.5F).down(2);
 			return true;
 		}
@@ -38,7 +38,7 @@ public class PuffBugDescentGoal extends Goal {
 		if(!(te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened())) {
 			return false;
 		}
-		return this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.onGround && this.puffbug.posX == this.originalPosX && this.puffbug.posZ == this.originalPosZ;
+		return this.puffbug.getAttackTarget() == null && this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.onGround && this.puffbug.posX == this.originalPosX && this.puffbug.posZ == this.originalPosZ;
 	}
 	
 	@Override

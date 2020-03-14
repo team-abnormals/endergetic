@@ -27,7 +27,7 @@ public class PuffBugCreateItemGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.puffbug.isInflated() && this.puffbug.hasLevitation() && this.puffbug.hasStackToCreate() && this.puffbug.getHealth() >= this.originalHealth;
+		return this.puffbug.getAttackTarget() == null && this.puffbug.isInflated() && this.puffbug.hasLevitation() && this.puffbug.hasStackToCreate() && this.puffbug.getHealth() >= this.originalHealth;
 	}
 	
 	@Override

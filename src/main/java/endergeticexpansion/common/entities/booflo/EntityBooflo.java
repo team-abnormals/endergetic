@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.entity.EndimatedEntity;
-import endergeticexpansion.api.entity.util.AdvancedAxisAllignedBB;
+import endergeticexpansion.api.entity.util.DetectionHelper;
 import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
@@ -227,7 +227,7 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		
 		if(!this.isWorldRemote()) {
-			this.setOnGround(!this.world.areCollisionShapesEmpty(AdvancedAxisAllignedBB.checkOnGround(this.getBoundingBox())));
+			this.setOnGround(!this.world.areCollisionShapesEmpty(DetectionHelper.checkOnGround(this.getBoundingBox())));
 			
 			if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
 				this.setRideControlDelay(this.getRideControlDelay() - 2);

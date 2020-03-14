@@ -20,7 +20,7 @@ public class PuffBugTeleportToRestGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.wantsToRest() && this.puffbug.getRNG().nextInt(50) == 0 && !this.puffbug.isInLove() && !this.puffbug.hasLevitation() && this.puffbug.getAttachedHiveSide() == Direction.UP && this.puffbug.getHive() != null && this.puffbug.getPollinationPos() == null && this.puffbug.getTeleportController().canTeleport()) {
+		if(this.puffbug.getAttackTarget() == null && this.puffbug.wantsToRest() && this.puffbug.getRNG().nextInt(50) == 0 && !this.puffbug.isInLove() && !this.puffbug.hasLevitation() && this.puffbug.getAttachedHiveSide() == Direction.UP && this.puffbug.getHive() != null && this.puffbug.getPollinationPos() == null && this.puffbug.getTeleportController().canTeleport()) {
 			TileEntityPuffBugHive hive = this.puffbug.getHive();
 			for(Direction directions : Direction.values()) {
 				if(HiveOccupantData.isHiveSideEmpty(hive, directions)) {

@@ -134,7 +134,7 @@
         	{ "name": "endergetic:entity/puffbug/puffbug_launch", "stream": false }
         ]
     },
-    "entity.puffbug.lands":
+    "entity.puffbug.land":
     {
         "category": "entity",
         "subtitle": "Puffbug lands",

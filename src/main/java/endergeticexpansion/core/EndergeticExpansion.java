@@ -26,6 +26,7 @@ import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.*;
 import endergeticexpansion.core.registry.other.EECapabilities;
+import endergeticexpansion.core.registry.other.EEDataSerializers;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
 import endergeticexpansion.core.registry.other.EEFireInfo;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
@@ -64,6 +65,7 @@ public class EndergeticExpansion {
 		instance = this;
 		
 		this.setupMessages();
+		EEDataSerializers.registerSerializers();
 		
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	
@@ -117,6 +119,7 @@ public class EndergeticExpansion {
 		
 		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
 	}
+	
 	
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {

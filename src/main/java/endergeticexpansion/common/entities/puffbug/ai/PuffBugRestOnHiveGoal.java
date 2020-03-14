@@ -14,7 +14,7 @@ public class PuffBugRestOnHiveGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return !this.puffbug.isInflated() && this.puffbug.getAttachedHiveSide() != Direction.UP;
+		return this.puffbug.getAttackTarget() == null && !this.puffbug.isInflated() && this.puffbug.getAttachedHiveSide() != Direction.UP;
 	}
 	
 	@Override

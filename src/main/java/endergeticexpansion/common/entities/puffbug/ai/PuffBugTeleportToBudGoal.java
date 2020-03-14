@@ -28,7 +28,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.isNoEndimationPlaying() && this.puffbug.getRNG().nextInt(100) == 0 && !this.puffbug.hasLevitation() && !this.puffbug.isInLove() && !this.puffbug.wantsToRest() && this.puffbug.getTeleportController().canTeleport()) {
+		if(this.puffbug.getAttackTarget() == null && this.puffbug.isNoEndimationPlaying() && this.puffbug.getRNG().nextInt(100) == 0 && !this.puffbug.hasLevitation() && !this.puffbug.isInLove() && !this.puffbug.wantsToRest() && this.puffbug.getTeleportController().canTeleport()) {
 			TileEntityBolloomBud bud = this.findNearbyBud();
 			if(bud != null) {
 				BlockPos pos = this.createUpperPosition(bud.getPos());

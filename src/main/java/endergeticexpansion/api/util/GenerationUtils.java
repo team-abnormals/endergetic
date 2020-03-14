@@ -1,6 +1,7 @@
 package endergeticexpansion.api.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -11,6 +12,7 @@ import net.minecraft.block.WallBlock;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.IWorldGenerationBaseReader;
 
@@ -149,6 +151,21 @@ public class GenerationUtils {
 			}
 		}
 		return true;
+	}
+	
+	public static BlockPos getClosestPositionToPos(List<BlockPos> positions, BlockPos pos) {
+		double distance = -1.0D;
+		BlockPos currentPos = null;
+		
+		for(BlockPos listOfPositions : positions) {
+			double newDistance = new Vec3d(pos).squareDistanceTo(new Vec3d(listOfPositions));
+			if(distance == -1.0D || newDistance < distance) {
+				distance = newDistance;
+				currentPos = listOfPositions;
+			}
+		}
+		
+		return currentPos;
 	}
 	
 }
