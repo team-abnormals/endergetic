@@ -21,7 +21,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return !this.puffbug.getRotationController().rotating && !this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_FROM_ANIMATION) && this.puffbug.isInflated() && this.puffbug.getLaunchDirection() != null;
+		return !this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_FROM_ANIMATION) && this.puffbug.isInflated() && this.puffbug.getLaunchDirection() != null;
 	}
 	
 	@Override

@@ -455,6 +455,24 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     		this.endimator.endKeyframe();
     		
     		this.endimator.resetKeyframe(2);
+    	} else if(puffbug.isEndimationPlaying(EntityPuffBug.PULL_ANIMATION)) {
+    		this.endimator.setAnimationToPlay(EntityPuffBug.PULL_ANIMATION);
+    		
+    		this.endimator.startKeyframe(5);
+    		this.endimator.rotate(this.NeckDeflatedProjectile, 0.65F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.HeadDeflatedProjectile, 0.4F, 0.0F, 0.0F);
+    		
+    		this.endimator.move(this.BodyDeflatedProjectile, 0.0F, -1.0F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.startKeyframe(10);
+    		this.endimator.rotate(this.NeckDeflatedProjectile, 0.23F, 0.0F, 0.0F);
+    		this.endimator.rotate(this.HeadDeflatedProjectile, 0.1F, 0.0F, 0.0F);
+    		
+    		this.endimator.move(this.BodyDeflatedProjectile, 0.0F, -0.5F, 0.0F);
+    		this.endimator.endKeyframe();
+    		
+    		this.endimator.resetKeyframe(10);
     	}
     	
     	this.Body.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);

@@ -52,7 +52,7 @@ public class ControlledEndimation {
 	/**
 	 * @return - Is the timer decrementing
 	 */
-	public boolean isDescrementing() {
+	public boolean isDecrementing() {
 		return this.shouldDecrement;
 	}
 	

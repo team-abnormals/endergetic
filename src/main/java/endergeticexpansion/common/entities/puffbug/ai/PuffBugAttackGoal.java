@@ -76,7 +76,7 @@ public class PuffBugAttackGoal extends Goal {
 		this.puffbug.getLookController().setLookPositionWithEntity(target, 20.0F, 20.0F);
 		
 		if(this.delayCounter <= 0) {
-			Path path = this.puffbug.getNavigator().getPathToPos(target.getPosition().up(3), 4);
+			Path path = this.puffbug.getNavigator().getPathToPos(target.getPosition().up(4), 4);
 			if(path != null && this.puffbug.getNavigator().setPath(path, 3.5F)) {
 				this.delayCounter += 5;
 			}
@@ -97,7 +97,7 @@ public class PuffBugAttackGoal extends Goal {
 				
 				RayTraceResult rayTrace = RayTraceHelper.rayTraceEntityResult(this.puffbug, MathHelper.wrapDegrees(pitch), yaw, SHOOT_RANGE, startingDistance, 1.0F);
 				
-				if(this.ticksChased >= 20 && this.canFitNewCollisionShape() && rayTrace != null && rayTrace.getType() != Type.BLOCK && pitch > 30.0F) {
+				if(this.ticksChased >= 30 && this.canFitNewCollisionShape() && rayTrace != null && rayTrace.getType() != Type.BLOCK && pitch > 30.0F) {
 					this.puffbug.setLaunchDirection(MathHelper.wrapDegrees(pitch), yaw);
 					this.puffbug.getNavigator().clearPath();
 				}

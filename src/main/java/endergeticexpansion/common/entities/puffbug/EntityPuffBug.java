@@ -117,6 +117,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public static final Endimation MAKE_ITEM_ANIMATION = new Endimation(100);
 	public static final Endimation FLY_ANIMATION = new Endimation(60);
 	public static final Endimation LAND_ANIMATION = new Endimation(20);
+	public static final Endimation PULL_ANIMATION = new Endimation(25);
 	
 	public final ControlledEndimation HIVE_LANDING = new ControlledEndimation(20, 0);
 	public final ControlledEndimation HIVE_SLEEP = new ControlledEndimation(25, 0);
@@ -138,6 +139,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	public boolean continueSeeking = true;
 	
 	public float prevSpin, spin;
+	private int ticksOutOfGround;
 	private int animationTick;
 	public int teleportCooldown;
 	public int ticksAwayFromHive;
@@ -184,6 +186,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(0, new PuffBugPullOutGoal(this));
 		this.goalSelector.addGoal(0, new PuffBugRestOnHiveGoal(this));
 		this.goalSelector.addGoal(1, new PuffBugAttachToHiveGoal(this));
 		this.goalSelector.addGoal(1, new PuffBugRotateToFireGoal(this));
@@ -327,11 +330,11 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			
 			this.HIVE_LANDING.tick();
 			this.HIVE_SLEEP.tick();
-			
+		
 			this.HIVE_LANDING.setDecrementing(this.getAttachedHiveSide() == Direction.UP);
 			
 			if(this.HIVE_LANDING.isAtMax()) {
-				if(this.HIVE_SLEEP.isDescrementing() && this.HIVE_SLEEP.getTick() == 0) {
+				if(this.HIVE_SLEEP.isDecrementing() && this.HIVE_SLEEP.getTick() == 0) {
 					this.HIVE_SLEEP.setDecrementing(false);
 				} else if(this.HIVE_SLEEP.isAtMax()) {
 					this.HIVE_SLEEP.setDecrementing(true);
@@ -417,6 +420,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 		}
 		
+		if(this.stuckInBlock) {
+			this.ticksOutOfGround = 0;
+		}
+		
 		if(this.isProjectile() && !this.isInflated()) {
 			BlockPos blockpos = this.getPosition();
 			BlockState blockstate = this.world.getBlockState(blockpos);
@@ -424,7 +431,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				VoxelShape voxelshape = blockstate.getCollisionShape(this.world, blockpos);
 				if(!voxelshape.isEmpty()) {
 					for(AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-						if(axisalignedbb.offset(blockpos).contains(this.getPositionVec()) || axisalignedbb.offset(blockpos).contains(this.getPositionVec().scale(1.1F))) {
+						if(axisalignedbb.offset(blockpos).contains(this.getPositionVec())) {
 							this.stuckInBlock = true;
 							break;
 						}
@@ -433,10 +440,14 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 			
 			if(this.stuckInBlock && !this.noClip) {
-				if(this.stuckInBlockState != blockstate && this.world.areCollisionShapesEmpty(this.getBoundingBox().grow(0.05D))) {
-					this.stuckInBlock = false;
-					this.setInflated(true);
-					this.nullifyFireDirection();
+				if(this.stuckInBlockState != blockstate && (this.world.areCollisionShapesEmpty(this.getBoundingBox().grow(0.05D)) || !this.onGround)) {
+					this.ticksOutOfGround++;
+					
+					if(this.ticksOutOfGround > 5) {
+						this.stuckInBlock = false;
+						this.setInflated(true);
+						this.nullifyFireDirection();
+					}
 				}
 				this.setMotion(Vec3d.ZERO);
 			} else {
@@ -696,7 +707,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			POLLINATE_ANIMATION,
 			MAKE_ITEM_ANIMATION,
 			FLY_ANIMATION,
-			LAND_ANIMATION
+			LAND_ANIMATION,
+			PULL_ANIMATION
 		};
 	}
 	
@@ -884,11 +896,19 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	private void onSting(RayTraceResult result) {
 		RayTraceResult.Type resultType = result.getType();
 		if(resultType == RayTraceResult.Type.ENTITY) {
-			((EntityRayTraceResult) result).getEntity().attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F);
+			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
+			if(entityResult.getEntity().attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
+				this.setInflated(true);
+				this.nullifyFireDirection();
+				this.stuckInBlock = false;
+				
+				NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
+			}
 		} else {
 			BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) result;
 			this.stuckInBlockState = this.world.getBlockState(blockraytraceresult.getPos());
 			this.stuckInBlock = true;
+
 			Vec3d end = result.getHitVec();
 			this.setPosition(end.getX(), end.getY(), end.getZ());
 			

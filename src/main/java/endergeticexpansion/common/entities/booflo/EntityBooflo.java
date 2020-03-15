@@ -368,7 +368,7 @@ public class EntityBooflo extends EndimatedEntity {
 							this.FRUIT_HOVER.setDecrementing(false);
 							this.FRUIT_HOVER.setTick(0);
 						}
-						this.FRUIT_HOVER.setDecrementing(!this.FRUIT_HOVER.isDescrementing());
+						this.FRUIT_HOVER.setDecrementing(!this.FRUIT_HOVER.isDecrementing());
 					}
 				} else if(this.getAnimationTick() >= 140) {
 					this.FRUIT_HOVER.setDecrementing(false);

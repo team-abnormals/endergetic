@@ -85,7 +85,7 @@ public class TileEntityBolloomBud extends TileEntity implements ITickableTileEnt
 		this.PEDAL_PROGRESS.tick();
 			
 		if(this.world.isAreaLoaded(this.pos, 1)) {
-			if(this.PEDAL_PROGRESS.isDescrementing() != this.getBlockState().get(BlockBolloomBud.OPENED)) {
+			if(this.PEDAL_PROGRESS.isDecrementing() != this.getBlockState().get(BlockBolloomBud.OPENED)) {
 				this.PEDAL_PROGRESS.setDecrementing(this.getBlockState().get(BlockBolloomBud.OPENED));
 			}
 		}
