@@ -81,7 +81,6 @@ public class EntityPoiseCluster extends LivingEntity {
 		nbt.putInt("BlocksToMoveUp", this.getBlocksToMoveUp());
 		nbt.putInt("TimesHit", this.getTimesHit());
 		nbt.putBoolean("IsAscending", this.isAscending());
-		nbt.putBoolean("PlayedClusterHoveringSound", this.playedSound);
 	}
 	
 	@Override
@@ -91,7 +90,6 @@ public class EntityPoiseCluster extends LivingEntity {
 		this.setBlocksToMoveUp(nbt.getInt("BlocksToMoveUp"));
 		this.setTimesHit(nbt.getInt("TimesHit"));
 		this.setAscending(nbt.getBoolean("IsAscending"));
-		this.playedSound = nbt.getBoolean("PlayedClusterHoveringSound");
 	}
 	
 	@Override
@@ -438,6 +436,8 @@ public class EntityPoiseCluster extends LivingEntity {
 			this.x = (float) cluster.posX;
 			this.y = (float) cluster.posY;
 			this.z = (float) cluster.posZ;
+			
+			this.pitch = cluster.getRNG().nextFloat() * 0.25F + 0.8F;
 		}
 		
 		@Override

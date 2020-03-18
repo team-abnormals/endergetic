@@ -53,7 +53,6 @@ public class PuffBugRotateToFireGoal extends Goal {
 			this.puffbug.setFireDirection((float) launch.getX(), (float) launch.getY());
 			this.puffbug.nullifyLaunchDirection();
 			this.puffbug.setInflated(false);
-			this.puffbug.continueSeeking = true;
 			NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.FLY_ANIMATION);
 			
 			for(int i = 0; i < 3; i++) {

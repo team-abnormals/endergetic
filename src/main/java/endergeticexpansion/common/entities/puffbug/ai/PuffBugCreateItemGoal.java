@@ -48,29 +48,35 @@ public class PuffBugCreateItemGoal extends Goal {
 		
 		this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 		
-		if(this.puffbug.getAnimationTick() == 90 && this.puffbug.isEndimationPlaying(EntityPuffBug.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
-			ItemEntity itementity = new ItemEntity(this.puffbug.world, this.puffbug.posX, this.puffbug.posY - 0.5D, this.puffbug.posZ, this.puffbug.getStackToCreate());
-			itementity.setPickupDelay(40);
-			this.puffbug.world.addEntity(itementity);
-			this.puffbug.setStackToCreate(null);
+		if(this.puffbug.isEndimationPlaying(EntityPuffBug.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
+			Random rand = this.puffbug.getRNG();
 			
-			this.puffbug.removePotionEffect(Effects.LEVITATION);
-			
-			Random rand = new Random();
-			
-			for(int i = 0; i < 6; i++) {
-				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-			
-				double x = this.puffbug.posX + offsetX;
-				double y = this.puffbug.posY + (rand.nextFloat() * 0.05F) + 0.5F;
-				double z = this.puffbug.posZ + offsetZ;
+			if(this.puffbug.getAnimationTick() == 90) {
+				ItemEntity itementity = new ItemEntity(this.puffbug.world, this.puffbug.posX, this.puffbug.posY - 0.5D, this.puffbug.posZ, this.puffbug.getStackToCreate());
+				itementity.setPickupDelay(40);
+				this.puffbug.world.addEntity(itementity);
+				this.puffbug.setStackToCreate(null);
 				
-				NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+				this.puffbug.removePotionEffect(Effects.LEVITATION);
+				
+				for(int i = 0; i < 6; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+				
+					double x = this.puffbug.posX + offsetX;
+					double y = this.puffbug.posY + (rand.nextFloat() * 0.05F) + 0.5F;
+					double z = this.puffbug.posZ + offsetZ;
+					
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+				}
+			} else if(this.puffbug.getAnimationTick() == 85) {
+				float pitch = this.puffbug.isChild() ? (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.5F : (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F;
+				this.puffbug.playSound(this.puffbug.getItemCreationSound(), 0.1F, pitch);
 			}
+		}
+		
+		if(this.puffbug.getAnimationTick() == 90 && this.puffbug.isEndimationPlaying(EntityPuffBug.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
 			
-			float pitch = this.puffbug.isChild() ? (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.5F : (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F;
-			this.puffbug.playSound(this.puffbug.getPuffSound(), 0.1F, pitch);
 		}
 	}
 	

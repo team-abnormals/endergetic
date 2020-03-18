@@ -118,12 +118,12 @@
         	{ "name": "endergetic:entity/puffbug/puffbug_sleep_2", "stream": false }
         ]
     },
-    "entity.puffbug.create_hive":
+    "entity.puffbug.create_item":
     {
         "category": "entity",
-        "subtitle": "Puffbug builds hive",
+        "subtitle": "Puffbug creates item",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_creates_hive", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_creation", "stream": false }
         ]
     },
     "entity.puffbug.launch":

@@ -41,7 +41,7 @@ public class EESounds {
 	public static final RegistryObject<SoundEvent> PUFFBUG_TELEPORT_FROM = createSoundEvent("entity.puffbug.teleport_from");
 	public static final RegistryObject<SoundEvent> PUFFBUG_POLLINATE     = createSoundEvent("entity.puffbug.pollinate");
 	public static final RegistryObject<SoundEvent> PUFFBUG_SLEEP         = createSoundEvent("entity.puffbug.sleep");
-	public static final RegistryObject<SoundEvent> PUFFBUG_CREATE_HIVE   = createSoundEvent("entity.puffbug.create_hive");
+	public static final RegistryObject<SoundEvent> PUFFBUG_CREATE_ITEM   = createSoundEvent("entity.puffbug.create_item");
 	public static final RegistryObject<SoundEvent> PUFFBUG_LAUNCH        = createSoundEvent("entity.puffbug.launch");
 	public static final RegistryObject<SoundEvent> PUFFBUG_LAND          = createSoundEvent("entity.puffbug.land");
 	public static final RegistryObject<SoundEvent> PUFFBUG_HURT          = createSoundEvent("entity.puffbug.hurt");

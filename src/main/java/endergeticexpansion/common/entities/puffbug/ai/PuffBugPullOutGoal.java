@@ -41,9 +41,7 @@ public class PuffBugPullOutGoal extends Goal {
 			}
 		} else if(this.puffbug.isEndimationPlaying(EntityPuffBug.PULL_ANIMATION)) {
 			if(this.pulls <= 0 && this.puffbug.getAnimationTick() == 5) {
-				this.puffbug.setInflated(true);
-				this.puffbug.nullifyFireDirection();
-				this.puffbug.stuckInBlock = false;
+				this.puffbug.disableProjectile();
 				this.puffbug.stuckInBlockState = null;
 				
 				float[] rotations = this.puffbug.getRotationController().getRotations(1.0F);
