@@ -31,7 +31,7 @@ public class RenderBooflo extends MobRenderer<EntityBooflo, EntityModel<EntityBo
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityBooflo booflo) {
-		String camSuffix = booflo.isCooflo() ? "_cam" : "";
-		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camSuffix + ".png");
+		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + booflo.getNameSuffix() + ".png");
 	}
+	
 }

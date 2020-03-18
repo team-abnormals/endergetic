@@ -37,8 +37,7 @@ public class RenderLayerBoofloGlow<E extends EntityBooflo, M extends EntityModel
 	}
 	
 	public ResourceLocation getTexture(E booflo) {
-		String camSuffix = booflo.isCooflo() ? "_cam" : "";
-		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + camSuffix + "_glow_layer.png");
+		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + booflo.getNameSuffix() + "_glow_layer.png");
 	}
 
 	@Override
