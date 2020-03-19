@@ -21,6 +21,7 @@ import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.puffbug.ai.*;
 import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
@@ -207,6 +208,13 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(this.stuckInBlock) {
 			this.setMotion(Vec3d.ZERO);
 		}
+		
+		if(this.getRidingEntity() instanceof EntityBooflo) {
+			this.disableProjectile();
+			this.nullifyLaunchDirection();
+			this.setInflated(true);
+		}
+		
 		super.tick();
 		this.endimateTick();
 		this.getRotationController().tick();
@@ -225,7 +233,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.puffCooldown--;
 			}
 			
-			if(this.isInflated() && !this.getRotationController().rotating && this.isNoEndimationPlaying()) {
+			if(!this.isPassenger() && this.isInflated() && !this.getRotationController().rotating && this.isNoEndimationPlaying()) {
 				if(this.isBoosting() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK || ((this.onGround || this.isInWater()) && this.puffCooldown <= 0 && this.getPollinationPos() == null && this.getLaunchDirection() == null && this.getFireDirection() == null)) {
 					NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
 					this.playSound(this.getPuffSound(), 0.15F, this.getSoundPitch());
@@ -397,7 +405,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					
 					if(!this.stuckInBlock) {
 						if(!this.world.isRemote && target != null && this.isEndimationPlaying(FLY_ANIMATION)) {
-							Vec3d targetVecNoScale = new Vec3d(target.posX - this.posX, target.posY - 0.5F - this.posY, target.posZ - this.posZ);
+							float seekOffset = target.posY > this.posY ? 0.0F : 0.5F;
+							Vec3d targetVecNoScale = new Vec3d(target.posX - this.posX, target.posY - seekOffset - this.posY, target.posZ - this.posZ);
 							Vec3d targetVec = targetVecNoScale.scale(SEEKING_FACTOR);
 						
 							double motionLength = motion.length();
@@ -902,8 +911,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					}
 					this.clearActivePotions();
 				}
-				
-				NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
 			}
 		} else {
 			BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) result;
@@ -925,7 +932,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Nullable
 	private EntityRayTraceResult traceEntity(Vec3d start, Vec3d end) {
 		return ProjectileHelper.func_221271_a(this.world, this, start, end, this.getBoundingBox().expand(this.getMotion()).grow(0.5F), (result) -> {
-			return !result.isSpectator() && result.isAlive() && result.canBeCollidedWith() && !(result instanceof EntityPuffBug);
+			return !result.isSpectator() && result.isAlive() && !(result instanceof EntityPuffBug);
 		});
 	}
 	
@@ -1050,13 +1057,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	@Override
-	protected void collideWithNearbyEntities() {
-		if(this.isProjectile()) return;
-		
-		super.collideWithNearbyEntities();
-	}
-	
-	@Override
 	public boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
@@ -1150,7 +1150,24 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected void collideWithEntity(Entity entity) {
 		if(!this.isInflated() && entity instanceof EntityPuffBug) {
-			return;
+			if(entity instanceof EntityPuffBug) {
+				return;
+			} else {
+				if(this.isProjectile()) {
+					if(entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
+						this.setInflated(true);
+						this.nullifyFireDirection();
+						this.stuckInBlock = false;
+						
+						if(!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
+							for(EffectInstance effects : this.getActivePotionEffects()) {
+								((LivingEntity) entity).addPotionEffect(effects);
+							}
+							this.clearActivePotions();
+						}
+					}
+				}
+			}
 		}
 		super.collideWithEntity(entity);
 	}
@@ -1405,7 +1422,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					
 					this.setYaw = 0.0F;
 					this.setPitch = 0.0F;
-					this.tickLength = 20;	
+					this.tickLength = this.puffbug.isPassenger() ? 1 : 20;	
 				}
 				this.ticksSinceNotRotating++;
 			}

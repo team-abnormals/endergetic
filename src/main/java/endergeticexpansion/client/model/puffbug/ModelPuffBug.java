@@ -3,7 +3,9 @@ package endergeticexpansion.client.model.puffbug;
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorRendererModel;
+import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -127,6 +129,11 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
 
     @Override
     public void render(E puffbug, float f, float f1, float f2, float f3, float f4, float f5) {
+    	Entity ridingEntity = puffbug.getRidingEntity();
+    	if(ridingEntity instanceof EntityBooflo && !(((EntityBooflo) ridingEntity).isEndimationPlaying(EntityBooflo.EAT) && ((EntityBooflo) ridingEntity).getAnimationTick() >= 20)) {
+    		return;
+    	}
+    	
     	this.animateModel(puffbug, f, f1, f2, f3, f4, f5);
     	if(puffbug.isInflated()) {
     		this.Body.render(f5);
@@ -160,6 +167,11 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     	
     	this.Body.rotateAngleY = rotations[0] * (float) (Math.PI / 180F);
     	this.Body.rotateAngleX = rotations[1] * (float) (Math.PI / 180F);
+    	
+    	if(puffBug.isPassenger()) {
+    		this.Body.rotateAngleZ = 1.57F;
+    	}
+    	
     	this.BodyDeflated.rotateAngleY = this.Body.rotateAngleY;
     	this.BodyDeflated.rotateAngleX = this.Body.rotateAngleX;
     	this.BodyDeflatedProjectile.rotateAngleY = this.Body.rotateAngleY;

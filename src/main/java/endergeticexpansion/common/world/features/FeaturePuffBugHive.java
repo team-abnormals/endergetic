@@ -76,7 +76,8 @@ public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 		List<Direction> openDirections = Lists.newArrayList();
 		for(Direction directions : Direction.values()) {
 			if(directions != Direction.UP) {
-				if(world.isAirBlock(pos.offset(directions))) {
+				BlockPos offsetPos = pos.offset(directions);
+				if(world.isAirBlock(offsetPos) && world.isAirBlock(offsetPos.up())) {
 					openDirections.add(directions);
 				}
 			}

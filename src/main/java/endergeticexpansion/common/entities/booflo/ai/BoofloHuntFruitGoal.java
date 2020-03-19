@@ -11,11 +11,10 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
-public class BoofloHuntGoal extends Goal {
+public class BoofloHuntFruitGoal extends Goal {
 	private final EntityBooflo booflo;
 	protected int attackTick;
 	private final double speedTowardsTarget;
-	private final boolean longMemory;
 	private Path path;
 	private int delayCounter;
 	private double targetX;
@@ -23,10 +22,9 @@ public class BoofloHuntGoal extends Goal {
 	private double targetZ;
 	private long field_220720_k;
 	
-	public BoofloHuntGoal(EntityBooflo booflo, double speed, boolean useLongMemory) {
+	public BoofloHuntFruitGoal(EntityBooflo booflo, double speed) {
 		this.booflo = booflo;
 		this.speedTowardsTarget = speed;
-		this.longMemory = useLongMemory;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 	
@@ -64,8 +62,6 @@ public class BoofloHuntGoal extends Goal {
 			return false;
 		} else if(!this.booflo.isBoofed()) {
 			return false;
-		} else if(!this.longMemory) {
-			return !this.booflo.getNavigator().noPath();
 		} else if(!this.booflo.isWithinHomeDistanceFromPosition(new BlockPos(target))) {
 			return false;
 		} else {
@@ -89,13 +85,13 @@ public class BoofloHuntGoal extends Goal {
 	}
 
 	public void tick() {
+		this.delayCounter--;
 		Entity target = this.booflo.getBoofloAttackTarget();
 		
 		double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+		this.booflo.getLookController().setLookPosition(target.posX, target.posY, target.posZ, 10.0F, 10.0F);
 		
-		this.delayCounter--;
-		
-		if((this.longMemory || this.booflo.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F)) {
+		if(this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
 			this.targetX = target.posX;
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.posZ;

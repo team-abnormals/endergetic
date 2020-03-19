@@ -7,13 +7,12 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetGoal {
@@ -43,9 +42,13 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	         return false;
 		} else if(this.goalOwner instanceof EntityBoofloAdolescent && !((EntityBoofloAdolescent)this.goalOwner).isHungry()) {
 			return false;
-		} else if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo)this.goalOwner).getBoofloAttackTarget() != null || !((EntityBooflo)this.goalOwner).isBoofed() || !((EntityBooflo)this.goalOwner).isHungry())) {
+		} else if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo) this.goalOwner).getBoofloAttackTarget() != null || !((EntityBooflo)this.goalOwner).isBoofed() || !((EntityBooflo)this.goalOwner).isHungry())) {
 			return false;
 		} else {
+			if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo) this.goalOwner).isTamed() && this.targetClass == EntityPuffBug.class)) {
+				return false;
+			}
+			
 			this.findNearestTarget();
 			return this.nearestTarget != null;
 		}
@@ -56,11 +59,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	protected void findNearestTarget() {
-		if(this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class) {
-			this.nearestTarget = this.findEntity(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.posX, this.goalOwner.posY + (double)this.goalOwner.getEyeHeight(), this.goalOwner.posZ, this.getTargetableArea(this.getTargetDistance()));
-		} else {
-			this.nearestTarget = this.goalOwner.world.getClosestPlayer(this.targetEntitySelector, this.goalOwner, this.goalOwner.posX, this.goalOwner.posY + (double)this.goalOwner.getEyeHeight(), this.goalOwner.posZ);
-		}
+		this.nearestTarget = this.findEntity(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.posX, this.goalOwner.posY + (double)this.goalOwner.getEyeHeight(), this.goalOwner.posZ, this.getTargetableArea(this.getTargetDistance()));
 	}
 
 	public void startExecuting() {

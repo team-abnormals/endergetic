@@ -1,5 +1,6 @@
 package endergeticexpansion.common.blocks.poise.hive;
 
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,8 +27,10 @@ public class BlockHiveHanger extends Block {
 	}
 	
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-		entityIn.setMotionMultiplier(state, new Vec3d(0.25D, (double)0.05F, 0.25D));
+	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+		if(!(entity instanceof EntityPuffBug)) {
+			entity.setMotionMultiplier(state, new Vec3d(0.25D, 0.05D, 0.25D));
+		}
 	}
 	
 	@Override

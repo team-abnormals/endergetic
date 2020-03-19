@@ -18,7 +18,7 @@ public class BoofloSinkGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.booflo.hasCaughtFruit() && this.booflo.isBoofed() && !this.booflo.onGround && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
+		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.onGround && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class BoofloSinkGoal extends Goal {
 		if(!this.isSafePos()) {
 			return false;
 		}
-		return !this.booflo.onGround && this.booflo.isBoofed() && this.booflo.hasCaughtFruit();
+		return !this.booflo.onGround && this.booflo.isBoofed() && (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug());
 	}
 	
 	@Override

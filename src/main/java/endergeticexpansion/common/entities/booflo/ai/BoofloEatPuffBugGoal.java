@@ -1,22 +1,18 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
-import java.util.EnumSet;
-
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class BoofloEatGoal extends Goal {
+public class BoofloEatPuffBugGoal extends Goal {
 	private EntityBooflo booflo;
 	private float originalYaw;
 	private int soundDelay = 0;
 
-	public BoofloEatGoal(EntityBooflo booflo) {
+	public BoofloEatPuffBugGoal(EntityBooflo booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
 	@Override
@@ -26,13 +22,13 @@ public class BoofloEatGoal extends Goal {
 				return false;
 			}
 		}
-		return this.booflo.isNoEndimationPlaying() && this.booflo.hasCaughtFruit() && !this.booflo.isBoofed() && this.booflo.isOnGround() && !this.booflo.isInLove();
+		return this.booflo.isNoEndimationPlaying() && this.booflo.hasCaughtPuffBug() && !this.booflo.isBoofed() && this.booflo.isOnGround() && !this.booflo.isInLove();
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
 		boolean flag = true;
-		if(!booflo.hasCaughtFruit()) {
+		if(!this.booflo.hasCaughtPuffBug()) {
 			if(this.booflo.getAnimationTick() < 140) {
 				flag = false;
 			}
@@ -56,15 +52,12 @@ public class BoofloEatGoal extends Goal {
 	public void startExecuting() {
 		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.EAT);
 		this.originalYaw = this.booflo.rotationYaw;
+		this.booflo.setLockedYaw(this.originalYaw);
 	}
 	
 	@Override
 	public void resetTask() {
 		this.originalYaw = 0;
-		if(this.booflo.hasCaughtFruit()) {
-			this.booflo.setCaughtFruit(false);
-			this.booflo.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
-		}
 		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.BLANK_ANIMATION);
 	}
 

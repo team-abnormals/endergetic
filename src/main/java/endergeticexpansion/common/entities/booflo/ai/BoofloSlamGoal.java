@@ -20,7 +20,7 @@ public class BoofloSlamGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.booflo.getPassengers().isEmpty() && this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && !this.booflo.onGround && (this.booflo.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +37,10 @@ public class BoofloAttackGoal extends Goal {
 		} else if(!this.booflo.isBoofed()) {
 			return false;
 		} else {
+			if(this.booflo.getBoofloAttackTarget() instanceof EntityPuffBug) {
+				return false;
+			}
+			
 			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRNG());
 			if(this.upperAirPos == null) {
 				Path newPath = this.booflo.getNavigator().getPathToEntityLiving(target, 0);

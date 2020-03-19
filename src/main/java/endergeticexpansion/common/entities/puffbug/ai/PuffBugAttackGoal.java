@@ -48,7 +48,7 @@ public class PuffBugAttackGoal extends Goal {
 			this.path = newPath;
 		}
 		
-		return this.puffbug.getLaunchDirection() == null && this.path != null;
+		return !this.puffbug.isPassenger() && this.puffbug.getLaunchDirection() == null && this.path != null;
 	}
 	
 	@Override

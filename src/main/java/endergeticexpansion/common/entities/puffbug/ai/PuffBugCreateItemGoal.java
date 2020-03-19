@@ -22,7 +22,7 @@ public class PuffBugCreateItemGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.puffbug.isInflated() && !this.puffbug.isAggressive() && this.puffbug.hasStackToCreate() && this.puffbug.isNoEndimationPlaying();
+		return !this.puffbug.isPassenger() && this.puffbug.isInflated() && !this.puffbug.isAggressive() && this.puffbug.hasStackToCreate() && this.puffbug.isNoEndimationPlaying();
 	}
 	
 	@Override

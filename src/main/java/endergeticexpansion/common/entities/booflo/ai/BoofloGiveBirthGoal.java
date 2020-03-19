@@ -32,7 +32,7 @@ public class BoofloGiveBirthGoal extends Goal {
 	@Override
 	public void startExecuting() {
 		this.originalYaw = this.mother.rotationYaw;
-		this.mother.setBirthYaw(this.originalYaw);
+		this.mother.setLockedYaw(this.originalYaw);
 		NetworkUtil.setPlayingAnimationMessage(this.mother, EntityBooflo.BIRTH);
 	}
 	
