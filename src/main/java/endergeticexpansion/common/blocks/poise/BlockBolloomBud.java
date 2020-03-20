@@ -1,11 +1,7 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.util.MathUtils;
-import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud.BudSide;
 import endergeticexpansion.core.registry.EEBlocks;
@@ -19,9 +15,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -87,33 +81,6 @@ public class BlockBolloomBud extends Block {
 			return false;
 		}
 		return false;
-	}
-	
-	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand p_220051_5_, BlockRayTraceResult p_220051_6_) {
-		if(this.placePedals(world, pos, true)) {
-			world.setBlockState(pos, getDefaultState().with(OPENED, true));
-			
-			if(world.getTileEntity(pos) instanceof TileEntityBolloomBud) {
-				((TileEntityBolloomBud) world.getTileEntity(pos)).startGrowing(player.getRNG(), 7, false);
-			}
-			
-			if(world.isRemote) {
-				Random rand = player.getRNG();
-				
-				for(int i = 0; i < 8; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-				
-					double x = pos.getX() + 0.5D + offsetX;
-					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
-					double z = pos.getZ() + 0.5D + offsetZ;
-				
-					world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
-				}
-			}
-		}
-		return true;
 	}
 	
 	public static boolean isAcrossOrAdjacentToBud(IWorldReader world, BlockPos pos) {
