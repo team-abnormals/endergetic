@@ -496,6 +496,11 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	@Override
+	public boolean isInvulnerableTo(DamageSource source) {
+		return source == DamageSource.IN_WALL || source == DamageSource.FLY_INTO_WALL || super.isInvulnerableTo(source);
+	}
+	
+	@Override
 	protected boolean processInteract(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();

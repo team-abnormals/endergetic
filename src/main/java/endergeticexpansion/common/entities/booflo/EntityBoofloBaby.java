@@ -31,6 +31,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -348,6 +349,11 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		if(!(entityIn instanceof EntityBooflo)) {
 			super.collideWithEntity(entityIn);
 		}
+	}
+	
+	@Override
+	public boolean isInvulnerableTo(DamageSource source) {
+		return source == DamageSource.IN_WALL || source == DamageSource.FLY_INTO_WALL || super.isInvulnerableTo(source);
 	}
 	
 	@Override
