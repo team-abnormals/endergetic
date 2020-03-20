@@ -33,7 +33,9 @@ public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 	
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+		if(rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.down();
+		
 		if(world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG_GLOWING.get()) {
 			if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 				world.setBlockState(pos, this.HIVE_STATE(true).get(), 2);
@@ -59,16 +61,14 @@ public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 	private void spawnPuffBugs(IWorld world, BlockPos pos, Random rand) {
 		int timesToRun = rand.nextInt(4) + 2;
 		
-		if(rand.nextBoolean()) {
-			for(Direction openDirections : this.getOpenSides(world, pos)) {
-				BlockPos offset = pos.offset(openDirections);
-				EntityPuffBug puffbug = EEEntities.PUFF_BUG.get().create(world.getWorld());
-				puffbug.setLocationAndAngles(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
-				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
-				world.addEntity(puffbug);
+		for(Direction openDirections : this.getOpenSides(world, pos)) {
+			BlockPos offset = pos.offset(openDirections);
+			EntityPuffBug puffbug = EEEntities.PUFF_BUG.get().create(world.getWorld());
+			puffbug.setLocationAndAngles(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
+			puffbug.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
+			world.addEntity(puffbug);
 				
-				if(timesToRun-- <= 0) break;
-			}
+			if(timesToRun-- <= 0) break;
 		}
 	}
 	
