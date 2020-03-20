@@ -37,7 +37,7 @@ public class BoofloBoofGoal extends Goal {
 				return true;
 			}
 		}
-		return !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(EntityBooflo.HOP);
+		return (this.booflo.hasCaughtPuffBug() || this.booflo.getPassengers().isEmpty()) && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(EntityBooflo.HOP);
 	}
 	
 	@Override

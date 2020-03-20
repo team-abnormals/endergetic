@@ -605,7 +605,11 @@ public class EntityBooflo extends EndimatedEntity {
 					this.setMotion(this.getMotion().add(xMotion * multiplier, 0.0F, zMotion * multiplier));
 				}
 				
-				super.travel(new Vec3d(0.0F, vec3d.y, 0.0F));
+				if(this.canPassengerSteer()) {
+					super.travel(new Vec3d(0.0F, vec3d.y, 0.0F));
+				} else {
+					this.setMotion(Vec3d.ZERO);
+				}
 			}
 		} else {
 			if(this.isServerWorld() && this.isBoofed()) {
