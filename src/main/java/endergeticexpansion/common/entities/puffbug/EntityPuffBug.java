@@ -1119,8 +1119,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.growingAge = -24000;
 			}
 		} else if(reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
-			if(rng.nextFloat() < 0.3F) {
-				int swarmSize = rng.nextInt(11) + 8;
+			if(rng.nextFloat() < 0.08F) {
+				int swarmSize = rng.nextInt(11) + 10;
 				for(int i = 0; i < swarmSize; i++) {
 					Vec3d spawnPos = new Vec3d(this.getPosition()).add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
 					
