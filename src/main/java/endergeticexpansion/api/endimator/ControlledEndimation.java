@@ -94,6 +94,14 @@ public class ControlledEndimation {
 	}
 	
 	/**
+	 * Gets the progress of the animation
+	 * @return - a lerped value of the animation's previous tick and new tick
+	 */
+	public float getAnimationProgressServer() {
+		return MathHelper.lerp(1.0F, this.prevTick, this.tick) / this.tickDuration;
+	}
+	
+	/**
 	 * Writes data about the ControlledEndimation to a CompoundNBT
 	 * Can be used to save data about the animation when the world gets saved and for command use
 	 * Values must be synced(Server -> Client)

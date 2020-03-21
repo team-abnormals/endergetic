@@ -107,6 +107,7 @@ public class EntityBooflo extends EndimatedEntity {
 	private static final DataParameter<Integer> BRACELETS_COLOR = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> BOOST_POWER = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> LOCKED_YAW = EntityDataManager.createKey(EntityBooflo.class, DataSerializers.FLOAT);
+	
 	public static final Endimation CROAK = new Endimation(55);
 	public static final Endimation HOP = new Endimation(25);
 	public static final Endimation HURT = new Endimation(15);
@@ -117,9 +118,11 @@ public class EntityBooflo extends EndimatedEntity {
 	public static final Endimation CHARGE = new Endimation(75);
 	public static final Endimation SLAM = new Endimation(10);
 	public static final Endimation GROWL = new Endimation(60);
+	
 	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
 	public final ControlledEndimation OPEN_JAW = new ControlledEndimation(25, 0);
 	public final ControlledEndimation FRUIT_HOVER = new ControlledEndimation(8, 0);
+	
 	private final EndergeticFlyingPathNavigator attackingNavigator;
 	private UUID playerInLove;
 	public int hopDelay;
@@ -1141,10 +1144,13 @@ public class EntityBooflo extends EndimatedEntity {
 				
 				passenger.setPosition(this.posX + ridingOffset.x, this.posY + 0.9F, this.posZ + ridingOffset.z);
 			} else if(passenger instanceof EntityPuffBug) {
-				passenger.rotationYaw = ((EntityPuffBug) passenger).renderYawOffset = ((EntityPuffBug) passenger).rotationYawHead = (this.rotationYaw - 75.0F);
+				EntityPuffBug puffbug = (EntityPuffBug) passenger;
+				passenger.rotationYaw = puffbug.renderYawOffset = puffbug.rotationYawHead = (this.rotationYaw - 75.0F);
 				if(this.isEndimationPlaying(EAT) && this.getAnimationTick() > 15) {
 					Vec3d ridingPos = (new Vec3d(1.0D, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
-					passenger.setPosition(this.posX + ridingPos.getX(), this.posY - 0.3F - (0.15F * this.FRUIT_HOVER.getAnimationProgress()), this.posZ + ridingPos.getZ());
+					float yOffset = puffbug.isChild() ? 0.1F : 0.3F;
+					
+					passenger.setPosition(this.posX + ridingPos.getX(), this.posY - yOffset - (0.15F * this.FRUIT_HOVER.getAnimationProgressServer()), this.posZ + ridingPos.getZ());
 				} else {
 					passenger.setPosition(this.posX, this.posY + 0.25F, this.posZ);
 				}

@@ -156,7 +156,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected void registerAttributes() {
 		super.registerAttributes();
-		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+		this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
 		this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.75F);
 		this.getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).setBaseValue(0.15D);
 		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
@@ -247,7 +247,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 			
 			if(this.getHivePos() == null) {
-				if(this.getRNG().nextFloat() <= 0.05F) {
+				if(this.world.getGameTime() % 5 == 0 && this.getRNG().nextFloat() <= 0.1F) {
 					TileEntityPuffBugHive hive = this.findNewNearbyHive();
 					if(hive != null) {
 						this.addToHive(hive);
@@ -399,8 +399,10 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				Vec3d fireDirection = this.getFireDirection();
 				
 				if(fireDirection != null) {
-					this.getRotationController().rotate((float) MathHelper.wrapDegrees(fireDirection.getY() - this.rotationYaw), (float) fireDirection.getX() + 90.0F, 0.0F, 5);
-				
+					if((this.world.isRemote && !this.stuckInBlock) || !this.world.isRemote) {
+						this.getRotationController().rotate((float) MathHelper.wrapDegrees(fireDirection.getY() - this.rotationYaw), (float) fireDirection.getX() + 90.0F, 0.0F, 5);
+					}
+					
 					LivingEntity target = this.getAttackTarget();
 					
 					if(!this.stuckInBlock) {
@@ -900,7 +902,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		if(resultType == RayTraceResult.Type.ENTITY) {
 			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
 			Entity entity = entityResult.getEntity();
-			if(entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
+			if(entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), (float) this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue())) {
 				this.setInflated(true);
 				this.nullifyFireDirection();
 				this.stuckInBlock = false;
@@ -1119,7 +1121,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				this.growingAge = -24000;
 			}
 		} else if(reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
-			if(rng.nextFloat() < 0.08F) {
+			if(rng.nextFloat() < 0.05F) {
 				int swarmSize = rng.nextInt(11) + 10;
 				for(int i = 0; i < swarmSize; i++) {
 					Vec3d spawnPos = new Vec3d(this.getPosition()).add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
@@ -1181,10 +1183,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
-		if(this.isProjectile() && (source == DamageSource.IN_WALL || source == DamageSource.FLY_INTO_WALL || source == DamageSource.CRAMMING)) {
-			return true;
-		}
-		return super.isInvulnerableTo(source);
+		return ((this.isProjectile() || this.isPassenger()) && (source == DamageSource.IN_WALL || source == DamageSource.FLY_INTO_WALL || source == DamageSource.CRAMMING)) || super.isInvulnerableTo(source);
 	}
 	
 	@Override
@@ -1410,6 +1409,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			this.prevPitch = this.pitch;
 			
 			if(!this.rotating) {
+				this.ticksSinceNotRotating++;
+				
 				if(this.ticksSinceNotRotating > 5) {
 					if(this.setYaw != 0.0F) {
 						this.startingYaw = this.yaw;
@@ -1426,7 +1427,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					this.setPitch = 0.0F;
 					this.tickLength = this.puffbug.isPassenger() ? 1 : 20;	
 				}
-				this.ticksSinceNotRotating++;
 			}
 			
 			this.yaw = this.clamp((this.setYaw - this.startingYaw) <= 0, this.yaw + ((this.setYaw - this.startingYaw) / this.tickLength), this.startingYaw, this.setYaw);
@@ -1454,7 +1454,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			
 			if(this.setPitch != pitch) {
 				this.startingPitch = this.pitch;
-				if(tickLength >= 20) {
+				if(tickLength >= 20 && this.puffbug.isNoEndimationPlaying()) {
 					NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.ROTATE_ANIMATION);
 				}
 			}
