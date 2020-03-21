@@ -217,6 +217,10 @@ public class EntityBooflo extends EndimatedEntity {
 						
 					};
 				}
+				
+				if(this.getBoofloAttackTarget() == null && this.hasPath() && this.getMotion().length() < 0.25F && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() == Type.BLOCK) {
+					this.getNavigator().clearPath();
+				}
 			}
 		}
 		

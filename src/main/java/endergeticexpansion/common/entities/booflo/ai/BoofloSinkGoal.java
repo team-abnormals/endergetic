@@ -37,9 +37,9 @@ public class BoofloSinkGoal extends Goal {
 	private boolean isSafePos() {
 		BlockPos pos = this.booflo.getPosition();
 		for(int i = 0; i < 10; i++) {
-			pos = pos.down(i);
-			if(Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP) && i >= 4) {
-				if(this.booflo.world.getBlockState(pos).getFluidState().isEmpty() && !this.booflo.world.getBlockState(pos).isBurning(this.booflo.world, pos)) {
+			BlockPos newPos = pos.down(i);
+			if(Block.hasSolidSide(this.booflo.world.getBlockState(newPos), this.booflo.world, newPos, Direction.UP)) {
+				if(this.booflo.world.getBlockState(newPos).getFluidState().isEmpty() && !this.booflo.world.getBlockState(newPos).isBurning(this.booflo.world, newPos)) {
 					return true;
 				}
 			}
