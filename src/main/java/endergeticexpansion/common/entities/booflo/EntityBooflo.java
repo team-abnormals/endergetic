@@ -194,7 +194,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.goalSelector.addGoal(9, new BoofloFaceRandomGoal(this));
 		this.goalSelector.addGoal(10, new BoofloGroundHopGoal(this));
 		
-		this.targetSelector.addGoal(1, new BoofloNearestAttackableTargetGoal<>(this, EntityPuffBug.class, 200, true, false));
+		this.targetSelector.addGoal(1, new BoofloNearestAttackableTargetGoal<>(this, EntityPuffBug.class, 175, true, false));
 		this.targetSelector.addGoal(2, new BoofloNearestAttackableTargetGoal<>(this, EntityBolloomFruit.class, true));
 	}
 	
