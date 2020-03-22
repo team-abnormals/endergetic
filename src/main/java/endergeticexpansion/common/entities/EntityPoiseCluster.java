@@ -113,7 +113,7 @@ public class EntityPoiseCluster extends LivingEntity {
 		
 		if(!this.isAscending()) {
 			if(this.posY > this.getOrigin().getY()) {
-				this.setMotion(0, -Math.toRadians(3), 0);
+				this.setMotion(0, -0.05F, 0);
 			} else if(Math.ceil(this.posY) == this.getOrigin().getY() && this.ticksExisted > 10) {
 				for(int i = 0; i < 8; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
@@ -180,7 +180,7 @@ public class EntityPoiseCluster extends LivingEntity {
 		 * Tell it to being moving down if a block is blocking its way up at its position above
 		 */
 		if(this.isAscending()) {
-			if(this.isBlockBlockingPath(false)) {
+			if(this.prevPosY == this.posY && this.isBlockBlockingPath(false)) {
 				this.descentCluster();
 			}
 			

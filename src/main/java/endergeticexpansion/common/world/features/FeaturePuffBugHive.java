@@ -66,6 +66,7 @@ public class FeaturePuffBugHive extends Feature<NoFeatureConfig> {
 			EntityPuffBug puffbug = EEEntities.PUFF_BUG.get().create(world.getWorld());
 			puffbug.setLocationAndAngles(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
 			puffbug.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
+			puffbug.setHivePos(pos);
 			world.addEntity(puffbug);
 				
 			if(timesToRun-- <= 0) break;

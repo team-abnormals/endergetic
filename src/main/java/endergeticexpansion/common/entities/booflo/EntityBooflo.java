@@ -968,7 +968,7 @@ public class EntityBooflo extends EndimatedEntity {
 	
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
-		return !this.isTamed() && !this.wasBred;
+		return !this.isTamed() && !this.wasBred && !this.isPregnant();
 	}
 	
 	public boolean isTempted() {
