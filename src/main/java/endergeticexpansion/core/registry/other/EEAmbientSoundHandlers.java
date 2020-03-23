@@ -94,17 +94,17 @@ public class EEAmbientSoundHandlers {
 			if(this.isInBiome(player)) {
 				this.ticksInBiome++;
 				
-				if(this.delay <= 0 && !Minecraft.getInstance().isGamePaused()) {
-					if(player.getRNG().nextFloat() < 0.01F) {
+				if(!Minecraft.getInstance().isGamePaused()) {
+					if(this.delay <= 0 && player.getRNG().nextFloat() < 0.0175F) {
 						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay.get(1).get()));
 						this.delay = 60;
 					}
 					
 					if(this.ticksTillNextMood <= this.ticksInBiome) {
 						soundHandler.play(new BiomeAmbienceAdditionSound(player, this.soundsToPlay.get(2).get()));
-						this.delay = 20;
 						this.ticksTillNextMood = this.generateTicksTillNextMood();
 						this.ticksInBiome = 0;
+						this.delay = 20;
 					}
 				}
 			} else {
@@ -123,7 +123,7 @@ public class EEAmbientSoundHandlers {
 		}
 		
 		private int generateTicksTillNextMood() {
-			return (new Random()).nextInt(12000) + 6000;
+			return (new Random()).nextInt(100) + 6000;
 		}
 		
 		class BiomeAmbienceSound extends TickableSound {
@@ -168,6 +168,7 @@ public class EEAmbientSoundHandlers {
 				this.repeat = false;
 				this.repeatDelay = 0;
 				this.volume = 0.5F;
+				this.pitch = (new Random()).nextFloat() * 0.2F + 0.9F;
 				this.priority = true;
 				this.global = true;
 			}

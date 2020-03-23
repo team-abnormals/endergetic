@@ -253,14 +253,25 @@
         	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2", "stream": false },
         	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0", "stream": false },
         	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2", "stream": false }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_0", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_1", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_2", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_0", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1", "stream": false }
         ]
     },
     "ambient.poise_forest.mood":
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0", "stream": false }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_0", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_1", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_2", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_3", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_puffs", "stream": false },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_shine", "stream": false }
         ]
     }
 }
