@@ -2,14 +2,10 @@ package endergeticexpansion.common.world.biomes;
 
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
-import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.world.dimension.EndDimension;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.GenerationStage.Decoration;
-import net.minecraft.world.gen.feature.DoublePlantConfig;
 import net.minecraft.world.gen.feature.EndGatewayConfig;
-import net.minecraft.world.gen.feature.GrassFeatureConfig;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
@@ -29,15 +25,15 @@ public class BiomePoiseForest extends EndergeticBiome {
 	
 	@Override
 	public void addSpawnsAndFeatures() {
-		this.addFeature(Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.POISE_DOME.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_EXTRA_HEIGHTMAP, new AtSurfaceWithExtraConfig(3, 0.02F, 1)));
-		this.addFeature(Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.POISE_TREE.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.COUNT_EXTRA_HEIGHTMAP, new AtSurfaceWithExtraConfig(2, 0.05F, 1)));
-		this.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, createDecoratedFeature(EEFeatures.ENDERGETIC_GATEWAY, EndGatewayConfig.func_214702_a(EndDimension.SPAWN, true), Placement.END_GATEWAY, IPlacementConfig.NO_PLACEMENT_CONFIG));
+		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.POISE_DOME.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.COUNT_EXTRA_HEIGHTMAP.configure(new AtSurfaceWithExtraConfig(3, 0.02F, 1))));
+		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.POISE_TREE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.COUNT_EXTRA_HEIGHTMAP.configure(new AtSurfaceWithExtraConfig(2, 0.05F, 1))));
+		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.ENDERGETIC_GATEWAY.withConfiguration(EndGatewayConfig.func_214702_a(EndDimension.SPAWN, true)).withPlacement(Placement.END_GATEWAY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
 		
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_CLUSTER.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 4, 22)));
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.PUFFBUG_HIVE.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 9, 25)));
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.BOLLOOM_BUD.get(), IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.9D, 90, 90)));
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_TALLGRASS.get(), new DoublePlantConfig(EEBlocks.POISE_GRASS_TALL.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_32, new NoiseDependant(-0.8D, 0, 7)));
-		this.addFeature(Decoration.VEGETAL_DECORATION, createDecoratedFeature(EEFeatures.POISE_GRASS.get(), new GrassFeatureConfig(EEBlocks.POISE_GRASS.get().getDefaultState()), Placement.NOISE_HEIGHTMAP_DOUBLE, new NoiseDependant(-0.8D, 5, 10)));
+		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.POISE_CLUSTER.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_32.configure(new NoiseDependant(-0.8D, 4, 22))));
+		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.PUFFBUG_HIVE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_32.configure(new NoiseDependant(-0.8D, 9, 25))));
+		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.BOLLOOM_BUD.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_32.configure(new NoiseDependant(-0.9D, 90, 90))));
+		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.POISE_TALLGRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_32.configure(new NoiseDependant(-0.8D, 0, 7))));
+		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.POISE_GRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_DOUBLE.configure(new NoiseDependant(-0.8D, 5, 10))));
 		
 		this.addCreatureSpawn(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2);
 		this.addCreatureSpawn(EEEntities.BOOFLO.get(), 15, 1, 3);

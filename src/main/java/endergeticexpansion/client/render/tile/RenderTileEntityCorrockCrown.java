@@ -1,5 +1,6 @@
 package endergeticexpansion.client.render.tile;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -8,10 +9,13 @@ import endergeticexpansion.client.model.ModelCorrockCrownWall;
 import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
 import endergeticexpansion.common.blocks.BlockCorrockCrownWall;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
+import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,13 +28,14 @@ public class RenderTileEntityCorrockCrown extends TileEntityRenderer<TileEntityC
 		new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/corrock_crown_overworld.png")
 	};
 	
-	public RenderTileEntityCorrockCrown() {
+	public RenderTileEntityCorrockCrown(TileEntityRendererDispatcher renderDispatcher) {
+		super(renderDispatcher);
 		this.standingModel = new ModelCorrockCrownStanding();
 		this.wallModel = new ModelCorrockCrownWall();
 	}
 	
 	@Override
-	public void render(TileEntityCorrockCrown tileEntityIn, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityCorrockCrown tileEntityIn, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		BlockState BlockState = tileEntityIn.getBlockState();
 		GlStateManager.pushMatrix();
 		

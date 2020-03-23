@@ -8,20 +8,19 @@ import endergeticexpansion.client.model.booflo.ModelAdolescentBooflo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Much like the vanilla RendererModel but can store data of default values and has some more advanced features;
- * Such as setting an individual RendererModel's opacity, scale, and texture position
+ * Much like the vanilla ModelRenderer but can store data of default values and has some more advanced features;
+ * Such as setting an individual ModelRenderer's opacity, scale, and texture position
  * 
  * @author - SmellyModder(Luke Tonon)
  */
 @OnlyIn(Dist.CLIENT)
-public class EndimatorRendererModel extends RendererModel {
+public class EndimatorModelRenderer extends ModelRenderer {
 	public float defaultRotationPointX, defaultRotationPointY, defaultRotationPointZ;
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
 	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
@@ -32,37 +31,28 @@ public class EndimatorRendererModel extends RendererModel {
 	private boolean compiled;
 	private int displayList;
 	@Nullable
-	private EndimatorRendererModel parentRendererModel;
+	private EndimatorModelRenderer parentModelRenderer;
 
 	/**
-	 * @param entityModel - Entity model this RendererModel belongs to
+	 * @param entityModel - Entity model this ModelRenderer belongs to
 	 */
-	public EndimatorRendererModel(EndimatorEntityModel<? extends Entity> entityModel) {
+	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> entityModel) {
 		super(entityModel);
 	}
 	
 	/**
-	 * Basic constructor
-	 * @param entityModel - Entity model this RendererModel belongs to
-	 * @param name - Name of this RendererModel
-	 */
-	public EndimatorRendererModel(EndimatorEntityModel<? extends Entity> entityModel, String name) {
-		super(entityModel, name);
-	}
-	
-	/**
 	 * Texture offset constuctor 
-	 * @param entityModel - Entity model this RendererModel belongs to
+	 * @param entityModel - Entity model this ModelRenderer belongs to
 	 * @param textureOffsetX - X offset on the texture
 	 * @param textureOffsetY - Y offset on the texture
 	 */
-	public EndimatorRendererModel(EndimatorEntityModel<? extends Entity> entityModel, int textureOffsetX, int textureOffsetY) {
+	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> entityModel, int textureOffsetX, int textureOffsetY) {
 		this(entityModel);
 		this.setTextureOffset(textureOffsetX, textureOffsetY);
 	}
 	
 	@Override
-	public RendererModel func_217178_a(String boxName, float offsetX, float offsetY, float offsetZ, int width, int height, int depth, float delta, int textureOffsetX, int textureOffsetY) {
+	public ModelRenderer func_217178_a(String boxName, float offsetX, float offsetY, float offsetZ, int width, int height, int depth, float delta, int textureOffsetX, int textureOffsetY) {
 		boxName = this.boxName + "." + boxName;
 		this.setTextureOffset(textureOffsetX, textureOffsetY);
 		this.cubeList.add((new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F)).setBoxName(boxName));
@@ -70,20 +60,20 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	@Override
-	public RendererModel addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth) {
+	public ModelRenderer addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth) {
 		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F));
 		return this;
 	}
 	
 	@Override
-	public RendererModel addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth, boolean mirrored) {
+	public ModelRenderer addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth, boolean mirrored) {
 		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F, mirrored));
 		return this;
 	}
 	
 	/**
 	 * Creates a simple textured box
-	 * @see RendererModel#addBox(float, float, float, int, int, int, float)
+	 * @see ModelRenderer#addBox(float, float, float, int, int, int, float)
 	 */
 	@Override
     public void addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth, float scaleFactor) {
@@ -92,10 +82,7 @@ public class EndimatorRendererModel extends RendererModel {
 
 	/**
 	 * A method that sets the default box's values
-	 * 
 	 * Should be called after all the boxes in an entity model have been initialized
-	 * 
-	 * @see ModelAdolescentBooflo
 	 */
 	public void setDefaultBoxValues() {
 		this.defaultRotationPointX = this.rotationPointX;
@@ -142,7 +129,7 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * Sets the scale of the X axis on this RendererModel
+	 * Sets the scale of the X axis on this ModelRenderer
 	 * @param scaleX - Value of scale
 	 */
 	public void setScaleX(float scaleX) {
@@ -150,7 +137,7 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * Sets the scale of the Y axis on this RendererModel
+	 * Sets the scale of the Y axis on this ModelRenderer
 	 * @param scaleY - Value of scale
 	 */
 	public void setScaleY(float scaleY) {
@@ -158,7 +145,7 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * Sets the scale of the Z axis on this RendererModel
+	 * Sets the scale of the Z axis on this ModelRenderer
 	 * @param scaleZ - Value of scale
 	 */
 	public void setScaleZ(float scaleZ) {
@@ -166,7 +153,7 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * Sets the opacity of this RendererModel
+	 * Sets the opacity of this ModelRenderer
 	 * @param opacity - Value of opacity; shouldn't exceed 1.0
 	 */
 	public void setOpacity(float opacity) {
@@ -174,11 +161,11 @@ public class EndimatorRendererModel extends RendererModel {
 	}
 	
 	/**
-	 * Sets the parent RendererModel of this RendererModel
-	 * @param parentRendererModel - The parent RendererModel
+	 * Sets the parent ModelRenderer of this ModelRenderer
+	 * @param parentModelRenderer - The parent ModelRenderer
 	 */
-	public void setParentRendererModel(@Nullable EndimatorRendererModel parentRendererModel) {
-		this.parentRendererModel = parentRendererModel;
+	public void setParentModelRenderer(@Nullable EndimatorModelRenderer parentModelRenderer) {
+		this.parentModelRenderer = parentModelRenderer;
 	}
 	
 	public void setShouldScaleChildren(boolean scaleChildren) {
@@ -189,20 +176,20 @@ public class EndimatorRendererModel extends RendererModel {
 	 * Performs the same function as vanilla's setTextureOffset
 	 */
 	@Override
-	public EndimatorRendererModel setTextureOffset(int x, int y) {
+	public EndimatorModelRenderer setTextureOffset(int x, int y) {
 		this.textureOffsetX = x;
 		this.textureOffsetY = y;
 		return this;
 	}
 	
 	/**
-	 * Performs the same function as vanilla's addChild but adjusted to fit EndimatorRendererModel
+	 * Performs the same function as vanilla's addChild but adjusted to fit EndimatorModelRenderer
 	 */
 	@Override
-	public void addChild(RendererModel rendererModel) {
-		super.addChild(rendererModel);
-		EndimatorRendererModel rendererModelChild = (EndimatorRendererModel) rendererModel;
-		rendererModelChild.setParentRendererModel(this);
+	public void addChild(ModelRenderer ModelRenderer) {
+		super.addChild(ModelRenderer);
+		EndimatorModelRenderer ModelRendererChild = (EndimatorModelRenderer) ModelRenderer;
+		ModelRendererChild.setParentModelRenderer(this);
 	}
 	
 	@Override
@@ -259,7 +246,7 @@ public class EndimatorRendererModel extends RendererModel {
 				}
 				
 				if(this.childModels != null) {
-					for(RendererModel childModel : this.childModels) {
+					for(ModelRenderer childModel : this.childModels) {
 						childModel.render(scale);
 					}
 				}

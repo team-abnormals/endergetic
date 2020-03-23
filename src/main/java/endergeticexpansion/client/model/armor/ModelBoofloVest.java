@@ -1,9 +1,11 @@
 package endergeticexpansion.client.model.armor;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 
 /**
@@ -11,38 +13,33 @@ import net.minecraft.entity.LivingEntity;
  * Created using Tabula 7.0.0
  */
 public class ModelBoofloVest<T extends LivingEntity> extends BipedModel<T> {
-    public RendererModel strap;
-    public RendererModel boofer;
+    public ModelRenderer strap;
+    public ModelRenderer boofer;
 
     public ModelBoofloVest(float modelSize) {
     	super(modelSize, 0.0F, 64, 64);
-        this.strap = new RendererModel(this, 16, 16);
+        this.strap = new ModelRenderer(this, 16, 16);
         this.strap.setRotationPoint(-4.0F, 0.0F, -2.0F);
         this.strap.addBox(0.0F, 0.0F, 0.0F, 8, 11, 4, 0.0F);
-        this.boofer = new RendererModel(this, 0, 32);
+        this.boofer = new ModelRenderer(this, 0, 32);
         this.boofer.setRotationPoint(0.0F, 2.0F, -2.0F);
         this.boofer.addBox(0.0F, 0.0F, 0.0F, 8, 8, 8, 0.0F);
         this.strap.addChild(this.boofer);
     }
-
-	@Override
-    public void render(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
-    	super.render(entity, f, f1, f2, f3, f4, f5);
-    	GlStateManager.pushMatrix();
-    	GlStateManager.scalef(1.25F, 1.25F, 1.25F);
-    	if(entity.isSneaking()) {
-    		GlStateManager.translatef(-0.25F, 0.18F, -0.175F);
-    	} else {
-    		GlStateManager.translatef(-0.25F, -0.05F, -0.125F);
-    	}
-        this.strap.render(f5);
-    	GlStateManager.popMatrix();
+    
+    @Override
+    public void render(MatrixStack p_225598_1_, IVertexBuilder p_225598_2_, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float f5) {
+    	super.render(p_225598_1_, p_225598_2_, p_225598_3_, p_225598_4_, p_225598_5_, p_225598_6_, p_225598_7_, f5);
+    	RenderSystem.pushMatrix();
+    	RenderSystem.scalef(1.25F, 1.25F, 1.25F);
+    	
+        this.strap.render(p_225598_1_, p_225598_2_, p_225598_4_, p_225598_4_, f5, f5, f5, f5);
+    	RenderSystem.popMatrix();
     }
-	
-	@Override
-	public void setRotationAngles(T entity, float p_212844_2_, float p_212844_3_, float p_212844_4_,float p_212844_5_, float p_212844_6_, float p_212844_7_) {
-		super.setRotationAngles(entity, p_212844_2_, p_212844_3_, p_212844_4_, p_212844_5_, p_212844_6_, p_212844_7_);
-		this.strap.copyModelAngles(this.bipedBody);
-	}
-
+    
+    @Override
+    public void setRotationAngles(T p_225597_1_, float p_225597_2_, float p_225597_3_, float p_225597_4_, float p_225597_5_, float p_225597_6_) {
+    	super.setRotationAngles(p_225597_1_, p_225597_2_, p_225597_3_, p_225597_4_, p_225597_5_, p_225597_6_);
+    	this.strap.copyModelAngles(this.bipedBody);
+    }
 }

@@ -7,13 +7,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.lighting.LightEngine;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
 @SuppressWarnings("deprecation")
@@ -29,7 +29,7 @@ public class BlockPoismossEumus extends Block implements IGrowable {
 	}
 
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
 		if(!worldIn.isRemote) {
 			if(!worldIn.isAreaLoaded(pos, 3)) return;
 			
@@ -67,7 +67,7 @@ public class BlockPoismossEumus extends Block implements IGrowable {
 	}
 	
 	@Override
-	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
+	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.up();
 		BlockState blockstate = EEBlocks.POISE_GRASS.get().getDefaultState();
 
@@ -96,7 +96,7 @@ public class BlockPoismossEumus extends Block implements IGrowable {
 			}
 
 			blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
-			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).func_224756_o(worldIn, blockpos1)) {
+			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isCollisionShapeOpaque(worldIn, blockpos1)) {
 				break;
 			}
 
@@ -108,15 +108,4 @@ public class BlockPoismossEumus extends Block implements IGrowable {
 	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
 		return true;
 	}
-	
-	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
-	}
-	
-	@Override
-	public boolean isSolid(BlockState state) {
-		return true;
-	}
-	
 }

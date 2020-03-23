@@ -10,7 +10,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -19,6 +18,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockFrisbloomBud extends Block {
 	public static final IntegerProperty LAYER = IntegerProperty.create("layers_total", 0, 3);
@@ -51,16 +51,15 @@ public class BlockFrisbloomBud extends Block {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if (!worldIn.isAreaLoaded(pos, 1)) return;
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if(!world.isAreaLoaded(pos, 1)) return;
 		
-		if(random.nextInt(2) == 1 && worldIn.getBlockState(pos.up()).isAir()) {
-			this.grow(state, worldIn, pos, random);
+		if(random.nextInt(2) == 1 && world.isAirBlock(pos.up())) {
+			this.grow(state, world, pos, random);
 		}
 		
 		if(state.get(LAYER) == 3) {
-			worldIn.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(BlockFrisbloomStem.LAYER, 4));
+			world.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(BlockFrisbloomStem.LAYER, 4));
 		}
 	}
 	
@@ -92,13 +91,7 @@ public class BlockFrisbloomBud extends Block {
 	}
 	
 	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
-	}
-	
-	@Override
 	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
 		return SoundType.PLANT;
 	}
-
 }

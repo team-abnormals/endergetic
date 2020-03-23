@@ -43,7 +43,7 @@ public class TileEntityBoof extends TileEntity implements ITickableTileEntity {
 				!(entity instanceof EntityBolloomBalloon) &&
 				!(this.world.getBlockState(this.pos).get(BlockBoof.BOOFED))) {
 				if(entity instanceof PlayerEntity) {
-					if(!((PlayerEntity)entity).isSneaking()){
+					if(!((PlayerEntity)entity).isShiftKeyDown()){
 						BlockBoof.doBoof(this.world, this.pos);
 					}
 					((PlayerEntity)entity).fallDistance = 0;

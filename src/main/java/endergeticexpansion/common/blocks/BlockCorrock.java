@@ -11,7 +11,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -24,6 +23,7 @@ import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.dimension.NetherDimension;
 import net.minecraft.world.dimension.OverworldDimension;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockCorrock extends Block {
 	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
@@ -43,9 +43,9 @@ public class BlockCorrock extends Block {
 	}
 	
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(worldIn)) {
-			worldIn.setBlockState(pos, this.getCorrockBlockForDimension(worldIn.getDimension()));
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+		if(!this.isInProperDimension(world)) {
+			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension()));
 		}
 	}
 	
@@ -103,10 +103,5 @@ public class BlockCorrock extends Block {
 	@Override
 	public OffsetType getOffsetType() {
 		return OffsetType.NONE;
-	}
-	
-	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
 	}
 }

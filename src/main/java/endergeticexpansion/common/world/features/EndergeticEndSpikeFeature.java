@@ -13,6 +13,7 @@ import net.minecraft.block.PaneBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -28,9 +29,9 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 	
 	@Override
 	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, EndSpikeFeatureConfig config) {
-		List<EndSpikeFeature.EndSpike> list = config.func_214671_b();
+		List<EndSpikeFeature.EndSpike> list = config.getSpikes();
 		if(list.isEmpty()) {
-			list = func_214554_a(worldIn);
+			list = generateSpikes(worldIn);
 		}
 
 		for(EndSpikeFeature.EndSpike endspikefeature$endspike : list) {
@@ -54,7 +55,7 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		}
 
 		if(p_214553_4_.isGuarded()) {
-			BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+			PooledMutable blockpos$mutableblockpos = PooledMutable.retain();
 
 			for(int k = -2; k <= 2; ++k) {
 				for(int l = -2; l <= 2; ++l) {
@@ -74,8 +75,8 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		}
 
 		EnderCrystalEntity endercrystalentity = EntityType.END_CRYSTAL.create(p_214553_1_.getWorld());
-		endercrystalentity.setBeamTarget(p_214553_3_.func_214668_c());
-		endercrystalentity.setInvulnerable(p_214553_3_.func_214669_a());
+		endercrystalentity.setBeamTarget(p_214553_3_.getCrystalBeamTarget());
+		endercrystalentity.setInvulnerable(p_214553_3_.isCrystalInvulnerable());
 		endercrystalentity.setLocationAndAngles((double)((float)p_214553_4_.getCenterX() + 0.5F), (double)(p_214553_4_.getHeight() + 1), (double)((float)p_214553_4_.getCenterZ() + 0.5F), p_214553_2_.nextFloat() * 360.0F, 0.0F);
 		p_214553_1_.addEntity(endercrystalentity);
 		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().getDefaultState());

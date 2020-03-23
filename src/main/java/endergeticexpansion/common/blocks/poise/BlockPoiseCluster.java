@@ -19,7 +19,6 @@ import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -121,11 +120,6 @@ public class BlockPoiseCluster extends Block {
 		}
 	}
 	
-	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.TRANSLUCENT;
-	}
-	
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
 	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
@@ -136,5 +130,4 @@ public class BlockPoiseCluster extends Block {
 	public SoundType getSoundType(BlockState p_220072_1_) {
 		return EESounds.EESoundTypes.CLUSTER;
 	}
-	
 }

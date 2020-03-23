@@ -231,7 +231,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		if(this.world.isRemote) {
 			if(this.forcedAgeTimer > 0) {
 				if(this.forcedAgeTimer % 4 == 0) {
-					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
+					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosX() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.getPosY() + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
 				}
 
 				this.forcedAgeTimer--;
@@ -257,7 +257,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		
 		if(this.isEndimationPlaying(BIRTH)) {
 			if(this.getAnimationTick() == 59) {
-				double[] oldPosition = { this.posX, this.posY, this.posZ };
+				double[] oldPosition = { this.getPosX(), this.getPosY(), this.getPosZ() };
 				this.stopRiding();
 				this.setBeingBorn(false);
 				this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
@@ -275,7 +275,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
 			
 			EntityBoofloAdolescent booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
-			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+			booflo.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
 			
 			if(this.hasCustomName()) {
     			booflo.setCustomName(this.getCustomName());
@@ -364,7 +364,9 @@ public class EntityBoofloBaby extends EndimatedEntity {
 	}
 	
 	@Override
-	public void fall(float distance, float damageMultiplier) {}
+	public boolean onLivingFall(float distance, float damageMultiplier) {
+		return false;
+	}
 
 	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {}
@@ -406,7 +408,7 @@ public class EntityBoofloBaby extends EndimatedEntity {
 
 		public void tick() {
 			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
+				Vec3d vec3d = new Vec3d(this.posX - this.booflo.getPosX(), this.posY - this.booflo.getPosY(), this.posZ - this.booflo.getPosZ());
 				double d0 = vec3d.length();
 				double d1 = vec3d.y / d0;
 				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
@@ -451,13 +453,13 @@ public class EntityBoofloBaby extends EndimatedEntity {
 		public void tick() {
 			if (this.isLooking) {
 				this.isLooking = false;
-				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.func_220678_h() + 20.0F, this.deltaLookYaw);
-				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, this.func_220677_g() + 10.0F, this.deltaLookPitch);
+				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.getTargetYaw() + 20.0F, this.deltaLookYaw);
+				this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, this.getTargetPitch() + 10.0F, this.deltaLookPitch);
 			} else {
 				if (this.mob.getNavigator().noPath()) {
-					this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 5.0F);
+					this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, 0.0F, 5.0F);
 				}
-				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
+				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
 			}
 
 			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.rotationYawHead - this.mob.renderYawOffset);

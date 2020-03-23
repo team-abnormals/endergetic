@@ -112,11 +112,6 @@ public abstract class BlockCorrockCrown extends ContainerBlock implements IBucke
 	}
 	
 	@Override
-	public boolean isSolid(BlockState state) {
-		return false;
-	}
-	
-	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}

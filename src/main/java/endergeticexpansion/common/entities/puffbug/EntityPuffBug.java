@@ -75,12 +75,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -306,9 +306,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
     			
-    				double x = this.posX + offsetX;
-    				double y = this.posY + (rand.nextFloat() * 0.05F) + 0.7F;
-    				double z = this.posZ + offsetZ;
+    				double x = this.getPosX() + offsetX;
+    				double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
+    				double z = this.getPosZ() + offsetZ;
     				
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F, (rand.nextFloat() * 0.05F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F);
 				}
@@ -317,9 +317,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 				
-					double x = this.posX + offsetX;
-					double y = this.posY + (rand.nextFloat() * 0.05F) + 0.7F;
-					double z = this.posZ + offsetZ;
+					double x = this.getPosX() + offsetX;
+					double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
+					double z = this.getPosZ() + offsetZ;
 					
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
@@ -328,9 +328,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 			
-					double x = this.posX + offsetX;
-					double y = this.posY + (rand.nextFloat() * 0.05F) + 0.7F;
-					double z = this.posZ + offsetZ;
+					double x = this.getPosX() + offsetX;
+					double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
+					double z = this.getPosZ() + offsetZ;
 				
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
@@ -407,8 +407,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 					
 					if(!this.stuckInBlock) {
 						if(!this.world.isRemote && target != null && this.isEndimationPlaying(FLY_ANIMATION)) {
-							float seekOffset = target.posY > this.posY ? 0.0F : 0.5F;
-							Vec3d targetVecNoScale = new Vec3d(target.posX - this.posX, target.posY - seekOffset - this.posY, target.posZ - this.posZ);
+							float seekOffset = target.getPosY() > this.getPosY() ? 0.0F : 0.5F;
+							Vec3d targetVecNoScale = new Vec3d(target.getPosX() - this.getPosX(), target.getPosY() - seekOffset - this.getPosY(), target.getPosZ() - this.getPosZ());
 							Vec3d targetVec = targetVecNoScale.scale(SEEKING_FACTOR);
 						
 							double motionLength = motion.length();
@@ -450,12 +450,12 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 			
 			if(this.stuckInBlock && !this.noClip) {
-				if(!this.world.isRemote && this.stuckInBlockState != blockstate && this.world.areCollisionShapesEmpty(this.getBoundingBox().grow(0.06D))) {
+				if(!this.world.isRemote && this.stuckInBlockState != blockstate && this.world.func_226664_a_(this.getBoundingBox().grow(0.06D))) {
 					this.disableProjectile();
 				}
 				this.setMotion(this.getMotion().mul(0.0F, 1.0F, 0.0F));
 			} else {
-				Vec3d positionVec = new Vec3d(this.posX, this.posY, this.posZ);
+				Vec3d positionVec = new Vec3d(this.getPosX(), this.getPosY(), this.getPosZ());
 				Vec3d endVec = positionVec.add(motion);
 				
 				RayTraceResult traceResult = this.world.rayTraceBlocks(new RayTraceContext(positionVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
@@ -868,7 +868,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	 * Looks for an open position near the hive, used for alerted Puff Bugs
 	 */
 	public void tryToTeleportToHive(BlockPos pos) {
-		MutableBlockPos positions = new MutableBlockPos();
+		PooledMutable positions = PooledMutable.retain();
 		List<BlockPos> avaliablePositions = Lists.newArrayList();
 		TileEntityPuffBugHive hive = this.getHive();
 		
@@ -933,7 +933,7 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	
 	@Nullable
 	private EntityRayTraceResult traceEntity(Vec3d start, Vec3d end) {
-		return ProjectileHelper.func_221271_a(this.world, this, start, end, this.getBoundingBox().expand(this.getMotion()).grow(0.5F), (result) -> {
+		return ProjectileHelper.rayTraceEntities(this.world, this, start, end, this.getBoundingBox().expand(this.getMotion()).grow(0.5F), (result) -> {
 			return !result.isSpectator() && result.isAlive() && !(result instanceof EntityPuffBug);
 		});
 	}
@@ -1005,9 +1005,8 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public int getBrightnessForRender() {
-		BlockPos blockpos = new BlockPos(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ);
+	public float getBrightness() {
+		BlockPos blockpos = new BlockPos(this.getPosX(), this.getPosY() + (double)this.getEyeHeight(), this.getPosZ());
 		if(this.stuckInBlock && !this.isInflated()) {
 			boolean rotationFlag = true;
 			float[] rotations = this.getRotationController().getRotations(1.0F);
@@ -1018,13 +1017,15 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 				rotationFlag = false;
 			}
 			
-			return this.world.isAreaLoaded(blockpos, 0) ? this.world.getCombinedLight(rotationFlag ? blockpos.offset(horizontalOffset).offset(verticalOffset) : blockpos.offset(horizontalOffset), 0) : 0;
+			return this.world.isAreaLoaded(blockpos, 0) ? this.world.getLight(rotationFlag ? blockpos.offset(horizontalOffset).offset(verticalOffset) : blockpos.offset(horizontalOffset)) : 0;
 		}
-		return this.world.isAreaLoaded(blockpos, 0) ? this.world.getCombinedLight(blockpos, 0) : 0;
+		return super.getBrightness();
 	}
 	
 	@Override
-	public void fall(float distance, float damageMultiplier) {}
+	public boolean onLivingFall(float distance, float damageMultiplier) {
+		return false;
+	}
 	
 	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize size) {
@@ -1275,9 +1276,9 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 			}
 			
 			if(this.action == MovementController.Action.MOVE_TO && !this.puffbug.getNavigator().noPath()) {
-				double xDistance = this.posX - this.puffbug.posX;
-				double yDistance = this.posY - this.puffbug.posY;
-				double zDistance = this.posZ - this.puffbug.posZ;
+				double xDistance = this.posX - this.puffbug.getPosX();
+				double yDistance = this.posY - this.puffbug.getPosY();
+				double zDistance = this.posZ - this.puffbug.getPosZ();
 				double totalDistance = (double) MathHelper.sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
 				
 				double verticalVelocity = yDistance / totalDistance;

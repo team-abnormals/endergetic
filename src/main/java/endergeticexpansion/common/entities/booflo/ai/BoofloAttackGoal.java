@@ -43,7 +43,7 @@ public class BoofloAttackGoal extends Goal {
 			
 			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRNG());
 			if(this.upperAirPos == null) {
-				Path newPath = this.booflo.getNavigator().getPathToEntityLiving(target, 0);
+				Path newPath = this.booflo.getNavigator().getPathToEntity(target, 0);
 				this.upperAirPos = newPath != null ? newPath.func_224770_k() : null;
 				return upperAirPos != null;
 			}
@@ -94,7 +94,7 @@ public class BoofloAttackGoal extends Goal {
 		
 		if(target != null && this.upperAirPos != null) {
 			this.booflo.getLookController().setLookPosition(this.upperAirPos.getX(), this.upperAirPos.getY(), this.upperAirPos.getZ(), 10.0F, 10.0F);
-			double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+			double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		
 			if(this.delayCounter <= 0 && !target.isInvisible()) {
 				this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);

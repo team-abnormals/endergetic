@@ -100,11 +100,11 @@ public class EntityPoiseCluster extends LivingEntity {
 		this.renderYawOffset = this.prevRenderYawOffset = 180.0F;
 		this.rotationYaw = this.prevRotationYaw = 180.0F;
 		
-		if(this.posY + 1.0F < (this.getOrigin().getY() + this.getBlocksToMoveUp()) && this.isAscending()) {
+		if(this.getPosY() + 1.0F < (this.getOrigin().getY() + this.getBlocksToMoveUp()) && this.isAscending()) {
 			this.setMotion(0.0F, 0.05F, 0.0F);
 		}
 		
-		if(this.posY + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
+		if(this.getPosY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
 			if(!this.world.isRemote) {
 				this.setAscending(false);
 			}
@@ -112,9 +112,9 @@ public class EntityPoiseCluster extends LivingEntity {
 		}
 		
 		if(!this.isAscending()) {
-			if(this.posY > this.getOrigin().getY()) {
+			if(this.getPosY() > this.getOrigin().getY()) {
 				this.setMotion(0, -0.05F, 0);
-			} else if(Math.ceil(this.posY) == this.getOrigin().getY() && this.ticksExisted > 10) {
+			} else if(Math.ceil(this.getPosY()) == this.getOrigin().getY() && this.ticksExisted > 10) {
 				for(int i = 0; i < 8; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
@@ -180,11 +180,11 @@ public class EntityPoiseCluster extends LivingEntity {
 		 * Tell it to being moving down if a block is blocking its way up at its position above
 		 */
 		if(this.isAscending()) {
-			if(this.prevPosY == this.posY && this.isBlockBlockingPath(false)) {
+			if(this.prevPosY == this.getPosY() && this.isBlockBlockingPath(false)) {
 				this.descentCluster();
 			}
 			
-			if(this.prevPosY == this.posY && this.ticksExisted % 25 == 0 && this.posY + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
+			if(this.prevPosY == this.getPosY() && this.ticksExisted % 25 == 0 && this.getPosY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
 				this.descentCluster();
 			}
 		}
@@ -219,7 +219,7 @@ public class EntityPoiseCluster extends LivingEntity {
 			return true;
 		}
 		this.setAscending(true);
-		this.setBlocksToMoveUp((int) (Math.ceil(this.posY) - this.getOrigin().getY()) + 10);
+		this.setBlocksToMoveUp((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10);
 		return false;
 	}
 	
@@ -235,9 +235,9 @@ public class EntityPoiseCluster extends LivingEntity {
 				this.remove();
 			}
 			
-			if((int) (Math.ceil(this.posY) - this.getOrigin().getY()) + 10 < 30) {
+			if((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10 < 30) {
 				this.setAscending(true);
-				this.setBlocksToMoveUp((int) (Math.ceil(this.posY) - this.getOrigin().getY()) + 10);
+				this.setBlocksToMoveUp((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10);
 			} else {
 				this.remove();
 			}
@@ -262,7 +262,9 @@ public class EntityPoiseCluster extends LivingEntity {
 	}
 	
 	@Override
-	public void fall(float distance, float damageMultiplier) {}
+	public boolean onLivingFall(float distance, float damageMultiplier) {
+		return false;
+	}
 	
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
@@ -433,9 +435,9 @@ public class EntityPoiseCluster extends LivingEntity {
 			this.repeat = true;
 			this.repeatDelay = 0;
 			this.volume = 1.0F;
-			this.x = (float) cluster.posX;
-			this.y = (float) cluster.posY;
-			this.z = (float) cluster.posZ;
+			this.x = (float) cluster.getPosX();
+			this.y = (float) cluster.getPosY();
+			this.z = (float) cluster.getPosZ();
 			
 			this.pitch = cluster.getRNG().nextFloat() * 0.25F + 0.8F;
 		}
@@ -447,9 +449,9 @@ public class EntityPoiseCluster extends LivingEntity {
 		
 		public void tick() {
 			if(this.cluster.isAlive()) {
-				this.x = (float) this.cluster.posX;
-				this.y = (float) this.cluster.posY;
-				this.z = (float) this.cluster.posZ;
+				this.x = (float) this.cluster.getPosX();
+				this.y = (float) this.cluster.getPosY();
+				this.z = (float) this.cluster.getPosZ();
 			} else {
 				this.ticksRemoved++;
 				if(this.ticksRemoved > 10) {

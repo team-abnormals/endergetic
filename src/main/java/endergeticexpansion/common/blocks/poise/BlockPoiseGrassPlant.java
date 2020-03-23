@@ -11,7 +11,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IGrowable;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -20,6 +19,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -63,7 +63,7 @@ public class BlockPoiseGrassPlant extends Block implements IGrowable {
 	}
 	
 	@Override
-	public void grow(World world, Random rand, BlockPos pos, BlockState state) {
+	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state) {
 		BlockPoiseGrassPlantTall plant = (BlockPoiseGrassPlantTall) EEBlocks.POISE_GRASS_TALL.get();
 		if(plant.getDefaultState().isValidPosition(world, pos) && world.isAirBlock(pos.up())) {
 			plant.placeAt(world, pos, 2);
@@ -72,10 +72,6 @@ public class BlockPoiseGrassPlant extends Block implements IGrowable {
 	
 	public Block.OffsetType getOffsetType() {
 		return Block.OffsetType.XYZ;
-	}
-	
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
 	}
 	
 	@Override

@@ -30,7 +30,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 
 	@Override
 	protected Vec3d getEntityPosition() {
-		return new Vec3d(this.entity.posX, this.entity.posY + (double)this.entity.getHeight() * 0.5D, this.entity.posZ);
+		return new Vec3d(this.entity.getPosX(), this.entity.getPosY() + (double)this.entity.getHeight() * 0.5D, this.entity.getPosZ());
 	}
 
 	@Override
@@ -45,12 +45,13 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 				this.pathFollow();
 			} else if(this.currentPath != null && this.currentPath.getCurrentPathIndex() < this.currentPath.getCurrentPathLength()) {
 				Vec3d vec3d = this.currentPath.getVectorFromIndex(this.entity, this.currentPath.getCurrentPathIndex());
-				if(MathHelper.floor(this.entity.posX) == MathHelper.floor(vec3d.x) && MathHelper.floor(this.entity.posY) == MathHelper.floor(vec3d.y) && MathHelper.floor(this.entity.posZ) == MathHelper.floor(vec3d.z)) {
+				if(MathHelper.floor(this.entity.getPosX()) == MathHelper.floor(vec3d.x) && MathHelper.floor(this.entity.getPosY()) == MathHelper.floor(vec3d.y) && MathHelper.floor(this.entity.getPosZ()) == MathHelper.floor(vec3d.z)) {
 					this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
 				}
 			}
 
-			DebugPacketSender.func_218803_a(this.world, this.entity, this.currentPath, this.maxDistanceToWaypoint);
+			DebugPacketSender.sendPath(this.world, this.entity, this.currentPath, this.maxDistanceToWaypoint);
+			
 			if(!this.noPath()) {
 				Vec3d vec3d1 = this.currentPath.getPosition(this.entity);
 	            this.entity.getMoveHelper().setMoveTo(vec3d1.x, vec3d1.y, vec3d1.z, this.speed);
@@ -70,7 +71,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 			}
 
 			Vec3d vec3d2 = this.currentPath.getCurrentPos();
-			if(Math.abs(this.entity.posX - (vec3d2.x + 0.5D)) < (double)f1 && Math.abs(this.entity.posZ - (vec3d2.z + 0.5D)) < (double)f1 && Math.abs(this.entity.posY - vec3d2.y) < (double)(f1 * 2.0F)) {
+			if(Math.abs(this.entity.getPosX() - (vec3d2.x + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosZ() - (vec3d2.z + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosY() - vec3d2.y) < (double)(f1 * 2.0F)) {
 				this.currentPath.incrementPathIndex();
 			}
 

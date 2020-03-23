@@ -8,16 +8,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.SoundType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.lighting.LightEngine;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
-@SuppressWarnings("deprecation")
 public class BlockPoismoss extends Block implements IGrowable {
 
 	public BlockPoismoss(Properties properties) {
@@ -30,7 +29,7 @@ public class BlockPoismoss extends Block implements IGrowable {
 	}
 	
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
 		if (!worldIn.isRemote) {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
 			if (!func_220257_b(state, worldIn, pos)) {
@@ -48,12 +47,14 @@ public class BlockPoismoss extends Block implements IGrowable {
 		return i < p_220257_1_.getMaxLightLevel();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return worldIn.getBlockState(pos.up()).isAir();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
+	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.up();
 		BlockState blockstate = EEBlocks.POISE_GRASS.get().getDefaultState();
 
@@ -82,7 +83,7 @@ public class BlockPoismoss extends Block implements IGrowable {
 			}
 
 			blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
-			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).func_224756_o(worldIn, blockpos1)) {
+			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isCollisionShapeOpaque(worldIn, blockpos1)) {
 				break;
 			}
 
@@ -105,12 +106,4 @@ public class BlockPoismoss extends Block implements IGrowable {
 		return SoundType.STONE;
 	}
 
-	public boolean isSolid(BlockState state) {
-		return true;
-	}
-
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
-	}
-	
 }

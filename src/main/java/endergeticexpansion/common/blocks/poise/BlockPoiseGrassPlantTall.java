@@ -23,7 +23,6 @@ import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -35,6 +34,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -149,10 +149,6 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(HALF, STAGE);
 	}
-	
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
-	}
 
 	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
 		return true;
@@ -178,18 +174,18 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 	}
 
 	@Override
-	public void grow(World worldIn, Random rand, BlockPos pos, BlockState state) {
+	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
 		this.grow(worldIn, pos, state, rand);
 	}
 	
-	public void grow(IWorld worldIn, BlockPos pos, BlockState state, Random rand) {
+	public void grow(ServerWorld worldIn, BlockPos pos, BlockState state, Random rand) {
 		if (state.get(STAGE) == 0) {
 			worldIn.setBlockState(pos, state.cycle(STAGE), 4);
 		} else {
 			if (!ForgeEventFactory.saplingGrowTree(worldIn, rand, pos)) return;
 			PoiseTree tree = new PoiseTree();
 			BlockPos treePos = state.get(HALF) == DoubleBlockHalf.LOWER ? pos : pos.down();
-			tree.spawn(worldIn, treePos, state, rand);
+			tree.spawn(worldIn, worldIn.getChunkProvider().getChunkGenerator(), treePos, state, rand);
 		}
 	}
 }

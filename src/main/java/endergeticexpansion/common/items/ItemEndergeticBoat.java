@@ -63,7 +63,7 @@ public class ItemEndergeticBoat extends Item {
             	EntityEndergeticBoat boatentity = new EntityEndergeticBoat(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
                 boatentity.setBoatModel(this.type);
                 boatentity.rotationYaw = playerIn.rotationYaw;
-                if (!worldIn.isCollisionBoxesEmpty(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
+                if (!worldIn.func_226665_a__(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
                     return new ActionResult<>(ActionResultType.FAIL, itemstack);
                 } else {
                     if (!worldIn.isRemote) {

@@ -52,8 +52,8 @@ public class BoofloTemptGoal extends Goal {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.0D);
 		}
 		
-		double dx = this.tempter.posX - this.booflo.posX;
-		double dz = this.tempter.posZ - this.booflo.posZ;
+		double dx = this.tempter.getPosX() - this.booflo.getPosX();
+		double dz = this.tempter.getPosZ() - this.booflo.getPosZ();
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		

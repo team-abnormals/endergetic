@@ -2,7 +2,6 @@ package endergeticexpansion.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.common.ToolType;
 
 public class BlockEumus extends Block {
@@ -14,15 +13,6 @@ public class BlockEumus extends Block {
 	@Override
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.SHOVEL;
-	}
-
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
-	}
-	
-	@Override
-	public boolean isSolid(BlockState p_200124_1_) {
-		return true;
 	}
 	
 }

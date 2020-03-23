@@ -43,7 +43,7 @@ public class PuffBugAttackGoal extends Goal {
 			return false;
 		}
 		
-		Path newPath = this.puffbug.getNavigator().getPathToEntityLiving(target, 0);
+		Path newPath = this.puffbug.getNavigator().getPathToEntity(target, 0);
 		if(newPath != null) {
 			this.path = newPath;
 		}
@@ -82,7 +82,7 @@ public class PuffBugAttackGoal extends Goal {
 			}
 			
 			if(this.puffbug.getDistance(target) <= SHOOT_RANGE) {
-				Vec3d distance = new Vec3d(target.posX - this.puffbug.posX, target.posY - this.puffbug.posY, target.posZ - this.puffbug.posZ);
+				Vec3d distance = new Vec3d(target.getPosX() - this.puffbug.getPosX(), target.getPosY() - this.puffbug.getPosY(), target.getPosZ() - this.puffbug.getPosZ());
 				
 				float pitch = -((float) (MathHelper.atan2(distance.getY(), (double) MathHelper.sqrt(distance.getX() * distance.getX() + distance.getZ() * distance.getZ())) * (double) (180F / (float) Math.PI)));
 				float yaw = (float) (MathHelper.atan2(distance.getZ(), distance.getX()) * (double) (180F / (float) Math.PI)) - 90F;
@@ -115,13 +115,13 @@ public class PuffBugAttackGoal extends Goal {
 	}
 	
 	private boolean canFitNewCollisionShape() {
-		return this.puffbug.isChild() ? this.puffbug.world.areCollisionShapesEmpty(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE_CHILD).offset(0.0F, 0.225F, 0.0F)) : this.puffbug.world.areCollisionShapesEmpty(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE).offset(0.0F, 0.225F, 0.0F));
+		return this.puffbug.isChild() ? this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE_CHILD).offset(0.0F, 0.225F, 0.0F)) : this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE).offset(0.0F, 0.225F, 0.0F));
 	}
 	
 	private AxisAlignedBB getBoundingBoxForSize(EntitySize size) {
 		float f = size.width / 2.0F;
-		Vec3d vec3d = new Vec3d(this.puffbug.posX - (double) f, this.puffbug.posY, this.puffbug.posZ - (double) f);
-		Vec3d vec3d1 = new Vec3d(this.puffbug.posX + (double) f, this.puffbug.posY + (double) size.height, this.puffbug.posZ + (double) f);
+		Vec3d vec3d = new Vec3d(this.puffbug.getPosX() - (double) f, this.puffbug.getPosY(), this.puffbug.getPosZ() - (double) f);
+		Vec3d vec3d1 = new Vec3d(this.puffbug.getPosX() + (double) f, this.puffbug.getPosY() + (double) size.height, this.puffbug.getPosZ() + (double) f);
 		return new AxisAlignedBB(vec3d, vec3d1);
 	}
 	

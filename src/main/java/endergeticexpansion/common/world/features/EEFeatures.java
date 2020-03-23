@@ -3,11 +3,9 @@ package endergeticexpansion.common.world.features;
 import java.util.function.Supplier;
 
 import endergeticexpansion.core.EndergeticExpansion;
-import net.minecraft.world.gen.feature.DoublePlantConfig;
 import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.GrassFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -16,8 +14,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class EEFeatures {
 	public static final DeferredRegister<Feature<?>> FEATURES = new DeferredRegister<>(ForgeRegistries.FEATURES, EndergeticExpansion.MOD_ID);
 	
-	public static final RegistryObject<Feature<GrassFeatureConfig>> POISE_GRASS    = createFeature("poise_grass", () -> new FeaturePoiseGrass(GrassFeatureConfig::deserialize));
-	public static final RegistryObject<Feature<DoublePlantConfig>> POISE_TALLGRASS = createFeature("poise_tallgrass", () -> new FeatureTallPoiseGrass(DoublePlantConfig::deserialize));
+	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_GRASS       = createFeature("poise_grass", () -> new FeaturePoiseGrass(NoFeatureConfig::deserialize));
+	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TALLGRASS   = createFeature("poise_tallgrass", () -> new FeatureTallPoiseGrass(NoFeatureConfig::deserialize));
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_CLUSTER     = createFeature("poise_cluster", () -> new FeaturePoiseCluster(NoFeatureConfig::deserialize));
 	public static final RegistryObject<Feature<NoFeatureConfig>> BOLLOOM_BUD       = createFeature("bolloom_bud", () -> new FeatureBolloomBud(NoFeatureConfig::deserialize));
 	public static final RegistryObject<Feature<NoFeatureConfig>> PUFFBUG_HIVE      = createFeature("puffbug_hive", () -> new FeaturePuffBugHive(NoFeatureConfig::deserialize));

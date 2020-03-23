@@ -68,7 +68,7 @@ public class EEBlocks {
 	public static final RegistryObject<BlockHiveHanger> HIVE_HANGER               = RegistryUtils.createBlockNoItem("hive_hanger", () -> new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE                    = RegistryUtils.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
 	public static final RegistryObject<BlockBoof> BOOF_BLOCK                      = RegistryUtils.createBlock("boof_block", () -> new BlockBoof(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
-	public static final RegistryObject<BlockDispensedBoof> BOOF_BLOCK_DISPENSED   = RegistryUtils.createBlockNoItem("boof_dispensed_block", () -> new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().hardnessAndResistance(-1, 3600000.0F)));
+	public static final RegistryObject<BlockDispensedBoof> BOOF_BLOCK_DISPENSED   = RegistryUtils.createBlockNoItem("boof_dispensed_block", () -> new BlockDispensedBoof(EEProperties.BOOF_BLOCK.doesNotBlockMovement().notSolid().hardnessAndResistance(-1, 3600000.0F)));
 	
 	/*
 	 * Vibra Jungle(Unused)

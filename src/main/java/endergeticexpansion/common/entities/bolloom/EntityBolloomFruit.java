@@ -68,9 +68,9 @@ public class EntityBolloomFruit extends Entity {
 		this.setOrigin(budPos);
 		this.setVineHeight(height);
 		
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 	}
 
 	@Override
@@ -107,9 +107,9 @@ public class EntityBolloomFruit extends Entity {
 	
 	@Override
 	public void tick() {
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 		
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
@@ -136,7 +136,7 @@ public class EntityBolloomFruit extends Entity {
 				this.setDesiredAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
 			}
 			
-			if(this.posY >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
+			if(this.getPosY() >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
 				this.remove();
 			}
 			
@@ -185,7 +185,7 @@ public class EntityBolloomFruit extends Entity {
 	
 	private void doParticles() {
 		if(this.world instanceof ServerWorld) {
-			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 		}
 	}
 	
@@ -318,7 +318,7 @@ public class EntityBolloomFruit extends Entity {
 			if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
 				super.applyEntityCollision(entityIn);
 			}
-		} else if (entityIn.posY >= this.getBoundingBox().minY) {
+		} else if (entityIn.getPosY() >= this.getBoundingBox().minY) {
 			super.applyEntityCollision(entityIn);
 		}
 	}

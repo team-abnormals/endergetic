@@ -1,31 +1,31 @@
 package endergeticexpansion.client.model;
 
-import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.model.Model;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 /**
  * ModelBoofBlockDispenser - Endergized
  * Created using Tabula 7.0.0
  */
-public class ModelBoofBlockDispenser extends Model {
-    public RendererModel base;
+public class ModelBoofBlockDispenser {
+    public ModelRenderer base;
 
     public ModelBoofBlockDispenser() {
-        this.textureWidth = 64;
-        this.textureHeight = 32;
-        this.base = new RendererModel(this, 0, 0);
+        this.base = new ModelRenderer(64, 32, 0, 0);
         this.base.setRotationPoint(0.0F, 18.0F, 2.0F);
         this.base.addBox(-6.0F, -6.0F, -6.0F, 12, 12, 12, 0.0F);
     }
 
-    public void renderAll() { 
-        this.base.render(0.0625F);
+    public void renderAll(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn) { 
+        this.base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
     }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(RendererModel RendererModel, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer RendererModel, float x, float y, float z) {
         RendererModel.rotateAngleX = x;
         RendererModel.rotateAngleY = y;
         RendererModel.rotateAngleZ = z;

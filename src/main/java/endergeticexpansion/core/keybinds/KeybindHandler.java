@@ -110,9 +110,9 @@ public class KeybindHandler {
         				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
         				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
         			
-        				double x = player.posX + offsetX;
-        				double y = player.posY + (rand.nextFloat() * 0.05F) + 1.25F;
-        				double z = player.posZ + offsetZ;
+        				double x = player.getPosX() + offsetX;
+        				double y = player.getPosY() + (rand.nextFloat() * 0.05F) + 1.25F;
+        				double z = player.getPosZ() + offsetZ;
         			
         				NetworkUtil.spawnParticleC2S2C("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
         			}

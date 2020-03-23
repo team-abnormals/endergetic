@@ -20,6 +20,7 @@ import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.dimension.NetherDimension;
 import net.minecraft.world.dimension.OverworldDimension;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
 public class BlockCorrockBlock extends Block {
@@ -34,9 +35,9 @@ public class BlockCorrockBlock extends Block {
 	}
 	
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(worldIn) && !this.isSubmerged(worldIn, pos)) {
-			worldIn.setBlockState(pos, this.getCorrockBlockForDimension(worldIn.getDimension()));
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
+			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension()));
 		}
 	}
 	

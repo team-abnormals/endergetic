@@ -59,7 +59,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	protected void findNearestTarget() {
-		this.nearestTarget = this.findEntity(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.posX, this.goalOwner.posY + (double)this.goalOwner.getEyeHeight(), this.goalOwner.posZ, this.getTargetableArea(this.getTargetDistance()));
+		this.nearestTarget = this.findEntity(this.targetClass, this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosY() + (double)this.goalOwner.getEyeHeight(), this.goalOwner.getPosZ(), this.getTargetableArea(this.getTargetDistance()));
 	}
 
 	public void startExecuting() {
@@ -114,7 +114,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 			
 				if(this.getTargetDistance() > 0.0D) {
 					double d1 = this.getTargetDistance();
-					double d2 = attacker.getDistanceSq(target.posX, target.posY, target.posZ);
+					double d2 = attacker.getDistanceSq(target.getPosX(), target.getPosY(), target.getPosZ());
 					if(d2 > d1 * d1) {
 						return false;
 					}

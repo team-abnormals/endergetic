@@ -13,6 +13,7 @@ import net.minecraft.pathfinding.PathType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
@@ -82,7 +83,7 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	
 	@SuppressWarnings("deprecation")
 	private PathNodeType isFree(int x, int y, int z) {
-		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+		PooledMutable blockpos$mutableblockpos = PooledMutable.retain();
 
 		for(int i = x; i < x + this.entitySizeX; ++i) {
 			for(int j = y; j < y + this.entitySizeY; ++j) {

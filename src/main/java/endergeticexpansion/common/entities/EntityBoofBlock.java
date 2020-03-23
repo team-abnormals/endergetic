@@ -70,9 +70,9 @@ public class EntityBoofBlock extends LivingEntity {
 					!(entity instanceof EntityPoiseCluster) &&
 					!(entity instanceof ItemFrameEntity)
 				) {
-					if(entity.posY - 0.45F >= this.posY) {
+					if(entity.getPosY() - 0.45F >= this.getPosY()) {
 						entity.addVelocity(0, this.rand.nextFloat() * 0.05D + 0.35D, 0);
-					} else if(entity.posY < this.posY - 1F) {
+					} else if(entity.getPosY() < this.getPosY() - 1F) {
 						entity.addVelocity(0, this.rand.nextFloat() * -0.05D - 0.35D, 0);
 					} else {
 						float amount = 0.5F;

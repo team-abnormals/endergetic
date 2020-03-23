@@ -1,6 +1,7 @@
 package endergeticexpansion.client.events;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -32,7 +33,7 @@ public class OverlayEvents {
 				int left = scaledWidth / 2 - 91;
 				int progress = ((EntityBooflo) player.getRidingEntity()).getRideControlDelay();
 				
-				GlStateManager.pushMatrix();
+				RenderSystem.pushMatrix();
 				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 				
 				OverlayEvents.drawTexture(left, top, 0, 0, 182, 5);
@@ -40,7 +41,7 @@ public class OverlayEvents {
 					OverlayEvents.drawTexture(left, top, 0, 5, progress, 10);
 				}
 				
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 			}
 		}
 	}

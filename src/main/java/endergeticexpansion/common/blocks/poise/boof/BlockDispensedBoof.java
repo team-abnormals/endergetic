@@ -76,11 +76,6 @@ public class BlockDispensedBoof extends DirectionalBlock implements IBucketPicku
 	}
 	
 	@Override
-	public boolean isSolid(BlockState state) {
-		return false;
-	}
-	
-	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}

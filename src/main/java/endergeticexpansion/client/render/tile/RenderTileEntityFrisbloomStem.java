@@ -2,6 +2,7 @@ package endergeticexpansion.client.render.tile;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -12,7 +13,9 @@ import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
@@ -22,13 +25,14 @@ public class RenderTileEntityFrisbloomStem extends TileEntityRenderer<TileEntity
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_stem.png");
 	private static final ResourceLocation TEXTURE_FLOWER = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_flower.png");
 	
-	public RenderTileEntityFrisbloomStem() {
-		model = new ModelFrisbloomStem();
-		modelFlower = new ModelFrisbloomFlower();
+	public RenderTileEntityFrisbloomStem(TileEntityRendererDispatcher renderDispatcher) {
+		super(renderDispatcher);
+		this.model = new ModelFrisbloomStem();
+		this.modelFlower = new ModelFrisbloomFlower();
 	}
 	
 	@Override
-	public void render(TileEntityFrisbloomStem te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityFrisbloomStem te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		Random rnd = new Random(((this.getLongForPos(te.getPos()) / 12)) ^ 5);
 		int rndRot = rnd.nextInt(12) - 6;
 		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.getDefaultState();
@@ -92,5 +96,4 @@ public class RenderTileEntityFrisbloomStem extends TileEntityRenderer<TileEntity
 	public long getLongForPos(BlockPos pos) {
 		return (pos.getX() + pos.getY() + pos.getZ() * pos.toLong());
 	}
-	
 }

@@ -80,7 +80,7 @@ public class RegistryUtils {
 	
 	public static <B extends Block> RegistryObject<B> createBlockWithTESIR(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
 		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
-		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setTEISR(() -> EETileEntityItemRenderer::new)));
+		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> EETileEntityItemRenderer::new)));
 		return block;
 	}
 	

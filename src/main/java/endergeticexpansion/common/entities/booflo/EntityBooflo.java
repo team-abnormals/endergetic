@@ -232,7 +232,7 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		
 		if(!this.isWorldRemote()) {
-			this.setOnGround(!this.world.areCollisionShapesEmpty(DetectionHelper.checkOnGround(this.getBoundingBox())));
+			this.setOnGround(!this.world.func_226664_a_(DetectionHelper.checkOnGround(this.getBoundingBox())));
 			
 			if(this.getRideControlDelay() > 0 && !this.isDelayExpanding() && this.isDelayDecrementing()) {
 				this.setRideControlDelay(this.getRideControlDelay() - 2);
@@ -276,7 +276,7 @@ public class EntityBooflo extends EndimatedEntity {
 				if((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if(this.getAnimationTick() % 20 == 0) {
 						if(this.world instanceof ServerWorld && this.hasCaughtFruit()) {
-							((ServerWorld) this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+							((ServerWorld) this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 						}
 						
 						if(this.hasCaughtPuffBug()) {
@@ -413,7 +413,7 @@ public class EntityBooflo extends EndimatedEntity {
 				double d0 = this.rand.nextGaussian() * 0.02D;
 				double d1 = this.rand.nextGaussian() * 0.02D;
 				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.posX + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), this.posY + 0.5D + (this.rand.nextFloat() * this.getHeight()), this.posZ + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), d0, d1, d2);
+				this.world.addParticle(ParticleTypes.HEART, this.getPosX() + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), this.getPosY() + 0.5D + (this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), d0, d1, d2);
 			}
 		}
 		
@@ -936,9 +936,9 @@ public class EntityBooflo extends EndimatedEntity {
 				double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 				double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 			
-				double x = this.posX + 0.5D + offsetX;
-				double y = this.posY + 0.5D + (this.rand.nextFloat() * 0.05F);
-				double z = this.posZ + 0.5D + offsetZ;
+				double x = this.getPosX() + 0.5D + offsetX;
+				double y = this.getPosY() + 0.5D + (this.rand.nextFloat() * 0.05F);
+				double z = this.getPosZ() + 0.5D + offsetZ;
 			
 				if(this.isWorldRemote()) {
 					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F);
@@ -1059,7 +1059,7 @@ public class EntityBooflo extends EndimatedEntity {
 			if(!this.isWorldRemote()) {
 				EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(this.world);
 				baby.setGrowingAge(-24000);
-				baby.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
+				baby.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);
 				this.world.addEntity(baby);
 				if(itemstack.hasDisplayName()) {
 					baby.setCustomName(itemstack.getDisplayName());
@@ -1102,7 +1102,7 @@ public class EntityBooflo extends EndimatedEntity {
 					double d0 = this.rand.nextGaussian() * 0.02D;
 					double d1 = this.rand.nextGaussian() * 0.02D;
 					double d2 = this.rand.nextGaussian() * 0.02D;
-					this.world.addParticle(particle, this.posX + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
+					this.world.addParticle(particle, this.getPosX() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.getPosY() + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
 				}
 			}
 			return true;
@@ -1142,7 +1142,7 @@ public class EntityBooflo extends EndimatedEntity {
 				double zOffset = passengerIndex == 0 ? 0.0F : passengerIndex == 1 ? -0.25F : 0.25F;
 				Vec3d ridingOffset = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-this.getLockedYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 				
-				passenger.setPosition(this.posX + ridingOffset.x, this.posY + 0.9F, this.posZ + ridingOffset.z);
+				passenger.setPosition(this.getPosX() + ridingOffset.x, this.getPosY() + 0.9F, this.getPosZ() + ridingOffset.z);
 			} else if(passenger instanceof EntityPuffBug) {
 				EntityPuffBug puffbug = (EntityPuffBug) passenger;
 				passenger.rotationYaw = puffbug.renderYawOffset = puffbug.rotationYawHead = (this.rotationYaw - 75.0F);
@@ -1150,9 +1150,9 @@ public class EntityBooflo extends EndimatedEntity {
 					Vec3d ridingPos = (new Vec3d(1.0D, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
 					float yOffset = puffbug.isChild() ? 0.1F : 0.3F;
 					
-					passenger.setPosition(this.posX + ridingPos.getX(), this.posY - yOffset - (0.15F * this.FRUIT_HOVER.getAnimationProgressServer()), this.posZ + ridingPos.getZ());
+					passenger.setPosition(this.getPosX() + ridingPos.getX(), this.getPosY() - yOffset - (0.15F * this.FRUIT_HOVER.getAnimationProgressServer()), this.getPosZ() + ridingPos.getZ());
 				} else {
-					passenger.setPosition(this.posX, this.posY + 0.25F, this.posZ);
+					passenger.setPosition(this.getPosX(), this.getPosY() + 0.25F, this.getPosZ());
 				}
 			} else {
 				super.updatePassenger(passenger);
@@ -1247,7 +1247,9 @@ public class EntityBooflo extends EndimatedEntity {
 	}
 	
 	@Override
-	public void fall(float distance, float damageMultiplier) {}
+	public boolean onLivingFall(float distance, float damageMultiplier) {
+		return false;
+	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -1257,7 +1259,7 @@ public class EntityBooflo extends EndimatedEntity {
 				double d0 = this.rand.nextGaussian() * 0.02D;
 				double d1 = this.rand.nextGaussian() * 0.02D;
 				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
+				this.world.addParticle(ParticleTypes.HEART, this.getPosX() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.getPosY() + 0.5D + (double)(this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), d0, d1, d2);
 			}
 		} else {
 			super.handleStatusUpdate(id);
@@ -1400,7 +1402,7 @@ public class EntityBooflo extends EndimatedEntity {
 					
 					this.booflo.setAIMoveSpeed(f2);
 				} else {
-					Vec3d vec3d = new Vec3d(this.posX - this.booflo.posX, this.posY - this.booflo.posY, this.posZ - this.booflo.posZ);
+					Vec3d vec3d = new Vec3d(this.posX - this.booflo.getPosX(), this.posY - this.booflo.getPosY(), this.posZ - this.booflo.getPosZ());
 					double d0 = vec3d.length();
 					double d1 = vec3d.y / d0;
 					float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
@@ -1445,13 +1447,13 @@ public class EntityBooflo extends EndimatedEntity {
 		public void tick() {
 			if(this.isLooking) {
 				this.isLooking = false;
-				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.func_220678_h() + 20.0F, this.deltaLookYaw);
-				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, this.func_220677_g() + 10.0F, this.deltaLookPitch);
+				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.getTargetYaw() + 20.0F, this.deltaLookYaw);
+				this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, this.getTargetPitch() + 10.0F, this.deltaLookPitch);
 			} else {
 				if(this.mob.getNavigator().noPath()) {
-					this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 5.0F);
+					this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, 0.0F, 5.0F);
 				}
-				this.mob.rotationYawHead = this.func_220675_a(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
+				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
 			}
 
 			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.rotationYawHead - this.mob.renderYawOffset);
@@ -1462,7 +1464,7 @@ public class EntityBooflo extends EndimatedEntity {
 			}
 			
 			if(((EntityBooflo) this.mob).isEndimationPlaying(CHARGE)) {
-				this.mob.rotationPitch = this.func_220675_a(this.mob.rotationPitch, 0.0F, 10.0F);
+				this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, 0.0F, 10.0F);
 			}
 		}
 	}

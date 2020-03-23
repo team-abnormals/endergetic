@@ -25,8 +25,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
@@ -43,17 +43,17 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	}
 	
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(worldIn) && !this.isSubmerged(worldIn, pos)) {
-			worldIn.setBlockState(pos, this.getCorrockBlockForDimension(worldIn.getDimension())
-				.with(ROTATION, worldIn.getBlockState(pos).get(ROTATION))
-				.with(UPSIDE_DOWN, worldIn.getBlockState(pos).get(UPSIDE_DOWN)));
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
+			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension())
+				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
+				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN)));
 		}
 		
-		if(worldIn.getBlockState(pos).get(UPSIDE_DOWN) && !worldIn.getBlockState(pos.up()).isSolid()) {
-			worldIn.destroyBlock(pos, true);
-		} else if(!worldIn.getBlockState(pos).get(UPSIDE_DOWN) && !worldIn.getBlockState(pos.down()).isSolid()) {
-			worldIn.destroyBlock(pos, true);
+		if(world.getBlockState(pos).get(UPSIDE_DOWN) && !world.getBlockState(pos.up()).isSolid()) {
+			world.destroyBlock(pos, true);
+		} else if(!world.getBlockState(pos).get(UPSIDE_DOWN) && !world.getBlockState(pos.down()).isSolid()) {
+			world.destroyBlock(pos, true);
 		}
 	}
 	

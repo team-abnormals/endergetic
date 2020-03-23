@@ -105,11 +105,6 @@ public class BlockPuffBugHive extends Block {
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.PICKAXE;
 	}
-	
-	@Override
-	public boolean hasCustomBreakingProgress(BlockState state) {
-		return true;
-	}
 
 	@Override
 	public boolean hasTileEntity(BlockState state) {
@@ -120,11 +115,6 @@ public class BlockPuffBugHive extends Block {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new TileEntityPuffBugHive();
-	}
-	
-	@Override
-	public boolean isSolid(BlockState state) {
-		return false;
 	}
 	
 	@Override

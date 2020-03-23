@@ -154,7 +154,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		
 		if(this.isEndimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION) && this.getAnimationTick() == 9) {
 			if(this.world instanceof ServerWorld) {
-				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.posX, this.posY + (double)this.getHeight() / 1.5D, this.posZ, 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
 			}
 			this.playSound(SoundEvents.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
 		}
@@ -222,7 +222,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
 			
-			if(this.posY <= 50) {
+			if(this.getPosY() <= 50) {
 				this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 				this.setPlayingEndimation(BOOF_ANIMATION);
 			}
@@ -239,7 +239,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 		if(this.world.isRemote) {
 			if(this.forcedAgeTimer > 0) {
 				if(this.forcedAgeTimer % 4 == 0) {
-					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), this.posY + 0.5D + (this.rand.nextFloat() * this.getHeight()), this.posZ + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), 0.0D, 0.0D, 0.0D);
+					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosX() + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), this.getPosY() + 0.5D + (this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (this.rand.nextFloat() * this.getWidth() * 2.0F) - this.getWidth(), 0.0D, 0.0D, 0.0D);
 				}
 
 				this.forcedAgeTimer--;
@@ -262,7 +262,9 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 	}
 	
 	@Override
-	public void fall(float distance, float damageMultiplier) {}
+	public boolean onLivingFall(float distance, float damageMultiplier) {
+		return false;
+	}
 
 	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {}
@@ -438,7 +440,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
 			
 			EntityBooflo booflo = EEEntities.BOOFLO.get().create(this.world);
-			booflo.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+			booflo.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
 			
 			if(this.hasCustomName()) {
     			booflo.setCustomName(this.getCustomName());
@@ -509,7 +511,7 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			if(!this.world.isRemote) {
 				EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(this.world);
 				baby.setGrowingAge(-24000);
-				baby.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
+				baby.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), 0.0F, 0.0F);
 				this.world.addEntity(baby);
 				if(itemstack.hasDisplayName()) {
 					baby.setCustomName(itemstack.getDisplayName());

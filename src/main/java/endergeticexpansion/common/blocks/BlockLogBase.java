@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -33,12 +34,12 @@ public class BlockLogBase extends RotatedPillarBlock {
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
 		if(state.getBlock() == this && player.getHeldItemMainhand().getItem() instanceof AxeItem && this.strippedState != null) {
 			world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 2.0F, 1.0F);
 			world.setBlockState(pos, this.strippedState.get().getDefaultState().with(AXIS, state.get(AXIS)));
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.FAIL;
 	}
 }

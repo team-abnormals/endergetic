@@ -26,7 +26,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 		if(!(this.booflo.isBoofed() && !this.booflo.isPregnant() && this.booflo.getBoofloAttackTarget() instanceof EntityPuffBug && this.booflo.getBoofloAttackTarget().isAlive() && !this.booflo.hasCaughtPuffBug())) {
 			return false;
 		}
-		this.path = this.booflo.getNavigator().getPathToEntityLiving(this.booflo.getBoofloAttackTarget(), 0);
+		this.path = this.booflo.getNavigator().getPathToEntity(this.booflo.getBoofloAttackTarget(), 0);
 		if(this.path != null) {
 			return true;
 		}
@@ -55,12 +55,12 @@ public class BoofloHuntPuffBugGoal extends Goal {
 	public void tick() {
 		EntityPuffBug target = (EntityPuffBug) this.booflo.getBoofloAttackTarget();
 		
-		double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+		double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		
 		this.delayCounter--;
 		
 		if(this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
-			this.booflo.getLookController().setLookPosition(target.posX, target.posY, target.posZ, 10.0F, 10.0F);
+			this.booflo.getLookController().setLookPosition(target.getPosX(), target.getPosY(), target.getPosZ(), 10.0F, 10.0F);
 			
 			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 			
@@ -68,7 +68,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 				this.delayCounter += 5;
 			}
 
-			if(!this.booflo.getNavigator().tryMoveToXYZ(target.posX, target.posY, target.posZ, SPEED)) {
+			if(!this.booflo.getNavigator().tryMoveToXYZ(target.getPosX(), target.getPosY(), target.getPosZ(), SPEED)) {
 				this.delayCounter += 5;
 			}
 		}

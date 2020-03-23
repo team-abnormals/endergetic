@@ -63,7 +63,7 @@ public class BoofloGiveBirthGoal extends Goal {
 			EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(world);
 			baby.setBeingBorn(true);
 			baby.setGrowingAge(-24000);
-			baby.setPosition(this.mother.posX + dx, this.mother.posY + 0.9F + (rand.nextFloat() * 0.05F), this.mother.posZ + dz);
+			baby.setPosition(this.mother.getPosX() + dx, this.mother.getPosY() + 0.9F + (rand.nextFloat() * 0.05F), this.mother.getPosZ() + dz);
 			baby.startRiding(this.mother, true);
 			baby.wasBred = this.mother.ticksExisted > 200;
 			

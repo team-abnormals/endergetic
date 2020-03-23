@@ -27,10 +27,10 @@ public class GenerationUtils {
 		BlockState blockstate1 = world.getBlockState(blockpos2);
 		BlockState blockstate2 = world.getBlockState(blockpos3);
 		BlockState blockstate3 = world.getBlockState(blockpos4);
-		boolean flag = getWallFlag(blockstate, blockstate.func_224755_d(world, blockpos1, Direction.SOUTH), Direction.SOUTH);
-		boolean flag1 = getWallFlag(blockstate1, blockstate1.func_224755_d(world, blockpos2, Direction.WEST), Direction.WEST);
-		boolean flag2 = getWallFlag(blockstate2, blockstate2.func_224755_d(world, blockpos3, Direction.NORTH), Direction.NORTH);
-		boolean flag3 = getWallFlag(blockstate3, blockstate3.func_224755_d(world, blockpos4, Direction.EAST), Direction.EAST);
+		boolean flag = getWallFlag(blockstate, blockstate.isSolidSide(world, blockpos1, Direction.SOUTH), Direction.SOUTH);
+		boolean flag1 = getWallFlag(blockstate1, blockstate1.isSolidSide(world, blockpos2, Direction.WEST), Direction.WEST);
+		boolean flag2 = getWallFlag(blockstate2, blockstate2.isSolidSide(world, blockpos3, Direction.NORTH), Direction.NORTH);
+		boolean flag3 = getWallFlag(blockstate3, blockstate3.isSolidSide(world, blockpos4, Direction.EAST), Direction.EAST);
 		boolean flag4 = (!flag || flag1 || !flag2 || flag3) && (flag || !flag1 || flag2 || !flag3);
 		return state.with(WallBlock.UP, Boolean.valueOf(flag4 || !world.isAirBlock(pos.up()))).with(FourWayBlock.NORTH, flag).with(FourWayBlock.EAST, flag1).with(FourWayBlock.SOUTH, flag2).with(FourWayBlock.WEST, flag3);
 	}

@@ -2,6 +2,7 @@ package endergeticexpansion.common.world.features;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.mojang.datafixers.Dynamic;
 
@@ -13,19 +14,20 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.GrassFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
 @SuppressWarnings("deprecation")
-public class FeaturePoiseGrass extends Feature<GrassFeatureConfig> {
+public class FeaturePoiseGrass extends Feature<NoFeatureConfig> {
+	private static final Supplier<BlockState> POISE_BUSH = () -> EEBlocks.POISE_GRASS.get().getDefaultState();
 	
-	public FeaturePoiseGrass(Function<Dynamic<?>, ? extends GrassFeatureConfig> config) {
+	public FeaturePoiseGrass(Function<Dynamic<?>, ? extends NoFeatureConfig> config) {
 		super(config);
 	}
 
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, GrassFeatureConfig config) {
+	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		for(BlockState blockstate = worldIn.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = worldIn.getBlockState(pos)) {
 			pos = pos.down();
 		}
@@ -33,8 +35,8 @@ public class FeaturePoiseGrass extends Feature<GrassFeatureConfig> {
 		int i = 0;
 		for(int j = 0; j < 128; ++j) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-			if (!this.isNearBolloomBud(worldIn, blockpos) && worldIn.isAirBlock(blockpos) && config.state.isValidPosition(worldIn, blockpos)) {
-				worldIn.setBlockState(blockpos, config.state, 2);
+			if (!this.isNearBolloomBud(worldIn, blockpos) && worldIn.isAirBlock(blockpos) && POISE_BUSH.get().isValidPosition(worldIn, blockpos)) {
+				worldIn.setBlockState(blockpos, POISE_BUSH.get(), 2);
 				++i;
 			}
 		}

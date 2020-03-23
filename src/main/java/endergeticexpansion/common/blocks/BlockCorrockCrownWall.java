@@ -27,8 +27,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockCorrockCrownWall extends BlockCorrockCrown {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -40,10 +40,10 @@ public class BlockCorrockCrownWall extends BlockCorrockCrown {
 	}
 	
 	@Override
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(worldIn) && !this.isSubmerged(worldIn, pos)) {
-			worldIn.setBlockState(pos, this.getCorrockBlockForDimension(worldIn.getDimension())
-				.with(FACING, worldIn.getBlockState(pos).get(FACING)));
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
+			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension())
+				.with(FACING, world.getBlockState(pos).get(FACING)));
 		}
 	}
 	

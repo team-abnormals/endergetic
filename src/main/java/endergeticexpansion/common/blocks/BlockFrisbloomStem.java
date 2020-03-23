@@ -22,6 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockFrisbloomStem extends Block {
 	//The height position of the current stem; 5 layers total
@@ -45,12 +46,11 @@ public class BlockFrisbloomStem extends Block {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
-	public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if (!worldIn.isBlockLoaded(pos)) return;
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if(!world.isAreaLoaded(pos, 0)) return;
 		
-		if (!state.isValidPosition(worldIn, pos)) {
-			worldIn.destroyBlock(pos, true);
+		if (!state.isValidPosition(world, pos)) {
+			world.destroyBlock(pos, true);
 		}
 	}
 	
@@ -88,11 +88,6 @@ public class BlockFrisbloomStem extends Block {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new TileEntityFrisbloomStem();
-	}
-	
-	@Override
-	public boolean isSolid(BlockState state) {
-		return false;
 	}
 	
 	@Override

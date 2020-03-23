@@ -41,9 +41,9 @@ public class PuffBugPollinateGoal extends Goal {
 		return
 			!this.puffbug.hasLevitation() &&
 			this.puffbug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION) &&
-			this.puffbug.posX == this.originalPosX &&
-			this.puffbug.posZ == this.originalPosZ &&
-			Math.abs(this.originalPosY - this.puffbug.posY) < 0.5F
+			this.puffbug.getPosX() == this.originalPosX &&
+			this.puffbug.getPosZ() == this.originalPosZ &&
+			Math.abs(this.originalPosY - this.puffbug.getPosY()) < 0.5F
 		;
 	}
 	
@@ -63,9 +63,9 @@ public class PuffBugPollinateGoal extends Goal {
 		this.puffbug.setAIMoveSpeed(0.0F);
 		this.puffbug.getNavigator().clearPath();
 		
-		this.originalPosX = (float) this.puffbug.posX;
-		this.originalPosY = (float) this.puffbug.posY;
-		this.originalPosZ = (float) this.puffbug.posZ;
+		this.originalPosX = (float) this.puffbug.getPosX();
+		this.originalPosY = (float) this.puffbug.getPosY();
+		this.originalPosZ = (float) this.puffbug.getPosZ();
 		
 		NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.POLLINATE_ANIMATION);
 	}

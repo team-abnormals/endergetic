@@ -14,7 +14,7 @@ public class RenderPoiseCluster extends LivingRenderer<EntityPoiseCluster, Model
     }
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityPoiseCluster entity) {
+	public ResourceLocation getEntityTexture(EntityPoiseCluster entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/poise_cluster.png");
 	}
 	

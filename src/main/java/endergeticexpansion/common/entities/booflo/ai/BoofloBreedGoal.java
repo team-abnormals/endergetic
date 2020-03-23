@@ -58,8 +58,8 @@ public class BoofloBreedGoal extends Goal {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
 		}
 		
-		double dx = this.mate.posX - this.booflo.posX;
-		double dz = this.mate.posZ - this.booflo.posZ;
+		double dx = this.mate.getPosX() - this.booflo.getPosX();
+		double dz = this.mate.getPosZ() - this.booflo.getPosZ();
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
@@ -104,7 +104,7 @@ public class BoofloBreedGoal extends Goal {
         
 		this.booflo.world.setEntityState(this.booflo, (byte) 18);
 		if(this.booflo.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-			this.booflo.world.addEntity(new ExperienceOrbEntity(this.booflo.world, this.booflo.posX, this.booflo.posY, this.booflo.posZ, this.booflo.getRNG().nextInt(7) + 1));
+			this.booflo.world.addEntity(new ExperienceOrbEntity(this.booflo.world, this.booflo.getPosX(), this.booflo.getPosY(), this.booflo.getPosZ(), this.booflo.getRNG().nextInt(7) + 1));
 		}
 	}
 	

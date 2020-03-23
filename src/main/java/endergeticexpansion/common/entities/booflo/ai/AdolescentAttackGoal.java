@@ -52,18 +52,18 @@ public class AdolescentAttackGoal extends Goal {
 			} else {
 				if(canPenalize) {
 					if(--this.delayCounter <= 0) {
-						this.path = this.attacker.getNavigator().getPathToEntityLiving(target, 0);
+						this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
 						this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 						return this.path != null;
 					} else {
 						return true;
 					}
 				}
-				this.path = this.attacker.getNavigator().getPathToEntityLiving(target, 0);
+				this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
 				if(this.path != null) {
 					return true;
 				} else {
-					return this.getAttackReachSqr(target) >= this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+					return this.getAttackReachSqr(target) >= this.attacker.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 	            }
 			}
 		}
@@ -107,14 +107,14 @@ public class AdolescentAttackGoal extends Goal {
 		Entity target = this.attacker.getBoofloAttackTarget();
 		this.attacker.getLookController().setLookPositionWithEntity(target, 10.0F, 10.0F);
 		
-		double distToEnemySqr = this.attacker.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+		double distToEnemySqr = this.attacker.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		
 		this.delayCounter--;
 		
 		if((this.longMemory || this.attacker.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
-			this.targetX = target.posX;
+			this.targetX = target.getPosX();
 			this.targetY = target.getBoundingBox().minY;
-			this.targetZ = target.posZ;
+			this.targetZ = target.getPosZ();
 			
 			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 			

@@ -52,7 +52,7 @@ public class PuffBugCreateItemGoal extends Goal {
 			Random rand = this.puffbug.getRNG();
 			
 			if(this.puffbug.getAnimationTick() == 90) {
-				ItemEntity itementity = new ItemEntity(this.puffbug.world, this.puffbug.posX, this.puffbug.posY - 0.5D, this.puffbug.posZ, this.puffbug.getStackToCreate());
+				ItemEntity itementity = new ItemEntity(this.puffbug.world, this.puffbug.getPosX(), this.puffbug.getPosY() - 0.5D, this.puffbug.getPosZ(), this.puffbug.getStackToCreate());
 				itementity.setPickupDelay(40);
 				this.puffbug.world.addEntity(itementity);
 				this.puffbug.setStackToCreate(null);
@@ -63,9 +63,9 @@ public class PuffBugCreateItemGoal extends Goal {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 				
-					double x = this.puffbug.posX + offsetX;
-					double y = this.puffbug.posY + (rand.nextFloat() * 0.05F) + 0.5F;
-					double z = this.puffbug.posZ + offsetZ;
+					double x = this.puffbug.getPosX() + offsetX;
+					double y = this.puffbug.getPosY() + (rand.nextFloat() * 0.05F) + 0.5F;
+					double z = this.puffbug.getPosZ() + offsetZ;
 					
 					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}

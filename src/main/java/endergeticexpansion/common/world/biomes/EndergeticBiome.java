@@ -52,12 +52,6 @@ public abstract class EndergeticBiome extends Biome {
 	public int getWeight() {
 		return 0;
 	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public int getSkyColorByTemp(float currentTemperature) {
-		return 0;
-	}
 	
 	@OnlyIn(Dist.CLIENT)
 	public int getSkyColor() {

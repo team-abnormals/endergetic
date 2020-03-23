@@ -25,7 +25,7 @@ public class EndergeticEndDimension extends EndDimension {
 		endgenerationsettings.setDefaultBlock(Blocks.END_STONE.getDefaultState());
 		endgenerationsettings.setDefaultFluid(Blocks.AIR.getDefaultState());
 		endgenerationsettings.setSpawnPos(this.getSpawnCoordinate());
-		return ChunkGeneratorType.FLOATING_ISLANDS.create(this.world, EndOverrideHandler.ENDERGETIC_END.create(BiomeProviderType.THE_END.createSettings().setSeed(this.world.getSeed())), endgenerationsettings);
+		return ChunkGeneratorType.FLOATING_ISLANDS.create(this.world, EndOverrideHandler.ENDERGETIC_END.create(BiomeProviderType.THE_END.func_226840_a_(this.world.getWorldInfo())), endgenerationsettings);
 	}
 	
 }

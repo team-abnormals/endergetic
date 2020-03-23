@@ -36,6 +36,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -141,9 +142,9 @@ public class EntityEndergeticBoat extends BoatEntity {
 				this.setRockingTicks(60);
 			}
 		}
-		this.world.addParticle(ParticleTypes.SPLASH, this.posX + (double) this.rand.nextFloat(), this.posY + 0.7D, this.posZ + (double) this.rand.nextFloat(), 0.0D, 0.0D, 0.0D);
+		this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() + (double) this.rand.nextFloat(), this.getPosY() + 0.7D, this.getPosZ() + (double) this.rand.nextFloat(), 0.0D, 0.0D, 0.0D);
 		if (this.rand.nextInt(20) == 0) {
-			this.world.playSound(this.posX, this.posY, this.posZ, this.getSplashSound(), this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+			this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), this.getSplashSound(), this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
 		}
 	}
 	
@@ -186,14 +187,14 @@ public class EntityEndergeticBoat extends BoatEntity {
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
 
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevPosX = this.getPosX();
+        this.prevPosY = this.getPosY();
+        this.prevPosZ = this.getPosZ();
 
         if (!this.world.isRemote) {
         	this.setFlag(6, this.isGlowing());
         }
-        baseTick();
+        this.baseTick();
 
         super.tickLerp();
         if (this.canPassengerSteer()) {
@@ -222,7 +223,7 @@ public class EntityEndergeticBoat extends BoatEntity {
                         Vec3d vec3d = this.getLook(1.0F);
                         double d0 = i == 1 ? -vec3d.z : vec3d.z;
                         double d1 = i == 1 ? vec3d.x : -vec3d.x;
-                        this.world.playSound((PlayerEntity) null, this.posX + d0, this.posY, this.posZ + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
                     }
                 }
 
@@ -344,7 +345,7 @@ public class EntityEndergeticBoat extends BoatEntity {
         int i1 = MathHelper.floor(axisalignedbb.minZ);
         int j1 = MathHelper.ceil(axisalignedbb.maxZ);
 
-        try (BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain()) {
+        try (PooledMutable blockpos$pooledmutableblockpos = BlockPos.PooledMutable.retain()) {
             label161:
             for (int k1 = k; k1 < l; ++k1) {
                 float f = 0.0F;
@@ -354,7 +355,7 @@ public class EntityEndergeticBoat extends BoatEntity {
                         blockpos$pooledmutableblockpos.setPos(l1, k1, i2);
                         IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
                         if (ifluidstate.isTagged(FluidTags.WATER)) {
-                            f = Math.max(f, ifluidstate.func_215679_a(this.world, blockpos$pooledmutableblockpos));
+                            f = Math.max(f, ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos));
                         }
 
                         if (f >= 1.0F) {
@@ -388,7 +389,7 @@ public class EntityEndergeticBoat extends BoatEntity {
         float f = 0.0F;
         int k1 = 0;
 
-        try (BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain()) {
+        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
             for (int l1 = i; l1 < j; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
                     int j2 = (l1 != i && l1 != j - 1 ? 0 : 1) + (i2 != i1 && i2 != j1 - 1 ? 0 : 1);
@@ -422,14 +423,14 @@ public class EntityEndergeticBoat extends BoatEntity {
         boolean flag = false;
         this.waterLevel = Double.MIN_VALUE;
 
-        try (BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain()) {
+        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
             for (int k1 = i; k1 < j; ++k1) {
                 for (int l1 = k; l1 < l; ++l1) {
                     for (int i2 = i1; i2 < j1; ++i2) {
                         blockpos$pooledmutableblockpos.setPos(k1, l1, i2);
                         IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
                         if (ifluidstate.isTagged(FluidTags.WATER)) {
-                            float f = (float) l1 + ifluidstate.func_215679_a(this.world, blockpos$pooledmutableblockpos);
+                            float f = (float) l1 + ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos);
                             this.waterLevel = Math.max((double) f, this.waterLevel);
                             flag |= axisalignedbb.minY < (double) f;
                         }
@@ -453,13 +454,13 @@ public class EntityEndergeticBoat extends BoatEntity {
         int j1 = MathHelper.ceil(axisalignedbb.maxZ);
         boolean flag = false;
 
-        try (BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain()) {
+        try (PooledMutable blockpos$pooledmutableblockpos = PooledMutable.retain()) {
             for (int k1 = i; k1 < j; ++k1) {
                 for (int l1 = k; l1 < l; ++l1) {
                     for (int i2 = i1; i2 < j1; ++i2) {
                         blockpos$pooledmutableblockpos.setPos(k1, l1, i2);
                         IFluidState ifluidstate = this.world.getFluidState(blockpos$pooledmutableblockpos);
-                        if (ifluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$pooledmutableblockpos.getY() + ifluidstate.func_215679_a(this.world, blockpos$pooledmutableblockpos))) {
+                        if (ifluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$pooledmutableblockpos.getY() + ifluidstate.getActualHeight(this.world, blockpos$pooledmutableblockpos))) {
                             if (!ifluidstate.isSource()) {
                                 return Status.UNDER_FLOWING_WATER;
                             }
@@ -481,7 +482,7 @@ public class EntityEndergeticBoat extends BoatEntity {
         this.momentum = 0.05F;
         if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
             this.waterLevel = this.getBoundingBox().minY + (double) this.getHeight();
-            this.setPosition(this.posX, (double) (this.getWaterLevelAbove() - this.getHeight()) + 0.101D, this.posZ);
+            this.setPosition(this.getPosX(), (double) (this.getWaterLevelAbove() - this.getHeight()) + 0.101D, this.getPosZ());
             this.setMotion(this.getMotion().mul(1.0D, 0.0D, 1.0D));
             this.lastYd = 0.0D;
             this.status = Status.IN_WATER;
@@ -562,7 +563,7 @@ public class EntityEndergeticBoat extends BoatEntity {
             }
 
             Vec3d vec3d = (new Vec3d((double) f, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPosition(this.posX + vec3d.x, this.posY + (double) f1, this.posZ + vec3d.z);
+            passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double) f1, this.getPosZ() + vec3d.z);
             passenger.rotationYaw += this.deltaRotation;
             passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
             this.applyYawToEntity(passenger);
@@ -619,7 +620,7 @@ public class EntityEndergeticBoat extends BoatEntity {
                         return;
                     }
 
-                    this.fall(this.fallDistance, 1.0F);
+                    this.onLivingFall(this.fallDistance, 1.0F);
                     if (!this.world.isRemote && !this.removed) {
                         this.remove();
                         if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {

@@ -1,8 +1,11 @@
 package endergeticexpansion.client.model.booflo;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
-import endergeticexpansion.api.endimator.EndimatorRendererModel;
+import endergeticexpansion.api.endimator.EndimatorModelRenderer;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import net.minecraft.util.math.MathHelper;
 
@@ -11,20 +14,20 @@ import net.minecraft.util.math.MathHelper;
  * Created using Tabula 7.0.0
  */
 public class ModelBoofloBaby<E extends EntityBoofloBaby> extends EndimatorEntityModel<E> {
-    public EndimatorRendererModel Head;
-    public EndimatorRendererModel Jaw;
-    public EndimatorRendererModel Tail;
+    public EndimatorModelRenderer Head;
+    public EndimatorModelRenderer Jaw;
+    public EndimatorModelRenderer Tail;
 
     public ModelBoofloBaby() {
         this.textureWidth = 32;
         this.textureHeight = 16;
-        this.Head = new EndimatorRendererModel(this, 15, 10);
+        this.Head = new EndimatorModelRenderer(this, 15, 10);
         this.Head.setRotationPoint(0.0F, 21.0F, 0.0F);
         this.Head.addBox(-2.0F, -2.0F, -2.0F, 4, 2, 4, 0.0F);
-        this.Tail = new EndimatorRendererModel(this, 0, 2);
+        this.Tail = new EndimatorModelRenderer(this, 0, 2);
         this.Tail.setRotationPoint(0.0F, 0.0F, 2.0F);
         this.Tail.addBox(0.0F, -2.0F, 0.0F, 0, 4, 8, 0.0F);
-        this.Jaw = new EndimatorRendererModel(this, 0, 0);
+        this.Jaw = new EndimatorModelRenderer(this, 0, 0);
         this.Jaw.setRotationPoint(0.0F, 0.0F, 2.0F);
         this.Jaw.addBox(-3.0F, 0.0F, -5.0F, 6, 3, 6, 0.0F);
         this.Head.addChild(this.Tail);
@@ -34,21 +37,21 @@ public class ModelBoofloBaby<E extends EntityBoofloBaby> extends EndimatorEntity
     }
 
     @Override
-    public void render(E entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
         this.Head.render(f5);
     }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(EndimatorRendererModel EndimatorRendererModel, float x, float y, float z) {
-        EndimatorRendererModel.rotateAngleX = x;
-        EndimatorRendererModel.rotateAngleY = y;
-        EndimatorRendererModel.rotateAngleZ = z;
+    public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
+        EndimatorModelRenderer.rotateAngleX = x;
+        EndimatorModelRenderer.rotateAngleY = y;
+        EndimatorModelRenderer.rotateAngleZ = z;
     }
     
     @Override
-    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
     	this.revertBoxesToDefaultValues();
     	
     	float tailAnimation = entityIn.getTailAnimation(ageInTicks - entityIn.ticksExisted);

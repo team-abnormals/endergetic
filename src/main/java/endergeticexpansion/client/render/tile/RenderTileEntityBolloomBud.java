@@ -6,13 +6,15 @@ import endergeticexpansion.client.model.bolloom.ModelBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderTileEntityBolloomBud extends TileEntityRenderer<TileEntityBolloomBud> {
 	private ModelBolloomBud budModel;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/bolloom_bud.png");
 	
-	public RenderTileEntityBolloomBud() {
+	public RenderTileEntityBolloomBud(TileEntityRendererDispatcher renderDispatcher) {
+		super(renderDispatcher);
 		this.budModel = new ModelBolloomBud();
 	}
 	

@@ -11,6 +11,7 @@ import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
@@ -18,7 +19,8 @@ public class RenderTileEntityBoofBlockDispensed extends TileEntityRenderer<TileE
 	public ModelBoofBlockDispenser model;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
 	
-	public RenderTileEntityBoofBlockDispensed() {
+	public RenderTileEntityBoofBlockDispensed(TileEntityRendererDispatcher renderDispatcher) {
+		super(renderDispatcher);
 		this.model = new ModelBoofBlockDispenser();
 	}
 	

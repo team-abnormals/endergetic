@@ -45,9 +45,9 @@ public class EntityBolloomKnot extends Entity {
 	@Override
 	@SuppressWarnings("deprecation")
 	public void tick() {
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 		if (!this.world.isRemote) {
 			if(this.getEntityWorld().isAreaLoaded(getHangingPos(), 1)) {
 				if (!this.removed && !this.onValidBlock()) {

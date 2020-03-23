@@ -61,10 +61,10 @@ public class BlockBoof extends ContainerBlock {
 	
 	@Override
 	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-		if (entityIn.isSneaking()) {
+		if (entityIn.isShiftKeyDown()) {
 			super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
 		} else {
-			entityIn.fall(fallDistance, 0.0F);
+			entityIn.onLivingFall(fallDistance, 0.0F);
 		}
 	}
 	

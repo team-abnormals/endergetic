@@ -8,7 +8,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,10 +48,5 @@ public class BlockHiveHanger extends Block {
 			return Blocks.AIR.getDefaultState();
 		}
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-	}
-	
-	@Override
-	public BlockRenderLayer getRenderLayer() {
-		return BlockRenderLayer.CUTOUT;
 	}
 }

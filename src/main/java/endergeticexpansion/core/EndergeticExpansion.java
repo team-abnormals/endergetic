@@ -7,28 +7,21 @@ import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.client.render.entity.*;
 import endergeticexpansion.client.render.entity.booflo.*;
 import endergeticexpansion.client.render.tile.*;
-import endergeticexpansion.common.entities.*;
-import endergeticexpansion.common.entities.bolloom.*;
-import endergeticexpansion.common.entities.booflo.*;
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.network.entity.*;
 import endergeticexpansion.common.network.entity.booflo.*;
 import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
 import endergeticexpansion.common.network.nbt.*;
 import endergeticexpansion.common.network.particle.*;
-import endergeticexpansion.common.tileentities.*;
-import endergeticexpansion.common.tileentities.boof.*;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.*;
-import endergeticexpansion.core.registry.other.EECapabilities;
 import endergeticexpansion.core.registry.other.EEDataSerializers;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
-import endergeticexpansion.core.registry.other.EEFireInfo;
+import endergeticexpansion.core.registry.other.EEBlockRegistrars;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -89,31 +82,33 @@ public class EndergeticExpansion {
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
 		EEDispenserBehaviors.registerAll();
-		EECapabilities.registerAll();
+		//EECapabilities.registerAll();
 		EEBiomes.applyBiomeInfo();
-		EEFireInfo.registerFireInfo();
+		EEBlockRegistrars.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
 		FeatureOverrideHandler.overrideFeatures();
 	}
 	
 	@OnlyIn(Dist.CLIENT)
 	void setupClient(final FMLClientSetupEvent event) {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFrisbloomStem.class, new RenderTileEntityFrisbloomStem());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCorrockCrown.class, new RenderTileEntityCorrockCrown());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBolloomBud.class, new RenderTileEntityBolloomBud());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPuffBugHive.class, new RenderTileEntityPuffBugHive());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDispensedBoof.class, new RenderTileEntityBoofBlockDispensed());
+		EEBlockRegistrars.setupRenderLayers();
+		
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.FRISBLOOM_STEM.get(), RenderTileEntityFrisbloomStem::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.CORROCK_CROWN.get(), RenderTileEntityCorrockCrown::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), RenderTileEntityBolloomBud::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), RenderTileEntityPuffBugHive::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), RenderTileEntityBoofBlockDispensed::new);
 	
-		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomFruit.class, RenderBolloomFruit::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityPoiseCluster.class, RenderPoiseCluster::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBoofBlock.class, RenderBoofBlock::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomKnot.class, RenderBolloomKnot::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBolloomBalloon.class, RenderBolloomBalloon::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityEndergeticBoat.class, RenderEndergeticBoat::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityPuffBug.class, RenderPuffBug::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloBaby.class, RenderBoofloBaby::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBoofloAdolescent.class, RenderBoofloAdolescent::new);
-		RenderingRegistry.registerEntityRenderingHandler(EntityBooflo.class, RenderBooflo::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), RenderBolloomFruit::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.POISE_CLUSTER.get(), RenderPoiseCluster::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOF_BLOCK.get(), RenderBoofBlock::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_KNOT.get(), RenderBolloomKnot::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_BALLOON.get(), RenderBolloomBalloon::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOAT.get(), RenderEndergeticBoat::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.PUFF_BUG.get(), RenderPuffBug::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), RenderBoofloBaby::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), RenderBoofloAdolescent::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), RenderBooflo::new);
 		
 		KeybindHandler.registerKeys();
 		

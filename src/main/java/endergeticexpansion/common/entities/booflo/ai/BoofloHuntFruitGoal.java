@@ -48,7 +48,7 @@ public class BoofloHuntFruitGoal extends Goal {
 				if(this.path != null) {
 					return true;
 				} else {
-					return this.getAttackReachSqr(target) >= this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
+					return this.getAttackReachSqr(target) >= this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 	            }
 			}
 		}
@@ -88,13 +88,13 @@ public class BoofloHuntFruitGoal extends Goal {
 		this.delayCounter--;
 		Entity target = this.booflo.getBoofloAttackTarget();
 		
-		double distToEnemySqr = this.booflo.getDistanceSq(target.posX, target.getBoundingBox().minY, target.posZ);
-		this.booflo.getLookController().setLookPosition(target.posX, target.posY, target.posZ, 10.0F, 10.0F);
+		double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
+		this.booflo.getLookController().setLookPosition(target.getPosX(), target.getPosY(), target.getPosZ(), 10.0F, 10.0F);
 		
 		if(this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
-			this.targetX = target.posX;
+			this.targetX = target.getPosX();
 			this.targetY = target.getBoundingBox().minY;
-			this.targetZ = target.posZ;
+			this.targetZ = target.getPosZ();
 			
 			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 			

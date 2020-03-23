@@ -1,8 +1,11 @@
 package endergeticexpansion.client.model.booflo;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.api.endimator.EndimatorEntityModel;
-import endergeticexpansion.api.endimator.EndimatorRendererModel;
+import endergeticexpansion.api.endimator.EndimatorModelRenderer;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.util.math.MathHelper;
 
@@ -11,39 +14,39 @@ import net.minecraft.util.math.MathHelper;
  * Created using Tabula 7.0.0
  */
 public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends EndimatorEntityModel<E> {
-    public EndimatorRendererModel Head;
-    public EndimatorRendererModel KneeLeft;
-    public EndimatorRendererModel KneeRight;
-    public EndimatorRendererModel ArmLeft;
-    public EndimatorRendererModel ArmRight;
-    public EndimatorRendererModel Tail;
-    public EndimatorRendererModel Jaw;
+    public EndimatorModelRenderer Head;
+    public EndimatorModelRenderer KneeLeft;
+    public EndimatorModelRenderer KneeRight;
+    public EndimatorModelRenderer ArmLeft;
+    public EndimatorModelRenderer ArmRight;
+    public EndimatorModelRenderer Tail;
+    public EndimatorModelRenderer Jaw;
     
     public ModelAdolescentBooflo() {
         this.textureWidth = 64;
         this.textureHeight = 48;
-        this.ArmRight = new EndimatorRendererModel(this, 14, 16);
+        this.ArmRight = new EndimatorModelRenderer(this, 14, 16);
         this.ArmRight.setRotationPoint(-4.5F, -2.0F, -7.0F);
         this.ArmRight.addBox(-4.0F, -1.0F, -1.0F, 4, 2, 2, 0.0F);
         this.setRotateAngle(ArmRight, 0.0F, -0.5585053606381855F, -0.3490658503988659F);
-        this.Head = new EndimatorRendererModel(this, 0, 0);
+        this.Head = new EndimatorModelRenderer(this, 0, 0);
         this.Head.setRotationPoint(0.0F, 18.0F, 5.0F);
         this.Head.addBox(-5.0F, -5.0F, -10.0F, 10, 5, 10, 0.0F);
-        this.KneeLeft = new EndimatorRendererModel(this, 0, 24);
+        this.KneeLeft = new EndimatorModelRenderer(this, 0, 24);
         this.KneeLeft.setRotationPoint(2.5F, -4.5F, -3.5F);
         this.KneeLeft.addBox(-1.5F, -5.0F, -1.5F, 3, 5, 3, 0.0F);
         this.setRotateAngle(KneeLeft, 0.0F, 0.0F, 0.3490658503988659F);
-        this.KneeRight = new EndimatorRendererModel(this, 14, 24);
+        this.KneeRight = new EndimatorModelRenderer(this, 14, 24);
         this.KneeRight.setRotationPoint(-2.5F, -4.5F, -3.5F);
         this.KneeRight.addBox(-1.5F, -5.0F, -1.5F, 3, 5, 3, 0.0F);
         this.setRotateAngle(KneeRight, 0.0F, 0.0F, -0.3490658503988659F);
-        this.Jaw = new EndimatorRendererModel(this, 16, 28);
+        this.Jaw = new EndimatorModelRenderer(this, 16, 28);
         this.Jaw.setRotationPoint(0.0F, 18.0F, 5.0F);
         this.Jaw.addBox(-6.0F, 0.0F, -11.0F, 12, 6, 12, 0.0F);
-        this.Tail = new EndimatorRendererModel(this, 32, 16);
+        this.Tail = new EndimatorModelRenderer(this, 32, 16);
         this.Tail.setRotationPoint(0.0F, -5.0F, 0.0F);
         this.Tail.addBox(0.0F, 0.0F, 0.0F, 0, 5, 7, 0.0F);
-        this.ArmLeft = new EndimatorRendererModel(this, 0, 16);
+        this.ArmLeft = new EndimatorModelRenderer(this, 0, 16);
         this.ArmLeft.setRotationPoint(4.5F, -2.0F, -7.0F);
         this.ArmLeft.addBox(0.0F, -1.0F, -1.0F, 4, 2, 2, 0.0F);
         this.setRotateAngle(ArmLeft, 0.0F, 0.5585053606381855F, 0.3490658503988659F);
@@ -59,8 +62,9 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     }
 
     @Override
-    public void render(E entity, float f, float f1, float f2, float f3, float f4, float f5) {
-    	this.animateModel(entity, f, f1, f2, f3, f4, f5);
+    public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
+    	this.animateModel(this.entity, f, f1, f2, f3, f4, f5);
+    	
     	this.Head.render(f5);
     	this.Jaw.render(f5);
     }
@@ -68,14 +72,16 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(EndimatorRendererModel EndimatorRendererModel, float x, float y, float z) {
-        EndimatorRendererModel.rotateAngleX = x;
-        EndimatorRendererModel.rotateAngleY = y;
-        EndimatorRendererModel.rotateAngleZ = z;
+    public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
+        EndimatorModelRenderer.rotateAngleX = x;
+        EndimatorModelRenderer.rotateAngleY = y;
+        EndimatorModelRenderer.rotateAngleZ = z;
     }
     
     @Override
-    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    	super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    	
     	this.revertBoxesToDefaultValues();
     	
     	this.Tail.rotateAngleY = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
