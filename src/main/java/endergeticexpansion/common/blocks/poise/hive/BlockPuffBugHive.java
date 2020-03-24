@@ -17,6 +17,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.*;
 import net.minecraftforge.common.ToolType;
 
@@ -25,9 +28,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockPuffBugHive extends Block {
+	private static final VoxelShape HIVE_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 3.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D));
 	
 	public BlockPuffBugHive(Properties properties) {
 		super(properties);
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return HIVE_SHAPE;
 	}
 	
 	@Override

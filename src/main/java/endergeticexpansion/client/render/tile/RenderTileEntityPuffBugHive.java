@@ -18,13 +18,14 @@ public class RenderTileEntityPuffBugHive extends TileEntityRenderer<TileEntityPu
 	
 	public RenderTileEntityPuffBugHive(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
-		hiveModel = new ModelPuffBugHive();
+		this.hiveModel = new ModelPuffBugHive();
 	}
 	
 	@Override
 	public void render(TileEntityPuffBugHive hive, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		matrixStack.push();
 		matrixStack.translate(0.5D, 1.5D, 0.5D);
+		matrixStack.scale(1.0F, -1.0F, -1.0F);
 		
 		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutout(TEXTURE));
 		this.hiveModel.renderAll(matrixStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);

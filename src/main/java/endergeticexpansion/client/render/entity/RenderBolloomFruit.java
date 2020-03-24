@@ -31,6 +31,7 @@ public class RenderBolloomFruit extends EntityRenderer<EntityBolloomFruit> {
 		float[] angles = entity.getVineAnimation(partialTicks);
 		this.model.vine_x.rotateAngleX = angles[0];
 		this.model.vine_x.rotateAngleY = angles[1];
+		this.model.setRotationAngles(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 		matrixStack.push();
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));

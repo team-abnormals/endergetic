@@ -62,11 +62,11 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     }
 
     @Override
-    public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
-    	this.animateModel(this.entity, f, f1, f2, f3, f4, f5);
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    	this.animateModel(this.entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
     	
-    	this.Head.render(f5);
-    	this.Jaw.render(f5);
+    	this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    	this.Jaw.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     /**

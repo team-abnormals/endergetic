@@ -151,6 +151,7 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     
     @Override
     public void setRotationAngles(E puffBug, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    	super.setRotationAngles(puffBug, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     	this.Body.setShouldScaleChildren(false);
     	
     	this.revertBoxesToDefaultValues();

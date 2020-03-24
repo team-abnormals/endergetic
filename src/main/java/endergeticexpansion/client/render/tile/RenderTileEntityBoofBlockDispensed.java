@@ -1,15 +1,15 @@
 package endergeticexpansion.client.render.tile;
 
-import java.util.function.Supplier;
-
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.client.model.ModelBoofBlockDispenser;
 import endergeticexpansion.common.blocks.poise.boof.BlockDispensedBoof;
 import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.EndergeticExpansion;
-import endergeticexpansion.core.registry.EEBlocks;
-import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
@@ -25,34 +25,31 @@ public class RenderTileEntityBoofBlockDispensed extends TileEntityRenderer<TileE
 	}
 	
 	@Override
-	public void render(TileEntityDispensedBoof te, double x, double y, double z, float partialTicks, int destroyStage) {
-		Supplier<BlockState> state = te.hasWorld() ? () -> te.getBlockState() : () -> (BlockState) EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState();
-		GlStateManager.pushMatrix();
+	public void render(TileEntityDispensedBoof boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+		Direction facing = boof.hasWorld() ? boof.getBlockState().get(BlockDispensedBoof.FACING) : Direction.NORTH;
 		
-		this.bindTexture(TEXTURE);
-		GlStateManager.translatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		if(state.get().get(BlockDispensedBoof.FACING) == Direction.NORTH) {
-			GlStateManager.rotatef(180.0F, 0, 1F, 0);
-		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.EAST) {
-			GlStateManager.rotatef(90.0F, 0, 1F, 0);
-		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.WEST) {
-			GlStateManager.rotatef(-90.0F, 0, 1F, 0);
-		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.UP) {
-			GlStateManager.rotatef(-90.0F, 1F, 0, 0);
-			GlStateManager.translatef(0.0F, 1.125F, -1.0F);
-		} else if(state.get().get(BlockDispensedBoof.FACING) == Direction.DOWN) {
-			GlStateManager.rotatef(90.0F, 1F, 0, 0);
-			GlStateManager.translatef(0.0F, 1.125F, 1.0F);
+		matrixStack.push();
+		matrixStack.translate(0.5F, 1.5F, 0.5F);
+		
+		if(facing == Direction.DOWN) {
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+			matrixStack.translate(0.0F, 1.125F, 1.0F);
+		} else if(facing == Direction.UP){
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
+			matrixStack.translate(0.0F, 1.125F, -1.0F);
+		} else if(facing == Direction.NORTH) {
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+		} else if(facing == Direction.EAST) {
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+		} else if(facing == Direction.WEST) {
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
 		}
 		
-		GlStateManager.enableRescaleNormal();
+		matrixStack.scale(1.0F, -1.0F, -1.0F);
 		
-		GlStateManager.pushMatrix();
-		GlStateManager.scalef(1.0F, -1.0F, -1.0F);
-		model.renderAll();
+		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.getEntityCutout(TEXTURE));
+		this.model.renderAll(matrixStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 		
-		GlStateManager.popMatrix();
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
-	
 }

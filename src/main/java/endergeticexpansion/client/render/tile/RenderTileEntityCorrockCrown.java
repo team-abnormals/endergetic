@@ -50,7 +50,7 @@ public class RenderTileEntityCorrockCrown extends TileEntityRenderer<TileEntityC
 			float angle = -state.get(WallSignBlock.FACING).getHorizontalAngle();
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(angle));
 			
-			matrixStack.translate(0.5F, -0.6F, 0.05F);
+			matrixStack.translate(0.0F, -1.0F, 0.05F);
 		}
 		
 		if(isStanding && state.get(BlockCorrockCrownStanding.UPSIDE_DOWN)) {

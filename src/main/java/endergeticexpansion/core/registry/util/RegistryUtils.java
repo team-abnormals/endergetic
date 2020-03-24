@@ -1,10 +1,10 @@
 package endergeticexpansion.core.registry.util;
 
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.items.EndergeticSpawnEgg;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrown;
 import endergeticexpansion.common.items.itemblocks.ItemBlockCorrockCrownS;
@@ -12,6 +12,7 @@ import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -78,9 +79,9 @@ public class RegistryUtils {
 		return block;
 	}
 	
-	public static <B extends Block> RegistryObject<B> createBlockWithTESIR(String name, Supplier<? extends B> supplier, @Nullable ItemGroup group) {
+	public static <B extends Block> RegistryObject<B> createBlockWithTESIR(String name, Supplier<? extends B> supplier, Callable<ItemStackTileEntityRenderer> ister, @Nullable ItemGroup group) {
 		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
-		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> EETileEntityItemRenderer::new)));
+		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> ister)));
 		return block;
 	}
 	

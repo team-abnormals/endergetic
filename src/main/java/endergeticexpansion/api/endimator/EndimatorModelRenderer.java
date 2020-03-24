@@ -1,15 +1,18 @@
 package endergeticexpansion.api.endimator;
 
-import javax.annotation.Nullable;
-
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.client.model.booflo.ModelAdolescentBooflo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.client.renderer.Matrix3f;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,21 +26,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class EndimatorModelRenderer extends ModelRenderer {
 	public float defaultRotationPointX, defaultRotationPointY, defaultRotationPointZ;
 	public float defaultRotateAngleX, defaultRotateAngleY, defaultRotateAngleZ;
-	public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
+	//Gone it seems? Will try later public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
 	public int textureOffsetX, textureOffsetY;
+	public float textureWidth, textureHeight;
 	public boolean scaleChildren = true;
 	public float[] scales = {1.0F, 1.0F, 1.0F};
-	public float opacity = 1.0F;
-	private boolean compiled;
-	private int displayList;
-	@Nullable
-	private EndimatorModelRenderer parentModelRenderer;
+	private final ObjectList<ModelBox> cubeList = new ObjectArrayList<>();
+	private final ObjectList<ModelRenderer> childModels = new ObjectArrayList<>();
 
 	/**
 	 * @param entityModel - Entity model this ModelRenderer belongs to
 	 */
-	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> entityModel) {
-		super(entityModel);
+	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model) {
+		super(model);
+		model.addCuboid(this);
+		model.accept(this);
+		this.setTextureSize(model.textureWidth, model.textureHeight);
 	}
 	
 	/**
@@ -46,39 +50,69 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	 * @param textureOffsetX - X offset on the texture
 	 * @param textureOffsetY - Y offset on the texture
 	 */
-	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> entityModel, int textureOffsetX, int textureOffsetY) {
-		this(entityModel);
-		this.setTextureOffset(textureOffsetX, textureOffsetY);
+	public EndimatorModelRenderer(EndimatorEntityModel<? extends Entity> model, int textureOffsetX, int textureOffsetY) {
+		this(model.textureWidth, model.textureHeight, textureOffsetX, textureOffsetY);
+		model.accept(this);
+		model.addCuboid(this);
 	}
 	
-	@Override
-	public ModelRenderer func_217178_a(String boxName, float offsetX, float offsetY, float offsetZ, int width, int height, int depth, float delta, int textureOffsetX, int textureOffsetY) {
-		boxName = this.boxName + "." + boxName;
-		this.setTextureOffset(textureOffsetX, textureOffsetY);
-		this.cubeList.add((new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F)).setBoxName(boxName));
-		return this;
+	public EndimatorModelRenderer(int textureWidthIn, int textureHeightIn, int textureOffsetXIn, int textureOffsetYIn) {
+		super(textureWidthIn, textureHeightIn, textureOffsetXIn, textureOffsetYIn);
 	}
 	
-	@Override
-	public ModelRenderer addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth) {
-		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F));
-		return this;
-	}
-	
-	@Override
-	public ModelRenderer addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth, boolean mirrored) {
-		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, 0.0F, mirrored));
-		return this;
+	public void addChild(ModelRenderer renderer) {
+		this.childModels.add(renderer);
 	}
 	
 	/**
-	 * Creates a simple textured box
-	 * @see ModelRenderer#addBox(float, float, float, int, int, int, float)
+	 * Performs the same function as vanilla's setTextureOffset
 	 */
 	@Override
-    public void addBox(float offsetX, float offsetY, float offsetZ, int width, int height, int depth, float scaleFactor) {
-		this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offsetX, offsetY, offsetZ, width, height, depth, scaleFactor));
-    }
+	public EndimatorModelRenderer setTextureOffset(int x, int y) {
+		this.textureOffsetX = x;
+		this.textureOffsetY = y;
+		return this;
+	}
+	
+	@Override
+	public EndimatorModelRenderer setTextureSize(int textureWidthIn, int textureHeightIn) {
+		this.textureWidth = (float)textureWidthIn;
+		this.textureHeight = (float)textureHeightIn;
+		return this;
+	}
+	
+	@Override
+	public EndimatorModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
+		this.setTextureOffset(texX, texY);
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
+		return this;
+	}
+
+	public EndimatorModelRenderer addBox(float x, float y, float z, float width, float height, float depth) {
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
+		return this;
+	}
+
+	public EndimatorModelRenderer addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
+		return this;
+	}
+
+	public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
+	}
+
+	public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
+	}
+
+	public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
+		this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
+	}
+
+	private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirorIn, boolean p_228305_13_) {
+		this.cubeList.add(new ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirorIn, this.textureWidth, this.textureHeight));
+	}
 
 	/**
 	 * A method that sets the default box's values
@@ -92,10 +126,6 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.defaultRotateAngleX = this.rotateAngleX;
 		this.defaultRotateAngleY = this.rotateAngleY;
 		this.defaultRotateAngleZ = this.rotateAngleZ;
-		
-		this.defaultOffsetX = this.offsetX;
-		this.defaultOffsetY = this.offsetY;
-		this.defaultOffsetZ = this.offsetZ;
 	}
 	
 	/**
@@ -113,14 +143,10 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.rotateAngleX = this.defaultRotateAngleX;
 		this.rotateAngleY = this.defaultRotateAngleY;
 		this.rotateAngleZ = this.defaultRotateAngleZ;
-		
-		this.offsetX = this.defaultOffsetX;
-		this.offsetY = this.defaultOffsetY;
-		this.offsetZ = this.defaultOffsetZ;
 	}
 	
 	/**
-	 * @param 
+	 * Sets the scale
 	 */
 	public void setScale(float x, float y, float z) {
 		this.scales[0] = x;
@@ -152,119 +178,239 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		this.scales[2] = scaleZ;
 	}
 	
-	/**
-	 * Sets the opacity of this ModelRenderer
-	 * @param opacity - Value of opacity; shouldn't exceed 1.0
-	 */
-	public void setOpacity(float opacity) {
-		this.opacity = opacity;
-	}
-	
-	/**
-	 * Sets the parent ModelRenderer of this ModelRenderer
-	 * @param parentModelRenderer - The parent ModelRenderer
-	 */
-	public void setParentModelRenderer(@Nullable EndimatorModelRenderer parentModelRenderer) {
-		this.parentModelRenderer = parentModelRenderer;
-	}
-	
 	public void setShouldScaleChildren(boolean scaleChildren) {
 		this.scaleChildren = scaleChildren;
 	}
 	
-	/**
-	 * Performs the same function as vanilla's setTextureOffset
-	 */
 	@Override
-	public EndimatorModelRenderer setTextureOffset(int x, int y) {
-		this.textureOffsetX = x;
-		this.textureOffsetY = y;
-		return this;
-	}
-	
-	/**
-	 * Performs the same function as vanilla's addChild but adjusted to fit EndimatorModelRenderer
-	 */
-	@Override
-	public void addChild(ModelRenderer ModelRenderer) {
-		super.addChild(ModelRenderer);
-		EndimatorModelRenderer ModelRendererChild = (EndimatorModelRenderer) ModelRenderer;
-		ModelRendererChild.setParentModelRenderer(this);
-	}
-	
-	@Override
-	public void render(float scale) {
-		if(!this.isHidden) {
-			if(this.showModel) {
-				GlStateManager.pushMatrix();
-				if(!this.compiled) {
-					this.compileDisplayList(scale);
-				}
-				GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
-				GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		if(this.showModel) {
+			if(!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
+				matrixStackIn.push();
+				this.translateRotate(matrixStackIn);
 				
-				if(this.rotateAngleZ != 0.0F) {
-					GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
-				}
-				if(this.rotateAngleY != 0.0F) {
-	                GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
-				}
-				if(this.rotateAngleX != 0.0F) {
-					GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
-				}
-				if(this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F) {
-					GlStateManager.scalef(this.scales[0], this.scales[1], this.scales[2]);
-				}
+				matrixStackIn.push();
+				matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
+				this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+				matrixStackIn.pop();
 				
-				if(this.opacity < 1.0F) {
-					GlStateManager.enableBlend();
-					GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-					GlStateManager.color4f(1F, 1F, 1F, this.opacity);
-				}
-				
-				GlStateManager.callList(this.displayList);
-				
-				if(this.opacity < 1.0F) {
-					GlStateManager.disableBlend();
-					GlStateManager.color4f(1F, 1F, 1F, 1F);
-				}
-				
-				if(!this.scaleChildren && (this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F)) {
-					GlStateManager.popMatrix();
-					GlStateManager.pushMatrix();
-					GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
-					GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-					if(this.rotateAngleZ != 0.0F) {
-						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
+				for(ModelRenderer modelrenderer : this.childModels) {
+					if(this.scaleChildren) {
+						matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
 					}
-					if(this.rotateAngleY != 0.0F) {
-						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
-					}
-					if(this.rotateAngleX != 0.0F) {
-						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
-					}
+					((EndimatorModelRenderer) modelrenderer).render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 				}
-				
-				if(this.childModels != null) {
-					for(ModelRenderer childModel : this.childModels) {
-						childModel.render(scale);
-					}
-				}
-				GlStateManager.popMatrix();
+
+				matrixStackIn.pop();
 			}
 		}
 	}
 	
-	private void compileDisplayList(float scale) {
-		this.displayList = GLAllocation.generateDisplayLists(1);
-		GlStateManager.newList(this.displayList, 4864);
-		BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+	private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		Matrix4f matrix4f = matrixEntryIn.getMatrix();
+		Matrix3f matrix3f = matrixEntryIn.getNormal();
 
-		for(int i = 0; i < this.cubeList.size(); ++i) {
-			this.cubeList.get(i).render(bufferbuilder, scale);
+		for(ModelBox modelrenderer$modelbox : this.cubeList) {
+			for(TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
+				Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
+				vector3f.transform(matrix3f);
+				float f = vector3f.getX();
+				float f1 = vector3f.getY();
+				float f2 = vector3f.getZ();
+
+				for(int i = 0; i < 4; ++i) {
+					PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
+					float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
+					float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
+					float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+					Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
+					vector4f.transform(matrix4f);
+					bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+				}
+			}
+		}
+	}
+	
+	public static class ModelBox {
+		protected final TexturedQuad[] quads;
+		public final float posX1;
+		public final float posY1;
+		public final float posZ1;
+		public final float posX2;
+		public final float posY2;
+		public final float posZ2;
+
+		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirorIn, float texWidth, float texHeight) {
+			this.posX1 = x;
+			this.posY1 = y;
+			this.posZ1 = z;
+			this.posX2 = x + width;
+			this.posY2 = y + height;
+			this.posZ2 = z + depth;
+			this.quads = new TexturedQuad[6];
+			float f = x + width;
+			float f1 = y + height;
+			float f2 = z + depth;
+			x = x - deltaX;
+			y = y - deltaY;
+			z = z - deltaZ;
+			f = f + deltaX;
+			f1 = f1 + deltaY;
+			f2 = f2 + deltaZ;
+			if(mirorIn) {
+				float f3 = f;
+				f = x;
+				x = f3;
+			}
+
+			PositionTextureVertex modelrenderer$positiontexturevertex7 = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex1 = new PositionTextureVertex(f, f1, z, 8.0F, 8.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex2 = new PositionTextureVertex(x, f1, z, 8.0F, 0.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex3 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
+			PositionTextureVertex modelrenderer$positiontexturevertex6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
+			float f4 = (float)texOffX;
+			float f5 = (float)texOffX + depth;
+			float f6 = (float)texOffX + depth + width;
+			float f7 = (float)texOffX + depth + width + width;
+			float f8 = (float)texOffX + depth + width + depth;
+			float f9 = (float)texOffX + depth + width + depth + width;
+			float f10 = (float)texOffY;
+			float f11 = (float)texOffY + depth;
+			float f12 = (float)texOffY + depth + height;
+			this.quads[2] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex}, f5, f10, f6, f11, texWidth, texHeight, mirorIn, Direction.DOWN);
+			this.quads[3] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex5}, f6, f11, f7, f10, texWidth, texHeight, mirorIn, Direction.UP);
+			this.quads[1] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex2}, f4, f11, f5, f12, texWidth, texHeight, mirorIn, Direction.WEST);
+			this.quads[4] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex1}, f5, f11, f6, f12, texWidth, texHeight, mirorIn, Direction.NORTH);
+			this.quads[0] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex5}, f6, f11, f8, f12, texWidth, texHeight, mirorIn, Direction.EAST);
+			this.quads[5] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex5, modelrenderer$positiontexturevertex6}, f8, f11, f9, f12, texWidth, texHeight, mirorIn, Direction.SOUTH);
+		}
+	}
+	
+	protected static class PositionTextureVertex {
+		public final Vector3f position;
+		public final float textureU;
+		public final float textureV;
+
+		public PositionTextureVertex(float x, float y, float z, float texU, float texV) {
+			this(new Vector3f(x, y, z), texU, texV);
 		}
 
-		GlStateManager.endList();
-		this.compiled = true;
+		public PositionTextureVertex setTextureUV(float texU, float texV) {
+			return new PositionTextureVertex(this.position, texU, texV);
+		}
+
+		public PositionTextureVertex(Vector3f posIn, float texU, float texV) {
+			this.position = posIn;
+			this.textureU = texU;
+			this.textureV = texV;
+		}
 	}
+	
+	protected static class TexturedQuad {
+		public final PositionTextureVertex[] vertexPositions;
+		public final Vector3f normal;
+
+		public TexturedQuad(PositionTextureVertex[] positionsIn, float u1, float v1, float u2, float v2, float texWidth, float texHeight, boolean mirrorIn, Direction directionIn) {
+			this.vertexPositions = positionsIn;
+			float f = 0.0F / texWidth;
+			float f1 = 0.0F / texHeight;
+			positionsIn[0] = positionsIn[0].setTextureUV(u2 / texWidth - f, v1 / texHeight + f1);
+			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
+			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
+			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
+			if(mirrorIn) {
+				int i = positionsIn.length;
+
+				for(int j = 0; j < i / 2; ++j) {
+	               PositionTextureVertex modelrenderer$positiontexturevertex = positionsIn[j];
+	               positionsIn[j] = positionsIn[i - 1 - j];
+	               positionsIn[i - 1 - j] = modelrenderer$positiontexturevertex;
+	            }
+			}
+
+			this.normal = directionIn.toVector3f();
+			if(mirrorIn) {
+				this.normal.mul(-1.0F, 1.0F, 1.0F);
+			}
+		}
+	}
+	
+//	@Override
+//	public void render(float scale) {
+//		if(!this.isHidden) {
+//			if(this.showModel) {
+//				GlStateManager.pushMatrix();
+//				if(!this.compiled) {
+//					this.compileDisplayList(scale);
+//				}
+//				GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
+//				GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+//				
+//				if(this.rotateAngleZ != 0.0F) {
+//					GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
+//				}
+//				if(this.rotateAngleY != 0.0F) {
+//	                GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
+//				}
+//				if(this.rotateAngleX != 0.0F) {
+//					GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
+//				}
+//				if(this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F) {
+//					GlStateManager.scalef(this.scales[0], this.scales[1], this.scales[2]);
+//				}
+//				
+//				if(this.opacity < 1.0F) {
+//					GlStateManager.enableBlend();
+//					GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//					GlStateManager.color4f(1F, 1F, 1F, this.opacity);
+//				}
+//				
+//				GlStateManager.callList(this.displayList);
+//				
+//				if(this.opacity < 1.0F) {
+//					GlStateManager.disableBlend();
+//					GlStateManager.color4f(1F, 1F, 1F, 1F);
+//				}
+//				
+//				if(!this.scaleChildren && (this.scales[0] != 1.0F || this.scales[1] != 1.0F || this.scales[2] != 1.0F)) {
+//					GlStateManager.popMatrix();
+//					GlStateManager.pushMatrix();
+//					GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
+//					GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+//					if(this.rotateAngleZ != 0.0F) {
+//						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
+//					}
+//					if(this.rotateAngleY != 0.0F) {
+//						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
+//					}
+//					if(this.rotateAngleX != 0.0F) {
+//						GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
+//					}
+//				}
+//				
+//				if(this.childModels != null) {
+//					for(ModelRenderer childModel : this.childModels) {
+//						childModel.render(scale);
+//					}
+//				}
+//				GlStateManager.popMatrix();
+//			}
+//		}
+//	}
+//	
+//	private void compileDisplayList(float scale) {
+//		this.displayList = GLAllocation.generateDisplayLists(1);
+//		GlStateManager.newList(this.displayList, 4864);
+//		BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
+//
+//		for(int i = 0; i < this.cubeList.size(); ++i) {
+//			this.cubeList.get(i).render(bufferbuilder, scale);
+//		}
+//
+//		GlStateManager.endList();
+//		this.compiled = true;
+//	}
 }

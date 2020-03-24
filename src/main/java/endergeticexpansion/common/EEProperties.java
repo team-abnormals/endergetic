@@ -45,7 +45,7 @@ public class EEProperties {
 	public static final Block.Properties ACIDIAN_LANTERN   = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).harvestLevel(2).harvestTool(ToolType.PICKAXE);
 	
 	public static final Block.Properties PUFFBUG_HIVE(boolean hanger) {
-		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
+		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).notSolid().doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
 	}
 	
 }

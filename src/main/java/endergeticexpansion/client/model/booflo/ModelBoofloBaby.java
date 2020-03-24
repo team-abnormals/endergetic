@@ -37,8 +37,8 @@ public class ModelBoofloBaby<E extends EntityBoofloBaby> extends EndimatorEntity
     }
 
     @Override
-    public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
-        this.Head.render(f5);
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     /**
