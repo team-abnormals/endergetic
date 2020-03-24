@@ -1,12 +1,16 @@
 package endergeticexpansion.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.client.model.bolloom.ModelBolloomFruit;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderBolloomFruit extends EntityRenderer<EntityBolloomFruit> {
@@ -18,21 +22,21 @@ public class RenderBolloomFruit extends EntityRenderer<EntityBolloomFruit> {
     }
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityBolloomFruit entity) {
+	public ResourceLocation getEntityTexture(EntityBolloomFruit entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_fruit.png");
 	}
 	
 	@Override
-	public void doRender(EntityBolloomFruit entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void render(EntityBolloomFruit entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		float[] angles = entity.getVineAnimation(partialTicks);
 		this.model.vine_x.rotateAngleX = angles[0];
 		this.model.vine_x.rotateAngleY = angles[1];
-		GlStateManager.pushMatrix();
-		this.bindTexture(this.getEntityTexture(entity));
-		GlStateManager.translated(x, y + 1.5F, z);
-		GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
-		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
-		GlStateManager.popMatrix();
-		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+		matrixStack.push();
+		matrixStack.translate(0.0F, 1.5F, 0.0F);
+		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
+    	this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		matrixStack.pop();
+		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 }

@@ -18,8 +18,8 @@ public class RenderBoofloAdolescent extends MobRenderer<EntityBoofloAdolescent, 
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityBoofloAdolescent entity) {
+	public ResourceLocation getEntityTexture(EntityBoofloAdolescent entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_adolescent.png");
 	}
-
+	
 }

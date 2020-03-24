@@ -1,12 +1,16 @@
 package endergeticexpansion.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.client.model.bolloom.ModelBolloomBalloon;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderBolloomBalloon extends EntityRenderer<EntityBolloomBalloon> {
@@ -38,22 +42,22 @@ public class RenderBolloomBalloon extends EntityRenderer<EntityBolloomBalloon> {
 	}
 	
 	@Override
-	public void doRender(EntityBolloomBalloon entity, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void render(EntityBolloomBalloon entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		float[] angles = entity.getVineAnimation(partialTicks);
 		model.x_string.rotateAngleX = angles[0];
 		model.x_string.rotateAngleY = angles[1];
-		GlStateManager.pushMatrix();
-		this.bindTexture(this.getEntityTexture(entity));
-		GlStateManager.translated(x, y + 1.5F, z);
-		GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
-		model.render(entity, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
-		GlStateManager.popMatrix();
-		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+		matrixStack.push();
+		matrixStack.translate(0.0F, 1.5F, 0.0F);
+		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
+    	this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		matrixStack.pop();
+		
+		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 	
 	@Override
-	protected ResourceLocation getEntityTexture(EntityBolloomBalloon balloon) {
+	public ResourceLocation getEntityTexture(EntityBolloomBalloon balloon) {
 		return balloon.getColor() == null ? DEFAULT_TEXTURE : COLORS[balloon.getColor().getId()];
 	}
-	
 }

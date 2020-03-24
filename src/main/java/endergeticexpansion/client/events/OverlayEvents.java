@@ -1,6 +1,5 @@
 package endergeticexpansion.client.events;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
@@ -27,8 +26,8 @@ public class OverlayEvents {
 			if(player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo) {
 				event.setCanceled(true);
 				
-				int scaledWidth = MC.mainWindow.getScaledWidth();
-				int scaledHeight = MC.mainWindow.getScaledHeight();
+				int scaledWidth = event.getWindow().getScaledWidth();
+				int scaledHeight = event.getWindow().getScaledHeight();
 				int top = scaledHeight - 32 + 3;
 				int left = scaledWidth / 2 - 91;
 				int progress = ((EntityBooflo) player.getRidingEntity()).getRideControlDelay();

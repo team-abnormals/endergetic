@@ -60,14 +60,6 @@ public class ModelBolloomBud {
         this.Pedal_2_open.addBox(0.0F, 0.0F, 0.0F, 12, 2, 12, 0.0F);
         this.setRotateAngle(Pedal_2_open, 0, 3.141592653589793F, 0.0F);
     }
-
-    public void renderAllClosed(MatrixStack matrix, IVertexBuilder builder, int light, int overlay) { 
-        this.Pedal.render(matrix, builder, light, overlay);
-        this.Pedal_3.render(matrix, builder, light, overlay);
-        this.Pedal_1.render(matrix, builder, light, overlay);
-        this.Pedal_2.render(matrix, builder, light, overlay);
-        this.Center.render(matrix, builder, light, overlay);
-    }
     
     public void renderAll(TileEntityBolloomBud bud, MatrixStack matrix, IVertexBuilder builder, int light, int overlay) {
     	float angle = 1.78F * bud.PEDAL_PROGRESS.getAnimationProgress();
@@ -95,5 +87,4 @@ public class ModelBolloomBud {
         ModelRenderer.rotateAngleY = y;
         ModelRenderer.rotateAngleZ = z;
     }
-    
 }

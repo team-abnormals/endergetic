@@ -1,13 +1,16 @@
 package endergeticexpansion.client.render.entity.layer;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,30 +28,19 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 	}
 	
 	@Override
-	public void render(T puffbug, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
+	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T puffbug, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if(!puffbug.isInflated()) return;
 		
-		this.bindTexture(this.getTexture(puffbug));
-		
-		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240.0F, 240.0F);
+		boolean colorFlag = puffbug.getColor() != -1 && !isLeviationOnlyEffect(puffbug);
 		
 		float[] rgb = new float[] {
-			(float) ((puffbug.getColor() >> 16 & 255) / 255.0D),
-			(float) ((puffbug.getColor() >> 8 & 255) / 255.0D),
-			(float) ((puffbug.getColor() & 255) / 255.0D),
+			colorFlag ? (float) ((puffbug.getColor() >> 16 & 255) / 255.0D) * 1.5F : 1.0F,
+			colorFlag ? (float) ((puffbug.getColor() >> 8 & 255) / 255.0D) * 1.5F : 1.0F,
+			colorFlag ? (float) ((puffbug.getColor() & 255) / 255.0D) * 1.5F : 1.0F,
 		};
 		
-		if(puffbug.getColor() != -1 && !isLeviationOnlyEffect(puffbug)) GlStateManager.color3f(rgb[0] * 1.5F, rgb[1] * 1.5F, rgb[2] * 1.5F);
-		
-		GlStateManager.disableLighting();
-        
-		this.getEntityModel().render(puffbug, p_212842_2_, p_212842_3_, p_212842_5_, p_212842_6_, p_212842_7_, p_212842_8_);
-		
-		GlStateManager.enableLighting();
-		
-		int i = puffbug.getBrightnessForRender();
-		GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, i % 65536, i / 65536);
-		this.func_215334_a(puffbug);
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEyes(this.getTexture(puffbug)));
+		this.getEntityModel().render(matrixStackIn, ivertexbuilder, 15728640, OverlayTexture.NO_OVERLAY, rgb[0], rgb[1], rgb[2], 1.0F);
 	}
 	
 	private ResourceLocation getTexture(EntityPuffBug puffbug) {
@@ -62,11 +54,6 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 		if(bug.getColor() == 13565951) {
 			return true;
 		}
-		return false;
-	}
-	
-	@Override
-	public boolean shouldCombineTextures() {
 		return false;
 	}
 }

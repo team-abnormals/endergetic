@@ -1,11 +1,14 @@
 package endergeticexpansion.client.render.entity.booflo;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import endergeticexpansion.client.model.booflo.ModelBooflo;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloBracelets;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloFruit;
 import endergeticexpansion.client.render.entity.layer.RenderLayerBoofloGlow;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -23,14 +26,15 @@ public class RenderBooflo extends MobRenderer<EntityBooflo, EntityModel<EntityBo
 		this.addLayer(new RenderLayerBoofloFruit(this));
 	}
 	
-	public void doRender(EntityBooflo booflo, double x, double y, double z, float entityYaw, float partialTicks) {
+	@Override
+	public void render(EntityBooflo booflo, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		this.shadowSize = booflo.isBoofed() ? 2.0F : 1.25F;
 		
-		super.doRender(booflo, x, y, z, entityYaw, partialTicks);
+		super.render(booflo, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityBooflo booflo) {
+	public ResourceLocation getEntityTexture(EntityBooflo booflo) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo" + booflo.getNameSuffix() + ".png");
 	}
 	
