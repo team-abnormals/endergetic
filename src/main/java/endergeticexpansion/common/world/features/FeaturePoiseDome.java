@@ -1329,13 +1329,13 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isProperBlock(IWorld world, BlockPos pos) {
-		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISE_GRASS_BLOCK.get() || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS.get();
+		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS.get() || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS.get();
 	}
 	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
 		BlockPos blockpos = pos.up();
 		if(world.getBlockState(blockpos).getBlock() == Blocks.AIR) {
-			BlockState newGround = EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState();
+			BlockState newGround = EEBlocks.POISMOSS.get().getDefaultState();
 			this.setBlockState(reader, blockpos, newGround);
 		}
 	}
@@ -1366,7 +1366,7 @@ public class FeaturePoiseDome extends Feature<NoFeatureConfig> {
 	}
 	
 	private void setPoismoss(IWorld world, BlockPos pos) {
-		world.setBlockState(pos, EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState(), 2);
+		world.setBlockState(pos, EEBlocks.POISMOSS.get().getDefaultState(), 2);
 	}
 
 }

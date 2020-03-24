@@ -12,11 +12,11 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderTileEntityPuffBugHive extends TileEntityRenderer<TileEntityPuffBugHive> {
+public class PuffBugHiveTileEntityRenderer extends TileEntityRenderer<TileEntityPuffBugHive> {
 	private ModelPuffBugHive hiveModel;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/puffbug_hive.png");
 	
-	public RenderTileEntityPuffBugHive(TileEntityRendererDispatcher renderDispatcher) {
+	public PuffBugHiveTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.hiveModel = new ModelPuffBugHive();
 	}

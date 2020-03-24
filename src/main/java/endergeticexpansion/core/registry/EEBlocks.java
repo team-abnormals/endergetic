@@ -77,8 +77,8 @@ public class EEBlocks {
 	/*
 	 * Poise Forest
 	 */
-	public static final RegistryObject<BlockPoismossEumus> POISMOSS_EUMUS       = RegistryUtils.createBlock("poismoss_eumus", () -> new BlockPoismossEumus(EEProperties.POISMOSS_EUMUS), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<BlockPoismoss> POISE_GRASS_BLOCK         = RegistryUtils.createBlock("poise_grass_block", () -> new BlockPoismoss(EEProperties.POISE_GRASS(false)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockPoismossEumus> POISMOSS_EUMUS         = RegistryUtils.createBlock("poismoss_eumus", () -> new BlockPoismossEumus(EEProperties.POISMOSS_EUMUS), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<BlockPoismoss> POISMOSS                    = RegistryUtils.createBlock("poise_grass_block", () -> new BlockPoismoss(EEProperties.POISE_GRASS(false)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<BlockPoiseGrassPlant> POISE_GRASS          = RegistryUtils.createBlock("poise_grass", () -> new BlockPoiseGrassPlant(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockPoiseGrassPlantTall> POISE_GRASS_TALL = RegistryUtils.createBlock("poise_grass_tall", () -> new BlockPoiseGrassPlantTall(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockPoiseCluster> POISE_CLUSTER           = RegistryUtils.createBlock("poise_cluster", () -> new BlockPoiseCluster(EEProperties.POISE_CLUSTER.tickRandomly()), ItemGroup.BUILDING_BLOCKS);

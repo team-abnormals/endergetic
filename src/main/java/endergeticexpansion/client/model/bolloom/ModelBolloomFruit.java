@@ -151,7 +151,7 @@ public class ModelBolloomFruit<T extends EntityBolloomFruit> extends EntityModel
         		this.vine_z_6.showModel = false;
         		break;
         }
-        this.fruit.render(matrixStackIn, bufferIn, 15728640, packedOverlayIn, red, green, blue, alpha);
+        this.fruit.render(matrixStackIn, bufferIn, 240, packedOverlayIn, red, green, blue, alpha);
         this.vine_x.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
     

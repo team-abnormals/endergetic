@@ -25,7 +25,7 @@ public class EEBlockRegistrars {
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_OVERWORLD.get(), RenderType.getCutout());
 		
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS_EUMUS.get(), RenderType.getCutoutMipped());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS_BLOCK.get(), RenderType.getCutoutMipped());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS_TALL.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());

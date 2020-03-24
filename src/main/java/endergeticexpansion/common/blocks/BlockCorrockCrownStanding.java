@@ -39,7 +39,7 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
+		return state.get(UPSIDE_DOWN) ? Block.makeCuboidShape(2.0D, 2.0D, 2.0D, 14.0D, 16.0D, 14.0D) : Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
 	}
 	
 	@Override
@@ -47,7 +47,8 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
 			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension())
 				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
-				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN)));
+				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
+			);
 		}
 		
 		if(world.getBlockState(pos).get(UPSIDE_DOWN) && !world.getBlockState(pos.up()).isSolid()) {

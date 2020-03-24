@@ -3,10 +3,11 @@ package endergeticexpansion.client.render.entity.layer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import endergeticexpansion.api.EndergeticAPI.ClientInfo;
+import endergeticexpansion.client.EERenderTypes;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -34,13 +35,16 @@ public class RenderLayerPuffBugGlow <T extends EntityPuffBug, M extends EntityMo
 		boolean colorFlag = puffbug.getColor() != -1 && !isLeviationOnlyEffect(puffbug);
 		
 		float[] rgb = new float[] {
-			colorFlag ? (float) ((puffbug.getColor() >> 16 & 255) / 255.0D) * 1.5F : 1.0F,
-			colorFlag ? (float) ((puffbug.getColor() >> 8 & 255) / 255.0D) * 1.5F : 1.0F,
-			colorFlag ? (float) ((puffbug.getColor() & 255) / 255.0D) * 1.5F : 1.0F,
+			colorFlag ? (float) ((puffbug.getColor() >> 16 & 255) / 255.0D) : 1.0F,
+			colorFlag ? (float) ((puffbug.getColor() >> 8 & 255) / 255.0D) : 1.0F,
+			colorFlag ? (float) ((puffbug.getColor() & 255) / 255.0D) : 1.0F,
 		};
 		
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEyes(this.getTexture(puffbug)));
-		this.getEntityModel().render(matrixStackIn, ivertexbuilder, 15728640, OverlayTexture.NO_OVERLAY, rgb[0], rgb[1], rgb[2], 1.0F);
+		ClientInfo.MINECRAFT.getTextureManager().bindTexture(this.getTexture(puffbug));
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(EERenderTypes.getEmissiveEntity(this.getTexture(puffbug)));
+		
+		this.getEntityModel().setRotationAngles(puffbug, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		this.getEntityModel().render(matrixStackIn, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, rgb[0], rgb[1], rgb[2], 1.0F);
 	}
 	
 	private ResourceLocation getTexture(EntityPuffBug puffbug) {

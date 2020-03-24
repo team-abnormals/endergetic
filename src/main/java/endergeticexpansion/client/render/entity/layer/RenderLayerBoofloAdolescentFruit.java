@@ -7,6 +7,7 @@ import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -26,7 +27,10 @@ public class RenderLayerBoofloAdolescentFruit extends LayerRenderer<EntityBooflo
 	public void render(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn, EntityBoofloAdolescent adolescent, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if(adolescent.hasFruit()) {
 			matrixStack.push();
-			matrixStack.translate(0.0F, 0.5F, 0.0F);
+			matrixStack.translate(0.0F, 1.1F, -0.2F);
+			
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+			
 			Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(adolescent, new ItemStack(EEItems.BOLLOOM_FRUIT.get()), ItemCameraTransforms.TransformType.GROUND, false, matrixStack, bufferIn, packedLightIn);
 			matrixStack.pop();
 		}

@@ -93,11 +93,11 @@ public class EndergeticExpansion {
 	void setupClient(final FMLClientSetupEvent event) {
 		EEBlockRegistrars.setupRenderLayers();
 		
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.FRISBLOOM_STEM.get(), RenderTileEntityFrisbloomStem::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.CORROCK_CROWN.get(), RenderTileEntityCorrockCrown::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), RenderTileEntityBolloomBud::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), RenderTileEntityPuffBugHive::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), RenderTileEntityBoofBlockDispensed::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.FRISBLOOM_STEM.get(), FrisbloomStemTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), BoofBlockTileEntityRenderer::new);
 	
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), RenderBolloomFruit::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.POISE_CLUSTER.get(), RenderPoiseCluster::new);

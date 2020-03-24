@@ -20,14 +20,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 @SuppressWarnings("unused")
-public class RenderTileEntityFrisbloomStem extends TileEntityRenderer<TileEntityFrisbloomStem> {
+public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<TileEntityFrisbloomStem> {
 	private ModelFrisbloomStem model;
 	
 	private ModelFrisbloomFlower modelFlower;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_stem.png");
 	private static final ResourceLocation TEXTURE_FLOWER = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_flower.png");
 	
-	public RenderTileEntityFrisbloomStem(TileEntityRendererDispatcher renderDispatcher) {
+	public FrisbloomStemTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new ModelFrisbloomStem();
 		this.modelFlower = new ModelFrisbloomFlower();

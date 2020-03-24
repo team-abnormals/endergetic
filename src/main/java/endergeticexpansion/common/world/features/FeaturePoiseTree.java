@@ -1085,7 +1085,7 @@ public class FeaturePoiseTree extends Feature<NoFeatureConfig> {
 		for(int i = 2; i >= -3; --i) {
 			BlockPos blockpos = pos.up(i);
 			if(world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(blockpos).getBlock() == Blocks.END_STONE) {
-				BlockState newGround = world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() ? POISMOSS_EUMUS.get() : EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState();
+				BlockState newGround = world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() ? POISMOSS_EUMUS.get() : EEBlocks.POISMOSS.get().getDefaultState();
 				this.setBlockState(reader, blockpos, newGround);
 				break;
 			}

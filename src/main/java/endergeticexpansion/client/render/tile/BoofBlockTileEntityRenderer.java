@@ -15,11 +15,11 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderTileEntityBoofBlockDispensed extends TileEntityRenderer<TileEntityDispensedBoof> {
+public class BoofBlockTileEntityRenderer extends TileEntityRenderer<TileEntityDispensedBoof> {
 	public ModelBoofBlockDispenser model;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
 	
-	public RenderTileEntityBoofBlockDispensed(TileEntityRendererDispatcher renderDispatcher) {
+	public BoofBlockTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new ModelBoofBlockDispenser();
 	}

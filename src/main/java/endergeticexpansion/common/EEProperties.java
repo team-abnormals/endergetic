@@ -47,5 +47,4 @@ public class EEProperties {
 	public static final Block.Properties PUFFBUG_HIVE(boolean hanger) {
 		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).notSolid().doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
 	}
-	
 }

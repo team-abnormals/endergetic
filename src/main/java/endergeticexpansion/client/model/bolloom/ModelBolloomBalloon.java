@@ -45,7 +45,7 @@ public class ModelBolloomBalloon<T extends EntityBolloomBalloon> extends EntityM
 
     @Override
     public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
-        this.balloon.render(matrix, arg1, 15728640, f1, f5, f5, f5, f5);
+        this.balloon.render(matrix, arg1, 240, f1, f5, f5, f5, f5);
         
         this.x_string.render(matrix, arg1, f, f1, f5, f5, f5, f5);
     }

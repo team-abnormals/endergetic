@@ -16,7 +16,7 @@ public class EESurfaceBuilders {
 	
 	public static final Supplier<SurfaceBuilderConfig> END_STONE_CONFIG = () -> new SurfaceBuilderConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
 	public static final Supplier<SurfaceBuilderConfig> EUMUS_CONFIG     = () -> new SurfaceBuilderConfig(EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
-	public static final Supplier<SurfaceBuilderConfig> POISMOSS_CONFIG  = () -> new SurfaceBuilderConfig(EEBlocks.POISE_GRASS_BLOCK.get().getDefaultState(), Blocks.END_STONE.getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
+	public static final Supplier<SurfaceBuilderConfig> POISMOSS_CONFIG  = () -> new SurfaceBuilderConfig(EEBlocks.POISMOSS.get().getDefaultState(), Blocks.END_STONE.getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
 	
 	public static final RegistryObject<SurfaceBuilder<SurfaceBuilderConfig>> POISE_SURFACE_BUILDER = createSurfaceBuilder("poise_forest", () -> new SurfaceBuilderPoiseForest(SurfaceBuilderConfig::deserialize));
 	

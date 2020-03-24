@@ -27,7 +27,7 @@ public class FeaturePoiseCluster extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.down()).getBlock() == EEBlocks.POISE_GRASS_BLOCK.get()) {
+		if(world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.down()).getBlock() == EEBlocks.POISMOSS.get()) {
 			this.createGlob(rand.nextInt(12), world, pos, rand);
 			return true;
 		}

@@ -28,8 +28,8 @@ public class ModelCorrockCrownWall {
     }
 
     public void renderAll(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn) { 
-        this.shape1_1.render(matrixStackIn, bufferIn, 15728640, packedOverlayIn);
-        this.shape1.render(matrixStackIn, bufferIn, 15728640, packedOverlayIn);
+        this.shape1_1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
+        this.shape1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
     }
 
     public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
