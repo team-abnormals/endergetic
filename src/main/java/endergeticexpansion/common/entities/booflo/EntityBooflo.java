@@ -396,7 +396,7 @@ public class EntityBooflo extends EndimatedEntity {
 		this.wasOnGround = this.onGround;
 		this.setPlayerWasBoosting(this.isPlayerBoosting());
 		
-		if(this.isEndimationPlaying(EAT)) {
+		if(this.isEndimationPlaying(EAT) && !this.hasCaughtFruit()) {
 			this.rotationYaw = this.rotationYawHead = this.renderYawOffset = this.getLockedYaw();
 		}
 	}

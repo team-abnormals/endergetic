@@ -29,7 +29,7 @@ public class RenderLayerBoofloFruit extends LayerRenderer<EntityBooflo, EntityMo
 		if(booflo.hasCaughtFruit() && !booflo.isBoofed() && booflo.isEndimationPlaying(EntityBooflo.EAT) && booflo.getAnimationTick() > 20) {
 			matrixStack.push();
 			
-			Vec3d fruitPos = (new Vec3d(-1.25D, 0.0D, 0.0D)).rotateYaw(-booflo.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+			Vec3d fruitPos = (new Vec3d(-1.25D, 0.0D, 0.0D)).rotateYaw(-netHeadYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
 			matrixStack.translate(fruitPos.getX(), fruitPos.getY() + 1.15F + this.getFruitPosOffset(booflo), fruitPos.getZ());
 			
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
