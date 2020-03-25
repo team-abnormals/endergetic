@@ -89,10 +89,11 @@ public class NetworkUtil {
 	public static void inflateBooflo(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
 		if(entity instanceof EntityBooflo) {
+			EntityBooflo booflo = (EntityBooflo) entity;
 			EndergeticExpansion.CHANNEL.sendToServer(new MessageSInflate(entityId));
-			((EntityBooflo) entity).setBoofed(true);
-			((EntityBooflo) entity).setDelayDecrementing(false);
-			((EntityBooflo) entity).setDelayExpanding(true);
+			booflo.setBoofed(true);
+			booflo.setDelayDecrementing(false);
+			booflo.setDelayExpanding(true);
 		}
 	}
 	

@@ -34,10 +34,11 @@ public class MessageSInflate {
 			context.enqueueWork(() -> {
 				Entity entity = context.getSender().world.getEntityByID(message.entityId);
 				if(entity instanceof EntityBooflo) {
-					((EntityBooflo) entity).setBoofed(true);
-					((EntityBooflo) entity).setDelayExpanding(true);
-					((EntityBooflo) entity).setDelayDecrementing(false);
-					NetworkUtil.setPlayingAnimationMessage((EntityBooflo) entity, EntityBooflo.INFLATE);
+					EntityBooflo booflo = (EntityBooflo) entity;
+					booflo.setBoofed(true);
+					booflo.setDelayExpanding(true);
+					booflo.setDelayDecrementing(false);
+					NetworkUtil.setPlayingAnimationMessage(booflo, EntityBooflo.INFLATE);
 				}
 			});
 			context.setPacketHandled(true);

@@ -120,18 +120,6 @@ public class KeybindHandler {
         		}
         	}
     	}
-		if(BOOFLO_INFLATE.isPressed() && Minecraft.getInstance().currentScreen == null) {
-			PlayerEntity player = Minecraft.getInstance().player;
-			Entity ridingEntity = player.getRidingEntity();
-			if(KeybindHandler.checkRidden(player) && !((EntityBooflo) ridingEntity).isOnGround()) {
-				EntityBooflo booflo = (EntityBooflo) ridingEntity;
-				if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
-					if(booflo.getRideControlDelay() <= 0) {
-						NetworkUtil.inflateBooflo(booflo.getEntityId());
-					}
-				}
-			}
-		}
 		if(BOOFLO_INFLATE.isKeyDown() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
@@ -144,6 +132,10 @@ public class KeybindHandler {
 						} else {
 							NetworkUtil.incrementBoofloBoostTimer(booflo.getEntityId());
 						}
+					}
+				} else if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
+					if(booflo.getRideControlDelay() <= 0) {
+						NetworkUtil.inflateBooflo(booflo.getEntityId());
 					}
 				}
 			}
