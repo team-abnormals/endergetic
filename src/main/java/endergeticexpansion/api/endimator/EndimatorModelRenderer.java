@@ -32,7 +32,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 	public boolean scaleChildren = true;
 	public float[] scales = {1.0F, 1.0F, 1.0F};
 	private final ObjectList<ModelBox> cubeList = new ObjectArrayList<>();
-	private final ObjectList<ModelRenderer> childModels = new ObjectArrayList<>();
+	private final ObjectList<EndimatorModelRenderer> childModels = new ObjectArrayList<>();
 
 	/**
 	 * @param entityModel - Entity model this ModelRenderer belongs to
@@ -60,7 +60,7 @@ public class EndimatorModelRenderer extends ModelRenderer {
 		super(textureWidthIn, textureHeightIn, textureOffsetXIn, textureOffsetYIn);
 	}
 	
-	public void addChild(ModelRenderer renderer) {
+	public void addChild(EndimatorModelRenderer renderer) {
 		this.childModels.add(renderer);
 	}
 	
@@ -189,18 +189,23 @@ public class EndimatorModelRenderer extends ModelRenderer {
 				matrixStackIn.push();
 				this.translateRotate(matrixStackIn);
 				
-				matrixStackIn.push();
-				matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
-				this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-				matrixStackIn.pop();
-				
-				for(ModelRenderer modelrenderer : this.childModels) {
-					if(this.scaleChildren) {
-						matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
+				if(this.scaleChildren) {
+					matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
+					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					
+					for(EndimatorModelRenderer modelrenderer : this.childModels) {
+						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 					}
-					((EndimatorModelRenderer) modelrenderer).render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+				} else {
+					matrixStackIn.push();
+					matrixStackIn.scale(this.scales[0], this.scales[1], this.scales[2]);
+					this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					matrixStackIn.pop();
+					
+					for(EndimatorModelRenderer modelrenderer : this.childModels) {
+						modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+					}
 				}
-
 				matrixStackIn.pop();
 			}
 		}
