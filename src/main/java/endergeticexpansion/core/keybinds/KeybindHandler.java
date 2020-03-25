@@ -25,11 +25,8 @@ import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -178,11 +175,5 @@ public class KeybindHandler {
 	
 	public static boolean checkRidden(PlayerEntity player) {
 		return player != null && player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
-	}
-    
-	public static boolean isPlayerOnGroundReal(PlayerEntity player) {
-		World world = player.world;
-		BlockPos pos = player.getPosition().down();
-		return world.getBlockState(pos).getCollisionShape(world, pos).project(Direction.UP).isEmpty();
 	}
 }

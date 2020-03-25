@@ -26,7 +26,7 @@ public class ItemBoofloVest extends ArmorItem {
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if(this.hasTag(stack)) {
 			if(stack.getTag().getBoolean("boofed")) {
 				stack.getTag().putInt("ticksBoofed", stack.getTag().getInt("ticksBoofed") + 1);
@@ -37,14 +37,15 @@ public class ItemBoofloVest extends ArmorItem {
 				stack.getTag().putBoolean("boofed", false);
 			}
 		}
-	}
-	
-	@Override
-	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
+		
 		if(stack.getTag().getInt("ticksBoofed") == 10) {
 			player.getItemStackFromSlot(EquipmentSlotType.CHEST).damageItem(2, player, (onBroken) -> {
 				onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
 			});
+		}
+		
+		if(player.onGround) {
+			stack.getTag().putInt("timesBoofed", 0);
 		}
 	}
 	

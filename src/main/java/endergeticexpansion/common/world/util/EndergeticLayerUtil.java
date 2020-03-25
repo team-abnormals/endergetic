@@ -22,7 +22,7 @@ public class EndergeticLayerUtil {
 
 	public static <T extends IArea, C extends IExtendedNoiseRandom<T>> IAreaFactory<T> createBiomeFactory(IAreaFactory<T> landFactory, LongFunction<C> contextFactory) {
 		IAreaFactory<T> biomeFactory = EndergeticGenLayerBiome.INSTANCE.apply(contextFactory.apply(1L));
-		biomeFactory = LayerUtil.repeat(200L, ZoomLayer.NORMAL, biomeFactory, 2, contextFactory);
+		biomeFactory = LayerUtil.repeat(100L, ZoomLayer.NORMAL, biomeFactory, 2, contextFactory);
 		return biomeFactory;
 	}
 	
@@ -36,7 +36,7 @@ public class EndergeticLayerUtil {
 		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1002L), biomesFactory);
 		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1003L), biomesFactory);
 		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1004L), biomesFactory);
-	        
+		
 		biomesFactory = SmoothLayer.INSTANCE.apply(contextFactory.apply(100L), biomesFactory);
 		
 		IAreaFactory<T> voroniZoomBiomesFactory = VoroniZoomLayer.INSTANCE.apply(contextFactory.apply(10L), biomesFactory);
