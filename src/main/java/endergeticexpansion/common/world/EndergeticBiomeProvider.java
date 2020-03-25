@@ -11,7 +11,7 @@ import net.minecraft.world.biome.provider.EndBiomeProviderSettings;
 import net.minecraft.world.gen.layer.Layer;
 
 public class EndergeticBiomeProvider extends EndBiomeProvider {
-	private final Layer biomeFactoryLayer;
+	private final Layer noiseBiomeLayer;
 	private final SharedSeedRandom random;
 	
 	public EndergeticBiomeProvider(EndBiomeProviderSettings settings) {
@@ -19,7 +19,7 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		this.random = new SharedSeedRandom(settings.getSeed());
 		this.random.skip(17292);
 		Layer[] alayer = EndergeticLayerUtil.createGenLayers(settings.getSeed(), WorldType.DEFAULT);
-		this.biomeFactoryLayer = alayer[1];
+		this.noiseBiomeLayer = alayer[1];
 	}
 	
 	@Override
@@ -31,10 +31,18 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		} else {
 			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
 			if (f >= 0.0F) {
-				return this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? super.getNoiseBiome(x, y, z) : this.biomeFactoryLayer.func_215738_a(x, y);
+				return this.isAreaChorus(x, z) ? super.getNoiseBiome(x, y, z) : this.getBiomeForArea(x, z);
 			} else {
-				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.biomeFactoryLayer.func_215738_a(x, y) == EEBiomes.CHORUS_PLAINS.get() ? super.getNoiseBiome(x, y, z) : this.biomeFactoryLayer.func_215738_a(x, y);
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.isAreaChorus(x, z) ? super.getNoiseBiome(x, y, z) : this.getBiomeForArea(x, z);
 			}
 		}
+	}
+	
+	private boolean isAreaChorus(int x, int z) {
+		return this.getBiomeForArea(x, z) == EEBiomes.CHORUS_PLAINS.get();
+	}
+	
+	private Biome getBiomeForArea(int x, int z) {
+		return this.noiseBiomeLayer.func_215738_a(x, z);
 	}
 }
