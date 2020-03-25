@@ -1,4 +1,4 @@
-package endergeticexpansion.api.entity.util;
+package endergeticexpansion.api.entity.pathfinding;
 
 import net.minecraft.entity.MobEntity;
 import net.minecraft.network.DebugPacketSender;

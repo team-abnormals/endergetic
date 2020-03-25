@@ -5,12 +5,11 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import endergeticexpansion.api.entity.util.EntityMotionHelper;
 import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomBalloon;
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.items.ItemBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -25,7 +24,6 @@ import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -58,48 +56,32 @@ public class KeybindHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onKeyPressed(KeyInputEvent event) {
 		if(BOOF_VEST.isPressed()) {
-    		PlayerEntity player = Minecraft.getInstance().player;
-    		Random rand = player.getRNG();
-    		ItemStack stack = player.inventory.armorItemInSlot(2);
+			PlayerEntity player = Minecraft.getInstance().player;
+			Random rand = player.getRNG();
+			ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-    		if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
-        		ItemBoofloVest vest = (ItemBoofloVest) stack.getItem();
-    			if(vest.canBoof(stack, player)) {
-    				CompoundNBT tag = stack.getTag();
-    				
-        			tag.putBoolean("boofed", true);
-        			tag.putInt("timesBoofed", tag.getInt("timesBoofed") + 1);
+			if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
+				ItemBoofloVest vest = (ItemBoofloVest) stack.getItem();
+				if(vest.canBoof(stack, player)) {
+					CompoundNBT tag = stack.getTag();
+    			
+					tag.putBoolean("boofed", true);
+					tag.putInt("timesBoofed", tag.getInt("timesBoofed") + 1);
+					vest.setDelayForBoofedAmount(stack, player);
         			
-        			vest.setDelayForBoofedAmount(stack, player);
+					NetworkUtil.updateSItemNBT(stack);
+					EntityMotionHelper.knockbackEntity(player, 4.0F, 0.75F, true, true);
         			
-        			NetworkUtil.updateSItemNBT(stack);
-        			
-        			double[] vars = {4D, player.rotationYaw, Math.PI, 180D};
-        			player.setVelocity(-MathHelper.sin((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D, 0.75D, MathHelper.cos((float) (vars[1] * vars[2] / vars[3])) * vars[0] * 0.1D);
-        			
-        			AxisAlignedBB bb = player.getBoundingBox().grow(2.0D);
-        			List<Entity> entities = player.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
-        			for(int i = 0; i < entities.size(); i++) {
-        				Entity entity = entities.get(i);
-        				
-        				if(entity.getEntityId() != player.getEntityId() &&
+					for(Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(2.0D))) {
+        				if(entity != player &&
         					!(entity instanceof EntityBoofBlock) &&
         					!(entity instanceof ShulkerEntity) &&
         					!(entity instanceof PaintingEntity) &&
         					!(entity instanceof EntityPoiseCluster) &&
         					!(entity instanceof ItemFrameEntity)
         				) {
-        					if(entity instanceof EntityBolloomFruit) {
-        						if(((EntityBolloomFruit)entity).isUntied()) {
-        							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
-        						}
-        					} else if(entity instanceof EntityBolloomBalloon) {
-        						if(((EntityBolloomBalloon)entity).isUntied()) {
-        							entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
-        						}
-        					} else {
-        						entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F, 0.75D, -MathHelper.cos((float) (entity.rotationYaw * vars[2] / vars[3])) * vars[0] * 0.1F);
-        					}
+        					boolean reverse = player.getRidingEntity() == entity;
+        					EntityMotionHelper.knockbackEntity(entity, 4.0F, 0.75F, reverse, false);
         				}
         			}
         			
@@ -116,7 +98,7 @@ public class KeybindHandler {
         			
         			player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (tag.getInt("timesBoofed") * 0.15F), 0.25F, 1.0F));
         			
-        			NetworkUtil.SBoofEntity(4.0D, 0.75D, 4.0D, 2);
+        			NetworkUtil.SBoofEntity(4.0F, 0.75F, 2);
         		}
         	}
     	}
@@ -165,7 +147,7 @@ public class KeybindHandler {
 		}
 	}
 	
-	public static boolean checkRidden(PlayerEntity player) {
+	private static boolean checkRidden(PlayerEntity player) {
 		return player != null && player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
 	}
 }

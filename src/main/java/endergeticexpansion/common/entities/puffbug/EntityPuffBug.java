@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 import endergeticexpansion.api.endimator.ControlledEndimation;
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.entity.IEndimatedEntity;
-import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
+import endergeticexpansion.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.RayTraceHelper;
 import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.api.util.MathUtils;

@@ -77,8 +77,8 @@ public class NetworkUtil {
 	 * Used for pushing entities back through the client for the server
 	 */
 	@OnlyIn(Dist.CLIENT)
-	public static void SBoofEntity(double velX, double velY, double velZ, int radius) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(velX, velY, velZ, radius));
+	public static void SBoofEntity(float xzForce, float upperForce, int radius) {
+		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(xzForce, upperForce, radius));
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package endergeticexpansion.api.entity.util;
+package endergeticexpansion.api.entity.pathfinding;
 
 import javax.annotation.Nullable;
 

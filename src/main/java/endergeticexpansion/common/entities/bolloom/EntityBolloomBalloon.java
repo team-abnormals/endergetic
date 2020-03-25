@@ -393,6 +393,12 @@ public class EntityBolloomBalloon extends Entity {
 	}
 	
 	@Override
+	public void addVelocity(double x, double y, double z) {
+		if(!this.isUntied()) return;
+		super.addVelocity(x, y, z);
+	}
+	
+	@Override
 	protected Vec3d handlePistonMovement(Vec3d pos) {
 		return Vec3d.ZERO;
 	}

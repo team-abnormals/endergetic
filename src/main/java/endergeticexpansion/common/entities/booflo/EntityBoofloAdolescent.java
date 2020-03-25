@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import endergeticexpansion.api.endimator.Endimation;
 import endergeticexpansion.api.endimator.entity.EndimatedEntity;
-import endergeticexpansion.api.entity.util.EndergeticFlyingPathNavigator;
+import endergeticexpansion.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;

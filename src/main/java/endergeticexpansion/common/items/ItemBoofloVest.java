@@ -44,7 +44,7 @@ public class ItemBoofloVest extends ArmorItem {
 			});
 		}
 		
-		if(player.onGround) {
+		if(player.onGround || (player.isPassenger() && player.getRidingEntity().onGround)) {
 			stack.getTag().putInt("timesBoofed", 0);
 		}
 	}

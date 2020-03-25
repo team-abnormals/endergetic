@@ -189,6 +189,12 @@ public class EntityBolloomFruit extends Entity {
 		}
 	}
 	
+	@Override
+	public void addVelocity(double x, double y, double z) {
+		if(!this.isUntied()) return;
+		super.addVelocity(x, y, z);
+	}
+	
 	public float getOriginalY() {
 		return this.getDataManager().get(ORIGINAL_Y);
 	}
