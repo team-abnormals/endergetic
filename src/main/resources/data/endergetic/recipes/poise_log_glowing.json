@@ -11,7 +11,7 @@
     {
         "L":
         {
-            "item": "endergetic:poise_log"
+            "item": "endergetic:poise_stem"
         },
         "P":
         {
@@ -20,7 +20,7 @@
     },
     "result":
     {
-        "item": "endergetic:poise_log_glowing",
+        "item": "endergetic:poise_stem_glowing",
         "count": 8
     }
 }

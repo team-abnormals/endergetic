@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "endergetic:poise_log"
+          "name": "endergetic:poise_stem_stripped"
         }
       ],
       "conditions": [
