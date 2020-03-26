@@ -23,6 +23,7 @@ public class EEBlockRegistrars {
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_END.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_NETHER.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_OVERWORLD.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.ENDER_FIRE, RenderType.getCutout());
 		
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS_EUMUS.get(), RenderType.getCutoutMipped());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
