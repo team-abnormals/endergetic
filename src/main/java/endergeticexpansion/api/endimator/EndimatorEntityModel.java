@@ -21,7 +21,7 @@ public abstract class EndimatorEntityModel<E extends Entity & IEndimatedEntity> 
 	protected Endimator endimator = new Endimator();
 	protected E entity;
 	
-	public void animateModel(E endimatedEntity, float f, float f1, float f2, float f3, float f4, float f5) {}
+	public void animateModel(E endimatedEntity) {}
 	
 	@Override
 	public void setRotationAngles(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

@@ -127,7 +127,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-    	this.animateModel(this.entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+    	this.animateModel(this.entity);
     	
     	if(this.entity.isBoofed()) {
     		this.HeadInflated.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -151,8 +151,7 @@ public class ModelBooflo<E extends EntityBooflo> extends EndimatorEntityModel<E>
     }
     
     @Override
-    public void animateModel(E booflo, float f, float f1, float f2, float f3, float f4, float f5) {
-    	super.animateModel(booflo, f, f1, f2, f3, f4, f5);
+    public void animateModel(E booflo) {
     	this.endimator.updateAnimations(booflo);
     	
     	if(booflo.isEndimationPlaying(EntityBooflo.CROAK)) {

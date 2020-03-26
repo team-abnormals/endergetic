@@ -8,8 +8,12 @@ import endergeticexpansion.api.endimator.EndimatorEntityModel;
 import endergeticexpansion.api.endimator.EndimatorModelRenderer;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.LightType;
 
 /**
  * ModelPuffBugInflated - Endergized
@@ -137,7 +141,11 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     		return;
     	}
     	
-    	this.animateModel(this.entity, 0, 0, 0, 0, 0, 0);
+    	if(!this.entity.isInflated() && this.entity.stuckInBlock) {
+    		packedLightIn = this.getPackedLightForStuck(this.entity);
+    	}
+    	
+    	this.animateModel(this.entity);
     	if(this.entity.isInflated()) {
     		this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     	} else {
@@ -147,6 +155,25 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     			this.BodyDeflated.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     		}
     	}
+    }
+    
+    private int getPackedLightForStuck(EntityPuffBug puffbug) {
+    	float partialTicks = ClientInfo.getPartialTicks();
+    	return LightTexture.packLight(puffbug.isBurning() ? 15 : puffbug.world.getLightFor(LightType.BLOCK, this.getStuckLightPos(puffbug, partialTicks)), this.entity.world.getLightFor(LightType.SKY, this.getStuckLightPos(puffbug, partialTicks)));
+    }
+    
+    private BlockPos getStuckLightPos(EntityPuffBug puffbug, float partialTicks) {
+    	BlockPos blockpos = new BlockPos(puffbug.getPosX(), puffbug.getPosY() + (double)puffbug.getEyeHeight(), puffbug.getPosX());
+    	boolean rotationFlag = true;
+		float[] rotations = puffbug.getRotationController().getRotations(partialTicks);
+		Direction horizontalOffset = Direction.fromAngle(rotations[0]).getOpposite();
+		Direction verticalOffset = (rotations[1] <= 180.0F && rotations[1] > 100.0F) ? Direction.UP : Direction.DOWN;
+		
+		if(rotations[1] >= 80.0F && rotations[1] <= 100.0F) {
+			rotationFlag = false;
+		}
+		
+		return rotationFlag ? blockpos.offset(horizontalOffset).offset(verticalOffset) : blockpos.offset(horizontalOffset);
     }
     
     @Override
@@ -214,7 +241,7 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     }
     
     @Override
-    public void animateModel(E puffbug, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animateModel(E puffbug) {
     	this.endimator.updateAnimations(puffbug);
     	
     	if(puffbug.isEndimationPlaying(EntityPuffBug.CLAIM_HIVE_ANIMATION)) {
