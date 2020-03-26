@@ -7,8 +7,8 @@ function initializeCoreMod() {
 			'target': {
 				'type': 'METHOD',
 				'class': 'net.minecraft.tileentity.EndGatewayTileEntity',
-				'methodName': 'func_195492_c',
-				'methodDesc': '(Lnet/minecraft/util/math/BlockPos;)V'
+				'methodName': 'func_227016_a_',
+				'methodDesc': '(Lnet/minecraft/world/server/ServerWorld;Lnet/minecraft/util/math/BlockPos;)V'
 			},
 			'transformer': function(method) {
 				print('[Endergetic Expansion]: Patching EndGatewayTileEntity#createExitPortal');
