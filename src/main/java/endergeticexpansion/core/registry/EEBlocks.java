@@ -57,6 +57,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EEBlocks {
 	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, EndergeticExpansion.MOD_ID);
@@ -96,7 +97,7 @@ public class EEBlocks {
 	public static final RegistryObject<BlockFenceGateBase> POISE_FENCE_GATE       = RegistryUtils.createBlock("poise_fence_gate", () -> new BlockFenceGateBase(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
 	public static final RegistryObject<BlockPressurePlateBase> POISE_PRESSURE_PLATE = RegistryUtils.createBlock("poise_pressure_plate", () -> new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
 	public static final RegistryObject<BlockButtonBase> POISE_BUTTON              = RegistryUtils.createBlock("poise_button", () -> new BlockButtonBase(EEProperties.POISE_WOOD_OTHER(false, true)), ItemGroup.REDSTONE);
-	public static final RegistryObject<BlockTrapdoorBase> POISE_TRAPDOOR          = RegistryUtils.createBlock("poise_trapdoor", () -> new BlockTrapdoorBase(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<BlockTrapdoorBase> POISE_TRAPDOOR          = RegistryUtils.createBlock("poise_trapdoor", () -> new BlockTrapdoorBase(EEProperties.POISE_TRAPDOOR), ItemGroup.REDSTONE);
 	public static final RegistryObject<BlockBolloomBud> BOLLOOM_BUD               = RegistryUtils.createBlockWithTESIR("bolloom_bud", () -> new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)), () -> new EETileEntityItemRenderer<>(TileEntityBolloomBud::new), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockPuffBugHive> PUFFBUG_HIVE             = RegistryUtils.createBlockWithTESIR("puffbug_hive", () -> new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)), () -> new EETileEntityItemRenderer<>(TileEntityPuffBugHive::new), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockHiveHanger> HIVE_HANGER               = RegistryUtils.createBlockNoItem("hive_hanger", () -> new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)));
@@ -119,7 +120,7 @@ public class EEBlocks {
 	public static final RegistryObject<SlabBlock> EUMUS_BRICK_SLAB               = RegistryUtils.createBlock("eumus_brick_slab", () -> new SlabBlock(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<BlockStairsBase> EUMUS_BRICK_STAIRS       = RegistryUtils.createBlock("eumus_brick_stairs", () -> new BlockStairsBase(() -> EUMUS_BRICKS.get().getDefaultState(), EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<WallBlock> EUMUS_BRICK_WALL               = RegistryUtils.createBlock("eumus_brick_wall", () -> new WallBlock(EEProperties.EUMUS_BRICKS), ItemGroup.DECORATIONS);
-	public static final RegistryObject<FlowerPotBlock> POISE_BUSH_POT            = RegistryUtils.createBlockNoItem("potted_poise_bush", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT.delegate.get(), () -> POISE_GRASS.get(), Properties.from(Blocks.POTTED_PINK_TULIP)));
+	public static final RegistryObject<FlowerPotBlock> POISE_BUSH_POT            = RegistryUtils.createBlockNoItem("potted_poise_bush", () -> new FlowerPotBlock(POISE_GRASS.get(), Properties.from(Blocks.POTTED_PINK_TULIP)));
 	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN                  = RegistryUtils.createBlock("mystical_obsidian", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<WallBlock> MYSTICAL_OBSIDIAN_WALL         = RegistryUtils.createBlock("mystical_obsidian_wall", () -> new WallBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<BlockRotatable> MYSTICAL_OBSIDIAN_RUNE    = RegistryUtils.createBlock("mystical_obsidian_rune", () -> new BlockRotatable(EEProperties.MYSTICAL_OBSIDIAN), null);
