@@ -36,7 +36,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 	
 	@Override
 	public void resetTask() {
-		if(this.ticksPassed >= this.ticksToRotate) {
+		if(this.puffbug.getLaunchDirection() != null && this.ticksPassed >= this.ticksToRotate) {
 			Vec3d launch = this.puffbug.getLaunchDirection();
 			
 			float yaw = (float) launch.getY() - this.puffbug.rotationYaw;
