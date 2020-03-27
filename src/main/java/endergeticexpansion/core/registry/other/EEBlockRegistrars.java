@@ -28,6 +28,7 @@ public class EEBlockRegistrars {
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_BUSH_POT.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_DOOR.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_TRAPDOOR.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_LADDER.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS_EUMUS.get(), RenderType.getCutoutMipped());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS.get(), RenderType.getCutout());
