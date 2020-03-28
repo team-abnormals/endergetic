@@ -34,7 +34,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -439,7 +438,7 @@ public class EntityPoiseCluster extends LivingEntity {
 			this.y = (float) cluster.getPosY();
 			this.z = (float) cluster.getPosZ();
 			
-			this.pitch = cluster.getRNG().nextFloat() * 0.25F + 0.8F;
+			this.pitch = cluster.getRNG().nextFloat() * 0.3F + 0.8F;
 		}
 		
 		@Override
@@ -459,10 +458,6 @@ public class EntityPoiseCluster extends LivingEntity {
 				}
 			}
 			
-			double distance = Math.sqrt(Minecraft.getInstance().player.getDistanceSq(this.cluster));
-			float volume = MathHelper.clamp((float) (1.5F / distance), 0.0F, 0.65F);
-			
-			this.volume = volume < 0.15F ? 0.0F : volume;
 			this.volume = Math.max(0.0F, this.volume - ((float) this.ticksRemoved / 10.0F));
 		}
 	}

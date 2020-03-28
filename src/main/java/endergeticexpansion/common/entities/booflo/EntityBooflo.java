@@ -423,7 +423,7 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		
 		if(this.isEndimationPlaying(CROAK) && this.getAnimationTick() == 5 && !this.isWorldRemote()) {
-			this.playSound(this.getAmbientSound(), this.getSoundVolume(), this.getSoundPitch());
+			this.playSound(this.getAmbientSound(), 1.25F, this.getSoundPitch());
 		}
 		
 		if(this.hasAggressiveAttackTarget()) {

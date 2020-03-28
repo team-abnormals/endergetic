@@ -1210,10 +1210,6 @@ public class EntityPuffBug extends AnimalEntity implements IEndimatedEntity {
 		return from ? EESounds.PUFFBUG_TELEPORT_FROM.get() : EESounds.PUFFBUG_TELEPORT_TO.get();
 	}
 	
-	public SoundEvent getPollinateSound() {
-		return EESounds.PUFFBUG_POLLINATE.get();
-	}
-	
 	public SoundEvent getSleepSound() {
 		return EESounds.PUFFBUG_SLEEP.get();
 	}

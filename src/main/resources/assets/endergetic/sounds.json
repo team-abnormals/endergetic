@@ -1,171 +1,162 @@
 {
-	"entity.booflo.croak":
-    {
-        "category": "entity",
+	"entity.booflo.croak": {
+		"category": "neutral",
         "subtitle": "Booflo croaks",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_croak_0", "stream": false },
-        	{ "name": "endergetic:entity/booflo/booflo_croak_1", "stream": false },
-        	{ "name": "endergetic:entity/booflo/booflo_croak_2", "stream": false },
-        	{ "name": "endergetic:entity/booflo/booflo_croak_3", "stream": false }
+        	"endergetic:entity/booflo/booflo_croak_0",
+        	"endergetic:entity/booflo/booflo_croak_1",
+        	"endergetic:entity/booflo/booflo_croak_2",
+        	"endergetic:entity/booflo/booflo_croak_3"
         ]
     },
     "entity.booflo.growl":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo growls",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_growl", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_growl" }
         ]
     },
     "entity.booflo.hop":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo hops",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_hop", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_hop" }
         ]
     },
     "entity.booflo.hop_land":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo lands from hop",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_land", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_land" }
         ]
     },
     "entity.booflo.slam":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo slams",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_slam", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_slam" }
         ]
     },
     "entity.booflo.inflate":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo inflates",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_inflate", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_inflate" }
         ]
     },
     "entity.booflo.deflate":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo deflates",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_deflate", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_deflate" }
         ]
     },
     "entity.booflo.hurt":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo hurts",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_0", "stream": false },
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_1", "stream": false },
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_2", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_0" },
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_1" },
+        	{ "name": "endergetic:entity/booflo/booflo_hurt_2" }
         ]
     },
     "entity.booflo.death":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Booflo dies",
         "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_death", "stream": false }
+        	{ "name": "endergetic:entity/booflo/booflo_death" }
         ]
     },
     "entity.puffbug.puff":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug puffs",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_puff", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_puff" }
         ]
     },
     "entity.puffbug.teleport_to":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug teleports to",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_to", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_to" }
         ]
     },
     "entity.puffbug.teleport_from":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug teleports from",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_from", "stream": false }
-        ]
-    },
-    "entity.puffbug.pollinate":
-    {
-        "category": "entity",
-        "subtitle": "Puffbug pollinates",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_pollinates", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_from" }
         ]
     },
     "entity.puffbug.sleep":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug snores",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_0", "stream": false },
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_1", "stream": false },
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_2", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_0" },
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_1" },
+        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_2" }
         ]
     },
     "entity.puffbug.create_item":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug creates item",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_creation", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_creation" }
         ]
     },
     "entity.puffbug.launch":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug launches",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_launch", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_launch" }
         ]
     },
     "entity.puffbug.land":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug lands",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_land", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_land" }
         ]
     },
     "entity.puffbug.hurt":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug hurts",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_0", "stream": false },
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_1", "stream": false },
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_2", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_0" },
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_1" },
+        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_2" }
         ]
     },
     "entity.puffbug.death":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Puffbug dies",
         "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_death", "stream": false }
+        	{ "name": "endergetic:entity/puffbug/puffbug_death" }
         ]
     },
     "entity.boof_block.inflate":
     {
-        "category": "entity",
+        "category": "neutral",
         "subtitle": "Boof Block inflates",
         "sounds": [
-        	{ "name": "endergetic:entity/block/boof_block_inflate", "stream": false }
+        	{ "name": "endergetic:entity/block/boof_block_inflate" }
         ]
     },
 	"block.cluster.place":
@@ -173,8 +164,8 @@
         "category": "block",
         "subtitle": "Cluster place",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_place_0", "stream": false},
-        	{ "name": "endergetic:block/cluster_place_1", "stream": false}
+        	{ "name": "endergetic:block/cluster_place_0" },
+        	{ "name": "endergetic:block/cluster_place_1" }
         ]
     },
     "block.cluster.break":
@@ -182,7 +173,7 @@
         "category": "block",
         "subtitle": "Cluster break",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_break_0", "stream": false}
+        	{ "name": "endergetic:block/cluster_break_0" }
         ]
     },
     "block.cluster.step":
@@ -190,9 +181,9 @@
         "category": "block",
         "subtitle": "Cluster step",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_step_0", "stream": false},
-        	{ "name": "endergetic:block/cluster_step_1", "stream": false},
-        	{ "name": "endergetic:block/cluster_step_2", "stream": false}
+        	{ "name": "endergetic:block/cluster_step_0" },
+        	{ "name": "endergetic:block/cluster_step_1" },
+        	{ "name": "endergetic:block/cluster_step_2" }
         ]
     },
     "block.cluster.hit":
@@ -200,7 +191,7 @@
         "category": "block",
         "subtitle": "Cluster hit",
         "sounds": [
-        	{ "name": "endergetic:block/cluster_hit", "stream": false}
+        	{ "name": "endergetic:block/cluster_hit" }
         ]
     },
     "block.poise_bush.ambient":
@@ -208,9 +199,9 @@
         "category": "block",
         "subtitle": "Poise bush bubbles",
         "sounds": [
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_0", "stream": false},
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_1", "stream": false},
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_2", "stream": false}
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_0" },
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_1" },
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_2" }
         ]
     },
     "block.poise_bush.ambient_long":
@@ -218,8 +209,8 @@
         "category": "block",
         "subtitle": "Poise bush bubbles",
         "sounds": [
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_0", "stream": false},
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_1", "stream": false}
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_0" },
+        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_1" }
         ]
     },
     "block.poise_cluster.ambient":
@@ -231,47 +222,47 @@
     },
     "item.booflo_vest.inflate":
     {
-        "category": "item",
+        "category": "player",
         "subtitle": "Booflo vest inflates",
         "sounds": [
-        	{ "name": "endergetic:item/booflo_vest_inflate", "stream": false}
+        	{ "name": "endergetic:item/booflo_vest_inflate" }
         ]
     },
     "ambient.poise_forest.loop":
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience", "stream": false }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience", "stream": true }
         ]
     },
     "ambient.poise_forest.additions":
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_0", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_2", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_0", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1", "stream": false }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_1" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_0" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_1" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_2" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_0" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1" }
         ]
     },
     "ambient.poise_forest.mood":
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_0", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_1", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_2", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_3", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_puffs", "stream": false },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_shine", "stream": false }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_0" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_1" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_2" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_3" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_puffs" },
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_shine" }
         ]
     }
 }

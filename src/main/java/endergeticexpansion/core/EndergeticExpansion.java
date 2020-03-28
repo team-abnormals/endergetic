@@ -64,13 +64,13 @@ public class EndergeticExpansion {
     	
 		EEItems.ITEMS.register(modEventBus);
 		EEBlocks.BLOCKS.register(modEventBus);
+		EESounds.SOUNDS.register(modEventBus);
 		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
 		EEEntities.ENTITY_TYPES.register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
-		EESounds.SOUNDS.register(modEventBus);
 		
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
