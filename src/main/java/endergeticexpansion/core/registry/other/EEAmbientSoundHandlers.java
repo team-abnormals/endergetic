@@ -166,7 +166,6 @@ public class EEAmbientSoundHandlers {
 				super(sound, SoundCategory.AMBIENT);
 				this.player = player;
 				this.repeat = false;
-				this.repeatDelay = 0;
 				this.volume = 0.5F;
 				this.pitch = (new Random()).nextFloat() * 0.2F + 0.9F;
 				this.priority = true;

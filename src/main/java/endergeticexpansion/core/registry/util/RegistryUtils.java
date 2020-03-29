@@ -79,9 +79,9 @@ public class RegistryUtils {
 		return block;
 	}
 	
-	public static <B extends Block> RegistryObject<B> createBlockWithTESIR(String name, Supplier<? extends B> supplier, Callable<ItemStackTileEntityRenderer> ister, @Nullable ItemGroup group) {
+	public static <B extends Block> RegistryObject<B> createBlockWithISTER(String name, Supplier<? extends B> supplier, final Supplier<Callable<ItemStackTileEntityRenderer>> ister, @Nullable ItemGroup group) {
 		RegistryObject<B> block = EEBlocks.BLOCKS.register(name, supplier);
-		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(() -> ister)));
+		EEItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().group(group).setISTER(ister)));
 		return block;
 	}
 	

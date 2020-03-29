@@ -263,7 +263,9 @@ public class EntityBoofloBaby extends EndimatedEntity {
 				this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
 				this.rotationPitch = 180;
 				this.setMotherNoClipTicks(50);
-			} else if(this.ticksExisted > 260) {
+			}
+		} else if(this.isNoEndimationPlaying() && this.getRidingEntity() instanceof EntityBooflo) {
+			if(this.ticksExisted > 260) {
 				this.stopRiding();
 				this.setBeingBorn(false);
 			}

@@ -1,5 +1,7 @@
 package endergeticexpansion.core.registry;
 
+import java.util.concurrent.Callable;
+
 import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.EEProperties;
 import endergeticexpansion.common.blocks.BlockAcidianLantern;
@@ -49,7 +51,11 @@ import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -98,8 +104,8 @@ public class EEBlocks {
 	public static final RegistryObject<BlockPressurePlateBase> POISE_PRESSURE_PLATE = RegistryUtils.createBlock("poise_pressure_plate", () -> new BlockPressurePlateBase(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
 	public static final RegistryObject<BlockButtonBase> POISE_BUTTON              = RegistryUtils.createBlock("poise_button", () -> new BlockButtonBase(EEProperties.POISE_WOOD_OTHER(false, true)), ItemGroup.REDSTONE);
 	public static final RegistryObject<BlockTrapdoorBase> POISE_TRAPDOOR          = RegistryUtils.createBlock("poise_trapdoor", () -> new BlockTrapdoorBase(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.REDSTONE);
-	public static final RegistryObject<BlockBolloomBud> BOLLOOM_BUD               = RegistryUtils.createBlockWithTESIR("bolloom_bud", () -> new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)), () -> new EETileEntityItemRenderer<>(TileEntityBolloomBud::new), ItemGroup.DECORATIONS);
-	public static final RegistryObject<BlockPuffBugHive> PUFFBUG_HIVE             = RegistryUtils.createBlockWithTESIR("puffbug_hive", () -> new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)), () -> new EETileEntityItemRenderer<>(TileEntityPuffBugHive::new), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockBolloomBud> BOLLOOM_BUD               = RegistryUtils.createBlockWithISTER("bolloom_bud", () -> new BlockBolloomBud(EEProperties.POISE_WOOD_OTHER(true, false)), () -> bolloomBudISTER(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockPuffBugHive> PUFFBUG_HIVE             = RegistryUtils.createBlockWithISTER("puffbug_hive", () -> new BlockPuffBugHive(EEProperties.PUFFBUG_HIVE(true)), () -> puffbugHiveISTER(), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockHiveHanger> HIVE_HANGER               = RegistryUtils.createBlockNoItem("hive_hanger", () -> new BlockHiveHanger(EEProperties.PUFFBUG_HIVE(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE                    = RegistryUtils.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
 	public static final RegistryObject<BlockBoof> BOOF_BLOCK                      = RegistryUtils.createBlock("boof_block", () -> new BlockBoof(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
@@ -138,6 +144,16 @@ public class EEBlocks {
 	public static final RegistryObject<Block> POISE_BOOKSHELF       = RegistryUtils.createCompatBlock("poise_bookshelf", "quark", () -> new BlockEEBookshelf(Properties.from(Blocks.BOOKSHELF)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_LADDER          = RegistryUtils.createCompatBlock("poise_ladder", "quark", () -> new BlockEELadder(Properties.from(Blocks.LADDER)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> EUMUS_BRICK_VERTICAL_SLAB = RegistryUtils.createCompatBlock("eumus_brick_vertical_slab", "quark", () -> new BlockVerticalSlab(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {
+		return () -> new EETileEntityItemRenderer<TileEntity>(TileEntityBolloomBud::new);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private static Callable<ItemStackTileEntityRenderer> puffbugHiveISTER() {
+		return () -> new EETileEntityItemRenderer<TileEntity>(TileEntityPuffBugHive::new);
+	}
 	
 	@SubscribeEvent
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {

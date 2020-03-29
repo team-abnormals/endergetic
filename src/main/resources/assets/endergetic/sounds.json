@@ -1,8 +1,8 @@
 {
 	"entity.booflo.croak": {
 		"category": "neutral",
-        "subtitle": "Booflo croaks",
-        "sounds": [
+ 		"subtitle": "Booflo croaks",
+		"sounds": [
         	"endergetic:entity/booflo/booflo_croak_0",
         	"endergetic:entity/booflo/booflo_croak_1",
         	"endergetic:entity/booflo/booflo_croak_2",
@@ -232,7 +232,7 @@
     {
         "category": "ambient",
         "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience", "stream": true }
+        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience" }
         ]
     },
     "ambient.poise_forest.additions":

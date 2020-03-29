@@ -31,11 +31,9 @@ public class EndergeticLayerUtil {
 		
 		IAreaFactory<T> biomesFactory = createBiomeFactory(landFactory, contextFactory);
 		
-		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1000L), biomesFactory);
-		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1001L), biomesFactory);
-		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1002L), biomesFactory);
-		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1003L), biomesFactory);
-		biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1004L), biomesFactory);
+		for(int i = 0; i < 3; i++) {
+			biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1000L + (long) i), biomesFactory);
+		}
 		
 		biomesFactory = SmoothLayer.INSTANCE.apply(contextFactory.apply(100L), biomesFactory);
 		
