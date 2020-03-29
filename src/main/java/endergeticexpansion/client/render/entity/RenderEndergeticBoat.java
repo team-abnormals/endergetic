@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderEndergeticBoat extends EntityRenderer<EntityEndergeticBoat> {
 	private static final ResourceLocation[] BOAT_TEXTURES = new ResourceLocation[] {
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/boat/poise_boat.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/boat/poise.png"),
 	};
 	protected final ModelEndergeticBoat model = new ModelEndergeticBoat();
 
