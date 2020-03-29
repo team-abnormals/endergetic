@@ -36,6 +36,7 @@ public class ModelBoofloVest<T extends LivingEntity> extends BipedModel<T> {
     public void render(MatrixStack matrixStack, IVertexBuilder vertexBuilder, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float f5) {
     	super.render(matrixStack, vertexBuilder, p_225598_3_, p_225598_4_, p_225598_5_, p_225598_6_, p_225598_7_, f5);
     	
+    	matrixStack.push();
     	matrixStack.scale(1.25F, 1.25F, 1.25F);
     	
     	if(this.entity.isShiftKeyDown()) {
@@ -44,11 +45,13 @@ public class ModelBoofloVest<T extends LivingEntity> extends BipedModel<T> {
     		matrixStack.translate(-0.25F, -0.05F, -0.125F);
     	}
     	
+    	
     	//Temporary get around for lighting bug with forge armor model
     	float partialTicks = ClientInfo.getPartialTicks();
     	int light = LightTexture.packLight(this.getBlockLight(this.entity, partialTicks), this.entity.world.getLightFor(LightType.SKY, new BlockPos(this.entity.getEyePosition(partialTicks))));
     	
-        this.strap.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+    	this.strap.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStack.pop();
     }
     
     @Override
