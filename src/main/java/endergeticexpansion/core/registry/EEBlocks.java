@@ -58,7 +58,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -146,15 +145,6 @@ public class EEBlocks {
 	public static final RegistryObject<Block> POISE_LADDER          = RegistryUtils.createCompatBlock("poise_ladder", "quark", () -> new BlockEELadder(Properties.from(Blocks.LADDER)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> EUMUS_BRICK_VERTICAL_SLAB = RegistryUtils.createCompatBlock("eumus_brick_vertical_slab", "quark", () -> new BlockVerticalSlab(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
 	
-	public static boolean bbLoaded = ModList.get().isLoaded("endergetic");
-	public static final RegistryObject<FlowerPotBlock> POTTED_POISE_GRASS_TALL 			= RegistryUtils.createBlockNoItem("potted_poise_grass_tall",	() -> new FlowerPotBlock(bbLoaded ? POISE_GRASS_TALL.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_OVERWORLD_CORROCK 		= RegistryUtils.createBlockNoItem("potted_corrock_overworld", 	() -> new FlowerPotBlock(bbLoaded ? CORROCK_OVERWORLD.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_NETHER_CORROCK 			= RegistryUtils.createBlockNoItem("potted_corrock_nether", 		() -> new FlowerPotBlock(bbLoaded ? CORROCK_NETHER.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_END_CORROCK 				= RegistryUtils.createBlockNoItem("potted_corrock_end", 		() -> new FlowerPotBlock(bbLoaded ? CORROCK_END.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_OVERWORLD_CORROCK_CROWN 	= RegistryUtils.createBlockNoItem("potted_corrock_crown_standing_overworld", 	() -> new FlowerPotBlock(bbLoaded ? CORROCK_CROWN_OVERWORLD_STANDING.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP).lightValue(6)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_NETHER_CORROCK_CROWN 		= RegistryUtils.createBlockNoItem("potted_corrock_crown_standing_nether", 		() -> new FlowerPotBlock(bbLoaded ? CORROCK_CROWN_NETHER_STANDING.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP).lightValue(6)));
-	public static final RegistryObject<FlowerPotBlock> POTTED_END_CORROCK_CROWN 		= RegistryUtils.createBlockNoItem("potted_corrock_crown_standing_end", 			() -> new FlowerPotBlock(bbLoaded ? CORROCK_CROWN_END_STANDING.get() : Blocks.AIR, Properties.from(Blocks.POTTED_PINK_TULIP).lightValue(6)));
-
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {
 		return () -> new EETileEntityItemRenderer<TileEntity>(TileEntityBolloomBud::new);
