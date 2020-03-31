@@ -35,6 +35,15 @@ public class EEBlockRegistrars {
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS_TALL.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());
 		RenderTypeLookup.setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
+		
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_POISE_GRASS_TALL.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_OVERWORLD_CORROCK.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_NETHER_CORROCK.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_END_CORROCK.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_OVERWORLD_CORROCK_CROWN.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_NETHER_CORROCK_CROWN.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.POTTED_END_CORROCK_CROWN.get(), RenderType.getCutout());
+
 	}
 	
 	private static void setFireInfo(Block block, int encouragement, int flammability) {
