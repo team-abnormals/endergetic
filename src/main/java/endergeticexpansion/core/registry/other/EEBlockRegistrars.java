@@ -23,6 +23,9 @@ public class EEBlockRegistrars {
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_END.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_NETHER.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_OVERWORLD.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_END.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_NETHER.get(), RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_OVERWORLD.get(), RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(EEBlocks.ENDER_FIRE, RenderType.getCutout());
 		
 		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_BUSH_POT.get(), RenderType.getCutout());

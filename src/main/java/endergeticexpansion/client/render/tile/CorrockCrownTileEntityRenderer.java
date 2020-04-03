@@ -10,6 +10,7 @@ import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StandingSignBlock;
 import net.minecraft.block.WallSignBlock;
@@ -71,10 +72,10 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<TileEntit
 	}
 	
 	public int getTexture(TileEntityCorrockCrown te) {
-		BlockState BlockState = te.getBlockState();
-		if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING.get() | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_END_WALL.get()) {
+		Block block = te.getBlockState().getBlock();
+		if(block == EEBlocks.CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.CORROCK_CROWN_END_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()) {
 			return 0;
-		} else if(BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() | BlockState.getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL.get()) {
+		} else if(block == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.CORROCK_CROWN_NETHER_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get()) {
 			return 1;
 		} else {
 			return 2;

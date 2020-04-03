@@ -1,9 +1,14 @@
 package endergeticexpansion.common.blocks;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Maps;
+
+import endergeticexpansion.core.events.PlayerEvents;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,9 +20,11 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -25,16 +32,22 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 public class BlockCorrockCrownStanding extends BlockCorrockCrown {
+	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+		conversions.put(DimensionType.OVERWORLD, () -> EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get());
+		conversions.put(DimensionType.THE_NETHER, () -> EEBlocks.CORROCK_CROWN_NETHER_STANDING.get());
+		conversions.put(DimensionType.THE_END, () -> EEBlocks.CORROCK_CROWN_END_STANDING.get());
+	});
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
 	public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
 	
-	public BlockCorrockCrownStanding(Properties properties) {
-		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, Integer.valueOf(0)).with(WATERLOGGED, Boolean.valueOf(false)).with(UPSIDE_DOWN, false));
+	public BlockCorrockCrownStanding(Properties properties, boolean petrified) {
+		super(properties, petrified);
+		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, false).with(UPSIDE_DOWN, false));
 	}
 	
 	@Override
@@ -44,38 +57,26 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
-			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension())
+		if(!this.petrified && !this.isInProperDimension(world)) {
+			world.setBlockState(pos, CONVERSIONS.get(world.getDimension().getType()).get().getDefaultState()
 				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
 				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
 			);
 		}
-		
-		if(world.getBlockState(pos).get(UPSIDE_DOWN) && !world.getBlockState(pos.up()).isSolid()) {
-			world.destroyBlock(pos, true);
-		} else if(!world.getBlockState(pos).get(UPSIDE_DOWN) && !world.getBlockState(pos.down()).isSolid()) {
-			world.destroyBlock(pos, true);
-		}
-	}
-	
-	public BlockState getCorrockBlockForDimension(Dimension dimension) {
-		switch(dimension.getType().getId()) {
-			case 0:
-				return EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get().getDefaultState();
-			case 1:
-				return EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState();
-			case -1:
-				return EEBlocks.CORROCK_CROWN_NETHER_STANDING.get().getDefaultState();
-		}
-		return null;
 	}
 	
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return state.get(UPSIDE_DOWN) ? worldIn.getBlockState(pos.up()).getMaterial().isSolid() : worldIn.getBlockState(pos.down()).getMaterial().isSolid();
+		return state.get(UPSIDE_DOWN) ? worldIn.getBlockState(pos.up()).isSolidSide(worldIn, pos.up(), Direction.DOWN) : worldIn.getBlockState(pos.down()).isSolidSide(worldIn, pos.down(), Direction.UP);
 	}
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if (!this.isInProperDimension(worldIn.getWorld())) {
+		if(stateIn.get(WATERLOGGED)) {
+			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+			if(!this.petrified) {
+				return PlayerEvents.convertCorrockBlock(stateIn);
+			}
+		}
+		if(!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 		
@@ -93,8 +94,12 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 			return null;
 		}
 		return direction == Direction.UP ? 
-			this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER))
-			: this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(UPSIDE_DOWN, true).with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
+			this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8)
+			: this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(UPSIDE_DOWN, true).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8);
+	}
+	
+	public boolean isInProperDimension(World world) {
+		return !this.petrified && CONVERSIONS.get(world.getDimension().getType()).get() == this;
 	}
 	
 	public BlockState rotate(BlockState state, Rotation rot) {

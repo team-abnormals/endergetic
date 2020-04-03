@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
-import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.ILiquidContainer;
@@ -18,21 +16,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.EndDimension;
-import net.minecraft.world.dimension.NetherDimension;
-import net.minecraft.world.dimension.OverworldDimension;
 import net.minecraft.world.storage.loot.LootContext.Builder;
 
 public abstract class BlockCorrockCrown extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
+	public final boolean petrified;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
-	protected BlockCorrockCrown(Properties builder) {
+	protected BlockCorrockCrown(Properties builder, boolean petrified) {
 		super(builder);
+		this.petrified = petrified;
 	}
 	
 	@Override
@@ -40,39 +35,6 @@ public abstract class BlockCorrockCrown extends ContainerBlock implements IBucke
 		ArrayList<ItemStack> dropList = new ArrayList<ItemStack>();
 		dropList.add(new ItemStack(this));
 		return dropList;
-	}
-
-	@SuppressWarnings("deprecation")
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if (stateIn.get(WATERLOGGED)) {
-			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-		}
-		if (!this.isInProperDimension(worldIn.getWorld())) {
-			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
-		}
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-	}
-	
-	public boolean isInProperDimension(World world) {
-		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get()) {
-			return (world.getDimension() instanceof OverworldDimension);
-		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_NETHER_WALL.get()) {
-			return (world.getDimension() instanceof NetherDimension);
-		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_STANDING.get() || this.getDefaultState().getBlock() == EEBlocks.CORROCK_CROWN_END_WALL.get()) {
-			return (world.getDimension() instanceof EndDimension);
-		}
-		return false;
-	}
-	
-	public boolean isSubmerged(World worldIn, BlockPos pos) {
-		if(worldIn.getBlockState(pos.up()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.down()).getBlock() == Blocks.WATER
-			|| worldIn.getBlockState(pos.north()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.east()).getBlock() == Blocks.WATER
-			|| worldIn.getBlockState(pos.south()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.west()).getBlock() == Blocks.WATER) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override

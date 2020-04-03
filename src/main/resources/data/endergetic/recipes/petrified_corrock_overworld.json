@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "endergetic",
+    "pattern":
+    [
+    	"CCC",
+    	"CBC",
+        "CCC"
+    ],
+    "key":
+    {
+        "C":
+        {
+            "item": "endergetic:corrock_overworld"
+        },
+        "B":
+        {
+            "item": "minecraft:water_bucket"
+        }
+    },
+    "result":
+    {
+        "item": "endergetic:petrified_corrock_overworld",
+        "count": 8
+    }
+}

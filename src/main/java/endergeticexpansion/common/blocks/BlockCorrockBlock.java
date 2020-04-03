@@ -1,32 +1,43 @@
 package endergeticexpansion.common.blocks;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Maps;
+
+import endergeticexpansion.core.events.PlayerEvents;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.EndDimension;
-import net.minecraft.world.dimension.NetherDimension;
-import net.minecraft.world.dimension.OverworldDimension;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
 public class BlockCorrockBlock extends Block {
-
-	public BlockCorrockBlock(Properties properties) {
+	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+		conversions.put(DimensionType.OVERWORLD, () -> EEBlocks.CORROCK_OVERWORLD_BLOCK.get());
+		conversions.put(DimensionType.THE_NETHER, () -> EEBlocks.CORROCK_NETHER_BLOCK.get());
+		conversions.put(DimensionType.THE_END, () -> EEBlocks.CORROCK_END_BLOCK.get());
+	});
+	public final boolean petrified;
+	
+	public BlockCorrockBlock(Properties properties, boolean petrified) {
 		super(properties);
+		this.petrified = petrified;
 	}
 	
 	@Override
@@ -36,8 +47,8 @@ public class BlockCorrockBlock extends Block {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(world) && !this.isSubmerged(world, pos)) {
-			world.setBlockState(pos, this.getCorrockBlockForDimension(world.getDimension()));
+		if(!this.petrified && !this.isInProperDimension(world)) {
+			world.setBlockState(pos, CONVERSIONS.get(world.getDimension().getType()).get().getDefaultState());
 		}
 	}
 	
@@ -46,13 +57,16 @@ public class BlockCorrockBlock extends Block {
 		return SoundType.CORAL;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (!this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 		
-	    return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		if(this.isSubmerged(worldIn, currentPos)) {
+			return !this.petrified ? PlayerEvents.convertCorrockBlock(stateIn) : stateIn;
+		}
+		
+	    return stateIn;
 	}
 	
 	@Nullable
@@ -65,35 +79,15 @@ public class BlockCorrockBlock extends Block {
 	}
 
 	public boolean isInProperDimension(World world) {
-		if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_OVERWORLD.get()) {
-			return (world.getDimension() instanceof OverworldDimension);
-		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_NETHER.get()) {
-			return (world.getDimension() instanceof NetherDimension);
-		}
-		else if(this.getDefaultState().getBlock() == EEBlocks.CORROCK_BLOCK_END.get()) {
-			return (world.getDimension() instanceof EndDimension);
-		}
-		return false;
+		return !this.petrified && CONVERSIONS.get(world.getDimension().getType()).get() == this;
 	}
 	
-	public BlockState getCorrockBlockForDimension(Dimension dimension) {
-		switch(dimension.getType().getId()) {
-			case 0:
-			return EEBlocks.CORROCK_BLOCK_OVERWORLD.get().getDefaultState();
-			case 1:
-			return EEBlocks.CORROCK_BLOCK_END.get().getDefaultState();
-			case -1:
-			return EEBlocks.CORROCK_BLOCK_NETHER.get().getDefaultState();
-		}
-		return null;
-	}
-	
-	public boolean isSubmerged(World worldIn, BlockPos pos) {
-		if(worldIn.getBlockState(pos.up()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.down()).getBlock() == Blocks.WATER
-			|| worldIn.getBlockState(pos.north()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.east()).getBlock() == Blocks.WATER
-			|| worldIn.getBlockState(pos.south()).getBlock() == Blocks.WATER || worldIn.getBlockState(pos.west()).getBlock() == Blocks.WATER) {
-			return true;
+	public boolean isSubmerged(IWorld world, BlockPos pos) {
+		for(Direction offsets : Direction.values()) {
+			IFluidState fluidState = world.getFluidState(pos.offset(offsets));
+			if(!fluidState.isEmpty() && fluidState.isTagged(FluidTags.WATER)) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -4,43 +4,11 @@ import java.util.concurrent.Callable;
 
 import endergeticexpansion.client.render.item.EETileEntityItemRenderer;
 import endergeticexpansion.common.EEProperties;
-import endergeticexpansion.common.blocks.BlockAcidianLantern;
-import endergeticexpansion.common.blocks.BlockButtonBase;
-import endergeticexpansion.common.blocks.BlockCorrock;
-import endergeticexpansion.common.blocks.BlockCorrockBlock;
-import endergeticexpansion.common.blocks.BlockCorrockCrown;
-import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
-import endergeticexpansion.common.blocks.BlockCorrockCrownWall;
-import endergeticexpansion.common.blocks.BlockDoorBase;
-import endergeticexpansion.common.blocks.BlockEEBookshelf;
-import endergeticexpansion.common.blocks.BlockEELadder;
-import endergeticexpansion.common.blocks.BlockEnderFire;
-import endergeticexpansion.common.blocks.BlockEumus;
-import endergeticexpansion.common.blocks.BlockFenceBase;
-import endergeticexpansion.common.blocks.BlockFenceGateBase;
-import endergeticexpansion.common.blocks.BlockFrisbloomBud;
-import endergeticexpansion.common.blocks.BlockFrisbloomStem;
-import endergeticexpansion.common.blocks.BlockLogBase;
-import endergeticexpansion.common.blocks.BlockPressurePlateBase;
-import endergeticexpansion.common.blocks.BlockRotatable;
-import endergeticexpansion.common.blocks.BlockSlabBase;
-import endergeticexpansion.common.blocks.BlockStairsBase;
-import endergeticexpansion.common.blocks.BlockTrapdoorBase;
-import endergeticexpansion.common.blocks.BlockVerticalSlab;
-import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
-import endergeticexpansion.common.blocks.poise.BlockGlowingPoiseLog;
-import endergeticexpansion.common.blocks.poise.BlockGlowingPoiseWood;
-import endergeticexpansion.common.blocks.poise.BlockPoiseCluster;
-import endergeticexpansion.common.blocks.poise.BlockPoiseGrassPlant;
-import endergeticexpansion.common.blocks.poise.BlockPoiseGrassPlantTall;
-import endergeticexpansion.common.blocks.poise.BlockPoismoss;
-import endergeticexpansion.common.blocks.poise.BlockPoismossEumus;
-import endergeticexpansion.common.blocks.poise.boof.BlockBoof;
-import endergeticexpansion.common.blocks.poise.boof.BlockDispensedBoof;
-import endergeticexpansion.common.blocks.poise.hive.BlockHiveHanger;
-import endergeticexpansion.common.blocks.poise.hive.BlockPuffBugHive;
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.blocks.*;
+import endergeticexpansion.common.blocks.poise.*;
+import endergeticexpansion.common.blocks.poise.boof.*;
+import endergeticexpansion.common.blocks.poise.hive.*;
+import endergeticexpansion.common.tileentities.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.block.Block;
@@ -68,18 +36,30 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class EEBlocks {
 	public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, EndergeticExpansion.MOD_ID);
 	
-	public static final RegistryObject<Block> CORROCK_BLOCK_OVERWORLD = RegistryUtils.createBlock("corrock_overworld_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> CORROCK_BLOCK_NETHER    = RegistryUtils.createBlock("corrock_nether_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> CORROCK_BLOCK_END       = RegistryUtils.createBlock("corrock_end_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, true)), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> CORROCK_OVERWORLD       = RegistryUtils.createBlock("corrock_overworld", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, false)), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> CORROCK_NETHER          = RegistryUtils.createBlock("corrock_nether", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, false)), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> CORROCK_END             = RegistryUtils.createBlock("corrock_end", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false)), ItemGroup.DECORATIONS);
-	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_OVERWORLD_WALL     = RegistryUtils.createBlockNoItem("corrock_crown_wall_overworld", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)));
-	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_OVERWORLD_STANDING     = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_overworld", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN)), () -> CORROCK_CROWN_OVERWORLD_WALL.get(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_NETHER_WALL        = RegistryUtils.createBlockNoItem("corrock_crown_wall_nether", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)));
-	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_NETHER_STANDING        = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_nether", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED)), () -> CORROCK_CROWN_NETHER_WALL.get(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_END_WALL           = RegistryUtils.createBlockNoItem("corrock_crown_wall_end", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)));
-	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_END_STANDING           = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE)), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> CORROCK_OVERWORLD_BLOCK           = RegistryUtils.createBlock("corrock_overworld_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_OVERWORLD_BLOCK = RegistryUtils.createBlock("petrified_corrock_overworld_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), true), null);
+	public static final RegistryObject<Block> CORROCK_NETHER_BLOCK              = RegistryUtils.createBlock("corrock_nether_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_NETHER_BLOCK    = RegistryUtils.createBlock("petrified_corrock_nether_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true), true), null);
+	public static final RegistryObject<Block> CORROCK_END_BLOCK                 = RegistryUtils.createBlock("corrock_end_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_END_BLOCK       = RegistryUtils.createBlock("petrified_corrock_end_block", () -> new BlockCorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, true), true), null);
+	public static final RegistryObject<Block> CORROCK_OVERWORLD                 = RegistryUtils.createBlock("corrock_overworld", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, false), false), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_OVERWORLD       = RegistryUtils.createBlock("petrified_corrock_overworld", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, false), true), null);
+	public static final RegistryObject<Block> CORROCK_NETHER                    = RegistryUtils.createBlock("corrock_nether", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, false), false), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_NETHER          = RegistryUtils.createBlock("petrified_corrock_nether", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, false), true), null);
+	public static final RegistryObject<Block> CORROCK_END                       = RegistryUtils.createBlock("corrock_end", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false), false), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> PETRIFIED_CORROCK_END             = RegistryUtils.createBlock("petrified_corrock_end", () -> new BlockCorrock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false), true), null);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_OVERWORLD_WALL           = RegistryUtils.createBlockNoItem("corrock_crown_wall_overworld", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), false));
+	public static final RegistryObject<BlockCorrockCrownWall> PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL = RegistryUtils.createBlockNoItem("petrified_corrock_crown_wall_overworld", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), true));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_OVERWORLD_STANDING           = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_overworld", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), false), () -> CORROCK_CROWN_OVERWORLD_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrown> PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING = RegistryUtils.createCorrockStandingBlock("petrified_corrock_crown_standing_overworld", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), true), () -> PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get(), null);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_NETHER_WALL              = RegistryUtils.createBlockNoItem("corrock_crown_wall_nether", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), false));
+	public static final RegistryObject<BlockCorrockCrownWall> PETRIFIED_CORROCK_CROWN_NETHER_WALL    = RegistryUtils.createBlockNoItem("petrified_corrock_crown_wall_nether", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), true));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_NETHER_STANDING              = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_nether", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), false), () -> CORROCK_CROWN_NETHER_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrown> PETRIFIED_CORROCK_CROWN_NETHER_STANDING    = RegistryUtils.createCorrockStandingBlock("petrified_corrock_crown_standing_nether", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), true), () -> PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), null);
+	public static final RegistryObject<BlockCorrockCrownWall> CORROCK_CROWN_END_WALL                 = RegistryUtils.createBlockNoItem("corrock_crown_wall_end", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false));
+	public static final RegistryObject<BlockCorrockCrownWall> PETRIFIED_CORROCK_CROWN_END_WALL       = RegistryUtils.createBlockNoItem("petrified_corrock_crown_wall_end", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true));
+	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_END_STANDING                 = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<BlockCorrockCrown> PETRIFIED_CORROCK_CROWN_END_STANDING       = RegistryUtils.createCorrockStandingBlock("petrified_corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true), () -> PETRIFIED_CORROCK_CROWN_END_WALL.get(), null);
 	
 	/*
 	 * Poise Forest
@@ -162,5 +142,4 @@ public class EEBlocks {
 		};
 		event.getRegistry().registerAll(blocks);
 	}
-	
 }
