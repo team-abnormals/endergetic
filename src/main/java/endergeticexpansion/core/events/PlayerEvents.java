@@ -1,11 +1,52 @@
 package endergeticexpansion.core.events;
 
+import java.util.List;
+
 import endergeticexpansion.core.EndergeticExpansion;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.projectile.PotionEntity;
+import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public class PlayerEvents {
+	
+	@SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onThrowableImpact(final ProjectileImpactEvent.Throwable event) {
+        ThrowableEntity projectileEntity = event.getThrowable();
 
+        if (projectileEntity instanceof PotionEntity) {
+            PotionEntity potionEntity = ((PotionEntity) projectileEntity);
+            ItemStack itemstack = potionEntity.getItem();
+            Potion potion = PotionUtils.getPotionFromItem(itemstack);
+            List<EffectInstance> list = PotionUtils.getEffectsFromStack(itemstack);
+
+            if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
+            	BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)event.getRayTraceResult();
+            	Direction direction = blockraytraceresult.getFace();
+            	BlockPos blockpos = blockraytraceresult.getPos().offset(Direction.DOWN).offset(direction);
+            	
+        		potionEntity.world.setBlockState(blockpos, Blocks.BRAIN_CORAL_BLOCK.getDefaultState());
+        		potionEntity.world.setBlockState(blockpos.offset(direction.getOpposite()), Blocks.BRAIN_CORAL_BLOCK.getDefaultState());
+            	for(Direction direction1 : Direction.Plane.HORIZONTAL) {
+            		potionEntity.world.setBlockState(blockpos.offset(direction1), Blocks.BRAIN_CORAL_BLOCK.getDefaultState());
+            	}
+            }
+        }
+    }
 //	//@SubscribeEvent
 //	public static void onEntityClicked(PlayerInteractEvent.EntityInteract event) {
 //		Entity entity = event.getTarget();
