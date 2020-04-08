@@ -13,8 +13,8 @@ import endergeticexpansion.common.network.entity.booflo.*;
 import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
 import endergeticexpansion.common.network.nbt.*;
 import endergeticexpansion.common.network.particle.*;
+import endergeticexpansion.common.world.EEWorldGenHandler;
 import endergeticexpansion.common.world.EndOverrideHandler;
-import endergeticexpansion.common.world.FeatureOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
@@ -87,7 +87,8 @@ public class EndergeticExpansion {
 		EEBiomes.applyBiomeInfo();
 		EEBlockRegistrars.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
-		FeatureOverrideHandler.overrideFeatures();
+		EEWorldGenHandler.addFeaturesToVanillaBiomes();
+		EEWorldGenHandler.overrideFeatures();
 	}
 	
 	@OnlyIn(Dist.CLIENT)
