@@ -3,7 +3,6 @@ package endergeticexpansion.core.registry.other;
 import endergeticexpansion.common.items.EndergeticEnderCrystalItem;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.RegistryUtils;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
@@ -15,7 +14,7 @@ import net.minecraftforge.registries.ObjectHolder;
 public class EERegistryReplacements {
 	
 	@ObjectHolder("minecraft:end_crystal")
-	public static Block END_CRYSTAL;
+	public static Item END_CRYSTAL;
 	
 	@SubscribeEvent
 	public static void registerItemReplacements(RegistryEvent.Register<Item> event) {
@@ -23,5 +22,5 @@ public class EERegistryReplacements {
 			new EndergeticEnderCrystalItem(RegistryUtils.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
 		);
 	}
-	
+
 }

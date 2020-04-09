@@ -9,4 +9,9 @@ public class TileEntityCorrockCrown extends TileEntity {
 		super(EETileEntities.CORROCK_CROWN.get());
 	}
 	
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		return super.getMaxRenderDistanceSquared() * 4;
+	}
+	
 }

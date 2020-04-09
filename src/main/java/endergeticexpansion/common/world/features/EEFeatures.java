@@ -24,7 +24,8 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_DOME        = createFeature("poise_dome", () -> new FeaturePoiseDome(NoFeatureConfig::deserialize));
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TREE        = createFeature("poise_tree", () -> new FeaturePoiseTree(NoFeatureConfig::deserialize));
 	
-	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH    = createFeature("corrock_branch", () -> new FeatureCorrockBranch(ProbabilityConfig::deserialize));
+	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH     = createFeature("corrock_patch", () -> new FeatureCorrockPatch(NoFeatureConfig::deserialize));
+	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH  = createFeature("corrock_branch", () -> new FeatureCorrockBranch(ProbabilityConfig::deserialize));
 	
 	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY =  new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize);
 	public static final Feature<EndSpikeFeatureConfig> ENDERGETIC_END_SPIKE =  new EndergeticEndSpikeFeature(EndSpikeFeatureConfig::deserialize);

@@ -19,6 +19,7 @@ public class EETags {
 	
 	public static class Blocks {
 		public static final Tag<Block> END_PLANTABLE = createTag("end_plantable");
+		public static final Tag<Block> CHORUS_PLANTABLE = createTag("chorus_plantable");
 		public static final Tag<Block> POISE_PLANTABLE = createTag("poise_plantable");
 		
 		private static Tag<Block> createTag(String name) {
