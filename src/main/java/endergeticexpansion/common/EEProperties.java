@@ -15,7 +15,7 @@ public class EEProperties {
 	}
 	
 	public static final Block.Properties CORROCK_BASE_GLOWING(MaterialColor color) {
-		return Block.Properties.create(Material.OCEAN_PLANT, color).lightValue(6).hardnessAndResistance(0F).doesNotBlockMovement();
+		return Block.Properties.create(Material.OCEAN_PLANT, color).lightValue(9).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	
 	public static final Block.Properties POISE_GRASS(boolean isPlant) {
