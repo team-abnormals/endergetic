@@ -19,6 +19,7 @@ import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChorusFlowerBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutable;
@@ -29,6 +30,7 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.placement.TopSolidWithNoiseConfig;
 
@@ -77,6 +79,10 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 							}
 						}
 					}
+					
+					BlockPos downPos = pos.down();
+					BlockPos groundModifierPos = new BlockPos(downPos.getX() + (rand.nextInt(3) - rand.nextInt(3)), downPos.getY(), downPos.getZ() + (rand.nextInt(3) - rand.nextInt(3)));
+					EEFeatures.CORROCK_GROUND_PATCH.get().place(world, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
 					
 					PooledMutable corrockPlantPos = PooledMutable.retain();
 					for(int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
@@ -207,7 +213,7 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 				branch.addBlockPiece(CORROCK_CROWN(true).get().with(BlockCorrockCrownWall.FACING, horizontals), placingPos);
 			} else if(chorusGrowths != null && world.isAirBlock(placingPos)) {
 				if(rand.nextFloat() < 0.3F && !addedChorusGrowth) {
-					chorusGrowths.add(new ChorusPlantPart(branch, placingPos));
+					chorusGrowths.add(new ChorusPlantPart(branch, placingPos, horizontals));
 					addedChorusGrowth = true;
 				}
 			}
@@ -254,15 +260,18 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 	
 	class ChorusPlantPart {
 		public final GenerationPiece piece;
+		private final Direction facing;
 		public final BlockPos pos;
 		
-		public ChorusPlantPart(GenerationPiece piece, BlockPos pos) {
+		public ChorusPlantPart(GenerationPiece piece, BlockPos pos, Direction facing) {
 			this.piece = piece;
 			this.pos = pos;
+			this.facing = facing;
 		}
 		
 		public void placeGrowth(IWorld world, Random rand) {
 			world.setBlockState(this.pos, Blocks.END_STONE.getDefaultState(), 2);
+			world.setBlockState(this.pos.offset(facing), EEBlocks.ENDSTONE_COVER.get().getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, this.facing.getOpposite()), 2);
 			ChorusFlowerBlock.generatePlant(world, this.pos.up(), rand, 8);
 		}
 	}

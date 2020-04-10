@@ -9,6 +9,7 @@ import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,6 +26,7 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TREE        = createFeature("poise_tree", () -> new FeaturePoiseTree(NoFeatureConfig::deserialize));
 	
 	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH     = createFeature("corrock_patch", () -> new FeatureCorrockPatch(NoFeatureConfig::deserialize));
+	public static final RegistryObject<Feature<SphereReplaceConfig>> CORROCK_GROUND_PATCH = createFeature("corrock_ground_patch", () -> new FeatureCorrockGroundPatch(SphereReplaceConfig::deserialize));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH  = createFeature("corrock_branch", () -> new FeatureCorrockBranch(ProbabilityConfig::deserialize));
 	
 	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY =  new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize);

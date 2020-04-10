@@ -61,8 +61,10 @@ public class BlockCorrockCrownWall extends BlockCorrockCrown {
 		return SHAPES.get(state.get(FACING));
 	}
 	
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return worldIn.getBlockState(pos.offset(state.get(FACING).getOpposite())).getMaterial().isSolid();
+	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+		Direction direction = state.get(FACING);
+		BlockPos blockpos = pos.offset(direction.getOpposite());
+		return Block.hasEnoughSolidSide(world, blockpos, direction);
 	}
 	
 	@Nullable

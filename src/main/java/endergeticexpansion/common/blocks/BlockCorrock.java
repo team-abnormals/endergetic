@@ -93,7 +93,8 @@ public class BlockCorrock extends Block implements IWaterLoggable {
 	
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return worldIn.getBlockState(pos.down()).isSolid();
+		BlockPos blockpos = pos.down();
+		return worldIn.getBlockState(blockpos).isSolidSide(worldIn, blockpos, Direction.UP);
 	}
 	
 	@Nullable

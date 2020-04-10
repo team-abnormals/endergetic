@@ -18,6 +18,7 @@ import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.WallBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemGroup;
@@ -60,6 +61,7 @@ public class EEBlocks {
 	public static final RegistryObject<BlockCorrockCrownWall> PETRIFIED_CORROCK_CROWN_END_WALL       = RegistryUtils.createBlockNoItem("petrified_corrock_crown_wall_end", () -> new BlockCorrockCrownWall(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true));
 	public static final RegistryObject<BlockCorrockCrown> CORROCK_CROWN_END_STANDING                 = RegistryUtils.createCorrockStandingBlock("corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
 	public static final RegistryObject<BlockCorrockCrown> PETRIFIED_CORROCK_CROWN_END_STANDING       = RegistryUtils.createCorrockStandingBlock("petrified_corrock_crown_standing_end", () -> new BlockCorrockCrownStanding(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true), () -> PETRIFIED_CORROCK_CROWN_END_WALL.get(), null);
+	public static final RegistryObject<Block> ENDSTONE_COVER                                         = RegistryUtils.createBlockNoItem("endstone_cover", () -> new BlockEndStoneCover(Block.Properties.create(Material.TALL_PLANTS, MaterialColor.PURPLE_TERRACOTTA).hardnessAndResistance(1.5F, 6.0F).doesNotBlockMovement()));
 	
 	/*
 	 * Poise Forest

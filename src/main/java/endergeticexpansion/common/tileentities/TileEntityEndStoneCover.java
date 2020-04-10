@@ -4,10 +4,10 @@ import endergeticexpansion.core.registry.EETileEntities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class TileEntityCorrockCrown extends TileEntity {
+public class TileEntityEndStoneCover extends TileEntity {
 
-	public TileEntityCorrockCrown() {
-		super(EETileEntities.CORROCK_CROWN.get());
+	public TileEntityEndStoneCover() {
+		super(EETileEntities.ENDSTONE_COVER.get());
 	}
 	
 	@Override
@@ -19,5 +19,5 @@ public class TileEntityCorrockCrown extends TileEntity {
 	public double getMaxRenderDistanceSquared() {
 		return super.getMaxRenderDistanceSquared() * 10;
 	}
-	
+
 }

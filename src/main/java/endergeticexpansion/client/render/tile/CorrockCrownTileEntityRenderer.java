@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import endergeticexpansion.client.EERenderTypes;
-import endergeticexpansion.client.model.ModelCorrockCrownStanding;
-import endergeticexpansion.client.model.ModelCorrockCrownWall;
+import endergeticexpansion.client.model.corrock.ModelCorrockCrownStanding;
+import endergeticexpansion.client.model.corrock.ModelCorrockCrownWall;
 import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
 import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
 import endergeticexpansion.core.EndergeticExpansion;

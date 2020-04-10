@@ -2,12 +2,8 @@ package endergeticexpansion.core.registry;
 
 import com.google.common.collect.Sets;
 
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
-import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
-import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
-import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.common.tileentities.*;
+import endergeticexpansion.common.tileentities.boof.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
@@ -23,6 +19,7 @@ public class EETileEntities {
 		EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get(),
 		EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()), null
 	));
+	public static final RegistryObject<TileEntityType<TileEntityEndStoneCover>> ENDSTONE_COVER = TILE_ENTITY_TYPES.register("endstone_cover", () -> new TileEntityType<>(TileEntityEndStoneCover::new, Sets.newHashSet(EEBlocks.ENDSTONE_COVER.get()), null));
 	public static final RegistryObject<TileEntityType<TileEntityFrisbloomStem>> FRISBLOOM_STEM = TILE_ENTITY_TYPES.register("frisbloom_stem", () -> new TileEntityType<>(TileEntityFrisbloomStem::new, Sets.newHashSet(EEBlocks.FRISBLOOM_STEM), null));
 	
 	/*
