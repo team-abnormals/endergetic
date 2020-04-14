@@ -16,6 +16,7 @@ import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
 import endergeticexpansion.common.blocks.BlockCorrockCrownWall;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.core.registry.EEBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChorusFlowerBlock;
@@ -27,12 +28,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
+import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.placement.TopSolidWithNoiseConfig;
 
 public class FeatureCorrockBranch extends AbstractCorrockFeature {
 
@@ -46,8 +46,9 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 		if(rand.nextFloat() > config.probability) return false;
 		
 		List<ChorusPlantPart> chorusGrowths = Lists.newArrayList();
+		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		
-		if(world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE) {
+		if(belowBlock == EEBlocks.CORROCK_END_BLOCK.get() || belowBlock == Blocks.END_STONE) {
 			GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isAirBlock(part.pos));
 			this.createBase(basePiece, world, pos, rand, baseHeight);
 			if(basePiece.canPlace(world)) {
@@ -82,7 +83,7 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 					
 					BlockPos downPos = pos.down();
 					BlockPos groundModifierPos = new BlockPos(downPos.getX() + (rand.nextInt(3) - rand.nextInt(3)), downPos.getY(), downPos.getZ() + (rand.nextInt(3) - rand.nextInt(3)));
-					EEFeatures.CORROCK_GROUND_PATCH.get().place(world, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
+					EEFeatures.GROUND_PATCH.get().place(world, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
 					
 					PooledMutable corrockPlantPos = PooledMutable.retain();
 					for(int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
@@ -253,7 +254,7 @@ public class FeatureCorrockBranch extends AbstractCorrockFeature {
 	public Consumer<Biome> processBiomeAddition() {
 		return biome -> {
 			if(IAddToBiomes.isInChorusBiome(biome)) {
-				biome.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Placement.TOP_SOLID_HEIGHTMAP_NOISE_BIASED.configure(new TopSolidWithNoiseConfig(2, 5.0D, 0.0D, Heightmap.Type.WORLD_SURFACE_WG))));
+				biome.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Placement.COUNT_HEIGHTMAP_DOUBLE.configure(new FrequencyConfig(1))));
 			}
 		};
 	}

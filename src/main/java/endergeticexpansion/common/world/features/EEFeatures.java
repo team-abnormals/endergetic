@@ -26,11 +26,11 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TREE        = createFeature("poise_tree", () -> new FeaturePoiseTree(NoFeatureConfig::deserialize));
 	
 	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH     = createFeature("corrock_patch", () -> new FeatureCorrockPatch(NoFeatureConfig::deserialize));
-	public static final RegistryObject<Feature<SphereReplaceConfig>> CORROCK_GROUND_PATCH = createFeature("corrock_ground_patch", () -> new FeatureCorrockGroundPatch(SphereReplaceConfig::deserialize));
+	public static final RegistryObject<Feature<SphereReplaceConfig>> GROUND_PATCH  = createFeature("ground_patch", () -> new FeatureGroundPatch(SphereReplaceConfig::deserialize));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH  = createFeature("corrock_branch", () -> new FeatureCorrockBranch(ProbabilityConfig::deserialize));
 	
-	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY =  new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize);
-	public static final Feature<EndSpikeFeatureConfig> ENDERGETIC_END_SPIKE =  new EndergeticEndSpikeFeature(EndSpikeFeatureConfig::deserialize);
+	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY = new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize);
+	public static final RegistryObject<Feature<EndSpikeFeatureConfig>> ENDERGETIC_END_SPIKE = createFeature("end_spike", () -> new EndergeticEndSpikeFeature(EndSpikeFeatureConfig::deserialize));
 	
 	private static <F extends Feature<?>> RegistryObject<F> createFeature(String name, Supplier<F> feature) {
 		return FEATURES.register(name, feature);
