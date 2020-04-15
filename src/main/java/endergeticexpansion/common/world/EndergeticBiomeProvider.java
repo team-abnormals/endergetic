@@ -31,9 +31,26 @@ public class EndergeticBiomeProvider extends EndBiomeProvider {
 		} else {
 			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
 			if (f >= 0.0F) {
-				return this.isAreaChorus(x, z) ? super.getNoiseBiome(x, y, z) : this.getBiomeForArea(x, z);
+				return this.isAreaChorus(x, z) ? this.getOriginalChorusBiome(x, y, z) : this.getBiomeForArea(x, z);
 			} else {
-				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.isAreaChorus(x, z) ? super.getNoiseBiome(x, y, z) : this.getBiomeForArea(x, z);
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : this.isAreaChorus(x, z) ? this.getOriginalChorusBiome(x, y, z) : this.getBiomeForArea(x, z);
+			}
+		}
+	}
+	
+	private Biome getOriginalChorusBiome(int x, int y, int z) {
+		int i = x >> 2;
+		int j = z >> 2;
+		if ((long)i * (long)i + (long)j * (long)j <= 4096L) {
+			return Biomes.THE_END;
+		} else {
+			float f = this.func_222365_c(i * 2 + 1, j * 2 + 1);
+			if (f > 40.0F) {
+				return EEBiomes.END_HIGHLANDS.get();
+			} else if (f >= 0.0F) {
+				return EEBiomes.END_MIDLANDS.get();
+			} else {
+				return f < -20.0F ? Biomes.SMALL_END_ISLANDS : Biomes.END_BARRENS;
 			}
 		}
 	}

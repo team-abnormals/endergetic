@@ -11,6 +11,7 @@ import endergeticexpansion.api.generation.IAddToBiomes;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
@@ -30,11 +31,15 @@ public class FeatureCorrockPatch extends Feature<NoFeatureConfig> implements IAd
 		super(config);
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+		for(BlockState blockstate = world.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = world.getBlockState(pos)) {
+			pos = pos.down();
+		}
 		if(world.getBlockState(pos).getBlock() != EEBlocks.CORROCK_END_BLOCK.get()) return false;
 		int i = 0;
 		
-		for(int j = 0; j < 200; ++j) {
+		for(int j = 0; j < 128; ++j) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(6) - rand.nextInt(6), rand.nextInt(8) - rand.nextInt(8));
 			if(world.isAirBlock(blockpos) && CORROCK.get().isValidPosition(world, blockpos)) {
 				boolean chance = world.getBlockState(blockpos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() ? rand.nextFloat() < 0.85F : rand.nextFloat() < 0.25F;
@@ -51,7 +56,7 @@ public class FeatureCorrockPatch extends Feature<NoFeatureConfig> implements IAd
 	public Consumer<Biome> processBiomeAddition() {
 		return biome -> {
 			if(IAddToBiomes.isInChorusBiome(biome)) {
-				biome.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.CORROCK_PATCH.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_DOUBLE.configure(new NoiseDependant(-0.8D, 10, 15))));
+				biome.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.CORROCK_PATCH.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_DOUBLE.configure(new NoiseDependant(-0.8D, 7, 8))));
 			}
 		};
 	}
