@@ -14,17 +14,17 @@
 	"block.endergetic.petrified_corrock_nether": "Rocoral del Nether petrificado",
 	"block.endergetic.petrified_corrock_end": "Rocoral del End petrificado",
 	"block.endergetic.corrock_crown_standing_overworld": "Corona de rocoral del Overworld",
-	"block.endergetic.corrock_crown_wall_overworld": "Muro de corona de rocoral del Overworld",
+	"block.endergetic.corrock_crown_wall_overworld": "Corona de rocoral del Overworld en el muro",
 	"block.endergetic.corrock_crown_standing_nether": "Corona de rocoral del Nether",
-	"block.endergetic.corrock_crown_wall_nether": "Muro de corona de rocoral del Nether",
+	"block.endergetic.corrock_crown_wall_nether": "Corona de rocoral del Nether en el muro",
 	"block.endergetic.corrock_crown_standing_end": "Corona de rocoral del End",
-	"block.endergetic.corrock_crown_wall_end": "Muro de corona de rocoral del End",
+	"block.endergetic.corrock_crown_wall_end": "Corona de rocoral del End en el muro",
 	"block.endergetic.petrified_corrock_crown_standing_overworld": "Corona de rocoral del Overworld petrificado",
-	"block.endergetic.petrified_corrock_crown_wall_overworld": "Muro de corona de rocoral del Overworld petrificado",
+	"block.endergetic.petrified_corrock_crown_wall_overworld": "Corona de rocoral del Overworld petrificado en el muro",
 	"block.endergetic.petrified_corrock_crown_standing_nether": "Corona de rocoral del Nether petrificado",
-	"block.endergetic.petrified_corrock_crown_wall_nether": "Muro de corona de rocoral del Nether petrificado",
+	"block.endergetic.petrified_corrock_crown_wall_nether": "Corona de rocoral del Nether petrificado en el muro",
 	"block.endergetic.petrified_corrock_crown_standing_end": "Corona de rocoral del End petrificado",
-	"block.endergetic.petrified_corrock_crown_wall_end": "Muro de corona de rocoral del End petrificado",
+	"block.endergetic.petrified_corrock_crown_wall_end": "Corona de rocoral del End petrificado en el muro",
 	"block.endergetic.frisbloom_stem": "Tallo de frisflor",
 	"block.endergetic.frisbloom_seeds": "Semillas de frisflor",
 	"block.endergetic.eumus": "Eúmus",
@@ -69,7 +69,7 @@
 	"block.endergetic.mystical_obsidian_wall": "Muro de obsidiana mística",
 	"block.endergetic.mystical_obsidian_rune": "Runa de obsidiana mística",
 	"block.endergetic.mystical_obsidian_activation_rune": "Runa de activación de obsidiana mística",
-	"block.endergetic.mystical_obsidian_activation_rune_active": "Runa de activación de obsidiana mística activada",
+	"block.endergetic.mystical_obsidian_activation_rune_active": "Runa de activación de obsidiana mística activa",
 	"block.endergetic.acidian_lantern": "Linterna acidiana",
 	"block.endergetic.crystal_holder": "Soporte de cristal",
 	
@@ -116,9 +116,9 @@
 	"_comment": "Biomas",
 	
 	"biome.endergetic.poise_forest": "Bosque equilibrado",
-	"biome.endergetic.chorus_plains": "Planicies de coral (Sin utilizar)",
+	"biome.endergetic.chorus_plains": "Planicies de coral (Inutilizado)",
 	
-	"_comment": "Avances",
+	"_comment": "Progresos",
 	"advancements.endergetic.find_poise_forest.title": "Un lugar equilibrado",
 	"advancements.endergetic.find_poise_forest.description": "Encuentra un bosque equilibrado",
 	"advancements.endergetic.catch_puffbug.title": "Cazador de bichos alienígenas",
@@ -136,6 +136,6 @@
 	"key.endergetic.booflo_inflate" : "Inflar buflo",
 	"key.endergetic.booflo_slam" : "Golpe de buflo",
 	
-	"_comment": "Tool Tips",
+	"_comment": "Descripciones",
 	"tooltip.endergetic.activePotions": "Efectos de poción activos:"
 }
