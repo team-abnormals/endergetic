@@ -50,7 +50,7 @@
 	"block.endergetic.poise_trapdoor": "Trampilla equilibrada",
 	"block.endergetic.poise_vertical_planks": "Madera horizontal equilibrada",
 	"block.endergetic.poise_vertical_slab": "Losa vertical equilibrada",
-	"block.endergetic.poise_bookshelf": "Librería equilibrada",
+	"block.endergetic.poise_bookshelf": "Estante de libros equilibrada",
 	"block.endergetic.poise_ladder": "Escalera de mano equilibrada",
 	"block.endergetic.bolloom_bud": "Capullo de flobo",
 	"block.endergetic.puffbug_hive": "Colmena de bicho puf",
@@ -58,15 +58,15 @@
 	"block.endergetic.boof_block": "Bloque buf",
 	"block.endergetic.boof_dispensed_block": "Bloque buf dispensado",
 	"block.endergetic.eumus_bricks": "Ladrillos de eúmus",
-	"block.endergetic.eumus_chiseled_bricks": "Ladrillos de eúmus cincelados",
+	"block.endergetic.eumus_chiseled_bricks": "Ladrillos de eúmus grabados",
 	"block.endergetic.eumus_brick_slab": "Losa de ladrillos de eúmus",
 	"block.endergetic.eumus_brick_vertical_slab": "Losa vertical de ladrillos de eúmus",
 	"block.endergetic.eumus_brick_stairs": "Escaleras de ladrillos de eúmus",
-	"block.endergetic.eumus_brick_wall": "Muro de ladrillos de eúmus",
+	"block.endergetic.eumus_brick_wall": "Pared de ladrillos de eúmus",
 	"block.endergetic.potted_poise_bush": "Maceta con arbusto equilibrado",
 	
 	"block.endergetic.mystical_obsidian": "Obsidiana mística",
-	"block.endergetic.mystical_obsidian_wall": "Muro de obsidiana mística",
+	"block.endergetic.mystical_obsidian_wall": "Pared de obsidiana mística",
 	"block.endergetic.mystical_obsidian_rune": "Runa de obsidiana mística",
 	"block.endergetic.mystical_obsidian_activation_rune": "Runa de activación de obsidiana mística",
 	"block.endergetic.mystical_obsidian_activation_rune_active": "Runa de activación de obsidiana mística activa",
@@ -75,7 +75,7 @@
 	
 	"_comment": "Objetos",
 	
-	"item.endergetic.poise_boat": "Barca equilibrada",
+	"item.endergetic.poise_boat": "Bote equilibrado",
 	"item.endergetic.eumus_brick": "Ladrillo de éumus",
 	"item.endergetic.bolloom_fruit": "Fruta de flobo",
 	"item.endergetic.bolloom_balloon": "Globo de flobo",
@@ -89,7 +89,7 @@
 	"item.endergetic.bolloom_balloon_blue": "Globo de flobo azul",
 	"item.endergetic.bolloom_balloon_magenta": "Globo de flobo magenta",
 	"item.endergetic.bolloom_balloon_purple": "Globo de flobo morado",
-	"item.endergetic.bolloom_balloon_brown": "Globo de flobo marrón",
+	"item.endergetic.bolloom_balloon_brown": "Globo de flobo café",
 	"item.endergetic.bolloom_balloon_gray": "Globo de flobo gris",
 	"item.endergetic.bolloom_balloon_light_gray": "Globo de flobo gris claro",
 	"item.endergetic.bolloom_balloon_white": "Globo de flobo blanco",
@@ -116,10 +116,10 @@
 	"_comment": "Biomas",
 	
 	"biome.endergetic.poise_forest": "Bosque equilibrado",
-	"biome.endergetic.chorus_plains": "Llanura de coral (Inutilizado)",
+	"biome.endergetic.chorus_plains": "Llanura de chorus (Inutilizado)",
 	
 	"_comment": "Progresos",
-	"advancements.endergetic.find_poise_forest.title": "Un lugar equilibrado",
+	"advancements.endergetic.find_poise_forest.title": "Un lugar en equilibrio",
 	"advancements.endergetic.find_poise_forest.description": "Encuentra un bosque equilibrado",
 	"advancements.endergetic.catch_puffbug.title": "Cazador de bichos alienígenas",
 	"advancements.endergetic.catch_puffbug.description": "Atrapa un bicho puf en un frasco",
@@ -128,7 +128,7 @@
 	"advancements.endergetic.eat_bolloom_fruit.title": "Sensación flotante",
 	"advancements.endergetic.eat_bolloom_fruit.description": "Come una fruta de flobo",
 	"advancements.endergetic.tame_booflo.title": "¡Amigo inflable!",
-	"advancements.endergetic.tame_booflo.description": "Domestica a un buflo alimentándolo con frutas de flobo y alejándote para dejarlo comer",
+	"advancements.endergetic.tame_booflo.description": "Domestica un buflo alimentándolo con frutas de flobo y alejándote para dejarlo comer",
 	
 	"_comment": "Controles",
 	
