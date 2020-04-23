@@ -137,5 +137,29 @@
 	"key.endergetic.booflo_slam" : "Golpe de buflo",
 	
 	"_comment": "Descripciones",
-	"tooltip.endergetic.activePotions": "Efectos de poción activos:"
+	"tooltip.endergetic.activePotions": "Efectos de poción activos:",
+	
+	"_comment": "Subtítulos",
+	
+	"subtitles.endergetic.booflo.croak": "Buflo croa",
+	"subtitles.endergetic.booflo.death": "Buflo muere",
+	"subtitles.endergetic.booflo.deflate": "Buflo se desinfla",
+	"subtitles.endergetic.booflo.growl": "Buflo gruñe",
+	"subtitles.endergetic.booflo.hop": "Buflo brinca",
+	"subtitles.endergetic.booflo.hop_land": "Buflo aterriza",
+	"subtitles.endergetic.booflo.hurt": "Buflo herido",
+	"subtitles.endergetic.booflo.inflate": "Buflo se infla",
+	"subtitles.endergetic.booflo.slam": "Buflo golpea",
+	"subtitles.endergetic.puffbug.puff": "Resoplido de bicho puf",
+	"subtitles.endergetic.puffbug.teleport_to": "Bicho puf teletransportado",
+	"subtitles.endergetic.puffbug.teleport_from": "Bicho puf se teletransporta",
+	"subtitles.endergetic.puffbug.sleep": "Bicho puf ronca",
+	"subtitles.endergetic.puffbug.create_item": "Bicho puf crea un objeto",
+	"subtitles.endergetic.puffbug.launch": "Bicho puf despega",
+	"subtitles.endergetic.puffbug.land": "Bicho puf aterriza",
+	"subtitles.endergetic.puffbug.hurt": "Bicho puf herido",
+	"subtitles.endergetic.puffbug.death": "Bicho puf muere",
+	"subtitles.endergetic.boof_block.inflate": "Bloque buf se infla",
+	"subtitles.endergetic.booflo_vest.inflate": "Chaleco de buflo se infla",
+	"subtitles.endergetic.poise_bush.ambient": "Burbujas de arbusto equilibrado"
 }
