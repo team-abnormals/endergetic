@@ -137,5 +137,30 @@
 	"key.endergetic.booflo_slam" : "Booflo Slam",
 	
 	"_comment": "Tool Tips",
-	"tooltip.endergetic.activePotions": "Active Potion Effects:"
+	
+	"tooltip.endergetic.activePotions": "Active Potion Effects:",
+	
+	"_comment": "Subtitles",
+	
+	"subtitles.endergetic.booflo.croak": "Booflo croaks",
+	"subtitles.endergetic.booflo.death": "Booflo dies",
+	"subtitles.endergetic.booflo.deflate": "Booflo deflates",
+	"subtitles.endergetic.booflo.growl": "Booflo growls",
+	"subtitles.endergetic.booflo.hop": "Booflo hops",
+	"subtitles.endergetic.booflo.hop_land": "Booflo lands from hop",
+	"subtitles.endergetic.booflo.hurt": "Booflo hurts",
+	"subtitles.endergetic.booflo.inflate": "Booflo inflates",
+	"subtitles.endergetic.booflo.slam": "Booflo slams",
+	"subtitles.endergetic.puffbug.puff": "Puffbug puffs",
+	"subtitles.endergetic.puffbug.teleport_to": "Puffbug teleports to",
+	"subtitles.endergetic.puffbug.teleport_from": "Puffbug teleports from",
+	"subtitles.endergetic.puffbug.sleep": "Puffbug snores",
+	"subtitles.endergetic.puffbug.create_item": "Puffbug creates item",
+	"subtitles.endergetic.puffbug.launch": "Puffbug launches",
+	"subtitles.endergetic.puffbug.land": "Puffbug lands",
+	"subtitles.endergetic.puffbug.hurt": "Puffbug hurts",
+	"subtitles.endergetic.puffbug.death": "Puffbug dies",
+	"subtitles.endergetic.boof_block.inflate": "Boof Block inflates",
+	"subtitles.endergetic.booflo_vest.inflate": "Booflo vest inflates",
+	"subtitles.endergetic.poise_bush.ambient": "Poise bush bubbles"
 }
