@@ -1,6 +1,9 @@
 {
 	"_comment": "Blocks",
 	
+	"block.endergetic.corrock_overworld_block": "Overworld Corrock Block",
+	"block.endergetic.corrock_nether_block": "Nether Corrock Block",
+	"block.endergetic.corrock_end_block": "End Corrock Block",
 	"block.endergetic.corrock_overworld": "Overworld Corrock",
 	"block.endergetic.corrock_nether": "Nether Corrock",
 	"block.endergetic.corrock_end": "End Corrock",
