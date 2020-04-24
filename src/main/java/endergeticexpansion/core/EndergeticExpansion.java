@@ -87,7 +87,7 @@ public class EndergeticExpansion {
 		EEBiomes.applyBiomeInfo();
 		EEBlockRegistrars.registerFireInfo();
 		EndOverrideHandler.overrideEndFactory();
-		EEWorldGenHandler.addFeaturesToVanillaBiomes();
+		//EEWorldGenHandler.addFeaturesToVanillaBiomes();
 		EEWorldGenHandler.overrideFeatures();
 	}
 	
