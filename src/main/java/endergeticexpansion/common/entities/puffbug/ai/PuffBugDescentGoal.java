@@ -53,6 +53,7 @@ public class PuffBugDescentGoal extends Goal {
 		this.puffbug.setAIMoveSpeed(0.0F);
 		this.puffbug.getNavigator().clearPath();
 		
+		this.ticksPassed = 0;
 		this.originalPosX = (float) this.puffbug.getPosX();
 		this.originalPosZ = (float) this.puffbug.getPosZ();
 	}
