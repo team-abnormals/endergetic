@@ -1,0 +1,1 @@
+{"type":"corail_woodcutter:woodcutting","ingredient":{"item":"endergetic:poise_planks"},"result":"endergetic:poise_button","count":1,"conditions":[{"type":"forge:mod_loaded","modid":"corail_woodcutter"}]}

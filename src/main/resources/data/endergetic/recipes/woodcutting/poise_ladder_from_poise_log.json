@@ -1,0 +1,1 @@
+{"type":"corail_woodcutter:woodcutting","ingredient":{"tag":"endergetic:poise_logs"},"result":"endergetic:poise_ladder","count":4,"conditions":[{"type":"forge:mod_loaded","modid":"corail_woodcutter"}]}
