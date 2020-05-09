@@ -69,7 +69,7 @@ public class BlockCorrock extends Block implements IWaterLoggable {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
 		if(!this.petrified && !this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.get(world.getDimension().getType()).get().getDefaultState());
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_OVERWORLD).get().getDefaultState());
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class BlockCorrock extends Block implements IWaterLoggable {
 	}
 
 	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.get(world.getDimension().getType()).get() == this;
+		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_OVERWORLD).get() == this;
 	}
 	
 	@Override

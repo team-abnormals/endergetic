@@ -37,7 +37,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 public class BlockCorrockCrownStanding extends BlockCorrockCrown {
-	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+	private static final Map<DimensionType, Supplier<BlockCorrockCrown>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
 		conversions.put(DimensionType.OVERWORLD, () -> EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get());
 		conversions.put(DimensionType.THE_NETHER, () -> EEBlocks.CORROCK_CROWN_NETHER_STANDING.get());
 		conversions.put(DimensionType.THE_END, () -> EEBlocks.CORROCK_CROWN_END_STANDING.get());
@@ -58,7 +58,7 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if(!this.petrified && !this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.get(world.getDimension().getType()).get().getDefaultState()
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get().getDefaultState()
 				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
 				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
 			);
@@ -99,7 +99,7 @@ public class BlockCorrockCrownStanding extends BlockCorrockCrown {
 	}
 	
 	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.get(world.getDimension().getType()).get() == this;
+		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get() == this;
 	}
 	
 	public BlockState rotate(BlockState state, Rotation rot) {
