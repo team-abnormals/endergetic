@@ -1,5 +1,5 @@
 {
-	"_comment": "Bloques",
+	"_comment": "Blocks",
 	
 	"block.endergetic.corrock_overworld_block": "Bloque de rocoral del Overworld",
 	"block.endergetic.corrock_nether_block": "Bloque de rocoral del Nether",
@@ -52,6 +52,8 @@
 	"block.endergetic.poise_vertical_slab": "Losa vertical equilibrada",
 	"block.endergetic.poise_bookshelf": "Estante de libros equilibrada",
 	"block.endergetic.poise_ladder": "Escalera de mano equilibrada",
+	"block.endergetic.poise_sign": "Letrero equilibrado",
+	"block.endergetic.poise_wall_sign": "Letrero equilibrado en pared",
 	"block.endergetic.bolloom_bud": "Capullo de flobo",
 	"block.endergetic.puffbug_hive": "Colmena de bicho puf",
 	"block.endergetic.hive_hanger": "Colgador de colmena",
@@ -73,7 +75,7 @@
 	"block.endergetic.acidian_lantern": "Linterna acidiana",
 	"block.endergetic.crystal_holder": "Soporte de cristal",
 	
-	"_comment": "Objetos",
+	"_comment_": "Items",
 	
 	"item.endergetic.poise_boat": "Bote equilibrado",
 	"item.endergetic.eumus_brick": "Ladrillo de éumus",
@@ -101,7 +103,7 @@
 	"item.endergetic.puff_bug_spawn_egg": "Generar bicho puf",
 	"item.endergetic.booflo_spawn_egg": "Generar buflo",
 	
-	"_comment": "Entidades",
+	"__comment": "Entities",
 	
 	"entity.endergetic.poise_cluster": "Racimo equilibrado",
 	"entity.endergetic.bolloom_fruit": "Fruta de flobo",
@@ -113,12 +115,12 @@
 	"entity.endergetic.booflo_adolescent": "Buflo adolescente",
 	"entity.endergetic.booflo": "Buflo",
 	
-	"_comment": "Biomas",
+	"___comment": "Biomes",
 	
 	"biome.endergetic.poise_forest": "Bosque equilibrado",
 	"biome.endergetic.chorus_plains": "Llanura de chorus (Inutilizado)",
 	
-	"_comment": "Progresos",
+	"____comment": "Advancements",
 	"advancements.endergetic.find_poise_forest.title": "Un lugar en equilibrio",
 	"advancements.endergetic.find_poise_forest.description": "Encuentra un bosque equilibrado",
 	"advancements.endergetic.catch_puffbug.title": "Cazador de bichos alienígenas",
@@ -130,16 +132,17 @@
 	"advancements.endergetic.tame_booflo.title": "¡Amigo inflable!",
 	"advancements.endergetic.tame_booflo.description": "Domestica un buflo alimentándolo con frutas de flobo y alejándote para dejarlo comer",
 	
-	"_comment": "Controles",
+	"_____comment": "Keybinds",
 	
 	"key.endergetic.boof_vest" : "Activar chaleco de buflo",
 	"key.endergetic.booflo_inflate" : "Inflar buflo",
 	"key.endergetic.booflo_slam" : "Golpe de buflo",
 	
-	"_comment": "Descripciones",
+	"______comment": "Tool Tips",
+	
 	"tooltip.endergetic.activePotions": "Efectos de poción activos:",
 	
-	"_comment": "Subtítulos",
+	"_______comment": "Subtitles",
 	
 	"subtitles.endergetic.booflo.croak": "Buflo croando",
 	"subtitles.endergetic.booflo.death": "Buflo muerto",
