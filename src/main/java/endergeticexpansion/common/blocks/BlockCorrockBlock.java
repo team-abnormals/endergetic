@@ -48,7 +48,7 @@ public class BlockCorrockBlock extends Block {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if(!this.petrified && !this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.get(world.getDimension().getType()).get().getDefaultState());
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().getDefaultState());
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class BlockCorrockBlock extends Block {
 	}
 
 	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.get(world.getDimension().getType()).get() == this;
+		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() == this;
 	}
 	
 	public boolean isSubmerged(IWorld world, BlockPos pos) {

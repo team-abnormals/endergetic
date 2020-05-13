@@ -5,9 +5,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.Dynamic;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 
 import endergeticexpansion.api.util.GenerationUtils;
-import endergeticexpansion.api.util.MathUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud.BudSide;

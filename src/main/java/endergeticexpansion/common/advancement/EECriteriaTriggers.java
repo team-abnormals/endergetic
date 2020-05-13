@@ -1,5 +1,7 @@
 package endergeticexpansion.common.advancement;
 
+import com.teamabnormals.abnormals_core.common.advancement.EmptyTrigger;
+
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.util.ResourceLocation;

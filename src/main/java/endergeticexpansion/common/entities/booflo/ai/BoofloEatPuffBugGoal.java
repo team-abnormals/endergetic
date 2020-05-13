@@ -1,6 +1,7 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;

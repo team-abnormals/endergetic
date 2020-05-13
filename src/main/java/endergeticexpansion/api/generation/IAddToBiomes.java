@@ -8,6 +8,7 @@ import net.minecraft.world.biome.Biomes;
 /**
  * @author SmellyModder(Luke Tonon)
  * Simple interface used for adding features to vanilla biomes
+ * TODO: Remove when Corrock is added
  */
 public interface IAddToBiomes {
 	Consumer<Biome> processBiomeAddition();

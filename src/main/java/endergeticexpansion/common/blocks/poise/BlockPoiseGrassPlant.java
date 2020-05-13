@@ -2,7 +2,8 @@ package endergeticexpansion.common.blocks.poise;
 
 import java.util.Random;
 
-import endergeticexpansion.api.util.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.other.EETags;

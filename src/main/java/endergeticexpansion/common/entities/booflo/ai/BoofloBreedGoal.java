@@ -5,7 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
 import net.minecraft.entity.EntityPredicate;

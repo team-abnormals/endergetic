@@ -2,7 +2,8 @@ package endergeticexpansion.common.network.entity.booflo;
 
 import java.util.function.Supplier;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;

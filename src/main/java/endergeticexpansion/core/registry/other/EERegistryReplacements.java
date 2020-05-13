@@ -1,8 +1,9 @@
 package endergeticexpansion.core.registry.other;
 
+import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+
 import endergeticexpansion.common.items.EndergeticEnderCrystalItem;
 import endergeticexpansion.core.EndergeticExpansion;
-import endergeticexpansion.core.registry.util.RegistryUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
@@ -19,7 +20,7 @@ public class EERegistryReplacements {
 	@SubscribeEvent
 	public static void registerItemReplacements(RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(
-			new EndergeticEnderCrystalItem(RegistryUtils.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
+			new EndergeticEnderCrystalItem(RegistryHelper.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
 		);
 	}
 

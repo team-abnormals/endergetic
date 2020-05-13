@@ -1,32 +1,37 @@
 package endergeticexpansion.core.registry;
 
-import com.google.common.collect.Sets;
-
-import endergeticexpansion.common.tileentities.*;
-import endergeticexpansion.common.tileentities.boof.*;
+import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
+import endergeticexpansion.common.tileentities.TileEntityEndStoneCover;
+import endergeticexpansion.common.tileentities.TileEntityFrisbloomStem;
+import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
+import endergeticexpansion.common.tileentities.boof.TileEntityBoof;
+import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
 import endergeticexpansion.core.EndergeticExpansion;
+import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EETileEntities {
-	public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, EndergeticExpansion.MOD_ID);
+	public static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
-	public static final RegistryObject<TileEntityType<TileEntityCorrockCrown>> CORROCK_CROWN = TILE_ENTITY_TYPES.register("corrock_crown", () -> new TileEntityType<>(TileEntityCorrockCrown::new, Sets.newHashSet(
+	public static final RegistryObject<TileEntityType<TileEntityCorrockCrown>> CORROCK_CROWN = HELPER.createTileEntity("corrock_crown", TileEntityCorrockCrown::new, () -> new Block[] {
 		EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.CORROCK_CROWN_NETHER_STANDING.get(),
 		EEBlocks.CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.CORROCK_CROWN_END_STANDING.get(), EEBlocks.CORROCK_CROWN_END_WALL.get(),
 		EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get(),
-		EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()), null
-	));
-	public static final RegistryObject<TileEntityType<TileEntityEndStoneCover>> ENDSTONE_COVER = TILE_ENTITY_TYPES.register("endstone_cover", () -> new TileEntityType<>(TileEntityEndStoneCover::new, Sets.newHashSet(EEBlocks.ENDSTONE_COVER.get()), null));
-	public static final RegistryObject<TileEntityType<TileEntityFrisbloomStem>> FRISBLOOM_STEM = TILE_ENTITY_TYPES.register("frisbloom_stem", () -> new TileEntityType<>(TileEntityFrisbloomStem::new, Sets.newHashSet(EEBlocks.FRISBLOOM_STEM), null));
+		EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()
+	});
+	public static final RegistryObject<TileEntityType<TileEntityEndStoneCover>> ENDSTONE_COVER = HELPER.createTileEntity("endstone_cover", TileEntityEndStoneCover::new, () -> new Block[] {EEBlocks.ENDSTONE_COVER.get()});
+	public static final RegistryObject<TileEntityType<TileEntityFrisbloomStem>> FRISBLOOM_STEM = HELPER.createTileEntity("frisbloom_stem", TileEntityFrisbloomStem::new, () -> new Block[] {EEBlocks.FRISBLOOM_STEM});
 	
 	/*
 	 * Poise Forest
 	 */
-	public static final RegistryObject<TileEntityType<TileEntityBolloomBud>> BOLLOOM_BUD = TILE_ENTITY_TYPES.register("bolloom_bud", () -> new TileEntityType<>(TileEntityBolloomBud::new, Sets.newHashSet(EEBlocks.BOLLOOM_BUD.get()), null));
-	public static final RegistryObject<TileEntityType<TileEntityPuffBugHive>> PUFFBUG_HIVE = TILE_ENTITY_TYPES.register("puffbug_hive", () -> new TileEntityType<>(TileEntityPuffBugHive::new, Sets.newHashSet(EEBlocks.PUFFBUG_HIVE.get()), null));
-	public static final RegistryObject<TileEntityType<TileEntityBoof>> BOOF_BLOCK = TILE_ENTITY_TYPES.register("boof_block", () -> new TileEntityType<>(TileEntityBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK.get()), null));
-	public static final RegistryObject<TileEntityType<TileEntityDispensedBoof>> BOOF_BLOCK_DISPENSED = TILE_ENTITY_TYPES.register("boof_block_dispensed", () -> new TileEntityType<>(TileEntityDispensedBoof::new, Sets.newHashSet(EEBlocks.BOOF_BLOCK_DISPENSED.get()), null));
+	public static final RegistryObject<TileEntityType<TileEntityBolloomBud>> BOLLOOM_BUD = HELPER.createTileEntity("bolloom_bud", TileEntityBolloomBud::new, () -> new Block[] {EEBlocks.BOLLOOM_BUD.get()});
+	public static final RegistryObject<TileEntityType<TileEntityPuffBugHive>> PUFFBUG_HIVE = HELPER.createTileEntity("puffbug_hive", TileEntityPuffBugHive::new, () -> new Block[] {EEBlocks.PUFFBUG_HIVE.get()});
+	public static final RegistryObject<TileEntityType<TileEntityBoof>> BOOF_BLOCK = HELPER.createTileEntity("boof_block", TileEntityBoof::new, () -> new Block[] {EEBlocks.BOOF_BLOCK.get()});
+	public static final RegistryObject<TileEntityType<TileEntityDispensedBoof>> BOOF_BLOCK_DISPENSED = HELPER.createTileEntity("boof_block_dispensed", TileEntityDispensedBoof::new, () -> new Block[] {EEBlocks.BOOF_BLOCK_DISPENSED.get()});
 }

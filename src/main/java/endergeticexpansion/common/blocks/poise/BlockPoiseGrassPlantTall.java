@@ -4,7 +4,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.util.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.world.other.PoiseTree;
 import endergeticexpansion.core.registry.EESounds;

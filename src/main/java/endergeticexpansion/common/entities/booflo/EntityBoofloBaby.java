@@ -2,8 +2,9 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.endimator.Endimation;
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
+
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
 import endergeticexpansion.common.entities.booflo.ai.BabyFollowParentGoal;
 import endergeticexpansion.core.registry.EEEntities;

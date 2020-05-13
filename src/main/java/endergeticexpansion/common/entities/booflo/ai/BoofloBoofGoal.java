@@ -2,7 +2,8 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;

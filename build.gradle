@@ -8,6 +8,9 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+plugins {
+  id "com.wynprice.cursemaven" version "2.1.1"
+}
 apply plugin: 'net.minecraftforge.gradle'
 
 apply plugin: 'eclipse'
@@ -75,6 +78,8 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.1.27'
+
+    compile fg.deobf("curse.maven:abnormals-core:2955363")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

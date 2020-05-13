@@ -1,6 +1,6 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.block.Block;

@@ -9,8 +9,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.Dynamic;
+import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 
-import endergeticexpansion.api.generation.GenerationPiece;
 import endergeticexpansion.api.generation.IAddToBiomes;
 import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
 import endergeticexpansion.common.blocks.BlockCorrockCrownWall;

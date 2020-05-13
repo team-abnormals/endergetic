@@ -2,8 +2,8 @@ package endergeticexpansion.client.model.bolloom;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;

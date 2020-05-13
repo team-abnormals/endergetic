@@ -1,6 +1,7 @@
 package endergeticexpansion.common.entities.puffbug.ai;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
 import net.minecraft.entity.ai.goal.Goal;

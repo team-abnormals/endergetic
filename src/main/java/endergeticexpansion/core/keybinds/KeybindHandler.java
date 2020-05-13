@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.util.EntityMotionHelper;
-import endergeticexpansion.api.util.MathUtils;
-import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.api.util.EndergeticNetworkUtil;
 import endergeticexpansion.common.entities.EntityBoofBlock;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
@@ -69,7 +70,7 @@ public class KeybindHandler {
 					tag.putInt("timesBoofed", tag.getInt("timesBoofed") + 1);
 					vest.setDelayForBoofedAmount(stack, player);
         			
-					NetworkUtil.updateSItemNBT(stack);
+					EndergeticNetworkUtil.updateSItemNBT(stack);
 					EntityMotionHelper.knockbackEntity(player, 4.0F, 0.75F, true, true);
         			
 					for(Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(2.0D))) {
@@ -98,7 +99,7 @@ public class KeybindHandler {
         			
         			player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (tag.getInt("timesBoofed") * 0.15F), 0.25F, 1.0F));
         			
-        			NetworkUtil.SBoofEntity(4.0F, 0.75F, 2);
+        			EndergeticNetworkUtil.SBoofEntity(4.0F, 0.75F, 2);
         		}
         	}
     	}
@@ -110,14 +111,14 @@ public class KeybindHandler {
 				if(booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
 						if(booflo.getRideControlDelay() >= 182) {
-							NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+							EndergeticNetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
 						} else {
-							NetworkUtil.incrementBoofloBoostTimer(booflo.getEntityId());
+							EndergeticNetworkUtil.incrementBoofloBoostTimer(booflo.getEntityId());
 						}
 					}
 				} else if(!booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(booflo.getRideControlDelay() <= 0) {
-						NetworkUtil.inflateBooflo(booflo.getEntityId());
+						EndergeticNetworkUtil.inflateBooflo(booflo.getEntityId());
 					}
 				}
 			}
@@ -128,7 +129,7 @@ public class KeybindHandler {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
-						NetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
+						EndergeticNetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
 					}
 				}
 			}
@@ -140,7 +141,7 @@ public class KeybindHandler {
 				EntityBooflo booflo = (EntityBooflo) ridingEntity;
 				if(booflo.isBoofed()) {
 					if(booflo.getRideControlDelay() <= 0 && booflo.isNoEndimationPlaying()) {
-						NetworkUtil.slamBooflo(booflo.getEntityId());
+						EndergeticNetworkUtil.slamBooflo(booflo.getEntityId());
 					}
 				}
 			}

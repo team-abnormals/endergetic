@@ -1,7 +1,8 @@
 package endergeticexpansion.common.entities.booflo.ai;
 
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.api.entity.util.DetectionHelper;
-import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;

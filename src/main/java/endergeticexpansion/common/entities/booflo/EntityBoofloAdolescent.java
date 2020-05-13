@@ -2,11 +2,12 @@ package endergeticexpansion.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.endimator.Endimation;
-import endergeticexpansion.api.endimator.entity.EndimatedEntity;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
-import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;

@@ -2,8 +2,8 @@ package endergeticexpansion.client.model.armor;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;

@@ -2,7 +2,8 @@ package endergeticexpansion.common.blocks.poise;
 
 import java.util.Random;
 
-import endergeticexpansion.api.util.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+
 import endergeticexpansion.client.particle.EEParticles;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;

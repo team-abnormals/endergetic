@@ -1,6 +1,6 @@
 package endergeticexpansion.common.items;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import endergeticexpansion.api.util.EndergeticNetworkUtil;
 import endergeticexpansion.client.model.armor.ModelBoofloVest;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.other.EEArmorMaterials;
@@ -70,7 +70,7 @@ public class ItemBoofloVest extends ArmorItem {
 	}
 	
 	public void setDelayForBoofedAmount(ItemStack stack, PlayerEntity player) {
-		NetworkUtil.setSItemCooldown(stack, 100, true);
+		EndergeticNetworkUtil.setSItemCooldown(stack, 100, true);
 	}
 	
 	@Override

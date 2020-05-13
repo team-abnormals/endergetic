@@ -1,29 +1,55 @@
 package endergeticexpansion.core;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
+
 import endergeticexpansion.client.particle.EEParticles;
-import endergeticexpansion.client.render.entity.*;
-import endergeticexpansion.client.render.entity.booflo.*;
-import endergeticexpansion.client.render.tile.*;
-import endergeticexpansion.common.items.EndergeticSpawnEgg;
-import endergeticexpansion.common.network.entity.*;
-import endergeticexpansion.common.network.entity.booflo.*;
+import endergeticexpansion.client.render.entity.RenderBolloomBalloon;
+import endergeticexpansion.client.render.entity.RenderBolloomFruit;
+import endergeticexpansion.client.render.entity.RenderBolloomKnot;
+import endergeticexpansion.client.render.entity.RenderBoofBlock;
+import endergeticexpansion.client.render.entity.RenderPoiseCluster;
+import endergeticexpansion.client.render.entity.RenderPuffBug;
+import endergeticexpansion.client.render.entity.booflo.RenderBooflo;
+import endergeticexpansion.client.render.entity.booflo.RenderBoofloAdolescent;
+import endergeticexpansion.client.render.entity.booflo.RenderBoofloBaby;
+import endergeticexpansion.client.render.tile.BolloomBudTileEntityRenderer;
+import endergeticexpansion.client.render.tile.BoofBlockTileEntityRenderer;
+import endergeticexpansion.client.render.tile.CorrockCrownTileEntityRenderer;
+import endergeticexpansion.client.render.tile.EndStoneCoverTileEntityRenderer;
+import endergeticexpansion.client.render.tile.FrisbloomStemTileEntityRenderer;
+import endergeticexpansion.client.render.tile.PuffBugHiveTileEntityRenderer;
+import endergeticexpansion.common.network.entity.MessageCSetVelocity;
+import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
+import endergeticexpansion.common.network.entity.MessageSBoofEntity;
+import endergeticexpansion.common.network.entity.MessageSSetCooldown;
+import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
+import endergeticexpansion.common.network.entity.MessageSSetVelocity;
+import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
+import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
+import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
+import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
 import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
-import endergeticexpansion.common.network.nbt.*;
-import endergeticexpansion.common.network.particle.*;
+import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
+import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
 import endergeticexpansion.common.world.EEWorldGenHandler;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.keybinds.KeybindHandler;
-import endergeticexpansion.core.registry.*;
+import endergeticexpansion.core.registry.EEBiomes;
+import endergeticexpansion.core.registry.EEEntities;
+import endergeticexpansion.core.registry.EESounds;
+import endergeticexpansion.core.registry.EETileEntities;
+import endergeticexpansion.core.registry.other.EEBlockRegistrars;
 import endergeticexpansion.core.registry.other.EEDataSerializers;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
-import endergeticexpansion.core.registry.other.EEBlockRegistrars;
+import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,16 +57,15 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
@@ -48,6 +73,7 @@ public class EndergeticExpansion {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
 	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
+	public static final EndergeticRegistryHelper REGISTRY_HELPER = new EndergeticRegistryHelper(MOD_ID);
 	
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
 		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -63,12 +89,12 @@ public class EndergeticExpansion {
 		
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     	
-		EEItems.ITEMS.register(modEventBus);
-		EEBlocks.BLOCKS.register(modEventBus);
-		EESounds.SOUNDS.register(modEventBus);
-		EETileEntities.TILE_ENTITY_TYPES.register(modEventBus);
+		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
+		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
-		EEEntities.ENTITY_TYPES.register(modEventBus);
+		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
@@ -107,7 +133,6 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOF_BLOCK.get(), RenderBoofBlock::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_KNOT.get(), RenderBolloomKnot::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_BALLOON.get(), RenderBolloomBalloon::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOAT.get(), RenderEndergeticBoat::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.PUFF_BUG.get(), RenderPuffBug::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), RenderBoofloBaby::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), RenderBoofloAdolescent::new);
@@ -115,23 +140,14 @@ public class EndergeticExpansion {
 		
 		KeybindHandler.registerKeys();
 		
+		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Arrays.asList(() -> EEBiomes.POISE_FOREST.get()), () -> EESounds.POISE_FOREST_LOOP.get(), () -> EESounds.POISE_FOREST_ADDITIONS.get(), () -> EESounds.POISE_FOREST_MOOD.get());
 		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
 	}
 	
 	
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {
-		for(RegistryObject<Item> items : EEItems.SPAWN_EGGS) {
-			//RegistryObject#isPresent causes a null pointer when it's false :crying: thanks forge
-			if(ObfuscationReflectionHelper.getPrivateValue(RegistryObject.class, items, "value") != null) {
-				Item item = items.get();
-				if(item instanceof EndergeticSpawnEgg) {
-					event.getItemColors().register((itemColor, itemsIn) -> {
-						return ((EndergeticSpawnEgg) item).getColor(itemsIn);
-					}, item);
-				}
-			}
-		}
+		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
     
 	private void setupMessages() {
@@ -174,26 +190,6 @@ public class EndergeticExpansion {
 		CHANNEL.messageBuilder(MessageSSetFallDistance.class, id++)
 		.encoder(MessageSSetFallDistance::serialize).decoder(MessageSSetFallDistance::deserialize)
 		.consumer(MessageSSetFallDistance::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageCAnimation.class, id++)
-		.encoder(MessageCAnimation::serialize).decoder(MessageCAnimation::deserialize)
-		.consumer(MessageCAnimation::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageTeleport.class, id++)
-		.encoder(MessageTeleport::serialize).decoder(MessageTeleport::deserialize)
-		.consumer(MessageTeleport::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageSpawnParticle.class, id++)
-		.encoder(MessageSpawnParticle::serialize).decoder(MessageSpawnParticle::deserialize)
-		.consumer(MessageSpawnParticle::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(MessageC2S2CSpawnParticle.class, id++)
-		.encoder(MessageC2S2CSpawnParticle::serialize).decoder(MessageC2S2CSpawnParticle::deserialize)
-		.consumer(MessageC2S2CSpawnParticle::handle)
 		.add();
 		
 		CHANNEL.messageBuilder(MessageSInflate.class, id++)

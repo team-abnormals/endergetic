@@ -3,8 +3,9 @@ package endergeticexpansion.common.blocks.poise;
 import java.util.List;
 import java.util.Random;
 
-import endergeticexpansion.api.util.MathUtils;
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.client.particle.EEParticles;
 import endergeticexpansion.common.entities.EntityPoiseCluster;
 import endergeticexpansion.core.registry.EESounds;

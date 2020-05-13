@@ -52,6 +52,8 @@
 	"block.endergetic.poise_vertical_slab": "Poise Vertical Slab",
 	"block.endergetic.poise_bookshelf": "Poise Bookshelf",
 	"block.endergetic.poise_ladder": "Poise Ladder",
+	"block.endergetic.poise_sign": "Poise Sign",
+	"block.endergetic.poise_wall_sign": "Poise Sign",
 	"block.endergetic.bolloom_bud": "Bolloom Bud",
 	"block.endergetic.puffbug_hive": "Puff Bug Hive",
 	"block.endergetic.hive_hanger": "Hive Hanger",
@@ -73,7 +75,7 @@
 	"block.endergetic.acidian_lantern": "Acidian Lantern",
 	"block.endergetic.crystal_holder": "Crystal Holder",
 	
-	"_comment": "Items",
+	"_comment_": "Items",
 	
 	"item.endergetic.poise_boat": "Poise Boat",
 	"item.endergetic.eumus_brick": "Eumus Brick",
@@ -101,7 +103,7 @@
 	"item.endergetic.puff_bug_spawn_egg": "Puff Bug Spawn Egg",
 	"item.endergetic.booflo_spawn_egg": "Booflo Spawn Egg",
 	
-	"_comment": "Entities",
+	"__comment": "Entities",
 	
 	"entity.endergetic.poise_cluster": "Poise Cluster",
 	"entity.endergetic.bolloom_fruit": "Bolloom Fruit",
@@ -113,12 +115,12 @@
 	"entity.endergetic.booflo_adolescent": "Booflo Adolescent",
 	"entity.endergetic.booflo": "Booflo",
 	
-	"_comment": "Biomes",
+	"___comment": "Biomes",
 	
 	"biome.endergetic.poise_forest": "Poise Forest",
 	"biome.endergetic.chorus_plains": "Chorus Plains(Unused)",
 	
-	"_comment": "Advancements",
+	"____comment": "Advancements",
 	"advancements.endergetic.find_poise_forest.title": "A Poised Place",
 	"advancements.endergetic.find_poise_forest.description": "Find a Poise Forest",
 	"advancements.endergetic.catch_puffbug.title": "Alien Bug Catcher",
@@ -130,17 +132,17 @@
 	"advancements.endergetic.tame_booflo.title": "Inflatable Friend!",
 	"advancements.endergetic.tame_booflo.description": "Tame a Booflo by feeding it Bolloom Fruits and backing away to let it eat",
 	
-	"_comment": "Keybinds",
+	"_____comment": "Keybinds",
 	
 	"key.endergetic.boof_vest" : "Booflo Vest Activate",
 	"key.endergetic.booflo_inflate" : "Booflo Ride Inflate",
 	"key.endergetic.booflo_slam" : "Booflo Slam",
 	
-	"_comment": "Tool Tips",
+	"______comment": "Tool Tips",
 	
 	"tooltip.endergetic.activePotions": "Active Potion Effects:",
 	
-	"_comment": "Subtitles",
+	"_______comment": "Subtitles",
 	
 	"subtitles.endergetic.booflo.croak": "Booflo croaks",
 	"subtitles.endergetic.booflo.death": "Booflo dies",

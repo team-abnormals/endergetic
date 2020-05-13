@@ -2,7 +2,8 @@ package endergeticexpansion.common.network.entity.puffbug;
 
 import java.util.function.Supplier;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
+
 import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;

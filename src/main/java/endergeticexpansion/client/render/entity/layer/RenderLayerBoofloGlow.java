@@ -2,8 +2,8 @@ package endergeticexpansion.client.render.entity.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
 import endergeticexpansion.client.EERenderTypes;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.core.EndergeticExpansion;

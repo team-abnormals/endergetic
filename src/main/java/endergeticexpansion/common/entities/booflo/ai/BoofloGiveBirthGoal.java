@@ -2,7 +2,8 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.Random;
 
-import endergeticexpansion.api.util.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
 import endergeticexpansion.core.registry.EEEntities;

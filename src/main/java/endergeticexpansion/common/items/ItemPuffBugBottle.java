@@ -3,9 +3,11 @@ package endergeticexpansion.common.items;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+
 import java.util.Map.Entry;
 
-import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
@@ -116,7 +118,7 @@ public class ItemPuffBugBottle extends Item {
 			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").applyTextStyles(TextFormatting.DARK_PURPLE));
 			for(EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + StringUtils.intToRomanNumerals(effects.getAmplifier() + 1)).applyTextStyles(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).applyTextStyles(potionTextFormat));
 			}
 		}
 	}

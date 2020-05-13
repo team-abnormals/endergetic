@@ -7,8 +7,9 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.api.endimator.ControlledEndimation;
-import endergeticexpansion.api.util.MathUtils;
+import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+
 import endergeticexpansion.api.util.StringUtils;
 import endergeticexpansion.common.blocks.poise.BlockBolloomBud;
 import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;

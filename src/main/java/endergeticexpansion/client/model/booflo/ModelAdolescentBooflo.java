@@ -2,10 +2,10 @@ package endergeticexpansion.client.model.booflo;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorEntityModel;
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimatorModelRenderer;
 
-import endergeticexpansion.api.EndergeticAPI.ClientInfo;
-import endergeticexpansion.api.endimator.EndimatorEntityModel;
-import endergeticexpansion.api.endimator.EndimatorModelRenderer;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import net.minecraft.util.math.MathHelper;
 
@@ -55,8 +55,6 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
         this.Head.addChild(this.KneeRight);
         this.Head.addChild(this.Tail);
         this.Head.addChild(this.ArmLeft);
-        
-        this.createScaleController();
         
         this.setDefaultBoxValues();
     }
@@ -113,58 +111,57 @@ public class ModelAdolescentBooflo<E extends EntityBoofloAdolescent> extends End
     
     @Override
     public void animateModel(E booflo) {
-    	this.endimator.updateAnimations(booflo);
+    	super.animateModel(booflo);
     	
     	if(booflo.isEndimationPlaying(EntityBoofloAdolescent.BOOF_ANIMATION)) {
-    		this.endimator.setAnimationToPlay(EntityBoofloAdolescent.BOOF_ANIMATION);
+    		this.setEndimationToPlay(EntityBoofloAdolescent.BOOF_ANIMATION);
     		
-    		this.endimator.startKeyframe(3);
-    		this.endimator.move(this.getScaleController(), 0.5F, -0.2F, 0.5F);
-    		this.endimator.move(Head, 0.0F, -0.2F, 0.0F);
-    		this.endimator.move(Jaw, 0.0F, -0.2F, 0.0F);
-    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, -0.4F);
-    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.4F);
-    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.2F);
-    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
-    		this.endimator.endKeyframe();
+    		this.startKeyframe(3);
+    		this.scale(this.Head, 0.5F, -0.2F, 0.5F);
+    		this.scale(this.Jaw, 0.5F, -0.2F, 0.5F);
+    		this.move(Head, 0.0F, -0.2F, 0.0F);
+    		this.move(Jaw, 0.0F, -0.2F, 0.0F);
+    		this.rotate(ArmLeft, 0.0F, 0.0F, -0.4F);
+    		this.rotate(ArmRight, 0.0F, 0.0F, 0.4F);
+    		this.rotate(KneeLeft, 0.0F, 0.0F, 0.2F);
+    		this.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
+    		this.endKeyframe();
     		
-    		this.endimator.setStaticKeyframe(3);
+    		this.setStaticKeyframe(3);
     		
-    		this.endimator.startKeyframe(4);
-    		this.endimator.move(this.getScaleController(), -0.0F, 0.0F, -0.0F);
-    		this.endimator.move(Head, 0.0F, 0F, 0.0F);
-    		this.endimator.move(Jaw, 0.0F, 0F, 0.0F);
-    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, 0.6F);
-    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, -0.6F);
-    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, -0.35F);
-    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, 0.35F);
-    		this.endimator.endKeyframe();
+    		this.startKeyframe(4);
+    		this.scale(this.Head, -0.0F, 0.0F, -0.0F);
+    		this.scale(this.Jaw, -0.0F, 0.0F, -0.0F);
+    		this.move(Head, 0.0F, 0F, 0.0F);
+    		this.move(Jaw, 0.0F, 0F, 0.0F);
+    		this.rotate(ArmLeft, 0.0F, 0.0F, 0.6F);
+    		this.rotate(ArmRight, 0.0F, 0.0F, -0.6F);
+    		this.rotate(KneeLeft, 0.0F, 0.0F, -0.35F);
+    		this.rotate(KneeRight, 0.0F, 0.0F, 0.35F);
+    		this.endKeyframe();
     		
-    		this.endimator.setStaticKeyframe(4);
+    		this.setStaticKeyframe(4);
     		
-    		this.endimator.startKeyframe(4);
-    		this.endimator.rotate(ArmLeft, 0.0F, 0.0F, -0.2F);
-    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.2F);
-    		this.endimator.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
-    		this.endimator.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
-    		this.endimator.endKeyframe();
+    		this.startKeyframe(4);
+    		this.rotate(ArmLeft, 0.0F, 0.0F, -0.2F);
+    		this.rotate(ArmRight, 0.0F, 0.0F, 0.2F);
+    		this.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
+    		this.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
+    		this.endKeyframe();
     	} else if(booflo.isEndimationPlaying(EntityBoofloAdolescent.EATING_ANIMATION)) {
-    		this.endimator.setAnimationToPlay(EntityBoofloAdolescent.EATING_ANIMATION);
+    		this.setEndimationToPlay(EntityBoofloAdolescent.EATING_ANIMATION);
     		
-    		this.endimator.startKeyframe(5);
-    		this.endimator.rotate(ArmLeft, 0.0F, -0.42F, 0.0F);
-    		this.endimator.rotate(ArmRight, 0.0F, 0.42F, 0.0F);
-    		this.endimator.rotate(Head, -0.6F, 0.0F, 0.0F);
-    		this.endimator.endKeyframe();
+    		this.startKeyframe(5);
+    		this.rotate(ArmLeft, 0.0F, -0.42F, 0.0F);
+    		this.rotate(ArmRight, 0.0F, 0.42F, 0.0F);
+    		this.rotate(Head, -0.6F, 0.0F, 0.0F);
+    		this.endKeyframe();
     		
-    		this.endimator.startKeyframe(5);
-    		this.endimator.rotate(ArmLeft, 0.0F, -0.0F, 0.0F);
-    		this.endimator.rotate(ArmRight, 0.0F, 0.0F, 0.0F);
-    		this.endimator.rotate(Head, -0.0F, 0.0F, 0.0F);
-    		this.endimator.endKeyframe();
+    		this.startKeyframe(5);
+    		this.rotate(ArmLeft, 0.0F, -0.0F, 0.0F);
+    		this.rotate(ArmRight, 0.0F, 0.0F, 0.0F);
+    		this.rotate(Head, -0.0F, 0.0F, 0.0F);
+    		this.endKeyframe();
     	}
-    	
-    	this.Head.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
-    	this.Jaw.setScale(this.getScaleController().rotationPointX, this.getScaleController().rotationPointY, this.getScaleController().rotationPointZ);
     }
 }

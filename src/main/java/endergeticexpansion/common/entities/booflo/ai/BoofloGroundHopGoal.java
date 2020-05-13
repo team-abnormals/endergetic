@@ -2,8 +2,9 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+
 import endergeticexpansion.api.entity.util.RayTraceHelper;
-import endergeticexpansion.api.util.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
 import net.minecraft.entity.ai.goal.Goal;
