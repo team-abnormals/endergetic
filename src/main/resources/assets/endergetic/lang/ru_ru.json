@@ -52,6 +52,8 @@
 	"block.endergetic.poise_vertical_slab": "Пуазовая вертикальная плита",
 	"block.endergetic.poise_bookshelf": "Пуазовая книжная полка",
 	"block.endergetic.poise_ladder": "Пуазовая лестница",
+	"block.endergetic.poise_sign": "Пуазовая табличка",
+	"block.endergetic.poise_wall_sign": "Пуазовая табличка",
 	"block.endergetic.bolloom_bud": "Бутон булума",
 	"block.endergetic.puffbug_hive": "Улей пуфмитов",
 	"block.endergetic.hive_hanger": "Подвеска улья",
@@ -73,7 +75,7 @@
 	"block.endergetic.acidian_lantern": "Кислотный Фонарь",
 	"block.endergetic.crystal_holder": "Кристальный держатель",
 	
-	"_comment": "Предметы",
+	"_comment_": "Предметы",
 	
 	"item.endergetic.poise_boat": "Пуазовая лодка",
 	"item.endergetic.eumus_brick": "Юмусовый кирпич",
@@ -101,7 +103,7 @@
 	"item.endergetic.puff_bug_spawn_egg": "Яйцо призыва пуфмита",
 	"item.endergetic.booflo_spawn_egg": "Яйцо призыва буффало",
 	
-	"_comment": "Сущности",
+	"__comment": "Сущности",
 	
 	"entity.endergetic.poise_cluster": "Сгусток пуаза",
 	"entity.endergetic.bolloom_fruit": "Фрукт булума",
@@ -113,12 +115,12 @@
 	"entity.endergetic.booflo_adolescent": "Подросток пуфлу",
 	"entity.endergetic.booflo": "Буффало",
 	
-	"_comment": "Биомы",
+	"___comment": "Биомы",
 	
 	"biome.endergetic.poise_forest": "Лес-пуаз",
 	"biome.endergetic.chorus_plains": "Хорусовые поля(Не используется)",
 	
-	"_comment": "Достижения",
+	"____comment": "Достижения",
 	"advancements.endergetic.find_poise_forest.title": "Вязкое местечко",
 	"advancements.endergetic.find_poise_forest.description": "Найдите Лес-пуаз",
 	"advancements.endergetic.catch_puffbug.title": "Ловец чужестранных жуков",
@@ -130,12 +132,32 @@
 	"advancements.endergetic.tame_booflo.title": "Надувной друг!",
 	"advancements.endergetic.tame_booflo.description": "Приручите Буффало, скармливая ему фрукты булума и отступив, чтобы дать ему съесть",
 	
-	"_comment": "Комбинации клавиш",
+	"_____comment": "Комбинации клавиш",
 	
 	"key.endergetic.boof_vest" : "Активация пуфлу-жилета",
 	"key.endergetic.booflo_inflate" : "Вздуть пуфлу",
 	"key.endergetic.booflo_slam" : "Удар пуфлу",
 	
-	"_comment": "Подсказки",
-	"tooltip.endergetic.activePotions": "Активные эффекты зелий:"
+	"______comment": "Подсказки",
+	"tooltip.endergetic.activePotions": "Активные эффекты зелий:",
+	
+	"_______comment": "Субтитры",
+	
+	"subtitles.endergetic.booflo.death": "Буффало погибает",
+	"subtitles.endergetic.booflo.deflate": "Буффало сдувается",
+	"subtitles.endergetic.booflo.growl": "Буффало рычит",
+	"subtitles.endergetic.booflo.hop": "Буффало подпрыгивает",
+	"subtitles.endergetic.booflo.hop_land": "Буффало приземляется",
+	"subtitles.endergetic.booflo.hurt": "Буффало ранен",
+	"subtitles.endergetic.booflo.inflate": "Буффало надувается",
+	"subtitles.endergetic.puffbug.teleport_to": "Пуфмит телепортируется к",
+	"subtitles.endergetic.puffbug.teleport_from": "Пуфмит телепортируется от",
+	"subtitles.endergetic.puffbug.sleep": "Пуфмит храпит",
+	"subtitles.endergetic.puffbug.create_item": "Пуфмит создает предмет",
+	"subtitles.endergetic.puffbug.launch": "Пуфмит взлетает",
+	"subtitles.endergetic.puffbug.land": "Пуфмит приземляется",
+	"subtitles.endergetic.puffbug.hurt": "Пуфмит ранен",
+	"subtitles.endergetic.puffbug.death": "Пуфмит погибает",
+	"subtitles.endergetic.boof_block.inflate": "Буф блок надувается",
+	"subtitles.endergetic.booflo_vest.inflate": "Пуфлу-жилет надувается"
 }
