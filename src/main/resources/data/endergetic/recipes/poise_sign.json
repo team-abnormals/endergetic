@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    " X "
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:poise_planks"
+    },
+    "X": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "endergetic:poise_sign",
+    "count": 3
+  }
+}

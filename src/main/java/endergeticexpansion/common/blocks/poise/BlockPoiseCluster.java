@@ -51,7 +51,8 @@ public class BlockPoiseCluster extends Block {
 	
 	@Override
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		Item item = player.getHeldItemMainhand().getItem();
+		ItemStack stack = player.getHeldItemMainhand();
+		Item item = stack.getItem();
 		if(!(item instanceof ShearsItem)) {
 			if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(EntityPoiseCluster.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
 				if(!world.isRemote) {
@@ -76,6 +77,7 @@ public class BlockPoiseCluster extends Block {
 			}
 		} else {
 			world.destroyBlock(pos, false);
+			stack.damageItem(1, player, (broken) -> broken.sendBreakAnimation(player.getActiveHand()));
 			spawnAsEntity(world, pos, new ItemStack(this.asItem()));
 		}
 	}

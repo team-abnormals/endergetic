@@ -18,12 +18,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -131,19 +131,24 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 		p_196390_1_.setBlockState(p_196390_2_.up(), this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER), flags);
 	}
 
+	@Override
+	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
+		super.harvestBlock(worldIn, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+	}
+
+	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
 		DoubleBlockHalf doubleblockhalf = state.get(HALF);
 		BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
 		BlockState blockstate = worldIn.getBlockState(blockpos);
-		if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
+		if(blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
 			worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
 			worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
-			if (!worldIn.isRemote && !player.isCreative() && player.getHeldItemMainhand().getItem() instanceof ShearsItem) {
-				spawnAsEntity(worldIn, pos, new ItemStack(this));
-				spawnAsEntity(worldIn, pos.up(), new ItemStack(this));
+			if(!worldIn.isRemote && !player.isCreative()) {
+				spawnDrops(state, worldIn, pos, null, player, player.getHeldItemMainhand());
+				spawnDrops(blockstate, worldIn, blockpos, null, player, player.getHeldItemMainhand());
 			}
 		}
-
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}
 

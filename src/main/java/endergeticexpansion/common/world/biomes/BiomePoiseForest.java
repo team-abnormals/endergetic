@@ -4,8 +4,10 @@ import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.world.dimension.EndDimension;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.EndGatewayConfig;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
@@ -23,6 +25,8 @@ public class BiomePoiseForest extends EndergeticBiome {
 	
 	@Override
 	public void addSpawnsAndFeatures() {
+		this.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, Feature.END_CITY.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+		
 		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.POISE_DOME.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.COUNT_EXTRA_HEIGHTMAP.configure(new AtSurfaceWithExtraConfig(3, 0.02F, 1))));
 		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.POISE_TREE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.COUNT_EXTRA_HEIGHTMAP.configure(new AtSurfaceWithExtraConfig(2, 0.05F, 1))));
 		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.ENDERGETIC_GATEWAY.withConfiguration(EndGatewayConfig.func_214702_a(EndDimension.SPAWN, true)).withPlacement(Placement.END_GATEWAY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));

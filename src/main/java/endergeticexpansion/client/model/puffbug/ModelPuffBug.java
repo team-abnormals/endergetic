@@ -501,14 +501,14 @@ public class ModelPuffBug<E extends EntityPuffBug> extends EndimatorEntityModel<
     		this.rotate(this.NeckDeflatedProjectile, 0.65F, 0.0F, 0.0F);
     		this.rotate(this.HeadDeflatedProjectile, 0.4F, 0.0F, 0.0F);
     		
-    		this.move(this.BodyDeflatedProjectile, 0.0F, -1.0F, 0.0F);
+    		this.offset(this.BodyDeflatedProjectile, 0.0F, 0.5F / 6.0F, 0.0F);
     		this.endKeyframe();
     		
     		this.startKeyframe(10);
     		this.rotate(this.NeckDeflatedProjectile, 0.23F, 0.0F, 0.0F);
     		this.rotate(this.HeadDeflatedProjectile, 0.1F, 0.0F, 0.0F);
     		
-    		this.move(this.BodyDeflatedProjectile, 0.0F, -0.5F, 0.0F);
+    		this.offset(this.BodyDeflatedProjectile, 0.0F, 0.25F / 6.0F, 0.0F);
     		this.endKeyframe();
     		
     		this.resetKeyframe(10);
