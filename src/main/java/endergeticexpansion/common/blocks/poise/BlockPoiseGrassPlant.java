@@ -2,6 +2,7 @@ package endergeticexpansion.common.blocks.poise;
 
 import java.util.Random;
 
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 
 import endergeticexpansion.client.particle.EEParticles;
@@ -12,7 +13,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IGrowable;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -97,5 +102,17 @@ public class BlockPoiseGrassPlant extends Block implements IGrowable {
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		BlockPos blockpos = pos.down();
 		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos);
+	}
+	
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtils.findIndexOfItem(Items.SEA_PICKLE, items);
+			if(targetIndex != -1) {
+				items.add(targetIndex + 1, new ItemStack(this));
+			} else {
+				this.getBlock().fillItemGroup(group, items);
+			}
+		}
 	}
 }

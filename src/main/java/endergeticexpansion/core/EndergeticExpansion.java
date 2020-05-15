@@ -69,7 +69,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";

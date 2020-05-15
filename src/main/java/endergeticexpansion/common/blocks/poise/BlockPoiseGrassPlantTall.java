@@ -4,6 +4,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 
 import endergeticexpansion.client.particle.EEParticles;
@@ -17,7 +18,9 @@ import net.minecraft.block.IGrowable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
@@ -25,6 +28,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -192,6 +196,18 @@ public class BlockPoiseGrassPlantTall extends Block implements IGrowable {
 			PoiseTree tree = new PoiseTree();
 			BlockPos treePos = state.get(HALF) == DoubleBlockHalf.LOWER ? pos : pos.down();
 			tree.spawn(worldIn, worldIn.getChunkProvider().getChunkGenerator(), treePos, state, rand);
+		}
+	}
+	
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtils.findIndexOfItem(Items.LARGE_FERN, items);
+			if(targetIndex != -1) {
+				items.add(targetIndex + 1, new ItemStack(this));
+			} else {
+				this.getBlock().fillItemGroup(group, items);
+			}
 		}
 	}
 }
