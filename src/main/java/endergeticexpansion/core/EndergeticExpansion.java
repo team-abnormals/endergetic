@@ -40,6 +40,7 @@ import endergeticexpansion.common.world.EEWorldGenHandler;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
+import endergeticexpansion.core.config.EEConfig;
 import endergeticexpansion.core.keybinds.KeybindHandler;
 import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEEntities;
@@ -57,9 +58,11 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -99,12 +102,20 @@ public class EndergeticExpansion {
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
 		
+		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
+			final ModConfig config = event.getConfig();
+			if(config.getSpec() == EEConfig.COMMON_SPEC) {
+				EEConfig.ValuesHolder.updateCommonValuesFromConfig(config);
+			}
+		});
+		
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
 		});
 		
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {

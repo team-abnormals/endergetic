@@ -164,5 +164,9 @@
 	"subtitles.endergetic.puffbug.death": "Puffbug dies",
 	"subtitles.endergetic.boof_block.inflate": "Boof Block inflates",
 	"subtitles.endergetic.booflo_vest.inflate": "Booflo vest inflates",
-	"subtitles.endergetic.poise_bush.ambient": "Poise bush bubbles"
+	"subtitles.endergetic.poise_bush.ambient": "Poise bush bubbles",
+	
+	"________comment": "Config",
+	
+	"endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager"
 }

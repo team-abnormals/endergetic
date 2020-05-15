@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import endergeticexpansion.common.world.features.EndergeticEndPodiumFeature;
+import endergeticexpansion.core.config.EEConfig;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -96,8 +97,10 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 			this.world.getChunkProvider().releaseTicket(TicketType.DRAGON, new ChunkPos(0, 0), 9, Unit.INSTANCE);
 		}
 		
-		LOGGER.debug("Found exit portal: " + this.findEndergeticExitPortal(true));
-		LOGGER.debug(this.exitPortalLocation != null ? this.exitPortalLocation.toString() : "null");
+		if(EEConfig.ValuesHolder.shouldDebugDragonFightManager()) {
+			LOGGER.debug("Found exit portal: " + this.findEndergeticExitPortal(true));
+			LOGGER.debug(this.exitPortalLocation != null ? this.exitPortalLocation.toString() : "null");
+		}
 	}
 	
 	private void scanForLegacyFight() {
