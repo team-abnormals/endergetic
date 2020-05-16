@@ -49,6 +49,7 @@ import endergeticexpansion.core.registry.EETileEntities;
 import endergeticexpansion.core.registry.other.EEBlockRegistrars;
 import endergeticexpansion.core.registry.other.EEDataSerializers;
 import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
+import endergeticexpansion.core.registry.other.EEFlammables;
 import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -119,6 +120,7 @@ public class EndergeticExpansion {
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
 		EEDispenserBehaviors.registerAll();
+		EEFlammables.registerFlammables();
 		//EECapabilities.registerAll();
 		EEBiomes.applyBiomeInfo();
 		EEBlockRegistrars.registerFireInfo();
