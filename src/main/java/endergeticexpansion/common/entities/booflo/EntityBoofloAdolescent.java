@@ -464,6 +464,33 @@ public class EntityBoofloAdolescent extends EndimatedEntity {
 			this.remove();
 		}
 	}
+
+	public void growDown() {
+		if(!this.world.isRemote && this.isAlive()) {
+			EntityBoofloBaby boofloBaby = EEEntities.BOOFLO_BABY.get().create(this.world);
+			boofloBaby.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
+
+			if(this.hasCustomName()) {
+				boofloBaby.setCustomName(this.getCustomName());
+				boofloBaby.setCustomNameVisible(this.isCustomNameVisible());
+			}
+
+			if(this.getLeashed()) {
+				boofloBaby.setLeashHolder(this.getLeashHolder(), true);
+				this.clearLeashed(true, false);
+			}
+
+			if(this.getRidingEntity() != null) {
+				boofloBaby.startRiding(this.getRidingEntity());
+			}
+
+			boofloBaby.wasBred = this.wasBred;
+			boofloBaby.setHealth(boofloBaby.getMaxHealth());
+			this.world.addEntity(boofloBaby);
+
+			this.remove();
+		}
+	}
 	
 	@OnlyIn(Dist.CLIENT)	
 	public float getTailAnimation(float ptc) {
