@@ -1,7 +1,5 @@
 package endergeticexpansion.core.events;
 
-import com.teamabnormals.abnormals_core.common.network.particle.MessageC2S2CSpawnParticle;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
 import endergeticexpansion.common.entities.booflo.EntityBooflo;
 import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
 import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
@@ -10,7 +8,6 @@ import endergeticexpansion.core.config.EEConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
