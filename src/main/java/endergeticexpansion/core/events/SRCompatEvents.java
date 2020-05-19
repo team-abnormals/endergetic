@@ -21,15 +21,22 @@ public class SRCompatEvents {
     public static void onPotionExpire(PotionEvent.PotionExpiryEvent event) {
         LivingEntity affected = event.getEntityLiving();
         boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
+        
         if(isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
+            
             if(!isBabyEffect && affected instanceof EntityBoofloBaby) ((EntityBoofloBaby)affected).growUp();
+            
             if(affected instanceof EntityBoofloAdolescent) {
+                
                 if (isBabyEffect) {
                     ((EntityBoofloAdolescent) affected).growDown();
-                } else {
+                } 
+                else {
                     ((EntityBoofloAdolescent) affected).growUp();
-                }
+               }
+                
             }
+            
             if(isBabyEffect && affected instanceof EntityBooflo) ((EntityBooflo)affected).growDown();
         }
 
