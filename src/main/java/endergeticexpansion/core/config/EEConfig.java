@@ -25,8 +25,6 @@ public class EEConfig {
 				.comment("If The Dragon Fight Manager should debug its portal values; Default: False")
 				.translation(makeTranslation("debug_dragon_fight_manager"))
 				.define("debugDragonFightManager", false);
-			
-			builder.pop();
 
 			builder.comment("Compatibility with Quark's poisonous potatoes feature")
 			.push("poisonousPotatoCompat");
@@ -42,6 +40,7 @@ public class EEConfig {
 					.comment("The chance to stunt booflo growth when feeding a poisonous potato; Default: 0.1")
 					.translation(makeTranslation("poison_chance"))
 					.defineInRange("poisonChance",0.1,0,1);
+			builder.pop();
 			builder.pop();
 		}
 	}
