@@ -975,7 +975,34 @@ public class EntityBooflo extends EndimatedEntity {
 		}
 		this.setBoostPower(0.0F);
 	}
-	
+
+	public void growDown() {
+		if(!this.world.isRemote && this.isAlive()) {
+			EntityBoofloAdolescent boofloAdolescent = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
+			boofloAdolescent.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
+
+			if(this.hasCustomName()) {
+				boofloAdolescent.setCustomName(this.getCustomName());
+				boofloAdolescent.setCustomNameVisible(this.isCustomNameVisible());
+			}
+
+			if(this.getLeashed()) {
+				boofloAdolescent.setLeashHolder(this.getLeashHolder(), true);
+				this.clearLeashed(true, false);
+			}
+
+			if(this.getRidingEntity() != null) {
+				boofloAdolescent.startRiding(this.getRidingEntity());
+			}
+
+			boofloAdolescent.wasBred = this.wasBred;
+			boofloAdolescent.setHealth(boofloAdolescent.getMaxHealth());
+			this.world.addEntity(boofloAdolescent);
+
+			this.remove();
+		}
+	}
+
 	public void catchPuffBug(EntityPuffBug puffbug) {
 		puffbug.startRiding(this, true);
 	}
