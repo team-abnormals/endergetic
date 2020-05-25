@@ -37,7 +37,7 @@
 	"block.endergetic.poise_door": "Porte en équilibre",
 	"block.endergetic.poise_trapdoor": "Trappe en équilibre",
 	"block.endergetic.bolloom_bud": "Bourgeon de Bolloum",
-	"block.endergetic.puffbug_hive": "Ruche de Poufbug",
+	"block.endergetic.puffbug_hive": "Ruche de Gonflinsecte",
 	"block.endergetic.hive_hanger": "Crochet à Ruche",
 	"block.endergetic.boof_block": "Bloc de Bouf",
 	"block.endergetic.boof_dispensed_block": "Bloc de Bouf étendu",
@@ -76,5 +76,6 @@
 	"entity.endergetic.bolloom_fruit": "Fruit de Bolloum",
 	"entity.endergetic.boof_block": "Bloc de Bouf",
 	"entity.endergetic.bolloom_knot": "Noeud de Bolloum",
-	"entity.endergetic.bolloom_balloon": "Ballon de Balloum"
+	"entity.endergetic.bolloom_balloon": "Ballon de Balloum",
+	"entity.endergetic.puff_bug": "Gonflinsecte"
 }
