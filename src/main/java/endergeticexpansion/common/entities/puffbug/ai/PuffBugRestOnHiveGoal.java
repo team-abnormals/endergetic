@@ -1,14 +1,14 @@
 package endergeticexpansion.common.entities.puffbug.ai;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 
 public class PuffBugRestOnHiveGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private int ticksRested;
 	
-	public PuffBugRestOnHiveGoal(EntityPuffBug puffbug) {
+	public PuffBugRestOnHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 	}
 

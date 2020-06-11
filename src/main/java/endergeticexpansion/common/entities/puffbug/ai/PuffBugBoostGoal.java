@@ -2,7 +2,7 @@ package endergeticexpansion.common.entities.puffbug.ai;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.pathfinding.PathType;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class PuffBugBoostGoal extends RandomWalkingGoal {
 	
-	public PuffBugBoostGoal(EntityPuffBug puffbug) {
+	public PuffBugBoostGoal(PuffBugEntity puffbug) {
 		super(puffbug, 1.0F, 15);
 	}
 	

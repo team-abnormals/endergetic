@@ -2,21 +2,19 @@ package endergeticexpansion.api.util;
 
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import endergeticexpansion.common.network.entity.*;
 import endergeticexpansion.common.network.entity.booflo.*;
-import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.common.network.nbt.SUpdateNBTTagMessage;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author - SmellyModder(Luke Tonon)
- * This class holds a big list of useful network functions. Most are used in the mod
+ * This class holds a list of useful network functions
  */
 public class EndergeticNetworkUtil {
 	/**
@@ -25,7 +23,7 @@ public class EndergeticNetworkUtil {
 	 */
 	@OnlyIn(Dist.CLIENT)
 	public static void updateSItemNBT(ItemStack stack) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSUpdateNBTTag(stack));
+		EndergeticExpansion.CHANNEL.sendToServer(new SUpdateNBTTagMessage(stack));
 	}
 	
 	/**
@@ -36,26 +34,7 @@ public class EndergeticNetworkUtil {
 	 */
 	@OnlyIn(Dist.CLIENT)
 	public static void setSItemCooldown(ItemStack stack, int cooldown, boolean isVest) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetCooldown(stack, cooldown, isVest));
-	}
-	
-	/**
-	 * @param motion - The vector motion of the entity
-	 * @param id - The Player's Entity Id
-	 * Used for applying motion to the client from the server
-	 */
-	public static void setCVelocity(Entity entity, Vec3d motion) {
-		EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageCSetVelocity(motion, entity.getEntityId()));
-	}
-	
-	/**
-	 * @param motion - The vector motion of the entity
-	 * @param id - The Player's Entity Id
-	 * Used for setting server side Entity Velocity from the client side
-	 */
-	@OnlyIn(Dist.CLIENT)
-	public static void setSVelocity(Vec3d motion, int id) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetVelocity(motion, id));
+		EndergeticExpansion.CHANNEL.sendToServer(new SSetCooldownMessage(stack, cooldown, isVest));
 	}
 	
 	/**
@@ -65,7 +44,7 @@ public class EndergeticNetworkUtil {
 	 */
 	@OnlyIn(Dist.CLIENT)
 	public static void SBoofEntity(float xzForce, float upperForce, int radius) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSBoofEntity(xzForce, upperForce, radius));
+		EndergeticExpansion.CHANNEL.sendToServer(new SBoofEntityMessage(xzForce, upperForce, radius));
 	}
 	
 	/**
@@ -75,9 +54,9 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void inflateBooflo(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof EntityBooflo) {
-			EntityBooflo booflo = (EntityBooflo) entity;
-			EndergeticExpansion.CHANNEL.sendToServer(new MessageSInflate(entityId));
+		if(entity instanceof BoofloEntity) {
+			BoofloEntity booflo = (BoofloEntity) entity;
+			EndergeticExpansion.CHANNEL.sendToServer(new SInflateMessage(entityId));
 			booflo.setBoofed(true);
 			booflo.setDelayDecrementing(false);
 			booflo.setDelayExpanding(true);
@@ -91,8 +70,8 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void slamBooflo(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof EntityBooflo) {
-			EndergeticExpansion.CHANNEL.sendToServer(new MessageSSlam(entityId));
+		if(entity instanceof BoofloEntity) {
+			EndergeticExpansion.CHANNEL.sendToServer(new SSlamMessage(entityId));
 		}
 	}
 	
@@ -103,8 +82,8 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void incrementBoofloBoostTimer(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof EntityBooflo) {
-			EndergeticExpansion.CHANNEL.sendToServer(new MessageSIncrementBoostDelay(entityId));
+		if(entity instanceof BoofloEntity) {
+			EndergeticExpansion.CHANNEL.sendToServer(new SIncrementBoostDelayMessage(entityId));
 		}
 	}
 	
@@ -115,18 +94,8 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void setPlayerNotBoosting(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof EntityBooflo) {
-			EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetPlayerNotBoosting(entityId));
+		if(entity instanceof BoofloEntity) {
+			EndergeticExpansion.CHANNEL.sendToServer(new SSetPlayerNotBoostingMessage(entityId));
 		}
-	}
-	
-	/**
-	 * @param entityId - The entity's id
-	 * @param distance - The height of the fall
-	 * Used for setting fall distance in booflo vests
-	 */
-	@OnlyIn(Dist.CLIENT)
-	public static void setSFallDistance(int entityId, int distance) {
-		EndergeticExpansion.CHANNEL.sendToServer(new MessageSSetFallDistance(entityId, distance));
 	}
 }

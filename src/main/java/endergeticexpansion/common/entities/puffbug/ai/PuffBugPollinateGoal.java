@@ -2,18 +2,18 @@ package endergeticexpansion.common.entities.puffbug.ai;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
+import endergeticexpansion.common.tileentities.BolloomBudTileEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PuffBugPollinateGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private World world;
 	private float originalPosX, originalPosY, originalPosZ;
 	
-	public PuffBugPollinateGoal(EntityPuffBug puffbug) {
+	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.world = this.puffbug.world;
 	}
@@ -22,7 +22,7 @@ public class PuffBugPollinateGoal extends Goal {
 	public boolean shouldExecute() {
 		if(this.puffbug.getPollinationPos() != null) {
 			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
-			if(te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened()) {
+			if(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
 				return true;
 			}
 		}
@@ -33,7 +33,7 @@ public class PuffBugPollinateGoal extends Goal {
 	public boolean shouldContinueExecuting() {
 		if(this.puffbug.getPollinationPos() != null) {
 			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
-			if(!(te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened())) {
+			if(!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 				return false;
 			}
 		} else {
@@ -41,7 +41,7 @@ public class PuffBugPollinateGoal extends Goal {
 		}
 		return
 			!this.puffbug.hasLevitation() &&
-			this.puffbug.isEndimationPlaying(EntityPuffBug.POLLINATE_ANIMATION) &&
+			this.puffbug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION) &&
 			this.puffbug.getPosX() == this.originalPosX &&
 			this.puffbug.getPosZ() == this.originalPosZ &&
 			Math.abs(this.originalPosY - this.puffbug.getPosY()) < 0.5F
@@ -68,7 +68,7 @@ public class PuffBugPollinateGoal extends Goal {
 		this.originalPosY = (float) this.puffbug.getPosY();
 		this.originalPosZ = (float) this.puffbug.getPosZ();
 		
-		NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.POLLINATE_ANIMATION);
+		NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.POLLINATE_ANIMATION);
 	}
 	
 	@Override
@@ -76,6 +76,6 @@ public class PuffBugPollinateGoal extends Goal {
 		this.puffbug.setPollinationPos(null);
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
 		
-		NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.BLANK_ANIMATION);
+		NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.BLANK_ANIMATION);
 	}
 }

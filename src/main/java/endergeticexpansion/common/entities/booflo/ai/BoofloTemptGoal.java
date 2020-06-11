@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
@@ -15,10 +15,10 @@ import net.minecraft.util.math.MathHelper;
 
 public class BoofloTemptGoal extends Goal {
 	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().allowInvulnerable();
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	private PlayerEntity tempter;
 	
-	public BoofloTemptGoal(EntityBooflo booflo) {
+	public BoofloTemptGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
@@ -46,7 +46,7 @@ public class BoofloTemptGoal extends Goal {
 	@Override
 	public void tick() {
 		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying()) {
-			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
+			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 		
 		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {

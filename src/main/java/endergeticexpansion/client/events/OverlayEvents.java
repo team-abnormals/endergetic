@@ -2,7 +2,7 @@ package endergeticexpansion.client.events;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -16,21 +16,20 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public class OverlayEvents {
-	
 	private static final Minecraft MC = Minecraft.getInstance();
 	
 	@SubscribeEvent
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
 		ClientPlayerEntity player = MC.player;
 		if(!MC.gameSettings.hideGUI && event.getType() == ElementType.EXPERIENCE) {
-			if(player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo) {
+			if(player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
 				event.setCanceled(true);
 				
 				int scaledWidth = event.getWindow().getScaledWidth();
 				int scaledHeight = event.getWindow().getScaledHeight();
 				int top = scaledHeight - 32 + 3;
 				int left = scaledWidth / 2 - 91;
-				int progress = ((EntityBooflo) player.getRidingEntity()).getRideControlDelay();
+				int progress = ((BoofloEntity) player.getRidingEntity()).getRideControlDelay();
 				
 				RenderSystem.pushMatrix();
 				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));

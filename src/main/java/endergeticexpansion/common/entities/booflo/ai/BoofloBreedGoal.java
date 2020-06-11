@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -21,11 +21,11 @@ import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 
 public class BoofloBreedGoal extends Goal {
 	private static final EntityPredicate MATE_CHECKER = (new EntityPredicate()).setDistance(16.0D).allowInvulnerable().allowFriendlyFire().setLineOfSiteRequired();
-	protected final EntityBooflo booflo;
-	protected EntityBooflo mate;
+	protected final BoofloEntity booflo;
+	protected BoofloEntity mate;
 	private int impregnateDelay;
 	
-	public BoofloBreedGoal(EntityBooflo booflo) {
+	public BoofloBreedGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
@@ -52,7 +52,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	public void tick() {
 		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.isBeingRidenOrRiding()) {
-			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
+			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 		
 		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
@@ -110,12 +110,12 @@ public class BoofloBreedGoal extends Goal {
 	}
 	
 	@Nullable
-	private EntityBooflo getNearbyMate() {
-		List<EntityBooflo> list = this.booflo.world.getTargettableEntitiesWithinAABB(EntityBooflo.class, MATE_CHECKER, this.booflo, this.booflo.getBoundingBox().grow(16.0D));
+	private BoofloEntity getNearbyMate() {
+		List<BoofloEntity> list = this.booflo.world.getTargettableEntitiesWithinAABB(BoofloEntity.class, MATE_CHECKER, this.booflo, this.booflo.getBoundingBox().grow(16.0D));
 		double d0 = Double.MAX_VALUE;
-		EntityBooflo booflo = null;
+		BoofloEntity booflo = null;
 
-		for(EntityBooflo booflos : list) {
+		for(BoofloEntity booflos : list) {
 			if(this.booflo.canMateWith(booflos) && this.booflo.getDistanceSq(booflos) < d0) {
 				booflo = booflos;
 				d0 = this.booflo.getDistanceSq(booflos);

@@ -2,7 +2,7 @@ package endergeticexpansion.common.world.features;
 
 import java.util.Random;
 
-import endergeticexpansion.common.blocks.BlockAcidianLantern;
+import endergeticexpansion.common.blocks.AcidianLanternBlock;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -20,7 +20,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.get().getDefaultState();
 	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.get().getDefaultState();
 	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().getDefaultState();
-	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(BlockAcidianLantern.FACING, Direction.UP);
+	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(AcidianLanternBlock.FACING, Direction.UP);
 	private static final BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
 		return active ? EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
 	}

@@ -3,7 +3,7 @@ package endergeticexpansion.common.entities.booflo.ai;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.util.DetectionHelper;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -11,31 +11,31 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 public class BoofloSlamGoal extends Goal {
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	private World world;
 	
-	public BoofloSlamGoal(EntityBooflo booflo) {
+	public BoofloSlamGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.world = booflo.world;
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		return this.booflo.getPassengers().isEmpty() && this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && !this.booflo.onGround && (this.booflo.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.booflo.getPassengers().isEmpty() && this.booflo.isEndimationPlaying(BoofloEntity.SWIM) && !this.booflo.onGround && (this.booflo.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
 		if(!this.isSolidUnderTarget()) {
-			NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.INFLATE);
+			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.INFLATE);
 			return false;
 		}
-		return !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.booflo.isEndimationPlaying(EntityBooflo.CHARGE);
+		return !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.booflo.isEndimationPlaying(BoofloEntity.CHARGE);
 	}
 	
 	@Override
 	public void startExecuting() {
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.CHARGE);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.CHARGE);
 	}
 	
 	@Override

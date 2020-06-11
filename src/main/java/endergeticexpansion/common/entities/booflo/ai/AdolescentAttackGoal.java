@@ -4,8 +4,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import endergeticexpansion.common.entities.bolloom.BolloomFruitEntity;
+import endergeticexpansion.common.entities.booflo.BoofloAdolescentEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +14,7 @@ import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
 public class AdolescentAttackGoal extends Goal {
-	protected final EntityBoofloAdolescent attacker;
+	protected final BoofloAdolescentEntity attacker;
 	protected int attackTick;
 	private final double speedTowardsTarget;
 	private final boolean longMemory;
@@ -27,7 +27,7 @@ public class AdolescentAttackGoal extends Goal {
 	private long field_220720_k;
 	private boolean canPenalize = false;
 
-	public AdolescentAttackGoal(EntityBoofloAdolescent attacker, double speedIn, boolean useLongMemory) {
+	public AdolescentAttackGoal(BoofloAdolescentEntity attacker, double speedIn, boolean useLongMemory) {
 		this.attacker = attacker;
 		this.speedTowardsTarget = speedIn;
 		this.longMemory = useLongMemory;
@@ -138,8 +138,8 @@ public class AdolescentAttackGoal extends Goal {
 		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
 			this.attacker.setHasFruit(true);
-			if(prey instanceof EntityBolloomFruit) {
-				((EntityBolloomFruit)prey).onBroken(this.attacker, false);
+			if(prey instanceof BolloomFruitEntity) {
+				((BolloomFruitEntity)prey).onBroken(this.attacker, false);
 				prey.remove();
 			}
 		}

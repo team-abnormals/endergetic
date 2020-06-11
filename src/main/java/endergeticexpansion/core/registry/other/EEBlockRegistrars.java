@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.fml.ModList;
 
 public class EEBlockRegistrars {
-	
 	public static void registerFireInfo() {
 		if(ModList.get().isLoaded("quark")) {
 			setFireInfo(EEBlocks.POISE_VERTICAL_PLANKS.get(), 5, 20);
@@ -20,28 +19,31 @@ public class EEBlockRegistrars {
 	}
 	
 	public static void setupRenderLayers() {
-		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_END.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_NETHER.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.CORROCK_OVERWORLD.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_END.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_NETHER.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.PETRIFIED_CORROCK_OVERWORLD.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.ENDER_FIRE, RenderType.getCutout());
+		setRenderLayer(EEBlocks.CORROCK_END.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.CORROCK_NETHER.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.CORROCK_OVERWORLD.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_END.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_NETHER.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_OVERWORLD.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.ENDER_FIRE, RenderType.getCutout());
 		
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_BUSH_POT.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_DOOR.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_TRAPDOOR.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_LADDER.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS_EUMUS.get(), RenderType.getCutoutMipped());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_GRASS_TALL.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());
-		RenderTypeLookup.setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_BUSH_POT.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_DOOR.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_TRAPDOOR.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_LADDER.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISMOSS_EUMUS.get(), RenderType.getCutoutMipped());
+		setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
+		setRenderLayer(EEBlocks.POISE_BUSH.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_BUSH_TALL.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());
+		setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
 	}
 	
 	private static void setFireInfo(Block block, int encouragement, int flammability) {
 		((FireBlock) Blocks.FIRE).setFireInfo(block, encouragement, flammability);
 	}
 	
+	private static synchronized void setRenderLayer(Block block, RenderType type) {
+		RenderTypeLookup.setRenderLayer(block, type::equals);
+	}
 }

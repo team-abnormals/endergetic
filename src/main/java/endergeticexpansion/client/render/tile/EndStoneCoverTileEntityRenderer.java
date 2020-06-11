@@ -3,8 +3,8 @@ package endergeticexpansion.client.render.tile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import endergeticexpansion.client.model.corrock.ModelCoverUp;
-import endergeticexpansion.common.tileentities.TileEntityEndStoneCover;
+import endergeticexpansion.client.model.corrock.CoverUpModel;
+import endergeticexpansion.common.tileentities.EndStoneCoverTileEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -14,17 +14,17 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
-public class EndStoneCoverTileEntityRenderer extends TileEntityRenderer<TileEntityEndStoneCover> {
-	private ModelCoverUp coverModel;
+public class EndStoneCoverTileEntityRenderer extends TileEntityRenderer<EndStoneCoverTileEntity> {
+	private CoverUpModel coverModel;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/endstone_cover.png");
 	
 	public EndStoneCoverTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
-		this.coverModel = new ModelCoverUp();
+		this.coverModel = new CoverUpModel();
 	}
 	
 	@Override
-	public void render(TileEntityEndStoneCover cover, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+	public void render(EndStoneCoverTileEntity cover, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		matrixStack.push();
 		
 		Direction facing = cover.hasWorld() ? cover.getBlockState().get(HorizontalBlock.HORIZONTAL_FACING) : Direction.NORTH;

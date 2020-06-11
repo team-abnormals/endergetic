@@ -2,18 +2,18 @@ package endergeticexpansion.common.entities.puffbug.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive;
-import endergeticexpansion.common.tileentities.TileEntityPuffBugHive.HiveOccupantData;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
+import endergeticexpansion.common.tileentities.PuffBugHiveTileEntity;
+import endergeticexpansion.common.tileentities.PuffBugHiveTileEntity.HiveOccupantData;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class PuffBugTeleportToRestGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	
-	public PuffBugTeleportToRestGoal(EntityPuffBug puffbug) {
+	public PuffBugTeleportToRestGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
@@ -21,7 +21,7 @@ public class PuffBugTeleportToRestGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		if(this.puffbug.getAttackTarget() == null && this.puffbug.wantsToRest() && this.puffbug.getRNG().nextInt(50) == 0 && !this.puffbug.isInLove() && !this.puffbug.hasLevitation() && this.puffbug.getAttachedHiveSide() == Direction.UP && this.puffbug.getHive() != null && this.puffbug.getPollinationPos() == null && this.puffbug.getTeleportController().canTeleport()) {
-			TileEntityPuffBugHive hive = this.puffbug.getHive();
+			PuffBugHiveTileEntity hive = this.puffbug.getHive();
 			for(Direction directions : Direction.values()) {
 				if(HiveOccupantData.isHiveSideEmpty(hive, directions)) {
 					BlockPos offset = hive.getPos().offset(directions);
@@ -49,6 +49,6 @@ public class PuffBugTeleportToRestGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_TO_ANIMATION);
+		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);
 	}
 }

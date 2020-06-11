@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.Dynamic;
 
 import endergeticexpansion.api.util.GenerationUtils;
-import endergeticexpansion.common.blocks.BlockAcidianLantern;
+import endergeticexpansion.common.blocks.AcidianLanternBlock;
 import endergeticexpansion.common.world.biomes.EndergeticBiome;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
@@ -69,8 +69,8 @@ public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 		this.placeWall(worldIn, pos.south().east().up());
 		this.placeWall(worldIn, pos.south().west().up());
 		
-		this.setBlockState(worldIn, pos.up(4), ACIDIAN_LANTERN.get().with(BlockAcidianLantern.FACING, Direction.UP));
-		this.setBlockState(worldIn, pos.down(4), ACIDIAN_LANTERN.get().with(BlockAcidianLantern.FACING, Direction.DOWN));
+		this.setBlockState(worldIn, pos.up(4), ACIDIAN_LANTERN.get().with(AcidianLanternBlock.FACING, Direction.UP));
+		this.setBlockState(worldIn, pos.down(4), ACIDIAN_LANTERN.get().with(AcidianLanternBlock.FACING, Direction.DOWN));
 
 		return true;
 	}

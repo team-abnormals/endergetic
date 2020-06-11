@@ -2,8 +2,8 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -11,19 +11,19 @@ import net.minecraft.pathfinding.Path;
 
 public class BoofloHuntPuffBugGoal extends Goal {
 	private static final float SPEED = 1.0F;
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	private Path path;
 	private int delayCounter;
 	private double targetX, targetY, targetZ;
 
-	public BoofloHuntPuffBugGoal(EntityBooflo booflo) {
+	public BoofloHuntPuffBugGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		if(!(this.booflo.isBoofed() && !this.booflo.isPregnant() && this.booflo.getBoofloAttackTarget() instanceof EntityPuffBug && this.booflo.getBoofloAttackTarget().isAlive() && !this.booflo.hasCaughtPuffBug())) {
+		if(!(this.booflo.isBoofed() && !this.booflo.isPregnant() && this.booflo.getBoofloAttackTarget() instanceof PuffBugEntity && this.booflo.getBoofloAttackTarget().isAlive() && !this.booflo.hasCaughtPuffBug())) {
 			return false;
 		}
 		this.path = this.booflo.getNavigator().getPathToEntity(this.booflo.getBoofloAttackTarget(), 0);
@@ -36,7 +36,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		Entity target = this.booflo.getBoofloAttackTarget();
-		return this.booflo.getPassengers().isEmpty() && !this.booflo.hasCaughtPuffBug() && this.booflo.isBoofed() && !this.booflo.isPregnant() && target != null && target.isAlive() && target instanceof EntityPuffBug;
+		return this.booflo.getPassengers().isEmpty() && !this.booflo.hasCaughtPuffBug() && this.booflo.isBoofed() && !this.booflo.isPregnant() && target != null && target.isAlive() && target instanceof PuffBugEntity;
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 	
 	@Override
 	public void tick() {
-		EntityPuffBug target = (EntityPuffBug) this.booflo.getBoofloAttackTarget();
+		PuffBugEntity target = (PuffBugEntity) this.booflo.getBoofloAttackTarget();
 		
 		double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		
@@ -84,7 +84,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 		this.booflo.getNavigator().clearPath();
 	}
 	
-	protected void tryToCatch(EntityPuffBug enemy, double distToEnemySqr) {
+	protected void tryToCatch(PuffBugEntity enemy, double distToEnemySqr) {
 		double attackRange = (this.booflo.getWidth() * 2.0F * this.booflo.getWidth() * 2.0F + enemy.getWidth()) * 0.75F;
 		if(distToEnemySqr <= attackRange) {
 			this.booflo.catchPuffBug(enemy);

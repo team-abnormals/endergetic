@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloAdolescentEntity;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
@@ -40,12 +40,12 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	public boolean shouldExecute() {
 		if(this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0) {
 	         return false;
-		} else if(this.goalOwner instanceof EntityBoofloAdolescent && !((EntityBoofloAdolescent)this.goalOwner).isHungry()) {
+		} else if(this.goalOwner instanceof BoofloAdolescentEntity && !((BoofloAdolescentEntity)this.goalOwner).isHungry()) {
 			return false;
-		} else if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo) this.goalOwner).getBoofloAttackTarget() != null || !((EntityBooflo)this.goalOwner).isBoofed() || !((EntityBooflo)this.goalOwner).isHungry())) {
+		} else if(this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).getBoofloAttackTarget() != null || !((BoofloEntity)this.goalOwner).isBoofed() || !((BoofloEntity)this.goalOwner).isHungry())) {
 			return false;
 		} else {
-			if(this.goalOwner instanceof EntityBooflo && (((EntityBooflo) this.goalOwner).isTamed() && this.targetClass == EntityPuffBug.class)) {
+			if(this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).isTamed() && this.targetClass == PuffBugEntity.class)) {
 				return false;
 			}
 			
@@ -63,10 +63,10 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	public void startExecuting() {
-		if(this.goalOwner instanceof EntityBooflo) {
-			((EntityBooflo) this.goalOwner).setBoofloAttackTargetId(this.nearestTarget.getEntityId());
+		if(this.goalOwner instanceof BoofloEntity) {
+			((BoofloEntity) this.goalOwner).setBoofloAttackTargetId(this.nearestTarget.getEntityId());
 		} else {
-			((EntityBoofloAdolescent) this.goalOwner).setBoofloAttackTarget(this.nearestTarget);
+			((BoofloAdolescentEntity) this.goalOwner).setBoofloAttackTarget(this.nearestTarget);
 		}
 		super.startExecuting();
 	}

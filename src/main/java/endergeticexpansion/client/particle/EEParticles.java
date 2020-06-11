@@ -30,10 +30,10 @@ public class EEParticles {
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
 			if(checkForNonNullWithReflectionCauseForgeIsBaby(POISE_BUBBLE)) {
-				Minecraft.getInstance().particles.registerFactory(POISE_BUBBLE.get(), ParticlePoiseBubble.Factory::new);
+				Minecraft.getInstance().particles.registerFactory(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
 			}
 			if(checkForNonNullWithReflectionCauseForgeIsBaby(SHORT_POISE_BUBBLE)) {
-				Minecraft.getInstance().particles.registerFactory(SHORT_POISE_BUBBLE.get(), ParticlePoiseBubble.ShortFactory::new);
+				Minecraft.getInstance().particles.registerFactory(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
 			}
 		}
 		

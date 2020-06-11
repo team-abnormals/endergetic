@@ -2,17 +2,17 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
+import endergeticexpansion.common.entities.booflo.BoofloAdolescentEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class AdolescentEatGoal extends Goal {
-	private EntityBoofloAdolescent adolescent;
+	private BoofloAdolescentEntity adolescent;
 	private int eatingTicks;
 
-	public AdolescentEatGoal(EntityBoofloAdolescent adolescent) {
+	public AdolescentEatGoal(BoofloAdolescentEntity adolescent) {
 		this.adolescent = adolescent;
 	}
 	
@@ -73,9 +73,9 @@ public class AdolescentEatGoal extends Goal {
 			this.eatingTicks++;
 			
 			if(this.eatingTicks % 10 == 0) {
-				NetworkUtil.setPlayingAnimationMessage(this.adolescent, EntityBoofloAdolescent.EATING_ANIMATION);
+				NetworkUtil.setPlayingAnimationMessage(this.adolescent, BoofloAdolescentEntity.EATING_ANIMATION);
 				if(this.eatingTicks < 60) {
-					this.adolescent.setPlayingEndimation(EntityBoofloAdolescent.EATING_ANIMATION);
+					this.adolescent.setPlayingEndimation(BoofloAdolescentEntity.EATING_ANIMATION);
 				}
 			}
 			

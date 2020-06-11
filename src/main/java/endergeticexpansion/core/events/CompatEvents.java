@@ -1,8 +1,8 @@
 package endergeticexpansion.core.events;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBoofloAdolescent;
-import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloAdolescentEntity;
+import endergeticexpansion.common.entities.booflo.BoofloBabyEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
@@ -22,16 +22,16 @@ public class CompatEvents {
         LivingEntity affected = event.getEntityLiving();
         boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
         if(isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
-            if(!isBabyEffect && affected instanceof EntityBoofloBaby) ((EntityBoofloBaby)affected).growUp();
-            if(affected instanceof EntityBoofloAdolescent) {
+            if(!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity)affected).growUp();
+            if(affected instanceof BoofloAdolescentEntity) {
                 if(isBabyEffect) {
-                    ((EntityBoofloAdolescent) affected).growDown();
+                    ((BoofloAdolescentEntity) affected).growDown();
                 } 
                 else {
-                    ((EntityBoofloAdolescent) affected).growUp();
+                    ((BoofloAdolescentEntity) affected).growUp();
                 }
             }
-            if(isBabyEffect && affected instanceof EntityBooflo) ((EntityBooflo)affected).growDown();
+            if(isBabyEffect && affected instanceof BoofloEntity) ((BoofloEntity)affected).growDown();
         }
 
     }

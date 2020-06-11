@@ -2,12 +2,12 @@ package endergeticexpansion.client.render.tile;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.teamabnormals.abnormals_core.client.ACRenderTypes;
 
-import endergeticexpansion.client.EERenderTypes;
-import endergeticexpansion.client.model.corrock.ModelCorrockCrownStanding;
-import endergeticexpansion.client.model.corrock.ModelCorrockCrownWall;
-import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
-import endergeticexpansion.common.tileentities.TileEntityCorrockCrown;
+import endergeticexpansion.client.model.corrock.CorrockCrownStandingModel;
+import endergeticexpansion.client.model.corrock.CorrockCrownWallModel;
+import endergeticexpansion.common.blocks.CorrockCrownStandingBlock;
+import endergeticexpansion.common.tileentities.CorrockCrownTileEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
@@ -20,9 +20,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 
-public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<TileEntityCorrockCrown> {
-	public ModelCorrockCrownStanding standingModel;
-	public ModelCorrockCrownWall wallModel;	
+public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCrownTileEntity> {
+	public CorrockCrownStandingModel standingModel;
+	public CorrockCrownWallModel wallModel;	
 	private static final ResourceLocation[] TEXTURES = {
 		new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/corrock_crown_end.png"),
 		new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/corrock_crown_nether.png"),
@@ -31,14 +31,14 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<TileEntit
 	
 	public CorrockCrownTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
-		this.standingModel = new ModelCorrockCrownStanding();
-		this.wallModel = new ModelCorrockCrownWall();
+		this.standingModel = new CorrockCrownStandingModel();
+		this.wallModel = new CorrockCrownWallModel();
 	}
 	
 	@Override
-	public void render(TileEntityCorrockCrown te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void render(CorrockCrownTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		BlockState state = te.getBlockState();
-		boolean isStanding = state.getBlock() instanceof BlockCorrockCrownStanding;
+		boolean isStanding = state.getBlock() instanceof CorrockCrownStandingBlock;
 		
 		matrixStack.push();
 		
@@ -54,24 +54,24 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<TileEntit
 			matrixStack.translate(0.0F, -0.4F, 0.05F);
 		}
 		
-		if(isStanding && state.get(BlockCorrockCrownStanding.UPSIDE_DOWN)) {
+		if(isStanding && state.get(CorrockCrownStandingBlock.UPSIDE_DOWN)) {
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, 2.0F, 0.0F);
 		}
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 		
 		if(isStanding) {
-			IVertexBuilder ivertexbuilder = buffer.getBuffer(EERenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
+			IVertexBuilder ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
 			this.standingModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		} else {
-			IVertexBuilder ivertexbuilder = buffer.getBuffer(EERenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
+			IVertexBuilder ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
 			this.wallModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		}
 		
 		matrixStack.pop();
 	}
 	
-	public int getTexture(TileEntityCorrockCrown te) {
+	public int getTexture(CorrockCrownTileEntity te) {
 		Block block = te.getBlockState().getBlock();
 		if(block == EEBlocks.CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.CORROCK_CROWN_END_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()) {
 			return 0;

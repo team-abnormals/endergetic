@@ -1,15 +1,15 @@
 package endergeticexpansion.common.entities.puffbug.ai;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class PuffBugAttachToHiveGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private int ticksPassed;
 	
-	public PuffBugAttachToHiveGoal(EntityPuffBug puffbug) {
+	public PuffBugAttachToHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 	}
 

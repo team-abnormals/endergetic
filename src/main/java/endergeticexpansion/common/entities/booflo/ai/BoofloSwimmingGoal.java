@@ -5,14 +5,14 @@ import java.util.EnumSet;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.util.RayTraceHelper;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public class BoofloSwimmingGoal extends Goal {
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	
-	public BoofloSwimmingGoal(EntityBooflo booflo) {
+	public BoofloSwimmingGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
 	}
@@ -27,11 +27,11 @@ public class BoofloSwimmingGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.isEndimationPlaying(EntityBooflo.SWIM) && this.booflo.isBoofed();
+		return this.booflo.isEndimationPlaying(BoofloEntity.SWIM) && this.booflo.isBoofed();
 	}
 	
 	@Override
 	public void startExecuting() {
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.SWIM);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.SWIM);
 	}
 }

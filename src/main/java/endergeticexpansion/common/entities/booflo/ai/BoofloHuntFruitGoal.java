@@ -2,8 +2,8 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.common.entities.bolloom.EntityBolloomFruit;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.bolloom.BolloomFruitEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +12,7 @@ import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 
 public class BoofloHuntFruitGoal extends Goal {
-	private final EntityBooflo booflo;
+	private final BoofloEntity booflo;
 	protected int attackTick;
 	private final double speedTowardsTarget;
 	private Path path;
@@ -22,7 +22,7 @@ public class BoofloHuntFruitGoal extends Goal {
 	private double targetZ;
 	private long field_220720_k;
 	
-	public BoofloHuntFruitGoal(EntityBooflo booflo, double speed) {
+	public BoofloHuntFruitGoal(BoofloEntity booflo, double speed) {
 		this.booflo = booflo;
 		this.speedTowardsTarget = speed;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
@@ -117,8 +117,8 @@ public class BoofloHuntFruitGoal extends Goal {
 		double attackReach = this.getAttackReachSqr(prey);
 		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
-			if(prey instanceof EntityBolloomFruit) {
-				((EntityBolloomFruit)prey).onBroken(this.booflo, false);
+			if(prey instanceof BolloomFruitEntity) {
+				((BolloomFruitEntity)prey).onBroken(this.booflo, false);
 				this.booflo.setCaughtFruit(true);
 				this.booflo.setHungry(false);
 				prey.remove();

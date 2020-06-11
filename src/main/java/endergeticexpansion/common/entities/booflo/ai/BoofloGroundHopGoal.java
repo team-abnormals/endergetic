@@ -5,16 +5,16 @@ import java.util.EnumSet;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.util.RayTraceHelper;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public class BoofloGroundHopGoal extends Goal {
-	private final EntityBooflo booflo;
+	private final BoofloEntity booflo;
 	private int ticksPassed;
 
-	public BoofloGroundHopGoal(EntityBooflo booflo) {
+	public BoofloGroundHopGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
 	}
@@ -34,7 +34,7 @@ public class BoofloGroundHopGoal extends Goal {
 	
 	@Override
 	public void startExecuting() {
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.HOP);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 	}
 	
 	@Override

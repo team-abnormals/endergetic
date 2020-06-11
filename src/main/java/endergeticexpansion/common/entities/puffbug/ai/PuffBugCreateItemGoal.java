@@ -6,17 +6,17 @@ import java.util.Random;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.potion.Effects;
 
 public class PuffBugCreateItemGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private int ticksPassed;
 	private float originalHealth;
 	
-	public PuffBugCreateItemGoal(EntityPuffBug puffbug) {
+	public PuffBugCreateItemGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
@@ -44,12 +44,12 @@ public class PuffBugCreateItemGoal extends Goal {
 		this.puffbug.setAIMoveSpeed(0.0F);
 		
 		if(this.ticksPassed >= 25 && this.puffbug.isNoEndimationPlaying()) {
-			NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.MAKE_ITEM_ANIMATION);
+			NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.MAKE_ITEM_ANIMATION);
 		}
 		
 		this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 		
-		if(this.puffbug.isEndimationPlaying(EntityPuffBug.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
+		if(this.puffbug.isEndimationPlaying(PuffBugEntity.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
 			Random rand = this.puffbug.getRNG();
 			
 			if(this.puffbug.getAnimationTick() == 90) {
@@ -76,7 +76,7 @@ public class PuffBugCreateItemGoal extends Goal {
 			}
 		}
 		
-		if(this.puffbug.getAnimationTick() == 90 && this.puffbug.isEndimationPlaying(EntityPuffBug.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
+		if(this.puffbug.getAnimationTick() == 90 && this.puffbug.isEndimationPlaying(PuffBugEntity.MAKE_ITEM_ANIMATION) && this.puffbug.hasStackToCreate()) {
 			
 		}
 	}

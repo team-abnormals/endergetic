@@ -2,16 +2,16 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class BoofloSinkGoal extends Goal {
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	
-	public BoofloSinkGoal(EntityBooflo booflo) {
+	public BoofloSinkGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}

@@ -3,9 +3,9 @@ package endergeticexpansion.client.render.tile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import endergeticexpansion.client.model.ModelBoofBlockDispenser;
-import endergeticexpansion.common.blocks.poise.boof.BlockDispensedBoof;
-import endergeticexpansion.common.tileentities.boof.TileEntityDispensedBoof;
+import endergeticexpansion.client.model.BoofBlockDispenserModel;
+import endergeticexpansion.common.blocks.poise.boof.DispensedBoofBlock;
+import endergeticexpansion.common.tileentities.boof.DispensedBoofTileEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -15,18 +15,18 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
-public class BoofBlockTileEntityRenderer extends TileEntityRenderer<TileEntityDispensedBoof> {
-	public ModelBoofBlockDispenser model;
+public class BoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBoofTileEntity> {
+	public BoofBlockDispenserModel model;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
 	
 	public BoofBlockTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
-		this.model = new ModelBoofBlockDispenser();
+		this.model = new BoofBlockDispenserModel();
 	}
 	
 	@Override
-	public void render(TileEntityDispensedBoof boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-		Direction facing = boof.hasWorld() ? boof.getBlockState().get(BlockDispensedBoof.FACING) : Direction.NORTH;
+	public void render(DispensedBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+		Direction facing = boof.hasWorld() ? boof.getBlockState().get(DispensedBoofBlock.FACING) : Direction.NORTH;
 		
 		matrixStack.push();
 		matrixStack.translate(0.5F, 1.5F, 0.5F);

@@ -5,24 +5,24 @@ import java.util.EnumSet;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class PuffBugRotateToFireGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private int ticksPassed;
 	private int ticksToRotate;
 	
-	public PuffBugRotateToFireGoal(EntityPuffBug puffbug) {
+	public PuffBugRotateToFireGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		return !this.puffbug.isPassenger() && !this.puffbug.isEndimationPlaying(EntityPuffBug.TELEPORT_FROM_ANIMATION) && this.puffbug.isInflated() && this.puffbug.getLaunchDirection() != null;
+		return !this.puffbug.isPassenger() && !this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_FROM_ANIMATION) && this.puffbug.isInflated() && this.puffbug.getLaunchDirection() != null;
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 			this.puffbug.setFireDirection((float) launch.getX(), (float) launch.getY());
 			this.puffbug.nullifyLaunchDirection();
 			this.puffbug.setInflated(false);
-			NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.FLY_ANIMATION);
+			NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.FLY_ANIMATION);
 			
 			for(int i = 0; i < 3; i++) {
 				Vec3d pos = this.puffbug.getPositionVec();

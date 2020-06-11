@@ -2,10 +2,7 @@ package endergeticexpansion.core.registry;
 
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
-import endergeticexpansion.common.items.ItemBolloomBalloon;
-import endergeticexpansion.common.items.ItemBolloomFruit;
-import endergeticexpansion.common.items.ItemBoofloVest;
-import endergeticexpansion.common.items.ItemPuffBugBottle;
+import endergeticexpansion.common.items.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
 import net.minecraft.item.DyeColor;
@@ -24,27 +21,27 @@ public class EEItems {
 	 * Poise
 	 */
 	public static final RegistryObject<Item> POISE_BOAT                 = HELPER.createBoatItem("poise", EEBlocks.POISE_PLANKS);
-	public static final RegistryObject<Item> BOLLOOM_FRUIT              = HELPER.createItem("bolloom_fruit", () -> new ItemBolloomFruit(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)));
+	public static final RegistryObject<Item> BOLLOOM_FRUIT              = HELPER.createItem("bolloom_fruit", () -> new BolloomFruitItem(new Item.Properties().group(ItemGroup.FOOD).food(EEFoods.BOLLOOM_FRUIT)));
 	public static final RegistryObject<Item> BOOFLO_HIDE                = HELPER.createItem("booflo_hide", () -> new Item(RegistryHelper.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
-	public static final RegistryObject<Item> PUFFBUG_BOTTLE             = HELPER.createItem("puffbug_bottle", () -> new ItemPuffBugBottle(RegistryHelper.createSimpleItemProperty(1, ItemGroup.MISC)));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON            = HELPER.createItem("bolloom_balloon", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), null));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED        = HELPER.createItem("bolloom_balloon_red", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_ORANGE     = HELPER.createItem("bolloom_balloon_orange", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.ORANGE));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_YELLOW     = HELPER.createItem("bolloom_balloon_yellow", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.YELLOW));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIME       = HELPER.createItem("bolloom_balloon_lime", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIME));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_GREEN      = HELPER.createItem("bolloom_balloon_green", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GREEN));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_BLUE = HELPER.createItem("bolloom_balloon_light_blue", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_BLUE));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_CYAN       = HELPER.createItem("bolloom_balloon_cyan", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.CYAN));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLUE       = HELPER.createItem("bolloom_balloon_blue", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLUE));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_PINK       = HELPER.createItem("bolloom_balloon_pink", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PINK));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_MAGENTA    = HELPER.createItem("bolloom_balloon_magenta", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.MAGENTA));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_PURPLE     = HELPER.createItem("bolloom_balloon_purple", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PURPLE));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_BROWN      = HELPER.createItem("bolloom_balloon_brown", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BROWN));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_GRAY       = HELPER.createItem("bolloom_balloon_gray", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GRAY));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_GRAY = HELPER.createItem("bolloom_balloon_light_gray", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_GRAY));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_WHITE      = HELPER.createItem("bolloom_balloon_white", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.WHITE));
-	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLACK      = HELPER.createItem("bolloom_balloon_black", () -> new ItemBolloomBalloon(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLACK));
-	public static final RegistryObject<Item> BOOFLO_VEST                = HELPER.createItem("booflo_vest", () -> new ItemBoofloVest(new Item.Properties().group(ItemGroup.COMBAT)));
+	public static final RegistryObject<Item> PUFFBUG_BOTTLE             = HELPER.createItem("puffbug_bottle", () -> new PuffBugBottleItem(RegistryHelper.createSimpleItemProperty(1, ItemGroup.MISC)));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON            = HELPER.createItem("bolloom_balloon", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), null));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED        = HELPER.createItem("bolloom_balloon_red", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.RED));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_ORANGE     = HELPER.createItem("bolloom_balloon_orange", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.ORANGE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_YELLOW     = HELPER.createItem("bolloom_balloon_yellow", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.YELLOW));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIME       = HELPER.createItem("bolloom_balloon_lime", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIME));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_GREEN      = HELPER.createItem("bolloom_balloon_green", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GREEN));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_BLUE = HELPER.createItem("bolloom_balloon_light_blue", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_BLUE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_CYAN       = HELPER.createItem("bolloom_balloon_cyan", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.CYAN));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLUE       = HELPER.createItem("bolloom_balloon_blue", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLUE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_PINK       = HELPER.createItem("bolloom_balloon_pink", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PINK));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_MAGENTA    = HELPER.createItem("bolloom_balloon_magenta", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.MAGENTA));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_PURPLE     = HELPER.createItem("bolloom_balloon_purple", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.PURPLE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BROWN      = HELPER.createItem("bolloom_balloon_brown", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BROWN));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_GRAY       = HELPER.createItem("bolloom_balloon_gray", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.GRAY));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_LIGHT_GRAY = HELPER.createItem("bolloom_balloon_light_gray", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.LIGHT_GRAY));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_WHITE      = HELPER.createItem("bolloom_balloon_white", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.WHITE));
+	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLACK      = HELPER.createItem("bolloom_balloon_black", () -> new BolloomBalloonItem(RegistryHelper.createSimpleItemProperty(16, ItemGroup.TOOLS), DyeColor.BLACK));
+	public static final RegistryObject<Item> BOOFLO_VEST                = HELPER.createItem("booflo_vest", () -> new BoofloVestItem(new Item.Properties().group(ItemGroup.COMBAT)));
 
 	/*
 	 * Spawn Eggs

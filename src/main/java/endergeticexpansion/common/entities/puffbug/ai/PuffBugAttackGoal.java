@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import endergeticexpansion.api.entity.util.RayTraceHelper;
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
@@ -21,13 +21,13 @@ import net.minecraft.util.math.Vec3d;
 
 public class PuffBugAttackGoal extends Goal {
 	public static final float SHOOT_RANGE = 8.0F;
-	private final EntityPuffBug puffbug;
+	private final PuffBugEntity puffbug;
 	@Nullable
 	private Path path;
 	private int delayCounter;
 	private int ticksChased;
 	
-	public PuffBugAttackGoal(EntityPuffBug puffbug) {
+	public PuffBugAttackGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
 	}
@@ -37,7 +37,7 @@ public class PuffBugAttackGoal extends Goal {
 		LivingEntity target = this.puffbug.getAttackTarget();
 		if(target == null) {
 			return false;
-		} else if(!EntityPuffBug.CAN_ANGER.test(target)) {
+		} else if(!PuffBugEntity.CAN_ANGER.test(target)) {
 			return false;
 		} else if(!this.puffbug.isInflated()) {
 			return false;
@@ -64,7 +64,7 @@ public class PuffBugAttackGoal extends Goal {
 		if(!this.puffbug.isInflated()) {
 			return false;
 		}
-		return this.puffbug.getLaunchDirection() == null && this.puffbug.getAttackTarget() != null && EntityPuffBug.CAN_ANGER.test(this.puffbug.getAttackTarget());
+		return this.puffbug.getLaunchDirection() == null && this.puffbug.getAttackTarget() != null && PuffBugEntity.CAN_ANGER.test(this.puffbug.getAttackTarget());
 	}
 	
 	@Override
@@ -115,7 +115,7 @@ public class PuffBugAttackGoal extends Goal {
 	}
 	
 	private boolean canFitNewCollisionShape() {
-		return this.puffbug.isChild() ? this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE_CHILD).offset(0.0F, 0.225F, 0.0F)) : this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(EntityPuffBug.PROJECTILE_SIZE).offset(0.0F, 0.225F, 0.0F));
+		return this.puffbug.isChild() ? this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(PuffBugEntity.PROJECTILE_SIZE_CHILD).offset(0.0F, 0.225F, 0.0F)) : this.puffbug.world.func_226664_a_(this.getBoundingBoxForSize(PuffBugEntity.PROJECTILE_SIZE).offset(0.0F, 0.225F, 0.0F));
 	}
 	
 	private AxisAlignedBB getBoundingBoxForSize(EntitySize size) {

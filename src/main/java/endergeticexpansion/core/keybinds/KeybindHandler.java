@@ -9,10 +9,10 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.util.EntityMotionHelper;
 import endergeticexpansion.api.util.EndergeticNetworkUtil;
-import endergeticexpansion.common.entities.EntityBoofBlock;
-import endergeticexpansion.common.entities.EntityPoiseCluster;
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.items.ItemBoofloVest;
+import endergeticexpansion.common.entities.BoofBlockEntity;
+import endergeticexpansion.common.entities.PoiseClusterEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.items.BoofloVestItem;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEItems;
 import endergeticexpansion.core.registry.EESounds;
@@ -62,7 +62,7 @@ public class KeybindHandler {
 			ItemStack stack = player.inventory.armorItemInSlot(2);
         	
 			if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
-				ItemBoofloVest vest = (ItemBoofloVest) stack.getItem();
+				BoofloVestItem vest = (BoofloVestItem) stack.getItem();
 				if(vest.canBoof(stack, player)) {
 					CompoundNBT tag = stack.getTag();
     			
@@ -75,10 +75,10 @@ public class KeybindHandler {
         			
 					for(Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(2.0D))) {
         				if(entity != player &&
-        					!(entity instanceof EntityBoofBlock) &&
+        					!(entity instanceof BoofBlockEntity) &&
         					!(entity instanceof ShulkerEntity) &&
         					!(entity instanceof PaintingEntity) &&
-        					!(entity instanceof EntityPoiseCluster) &&
+        					!(entity instanceof PoiseClusterEntity) &&
         					!(entity instanceof ItemFrameEntity)
         				) {
         					boolean reverse = player.getRidingEntity() == entity;
@@ -106,8 +106,8 @@ public class KeybindHandler {
 		if(BOOFLO_INFLATE.isKeyDown() && Minecraft.getInstance().currentScreen == null) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
-			if(KeybindHandler.isRidingBooflo(player) && !((EntityBooflo) ridingEntity).isOnGround()) {
-				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+			if(KeybindHandler.isRidingBooflo(player) && !((BoofloEntity) ridingEntity).isOnGround()) {
+				BoofloEntity booflo = (BoofloEntity) ridingEntity;
 				if(booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
 						if(booflo.getRideControlDelay() >= 182) {
@@ -126,7 +126,7 @@ public class KeybindHandler {
 			PlayerEntity player = Minecraft.getInstance().player;
 			if(KeybindHandler.isRidingBooflo(player) && Minecraft.getInstance().currentScreen == null) {
 				Entity ridingEntity = player.getRidingEntity();
-				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				BoofloEntity booflo = (BoofloEntity) ridingEntity;
 				if(booflo.isBoofed()) {
 					if(!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.wasPlayerBoosting()) {
 						EndergeticNetworkUtil.setPlayerNotBoosting(booflo.getEntityId());
@@ -138,7 +138,7 @@ public class KeybindHandler {
 			PlayerEntity player = Minecraft.getInstance().player;
 			Entity ridingEntity = player.getRidingEntity();
 			if(KeybindHandler.isRidingBooflo(player)) {
-				EntityBooflo booflo = (EntityBooflo) ridingEntity;
+				BoofloEntity booflo = (BoofloEntity) ridingEntity;
 				if(booflo.isBoofed()) {
 					if(booflo.getRideControlDelay() <= 0 && booflo.isNoEndimationPlaying()) {
 						EndergeticNetworkUtil.slamBooflo(booflo.getEntityId());
@@ -149,6 +149,6 @@ public class KeybindHandler {
 	}
 	
 	private static boolean isRidingBooflo(PlayerEntity player) {
-		return player != null && player.isPassenger() && player.getRidingEntity() instanceof EntityBooflo;
+		return player != null && player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity;
 	}
 }

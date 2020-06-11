@@ -8,34 +8,13 @@ import org.apache.logging.log4j.Logger;
 import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 
 import endergeticexpansion.client.particle.EEParticles;
-import endergeticexpansion.client.render.entity.RenderBolloomBalloon;
-import endergeticexpansion.client.render.entity.RenderBolloomFruit;
-import endergeticexpansion.client.render.entity.RenderBolloomKnot;
-import endergeticexpansion.client.render.entity.RenderBoofBlock;
-import endergeticexpansion.client.render.entity.RenderPoiseCluster;
-import endergeticexpansion.client.render.entity.RenderPuffBug;
-import endergeticexpansion.client.render.entity.booflo.RenderBooflo;
-import endergeticexpansion.client.render.entity.booflo.RenderBoofloAdolescent;
-import endergeticexpansion.client.render.entity.booflo.RenderBoofloBaby;
-import endergeticexpansion.client.render.tile.BolloomBudTileEntityRenderer;
-import endergeticexpansion.client.render.tile.BoofBlockTileEntityRenderer;
-import endergeticexpansion.client.render.tile.CorrockCrownTileEntityRenderer;
-import endergeticexpansion.client.render.tile.EndStoneCoverTileEntityRenderer;
-import endergeticexpansion.client.render.tile.FrisbloomStemTileEntityRenderer;
-import endergeticexpansion.client.render.tile.PuffBugHiveTileEntityRenderer;
-import endergeticexpansion.common.network.entity.MessageCSetVelocity;
-import endergeticexpansion.common.network.entity.MessageCUpdatePlayerMotion;
-import endergeticexpansion.common.network.entity.MessageSBoofEntity;
-import endergeticexpansion.common.network.entity.MessageSSetCooldown;
-import endergeticexpansion.common.network.entity.MessageSSetFallDistance;
-import endergeticexpansion.common.network.entity.MessageSSetVelocity;
-import endergeticexpansion.common.network.entity.booflo.MessageSIncrementBoostDelay;
-import endergeticexpansion.common.network.entity.booflo.MessageSInflate;
-import endergeticexpansion.common.network.entity.booflo.MessageSSetPlayerNotBoosting;
-import endergeticexpansion.common.network.entity.booflo.MessageSSlam;
-import endergeticexpansion.common.network.entity.puffbug.MessageRotate;
-import endergeticexpansion.common.network.nbt.MessageCUpdateNBTTag;
-import endergeticexpansion.common.network.nbt.MessageSUpdateNBTTag;
+import endergeticexpansion.client.render.entity.*;
+import endergeticexpansion.client.render.entity.booflo.*;
+import endergeticexpansion.client.render.tile.*;
+import endergeticexpansion.common.network.entity.*;
+import endergeticexpansion.common.network.entity.booflo.*;
+import endergeticexpansion.common.network.entity.puffbug.RotateMessage;
+import endergeticexpansion.common.network.nbt.SUpdateNBTTagMessage;
 import endergeticexpansion.common.world.EEWorldGenHandler;
 import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
@@ -46,10 +25,7 @@ import endergeticexpansion.core.registry.EEBiomes;
 import endergeticexpansion.core.registry.EEEntities;
 import endergeticexpansion.core.registry.EESounds;
 import endergeticexpansion.core.registry.EETileEntities;
-import endergeticexpansion.core.registry.other.EEBlockRegistrars;
-import endergeticexpansion.core.registry.other.EEDataSerializers;
-import endergeticexpansion.core.registry.other.EEDispenserBehaviors;
-import endergeticexpansion.core.registry.other.EEFlammables;
+import endergeticexpansion.core.registry.other.*;
 import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -58,6 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -70,6 +47,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+@SuppressWarnings("deprecation")
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
@@ -119,14 +97,15 @@ public class EndergeticExpansion {
 	}
 	
 	void setupCommon(final FMLCommonSetupEvent event) {
-		EEDispenserBehaviors.registerAll();
-		EEFlammables.registerFlammables();
-		//EECapabilities.registerAll();
-		EEBiomes.applyBiomeInfo();
-		EEBlockRegistrars.registerFireInfo();
+		DeferredWorkQueue.runLater(() -> {
+			EEDispenserBehaviors.registerAll();
+			EEFlammables.registerFlammables();
+			EEBiomes.applyBiomeInfo();
+			EEBlockRegistrars.registerFireInfo();
+			EEWorldGenHandler.overrideFeatures();
+		});
+		EECapabilities.registerCaps();
 		EndOverrideHandler.overrideEndFactory();
-		//EEWorldGenHandler.addFeaturesToVanillaBiomes();
-		EEWorldGenHandler.overrideFeatures();
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -140,15 +119,15 @@ public class EndergeticExpansion {
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), BoofBlockTileEntityRenderer::new);
 	
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), RenderBolloomFruit::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.POISE_CLUSTER.get(), RenderPoiseCluster::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOF_BLOCK.get(), RenderBoofBlock::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_KNOT.get(), RenderBolloomKnot::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_BALLOON.get(), RenderBolloomBalloon::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.PUFF_BUG.get(), RenderPuffBug::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), RenderBoofloBaby::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), RenderBoofloAdolescent::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), RenderBooflo::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), BolloomFruitRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.POISE_CLUSTER.get(), PoiseClusterRender::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOF_BLOCK.get(), BoofBlockRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_KNOT.get(), BolloomKnotRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_BALLOON.get(), BolloomBalloonRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.PUFF_BUG.get(), PuffBugRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), BoofloBabyRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), BoofloRenderer::new);
 		
 		KeybindHandler.registerKeys();
 		
@@ -164,69 +143,45 @@ public class EndergeticExpansion {
     
 	private void setupMessages() {
 		int id = -1;
-		CHANNEL.messageBuilder(MessageCUpdatePlayerMotion.class, id++)
-		.encoder(MessageCUpdatePlayerMotion::serialize).decoder(MessageCUpdatePlayerMotion::deserialize)
-		.consumer(MessageCUpdatePlayerMotion::handle)
+    	
+		CHANNEL.messageBuilder(SUpdateNBTTagMessage.class, id++)
+		.encoder(SUpdateNBTTagMessage::serialize).decoder(SUpdateNBTTagMessage::deserialize)
+		.consumer(SUpdateNBTTagMessage::handle)
 		.add();
     	
-		CHANNEL.messageBuilder(MessageCUpdateNBTTag.class, id++)
-		.encoder(MessageCUpdateNBTTag::serialize).decoder(MessageCUpdateNBTTag::deserialize)
-		.consumer(MessageCUpdateNBTTag::handle)
+		CHANNEL.messageBuilder(SSetCooldownMessage.class, id++)
+		.encoder(SSetCooldownMessage::serialize).decoder(SSetCooldownMessage::deserialize)
+		.consumer(SSetCooldownMessage::handle)
 		.add();
     	
-		CHANNEL.messageBuilder(MessageSUpdateNBTTag.class, id++)
-		.encoder(MessageSUpdateNBTTag::serialize).decoder(MessageSUpdateNBTTag::deserialize)
-		.consumer(MessageSUpdateNBTTag::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageSSetCooldown.class, id++)
-		.encoder(MessageSSetCooldown::serialize).decoder(MessageSSetCooldown::deserialize)
-		.consumer(MessageSSetCooldown::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageCSetVelocity.class, id++)
-		.encoder(MessageCSetVelocity::serialize).decoder(MessageCSetVelocity::deserialize)
-		.consumer(MessageCSetVelocity::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageSSetVelocity.class, id++)
-		.encoder(MessageSSetVelocity::serialize).decoder(MessageSSetVelocity::deserialize)
-		.consumer(MessageSSetVelocity::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageSBoofEntity.class, id++)
-		.encoder(MessageSBoofEntity::serialize).decoder(MessageSBoofEntity::deserialize)
-		.consumer(MessageSBoofEntity::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(MessageSSetFallDistance.class, id++)
-		.encoder(MessageSSetFallDistance::serialize).decoder(MessageSSetFallDistance::deserialize)
-		.consumer(MessageSSetFallDistance::handle)
+		CHANNEL.messageBuilder(SBoofEntityMessage.class, id++)
+		.encoder(SBoofEntityMessage::serialize).decoder(SBoofEntityMessage::deserialize)
+		.consumer(SBoofEntityMessage::handle)
 		.add();
 		
-		CHANNEL.messageBuilder(MessageSInflate.class, id++)
-		.encoder(MessageSInflate::serialize).decoder(MessageSInflate::deserialize)
-		.consumer(MessageSInflate::handle)
+		CHANNEL.messageBuilder(SInflateMessage.class, id++)
+		.encoder(SInflateMessage::serialize).decoder(SInflateMessage::deserialize)
+		.consumer(SInflateMessage::handle)
 		.add();
 		
-		CHANNEL.messageBuilder(MessageSIncrementBoostDelay.class, id++)
-		.encoder(MessageSIncrementBoostDelay::serialize).decoder(MessageSIncrementBoostDelay::deserialize)
-		.consumer(MessageSIncrementBoostDelay::handle)
+		CHANNEL.messageBuilder(SIncrementBoostDelayMessage.class, id++)
+		.encoder(SIncrementBoostDelayMessage::serialize).decoder(SIncrementBoostDelayMessage::deserialize)
+		.consumer(SIncrementBoostDelayMessage::handle)
 		.add();
 		
-		CHANNEL.messageBuilder(MessageSSetPlayerNotBoosting.class, id++)
-		.encoder(MessageSSetPlayerNotBoosting::serialize).decoder(MessageSSetPlayerNotBoosting::deserialize)
-		.consumer(MessageSSetPlayerNotBoosting::handle)
+		CHANNEL.messageBuilder(SSetPlayerNotBoostingMessage.class, id++)
+		.encoder(SSetPlayerNotBoostingMessage::serialize).decoder(SSetPlayerNotBoostingMessage::deserialize)
+		.consumer(SSetPlayerNotBoostingMessage::handle)
 		.add();
 		
-		CHANNEL.messageBuilder(MessageSSlam.class, id++)
-		.encoder(MessageSSlam::serialize).decoder(MessageSSlam::deserialize)
-		.consumer(MessageSSlam::handle)
+		CHANNEL.messageBuilder(SSlamMessage.class, id++)
+		.encoder(SSlamMessage::serialize).decoder(SSlamMessage::deserialize)
+		.consumer(SSlamMessage::handle)
 		.add();
 		
-		CHANNEL.messageBuilder(MessageRotate.class, id++)
-		.encoder(MessageRotate::serialize).decoder(MessageRotate::deserialize)
-		.consumer(MessageRotate::handle)
+		CHANNEL.messageBuilder(RotateMessage.class, id++)
+		.encoder(RotateMessage::serialize).decoder(RotateMessage::deserialize)
+		.consumer(RotateMessage::handle)
 		.add();
 	}
 }

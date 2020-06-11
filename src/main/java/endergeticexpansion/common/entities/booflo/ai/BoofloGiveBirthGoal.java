@@ -4,19 +4,19 @@ import java.util.Random;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBoofloBaby;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloBabyEntity;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
 public class BoofloGiveBirthGoal extends Goal {
-	private EntityBooflo mother;
+	private BoofloEntity mother;
 	private int birthTicks;
 	private float originalYaw;
 	
-	public BoofloGiveBirthGoal(EntityBooflo mother) {
+	public BoofloGiveBirthGoal(BoofloEntity mother) {
 		this.mother = mother;
 	}
 	
@@ -27,14 +27,14 @@ public class BoofloGiveBirthGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.mother.isPregnant() && this.mother.isEndimationPlaying(EntityBooflo.BIRTH);
+		return this.mother.isPregnant() && this.mother.isEndimationPlaying(BoofloEntity.BIRTH);
 	}
 	
 	@Override
 	public void startExecuting() {
 		this.originalYaw = this.mother.rotationYaw;
 		this.mother.setLockedYaw(this.originalYaw);
-		NetworkUtil.setPlayingAnimationMessage(this.mother, EntityBooflo.BIRTH);
+		NetworkUtil.setPlayingAnimationMessage(this.mother, BoofloEntity.BIRTH);
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class BoofloGiveBirthGoal extends Goal {
 			
 			this.mother.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.3F, 0.6F);
 			
-			EntityBoofloBaby baby = EEEntities.BOOFLO_BABY.get().create(world);
+			BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(world);
 			baby.setBeingBorn(true);
 			baby.setGrowingAge(-24000);
 			baby.setPosition(this.mother.getPosX() + dx, this.mother.getPosY() + 0.9F + (rand.nextFloat() * 0.05F), this.mother.getPosZ() + dz);

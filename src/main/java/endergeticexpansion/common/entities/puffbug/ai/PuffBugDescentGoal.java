@@ -2,8 +2,8 @@ package endergeticexpansion.common.entities.puffbug.ai;
 
 import javax.annotation.Nullable;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
-import endergeticexpansion.common.tileentities.TileEntityBolloomBud;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
+import endergeticexpansion.common.tileentities.BolloomBudTileEntity;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.tileentity.TileEntity;
@@ -11,14 +11,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class PuffBugDescentGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private World world;
 	@Nullable
 	private BlockPos budPos;
 	private float originalPosX, originalPosZ;
 	private int ticksPassed;
 	
-	public PuffBugDescentGoal(EntityPuffBug puffbug) {
+	public PuffBugDescentGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.world = puffbug.world;
 	}
@@ -35,7 +35,7 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		TileEntity te = this.world.getTileEntity(this.budPos);
-		if(!(te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened())) {
+		if(!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 			return false;
 		}
 		return this.puffbug.getAttackTarget() == null && this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.onGround && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ;
@@ -44,8 +44,8 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public void startExecuting() {
 		TileEntity te = this.world.getTileEntity(this.puffbug.getBudPos());
-		if(te instanceof TileEntityBolloomBud) {
-			((TileEntityBolloomBud) te).setTeleportingBug(null);
+		if(te instanceof BolloomBudTileEntity) {
+			((BolloomBudTileEntity) te).setTeleportingBug(null);
 		}
 		
 		this.puffbug.setBudPos(null);
@@ -75,7 +75,7 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public void resetTask() {
 		TileEntity te = this.world.getTileEntity(this.budPos);
-		if((te instanceof TileEntityBolloomBud && ((TileEntityBolloomBud) te).canBeOpened()) && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ && this.puffbug.onGround) {
+		if((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ && this.puffbug.onGround) {
 			this.puffbug.setPollinationPos(this.budPos);
 		}
 		

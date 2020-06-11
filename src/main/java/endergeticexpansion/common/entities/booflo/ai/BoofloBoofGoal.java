@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.fluid.IFluidState;
@@ -13,9 +13,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class BoofloBoofGoal extends Goal {
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	
-	public BoofloBoofGoal(EntityBooflo booflo) {
+	public BoofloBoofGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
@@ -38,18 +38,18 @@ public class BoofloBoofGoal extends Goal {
 				return true;
 			}
 		}
-		return (this.booflo.hasCaughtPuffBug() || this.booflo.getPassengers().isEmpty()) && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(EntityBooflo.HOP);
+		return (this.booflo.hasCaughtPuffBug() || this.booflo.getPassengers().isEmpty()) && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(BoofloEntity.HOP);
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.isEndimationPlaying(EntityBooflo.INFLATE);
+		return this.booflo.isEndimationPlaying(BoofloEntity.INFLATE);
 	}
 	
 	@Override
 	public void startExecuting() {
 		this.booflo.setBoofed(true);
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.INFLATE);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.INFLATE);
 	}
 	
 	private boolean shouldJumpForFall() {

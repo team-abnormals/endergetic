@@ -4,18 +4,18 @@ import java.util.EnumSet;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import endergeticexpansion.core.registry.EEItems;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class BoofloEatFruitGoal extends Goal {
-	private EntityBooflo booflo;
+	private BoofloEntity booflo;
 	private float originalYaw;
 	private int soundDelay = 0;
 
-	public BoofloEatFruitGoal(EntityBooflo booflo) {
+	public BoofloEatFruitGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
@@ -50,12 +50,12 @@ public class BoofloEatFruitGoal extends Goal {
 				return false;
 			}
 		}
-		return this.booflo.isEndimationPlaying(EntityBooflo.EAT) && flag && !this.booflo.isBoofed() && this.booflo.isOnGround();
+		return this.booflo.isEndimationPlaying(BoofloEntity.EAT) && flag && !this.booflo.isBoofed() && this.booflo.isOnGround();
 	}
 	
 	@Override
 	public void startExecuting() {
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.EAT);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.EAT);
 		this.originalYaw = this.booflo.rotationYaw;
 	}
 	
@@ -66,7 +66,7 @@ public class BoofloEatFruitGoal extends Goal {
 			this.booflo.setCaughtFruit(false);
 			this.booflo.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
 		}
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, EntityBooflo.BLANK_ANIMATION);
+		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.BLANK_ANIMATION);
 	}
 
 	@Override

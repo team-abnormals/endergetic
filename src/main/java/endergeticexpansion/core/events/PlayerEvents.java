@@ -6,11 +6,11 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 
-import endergeticexpansion.common.blocks.BlockCorrock;
-import endergeticexpansion.common.blocks.BlockCorrockBlock;
-import endergeticexpansion.common.blocks.BlockCorrockCrown;
-import endergeticexpansion.common.blocks.BlockCorrockCrownStanding;
-import endergeticexpansion.common.blocks.BlockCorrockCrownWall;
+import endergeticexpansion.common.blocks.CorrockBlock;
+import endergeticexpansion.common.blocks.CorrockCrownBlock;
+import endergeticexpansion.common.blocks.CorrockCrownStandingBlock;
+import endergeticexpansion.common.blocks.CorrockCrownWallBlock;
+import endergeticexpansion.common.blocks.CorrockPlantBlock;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
@@ -76,7 +76,7 @@ public class PlayerEvents {
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if((block instanceof BlockCorrock && !((BlockCorrock) block).petrified) || (block instanceof BlockCorrockBlock && !((BlockCorrockBlock) block).petrified) || (block instanceof BlockCorrockCrown && !((BlockCorrockCrown) block).petrified)) {
+		if((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || (block instanceof CorrockBlock && !((CorrockBlock) block).petrified) || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
 			world.setBlockState(pos, convertCorrockBlock(state));
 		}
 	}
@@ -86,33 +86,33 @@ public class PlayerEvents {
 		for(Map.Entry<Supplier<Block>, Supplier<Block>> entries : PETRIFICATION_MAP.entrySet()) {
 			Block petrifiedBlock = entries.getValue().get();
 			if(entries.getKey().get() == block) {
-				if(block instanceof BlockCorrock) {
-					return petrifiedBlock.getDefaultState().with(BlockCorrock.WATERLOGGED, state.get(BlockCorrock.WATERLOGGED));
-				} else if(block instanceof BlockCorrockBlock) {
+				if(block instanceof CorrockPlantBlock) {
+					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
+				} else if(block instanceof CorrockBlock) {
 					return petrifiedBlock.getDefaultState();
-				} else if(block instanceof BlockCorrockCrownStanding) {
+				} else if(block instanceof CorrockCrownStandingBlock) {
 					return petrifiedBlock.getDefaultState()
-						.with(BlockCorrockCrownStanding.ROTATION, state.get(BlockCorrockCrownStanding.ROTATION))
-						.with(BlockCorrockCrownStanding.UPSIDE_DOWN, state.get(BlockCorrockCrownStanding.UPSIDE_DOWN))
-						.with(BlockCorrockCrownStanding.WATERLOGGED, state.get(BlockCorrockCrownStanding.WATERLOGGED));
+						.with(CorrockCrownStandingBlock.ROTATION, state.get(CorrockCrownStandingBlock.ROTATION))
+						.with(CorrockCrownStandingBlock.UPSIDE_DOWN, state.get(CorrockCrownStandingBlock.UPSIDE_DOWN))
+						.with(CorrockCrownStandingBlock.WATERLOGGED, state.get(CorrockCrownStandingBlock.WATERLOGGED));
 				}
-				return petrifiedBlock.getDefaultState().with(BlockCorrockCrownWall.WATERLOGGED, state.get(BlockCorrockCrownWall.WATERLOGGED)).with(BlockCorrockCrownWall.FACING, state.get(BlockCorrockCrownWall.FACING));
+				return petrifiedBlock.getDefaultState().with(CorrockCrownWallBlock.WATERLOGGED, state.get(CorrockCrownWallBlock.WATERLOGGED)).with(CorrockCrownWallBlock.FACING, state.get(CorrockCrownWallBlock.FACING));
 			}
 		}
 		return null;
 	}
 	
-//	//@SubscribeEvent
+//	@SubscribeEvent
 //	public static void onEntityClicked(PlayerInteractEvent.EntityInteract event) {
 //		Entity entity = event.getTarget();
 //		PlayerEntity player = event.getPlayer();
-//		if(event.getItemStack().getItem() instanceof ItemBolloomBalloon && !entity.getEntityWorld().isRemote && !player.isShiftKeyDown()) {
-//			if(entity instanceof LivingEntity && !(entity instanceof EntityBolloomFruit) && !(entity instanceof EntityBoofBlock) && !(entity instanceof EntityPoiseCluster)) {
+//		if(event.getItemStack().getItem() instanceof BolloomBalloonItem && !entity.getEntityWorld().isRemote && !player.isShiftKeyDown()) {
+//			if(entity instanceof LivingEntity && !(entity instanceof BoofBlockEntity) && !(entity instanceof PoiseClusterEntity)) {
 //				entity.getCapability(BalloonProvider.BALLOON_CAP, null)
 //				.ifPresent(balloons -> {
 //					if(balloons.getBalloonsTied() < 4) {
 //						balloons.incrementBalloons(1);
-//						EntityBolloomBalloon.addBalloonToEntity(entity);
+//						BolloomBalloonEntity.addBalloonToEntity(entity);
 //						System.out.println(balloons.getBalloonsTied());
 //					}
 //				});
@@ -121,12 +121,11 @@ public class PlayerEvents {
 //				.ifPresent(balloons -> {
 //					if(balloons.getBalloonsTied() < 4) {
 //						balloons.incrementBalloons(1);
-//						EntityBolloomBalloon.addBalloonToEntity(entity);
+//						BolloomBalloonEntity.addBalloonToEntity(entity);
 //						System.out.println(balloons.getBalloonsTied());
 //					}
 //				});
 //			}
 //		}
-//	}
-//	
+//	}	
 }

@@ -2,24 +2,24 @@ package endergeticexpansion.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import endergeticexpansion.common.entities.booflo.EntityBooflo;
-import endergeticexpansion.common.entities.booflo.EntityBooflo.GroundMoveHelperController;
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.potion.Effects;
 
 public class BoofloFaceRandomGoal extends Goal {
-	private final EntityBooflo booflo;
+	private final BoofloEntity booflo;
 	private float chosenDegrees;
 	private int nextRandomizeTime;
 
-	public BoofloFaceRandomGoal(EntityBooflo booflo) {
+	public BoofloFaceRandomGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
 	@Override
 	public boolean shouldExecute() {
-    	return !this.booflo.isBoofed() && this.booflo.getAttackTarget() == null && (this.booflo.onGround || this.booflo.isPotionActive(Effects.LEVITATION)) && this.booflo.getMoveHelper() instanceof EntityBooflo.GroundMoveHelperController;
+    	return !this.booflo.isBoofed() && this.booflo.getAttackTarget() == null && (this.booflo.onGround || this.booflo.isPotionActive(Effects.LEVITATION)) && this.booflo.getMoveHelper() instanceof BoofloEntity.GroundMoveHelperController;
 	}
 
 	@Override

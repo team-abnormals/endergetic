@@ -16,8 +16,8 @@ public class EEBiomes {
 	private static int TOTAL_WEIGHT;
 	public static final DeferredRegister<Biome> BIOMES = new DeferredRegister<>(ForgeRegistries.BIOMES, EndergeticExpansion.MOD_ID);
 	
-	public static final RegistryObject<EndergeticBiome> POISE_FOREST  = createEndBiome("poise_forest", BiomePoiseForest::new);
-	public static final RegistryObject<EndergeticBiome> CHORUS_PLAINS = createEndBiome("chorus_plains", BiomeChorusPlains::new);
+	public static final RegistryObject<EndergeticBiome> POISE_FOREST  = createEndBiome("poise_forest", PoiseForestBiome::new);
+	public static final RegistryObject<EndergeticBiome> CHORUS_PLAINS = createEndBiome("chorus_plains", ChorusPlainsBiome::new);
 	public static final RegistryObject<Biome> END_MIDLANDS            = registerBiome("end_midlands", EndergeticMidlandsBiome::new);
 	public static final RegistryObject<Biome> END_HIGHLANDS           = registerBiome("end_highlands", EndergeticHighlandsBiome::new);
 	

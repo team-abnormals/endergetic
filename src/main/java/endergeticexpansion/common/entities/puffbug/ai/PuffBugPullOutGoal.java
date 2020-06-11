@@ -4,16 +4,16 @@ import java.util.EnumSet;
 
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
-import endergeticexpansion.common.entities.puffbug.EntityPuffBug;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class PuffBugPullOutGoal extends Goal {
-	private EntityPuffBug puffbug;
+	private PuffBugEntity puffbug;
 	private int pulls;
 	
-	public PuffBugPullOutGoal(EntityPuffBug puffbug) {
+	public PuffBugPullOutGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
@@ -37,10 +37,10 @@ public class PuffBugPullOutGoal extends Goal {
 	public void tick() {
 		if(this.puffbug.isNoEndimationPlaying()) {
 			if(this.pulls > 0) {
-				NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.PULL_ANIMATION);
+				NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.PULL_ANIMATION);
 				this.pulls--;
 			}
-		} else if(this.puffbug.isEndimationPlaying(EntityPuffBug.PULL_ANIMATION)) {
+		} else if(this.puffbug.isEndimationPlaying(PuffBugEntity.PULL_ANIMATION)) {
 			if(this.pulls <= 0 && this.puffbug.getAnimationTick() == 5) {
 				this.puffbug.disableProjectile();
 				this.puffbug.stuckInBlockState = null;
@@ -60,6 +60,6 @@ public class PuffBugPullOutGoal extends Goal {
 	
 	@Override
 	public void resetTask() {
-		NetworkUtil.setPlayingAnimationMessage(this.puffbug, EntityPuffBug.BLANK_ANIMATION);
+		NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.BLANK_ANIMATION);
 	}
 }
