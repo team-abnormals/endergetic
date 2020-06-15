@@ -16,11 +16,7 @@ import com.google.common.collect.Sets;
 import endergeticexpansion.common.world.features.EndergeticEndPodiumFeature;
 import endergeticexpansion.core.config.EEConfig;
 import endergeticexpansion.core.registry.EEBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockPattern;
-import net.minecraft.block.pattern.BlockPatternBuilder;
 import net.minecraft.block.pattern.BlockPattern.PatternHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -29,7 +25,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.EndPortalTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Unit;
@@ -47,12 +42,7 @@ import net.minecraft.world.server.TicketType;
 public class EndergeticDragonFightManager extends DragonFightManager {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(0.0D, 128.0D, 0.0D, 192.0D));
-	private static final Predicate<BlockState> IS_PORTAL_BLOCK = (state) -> {
-		Block block = state.getBlock();
-		return block == EEBlocks.MYSTICAL_OBSIDIAN.get() || block == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() || block == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get() || block == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get();
-	};
-	private final BlockPattern portalPattern = BlockPatternBuilder.start().aisle("       ", "       ", "       ", "   #   ", "       ", "       ", "       ").aisle("       ", "       ", "       ", "   #   ", "       ", "       ", "       ").aisle("       ", "       ", "       ", "   #   ", "       ", "       ", "       ").aisle("  ###  ", " #   # ", "#     #", "#  #  #", "#     #", " #   # ", "  ###  ").aisle("       ", "  ###  ", " ##### ", " ##### ", " ##### ", "  ###  ", "       ").where('#', CachedBlockInfo.hasState(IS_PORTAL_BLOCK)).build();
-
+	
 	public EndergeticDragonFightManager(ServerWorld worldIn, CompoundNBT compound, EndDimension dim) {
 		super(worldIn, compound, dim);
 	}
@@ -60,7 +50,7 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 	@Override
 	public void tick() {
 		this.bossInfo.setVisible(!this.dragonKilled);
-		if(++this.ticksSinceLastPlayerScan >= 20) {
+		if(this.ticksSinceLastPlayerScan++ >= 20) {
 			this.updatePlayers();
 			this.ticksSinceLastPlayerScan = 0;
 		}
@@ -112,7 +102,7 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 		} else {
 			LOGGER.info("Found that the dragon has not yet been killed in this world.");
 			this.previouslyKilled = false;
-			if(this.findExitPortal() == null) {
+			if(!this.findEndergeticExitPortal(false)) {
 				this.generatePortal(false);
 			}
 		}
@@ -203,18 +193,6 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 	@Override
 	@Nullable
 	public PatternHelper findExitPortal() {
-		int height = this.world.getHeight(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.up()).getY();
-		
-		for(int y = height; y >= 0; y--) {
-			BlockPattern.PatternHelper blockpattern$patternhelper1 = this.portalPattern.match(this.world, new BlockPos(EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getX(), y, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getZ()));
-			if(blockpattern$patternhelper1 != null) {
-				if(this.exitPortalLocation == null) {
-					this.exitPortalLocation = blockpattern$patternhelper1.translateOffset(3, 3, 3).getPos();
-				}
-				return blockpattern$patternhelper1;
-			}
-		}
-		
 		return null;
 	}
 	

@@ -7,36 +7,6 @@ var InsnList = org.objectweb.asm.tree.InsnList;
 
 function initializeCoreMod() {
 	return {
-		'patch_dragon_fight_manager_generate_portal': {
-			'target': {
-				'type': 'METHOD',
-				'class': 'net.minecraft.world.end.DragonFightManager',
-				'methodName': 'func_186094_a',
-				'methodDesc': '(Z)V'
-			},
-			'transformer': function(method) {
-				print('[Endergetic Expansion]: Patching DragonFightManager#generatePortal');
-				var instr = method.instructions;
-				
-				for(var i = 0; i < instr.size(); i++) {
-					var currentInstr = instr.get(i);
-					if(currentInstr.getOpcode() == Opcodes.NEW) {
-						instr.set(currentInstr, new TypeInsnNode(Opcodes.NEW, "endergeticexpansion/common/world/features/EndergeticEndPodiumFeature"));
-						break;
-					}
-				}
-				
-				for(var i = 0; i < instr.size(); i++) {
-					var currentInstr = instr.get(i);
-					if(currentInstr.getOpcode() == Opcodes.INVOKESPECIAL) {
-						instr.set(currentInstr, new MethodInsnNode(Opcodes.INVOKESPECIAL, "endergeticexpansion/common/world/features/EndergeticEndPodiumFeature", "<init>", "(Z)V"));
-						break;
-					}
-				}
-
-				return method;
-			}
-		},
 		'patch_dragon_fight_manager_generate_gateway': {
 			'target': {
 				'type': 'METHOD',
@@ -47,7 +17,6 @@ function initializeCoreMod() {
 			'transformer': function(method) {
 				print('[Endergetic Expansion]: Patching DragonFightManager#generateGateway');
 				var instr = method.instructions;
-				var ran = false;
 				
 				for(var i = 0; i < instr.size(); i++) {
 					var currentInstr = instr.get(i);
@@ -60,5 +29,5 @@ function initializeCoreMod() {
 				return method;
 			}
 		}
-	}
+	};
 }

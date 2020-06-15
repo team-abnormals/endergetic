@@ -2,5 +2,4 @@
 	"patch_ender_crystal": "coremods/patch_ender_crystal.js",
 	"patch_dragon_fight_manager": "coremods/patch_dragon_fight_manager.js",
 	"patch_end_gateway_tile_entity": "coremods/patch_end_gateway_tile_entity.js"
-	//"patch_chorus_placement": "coremods/patch_chorus_placement.js"
 }

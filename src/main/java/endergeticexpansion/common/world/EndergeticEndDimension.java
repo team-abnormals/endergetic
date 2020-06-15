@@ -13,10 +13,10 @@ import net.minecraft.world.server.ServerWorld;
 
 public class EndergeticEndDimension extends EndDimension {
 
-	public EndergeticEndDimension(World worldIn, DimensionType typeIn) {
-		super(worldIn, typeIn);
-		CompoundNBT compoundnbt = worldIn.getWorldInfo().getDimensionData(typeIn);
-		this.dragonFightManager = worldIn instanceof ServerWorld ? new EndergeticDragonFightManager((ServerWorld)worldIn, compoundnbt.getCompound("DragonFight"), this) : null;
+	public EndergeticEndDimension(World world, DimensionType type) {
+		super(world, type);
+		CompoundNBT compoundnbt = world.getWorldInfo().getDimensionData(type);
+		this.dragonFightManager = world instanceof ServerWorld ? new EndergeticDragonFightManager((ServerWorld) world, compoundnbt.getCompound("DragonFight"), this) : null;
 	}
 
 	@Override
