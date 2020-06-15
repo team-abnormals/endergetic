@@ -1,18 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "#",
-    "#",
-    "#"
-  ],
-  "key": {
-    "#": {
-      "item": "endergetic:eumus_brick_slab"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "endergetic:poise_vertical_planks"
     }
-  },
+  ],
   "result": {
-    "item": "endergetic:eumus_brick_vertical_slab",
-    "count": 3
+    "item": "endergetic:poise_planks",
+    "count": 1
   },
   "conditions": [
     {
@@ -24,7 +19,7 @@
         },
         {
           "type": "abnormals_core:quark_flag",
-          "flag": "vertical_slabs"
+          "flag": "vertical_planks"
         }
       ]
     }

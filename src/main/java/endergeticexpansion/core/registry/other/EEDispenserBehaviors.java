@@ -1,7 +1,5 @@
 package endergeticexpansion.core.registry.other;
 
-import com.teamabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
-
 import endergeticexpansion.common.blocks.poise.boof.BoofBlock;
 import endergeticexpansion.common.items.BolloomBalloonItem;
 import endergeticexpansion.common.items.PuffBugBottleItem;
@@ -14,7 +12,6 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
@@ -53,11 +50,7 @@ public class EEDispenserBehaviors {
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_GRAY.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLACK.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE.get(), new PuffBugBottleItem.PuffBugBottleDispenseBehavior());
-		
-		EndergeticExpansion.REGISTRY_HELPER.getDeferredItemRegister().getEntries().stream().filter((entry) -> entry.get() instanceof AbnormalsSpawnEggItem).forEach((item) -> {
-			Item items = item.get();
-    		DispenserBlock.registerDispenseBehavior(items, spawnEggItemBehavior);
-		});
+		EndergeticExpansion.REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 	}
 	
 }
