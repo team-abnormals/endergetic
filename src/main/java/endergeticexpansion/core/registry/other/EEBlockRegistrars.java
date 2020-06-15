@@ -1,21 +1,22 @@
 package endergeticexpansion.core.registry.other;
 
+import com.teamabnormals.abnormals_core.core.utils.DataUtils;
+
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FireBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraftforge.fml.ModList;
 
 public class EEBlockRegistrars {
 	public static void registerFireInfo() {
-		if(ModList.get().isLoaded("quark")) {
-			setFireInfo(EEBlocks.POISE_VERTICAL_PLANKS.get(), 5, 20);
-			setFireInfo(EEBlocks.POISE_VERTICAL_SLAB.get(), 5, 20);
-			setFireInfo(EEBlocks.POISE_BOOKSHELF.get(), 30, 20);
-		}
-		setFireInfo(EEBlocks.POISE_PLANKS.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_PLANKS.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_SLAB.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_STAIRS.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_FENCE.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_FENCE_GATE.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_VERTICAL_PLANKS.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_VERTICAL_SLAB.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_BOOKSHELF.get(), 5, 20);
 	}
 	
 	public static void setupRenderLayers() {
@@ -37,10 +38,6 @@ public class EEBlockRegistrars {
 		setRenderLayer(EEBlocks.POISE_BUSH_TALL.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());
 		setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
-	}
-	
-	private static void setFireInfo(Block block, int encouragement, int flammability) {
-		((FireBlock) Blocks.FIRE).setFireInfo(block, encouragement, flammability);
 	}
 	
 	private static synchronized void setRenderLayer(Block block, RenderType type) {
