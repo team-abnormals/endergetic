@@ -4,14 +4,11 @@ import java.util.List;
 
 import endergeticexpansion.core.registry.EEBlocks;
 import endergeticexpansion.core.registry.EEEntities;
+import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.item.PaintingEntity;
-import net.minecraft.entity.monster.ShulkerEntity;
-import net.minecraft.entity.monster.VexEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -55,21 +52,15 @@ public class BoofBlockEntity extends LivingEntity {
 	public void tick() {
 		AxisAlignedBB bb = this.getBoundingBox().grow(0, 0.25F, 0);
 		List<Entity> entities = this.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
-		int entityCount = entities.size();
-		boolean hasEntity = entityCount > 0;
-		if(hasEntity) {
-			for(int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
+		for(int i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
 				
-				if(!(entity instanceof BoofBlockEntity) &&
-					!(entity instanceof ShulkerEntity) &&
-					!(entity instanceof TridentEntity) &&
-					!(entity instanceof AbstractArrowEntity) &&
-					!(entity instanceof PaintingEntity) &&
-					!(entity instanceof VexEntity) &&
-					!(entity instanceof PoiseClusterEntity) &&
-					!(entity instanceof ItemFrameEntity)
-				) {
+			if(!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
+				if(entity instanceof TridentEntity || entity instanceof AbstractArrowEntity) {
+					this.setForProjectile(true);
+					this.world.setBlockState(getOrigin(), Blocks.AIR.getDefaultState());
+					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F);
+				} else {
 					if(entity.getPosY() - 0.45F >= this.getPosY()) {
 						entity.addVelocity(0, this.rand.nextFloat() * 0.05D + 0.35D, 0);
 					} else if(entity.getPosY() < this.getPosY() - 1F) {
@@ -79,21 +70,19 @@ public class BoofBlockEntity extends LivingEntity {
 						Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
 						entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
-				} else if((entity instanceof TridentEntity) || (entity instanceof AbstractArrowEntity)) {
-					this.setForProjectile(true);
-					this.getEntityWorld().setBlockState(getOrigin(), Blocks.AIR.getDefaultState());
-					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F);
 				}
 			}
 		}
+		
 		if(this.ticksExisted >= 10) {
-			if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.getEntityWorld().getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK.get() && !this.isForProjectile()) {
-				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
-			} else if(this.getEntityWorld().isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
-				this.getEntityWorld().setBlockState(getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
+			if(this.world.isAreaLoaded(this.getOrigin(), 1) && this.world.getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK.get() && !this.isForProjectile()) {
+				this.world.setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
+			} else if(this.world.isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
+				this.getEntityWorld().setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
 			}
 			this.remove();
 		}
+		
 		this.setMotion(Vec3d.ZERO);
 		super.tick();
 	}
@@ -171,5 +160,4 @@ public class BoofBlockEntity extends LivingEntity {
 	public HandSide getPrimaryHand() {
 		return HandSide.RIGHT;
 	}
-	
 }

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "endergetic:boof_block",
+    "endergetic:poise_cluster",
+    "endergetic:bolloom_fruit",
+    "endergetic:bolloom_balloon",
+    "minecraft:shulker",
+    "minecraft:painting",
+    "minecraft:vex",
+    "minecraft:item_frame"
+  ]
+}

@@ -1,6 +1,5 @@
 package endergeticexpansion.common.blocks.poise;
 
-import java.util.List;
 import java.util.Random;
 
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
@@ -15,8 +14,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.TridentEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
@@ -24,6 +22,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -83,42 +82,32 @@ public class PoiseClusterBlock extends Block {
 	}
 	
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-		if(entityIn instanceof AbstractArrowEntity || entityIn instanceof TridentEntity) {
-			AxisAlignedBB bb = new AxisAlignedBB(pos).offset(0, 1, 0);
-			List<Entity> entities = worldIn.getEntitiesWithinAABB(Entity.class, bb);
-			boolean isBlocked = false;
-			for(int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
+	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+		BlockPos pos = hit.getPos();
+		if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos.up())).isEmpty()) {
+			if(!world.isRemote) {
+				PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
+				cluster.setBlocksToMoveUp(10);
+				world.addEntity(cluster);
 				
-				if(entity instanceof PoiseClusterEntity) {
-					isBlocked = true;
+				if(projectile instanceof ArrowEntity) {
+					projectile.remove();
 				}
-			}
-			if(worldIn.isAirBlock(pos.up()) && !isBlocked) {
-				if(!worldIn.isRemote) {
-					PoiseClusterEntity cluster = new PoiseClusterEntity(worldIn, pos, pos.getX(), pos.getY(), pos.getZ());
-					cluster.setBlocksToMoveUp(10);
-					worldIn.addEntity(cluster);
-					entityIn.remove();
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
-					worldIn.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
+				
+				world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
 					
-					Random rand = new Random();
+				Random rand = new Random();
+				for(int i = 0; i < 8; i++) {
+					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 					
-					for(int i = 0; i < 8; i++) {
-						double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-						double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-					
-						double x = pos.getX() + 0.5D + offsetX;
-						double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
-						double z = pos.getZ() + 0.5D + offsetZ;
-					
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
-					}
+					double x = pos.getX() + 0.5D + offsetX;
+					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
+					double z = pos.getZ() + 0.5D + offsetZ;
+				
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 				}
-			} else {
-				worldIn.setBlockState(pos, getDefaultState());
 			}
 		}
 	}

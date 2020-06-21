@@ -40,7 +40,7 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 	));
 
 	public DispensedBoofBlock(Properties builder) {
-		super(builder);
+		super(builder.doesNotBlockMovement());
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
 	
