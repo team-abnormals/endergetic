@@ -28,6 +28,7 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH     = createFeature("corrock_patch", () -> new CorrockPatchFeature(NoFeatureConfig::deserialize));
 	public static final RegistryObject<Feature<SphereReplaceConfig>> GROUND_PATCH  = createFeature("ground_patch", () -> new GroundPatchFeature(SphereReplaceConfig::deserialize));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH  = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig::deserialize));
+	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER   = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig::deserialize));
 	
 	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY = new EndergeticEndGatewayFeature(EndGatewayConfig::deserialize);
 	public static final RegistryObject<Feature<EndSpikeFeatureConfig>> ENDERGETIC_END_SPIKE = createFeature("end_spike", () -> new EndergeticEndSpikeFeature(EndSpikeFeatureConfig::deserialize));

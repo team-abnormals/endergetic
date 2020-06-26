@@ -17,8 +17,6 @@ import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ChorusFlowerBlock;
-import net.minecraft.block.HorizontalBlock;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutable;
@@ -53,7 +51,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					branchPieces[0].place(world);
 					
 					for(ChorusPlantPart chorusParts : this.getAllChorusPartsMatchingPiece(chorusGrowths, branchPieces[0])) {
-						chorusParts.placeGrowth(world, rand);
+						chorusParts.placeCoveredGrowth(world, rand);
 					}
 					
 					if(branchCount > 1) {
@@ -61,7 +59,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 							branchPieces[1].place(world);
 							
 							for(ChorusPlantPart chorusParts : this.getAllChorusPartsMatchingPiece(chorusGrowths, branchPieces[1])) {
-								chorusParts.placeGrowth(world, rand);
+								chorusParts.placeCoveredGrowth(world, rand);
 							}
 						}
 						if(branchCount > 2) {
@@ -69,7 +67,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 								branchPieces[2].place(world);
 								
 								for(ChorusPlantPart chorusParts : this.getAllChorusPartsMatchingPiece(chorusGrowths, branchPieces[2])) {
-									chorusParts.placeGrowth(world, rand);
+									chorusParts.placeCoveredGrowth(world, rand);
 								}
 							}
 						}
@@ -242,24 +240,6 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 	
 	private BlockState randomStandingCorrockCrown(Random rand) {
 		return CORROCK_CROWN(false).get().with(CorrockCrownStandingBlock.ROTATION, rand.nextInt(16));
-	}
-	
-	class ChorusPlantPart {
-		public final GenerationPiece piece;
-		private final Direction facing;
-		public final BlockPos pos;
-		
-		public ChorusPlantPart(GenerationPiece piece, BlockPos pos, Direction facing) {
-			this.piece = piece;
-			this.pos = pos;
-			this.facing = facing;
-		}
-		
-		public void placeGrowth(IWorld world, Random rand) {
-			world.setBlockState(this.pos, Blocks.END_STONE.getDefaultState(), 2);
-			world.setBlockState(this.pos.offset(facing), EEBlocks.ENDSTONE_COVER.get().getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, this.facing.getOpposite()), 2);
-			ChorusFlowerBlock.generatePlant(world, this.pos.up(), rand, 8);
-		}
 	}
 
 }
