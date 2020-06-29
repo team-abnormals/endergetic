@@ -65,6 +65,7 @@
 	"block.endergetic.eumus_brick_stairs": "Escaliers en brique d'humus",
 	"block.endergetic.eumus_brick_wall": "Muret en brique d'humus",
 	"block.endergetic.potted_poise_bush": "Pot d'herbe de lévita",
+
 	"block.endergetic.mystical_obsidian": "Obsidienne mystique",
 	"block.endergetic.mystical_obsidian_wall": "Muret en obsidienne mystique",
 	"block.endergetic.mystical_obsidian_rune": "Rune en obsidienne mystique",
@@ -72,7 +73,8 @@
 	"block.endergetic.mystical_obsidian_activation_rune_active": "Rune d'activation en obisdienne mystique activée",
 	"block.endergetic.acidian_lantern": "Lanterne d'acidienne",
 	"block.endergetic.crystal_holder": "Réceptacle de cristal de l'End",
-	"_comment": "Items",
+
+	"_comment_": "Items",
 	"item.endergetic.poise_boat": "Bateau en lévita",
 	"item.endergetic.eumus_brick": "Brique d'humus",
 	"item.endergetic.bolloom_fruit": "Fruit de Bolloum",
@@ -98,7 +100,8 @@
 	"item.endergetic.puffbug_bottle": "Fiole de Gonflinsecte",
 	"item.endergetic.puff_bug_spawn_egg": "Oeuf d'apparition de Gonflinsecte",
 	"item.endergetic.booflo_spawn_egg": "Oeuf d'apparition de Bouflo",
-	"_comment": "Entities",
+
+	"__comment": "Entities",
 	"entity.endergetic.poise_cluster": "Grappe de lévita",
 	"entity.endergetic.bolloom_fruit": "Fruit de Bolloum",
 	"entity.endergetic.boof_block": "Bloc de Bouf",
@@ -108,9 +111,11 @@
 	"entity.endergetic.booflo_baby": "Bébé Bouflo",
 	"entity.endergetic.booflo_adolescent": "Bouflo Adolescent",
 	"entity.endergetic.booflo": "Bouflo",
+
 	"___comment": "Biomes",
 	"biome.endergetic.poise_forest": "Forêt de lévita",
 	"biome.endergetic.chorus_plains": "Plaines de chorus(Inutilisé)",
+
 	"____comment": "Advancements",
 	"advancements.endergetic.find_poise_forest.title": "Un endroit en lévitation",
 	"advancements.endergetic.find_poise_forest.description": "Trouvez une Forêt de lévita",
@@ -122,12 +127,15 @@
 	"advancements.endergetic.eat_bolloom_fruit.description": "Manger un Fruit de Bolloum",
 	"advancements.endergetic.tame_booflo.title": "Ami gonflable!",
 	"advancements.endergetic.tame_booflo.description": "Apprivoisez un Bouflo en lui donnant des Fruits de Bolloum à manger",
+
 	"_____comment": "Keybinds",
 	"key.endergetic.boof_vest": "Activer la Veste en Bouflo",
 	"key.endergetic.booflo_inflate": "Faire gonfler le Bouflo",
 	"key.endergetic.booflo_slam": "Faire écraser le Bouflo",
+
 	"______comment": "Tool Tips",
 	"tooltip.endergetic.activePotions": "Effets de potion actifs:",
+
 	"_______comment": "Subtitles",
 	"subtitles.endergetic.booflo.croak": "Bouflo coasse",
 	"subtitles.endergetic.booflo.death": "Bouflo meurt",
@@ -150,6 +158,7 @@
 	"subtitles.endergetic.boof_block.inflate": "Bloc de Bouf gonfle",
 	"subtitles.endergetic.booflo_vest.inflate": "Veste en Bouflo gonfle",
 	"subtitles.endergetic.poise_bush.ambient": "Bulles d'herbe de lévita",
+
 	"________comment": "Config",
 	"endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager"
 }
