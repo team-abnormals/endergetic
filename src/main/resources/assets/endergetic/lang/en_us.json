@@ -1,6 +1,5 @@
 {
 	"_comment": "Blocks",
-	
 	"block.endergetic.corrock_overworld_block": "Overworld Corrock Block",
 	"block.endergetic.corrock_nether_block": "Nether Corrock Block",
 	"block.endergetic.corrock_end_block": "End Corrock Block",
@@ -66,7 +65,7 @@
 	"block.endergetic.eumus_brick_stairs": "Eumus Brick Stairs",
 	"block.endergetic.eumus_brick_wall": "Eumus Brick Wall",
 	"block.endergetic.potted_poise_bush": "Potted Poise Bush",
-	
+
 	"block.endergetic.mystical_obsidian": "Mystical Obsidian",
 	"block.endergetic.mystical_obsidian_wall": "Mystical Obsidian Wall",
 	"block.endergetic.mystical_obsidian_rune": "Mystical Obsidian Rune",
@@ -74,9 +73,8 @@
 	"block.endergetic.mystical_obsidian_activation_rune_active": "Activated Mystical Obsidian Activation Rune",
 	"block.endergetic.acidian_lantern": "Acidian Lantern",
 	"block.endergetic.crystal_holder": "Crystal Holder",
-	
+
 	"_comment_": "Items",
-	
 	"item.endergetic.poise_boat": "Poise Boat",
 	"item.endergetic.eumus_brick": "Eumus Brick",
 	"item.endergetic.bolloom_fruit": "Bolloom Fruit",
@@ -103,9 +101,8 @@
 	"item.endergetic.puff_bug_spawn_egg": "Puff Bug Spawn Egg",
 	"item.endergetic.booflo_spawn_egg": "Booflo Spawn Egg",
 	"item.endergetic.feature_stick": "Feature Stick",
-	
+
 	"__comment": "Entities",
-	
 	"entity.endergetic.poise_cluster": "Poise Cluster",
 	"entity.endergetic.bolloom_fruit": "Bolloom Fruit",
 	"entity.endergetic.boof_block": "Boof Block",
@@ -115,12 +112,11 @@
 	"entity.endergetic.booflo_baby": "Booflo Baby",
 	"entity.endergetic.booflo_adolescent": "Booflo Adolescent",
 	"entity.endergetic.booflo": "Booflo",
-	
+
 	"___comment": "Biomes",
-	
 	"biome.endergetic.poise_forest": "Poise Forest",
 	"biome.endergetic.chorus_plains": "Chorus Plains(Unused)",
-	
+
 	"____comment": "Advancements",
 	"advancements.endergetic.find_poise_forest.title": "A Poised Place",
 	"advancements.endergetic.find_poise_forest.description": "Find a Poise Forest",
@@ -132,19 +128,16 @@
 	"advancements.endergetic.eat_bolloom_fruit.description": "Eat a Bolloom Fruit",
 	"advancements.endergetic.tame_booflo.title": "Inflatable Friend!",
 	"advancements.endergetic.tame_booflo.description": "Tame a Booflo by feeding it Bolloom Fruits and backing away to let it eat",
-	
+
 	"_____comment": "Keybinds",
-	
 	"key.endergetic.boof_vest" : "Booflo Vest Activate",
 	"key.endergetic.booflo_inflate" : "Booflo Ride Inflate",
 	"key.endergetic.booflo_slam" : "Booflo Slam",
-	
+
 	"______comment": "Tool Tips",
-	
 	"tooltip.endergetic.activePotions": "Active Potion Effects:",
-	
+
 	"_______comment": "Subtitles",
-	
 	"subtitles.endergetic.booflo.croak": "Booflo croaks",
 	"subtitles.endergetic.booflo.death": "Booflo dies",
 	"subtitles.endergetic.booflo.deflate": "Booflo deflates",
@@ -166,8 +159,7 @@
 	"subtitles.endergetic.boof_block.inflate": "Boof Block inflates",
 	"subtitles.endergetic.booflo_vest.inflate": "Booflo vest inflates",
 	"subtitles.endergetic.poise_bush.ambient": "Poise bush bubbles",
-	
+
 	"________comment": "Config",
-	
 	"endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager"
 }
