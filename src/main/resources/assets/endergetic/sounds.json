@@ -28,7 +28,7 @@
     "entity.booflo.hop_land":
     {
         "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.land",
+        "subtitle": "subtitles.endergetic.booflo.hop_land",
         "sounds": [
         	{ "name": "endergetic:entity/booflo/booflo_land" }
         ]
