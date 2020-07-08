@@ -34,7 +34,7 @@ public class BoofTileEntity extends TileEntity implements ITickableTileEntity {
 					}
 					((PlayerEntity) entity).fallDistance = 0;
 				} else if(entity instanceof AbstractArrowEntity) {
-					ObfuscationReflectionHelper.setPrivateValue(AbstractArrowEntity.class, (AbstractArrowEntity) entity, false, "inGround");
+					ObfuscationReflectionHelper.setPrivateValue(AbstractArrowEntity.class, (AbstractArrowEntity) entity, false, "field_70254_i");
 					BoofBlock.doBoof(this.world, this.pos);
 				} else {
 					BoofBlock.doBoof(this.world, this.pos);
