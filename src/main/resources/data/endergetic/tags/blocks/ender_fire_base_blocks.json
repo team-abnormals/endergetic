@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:end_stone",
+    "endergetic:eumus",
+    "endergetic:eumus_poismoss",
+    "endergetic:poismoss",
+    "endergetic:crystal_holder",
+    "endergetic:mystical_obsidian_rune",
+    "endergetic:mystical_obsidian_activation_rune",
+    "endergetic:activated_mystical_obsidian_activation_rune"
+  ]
+}

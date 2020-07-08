@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "endergetic:poise_slab",
     "endergetic:eumus_brick_slab"
   ]
 }

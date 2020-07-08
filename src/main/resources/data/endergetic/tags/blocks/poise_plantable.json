@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "endergetic:poismoss_eumus",
-    "endergetic:poise_grass_block"
+    "endergetic:eumus_poismoss",
+    "endergetic:poismoss"
   ]
 }

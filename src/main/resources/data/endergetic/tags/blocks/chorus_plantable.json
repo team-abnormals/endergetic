@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "endergetic:corrock_end_block",
-    "endergetic:corrock_nether_block",
-    "endergetic:corrock_overworld_block",
+    "endergetic:end_corrock_block",
+    "endergetic:nether_corrock_block",
+    "endergetic:overworld_corrock_block",
     "minecraft:end_stone"
   ]
 }

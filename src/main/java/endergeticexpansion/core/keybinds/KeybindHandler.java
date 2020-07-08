@@ -39,7 +39,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public class KeybindHandler {
 	private static List<KeyBinding> keyBinds = Lists.newArrayList();
-	public static KeyBinding BOOF_VEST = registerKeybind(new KeyBinding("key.endergetic.boof_vest", 32, "key.categories.movement"));
+	public static KeyBinding BOOF_VEST = registerKeybind(new KeyBinding("key.endergetic.booflo_vest", 32, "key.categories.movement"));
 	public static KeyBinding BOOFLO_INFLATE = registerKeybind(new KeyBinding("key.endergetic.booflo_inflate", 32, "key.categories.gameplay"));
 	public static KeyBinding BOOFLO_SLAM = registerKeybind(new KeyBinding("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
 	

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "endergetic:poise_stem",
+    "endergetic:stripped_poise_stem",
+    "endergetic:poise_wood",
+    "endergetic:stripped_poise_wood",
+    "endergetic:glowing_poise_stem",
+    "endergetic:glowing_poise_wood"
+  ]
+}

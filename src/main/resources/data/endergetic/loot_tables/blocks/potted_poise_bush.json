@@ -20,7 +20,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "endergetic:poise_grass"
+          "name": "endergetic:poise_bush"
         }
       ],
       "conditions": [

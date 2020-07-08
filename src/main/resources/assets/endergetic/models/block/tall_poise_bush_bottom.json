@@ -1,0 +1,6 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "endergetic:block/tall_poise_bush_bottom"
+    }
+}

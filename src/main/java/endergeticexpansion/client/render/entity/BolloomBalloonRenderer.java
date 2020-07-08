@@ -16,22 +16,22 @@ import net.minecraft.util.math.vector.Vector3f;
 public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity> {
 	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
 	public static final ResourceLocation[] COLORS = new ResourceLocation[] {
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_white.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_orange.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_magenta.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_light_blue.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_yellow.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_lime.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_pink.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_gray.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_light_gray.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_cyan.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_purple.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_blue.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_brown.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_green.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_red.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon_black.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/white_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/orange_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/magenta_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/light_blue_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/yellow_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/lime_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/pink_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/gray_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/light_gray_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/cyan_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/purple_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/blue_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/brown_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/green_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/red_bolloom_balloon.png"),
+		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/black_bolloom_balloon.png"),
 	};
 
 	public BolloomBalloonModel<BolloomBalloonEntity> model;

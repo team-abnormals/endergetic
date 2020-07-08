@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:glowing_poise_stem"
+    }
+  },
+  "result": {
+    "item": "endergetic:glowing_poise_wood",
+    "count": 3
+  }
+}

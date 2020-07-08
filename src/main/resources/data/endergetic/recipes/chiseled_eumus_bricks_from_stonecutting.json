@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "endergetic:eumus_bricks"
+  },
+  "result": "endergetic:chiseled_eumus_bricks",
+  "count": 1
+}

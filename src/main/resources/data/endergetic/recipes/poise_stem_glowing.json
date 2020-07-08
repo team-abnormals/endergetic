@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "endergetic",
+    "pattern":
+    [
+    	"LLL",
+        "LPL",
+        "LLL"
+    ],
+    "key":
+    {
+        "L":
+        {
+            "item": "endergetic:poise_stem"
+        },
+        "P":
+        {
+            "item": "endergetic:poise_cluster"
+        }
+    },
+    "result":
+    {
+        "item": "endergetic:glowing_poise_stem",
+        "count": 8
+    }
+}

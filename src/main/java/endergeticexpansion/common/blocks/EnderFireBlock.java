@@ -25,7 +25,7 @@ public class EnderFireBlock extends AbstractFireBlock {
 	}
 
 	public static boolean isEnderFireBase(Block block) {
-		return block.isIn(EETags.Blocks.ENDER_FIRE_BASE);
+		return block.isIn(EETags.Blocks.ENDER_FIRE_BASE_BLOCKS);
 	}
 
 	protected boolean canBurn(BlockState stateIn) {
