@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:obsidian",
+    "minecraft:bedrock",
+    "endergetic:crystal_holder",
+    "endergetic:mystical_obsidian_activation_rune",
+    "endergetic:mystical_obsidian_activation_rune_active"
+  ]
+}

@@ -2,9 +2,8 @@ package endergeticexpansion.common.items;
 
 import java.util.List;
 
-import endergeticexpansion.core.registry.EEBlocks;
+import endergeticexpansion.core.registry.other.EETags;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.item.EnderCrystalItem;
@@ -27,7 +26,7 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 		World world = context.getWorld();
 		BlockPos blockpos = context.getPos();
 		BlockState blockstate = world.getBlockState(blockpos);
-		if(blockstate.getBlock() != Blocks.OBSIDIAN && blockstate.getBlock() != Blocks.BEDROCK && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() && blockstate.getBlock() != EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get()) {
+		if(!blockstate.getBlock().isIn(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
 			return ActionResultType.FAIL;
 		} else {
 			BlockPos blockpos1 = blockpos.up();
@@ -37,7 +36,7 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 				double d0 = (double)blockpos1.getX();
 				double d1 = (double)blockpos1.getY();
 				double d2 = (double)blockpos1.getZ();
-				List<Entity> list = world.getEntitiesWithinAABBExcludingEntity((Entity)null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
+				List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
 				if (!list.isEmpty()) {
 					return ActionResultType.FAIL;
 				} else {

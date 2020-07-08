@@ -34,8 +34,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
@@ -124,7 +122,7 @@ public class EEBlocks {
 	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = HELPER.createBlock("mystical_obsidian_activation_rune_active", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.setLightLevel(state -> 5)), null);
 	public static final RegistryObject<AcidianLanternBlock> ACIDIAN_LANTERN      = HELPER.createBlock("acidian_lantern", () ->  new AcidianLanternBlock(EEProperties.ACIDIAN_LANTERN), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> CRYSTAL_HOLDER                     = HELPER.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static Block ENDER_FIRE           = new EnderFireBlock(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");
+	public static final RegistryObject<Block> ENDER_FIRE                         = HELPER.createBlock("ender_fire", () -> new EnderFireBlock(Properties.from(Blocks.FIRE)), null);
 	
 	/*
 	 * Compatibility
@@ -143,13 +141,5 @@ public class EEBlocks {
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> puffbugHiveISTER() {
 		return () -> new EETileEntityItemRenderer<TileEntity>(PuffBugHiveTileEntity::new);
-	}
-	
-	@SubscribeEvent
-	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
-		final Block blocks[] = {
-			ENDER_FIRE
-		};
-		event.getRegistry().registerAll(blocks);
 	}
 }

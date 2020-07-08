@@ -21,6 +21,8 @@ public class EETags {
 		public static final ITag.INamedTag<Block> END_PLANTABLE = createTag("end_plantable");
 		public static final ITag.INamedTag<Block> CHORUS_PLANTABLE = createTag("chorus_plantable");
 		public static final ITag.INamedTag<Block> POISE_PLANTABLE = createTag("poise_plantable");
+		public static final ITag.INamedTag<Block> ENDER_FIRE_BASE = createTag("ender_fire_base");
+		public static final ITag.INamedTag<Block> END_CRYSTAL_PLACEABLE = createTag("end_crystal_placeable");
 		
 		private static ITag.INamedTag<Block> createTag(String name) {
 			return BlockTags.makeWrapperTag("endergetic:" + name);
