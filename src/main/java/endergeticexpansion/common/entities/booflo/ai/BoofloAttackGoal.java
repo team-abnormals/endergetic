@@ -44,7 +44,7 @@ public class BoofloAttackGoal extends Goal {
 			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRNG());
 			if(this.upperAirPos == null) {
 				Path newPath = this.booflo.getNavigator().getPathToEntity(target, 0);
-				this.upperAirPos = newPath != null ? newPath.func_224770_k() : null;
+				this.upperAirPos = newPath != null ? newPath.getTarget() : null;
 				return upperAirPos != null;
 			}
 			
@@ -65,7 +65,7 @@ public class BoofloAttackGoal extends Goal {
 			return false;
 		} else if(!this.booflo.isBoofed()) {
 			return false;
-		} else if(this.booflo.getPosition().distanceSq(this.upperAirPos) > UPPER_DISTANCE) {
+		} else if(this.booflo.func_233580_cy_().distanceSq(this.upperAirPos) > UPPER_DISTANCE) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -103,7 +103,7 @@ public class BoofloAttackGoal extends Goal {
 		            this.delayCounter += 5;
 				}
 
-				if(this.path != null && !this.booflo.getNavigator().tryMoveToXYZ(this.path.func_224770_k().getX(), this.path.func_224770_k().getY(), this.path.func_224770_k().getZ(), 1.35F)) {
+				if(this.path != null && !this.booflo.getNavigator().tryMoveToXYZ(this.path.getTarget().getX(), this.path.getTarget().getY(), this.path.getTarget().getZ(), 1.35F)) {
 					this.delayCounter += 5;
 				}
 			}
@@ -112,7 +112,7 @@ public class BoofloAttackGoal extends Goal {
 	
 	@Nullable
 	private BlockPos getUpperPosToTarget(Entity target, Random rand) {
-		BlockPos startingPos = target.getPosition();
+		BlockPos startingPos = target.func_233580_cy_();
 		BlockPos targetPos = BlockPos.ZERO;
 		boolean isOpenBelow = true;
 		for(int y = 0; y < UPPER_DISTANCE; y++) {

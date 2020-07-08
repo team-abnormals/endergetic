@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class EEBiomes {
 	private static int TOTAL_WEIGHT;
-	public static final DeferredRegister<Biome> BIOMES = new DeferredRegister<>(ForgeRegistries.BIOMES, EndergeticExpansion.MOD_ID);
+	public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, EndergeticExpansion.MOD_ID);
 	
 	public static final RegistryObject<EndergeticBiome> POISE_FOREST  = createEndBiome("poise_forest", PoiseForestBiome::new);
 	public static final RegistryObject<EndergeticBiome> CHORUS_PLAINS = createEndBiome("chorus_plains", ChorusPlainsBiome::new);

@@ -48,6 +48,6 @@ public class EEEntities {
 	}
 	
 	public static class EEEntityClassifications {
-		public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "END_CREATURE", 20, false, true);
+		public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "END_CREATURE", 20, false, true, 128);
 	}
 }

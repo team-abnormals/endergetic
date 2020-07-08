@@ -36,11 +36,6 @@ public class FrisbloomBudBlock extends Block {
 		return SHAPE;
 	}
 	
-	@Override
-	public int tickRate(IWorldReader worldIn) {
-		return 60;
-	}
-	
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(LAYER);
 	}

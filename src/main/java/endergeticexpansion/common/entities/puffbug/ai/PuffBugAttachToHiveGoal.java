@@ -3,7 +3,7 @@ package endergeticexpansion.common.entities.puffbug.ai;
 import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PuffBugAttachToHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -29,7 +29,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 		this.puffbug.getNavigator().clearPath();
 		this.puffbug.setAIMoveSpeed(0.0F);
 		
-		this.puffbug.setMotion(Vec3d.ZERO);
+		this.puffbug.setMotion(Vector3d.ZERO);
 	}
 	
 	@Override

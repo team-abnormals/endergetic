@@ -1,10 +1,9 @@
 package endergeticexpansion.common.world.features;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import endergeticexpansion.api.util.GenerationUtils;
 import endergeticexpansion.common.blocks.poise.GlowingPoiseLogBlock;
@@ -15,12 +14,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.IWorldGenerationReader;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -30,12 +30,12 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 	private final Supplier<BlockState> POISE_LOG = () -> EEBlocks.POISE_LOG.get().getDefaultState();
 	private final Supplier<BlockState> GLOWING_POISE_LOG = () -> EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
 	
-	public PoiseTreeFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+	public PoiseTreeFeature(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
 	}
 	
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		int treeHeight = rand.nextInt(19) + 13;
 		int size = 0;
 		//Random tree top size; small(45%), medium(40%), large(15%)
@@ -1086,7 +1086,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 			BlockPos blockpos = pos.up(i);
 			if(world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(blockpos).getBlock() == Blocks.END_STONE) {
 				BlockState newGround = world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() ? POISMOSS_EUMUS.get() : EEBlocks.POISMOSS.get().getDefaultState();
-				this.setBlockState(reader, blockpos, newGround);
+				this.setBlockState(world, blockpos, newGround);
 				break;
 			}
 
@@ -1169,6 +1169,10 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, EEBlocks.POISE_CLUSTER.get().getDefaultState(), 2);
 		}
+	}
+	
+	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
+		world.setBlockState(pos, state, 2);
 	}
 	
 	private boolean isViableBranchArea(IWorld world, BlockPos pos, Direction direction, int directionLength, BlockPos topPosition) {

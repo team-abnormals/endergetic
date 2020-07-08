@@ -6,8 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.EndRodBlock;
 import net.minecraft.block.IWaterLoggable;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.BooleanProperty;
@@ -53,7 +53,7 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 	
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		IFluidState fluidState = context.getWorld().getFluidState(context.getPos());
+		FluidState fluidState = context.getWorld().getFluidState(context.getPos());
 		return super.getStateForPlacement(context).with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
 	}
 	
@@ -66,7 +66,7 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 	}
 	
 	@Override
-	public IFluidState getFluidState(BlockState state) {
+	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
 	}
 	
@@ -105,10 +105,5 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 		if(rand.nextFloat() <= 0.65F) {
 			worldIn.addParticle(ParticleTypes.DRAGON_BREATH, d0, d1 + direction.getYOffset(), d2, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D);
 		}
-	}
-	
-	@Override
-	public int getLightValue(BlockState state) {
-		return 10;
 	}
 }

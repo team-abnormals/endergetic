@@ -9,7 +9,6 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
 
 public class BoofloHuntFruitGoal extends Goal {
 	private final BoofloEntity booflo;
@@ -44,7 +43,7 @@ public class BoofloHuntFruitGoal extends Goal {
 			} else if(!this.booflo.isBoofed()) {
 				return false;
 			} else {
-				this.path = this.booflo.getNavigator().getPathToPos(new BlockPos(target), 0);
+				this.path = this.booflo.getNavigator().getPathToPos(target.func_233580_cy_(), 0);
 				if(this.path != null) {
 					return true;
 				} else {
@@ -62,7 +61,7 @@ public class BoofloHuntFruitGoal extends Goal {
 			return false;
 		} else if(!this.booflo.isBoofed()) {
 			return false;
-		} else if(!this.booflo.isWithinHomeDistanceFromPosition(new BlockPos(target))) {
+		} else if(!this.booflo.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();

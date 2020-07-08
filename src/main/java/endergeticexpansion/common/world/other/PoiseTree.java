@@ -13,7 +13,7 @@ public class PoiseTree extends EndergeticTree {
 	@Override
 	@Nullable
 	protected Feature<NoFeatureConfig> getTreeFeature(Random random) {
-		return new PoiseTreeFeature(NoFeatureConfig::deserialize);
+		return new PoiseTreeFeature(NoFeatureConfig.field_236558_a_);
 	}
 
 }

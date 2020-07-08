@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import endergeticexpansion.api.entity.util.DetectionHelper;
 import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import endergeticexpansion.core.registry.EETileEntities;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -152,7 +153,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 	}
 	
 	@Override
-	public void read(CompoundNBT compound) {
+	public void read(BlockState state, CompoundNBT compound) {
 		this.hiveOccupants.clear();
 		ListNBT Occupants = compound.getList("HiveOccupants", 10);
 	
@@ -166,7 +167,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 		
 		this.teleportCooldown = compound.getInt("TeleportCooldown");
 		
-		super.read(compound);
+		super.read(state, compound);
 	}
 	
 	@Nullable

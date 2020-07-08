@@ -7,7 +7,7 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public class BoofloBoofGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		boolean onGround = this.booflo.onGround;
+		boolean onGround = this.booflo.isOnGround();
 		boolean flagChance = !this.booflo.hasAggressiveAttackTarget() ? this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.getAnimationTick() == 20 : this.booflo.getAnimationTick() >= 20;
 		
 		if(this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
@@ -53,10 +53,10 @@ public class BoofloBoofGoal extends Goal {
 	}
 	
 	private boolean shouldJumpForFall() {
-		BlockPos pos = this.booflo.getPosition();
+		BlockPos pos = this.booflo.func_233580_cy_();
 		for(int i = 0; i < 12; i++) {
 			pos = pos.down(i);
-			IFluidState fluidState = this.booflo.world.getFluidState(pos);
+			FluidState fluidState = this.booflo.world.getFluidState(pos);
 			if(!Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP) && i > 6 || fluidState.isTagged(FluidTags.LAVA)) {
 				return true;
 			} else if(Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP)) {

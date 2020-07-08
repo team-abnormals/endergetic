@@ -9,11 +9,11 @@ import endergeticexpansion.common.tileentities.boof.DispensedBoofTileEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class BoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBoofTileEntity> {
 	public BoofBlockDispenserModel model;

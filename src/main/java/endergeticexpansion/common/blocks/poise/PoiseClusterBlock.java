@@ -12,9 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
@@ -82,7 +82,7 @@ public class PoiseClusterBlock extends Block {
 	}
 	
 	@Override
-	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
 		BlockPos pos = hit.getPos();
 		if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos.up())).isEmpty()) {
 			if(!world.isRemote) {

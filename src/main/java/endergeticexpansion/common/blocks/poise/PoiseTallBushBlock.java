@@ -86,11 +86,6 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	}
 	
 	@Override
-	public int getLightValue(BlockState state) {
-		return 10;
-	}
-	
-	@Override
 	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
 		return state.get(STAGE) > 0 ? false : true;
 	}
@@ -113,7 +108,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockPos blockpos = context.getPos();
-		return blockpos.getY() < context.getWorld().getDimension().getHeight() - 1 && context.getWorld().getBlockState(blockpos.up()).isReplaceable(context) ? super.getStateForPlacement(context) : null;
+		return blockpos.getY() < context.getWorld().getHeight() - 1 && context.getWorld().getBlockState(blockpos.up()).isReplaceable(context) ? super.getStateForPlacement(context) : null;
 	}
 
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
@@ -190,7 +185,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	
 	public void grow(ServerWorld worldIn, BlockPos pos, BlockState state, Random rand) {
 		if (state.get(STAGE) == 0) {
-			worldIn.setBlockState(pos, state.cycle(STAGE), 4);
+			worldIn.setBlockState(pos, state.func_235896_a_(STAGE), 4);
 		} else {
 			if (!ForgeEventFactory.saplingGrowTree(worldIn, rand, pos)) return;
 			PoiseTree tree = new PoiseTree();

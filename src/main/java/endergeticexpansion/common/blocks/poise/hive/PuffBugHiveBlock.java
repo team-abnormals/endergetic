@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -57,8 +58,10 @@ public class PuffBugHiveBlock extends Block {
 		super.onExplosionDestroy(world, pos, explosion);
 	}
 	
+	
+	
 	@Override
-	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, Entity projectile) {
+	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
 		TileEntity tileEntity = world.getTileEntity(hit.getPos());
 		if(tileEntity instanceof PuffBugHiveTileEntity) {
 			((PuffBugHiveTileEntity) tileEntity).alertPuffBugs(null);

@@ -1,6 +1,6 @@
 package endergeticexpansion.client.events;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import endergeticexpansion.common.entities.booflo.BoofloEntity;
 import endergeticexpansion.core.EndergeticExpansion;
@@ -31,20 +31,21 @@ public class OverlayEvents {
 				int left = scaledWidth / 2 - 91;
 				int progress = ((BoofloEntity) player.getRidingEntity()).getRideControlDelay();
 				
-				RenderSystem.pushMatrix();
+				MatrixStack stack = event.getMatrixStack();
+				stack.push();
 				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 				
-				OverlayEvents.drawTexture(left, top, 0, 0, 182, 5);
+				OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
 				if(progress > 0) {
-					OverlayEvents.drawTexture(left, top, 0, 5, progress, 10);
+					OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
 				}
 				
-				RenderSystem.popMatrix();
+				stack.pop();
 			}
 		}
 	}
 	
-	private static void drawTexture(int posX, int posY, int p_blit_3_, int p_blit_4_, int p_blit_5_, int p_blit_6_) {
-		AbstractGui.blit(posX, posY, -90, (float)p_blit_3_, (float)p_blit_4_, p_blit_5_, p_blit_6_, 256, 256);
+	private static void drawTexture(MatrixStack stack, int posX, int posY, int p_blit_3_, int p_blit_4_, int p_blit_5_, int p_blit_6_) {
+		AbstractGui.blit(stack, posX, posY, -90, (float)p_blit_3_, (float)p_blit_4_, p_blit_5_, p_blit_6_, 256, 256);
 	}
 }

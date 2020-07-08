@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.pathfinding.FlaggedPathPoint;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNodeType;
@@ -13,7 +13,6 @@ import net.minecraft.pathfinding.PathType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
@@ -83,12 +82,12 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	
 	@SuppressWarnings("deprecation")
 	private PathNodeType isFree(int x, int y, int z) {
-		PooledMutable blockpos$mutableblockpos = PooledMutable.retain();
+		BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
 		for(int i = x; i < x + this.entitySizeX; ++i) {
 			for(int j = y; j < y + this.entitySizeY; ++j) {
 				for(int k = z; k < z + this.entitySizeZ; ++k) {
-					IFluidState ifluidstate = this.blockaccess.getFluidState(blockpos$mutableblockpos.setPos(i, j, k));
+					FluidState ifluidstate = this.blockaccess.getFluidState(blockpos$mutableblockpos.setPos(i, j, k));
 					BlockState blockstate = this.blockaccess.getBlockState(blockpos$mutableblockpos.setPos(i, j, k));
 					if(ifluidstate.isEmpty() && blockstate.allowsMovement(this.blockaccess, blockpos$mutableblockpos.down(), PathType.AIR) && blockstate.isAir()) {
 						return PathNodeType.WALKABLE;

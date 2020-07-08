@@ -23,7 +23,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BoofBlockEntity extends LivingEntity {
@@ -67,7 +67,7 @@ public class BoofBlockEntity extends LivingEntity {
 						entity.addVelocity(0, this.rand.nextFloat() * -0.05D - 0.35D, 0);
 					} else {
 						float amount = 0.5F;
-						Vec3d result = entity.getPositionVec().subtract(this.getPositionVec());
+						Vector3d result = entity.getPositionVec().subtract(this.getPositionVec());
 						entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
 				}
@@ -83,7 +83,7 @@ public class BoofBlockEntity extends LivingEntity {
 			this.remove();
 		}
 		
-		this.setMotion(Vec3d.ZERO);
+		this.setMotion(Vector3d.ZERO);
 		super.tick();
 	}
 	

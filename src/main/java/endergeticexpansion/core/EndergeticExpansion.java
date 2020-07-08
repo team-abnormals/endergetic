@@ -1,7 +1,6 @@
 package endergeticexpansion.core;
 
 import java.util.Arrays;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +15,6 @@ import endergeticexpansion.common.network.entity.booflo.*;
 import endergeticexpansion.common.network.entity.puffbug.RotateMessage;
 import endergeticexpansion.common.network.nbt.SUpdateNBTTagMessage;
 import endergeticexpansion.common.world.EEWorldGenHandler;
-import endergeticexpansion.common.world.EndOverrideHandler;
 import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.common.world.surfacebuilders.EESurfaceBuilders;
 import endergeticexpansion.core.config.EEConfig;
@@ -69,7 +67,7 @@ public class EndergeticExpansion {
 		EEDataSerializers.registerSerializers();
 		
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-    	
+		
 		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
@@ -103,9 +101,9 @@ public class EndergeticExpansion {
 			EEBiomes.applyBiomeInfo();
 			EEBlockRegistrars.registerFireInfo();
 			EEWorldGenHandler.overrideFeatures();
+			EEEntityAttributes.putAttributes();
 		});
 		EECapabilities.registerCaps();
-		EndOverrideHandler.overrideEndFactory();
 	}
 	
 	@OnlyIn(Dist.CLIENT)

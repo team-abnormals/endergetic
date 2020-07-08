@@ -15,9 +15,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
@@ -32,12 +32,13 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -74,14 +75,6 @@ public class BoofloBabyEntity extends EndimatedEntity {
 	}
 	
 	@Override
-	protected void registerAttributes() {
-		super.registerAttributes();
-		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.85D);
-		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(18.0D);
-		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(5.0D);
-	}
-	
-	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
 		this.goalSelector.addGoal(3, new BabyFollowParentGoal(this, 1.2F));
@@ -102,7 +95,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 	}
 	
 	@Override
-	public void travel(Vec3d vec3d) {
+	public void travel(Vector3d vec3d) {
 		if (this.isServerWorld() && !this.isInWater()) {
 			this.moveRelative(0.012F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
@@ -326,14 +319,14 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		}
 	}
 	
-	public boolean processInteract(PlayerEntity player, Hand hand) {
+	public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		if(itemstack.getItem() == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
-			return true;
+			return ActionResultType.CONSUME;
 		}
-		return super.processInteract(player, hand);
+		return super.func_230254_b_(player, hand);
 	}
 	
 	@Override
@@ -380,8 +373,8 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		}
 
 		@Nullable
-		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4);
+		protected Vector3d getPosition() {
+			Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4);
 
 			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.WATER) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4)) {
 				;
@@ -411,7 +404,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 
 		public void tick() {
 			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vec3d vec3d = new Vec3d(this.posX - this.booflo.getPosX(), this.posY - this.booflo.getPosY(), this.posZ - this.booflo.getPosZ());
+				Vector3d vec3d = new Vector3d(this.posX - this.booflo.getPosX(), this.posY - this.booflo.getPosY(), this.posZ - this.booflo.getPosZ());
 				double d0 = vec3d.length();
 				double d1 = vec3d.y / d0;
 				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
@@ -420,7 +413,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 				this.booflo.renderYawOffset = this.booflo.rotationYaw;
 				this.booflo.rotationYawHead = this.booflo.rotationYaw;
 				
-				float f1 = (float)(this.speed * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+				float f1 = (float)(this.speed * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
 				
 				this.booflo.setAIMoveSpeed(f2);

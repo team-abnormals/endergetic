@@ -2,12 +2,11 @@ package endergeticexpansion.common.world.features.corrock;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 
 import endergeticexpansion.common.blocks.CorrockCrownStandingBlock;
@@ -19,21 +18,21 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.PooledMutable;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class CorrockBranchFeature extends AbstractCorrockFeature {
 
-	public CorrockBranchFeature(Function<Dynamic<?>, ? extends ProbabilityConfig> configFactory) {
+	public CorrockBranchFeature(Codec<ProbabilityConfig> configFactory) {
 		super(configFactory);
 	}
 
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
 		int baseHeight = rand.nextInt(4) + 4;
 		if(rand.nextFloat() > config.probability) return false;
 		
@@ -75,9 +74,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					
 					BlockPos downPos = pos.down();
 					BlockPos groundModifierPos = new BlockPos(downPos.getX() + (rand.nextInt(3) - rand.nextInt(3)), downPos.getY(), downPos.getZ() + (rand.nextInt(3) - rand.nextInt(3)));
-					EEFeatures.GROUND_PATCH.get().place(world, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
+					EEFeatures.GROUND_PATCH.get().func_230362_a_(world, manager, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
 					
-					PooledMutable corrockPlantPos = PooledMutable.retain();
+					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
 					for(int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
 						for(int y = pos.getY(); y < pos.getY() + baseHeight + 10; y++) {
 							for(int z = pos.getZ() - 4; z < pos.getZ() + 4; z++) {

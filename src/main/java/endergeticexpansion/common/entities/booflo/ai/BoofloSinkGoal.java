@@ -18,7 +18,7 @@ public class BoofloSinkGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.onGround && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
+		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.func_233570_aj_() && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class BoofloSinkGoal extends Goal {
 		if(!this.isSafePos()) {
 			return false;
 		}
-		return !this.booflo.onGround && this.booflo.isBoofed() && (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug());
+		return !this.booflo.func_233570_aj_() && this.booflo.isBoofed() && (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug());
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class BoofloSinkGoal extends Goal {
 	}
 	
 	private boolean isSafePos() {
-		BlockPos pos = this.booflo.getPosition();
+		BlockPos pos = this.booflo.func_233580_cy_();
 		for(int i = 0; i < 10; i++) {
 			BlockPos newPos = pos.down(i);
 			if(Block.hasSolidSide(this.booflo.world.getBlockState(newPos), this.booflo.world, newPos, Direction.UP)) {

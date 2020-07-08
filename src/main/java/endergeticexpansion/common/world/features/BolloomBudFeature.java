@@ -1,10 +1,9 @@
 package endergeticexpansion.common.world.features;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 
 import endergeticexpansion.api.util.GenerationUtils;
@@ -16,11 +15,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -28,12 +28,12 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 	protected static final Supplier<BlockState> BOLLOOM_BUD = () -> EEBlocks.BOLLOOM_BUD.get().getDefaultState();
 
-	public BolloomBudFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+	public BolloomBudFeature(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
 	}
 
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if(rand.nextFloat() > 0.75) {
 			if(this.isValidPos(world, pos)) {
 				world.setBlockState(pos, BOLLOOM_BUD.get(), 2);

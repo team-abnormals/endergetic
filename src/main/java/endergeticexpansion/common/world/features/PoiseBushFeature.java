@@ -1,20 +1,20 @@
 package endergeticexpansion.common.world.features;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -23,11 +23,11 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 public class PoiseBushFeature extends Feature<NoFeatureConfig> {
 	private static final Supplier<BlockState> POISE_BUSH = () -> EEBlocks.POISE_BUSH.get().getDefaultState();
 	
-	public PoiseBushFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> config) {
+	public PoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
 
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		for(BlockState blockstate = worldIn.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = worldIn.getBlockState(pos)) {
 			pos = pos.down();
 		}

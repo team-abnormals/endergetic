@@ -39,7 +39,7 @@ public class BoofloVestModel<T extends LivingEntity> extends BipedModel<T> {
     	matrixStack.push();
     	matrixStack.scale(1.25F, 1.25F, 1.25F);
     	
-    	if(this.entity.isShiftKeyDown()) {
+    	if(this.entity.isSneaking()) {
     		matrixStack.translate(-0.25F, -0.05F, -0.125F);
     	} else {
     		matrixStack.translate(-0.25F, -0.05F, -0.125F);

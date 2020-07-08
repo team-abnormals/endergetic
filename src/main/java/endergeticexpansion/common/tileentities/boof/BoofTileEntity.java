@@ -29,7 +29,7 @@ public class BoofTileEntity extends TileEntity implements ITickableTileEntity {
 			
 			if(!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()) && !(this.world.getBlockState(this.pos).get(BoofBlock.BOOFED))) {
 				if(entity instanceof PlayerEntity) {
-					if(!((PlayerEntity) entity).isShiftKeyDown()){
+					if(!((PlayerEntity) entity).isSneaking()){
 						BoofBlock.doBoof(this.world, this.pos);
 					}
 					((PlayerEntity) entity).fallDistance = 0;

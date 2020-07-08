@@ -2,9 +2,8 @@ package endergeticexpansion.common.world.features;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
@@ -13,25 +12,25 @@ import net.minecraft.block.PaneBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.PooledMutable;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.EndSpikeFeature;
 import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 
-	public EndergeticEndSpikeFeature(Function<Dynamic<?>, ? extends EndSpikeFeatureConfig> config) {
+	public EndergeticEndSpikeFeature(Codec<EndSpikeFeatureConfig> config) {
 		super(config);
 	}
 	
 	@Override
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, EndSpikeFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, EndSpikeFeatureConfig config) {
 		List<EndSpikeFeature.EndSpike> list = config.getSpikes();
 		if(list.isEmpty()) {
-			list = generateSpikes(worldIn);
+			list = func_236356_a_(worldIn);
 		}
 
 		for(EndSpikeFeature.EndSpike endspikefeature$endspike : list) {
@@ -55,7 +54,7 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		}
 
 		if(p_214553_4_.isGuarded()) {
-			PooledMutable blockpos$mutableblockpos = PooledMutable.retain();
+			BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
 			for(int k = -2; k <= 2; ++k) {
 				for(int l = -2; l <= 2; ++l) {
@@ -82,4 +81,7 @@ public class EndergeticEndSpikeFeature extends EndSpikeFeature {
 		this.setBlockState(p_214553_1_, new BlockPos(p_214553_4_.getCenterX(), p_214553_4_.getHeight(), p_214553_4_.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().getDefaultState());
 	}
 	
+	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
+		world.setBlockState(pos, state, 2);
+	}
 }

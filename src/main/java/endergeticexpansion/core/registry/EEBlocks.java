@@ -19,8 +19,8 @@ import endergeticexpansion.common.tileentities.BolloomBudTileEntity;
 import endergeticexpansion.common.tileentities.PuffBugHiveTileEntity;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
+import net.minecraft.block.AbstractBlock.Properties;
 import net.minecraft.block.Block;
-import net.minecraft.block.Block.Properties;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.PressurePlateBlock;
@@ -80,7 +80,7 @@ public class EEBlocks {
 	public static final RegistryObject<PoiseClusterBlock> POISE_CLUSTER           = HELPER.createBlock("poise_cluster", () -> new PoiseClusterBlock(EEProperties.POISE_CLUSTER.tickRandomly()), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<StrippedLogBlock> POISE_LOG_STRIPPED       = HELPER.createBlock("poise_stem_stripped", () -> new StrippedLogBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<StrippedWoodBlock> POISE_WOOD_STRIPPED     = HELPER.createBlock("poise_wood_stripped", () -> new StrippedWoodBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<AbnormalsLogBlock> POISE_LOG               = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(() -> EEBlocks.POISE_LOG_STRIPPED.get(), MaterialColor.PURPLE_TERRACOTTA, EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<AbnormalsLogBlock> POISE_LOG               = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(() -> EEBlocks.POISE_LOG_STRIPPED.get(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<WoodBlock> POISE_WOOD                      = HELPER.createBlock("poise_wood", () -> new WoodBlock(() -> EEBlocks.POISE_WOOD_STRIPPED.get(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<GlowingPoiseLogBlock> POISE_LOG_GLOWING    = HELPER.createBlock("poise_stem_glowing", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<GlowingPoiseLogBlock> POISE_WOOD_GLOWING   = HELPER.createBlock("poise_wood_glowing", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING), ItemGroup.BUILDING_BLOCKS);
@@ -121,7 +121,7 @@ public class EEBlocks {
 	public static final RegistryObject<WallBlock> MYSTICAL_OBSIDIAN_WALL         = HELPER.createBlock("mystical_obsidian_wall", () -> new WallBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_RUNE    = HELPER.createBlock("mystical_obsidian_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = HELPER.createBlock("mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = HELPER.createBlock("mystical_obsidian_activation_rune_active", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.lightValue(5)), null);
+	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = HELPER.createBlock("mystical_obsidian_activation_rune_active", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.setLightLevel(state -> 5)), null);
 	public static final RegistryObject<AcidianLanternBlock> ACIDIAN_LANTERN      = HELPER.createBlock("acidian_lantern", () ->  new AcidianLanternBlock(EEProperties.ACIDIAN_LANTERN), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> CRYSTAL_HOLDER                     = HELPER.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static Block ENDER_FIRE           = new EnderFireBlock(Properties.from(Blocks.FIRE)).setRegistryName(EndergeticExpansion.MOD_ID, "ender_fire");

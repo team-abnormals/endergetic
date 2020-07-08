@@ -1,20 +1,20 @@
 package endergeticexpansion.common.world.features;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import endergeticexpansion.common.blocks.poise.PoiseTallBushBlock;
 import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -22,17 +22,17 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 	private static final Supplier<BlockState> POISE_BUSH_TALL = () -> EEBlocks.POISE_BUSH_TALL.get().getDefaultState();
 	
-	public TallPoiseBushFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> config) {
+	public TallPoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
 
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		boolean flag = false;
 
 		for(int i = 0; i < 64; ++i) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-			if (!isNearBolloomBud(worldIn, blockpos) && worldIn.isAirBlock(blockpos) && blockpos.getY() < worldIn.getWorld().getDimension().getHeight() - 2 && POISE_BUSH_TALL.get().isValidPosition(worldIn, blockpos)) {
-				((PoiseTallBushBlock) POISE_BUSH_TALL.get().getBlock()).placeAt(worldIn, blockpos, 2);
+			if (!isNearBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && POISE_BUSH_TALL.get().isValidPosition(world, blockpos)) {
+				((PoiseTallBushBlock) POISE_BUSH_TALL.get().getBlock()).placeAt(world, blockpos, 2);
 				flag = true;
 			}
 		}

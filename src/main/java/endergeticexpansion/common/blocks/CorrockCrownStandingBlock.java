@@ -13,8 +13,8 @@ import endergeticexpansion.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.IntegerProperty;
@@ -29,18 +29,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	private static final Map<DimensionType, Supplier<CorrockCrownBlock>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(DimensionType.OVERWORLD, () -> EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get());
-		conversions.put(DimensionType.THE_NETHER, () -> EEBlocks.CORROCK_CROWN_NETHER_STANDING.get());
-		conversions.put(DimensionType.THE_END, () -> EEBlocks.CORROCK_CROWN_END_STANDING.get());
+		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, () -> EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get());
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, () -> EEBlocks.CORROCK_CROWN_NETHER_STANDING.get());
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, () -> EEBlocks.CORROCK_CROWN_END_STANDING.get());
 	});
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
 	public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
@@ -58,7 +58,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if(!this.petrified && !this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get().getDefaultState()
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get().getDefaultState()
 				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
 				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
 			);
@@ -85,7 +85,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+		FluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 		Direction direction = context.getFace();
 		if (!this.isInProperDimension(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
@@ -99,7 +99,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	}
 	
 	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimension().getType(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get() == this;
+		return !this.petrified && CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get() == this;
 	}
 	
 	public BlockState rotate(BlockState state, Rotation rot) {

@@ -5,9 +5,9 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,7 +16,7 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 	protected final IAnimatedSprite animatedSprite;
 	private float angle;
 	
-	public PoiseBubbleParticle(IAnimatedSprite animatedSprite, World world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, boolean isShort) {
+	public PoiseBubbleParticle(IAnimatedSprite animatedSprite, ClientWorld world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, boolean isShort) {
 		super(world, posX, posY, posZ, motionX, motionY, motionZ);
 		this.motionX = motionX;
 		this.motionY = isShort ? motionY + (rand.nextDouble() * 0.05D + 0.055F) : motionY + (rand.nextDouble() * 0.05D + 0.075F);
@@ -76,7 +76,7 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 		}
 
 		@Override
-		public Particle makeParticle(BasicParticleType type, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle makeParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new PoiseBubbleParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, false);
 		}
 	}
@@ -89,7 +89,7 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 		}
 
 		@Override
-		public Particle makeParticle(BasicParticleType type, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle makeParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new PoiseBubbleParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, true);
 		}
 	}

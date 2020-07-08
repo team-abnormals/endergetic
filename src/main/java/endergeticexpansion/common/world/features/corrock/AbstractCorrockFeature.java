@@ -1,12 +1,11 @@
 package endergeticexpansion.common.world.features.corrock;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 
 import endergeticexpansion.core.registry.EEBlocks;
@@ -27,7 +26,7 @@ public abstract class AbstractCorrockFeature extends Feature<ProbabilityConfig> 
 		return wall ? () -> EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState() : () -> EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState();
 	}
 
-	public AbstractCorrockFeature(Function<Dynamic<?>, ? extends ProbabilityConfig> configFactory) {
+	public AbstractCorrockFeature(Codec<ProbabilityConfig> configFactory) {
 		super(configFactory);
 	}
 	

@@ -1,5 +1,5 @@
 {
-    "parent": "block/fire_side_alt",
+    "parent": "block/template_fire_side_alt",
     "textures": {
         "particle": "endergetic:block/ender_fire_1",
         "fire": "endergetic:block/ender_fire_1"

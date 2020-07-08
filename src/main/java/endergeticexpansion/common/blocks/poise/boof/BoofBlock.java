@@ -16,8 +16,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.state.BooleanProperty;
@@ -61,7 +61,7 @@ public class BoofBlock extends ContainerBlock {
 	
 	@Override
 	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-		if (entityIn.isShiftKeyDown()) {
+		if (entityIn.isSneaking()) {
 			super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
 		} else {
 			entityIn.onLivingFall(fallDistance, 0.0F);
@@ -73,7 +73,6 @@ public class BoofBlock extends ContainerBlock {
 		if(entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			player.entityCollisionReduction = Float.MAX_VALUE;
-			player.onGround = false;
 			player.fallDistance = 0;
 		}
 	}
@@ -103,17 +102,17 @@ public class BoofBlock extends ContainerBlock {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			World world = source.getWorld();
-			this.successful = true;
+			this.func_239796_a_(true);
             BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
             BlockState blockstate = world.getBlockState(blockpos);
             if(!blockstate.getMaterial().isReplaceable()) {
-    			this.successful = false;
+            	this.func_239796_a_(false);
             } else {
-            	this.successful = true;
+            	this.func_239796_a_(true);
             }
             
-            if (this.successful) {
-            	IFluidState fluidstate = world.getFluidState(blockpos);
+            if (this.func_239795_a_()) {
+            	FluidState fluidstate = world.getFluidState(blockpos);
             	if(fluidstate.getFluid() == Fluids.WATER) {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.WATERLOGGED, true).with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	} else {

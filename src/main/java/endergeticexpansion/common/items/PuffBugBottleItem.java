@@ -18,8 +18,8 @@ import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
@@ -115,18 +115,18 @@ public class PuffBugBottleItem extends Item {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		CompoundNBT nbt = stack.getTag();
 		if(nbt != null && nbt.contains("CustomPotionEffects")) {
-			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").applyTextStyles(TextFormatting.DARK_PURPLE));
+			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").func_240699_a_(TextFormatting.DARK_PURPLE));
 			for(EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).applyTextStyles(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).func_240701_a_(potionTextFormat));
 			}
 		}
 	}
 	
 	private TextFormatting getEffectTextColor(EffectInstance effect) {
-		Map<IAttribute, AttributeModifier> map = effect.getPotion().getAttributeModifierMap();
+		Map<Attribute, AttributeModifier> map = effect.getPotion().getAttributeModifierMap();
 		if(!map.isEmpty()) {
-        	for(Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
+        	for(Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
         		AttributeModifier entryValue = entry.getValue();
         		AttributeModifier modifier = new AttributeModifier(entryValue.getName(), effect.getPotion().getAttributeModifierAmount(effect.getAmplifier(), entryValue), entryValue.getOperation());
         		

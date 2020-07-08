@@ -136,7 +136,7 @@ public class BolloomFruitEntity extends Entity {
 				this.setDesiredAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
 			}
 			
-			if(this.getPosY() >= this.world.getDimension().getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
+			if(this.getPosY() >= this.world.getSeaLevel() * 2 && this.rand.nextFloat() <= 0.10F && this.isUntied()) {
 				this.remove();
 			}
 			
@@ -173,7 +173,7 @@ public class BolloomFruitEntity extends Entity {
 	@SuppressWarnings("deprecation")
 	public boolean isOpenPathBelowFruit() {
 		for (int i = 0; i < this.getVineHeight(); i++) {
-			BlockPos pos = this.getPosition().down(i);
+			BlockPos pos = this.func_233580_cy_().down(i);
 			if(this.getEntityWorld().isAreaLoaded(pos, 1)) {
 				if(!this.getEntityWorld().getBlockState(pos).isAir()) {
 					return false;
@@ -283,7 +283,7 @@ public class BolloomFruitEntity extends Entity {
 	
 	public void onBroken(@Nullable Entity brokenEntity, boolean dropFruit) {
 		if(dropFruit) {
-			Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
+			Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
 		}
 		this.playSound(SoundEvents.BLOCK_WET_GRASS_BREAK, 1.0F, 1.0F);
 		this.doParticles();

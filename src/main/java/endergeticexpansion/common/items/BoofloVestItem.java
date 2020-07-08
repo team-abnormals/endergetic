@@ -44,7 +44,7 @@ public class BoofloVestItem extends ArmorItem {
 			});
 		}
 		
-		if(player.onGround || (player.isPassenger() && player.getRidingEntity().onGround)) {
+		if(player.func_233570_aj_() || (player.isPassenger() && player.getRidingEntity().func_233570_aj_())) {
 			stack.getTag().putInt("timesBoofed", 0);
 		}
 	}

@@ -1,9 +1,8 @@
 package endergeticexpansion.common.world.surfacebuilders;
 
 import java.util.Random;
-import java.util.function.Function;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.world.biome.Biome;
@@ -14,7 +13,7 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
 public class PoiseForestSurfaceBuilder extends DefaultSurfaceBuilder {
 	
-	public PoiseForestSurfaceBuilder(Function<Dynamic<?>, ? extends SurfaceBuilderConfig> config) {
+	public PoiseForestSurfaceBuilder(Codec<SurfaceBuilderConfig> config) {
 		super(config);
 	}
 

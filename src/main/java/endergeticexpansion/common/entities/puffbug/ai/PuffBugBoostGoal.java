@@ -7,7 +7,7 @@ import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PuffBugBoostGoal extends RandomWalkingGoal {
 	
@@ -25,7 +25,7 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 				}
 			}
 
-			Vec3d destination = this.getPosition();
+			Vector3d destination = this.getPosition();
 			if(destination == null) {
 				return false;
 			} else {
@@ -39,8 +39,8 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 	}
 
 	@Nullable
-	protected Vec3d getPosition() {
-		Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5);
+	protected Vector3d getPosition() {
+		Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5);
 
 		for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
 			;

@@ -21,7 +21,7 @@ public class BoofloSlamGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.booflo.getPassengers().isEmpty() && this.booflo.isEndimationPlaying(BoofloEntity.SWIM) && !this.booflo.onGround && (this.booflo.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.booflo.getPassengers().isEmpty() && this.booflo.isEndimationPlaying(BoofloEntity.SWIM) && !this.booflo.func_233570_aj_() && (this.booflo.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class BoofloSlamGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.INFLATE);
 			return false;
 		}
-		return !this.booflo.onGround && this.booflo.hasAggressiveAttackTarget() && this.booflo.isEndimationPlaying(BoofloEntity.CHARGE);
+		return !this.booflo.func_233570_aj_() && this.booflo.hasAggressiveAttackTarget() && this.booflo.isEndimationPlaying(BoofloEntity.CHARGE);
 	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class BoofloSlamGoal extends Goal {
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
 		for(int y = 1; y < 4; y++) {
-			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.booflo.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.booflo.getBoofloAttackTarget().getPosition().down(y)), this.world, this.booflo.getBoofloAttackTarget().getPosition().down(y), Direction.UP) : true;
+			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.booflo.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.booflo.getBoofloAttackTarget().func_233580_cy_().down(y)), this.world, this.booflo.getBoofloAttackTarget().func_233580_cy_().down(y), Direction.UP) : true;
 		}
 		return isSomewhatSolidUnder;
 	}

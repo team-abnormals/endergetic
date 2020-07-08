@@ -7,7 +7,7 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PuffBugPullOutGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -51,7 +51,7 @@ public class PuffBugPullOutGoal extends Goal {
 				float motionY = -MathHelper.sin(rotations[0] * ((float) Math.PI / 180F));
 				float motionZ = -MathHelper.cos(rotations[1] * ((float) Math.PI / 180F)) * MathHelper.cos(rotations[0] * ((float) Math.PI / 180F));
 				
-				Vec3d popOutMotion = new Vec3d(motionX, motionY, motionZ).normalize().scale(0.25F);
+				Vector3d popOutMotion = new Vector3d(motionX, motionY, motionZ).normalize().scale(0.25F);
 				
 				this.puffbug.setMotion(popOutMotion);
 			}

@@ -61,7 +61,7 @@ public class KeybindHandler {
 			Random rand = player.getRNG();
 			ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-			if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
+			if(!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.func_233570_aj_() && Minecraft.getInstance().currentScreen == null && !player.isSpectator()) {
 				BoofloVestItem vest = (BoofloVestItem) stack.getItem();
 				if(vest.canBoof(stack, player)) {
 					CompoundNBT tag = stack.getTag();

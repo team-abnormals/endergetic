@@ -3,14 +3,11 @@ package endergeticexpansion.core.registry;
 import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 
 import endergeticexpansion.common.items.*;
-import endergeticexpansion.common.items.dev.FeatureStick;
-import endergeticexpansion.common.world.features.EEFeatures;
 import endergeticexpansion.core.EndergeticExpansion;
 import endergeticexpansion.core.registry.util.EndergeticRegistryHelper;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
@@ -51,9 +48,4 @@ public class EEItems {
 	 */
 	public static final RegistryObject<Item> PUFF_BUG_SPAWN_EGG         = HELPER.createSpawnEggItem("puff_bug", () -> EEEntities.PUFF_BUG.get(), 15660724, 16610303);
 	public static final RegistryObject<Item> BOOFLO_SPAWN_EGG           = HELPER.createSpawnEggItem("booflo", () -> EEEntities.BOOFLO.get(), 8143741, 16641190);
-
-	/*
-	 * Feature Stick
-	 */
-	//public static final RegistryObject<Item> FEATURE_STICK              = HELPER.createItem("feature_stick", () -> new FeatureStick<>(() -> EEFeatures.CORROCK_TOWER.get(), new ProbabilityConfig(0.1F)));
 }

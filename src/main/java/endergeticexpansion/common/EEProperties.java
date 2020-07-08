@@ -1,5 +1,6 @@
 package endergeticexpansion.common;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -15,7 +16,7 @@ public class EEProperties {
 	}
 	
 	public static final Block.Properties CORROCK_BASE_GLOWING(MaterialColor color) {
-		return Block.Properties.create(Material.OCEAN_PLANT, color).lightValue(9).hardnessAndResistance(0F).doesNotBlockMovement();
+		return Block.Properties.create(Material.OCEAN_PLANT, color).setLightLevel((state) -> 9).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	
 	public static final Block.Properties POISE_GRASS(boolean isPlant) {
@@ -35,15 +36,15 @@ public class EEProperties {
 	}
 	
 	public static final Block.Properties POISE_CLUSTER     = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISE_PINK).notSolid().hardnessAndResistance(0.15F);
-	public static final Block.Properties POISE_WOOD        = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2, 10);
+	public static final Block.Properties POISE_WOOD        = AbstractBlock.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2);
 	public static final Block.Properties POISE_WOOD_NOT_SOLID = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).notSolid().harvestTool(ToolType.AXE).hardnessAndResistance(2, 10);
-	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2, 10).lightValue(15);
+	public static final Block.Properties POISE_LOG_GLOWING = Block.Properties.create(Material.WOOD, EEMaterialColors.POISE_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).hardnessAndResistance(2, 10).setLightLevel((state) -> 15);
 	public static final Block.Properties BOOF_BLOCK        = Block.Properties.create(Material.WOOL, MaterialColor.YELLOW_TERRACOTTA).sound(SoundType.CLOTH).hardnessAndResistance(0.85F);
 	public static final Block.Properties EUMUS             = Block.Properties.create(Material.EARTH, EEMaterialColors.EUMUS).hardnessAndResistance(0.5F).sound(SoundType.GROUND);
 	public static final Block.Properties POISMOSS_EUMUS    = Block.Properties.create(Material.ORGANIC, EEMaterialColors.POISMOSS).tickRandomly().hardnessAndResistance(0.6F).sound(SoundType.PLANT);
 	public static final Block.Properties EUMUS_BRICKS      = Block.Properties.create(Material.ROCK, EEMaterialColors.EUMUS).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).hardnessAndResistance(2, 30);
 	public static final Block.Properties MYSTICAL_OBSIDIAN = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(-1.0F, 3600000.0F).noDrops();
-	public static final Block.Properties ACIDIAN_LANTERN   = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).harvestLevel(2).harvestTool(ToolType.PICKAXE);
+	public static final Block.Properties ACIDIAN_LANTERN   = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).setLightLevel(state -> 15).harvestLevel(2).harvestTool(ToolType.PICKAXE);
 	
 	public static final Block.Properties PUFFBUG_HIVE(boolean hanger) {
 		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).notSolid().doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);

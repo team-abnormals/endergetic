@@ -13,8 +13,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.server.ServerWorld;
 
 public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 
@@ -45,8 +45,8 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 						EnderCrystalEntity endercrystalentity = new EnderCrystalEntity(world, d0 + 0.5D, d1, d2 + 0.5D);
 						endercrystalentity.setShowBottom(false);
 						world.addEntity(endercrystalentity);
-						if (world.dimension instanceof EndDimension) {
-							DragonFightManager dragonfightmanager = ((EndDimension)world.dimension).getDragonFightManager();
+						DragonFightManager dragonfightmanager = ((ServerWorld) world).func_241110_C_();
+						if (dragonfightmanager != null) {
 							dragonfightmanager.tryRespawnDragon();
 						}
 					}

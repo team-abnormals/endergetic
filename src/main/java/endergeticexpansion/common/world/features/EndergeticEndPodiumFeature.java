@@ -9,11 +9,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
@@ -31,7 +32,8 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 		this.activePortal = activePortalIn;
 	}
 	
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	@Override
+	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
 			boolean flag = blockpos.withinDistance(pos, 2.5D);
 			if(flag || blockpos.withinDistance(pos, 3.5D)) {
@@ -84,5 +86,9 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 		this.setBlockState(world, pos.offset(direction, 3).offset(direction.rotateY()).up(), MYSTICAL_OBSIDIAN_RUNE.with(HorizontalBlock.HORIZONTAL_FACING, direction.getOpposite()));
 		this.setBlockState(world, pos.offset(direction, 3).up(), MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(active).with(HorizontalBlock.HORIZONTAL_FACING, direction));
 		this.setBlockState(world, pos.offset(direction, 3).offset(direction.rotateYCCW()).up(), MYSTICAL_OBSIDIAN_RUNE.with(HorizontalBlock.HORIZONTAL_FACING, direction));
+	}
+	
+	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
+		world.setBlockState(pos, state, 2);
 	}
 }

@@ -12,7 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class PuffBugTeleportToBudGoal extends Goal {
@@ -45,12 +45,12 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	@Override
 	public void startExecuting() {
 		this.puffbug.getTeleportController().processTeleportation();
-		this.puffbug.setMotion(Vec3d.ZERO);
+		this.puffbug.setMotion(Vector3d.ZERO);
 	}
 	
 	@Override
 	public void tick() {
-		this.puffbug.setMotion(Vec3d.ZERO);
+		this.puffbug.setMotion(Vector3d.ZERO);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	
 	@Nullable
 	private BolloomBudTileEntity findNearbyBud() {
-		BlockPos pos = this.puffbug.getPosition();
+		BlockPos pos = this.puffbug.func_233580_cy_();
 		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-AREA_CHECK_SIZE, -AREA_CHECK_SIZE / 2, -AREA_CHECK_SIZE), pos.add(AREA_CHECK_SIZE, AREA_CHECK_SIZE / 2, AREA_CHECK_SIZE))) {
 			if(blockpos.withinDistance(this.puffbug.getPositionVec(), AREA_CHECK_SIZE)) {
 				if(this.world.getBlockState(blockpos).getBlock() == EEBlocks.BOLLOOM_BUD.get() && this.world.getTileEntity(blockpos) instanceof BolloomBudTileEntity) {

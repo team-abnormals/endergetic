@@ -32,7 +32,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.EndDimension;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -43,8 +42,8 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(0.0D, 128.0D, 0.0D, 192.0D));
 	
-	public EndergeticDragonFightManager(ServerWorld worldIn, CompoundNBT compound, EndDimension dim) {
-		super(worldIn, compound, dim);
+	public EndergeticDragonFightManager(ServerWorld worldIn, long seed, CompoundNBT compound) {
+		super(worldIn, seed, compound);
 	}
 	
 	@Override
@@ -282,6 +281,6 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 				;
 			}
 		}
-		endpodiumfeature.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).place(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
+		endpodiumfeature.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
 	}
 }

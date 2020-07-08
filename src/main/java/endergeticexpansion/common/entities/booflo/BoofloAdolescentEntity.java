@@ -8,6 +8,7 @@ import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import endergeticexpansion.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import endergeticexpansion.api.entity.util.EntityItemStackHelper;
+import endergeticexpansion.common.blocks.CorrockBlock.DimensionTypeAccessor;
 import endergeticexpansion.common.entities.bolloom.BolloomFruitEntity;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentAttackGoal;
 import endergeticexpansion.common.entities.booflo.ai.AdolescentEatGoal;
@@ -22,9 +23,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,18 +41,18 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -105,14 +106,6 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	}
 	
 	@Override
-	protected void registerAttributes() {
-		super.registerAttributes();
-		this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.7D);
-		this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(25.0D);
-		this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-	}
-	
-	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(1, new AdolescentEatGoal(this));
 		this.goalSelector.addGoal(4, new AdolescentAttackGoal(this, 1.1D, true));
@@ -122,7 +115,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	}
 	
 	@Override
-	public void travel(Vec3d vec3d) {
+	public void travel(Vector3d vec3d) {
 		if(this.isServerWorld() && !this.isInWater()) {
 			this.moveRelative(0.015F, vec3d);
 			this.move(MoverType.SELF, this.getMotion());
@@ -139,7 +132,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			
 			@Override
 			public boolean canEntityStandOnPos(BlockPos pos) {
-				return !this.entity.onGround;
+				return !this.entity.func_233570_aj_();
 			}
 			
 		};
@@ -203,7 +196,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
 		}
 		
-		if((this.onGround || this.isPassenger()) && this.doesWantToGrow() && this.world.checkBlockCollision(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
+		if((this.onGround || this.isPassenger()) && this.doesWantToGrow() && this.world.hasNoCollisions(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
 			this.growUp();
 		}
 		
@@ -219,7 +212,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 		
 		//Helps them not fall off the edge
-		if((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.dimension == DimensionType.THE_END && !this.isSafePos(getPosition(), 3)) {
+		if((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.func_233580_cy_(), 3)) {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
 			
@@ -229,7 +222,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			}
 		}
 		
-		if(!this.onGround && this.dimension == DimensionType.THE_END && !this.isSafePos(getPosition(), 3) && !this.isWorldRemote()) {
+		if(!this.onGround && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.func_233580_cy_(), 3) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F, 0, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F);
 		}
 		
@@ -531,7 +524,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	}
 	
 	@Override
-	protected boolean processInteract(PlayerEntity player, Hand hand) {
+	protected ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		
@@ -547,14 +540,14 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 				
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
-			return true;
+			return ActionResultType.PASS;
 		} else if(item == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
             this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
             this.setEaten(true);
-            return true;
+            return ActionResultType.CONSUME;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 	
 	@Override
@@ -583,8 +576,8 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 
 		@Nullable
-		protected Vec3d getPosition() {
-			Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0);
+		protected Vector3d getPosition() {
+			Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0);
 			
 			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0)) {
 				;
@@ -615,13 +608,13 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 
 		public void tick() {
 			if(this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vec3d vec3d = this.booflo.getMoveControllerPathDistance(this.posX, this.posY, this.posZ);
+				Vector3d vec3d = this.booflo.getMoveControllerPathDistance(this.posX, this.posY, this.posZ);
 				
 				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
 				this.booflo.renderYawOffset = this.booflo.rotationYaw;
 				this.booflo.rotationYawHead = this.booflo.rotationYaw;
 				
-				float f1 = (float)(2 * this.booflo.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+				float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
 				
 				this.booflo.setAIMoveSpeed(f2);

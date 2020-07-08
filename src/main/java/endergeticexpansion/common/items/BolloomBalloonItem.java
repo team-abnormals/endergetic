@@ -79,18 +79,17 @@ public class BolloomBalloonItem extends Item {
 
 	public static class BalloonDispenseBehavior extends DefaultDispenseItemBehavior {
 		
-		@SuppressWarnings("deprecation")
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
 			World world = source.getWorld();
 			BlockState state = world.getBlockState(blockpos);
-			if(state.getBlock().getMaterial(state).isReplaceable() && stack.getItem() instanceof BolloomBalloonItem) {
+			if(state.getMaterial().isReplaceable() && stack.getItem() instanceof BolloomBalloonItem) {
 				BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, blockpos);
 				balloon.setColor(((BolloomBalloonItem)stack.getItem()).getBalloonColor());
 				world.addEntity(balloon);
 				stack.shrink(1);
-			} else if(!state.getBlock().getMaterial(state).isReplaceable() && !state.getBlock().isIn(BlockTags.FENCES)) {
+			} else if(!state.getMaterial().isReplaceable() && !state.getBlock().isIn(BlockTags.FENCES)) {
 				return super.dispenseStack(source, stack);
 			} else if(state.getBlock().isIn(BlockTags.FENCES)) {
 				if(BolloomKnotEntity.getKnotForPosition(world, blockpos) == null && stack.getItem() instanceof BolloomBalloonItem) {

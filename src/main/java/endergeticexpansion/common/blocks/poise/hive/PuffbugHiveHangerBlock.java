@@ -11,9 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -28,7 +28,7 @@ public class PuffbugHiveHangerBlock extends Block {
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
 		if(!(entity instanceof PuffBugEntity)) {
-			entity.setMotionMultiplier(state, new Vec3d(0.25D, 0.05D, 0.25D));
+			entity.setMotionMultiplier(state, new Vector3d(0.25D, 0.05D, 0.25D));
 		}
 	}
 	

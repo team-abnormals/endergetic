@@ -33,7 +33,7 @@ public class AdolescentEatGoal extends Goal {
 		if(this.adolescent.isDescenting()) {
 			return this.isSafePos() && this.adolescent.hasFruit();
 		} else if(this.adolescent.isEating()) {
-			return this.adolescent.onGround && this.adolescent.hasFruit() && this.eatingTicks < 61;
+			return this.adolescent.func_233570_aj_() && this.adolescent.hasFruit() && this.eatingTicks < 61;
 		}
 		
 		return false;
@@ -65,7 +65,7 @@ public class AdolescentEatGoal extends Goal {
 		this.adolescent.getNavigator().clearPath();
 		
 		if(this.adolescent.isDescenting()) {
-			if(this.adolescent.onGround) {
+			if(this.adolescent.func_233570_aj_()) {
 				this.adolescent.setEating(true);
 				this.adolescent.setDescenting(false);
 			}
@@ -90,7 +90,7 @@ public class AdolescentEatGoal extends Goal {
 	}
 
 	private boolean isSafePos() {
-		BlockPos pos = this.adolescent.getPosition();
+		BlockPos pos = this.adolescent.func_233580_cy_();
 		for(int i = 0; i < 10; i++) {
 			pos = pos.down(i);
 			if(Block.hasSolidSide(this.adolescent.world.getBlockState(pos), this.adolescent.world, pos, Direction.UP) && i >= 4) {

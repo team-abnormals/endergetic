@@ -25,6 +25,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
@@ -32,7 +33,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -126,7 +127,7 @@ public class BolloomBalloonEntity extends Entity {
 				}
 			}
 		}
-		if(world.isAreaLoaded(this.getPosition(), 1)) {
+		if (this.world.isAreaLoaded(this.func_233580_cy_(), 1)) {
 			this.dataManager.set(SWAY, (float) Math.sin((2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
 		}
 		if(!world.isRemote) {
@@ -169,7 +170,7 @@ public class BolloomBalloonEntity extends Entity {
 			    this.setAngle(this.getAngle() - 0.03F);
 			}
 		}
-		if(world.isAreaLoaded(this.getPosition(), 1)) {
+		if (this.world.isAreaLoaded(this.func_233580_cy_(), 1)) {
 			if(!this.isUntied()) {
 				this.setPosition(
 					this.getDataManager().get(ORIGINAL_X) + this.dataManager.get(SWAY) * Math.sin(-this.getAngle()),
@@ -381,15 +382,16 @@ public class BolloomBalloonEntity extends Entity {
 	}
 	
 	@Override
-	public final boolean processInitialInteract(PlayerEntity player, Hand hand) {
+	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		if (itemstack.getItem() instanceof DyeItem && this.getColor() != ((DyeItem) itemstack.getItem()).getDyeColor()) {
 			if(!this.world.isRemote) {
 				this.setColor(((DyeItem) itemstack.getItem()).getDyeColor());
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
+			return ActionResultType.CONSUME;
 		}
-		return super.processInitialInteract(player, hand);
+		return super.applyPlayerInteraction(player, vec, hand);
 	}
 	
 	@Override
@@ -399,8 +401,8 @@ public class BolloomBalloonEntity extends Entity {
 	}
 	
 	@Override
-	protected Vec3d handlePistonMovement(Vec3d pos) {
-		return Vec3d.ZERO;
+	protected Vector3d handlePistonMovement(Vector3d pos) {
+		return Vector3d.ZERO;
 	}
 	
 	@Override

@@ -2,13 +2,12 @@ package endergeticexpansion.common.world.features.corrock;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 
 import endergeticexpansion.api.util.GenerationUtils;
@@ -19,19 +18,21 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class CorrockTowerFeature extends AbstractCorrockFeature {
 
-	public CorrockTowerFeature(Function<Dynamic<?>, ? extends ProbabilityConfig> configFactory) {
-		super(configFactory);
+	public CorrockTowerFeature(Codec<ProbabilityConfig> config) {
+		super(config);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
 		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		if(world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			float chance = rand.nextFloat();
@@ -171,6 +172,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		return successfulSides >= 2 ? piece : null;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private Pair<GenerationPiece, List<ChorusPlantPart>> getMediumTop(IWorld world, BlockPos pos, Random rand) {
 		GenerationPiece top = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
 		List<ChorusPlantPart> growths = Lists.newArrayList();

@@ -2,11 +2,10 @@ package endergeticexpansion.common.world.features;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import endergeticexpansion.core.registry.EEBlocks;
@@ -15,11 +14,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 	
@@ -27,12 +27,12 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		return hanger ? () -> EEBlocks.HIVE_HANGER.get().getDefaultState() : () -> EEBlocks.PUFFBUG_HIVE.get().getDefaultState();
 	}
 
-	public PuffBugHiveFeature(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+	public PuffBugHiveFeature(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
 	}
 	
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if(rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.down();
 		

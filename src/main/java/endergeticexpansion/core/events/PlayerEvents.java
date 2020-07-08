@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public class PlayerEvents {
+	
 	public static final Map<Supplier<Block>, Supplier<Block>> PETRIFICATION_MAP = Util.make(Maps.newHashMap(), (petrifications) -> {
 		petrifications.put(() -> EEBlocks.CORROCK_END.get(), () -> EEBlocks.PETRIFIED_CORROCK_END.get());
 		petrifications.put(() -> EEBlocks.CORROCK_NETHER.get(), () -> EEBlocks.PETRIFIED_CORROCK_NETHER.get());

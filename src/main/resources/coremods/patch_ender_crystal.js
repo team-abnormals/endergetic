@@ -1,5 +1,5 @@
 var Opcodes = org.objectweb.asm.Opcodes;
-var FieldInsnNode = org.objectweb.asm.tree.FieldInsnNode;
+var MethodInsnNode = org.objectweb.asm.tree.MethodInsnNode;
 
 function initializeCoreMod() {
 	return {
@@ -16,8 +16,8 @@ function initializeCoreMod() {
 
 				for(var i = 0; i < instr.size(); i++) {
 					var currentInstr = instr.get(i);
-					if(currentInstr.getOpcode() == Opcodes.GETSTATIC) {
-						instr.set(currentInstr, new FieldInsnNode(Opcodes.GETSTATIC, "endergeticexpansion/core/registry/EEBlocks", "ENDER_FIRE", "Lnet/minecraft/block/Block;"));
+					if(currentInstr.getOpcode() == Opcodes.INVOKESTATIC) {
+						instr.set(currentInstr, new MethodInsnNode(Opcodes.INVOKESTATIC, "endergeticexpansion/core/EEHooks", "getEnderCrystalFireForPlacement", "(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", false));
 						break;
 					}
 				}

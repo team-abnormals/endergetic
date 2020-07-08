@@ -37,7 +37,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -132,7 +132,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			}
 			
 			if(this.isBlockBlockingPath(true) && this.ticksExisted > 10) {
-				BlockPos pos = this.getPosition();
+				BlockPos pos = this.func_233580_cy_();
 				
 				for(int i = 0; i < 8; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
@@ -213,7 +213,7 @@ public class PoiseClusterEntity extends LivingEntity {
 		this.setTimesHit(this.getTimesHit() + 1);
 		if(this.getTimesHit() >= 3) {
 			if(!this.world.isRemote) {
-				Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+				Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 			}
 			this.remove();
 			return true;
@@ -230,7 +230,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			
 			if(this.getTimesHit() >= 3) {
 				if(!this.getEntityWorld().isRemote) {
-					Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+					Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 				}
 				this.remove();
 			}
@@ -277,7 +277,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	private boolean isBlockBlockingPath(boolean down) {
-		Vec3d eyePos = down ? this.getPositionVec() : this.getEyePosition(1.0F);
+		Vector3d eyePos = down ? this.getPositionVec() : this.getEyePosition(1.0F);
 		return this.world.rayTraceBlocks(new RayTraceContext(
 			eyePos,
 			eyePos.add(this.getMotion()),
@@ -299,11 +299,11 @@ public class PoiseClusterEntity extends LivingEntity {
 						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
 
 						if(entity instanceof PlayerEntity) {
-							entity.move(MoverType.PISTON, new Vec3d(0.0F, distanceMotion, 0.0F));
+							entity.move(MoverType.PISTON, new Vector3d(0.0F, distanceMotion, 0.0F));
 						} else {
-							entity.move(MoverType.SELF, new Vec3d(0.0F, distanceMotion, 0.0F));
+							entity.move(MoverType.SELF, new Vector3d(0.0F, distanceMotion, 0.0F));
 						}
-						entity.onGround = true;
+						entity.func_230245_c_(true);
 					}
 				}
 			}
@@ -350,7 +350,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	@Override
-	public void knockBack(Entity entityIn, float strength, double xRatio, double zRatio) {}
+	protected void constructKnockBackVector(LivingEntity entityIn) {}
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
@@ -404,7 +404,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	@Override
-	protected void dealFireDamage(int amount) {}
+	public void setFire(int seconds) {}
 	
 	@Override
 	public Iterable<ItemStack> getArmorInventoryList() {
@@ -455,7 +455,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			} else {
 				this.ticksRemoved++;
 				if(this.ticksRemoved > 10) {
-					this.donePlaying = true;
+					this.func_239509_o_();
 				}
 			}
 			

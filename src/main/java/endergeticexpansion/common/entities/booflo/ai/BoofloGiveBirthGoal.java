@@ -22,7 +22,7 @@ public class BoofloGiveBirthGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		return !this.mother.hasCaughtFruit() && !this.mother.isBoofed() && this.mother.isNoEndimationPlaying() && this.mother.isPregnant() && (this.mother.onGround || this.mother.isPassenger());
+		return !this.mother.hasCaughtFruit() && !this.mother.isBoofed() && this.mother.isNoEndimationPlaying() && this.mother.isPregnant() && (this.mother.func_233570_aj_() || this.mother.isPassenger());
 	}
 	
 	@Override
