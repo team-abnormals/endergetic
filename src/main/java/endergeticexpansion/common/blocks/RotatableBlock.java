@@ -26,5 +26,5 @@ public class RotatableBlock extends HorizontalBlock {
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(HORIZONTAL_FACING);
 	}
-	   
+	
 }

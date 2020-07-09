@@ -72,8 +72,8 @@ public class EndergeticExpansion {
 		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
-		EEParticles.PARTICLES.register(modEventBus);
 		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
+		EEParticles.PARTICLES.register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);

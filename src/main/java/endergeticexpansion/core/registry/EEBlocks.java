@@ -94,7 +94,7 @@ public class EEBlocks {
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN = HELPER.createSignBlock("poise", MaterialColor.PURPLE_TERRACOTTA);
 	public static final RegistryObject<BolloomBudBlock> BOLLOOM_BUD               = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.POISE_WOOD_OTHER(true, false)), () -> bolloomBudISTER(), ItemGroup.DECORATIONS);
 	public static final RegistryObject<PuffBugHiveBlock> PUFFBUG_HIVE             = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.PUFFBUG_HIVE(true)), () -> puffbugHiveISTER(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<PuffbugHiveHangerBlock> HIVE_HANGER               = HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.PUFFBUG_HIVE(false)));
+	public static final RegistryObject<PuffbugHiveHangerBlock> HIVE_HANGER        = HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.PUFFBUG_HIVE(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE                    = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
 	public static final RegistryObject<BoofBlock> BOOF_BLOCK                      = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
 	public static final RegistryObject<DispensedBoofBlock> BOOF_BLOCK_DISPENSED   = HELPER.createBlockNoItem("dispensed_boof_block", () -> new DispensedBoofBlock(EEProperties.BOOF_BLOCK.doesNotBlockMovement().notSolid().hardnessAndResistance(-1, 3600000.0F)));

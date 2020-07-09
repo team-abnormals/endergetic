@@ -1,6 +1,7 @@
 package endergeticexpansion.core.registry.other;
 
 import endergeticexpansion.core.registry.EEEntities;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
@@ -40,6 +41,12 @@ public class EEEntityAttributes {
 				.func_233815_a_(Attributes.MAX_HEALTH, 8.0F)
 				.func_233815_a_(Attributes.FOLLOW_RANGE, 16.0F)
 			.func_233813_a_()
+		);
+		GlobalEntityTypeAttributes.put(EEEntities.POISE_CLUSTER.get(),
+			LivingEntity.registerAttributes().func_233813_a_()
+		);
+		GlobalEntityTypeAttributes.put(EEEntities.BOOF_BLOCK.get(),
+			LivingEntity.registerAttributes().func_233813_a_()
 		);
 	}
 	

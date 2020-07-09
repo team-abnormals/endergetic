@@ -20,7 +20,6 @@ public class EEProperties {
 	}
 	
 	public static final Block.Properties POISE_GRASS(boolean isPlant) {
-		//Fire you say? Well trust me its safe
 		return !isPlant ? Block.Properties.create(Material.ROCK, EEMaterialColors.POISMOSS).hardnessAndResistance(3.0F, 9.0F).tickRandomly() : Block.Properties.create(Material.FIRE, EEMaterialColors.POISMOSS).sound(SoundType.PLANT).hardnessAndResistance(0F).doesNotBlockMovement();
 	}
 	

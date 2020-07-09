@@ -25,8 +25,8 @@ import net.minecraft.world.gen.SimplexNoiseGenerator;
 import net.minecraft.world.gen.layer.Layer;
 
 public final class EEHooks {
-	private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().filter((p_199776_0_) -> {
-		return p_199776_0_.getKey() != Direction.DOWN;
+	private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().filter((direction) -> {
+		return direction.getKey() != Direction.DOWN;
 	}).collect(Util.toMapCollector());
 	private static SimplexNoiseGenerator generator;
 	private static Layer noiseBiomeLayer;
@@ -67,17 +67,17 @@ public final class EEHooks {
 		return getNormalFirePlacement(reader, pos);
 	}
 	
-	private static BlockState getNormalFirePlacement(IBlockReader p_196448_1_, BlockPos p_196448_2_) {
-		BlockPos blockpos = p_196448_2_.down();
-		BlockState blockstate = p_196448_1_.getBlockState(blockpos);
+	private static BlockState getNormalFirePlacement(IBlockReader reader, BlockPos pos) {
+		BlockPos downPos = pos.down();
+		BlockState blockstate = reader.getBlockState(downPos);
 		FireBlock fire = (FireBlock) Blocks.FIRE;
-		if (!fire.canCatchFire(p_196448_1_, p_196448_2_, Direction.UP) && !Block.hasSolidSide(blockstate, p_196448_1_, blockpos, Direction.UP)) {
+		if (!fire.canCatchFire(reader, pos, Direction.UP) && !Block.hasSolidSide(blockstate, reader, downPos, Direction.UP)) {
 			BlockState blockstate1 = fire.getDefaultState();
 
 			for(Direction direction : Direction.values()) {
 				BooleanProperty booleanproperty = FACING_TO_PROPERTY_MAP.get(direction);
 				if (booleanproperty != null) {
-					blockstate1 = blockstate1.with(booleanproperty, Boolean.valueOf(fire.canCatchFire(p_196448_1_, p_196448_2_.offset(direction), direction.getOpposite())));
+					blockstate1 = blockstate1.with(booleanproperty, Boolean.valueOf(fire.canCatchFire(reader, pos.offset(direction), direction.getOpposite())));
 				}
 			}
 
