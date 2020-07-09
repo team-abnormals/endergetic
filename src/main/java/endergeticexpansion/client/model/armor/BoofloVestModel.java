@@ -19,10 +19,11 @@ import net.minecraft.world.LightType;
 public class BoofloVestModel<T extends LivingEntity> extends BipedModel<T> {
     public ModelRenderer strap;
     public ModelRenderer boofer;
-    private T entity;
+    private T wearer;
 
-    public BoofloVestModel(float modelSize) {
+    public BoofloVestModel(T wearer, float modelSize) {
     	super(modelSize, 0.0F, 64, 64);
+    	this.wearer = wearer;
         this.strap = new ModelRenderer(this, 16, 16);
         this.strap.setRotationPoint(-4.0F, 0.0F, -2.0F);
         this.strap.addBox(0.0F, 0.0F, 0.0F, 8, 11, 4, 0.0F);
@@ -34,12 +35,12 @@ public class BoofloVestModel<T extends LivingEntity> extends BipedModel<T> {
     
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder vertexBuilder, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float f5) {
-    	super.render(matrixStack, vertexBuilder, p_225598_3_, p_225598_4_, p_225598_5_, p_225598_6_, p_225598_7_, f5);
+    	this.strap.copyModelAngles(this.bipedBody);
     	
     	matrixStack.push();
     	matrixStack.scale(1.25F, 1.25F, 1.25F);
     	
-    	if(this.entity.isSneaking()) {
+    	if(this.wearer.isSneaking()) {
     		matrixStack.translate(-0.25F, -0.05F, -0.125F);
     	} else {
     		matrixStack.translate(-0.25F, -0.05F, -0.125F);
@@ -48,18 +49,10 @@ public class BoofloVestModel<T extends LivingEntity> extends BipedModel<T> {
     	
     	//Temporary get around for lighting bug with forge armor model
     	float partialTicks = ClientInfo.getPartialTicks();
-    	int light = LightTexture.packLight(this.getBlockLight(this.entity, partialTicks), this.entity.world.getLightFor(LightType.SKY, new BlockPos(this.entity.getEyePosition(partialTicks))));
+    	int light = LightTexture.packLight(this.getBlockLight(this.wearer, partialTicks), this.wearer.world.getLightFor(LightType.SKY, new BlockPos(this.wearer.getEyePosition(partialTicks))));
     	
     	this.strap.render(matrixStack, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStack.pop();
-    }
-    
-    @Override
-    public void setRotationAngles(T entity, float p_225597_2_, float p_225597_3_, float p_225597_4_, float p_225597_5_, float p_225597_6_) {
-    	this.entity = entity;
-    	super.setRotationAngles(entity, p_225597_2_, p_225597_3_, p_225597_4_, p_225597_5_, p_225597_6_);
-    	
-    	this.strap.copyModelAngles(this.bipedBody);
     }
     
     private int getBlockLight(T entityIn, float partialTicks) {

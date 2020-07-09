@@ -86,13 +86,13 @@ public class BoofloVestItem extends ArmorItem {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlotType armorSlot, A _default) {
+	public <A extends BipedModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlotType armorSlot, A _default) {
 		if(stack.hasTag()) {
 			if(stack.getTag().getBoolean("boofed")) {
-				return (A) new BoofloVestModel(1.0F);
+				return (A) new BoofloVestModel(wearer, 1.0F);
 			}
 		}
-		return super.getArmorModel(entityLiving, stack, armorSlot, _default);
+		return super.getArmorModel(wearer, stack, armorSlot, _default);
 	}
 	
 }

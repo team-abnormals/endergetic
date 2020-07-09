@@ -141,45 +141,13 @@ public class EndergeticExpansion {
     
 	private void setupMessages() {
 		int id = -1;
-    	
-		CHANNEL.messageBuilder(SUpdateNBTTagMessage.class, id++)
-		.encoder(SUpdateNBTTagMessage::serialize).decoder(SUpdateNBTTagMessage::deserialize)
-		.consumer(SUpdateNBTTagMessage::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(SSetCooldownMessage.class, id++)
-		.encoder(SSetCooldownMessage::serialize).decoder(SSetCooldownMessage::deserialize)
-		.consumer(SSetCooldownMessage::handle)
-		.add();
-    	
-		CHANNEL.messageBuilder(SBoofEntityMessage.class, id++)
-		.encoder(SBoofEntityMessage::serialize).decoder(SBoofEntityMessage::deserialize)
-		.consumer(SBoofEntityMessage::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(SInflateMessage.class, id++)
-		.encoder(SInflateMessage::serialize).decoder(SInflateMessage::deserialize)
-		.consumer(SInflateMessage::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(SIncrementBoostDelayMessage.class, id++)
-		.encoder(SIncrementBoostDelayMessage::serialize).decoder(SIncrementBoostDelayMessage::deserialize)
-		.consumer(SIncrementBoostDelayMessage::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(SSetPlayerNotBoostingMessage.class, id++)
-		.encoder(SSetPlayerNotBoostingMessage::serialize).decoder(SSetPlayerNotBoostingMessage::deserialize)
-		.consumer(SSetPlayerNotBoostingMessage::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(SSlamMessage.class, id++)
-		.encoder(SSlamMessage::serialize).decoder(SSlamMessage::deserialize)
-		.consumer(SSlamMessage::handle)
-		.add();
-		
-		CHANNEL.messageBuilder(RotateMessage.class, id++)
-		.encoder(RotateMessage::serialize).decoder(RotateMessage::deserialize)
-		.consumer(RotateMessage::handle)
-		.add();
+		CHANNEL.registerMessage(id++, SUpdateNBTTagMessage.class, SUpdateNBTTagMessage::serialize, SUpdateNBTTagMessage::deserialize, SUpdateNBTTagMessage::handle);
+		CHANNEL.registerMessage(id++, SSetCooldownMessage.class, SSetCooldownMessage::serialize, SSetCooldownMessage::deserialize, SSetCooldownMessage::handle);
+		CHANNEL.registerMessage(id++, SBoofEntityMessage.class, SBoofEntityMessage::serialize, SBoofEntityMessage::deserialize, SBoofEntityMessage::handle);
+		CHANNEL.registerMessage(id++, SInflateMessage.class, SInflateMessage::serialize, SInflateMessage::deserialize, SInflateMessage::handle);
+		CHANNEL.registerMessage(id++, SIncrementBoostDelayMessage.class, SIncrementBoostDelayMessage::serialize, SIncrementBoostDelayMessage::deserialize, SIncrementBoostDelayMessage::handle);
+		CHANNEL.registerMessage(id++, SSetPlayerNotBoostingMessage.class, SSetPlayerNotBoostingMessage::serialize, SSetPlayerNotBoostingMessage::deserialize, SSetPlayerNotBoostingMessage::handle);
+		CHANNEL.registerMessage(id++, SSlamMessage.class, SSlamMessage::serialize, SSlamMessage::deserialize, SSlamMessage::handle);
+		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
 	}
 }
