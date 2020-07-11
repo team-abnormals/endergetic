@@ -8,6 +8,8 @@ import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 
 import java.util.Map.Entry;
 
+import endergeticexpansion.common.entities.booflo.BoofloEntity;
+import endergeticexpansion.common.entities.puffbug.PuffBugEntity;
 import endergeticexpansion.core.registry.EEEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
@@ -17,6 +19,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -76,6 +79,27 @@ public class PuffBugBottleItem extends Item {
 			
 			return ActionResultType.SUCCESS;
 		}
+	}
+	
+	@Override
+	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
+		if (target instanceof BoofloEntity) {
+			BoofloEntity booflo = (BoofloEntity) target;
+			if (!booflo.hasCaughtFruit() && !booflo.hasCaughtPuffBug() && booflo.isTamed()) {
+				World world = player.world;
+				PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world);
+				puffbug.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
+				EntityType.applyItemNBT(world, player, puffbug, stack.getOrCreateTag());
+				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(puffbug.func_233580_cy_()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
+				world.addEntity(puffbug);
+				booflo.catchPuffBug(puffbug);
+				if (!player.abilities.isCreativeMode) {
+					this.emptyBottle(player, hand);
+				}
+				return ActionResultType.CONSUME;
+			}
+		}
+		return super.itemInteractionForEntity(stack, player, target, hand);
 	}
 	
 	@Override

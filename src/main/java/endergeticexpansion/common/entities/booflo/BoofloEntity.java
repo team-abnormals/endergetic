@@ -464,16 +464,12 @@ public class BoofloEntity extends EndimatedEntity {
 			compound.putUniqueId("LoveCause", this.playerInLove);
 		}
 		
-		if(this.getOwnerId() == null) {
-			compound.putString("OwnerUUID", "");
-		} else {
-			compound.putString("OwnerUUID", this.getOwnerId().toString());
+		if (this.getOwnerId() != null) {
+			compound.putString("Owner", this.getOwnerId().toString());
 		}
 		
-		if(this.getLastFedId() == null) {
-			compound.putString("LastFedUUID", "");
-		} else {
-			compound.putString("LastFedUUID", this.getLastFedId().toString());
+		if (this.getLastFedId() != null) {
+			compound.putString("LastFed", this.getLastFedId().toString());
 		}
 	}
 	
@@ -497,29 +493,29 @@ public class BoofloEntity extends EndimatedEntity {
 		this.playerInLove = compound.hasUniqueId("LoveCause") ? compound.getUniqueId("LoveCause") : null;
 		this.wasBred = compound.getBoolean("WasBred");
 		
-		String ownerUUID = compound.contains("OwnerUUID", 8) ? compound.getString("OwnerUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner")).toString();
-		String lastFedUUID = compound.contains("LastFedUUID") ? compound.getString("LastFedUUID") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner")).toString();
-		
-		if(compound.contains("BraceletsColor", 99)) {
+		if (compound.contains("BraceletsColor", 99)) {
 			this.setBraceletsColor(DyeColor.byId(compound.getInt("BraceletsColor")));
 		}
 		
-		if(compound.contains("FruitsNeededTillTamed")) {
+		if (compound.contains("FruitsNeededTillTamed")) {
 			this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		}
 		
-		if(!ownerUUID.isEmpty()) {
+		UUID ownerUUID = compound.hasUniqueId("Owner") ? compound.getUniqueId("Owner") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("Owner"));
+		UUID lastFedUUID = compound.hasUniqueId("LastFed") ? compound.getUniqueId("LastFed") : PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), compound.getString("LastFed"));
+		
+		if (ownerUUID != null) {
 			try {
-				this.setOwnerId(UUID.fromString(ownerUUID));
+				this.setOwnerId(ownerUUID);
 				this.setTamed(true);
-			} catch (Throwable exception) {
-				this.setTamed(false);
+			} catch (Throwable throwable) {
+	            this.setTamed(false);
 			}
 		}
 		
-		if(!lastFedUUID.isEmpty()) {
+		if (lastFedUUID != null) {
 			try {
-				this.setLastFedId(UUID.fromString(lastFedUUID));
+				this.setLastFedId(lastFedUUID);
 			} catch (Throwable exception) {}
 		}
 	}
