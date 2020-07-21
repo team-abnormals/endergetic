@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import endergeticexpansion.common.world.features.corrock.*;
 import endergeticexpansion.core.EndergeticExpansion;
 import net.minecraft.world.gen.feature.EndGatewayConfig;
-import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
@@ -31,7 +30,6 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER   = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig.field_236576_b_));
 	
 	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY = new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_);
-	public static final RegistryObject<Feature<EndSpikeFeatureConfig>> ENDERGETIC_END_SPIKE = createFeature("end_spike", () -> new EndergeticEndSpikeFeature(EndSpikeFeatureConfig.field_236644_a_));
 	
 	private static <F extends Feature<?>> RegistryObject<F> createFeature(String name, Supplier<F> feature) {
 		return FEATURES.register(name, feature);

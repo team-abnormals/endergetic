@@ -90,4 +90,8 @@ public final class EEHooks {
 	public static BlockState getEnderCrystalFireForPlacement(IBlockReader reader, BlockPos pos) {
 		return EEBlocks.ENDER_FIRE.get().getDefaultState();
 	}
+	
+	public static Block getCrystalHolder() {
+		return EEBlocks.CRYSTAL_HOLDER.get();
+	}
 }
