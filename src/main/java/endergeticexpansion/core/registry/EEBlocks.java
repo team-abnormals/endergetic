@@ -122,7 +122,7 @@ public class EEBlocks {
 	public static final RegistryObject<RotatableBlock> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE = HELPER.createBlock("activated_mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.setLightLevel(state -> 5)), null);
 	public static final RegistryObject<AcidianLanternBlock> ACIDIAN_LANTERN      = HELPER.createBlock("acidian_lantern", () ->  new AcidianLanternBlock(EEProperties.ACIDIAN_LANTERN), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> CRYSTAL_HOLDER                     = HELPER.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> ENDER_FIRE                         = HELPER.createBlock("ender_fire", () -> new EnderFireBlock(Properties.from(Blocks.FIRE)), null);
+	public static final RegistryObject<Block> ENDER_FIRE                         = HELPER.createBlockNoItem("ender_fire", () -> new EnderFireBlock(Properties.from(Blocks.FIRE)));
 	
 	/*
 	 * Compatibility

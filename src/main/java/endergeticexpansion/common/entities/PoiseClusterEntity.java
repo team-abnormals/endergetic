@@ -350,7 +350,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	@Override
-	protected void constructKnockBackVector(LivingEntity entityIn) {}
+	public void applyKnockback(float strengthIn, double ratioXIn, double ratioZIn) {}
 	
 	@Override
 	public CreatureAttribute getCreatureAttribute() {
