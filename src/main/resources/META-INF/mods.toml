@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[32,)"
 logoFile="logo.png" #optional
 issueTrackerURL="https://github.com/minecraftabnormals/The-Endergetic-Expansion/issues"
 
@@ -15,7 +15,7 @@ issueTrackerURL="https://github.com/minecraftabnormals/The-Endergetic-Expansion/
 [[dependencies.endergetic]]
     modId="forge"
     mandatory=true
-    versionRange="[32.0.57,)"
+    versionRange="[32.0.88,)"
     ordering="NONE"
 
 [[dependencies.endergetic]]
@@ -28,6 +28,6 @@ issueTrackerURL="https://github.com/minecraftabnormals/The-Endergetic-Expansion/
 [[dependencies.endergetic]]
     modId="abnormals_core"
     mandatory=true
-    versionRange="[2.0.0,)"
+    versionRange="[2.1.0,)"
     ordering="AFTER"
     side="BOTH"

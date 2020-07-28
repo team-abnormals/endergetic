@@ -12,15 +12,14 @@ plugins {
   id "com.wynprice.cursemaven" version "2.1.1"
 }
 apply plugin: 'net.minecraftforge.gradle'
-
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.3.2'
-group = 'com.yourname.modid'
+version = '2.0.0'
+group = 'com.minecraftabnormals.endergetic'
 archivesBaseName = 'The-Endergetic-Expansion-1.16.1'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     mappings channel: 'snapshot', version: '20200707-1.16.1'
@@ -30,15 +29,10 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-
             mods {
-                examplemod {
+                endergetic {
                     source sourceSets.main
                 }
             }
@@ -46,13 +40,10 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             property 'forge.logging.console.level', 'debug'
-
             mods {
-                examplemod {
+                endergetic {
                     source sourceSets.main
                 }
             }
@@ -60,15 +51,11 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
-
+            args '--mod', 'endergetic', '--all', '--output', file('src/generated/resources/')
             mods {
-                examplemod {
+                endergetic {
                     source sourceSets.main
                 }
             }
@@ -77,35 +64,20 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.57'
-    implementation fg.deobf("curse.maven:abnormals-core:2989106")
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.88'
+    implementation fg.deobf("curse.maven:abnormals-core:3016902")
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        	"Specification-Title": "The Endergetic Expansion",
+            	"Specification-Vendor": "Team Abnormals",
+            	"Specification-Version": "1",
+            	"Implementation-Title": project.name,
+            	"Implementation-Version": "${version}",
+            	"Implementation-Vendor": "Team Abnormals",
+            	"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
         ])
-    }
-}
-
-jar.finalizedBy('reobfJar') 
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
     }
 }
