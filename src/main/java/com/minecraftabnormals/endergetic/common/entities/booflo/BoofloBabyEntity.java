@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.ai.BabyFollowParentGoal;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;

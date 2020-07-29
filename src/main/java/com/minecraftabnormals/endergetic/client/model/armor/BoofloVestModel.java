@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.client.model.armor;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.entity.model.BipedModel;

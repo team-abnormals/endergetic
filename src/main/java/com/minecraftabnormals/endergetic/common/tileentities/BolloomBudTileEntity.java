@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.minecraftabnormals.endergetic.api.util.StringUtils;
 import com.minecraftabnormals.endergetic.common.blocks.poise.BolloomBudBlock;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;

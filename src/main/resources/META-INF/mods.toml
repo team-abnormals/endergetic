@@ -1,22 +1,20 @@
 modLoader="javafml"
 loaderVersion="[32,)"
-logoFile="logo.png" #optional
 issueTrackerURL="https://github.com/minecraftabnormals/The-Endergetic-Expansion/issues"
 license="https://github.com/minecraftabnormals/The-Endergetic-Expansion/blob/master/LICENSE.txt"
 
 [[mods]]
     modId="endergetic"
-    namespace="endergetic"
     version="2.0.1"
+    logoFile="logo.png"
     displayName="The Endergetic Expansion"
     authors="SmellyModder, Endergized, Timinations, Minecraft Abnormals"
     description='''Ever since the end was first introduced to the game it's always been a dull place; and it has great potential to be something greater. This mod expands the end greatly by adding tons of new biomes, mobs, bosses, items, blocks, etc to the end! Venture to new places like the Poise Forest or explore old places like the chorus biome which have been revamped!'''
-    displayURL=""
 
 [[dependencies.endergetic]]
     modId="forge"
     mandatory=true
-    versionRange="[32.0.88,)"
+    versionRange="[32.0.72,)"
     ordering="NONE"
 
 [[dependencies.endergetic]]
@@ -29,6 +27,6 @@ license="https://github.com/minecraftabnormals/The-Endergetic-Expansion/blob/mas
 [[dependencies.endergetic]]
     modId="abnormals_core"
     mandatory=true
-    versionRange="[2.1.0,)"
+    versionRange="[2.0.1,)"
     ordering="AFTER"
     side="BOTH"

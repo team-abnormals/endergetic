@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.minecraftabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;

@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.minecraftabnormals.abnormals_core.core.library.GenerationPiece;
+import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;

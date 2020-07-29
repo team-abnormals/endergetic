@@ -4,8 +4,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.utils.ItemStackUtils;
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.minecraftabnormals.endergetic.client.particle.EEParticles;
 import com.minecraftabnormals.endergetic.common.world.other.PoiseTree;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;

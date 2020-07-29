@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import com.minecraftabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.items.EndergeticEnderCrystalItem;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 

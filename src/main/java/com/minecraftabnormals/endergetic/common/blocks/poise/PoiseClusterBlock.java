@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 
 import java.util.Random;
 
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
-import com.minecraftabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particle.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
-import com.minecraftabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityMotionHelper;
 import com.minecraftabnormals.endergetic.api.util.EndergeticNetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;

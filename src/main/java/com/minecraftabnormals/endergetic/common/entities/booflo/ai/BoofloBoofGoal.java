@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.minecraftabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.block.Block;

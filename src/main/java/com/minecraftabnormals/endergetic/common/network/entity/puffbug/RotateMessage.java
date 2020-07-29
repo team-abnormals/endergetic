@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.network.entity.puffbug;
 
 import java.util.function.Supplier;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
 import net.minecraft.entity.Entity;

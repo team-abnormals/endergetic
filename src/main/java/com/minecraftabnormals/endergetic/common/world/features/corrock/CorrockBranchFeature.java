@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
-import com.minecraftabnormals.abnormals_core.core.library.GenerationPiece;
+import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;

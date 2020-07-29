@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
 import java.util.function.Supplier;
 
-import com.minecraftabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.entity.Entity;

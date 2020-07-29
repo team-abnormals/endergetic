@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.api.util;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;

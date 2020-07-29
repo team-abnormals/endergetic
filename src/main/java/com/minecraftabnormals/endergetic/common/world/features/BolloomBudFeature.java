@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.poise.BolloomBudBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;

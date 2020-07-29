@@ -3,11 +3,11 @@ package com.minecraftabnormals.endergetic.core.registry;
 import java.util.concurrent.Callable;
 
 import com.mojang.datafixers.util.Pair;
-import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.BookshelfBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.sign.*;
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.*;
+import com.teamabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
+import com.teamabnormals.abnormals_core.common.blocks.BookshelfBlock;
+import com.teamabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
+import com.teamabnormals.abnormals_core.common.blocks.sign.*;
+import com.teamabnormals.abnormals_core.common.blocks.wood.*;
 import com.minecraftabnormals.endergetic.client.render.item.EETileEntityItemRenderer;
 import com.minecraftabnormals.endergetic.common.EEProperties;
 import com.minecraftabnormals.endergetic.common.blocks.*;

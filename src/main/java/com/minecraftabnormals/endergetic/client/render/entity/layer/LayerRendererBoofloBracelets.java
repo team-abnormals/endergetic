@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.client.render.entity.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.abnormals_core.client.ACRenderTypes;
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 

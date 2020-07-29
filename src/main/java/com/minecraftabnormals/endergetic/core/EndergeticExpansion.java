@@ -4,7 +4,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.minecraftabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
+import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 import com.minecraftabnormals.endergetic.client.particle.EEParticles;
 import com.minecraftabnormals.endergetic.client.render.entity.*;
 import com.minecraftabnormals.endergetic.client.render.entity.booflo.*;

@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import com.minecraftabnormals.abnormals_core.core.utils.DataUtils;
+import com.teamabnormals.abnormals_core.core.utils.DataUtils;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.Block;

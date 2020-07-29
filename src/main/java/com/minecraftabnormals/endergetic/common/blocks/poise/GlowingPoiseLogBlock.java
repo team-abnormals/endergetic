@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 
 import java.util.Random;
 
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.minecraftabnormals.endergetic.client.particle.EEParticles;
 
 import net.minecraft.block.BlockState;

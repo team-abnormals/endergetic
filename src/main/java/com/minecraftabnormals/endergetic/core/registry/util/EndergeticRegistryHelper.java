@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.items.blockitems.CorrockCrownSBlockItem;
 
 import net.minecraft.block.Block;

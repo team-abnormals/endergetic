@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.utils.MathUtils;
-import com.minecraftabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;

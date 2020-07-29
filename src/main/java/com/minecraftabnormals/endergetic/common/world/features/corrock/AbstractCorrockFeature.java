@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.mojang.serialization.Codec;
-import com.minecraftabnormals.abnormals_core.core.library.GenerationPiece;
+import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.BlockState;
