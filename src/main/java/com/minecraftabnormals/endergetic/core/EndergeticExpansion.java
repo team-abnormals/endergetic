@@ -133,7 +133,6 @@ public class EndergeticExpansion {
 		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
 	}
 	
-	
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {
 		REGISTRY_HELPER.processSpawnEggColors(event);

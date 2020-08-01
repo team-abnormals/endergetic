@@ -1,8 +1,0 @@
-{
-	"patch_ender_crystal": "coremods/patch_ender_crystal.js",
-	"patch_dragon_fight_manager": "coremods/patch_dragon_fight_manager.js",
-	"patch_end_gateway_tile_entity": "coremods/patch_end_gateway_tile_entity.js",
-	"patch_end_biome_provider": "coremods/patch_end_biome_provider.js",
-	"patch_server_world": "coremods/patch_server_world.js",
-	"patch_abstract_fire_block": "coremods/patch_abstract_fire_block.js"
-}

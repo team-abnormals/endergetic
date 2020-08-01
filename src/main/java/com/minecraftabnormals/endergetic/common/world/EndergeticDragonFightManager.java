@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.features.EndergeticEndPodiumFeature;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -31,12 +32,15 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class EndergeticDragonFightManager extends DragonFightManager {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -275,12 +279,23 @@ public class EndergeticDragonFightManager extends DragonFightManager {
 	
 	@Override
 	public void generatePortal(boolean active) {
-		EndergeticEndPodiumFeature endpodiumfeature = new EndergeticEndPodiumFeature(active);
+		EndergeticEndPodiumFeature endpodium = new EndergeticEndPodiumFeature(active);
 		if(this.exitPortalLocation == null) {
 			for(this.exitPortalLocation = this.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).down(); this.world.getBlockState(this.exitPortalLocation).getBlock() == Blocks.BEDROCK && this.exitPortalLocation.getY() > this.world.getSeaLevel(); this.exitPortalLocation = this.exitPortalLocation.down()) {
 				;
 			}
 		}
-		endpodiumfeature.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
+		endpodium.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
+	}
+	
+	@Override
+	protected void spawnNewGateway() {
+		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(DragonFightManager.class, this, "field_186111_e");
+		if (!gateways.isEmpty()) {
+			int removed = gateways.remove(gateways.size() - 1);
+			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
+			this.world.playEvent(3000, pos, 0);
+			EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a()).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+		}
 	}
 }

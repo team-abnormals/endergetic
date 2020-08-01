@@ -30,7 +30,7 @@ public class EEFeatures {
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH  = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig.field_236576_b_));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER   = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig.field_236576_b_));
 	
-	public static final Feature<EndGatewayConfig> ENDERGETIC_GATEWAY = new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_);
+	public static final RegistryObject<Feature<EndGatewayConfig>> ENDERGETIC_GATEWAY = createFeature("gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_));
 	
 	private static <F extends Feature<?>> RegistryObject<F> createFeature(String name, Supplier<F> feature) {
 		return FEATURES.register(name, feature);

@@ -19,7 +19,6 @@ public class EETags {
 	
 	public static class Blocks {
 		public static final ITag.INamedTag<Block> END_PLANTABLE = createTag("end_plantable");
-		public static final ITag.INamedTag<Block> CHORUS_PLANTABLE = createTag("chorus_plantable");
 		public static final ITag.INamedTag<Block> POISE_PLANTABLE = createTag("poise_plantable");
 		public static final ITag.INamedTag<Block> ENDER_FIRE_BASE_BLOCKS = createTag("ender_fire_base_blocks");
 		public static final ITag.INamedTag<Block> END_CRYSTAL_PLACEABLE = createTag("end_crystal_placeable");

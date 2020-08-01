@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "com.minecraftabnormals.endergetic.core.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "endergetic.refmap.json",
+  "mixins": [
+  	"MixinAbstractFireBlock",
+  	"MixinServerWorld",
+  	"MixinEndBiomeProvider",
+  	"MixinEndGatewayTileEntity",
+  	"MixinEndSpikeFeature"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
