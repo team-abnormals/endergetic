@@ -127,6 +127,8 @@
 	"advancements.endergetic.eat_bolloom_fruit.description": "Come una fruta de flobo",
 	"advancements.endergetic.tame_booflo.title": "¡Amigo inflable!",
 	"advancements.endergetic.tame_booflo.description": "Domestica un buflote alimentándolo con frutas de flobo y alejándote para dejarlo comer",
+	"advancements.endergetic.up_up_and_away.title": "¡Arriba, arriba y muy lejos!",
+	"advancements.endergetic.up_up_and_away.description": "Átate a cuatro o más globos de flobo para flotar a lo alto",
 
 	"_____comment": "Keybinds",
 	"key.endergetic.booflo_vest" : "Activar chaleco de buflote",
