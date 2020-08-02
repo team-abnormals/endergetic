@@ -1093,7 +1093,7 @@ public class BoofloEntity extends EndimatedEntity {
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 			return ActionResultType.CONSUME;
-		} else if(!this.isWorldRemote() && item == EEBlocks.POISE_CLUSTER.get().asItem() && this.canBreed()) {
+		} else if(item == EEBlocks.POISE_CLUSTER.get().asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
 			return ActionResultType.CONSUME;
@@ -1141,12 +1141,12 @@ public class BoofloEntity extends EndimatedEntity {
 			}
 		} else {
 			ActionResultType result = itemstack.interactWithEntity(player, this, hand);
-			if (result != ActionResultType.PASS && result != ActionResultType.FAIL || item == EEItems.BOLLOOM_FRUIT.get() || item == EEBlocks.POISE_CLUSTER.get().asItem()) {
+			if (result == ActionResultType.CONSUME || result == ActionResultType.SUCCESS) {
 				return ActionResultType.PASS;
 			}
-        	 
-			if(this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
-				if(!this.world.isRemote) {
+			
+			if (this.isTamed() && !this.isBeingRidden() && !this.isPregnant()) {
+				if (!this.world.isRemote) {
 					player.rotationYaw = this.rotationYaw;
 					player.rotationPitch = this.rotationPitch;
 					player.startRiding(this);
