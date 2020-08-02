@@ -1,0 +1,23 @@
+{
+  "parent": "endergetic:eat_bolloom_fruit",
+  "display": {
+    "icon": {
+      "item": "endergetic:bolloom_balloon"
+    },
+    "title": {
+      "translate": "advancements.endergetic.up_up_and_away.title"
+    },
+    "description": {
+      "translate": "advancements.endergetic.up_up_and_away.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+  	"tamed": {
+  	  "trigger": "endergetic:up_up_and_away"
+    }
+  }
+}

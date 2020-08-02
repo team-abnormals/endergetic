@@ -128,6 +128,8 @@
 	"advancements.endergetic.eat_bolloom_fruit.description": "Eat a Bolloom Fruit",
 	"advancements.endergetic.tame_booflo.title": "Inflatable Friend!",
 	"advancements.endergetic.tame_booflo.description": "Tame a Booflo by feeding it Bolloom Fruits and backing away to let it eat",
+	"advancements.endergetic.up_up_and_away.title": "Up, Up and Away!",
+	"advancements.endergetic.up_up_and_away.description": "Attach yourself with four or more bolloom balloons to float upwards",
 
 	"_____comment": "Keybinds",
 	"key.endergetic.booflo_vest" : "Booflo Vest Activate",
