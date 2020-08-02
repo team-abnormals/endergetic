@@ -80,7 +80,7 @@ public class EndergeticExpansion {
 		
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
-			if(config.getSpec() == EEConfig.COMMON_SPEC) {
+			if (config.getSpec() == EEConfig.COMMON_SPEC) {
 				EEConfig.ValuesHolder.updateCommonValuesFromConfig(config);
 			}
 		});
@@ -103,7 +103,6 @@ public class EndergeticExpansion {
 			EEWorldGenHandler.overrideFeatures();
 			EEEntityAttributes.putAttributes();
 		});
-		EECapabilities.registerCaps();
 	}
 	
 	@OnlyIn(Dist.CLIENT)

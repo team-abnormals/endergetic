@@ -1065,7 +1065,6 @@ public class BoofloEntity extends EndimatedEntity {
 	@Override
 	protected void jump() {
 		Vector3d vec3d = this.getMotion();
-		
 		this.setMotion(vec3d.x, 0.55D, vec3d.z);
 		this.isAirBorne = true;
 	}
@@ -1073,7 +1072,6 @@ public class BoofloEntity extends EndimatedEntity {
 	@Override
 	protected void collideWithEntity(Entity entity) {
 		if(entity instanceof BoofloBabyEntity && (((BoofloBabyEntity) (entity)).isBeingBorn() || ((BoofloBabyEntity) (entity)).getMotherNoClipTicks() > 0)) return;
-		
 		super.collideWithEntity(entity);
 	}
 	

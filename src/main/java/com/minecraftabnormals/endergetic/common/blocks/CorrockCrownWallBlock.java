@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.minecraftabnormals.endergetic.core.events.PlayerEvents;
+import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.Block;
@@ -95,7 +95,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		if(stateIn.get(WATERLOGGED)) {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 			if(!this.petrified) {
-				return PlayerEvents.convertCorrockBlock(stateIn);
+				return EntityEvents.convertCorrockBlock(stateIn);
 			}
 		}
 		if(!stateIn.get(WATERLOGGED) && !this.petrified && !this.isInProperDimension(worldIn.getWorld())) {

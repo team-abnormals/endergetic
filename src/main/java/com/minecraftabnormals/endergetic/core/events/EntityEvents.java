@@ -2,7 +2,9 @@ package com.minecraftabnormals.endergetic.core.events;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock;
@@ -10,15 +12,20 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
@@ -27,12 +34,16 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
-public class PlayerEvents {
+public class EntityEvents {
+	private static final AttributeModifier SLOW_BALLOON = new AttributeModifier(UUID.fromString("eb2242e0-d3be-11ea-87d0-0242ac130003"), "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION);
+	private static final AttributeModifier SUPER_SLOW_BALLOON = new AttributeModifier(UUID.fromString("b5c9b111-62b3-40da-b396-f90a138583ad"), "Super slow falling acceleration reduction", -0.075, AttributeModifier.Operation.ADDITION);
 	
 	public static final Map<Supplier<Block>, Supplier<Block>> PETRIFICATION_MAP = Util.make(Maps.newHashMap(), (petrifications) -> {
 		petrifications.put(() -> EEBlocks.CORROCK_END.get(), () -> EEBlocks.PETRIFIED_CORROCK_END.get());
@@ -74,6 +85,36 @@ public class PlayerEvents {
 		}
 	}
 	
+	@SubscribeEvent
+	public static void onLivingTick(LivingUpdateEvent event) {
+		LivingEntity entity = event.getEntityLiving();
+		if (!entity.world.isRemote) {
+			if (entity instanceof LivingEntity) {
+				int balloonCount = entity.getPassengers().stream().filter(passenger -> passenger instanceof BolloomBalloonEntity).collect(Collectors.toList()).size();
+				ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+				boolean hasABalloon = balloonCount > 0;
+				if (hasABalloon) entity.fallDistance = 0.0F;
+				boolean isFalling = entity.getMotion().y <= 0.0D;
+				
+				if (isFalling && balloonCount < 3 && hasABalloon) {
+					if (!gravity.hasModifier(SLOW_BALLOON)) gravity.func_233767_b_(SLOW_BALLOON);
+				} else if (gravity.hasModifier(SLOW_BALLOON)) {
+					gravity.removeModifier(SLOW_BALLOON);
+				}
+				
+				if (isFalling && balloonCount == 3) {
+					if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.func_233767_b_(SUPER_SLOW_BALLOON);
+				} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
+					gravity.removeModifier(SUPER_SLOW_BALLOON);
+				}
+				
+				if (balloonCount > 3) {
+					entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
+				}
+			}
+		}
+	}
+	
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
@@ -102,31 +143,4 @@ public class PlayerEvents {
 		}
 		return null;
 	}
-	
-//	@SubscribeEvent
-//	public static void onEntityClicked(PlayerInteractEvent.EntityInteract event) {
-//		Entity entity = event.getTarget();
-//		PlayerEntity player = event.getPlayer();
-//		if(event.getItemStack().getItem() instanceof BolloomBalloonItem && !entity.getEntityWorld().isRemote && !player.isShiftKeyDown()) {
-//			if(entity instanceof LivingEntity && !(entity instanceof BoofBlockEntity) && !(entity instanceof PoiseClusterEntity)) {
-//				entity.getCapability(BalloonProvider.BALLOON_CAP, null)
-//				.ifPresent(balloons -> {
-//					if(balloons.getBalloonsTied() < 4) {
-//						balloons.incrementBalloons(1);
-//						BolloomBalloonEntity.addBalloonToEntity(entity);
-//						System.out.println(balloons.getBalloonsTied());
-//					}
-//				});
-//			} else if(entity instanceof BoatEntity) {
-//				entity.getCapability(BalloonProvider.BALLOON_CAP, null)
-//				.ifPresent(balloons -> {
-//					if(balloons.getBalloonsTied() < 4) {
-//						balloons.incrementBalloons(1);
-//						BolloomBalloonEntity.addBalloonToEntity(entity);
-//						System.out.println(balloons.getBalloonsTied());
-//					}
-//				});
-//			}
-//		}
-//	}	
 }

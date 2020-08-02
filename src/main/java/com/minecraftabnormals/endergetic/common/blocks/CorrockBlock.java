@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
-import com.minecraftabnormals.endergetic.core.events.PlayerEvents;
+import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.Block;
@@ -66,7 +66,7 @@ public class CorrockBlock extends Block {
 		}
 		
 		if(this.isSubmerged(worldIn, currentPos)) {
-			return !this.petrified ? PlayerEvents.convertCorrockBlock(stateIn) : stateIn;
+			return !this.petrified ? EntityEvents.convertCorrockBlock(stateIn) : stateIn;
 		}
 		
 	    return stateIn;
