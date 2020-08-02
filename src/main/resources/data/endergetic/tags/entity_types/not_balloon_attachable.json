@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "endergetic:boof_block",
+    "endergetic:poise_cluster",
+    "endergetic:puff_bug",
+    "endergetic:booflo",
+    "endergetic:booflo_adolescent",
+    "endergetic:booflo_baby",
+    "minecraft:shulker",
+    "minecraft:horse",
+    "minecraft:armor_stand",
+    "minecraft:phantom",
+    "minecraft:ghast",
+    "minecraft:wither",
+    "minecraft:ender_dragon"
+  ]
+}

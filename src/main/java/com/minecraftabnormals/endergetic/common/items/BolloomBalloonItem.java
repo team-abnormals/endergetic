@@ -10,6 +10,7 @@ import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
+import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import com.teamabnormals.abnormals_core.core.utils.EntityUtils;
 
 import net.minecraft.block.Block;
@@ -100,7 +101,7 @@ public class BolloomBalloonItem extends Item {
 	}
 	
 	private boolean canAttachBalloonToTarget(LivingEntity target) {
-		return !(target instanceof BoofBlockEntity && target instanceof PoiseClusterEntity) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < 6;
+		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && !(target instanceof BoofBlockEntity && target instanceof PoiseClusterEntity) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < 6;
 	}
 	
 	private void attachToEntity(PlayerEntity player, LivingEntity target) {

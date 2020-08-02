@@ -30,6 +30,7 @@ public class EETags {
 	
 	public static class EntityTypes {
 		public static final ITag.INamedTag<EntityType<?>> BOOF_BLOCK_RESISTANT = createTag("boof_block_resistant");
+		public static final ITag.INamedTag<EntityType<?>> NOT_BALLOON_ATTACHABLE = createTag("not_balloon_attachable");
 		
 		private static ITag.INamedTag<EntityType<?>> createTag(String name) {
 			return EntityTypeTags.func_232896_a_("endergetic:" + name);
