@@ -111,6 +111,11 @@ public class BoofBlockEntity extends LivingEntity {
 	}
 	
 	@Override
+	public boolean isAlive() {
+		return false;
+	}
+	
+	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {return false;}
 	
 	public boolean isForProjectile() {

@@ -272,6 +272,11 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	@Override
+	public boolean isAlive() {
+		return false;
+	}
+	
+	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize size) {
 		return size.height;
 	}
