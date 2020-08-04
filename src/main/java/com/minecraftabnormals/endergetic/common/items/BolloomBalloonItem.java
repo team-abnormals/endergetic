@@ -55,10 +55,19 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && canAttachBalloonToTarget(player) && !this.hasEntityTarget(player) && EntityUtils.rayTrace(player, this.getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
-			attachToEntity(this.balloonColor, player, player);
-			if (!player.isCreative()) stack.shrink(1);
-			return ActionResult.resultConsume(stack);
+		if (!world.isRemote && !this.hasEntityTarget(player) && EntityUtils.rayTrace(player, this.getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
+			Entity ridingEntity = player.getRidingEntity();
+			if (ridingEntity instanceof BoatEntity && canAttachBalloonToTarget(ridingEntity)) {
+				attachToEntity(this.balloonColor, player, ridingEntity);
+				if (!player.isCreative()) stack.shrink(1);
+				return ActionResult.resultConsume(stack);
+			}
+			
+			if (canAttachBalloonToTarget(player)) {
+				attachToEntity(this.balloonColor, player, player);
+				if (!player.isCreative()) stack.shrink(1);
+				return ActionResult.resultConsume(stack);
+			}
 		}
 		return ActionResult.resultPass(stack);
 	}
