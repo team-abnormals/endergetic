@@ -63,6 +63,7 @@ public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity>
 	
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
+		if (balloon.getHideTime() > 0) return false;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		return balloon.getRidingEntity() == player && Minecraft.getInstance().gameSettings.thirdPersonView == 0 ? player.rotationPitch < -45.0F : true;
 	}

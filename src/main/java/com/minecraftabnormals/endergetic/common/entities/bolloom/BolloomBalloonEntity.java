@@ -1,10 +1,16 @@
 package com.minecraftabnormals.endergetic.common.entities.bolloom;
 
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -14,6 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
@@ -30,6 +37,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -43,6 +51,8 @@ import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BolloomBalloonEntity extends Entity {
+	private static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
+	
 	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
@@ -53,9 +63,11 @@ public class BolloomBalloonEntity extends Entity {
 	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.<Optional<UUID>>createKey(BolloomBalloonEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
+	private static final DataParameter<Integer> HIDE_TIME = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT);
 	protected static final DataParameter<Byte> COLOR = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BYTE);
 	public float prevVineAngle;
 	public float prevAngle;
+	private boolean hasModifiedBoatIndex;
 	
 	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
 		super(entityType, world);
@@ -163,11 +175,27 @@ public class BolloomBalloonEntity extends Entity {
 			}
 			this.setUntied();
 		}
-		this.incrementTicksExisted();
 		
-		if (this.getRidingEntity() != null) {
-			System.out.println(this.getRidingEntity());
+		/**
+		 * Sometimes the order of riding and dismounting shifts causing orders to be bumped above 3, this is a fix for it.
+		 */
+		Entity ridingEntity = this.getRidingEntity();
+		if (ridingEntity instanceof BoatEntity) {
+			Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(ridingEntity.getUniqueID());
+			if (orderMap != null) {
+				UUID uuid = this.getUniqueID();
+				if (orderMap.containsKey(uuid) && orderMap.get(uuid) >= 4) {
+					orderMap.put(uuid, this.getClosestOrder(orderMap));
+				}
+			}
 		}
+		
+		/**
+		 * Often it takes a bit too long to sync the position of the Balloon on the boat to the client to the server, so this temporarily hides it.
+		 */
+		if (this.getHideTime() > 0) this.decrementHideTime();
+		
+		this.incrementTicksExisted();
 	}
 	
 	@Override
@@ -182,6 +210,7 @@ public class BolloomBalloonEntity extends Entity {
 		this.getDataManager().register(SWAY, 0F);
 		this.getDataManager().register(DESIRED_ANGLE, 0F);
 		this.getDataManager().register(TICKSEXISTED, 0);
+		this.getDataManager().register(HIDE_TIME, 0);
 		this.getDataManager().register(COLOR, (byte)16);
 	}
 
@@ -330,9 +359,88 @@ public class BolloomBalloonEntity extends Entity {
 		return true;
 	}
 	
+	@Override
+	public boolean startRiding(Entity entity, boolean force) {
+		if (super.startRiding(entity, force)) {
+			if (entity instanceof BoatEntity) {
+				UUID boatUUID = entity.getUniqueID();
+				if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID)) {
+					Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(boatUUID);
+					if (!this.hasModifiedBoatIndex) {
+						orderMap.put(this.getUniqueID(), this.getClosestOrder(orderMap));
+						this.hasModifiedBoatIndex = true;
+					}
+				} else {
+					BALLOONS_ON_BOAT_MAP.put(boatUUID, Util.make(Maps.newHashMap(), (map) -> {
+						map.put(this.getUniqueID(), 0);
+					}));
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void func_233575_bb_() {
+		if (this.getRidingEntity() instanceof BoatEntity && !this.isAlive()) {
+			UUID boatUUID = this.getRidingEntity().getUniqueID();
+			UUID uuid = this.getUniqueID();
+			if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID) && BALLOONS_ON_BOAT_MAP.get(boatUUID).containsKey(uuid)) {
+				BALLOONS_ON_BOAT_MAP.get(boatUUID).remove(uuid);
+			}
+		}
+		super.func_233575_bb_();
+	}
+	
 	public void setRidingPosition() {
 		Entity ridingEntity = this.getRidingEntity();
-		this.setPosition(ridingEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), ridingEntity.getPosY() + this.getMountedYOffset() + this.getRidingEntity().getEyeHeight(), ridingEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
+		if (ridingEntity instanceof BoatEntity) {
+			Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(ridingEntity.getUniqueID());
+			UUID uuid = this.getUniqueID();
+			if (!orderMap.containsKey(uuid)) return;
+			
+			float x = 0.0F, z = 0.0F;
+			switch (orderMap.get(uuid)) {
+				default:
+				case 0:
+					x = 0.9F;
+					z = -0.5F;
+					break;
+				case 1:
+					x = 0.9F;
+					z = 0.5F;
+					break;
+				case 2:
+					x = -0.9F;
+					z = -0.5F;
+					break;
+				case 3:
+					x = -0.9F;
+					z = 0.5F;
+					break;
+			}
+			Vector3d ridingOffset = (new Vector3d(x, 0.0D, z)).rotateYaw((float) (-ridingEntity.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
+			this.setPosition(ridingEntity.getPosX() + ridingOffset.getX() + this.getSway() * Math.sin(-this.getAngle()), ridingEntity.getPosY() + this.getMountedYOffset() + this.getRidingEntity().getEyeHeight(), ridingEntity.getPosZ() + ridingOffset.getZ() + this.getSway() * Math.cos(-this.getAngle()));
+		} else {
+			this.setPosition(ridingEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), ridingEntity.getPosY() + this.getMountedYOffset() + this.getRidingEntity().getEyeHeight(), ridingEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
+		}
+	}
+	
+	public void setBoatPosition() {
+		this.setRidingPosition();
+		this.dataManager.set(HIDE_TIME, 2);
+	}
+	
+	private int getClosestOrder(Map<UUID, Integer> orderMap) {
+		Set<Integer> missingNumbers = Sets.newHashSet();
+		Set<Integer> orders = orderMap.values().stream().collect(Collectors.toSet());
+		for (int i = 0; i < 4; i++) {
+			if (!orders.contains(i)) {
+				missingNumbers.add(i);
+			}
+		}
+		return missingNumbers.isEmpty() ? orders.size() : missingNumbers.stream().sorted(Comparator.comparingInt(Math::abs)).collect(Collectors.toList()).get(0);
 	}
 	
 	@Override
@@ -412,6 +520,14 @@ public class BolloomBalloonEntity extends Entity {
 
 	public void incrementTicksExisted() {
 		this.getDataManager().set(TICKSEXISTED, getTicksExisted() + 1);
+	}
+	
+	public int getHideTime() {
+		return this.getDataManager().get(HIDE_TIME);
+	}
+
+	public void decrementHideTime() {
+		this.getDataManager().set(HIDE_TIME, this.getHideTime() - 1);
 	}
 	
 	public BlockPos getFencePos() {

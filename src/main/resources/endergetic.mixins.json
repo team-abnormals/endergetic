@@ -9,7 +9,8 @@
   	"MixinServerWorld",
   	"MixinEndBiomeProvider",
   	"MixinEndGatewayTileEntity",
-  	"MixinEndSpikeFeature"
+  	"MixinEndSpikeFeature",
+  	"MixinBoatEntity"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
-import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -21,6 +19,7 @@ import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.DyeColor;
@@ -56,8 +55,8 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && this.canAttachBalloonToTarget(player) && !this.hasEntityTarget(player) && EntityUtils.rayTrace(player, this.getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
-			this.attachToEntity(player, player);
+		if (!world.isRemote && canAttachBalloonToTarget(player) && !this.hasEntityTarget(player) && EntityUtils.rayTrace(player, this.getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
+			attachToEntity(this.balloonColor, player, player);
 			if (!player.isCreative()) stack.shrink(1);
 			return ActionResult.resultConsume(stack);
 		}
@@ -92,25 +91,29 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
 		World world = player.world;
-		if (!world.isRemote && this.canAttachBalloonToTarget(target)) {
-			this.attachToEntity(player, target);
+		if (!world.isRemote && canAttachBalloonToTarget(target)) {
+			attachToEntity(this.balloonColor, player, target);
 			if (!player.isCreative()) stack.shrink(1);
 			return ActionResultType.CONSUME;
 		}
 		return ActionResultType.PASS;
 	}
 	
-	private boolean canAttachBalloonToTarget(LivingEntity target) {
-		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && !(target instanceof BoofBlockEntity && target instanceof PoiseClusterEntity) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < 6;
+	public static boolean canAttachBalloonToTarget(Entity target) {
+		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < (target instanceof BoatEntity ? 4 : 6);
 	}
 	
-	private void attachToEntity(PlayerEntity player, LivingEntity target) {
+	public static void attachToEntity(DyeColor color, PlayerEntity player, Entity target) {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
-		balloon.setColor(this.balloonColor);
-		balloon.setPosition(target.getPosX() + balloon.getSway() * Math.sin(-balloon.getAngle()), target.getPosY() + balloon.getMountedYOffset() + target.getEyeHeight(), target.getPosZ() + balloon.getSway() * Math.cos(-balloon.getAngle()));
-		balloon.setUntied();
+		balloon.setColor(color);
 		balloon.startRiding(target, true);
+		if (target instanceof BoatEntity) {
+			balloon.setBoatPosition();
+		} else {
+			balloon.setPosition(target.getPosX() + balloon.getSway() * Math.sin(-balloon.getAngle()), target.getPosY() + balloon.getMountedYOffset() + target.getEyeHeight(), target.getPosZ() + balloon.getSway() * Math.cos(-balloon.getAngle()));
+		}
+		balloon.setUntied();
 		world.addEntity(balloon);
 	}
 
