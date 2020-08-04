@@ -59,12 +59,14 @@ public class BolloomBalloonItem extends Item {
 			Entity ridingEntity = player.getRidingEntity();
 			if (ridingEntity instanceof BoatEntity && canAttachBalloonToTarget(ridingEntity)) {
 				attachToEntity(this.balloonColor, player, ridingEntity);
+				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
 				return ActionResult.resultConsume(stack);
 			}
 			
 			if (canAttachBalloonToTarget(player)) {
 				attachToEntity(this.balloonColor, player, player);
+				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
 				return ActionResult.resultConsume(stack);
 			}
@@ -101,6 +103,7 @@ public class BolloomBalloonItem extends Item {
 	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
 		World world = player.world;
 		if (!world.isRemote && canAttachBalloonToTarget(target)) {
+			player.swing(hand, true);
 			attachToEntity(this.balloonColor, player, target);
 			if (!player.isCreative()) stack.shrink(1);
 			return ActionResultType.CONSUME;
