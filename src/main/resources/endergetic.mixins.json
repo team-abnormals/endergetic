@@ -10,7 +10,8 @@
   	"MixinEndBiomeProvider",
   	"MixinEndGatewayTileEntity",
   	"MixinEndSpikeFeature",
-  	"MixinBoatEntity"
+  	"MixinBoatEntity",
+  	"MixinEntity"
   ],
   "injectors": {
     "defaultRequire": 1

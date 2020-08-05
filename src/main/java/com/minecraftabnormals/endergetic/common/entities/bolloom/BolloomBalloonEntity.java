@@ -51,7 +51,7 @@ import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BolloomBalloonEntity extends Entity {
-	private static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
+	public static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
 	
 	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
@@ -398,7 +398,7 @@ public class BolloomBalloonEntity extends Entity {
 		if (ridingEntity instanceof BoatEntity) {
 			Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(ridingEntity.getUniqueID());
 			UUID uuid = this.getUniqueID();
-			if (!orderMap.containsKey(uuid)) return;
+			if (orderMap == null || !orderMap.containsKey(uuid)) return;
 			
 			float x = 0.0F, z = 0.0F;
 			switch (orderMap.get(uuid)) {
