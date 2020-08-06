@@ -565,8 +565,17 @@ public class BolloomBalloonEntity extends Entity {
     
     @Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().grow(5);
+    	return super.getRenderBoundingBox().grow(5);
 	}
+    
+    @Override
+    public boolean isInRangeToRenderDist(double distance) {
+    	Entity ridingEntity = this.getRidingEntity();
+    	if (ridingEntity != null) {
+    		return ridingEntity.isInRangeToRenderDist(distance);
+    	}
+    	return super.isInRangeToRenderDist(distance);
+    }
 
 	@Override
 	public IPacket<?> createSpawnPacket() {
