@@ -61,7 +61,7 @@ public abstract class MixinBoatEntity extends Entity {
 		if (item instanceof BolloomBalloonItem && BolloomBalloonItem.canAttachBalloonToTarget(boat)) {
 			player.swing(hand, true);
 			if (!boat.world.isRemote) {
-				BolloomBalloonItem.attachToEntity(((BolloomBalloonItem) item).getBalloonColor(), player, boat);
+				BolloomBalloonItem.attachToEntity(((BolloomBalloonItem) item).getBalloonColor(), boat);
 			}
 			if (!player.isCreative()) stack.shrink(1);
 			info.setReturnValue(ActionResultType.CONSUME);

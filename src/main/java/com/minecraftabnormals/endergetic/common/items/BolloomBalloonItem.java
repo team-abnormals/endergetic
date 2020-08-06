@@ -59,14 +59,14 @@ public class BolloomBalloonItem extends Item {
 		if (!world.isRemote && !hasEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
 			Entity ridingEntity = player.getRidingEntity();
 			if (ridingEntity instanceof BoatEntity && canAttachBalloonToTarget(ridingEntity)) {
-				attachToEntity(this.balloonColor, player, ridingEntity);
+				attachToEntity(this.balloonColor, ridingEntity);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
 				return ActionResult.resultConsume(stack);
 			}
 			
 			if (canAttachBalloonToTarget(player)) {
-				attachToEntity(this.balloonColor, player, player);
+				attachToEntity(this.balloonColor, player);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
 				return ActionResult.resultConsume(stack);
@@ -105,7 +105,7 @@ public class BolloomBalloonItem extends Item {
 		World world = player.world;
 		if (!world.isRemote && canAttachBalloonToTarget(target)) {
 			player.swing(hand, true);
-			attachToEntity(this.balloonColor, player, target);
+			attachToEntity(this.balloonColor, target);
 			if (!player.isCreative()) stack.shrink(1);
 			return ActionResultType.CONSUME;
 		}
@@ -116,7 +116,7 @@ public class BolloomBalloonItem extends Item {
 		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < (target instanceof BoatEntity ? 4 : 6);
 	}
 	
-	public static void attachToEntity(DyeColor color, PlayerEntity player, Entity target) {
+	public static void attachToEntity(DyeColor color, Entity target) {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
 		balloon.setColor(color);
@@ -224,24 +224,33 @@ public class BolloomBalloonItem extends Item {
 			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
 			World world = source.getWorld();
 			BlockState state = world.getBlockState(blockpos);
-			if(state.getMaterial().isReplaceable() && stack.getItem() instanceof BolloomBalloonItem) {
+			
+			for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockpos))) {
+				if (!world.isRemote && (entity instanceof LivingEntity || entity instanceof BoatEntity) && canAttachBalloonToTarget(entity)) {
+					attachToEntity(((BolloomBalloonItem) stack.getItem()).getBalloonColor(), entity);
+					stack.shrink(1);
+					return stack;
+				}
+			}
+			
+			if (state.getMaterial().isReplaceable()) {
 				BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, blockpos);
-				balloon.setColor(((BolloomBalloonItem)stack.getItem()).getBalloonColor());
+				balloon.setColor(((BolloomBalloonItem) stack.getItem()).getBalloonColor());
 				world.addEntity(balloon);
 				stack.shrink(1);
-			} else if(!state.getMaterial().isReplaceable() && !state.getBlock().isIn(BlockTags.FENCES)) {
+			} else if (!state.getMaterial().isReplaceable() && !state.getBlock().isIn(BlockTags.FENCES)) {
 				return super.dispenseStack(source, stack);
-			} else if(state.getBlock().isIn(BlockTags.FENCES)) {
-				if(BolloomKnotEntity.getKnotForPosition(world, blockpos) == null && stack.getItem() instanceof BolloomBalloonItem) {
-					BolloomKnotEntity.createStartingKnot(world, blockpos, ((BolloomBalloonItem)stack.getItem()).getBalloonColor());
+			} else if (state.getBlock().isIn(BlockTags.FENCES)) {
+				if (BolloomKnotEntity.getKnotForPosition(world, blockpos) == null) {
+					BolloomKnotEntity.createStartingKnot(world, blockpos, ((BolloomBalloonItem) stack.getItem()).getBalloonColor());
 					stack.shrink(1);
 					return stack;
 				} else {
 					for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockpos))) {
-						if(entity instanceof BolloomKnotEntity && stack.getItem() instanceof BolloomBalloonItem) {
-							if(!((BolloomKnotEntity)entity).hasMaxBalloons()) {
+						if (entity instanceof BolloomKnotEntity) {
+							if (!((BolloomKnotEntity) entity).hasMaxBalloons()) {
 								BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, blockpos);
-								setKnot.addBalloon(((BolloomBalloonItem)stack.getItem()).getBalloonColor());
+								setKnot.addBalloon(((BolloomBalloonItem) stack.getItem()).getBalloonColor());
 								stack.shrink(1);
 							} else {
 								return super.dispenseStack(source, stack);
