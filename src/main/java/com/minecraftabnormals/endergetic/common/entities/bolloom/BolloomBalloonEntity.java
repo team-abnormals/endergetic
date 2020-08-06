@@ -12,6 +12,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CRemoveBalloonFromOrderMap;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
@@ -49,6 +51,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class BolloomBalloonEntity extends Entity {
 	public static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
@@ -383,11 +386,16 @@ public class BolloomBalloonEntity extends Entity {
 	
 	@Override
 	public void func_233575_bb_() {
-		if (this.getRidingEntity() instanceof BoatEntity && !this.isAlive()) {
+		Entity ridingEntity = this.getRidingEntity();
+		if (ridingEntity instanceof BoatEntity && !this.isAlive()) {
 			UUID boatUUID = this.getRidingEntity().getUniqueID();
 			UUID uuid = this.getUniqueID();
 			if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID) && BALLOONS_ON_BOAT_MAP.get(boatUUID).containsKey(uuid)) {
 				BALLOONS_ON_BOAT_MAP.get(boatUUID).remove(uuid);
+			}
+			
+			if (!this.world.isRemote) {
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new S2CRemoveBalloonFromOrderMap(ridingEntity.getEntityId(), this.getEntityId()));
 			}
 		}
 		super.func_233575_bb_();

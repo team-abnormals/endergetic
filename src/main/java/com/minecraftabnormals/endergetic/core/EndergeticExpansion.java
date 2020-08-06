@@ -1,18 +1,18 @@
 package com.minecraftabnormals.endergetic.core;
 
 import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 import com.minecraftabnormals.endergetic.client.particle.EEParticles;
 import com.minecraftabnormals.endergetic.client.render.entity.*;
 import com.minecraftabnormals.endergetic.client.render.entity.booflo.*;
 import com.minecraftabnormals.endergetic.client.render.tile.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
-import com.minecraftabnormals.endergetic.common.network.entity.puffbug.RotateMessage;
-import com.minecraftabnormals.endergetic.common.network.nbt.SUpdateNBTTagMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
+import com.minecraftabnormals.endergetic.common.network.nbt.*;
 import com.minecraftabnormals.endergetic.common.world.EEWorldGenHandler;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
@@ -22,8 +22,13 @@ import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-import com.minecraftabnormals.endergetic.core.registry.other.*;
+import com.minecraftabnormals.endergetic.core.registry.other.EEBlockRegistrars;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDispenserBehaviors;
+import com.minecraftabnormals.endergetic.core.registry.other.EEEntityAttributes;
+import com.minecraftabnormals.endergetic.core.registry.other.EEFlammables;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
+import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -147,5 +152,6 @@ public class EndergeticExpansion {
 		CHANNEL.registerMessage(id++, SSetPlayerNotBoostingMessage.class, SSetPlayerNotBoostingMessage::serialize, SSetPlayerNotBoostingMessage::deserialize, SSetPlayerNotBoostingMessage::handle);
 		CHANNEL.registerMessage(id++, SSlamMessage.class, SSlamMessage::serialize, SSlamMessage::deserialize, SSlamMessage::handle);
 		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
+		CHANNEL.registerMessage(id++, S2CRemoveBalloonFromOrderMap.class, S2CRemoveBalloonFromOrderMap::serialize, S2CRemoveBalloonFromOrderMap::deserialize, S2CRemoveBalloonFromOrderMap::handle);
 	}
 }
