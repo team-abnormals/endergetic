@@ -11,7 +11,8 @@
   	"MixinEndGatewayTileEntity",
   	"MixinEndSpikeFeature",
   	"MixinBoatEntity",
-  	"MixinEntity"
+  	"MixinEntity",
+  	"MixinServerPlayNetHandler"
   ],
   "injectors": {
     "defaultRequire": 1
