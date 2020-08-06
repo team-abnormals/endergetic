@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.items;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -170,12 +171,50 @@ public class BolloomBalloonItem extends Item {
 		Predicate<Entity> predicate = (p_217727_0_) -> {
 			return !p_217727_0_.isSpectator() && p_217727_0_.canBeCollidedWith();
 		};
-		EntityRayTraceResult entityraytraceresult = ProjectileHelper.rayTraceEntities(player, vec3d, vec3d2, axisalignedbb, predicate, sqrDistance);
+		EntityRayTraceResult entityraytraceresult = rayTraceEntities(player, vec3d, vec3d2, axisalignedbb, predicate, sqrDistance);
 		if (entityraytraceresult == null) {
 			return false;
 		} else {
 			return !(vec3d.squareDistanceTo(entityraytraceresult.getHitVec()) > sqrDistance);
 		}
+	}
+	
+	/**
+	 * Moved here since {@link ProjectileHelper#rayTraceEntities(Entity, Vector3d, Vector3d, AxisAlignedBB, Predicate, double)} is client only
+	 */
+	private static EntityRayTraceResult rayTraceEntities(Entity shooter, Vector3d startVec, Vector3d endVec, AxisAlignedBB boundingBox, Predicate<Entity> filter, double distance) {
+		World world = shooter.world;
+		double d0 = distance;
+		Entity entity = null;
+		Vector3d vector3d = null;
+
+		for (Entity entity1 : world.getEntitiesInAABBexcluding(shooter, boundingBox, filter)) {
+			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) entity1.getCollisionBorderSize());
+			Optional<Vector3d> optional = axisalignedbb.rayTrace(startVec, endVec);
+			if (axisalignedbb.contains(startVec)) {
+				if (d0 >= 0.0D) {
+					entity = entity1;
+					vector3d = optional.orElse(startVec);
+					d0 = 0.0D;
+				}
+			} else if (optional.isPresent()) {
+				Vector3d vector3d1 = optional.get();
+				double d1 = startVec.squareDistanceTo(vector3d1);
+				if (d1 < d0 || d0 == 0.0D) {
+					if (entity1.getLowestRidingEntity() == shooter.getLowestRidingEntity() && !entity1.canRiderInteract()) {
+						if (d0 == 0.0D) {
+							entity = entity1;
+							vector3d = vector3d1;
+						}
+					} else {
+						entity = entity1;
+						vector3d = vector3d1;
+						d0 = d1;
+					}
+				}
+			}
+	    }
+		return entity == null ? null : new EntityRayTraceResult(entity, vector3d);
 	}
 
 	public static class BalloonDispenseBehavior extends DefaultDispenseItemBehavior {
@@ -217,5 +256,4 @@ public class BolloomBalloonItem extends Item {
 		}
 		
 	}
-	
 }
