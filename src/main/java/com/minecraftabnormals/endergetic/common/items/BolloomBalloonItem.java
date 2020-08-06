@@ -55,7 +55,7 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !this.hasEntityTarget(player) && EntityUtils.rayTrace(player, this.getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
+		if (!world.isRemote && !hasEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
 			Entity ridingEntity = player.getRidingEntity();
 			if (ridingEntity instanceof BoatEntity && canAttachBalloonToTarget(ridingEntity)) {
 				attachToEntity(this.balloonColor, player, ridingEntity);
@@ -155,13 +155,13 @@ public class BolloomBalloonItem extends Item {
 		return true;
 	}
 	
-	private double getPlayerReach(PlayerEntity player) {
+	public static double getPlayerReach(PlayerEntity player) {
 		double reach = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 		return (player.isCreative() ? reach : reach - 0.5F);
 	}
 	
-	private boolean hasEntityTarget(PlayerEntity player) {
-		double distance = this.getPlayerReach(player);
+	public static boolean hasEntityTarget(PlayerEntity player) {
+		double distance = getPlayerReach(player);
 		Vector3d vec3d = player.getEyePosition(1.0F);
 		Vector3d vec3d1 = player.getLook(1.0F).scale(distance);
 		Vector3d vec3d2 = vec3d.add(vec3d1);
