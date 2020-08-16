@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * @author Voliant
+ * @author tessdotcpp
  * Events for compatibility with the Savage & Ravage mod.
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
