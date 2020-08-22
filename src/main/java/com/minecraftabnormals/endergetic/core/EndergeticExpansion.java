@@ -30,6 +30,7 @@ import com.minecraftabnormals.endergetic.core.registry.other.EEFlammables;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -134,7 +135,7 @@ public class EndergeticExpansion {
 		KeybindHandler.registerKeys();
 		
 		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Arrays.asList(() -> EEBiomes.POISE_FOREST.get()), () -> EESounds.POISE_FOREST_LOOP.get(), () -> EESounds.POISE_FOREST_ADDITIONS.get(), () -> EESounds.POISE_FOREST_MOOD.get());
-		EnderCrystalRenderer.ENDER_CRYSTAL_TEXTURES = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/end_crystal.png");
+		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 	}
 	
 	@OnlyIn(Dist.CLIENT)
