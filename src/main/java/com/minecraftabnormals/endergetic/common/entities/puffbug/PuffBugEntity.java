@@ -46,6 +46,7 @@ import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -1049,6 +1050,11 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.PUFF_BUG_SPAWN_EGG.get());
 	}
+	
+	@Override
+    public CreatureAttribute getCreatureAttribute() {
+        return CreatureAttribute.ARTHROPOD;
+    }
 	
 	@Override
 	public boolean isBreedingItem(ItemStack stack) {
