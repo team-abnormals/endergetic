@@ -38,6 +38,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -52,9 +53,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BolloomBalloonEntity extends Entity {
 	public static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
+	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
 	
 	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
@@ -121,7 +124,7 @@ public class BolloomBalloonEntity extends Entity {
 		
 		if (this.world.isAreaLoaded(getFencePos(), 1) && !this.isUntied()) {
 			if (!this.world.getBlockState(this.getFencePos()).getBlock().isIn(BlockTags.FENCES)) {
-				if(!this.world.isRemote && this.getKnot() != null) {
+				if (!this.world.isRemote && this.getKnot() != null) {
 					((BolloomKnotEntity) this.getKnot()).setBalloonsTied(((BolloomKnotEntity) this.getKnot()).getBalloonsTied() - 1);
 				}
 				this.setUntied();
@@ -222,22 +225,22 @@ public class BolloomBalloonEntity extends Entity {
 		if (this.getKnotId() != null) {
 			nbt.putUniqueId("KnotUUID", this.getKnotId());
 		}
-		nbt.putBoolean("UNTIED", this.getDataManager().get(UNTIED));
-		nbt.putFloat("ORIGIN_X", this.getDataManager().get(ORIGINAL_X));
-		nbt.putFloat("ORIGIN_Y", this.getDataManager().get(ORIGINAL_Y));
-		nbt.putFloat("ORIGIN_Z", this.getDataManager().get(ORIGINAL_Z));
-		nbt.putLong("FENCE_POS", this.getDataManager().get(FENCE_POS).toLong());
+		nbt.putBoolean("UNTIED", this.dataManager.get(UNTIED));
+		nbt.putFloat("ORIGIN_X", this.dataManager.get(ORIGINAL_X));
+		nbt.putFloat("ORIGIN_Y", this.dataManager.get(ORIGINAL_Y));
+		nbt.putFloat("ORIGIN_Z", this.dataManager.get(ORIGINAL_Z));
+		nbt.putLong("FENCE_POS", this.dataManager.get(FENCE_POS).toLong());
 		nbt.putByte("Color", this.dataManager.get(COLOR));
 	}
 	
 	@Override
 	protected void readAdditional(CompoundNBT nbt) {
 		this.setKnotId(nbt.contains("KnotUUID") ? nbt.getUniqueId("KnotUUID") : null);
-		this.getDataManager().set(UNTIED, nbt.getBoolean("UNTIED"));
-		this.getDataManager().set(ORIGINAL_X, nbt.getFloat("ORIGIN_X"));
-		this.getDataManager().set(ORIGINAL_Y, nbt.getFloat("ORIGIN_Y"));
-		this.getDataManager().set(ORIGINAL_Z, nbt.getFloat("ORIGIN_Z"));
-		this.getDataManager().set(FENCE_POS, BlockPos.fromLong(nbt.getLong("FENCE_POS")));
+		this.dataManager.set(UNTIED, nbt.getBoolean("UNTIED"));
+		this.dataManager.set(ORIGINAL_X, nbt.getFloat("ORIGIN_X"));
+		this.dataManager.set(ORIGINAL_Y, nbt.getFloat("ORIGIN_Y"));
+		this.dataManager.set(ORIGINAL_Z, nbt.getFloat("ORIGIN_Z"));
+		this.dataManager.set(FENCE_POS, BlockPos.fromLong(nbt.getLong("FENCE_POS")));
 		this.dataManager.set(COLOR, nbt.getByte("Color"));
 	}
 	
@@ -306,7 +309,7 @@ public class BolloomBalloonEntity extends Entity {
 	
 	@Nullable
 	public Entity getKnot() {
-		return ((ServerWorld)world).getEntityByUuid(getKnotId());
+		return ((ServerWorld) this.world).getEntityByUuid(this.getKnotId());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -320,8 +323,8 @@ public class BolloomBalloonEntity extends Entity {
 	public boolean checkForBlocksDown() {
 		for (int i = 0; i < 3; i++) {
 			BlockPos pos = this.getFencePos().up(3).down(i);
-			if(this.getEntityWorld().isAreaLoaded(pos, 1)) {
-				if(!this.getEntityWorld().getBlockState(pos).getMaterial().isReplaceable() || this.getEntityWorld().getBlockState(pos).getBlock() == Blocks.LAVA) {
+			if (this.getEntityWorld().isAreaLoaded(pos, 1)) {
+				if (!this.getEntityWorld().getBlockState(pos).getMaterial().isReplaceable() || this.getEntityWorld().getBlockState(pos).getBlock() == Blocks.LAVA) {
 					return true;
 				}
 			}
@@ -333,7 +336,7 @@ public class BolloomBalloonEntity extends Entity {
 	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		if (itemstack.getItem() instanceof DyeItem && this.getColor() != ((DyeItem) itemstack.getItem()).getDyeColor()) {
-			if(!this.world.isRemote) {
+			if (!this.world.isRemote) {
 				this.setColor(((DyeItem) itemstack.getItem()).getDyeColor());
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
@@ -408,24 +411,19 @@ public class BolloomBalloonEntity extends Entity {
 			UUID uuid = this.getUniqueID();
 			if (orderMap == null || !orderMap.containsKey(uuid)) return;
 			
-			float x = 0.0F, z = 0.0F;
+			float x = ridingEntity.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? 1.6F : 0.9F, z = 0.5F;
 			switch (orderMap.get(uuid)) {
 				default:
 				case 0:
-					x = 0.9F;
-					z = -0.5F;
+					z *= -1.0F;
 					break;
-				case 1:
-					x = 0.9F;
-					z = 0.5F;
-					break;
+				case 1: break;
 				case 2:
-					x = -0.9F;
-					z = -0.5F;
+					x *= -1.0F;
+					z *= -1.0F;
 					break;
 				case 3:
-					x = -0.9F;
-					z = 0.5F;
+					x *= -1.0F;
 					break;
 			}
 			Vector3d ridingOffset = (new Vector3d(x, 0.0D, z)).rotateYaw((float) (-ridingEntity.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
@@ -581,5 +579,4 @@ public class BolloomBalloonEntity extends Entity {
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-
 }
