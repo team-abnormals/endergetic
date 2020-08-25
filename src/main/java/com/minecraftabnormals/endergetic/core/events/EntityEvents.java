@@ -151,17 +151,17 @@ public class EntityEvents {
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || (block instanceof CorrockBlock && !((CorrockBlock) block).petrified) || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
+		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || (block instanceof CorrockBlock && !((CorrockBlock) block).petrified) || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
 			world.setBlockState(pos, convertCorrockBlock(state));
 		}
 	}
 	
 	public static BlockState convertCorrockBlock(BlockState state) {
 		Block block = state.getBlock();
-		for(Map.Entry<Supplier<Block>, Supplier<Block>> entries : PETRIFICATION_MAP.entrySet()) {
+		for (Map.Entry<Supplier<Block>, Supplier<Block>> entries : PETRIFICATION_MAP.entrySet()) {
 			Block petrifiedBlock = entries.getValue().get();
-			if(entries.getKey().get() == block) {
-				if(block instanceof CorrockPlantBlock) {
+			if (entries.getKey().get() == block) {
+				if (block instanceof CorrockPlantBlock) {
 					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
 				} else if(block instanceof CorrockBlock) {
 					return petrifiedBlock.getDefaultState();
