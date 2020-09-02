@@ -3,6 +3,10 @@ package com.minecraftabnormals.endergetic.core.mixin;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.server.ServerChunkProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,8 +28,7 @@ import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
 
 @Mixin(ServerWorld.class)
-public class MixinServerWorld {
-
+public final class MixinServerWorld {
 	@Shadow(remap = false)
 	public DragonFightManager field_241105_O_;
 	
@@ -36,4 +39,25 @@ public class MixinServerWorld {
 		}
 	}
 
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;addedToChunk:Z", ordinal = 1, shift = At.Shift.AFTER), method = "updateEntity")
+	private void updateBalloons(Entity entity, CallbackInfo info) {
+		BalloonHolder balloonHolder = (BalloonHolder) entity;
+		ServerChunkProvider chunkProvider = ((ServerWorld) (Object) this).getChunkProvider();
+		for (BolloomBalloonEntity balloon : balloonHolder.getBalloons()) {
+			if (!balloon.removed && balloon.attachedEntity == entity) {
+				if (chunkProvider.isChunkLoaded(balloon)) {
+					balloon.forceSetPosition(balloon.getPosX(), balloon.getPosY(), balloon.getPosZ());
+					balloon.prevRotationYaw = balloon.rotationYaw;
+					balloon.prevRotationPitch = balloon.rotationPitch;
+					if (balloon.addedToChunk) {
+						balloon.ticksExisted++;
+						balloon.updateAttachedPosition();
+					}
+					((ServerWorld) (Object) this).chunkCheck(balloon);
+				}
+			} else {
+
+			}
+		}
+	}
 }

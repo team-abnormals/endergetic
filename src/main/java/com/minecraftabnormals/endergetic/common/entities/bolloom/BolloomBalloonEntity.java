@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CRemoveBalloonFromOrderMap;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
@@ -74,6 +75,8 @@ public class BolloomBalloonEntity extends Entity {
 	public float prevVineAngle;
 	public float prevAngle;
 	private boolean hasModifiedBoatIndex;
+
+	public Entity attachedEntity;
 	
 	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
 		super(entityType, world);
@@ -169,7 +172,7 @@ public class BolloomBalloonEntity extends Entity {
 					this.getDataManager().get(ORIGINAL_Z) + this.getSway() * Math.cos(-this.getAngle())
 				);
 			} else {
-				if (this.getRidingEntity() == null) {
+				if (this.attachedEntity == null) {
 					this.move(MoverType.SELF, this.getMotion());
 					this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 				}
@@ -200,8 +203,10 @@ public class BolloomBalloonEntity extends Entity {
 		 * Often it takes a bit too long to sync the position of the Balloon on the boat to the client to the server, so this temporarily hides it.
 		 */
 		if (this.getHideTime() > 0) this.decrementHideTime();
-		
-		this.incrementTicksExisted();
+
+		if (this.attachedEntity == null) {
+			this.incrementTicksExisted();
+		}
 	}
 	
 	@Override
@@ -436,6 +441,35 @@ public class BolloomBalloonEntity extends Entity {
 	public void setBoatPosition() {
 		this.setRidingPosition();
 		this.dataManager.set(HIDE_TIME, 2);
+	}
+
+	public void updateAttachedPosition() {
+		this.setMotion(Vector3d.ZERO);
+		if (canUpdate()) {
+			this.tick();
+			this.incrementTicksExisted();
+			if (this.attachedEntity instanceof BoatEntity) {
+				float x = this.attachedEntity.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? 1.6F : 0.9F, z = 0.5F;
+				switch (((BalloonHolder) this.attachedEntity).getBalloons().indexOf(this)) {
+					default:
+					case 0:
+						z *= -1.0F;
+						break;
+					case 1: break;
+					case 2:
+						x *= -1.0F;
+						z *= -1.0F;
+						break;
+					case 3:
+						x *= -1.0F;
+						break;
+				}
+				Vector3d attachedOffset = (new Vector3d(x, 0.0D, z)).rotateYaw((float) (-this.attachedEntity.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
+				this.setPosition(this.attachedEntity.getPosX() + attachedOffset.getX() + this.getSway() * Math.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + attachedOffset.getZ() + this.getSway() * Math.cos(-this.getAngle()));
+			} else if (this.attachedEntity != null) {
+				this.setPosition(this.attachedEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
+			}
+		}
 	}
 	
 	private int getClosestOrder(Map<UUID, Integer> orderMap) {

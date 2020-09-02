@@ -12,7 +12,11 @@
   	"MixinEndSpikeFeature",
   	"MixinBoatEntity",
   	"MixinEntity",
-  	"MixinServerPlayNetHandler"
+  	"MixinServerPlayNetHandler",
+    "MixinTrackedEntity"
+  ],
+  "client": [
+    "MixinClientWorld"
   ],
   "injectors": {
     "defaultRequire": 1

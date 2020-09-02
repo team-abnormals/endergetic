@@ -2,12 +2,12 @@ package com.minecraftabnormals.endergetic.common.items;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
+import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import com.teamabnormals.abnormals_core.core.utils.EntityUtils;
@@ -113,19 +113,15 @@ public class BolloomBalloonItem extends Item {
 	}
 	
 	public static boolean canAttachBalloonToTarget(Entity target) {
-		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && target.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList()).size() < (target instanceof BoatEntity ? 4 : 6);
+		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && ((BalloonHolder) target).getBalloons().size() < (target instanceof BoatEntity ? 4 : 6);
 	}
 	
 	public static void attachToEntity(DyeColor color, Entity target) {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
 		balloon.setColor(color);
-		balloon.startRiding(target, true);
-		if (target instanceof BoatEntity) {
-			balloon.setBoatPosition();
-		} else {
-			balloon.setPosition(target.getPosX() + balloon.getSway() * Math.sin(-balloon.getAngle()), target.getPosY() + balloon.getMountedYOffset() + target.getEyeHeight(), target.getPosZ() + balloon.getSway() * Math.cos(-balloon.getAngle()));
-		}
+		((BalloonHolder) target).attachBalloon(balloon);
+		balloon.updateAttachedPosition();
 		balloon.setUntied();
 		world.addEntity(balloon);
 	}

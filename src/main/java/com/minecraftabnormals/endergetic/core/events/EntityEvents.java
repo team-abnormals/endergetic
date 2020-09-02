@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
@@ -15,7 +14,9 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloons;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.teamabnormals.abnormals_core.client.ClientInfo;
 import com.teamabnormals.abnormals_core.core.utils.EntityUtils;
@@ -50,8 +51,10 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public class EntityEvents {
@@ -103,7 +106,7 @@ public class EntityEvents {
 		LivingEntity entity = event.getEntityLiving();
 		if (!entity.world.isRemote) {
 			if (entity instanceof LivingEntity) {
-				int balloonCount = entity.getPassengers().stream().filter(passenger -> passenger instanceof BolloomBalloonEntity).collect(Collectors.toList()).size();
+				int balloonCount = ((BalloonHolder) entity).getBalloons().size();
 				ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
 				boolean hasABalloon = balloonCount > 0;
 				if (hasABalloon) entity.fallDistance = 0.0F;
@@ -130,6 +133,20 @@ public class EntityEvents {
 			}
 		}
 	}
+
+	@SubscribeEvent
+	public static void onEntityTracked(PlayerEvent.StartTracking event) {
+		ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+		Entity trackingEntity = event.getTarget();
+		if (trackingEntity instanceof BolloomBalloonEntity) {
+			BolloomBalloonEntity balloon = (BolloomBalloonEntity) trackingEntity;
+			if (balloon.attachedEntity != null) {
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(balloon.attachedEntity));
+			}
+		} else {
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(trackingEntity));
+		}
+	}
 	
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
@@ -139,7 +156,7 @@ public class EntityEvents {
 			if (player.rotationPitch > -25.0F) return;
 			Entity ridingEntity = player.getRidingEntity();
 			if (ridingEntity instanceof BoatEntity && !BolloomBalloonItem.hasEntityTarget(player) && EntityUtils.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
-				List<Entity> balloons = ridingEntity.getPassengers().stream().filter(rider -> rider instanceof BolloomBalloonEntity).collect(Collectors.toList());
+				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
 					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));
 					event.setSwingHand(true);

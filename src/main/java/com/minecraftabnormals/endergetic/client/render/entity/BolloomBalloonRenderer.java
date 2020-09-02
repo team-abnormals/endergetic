@@ -45,8 +45,8 @@ public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity>
 	}
 	
 	@Override
-	public void render(BolloomBalloonEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		float[] angles = entity.getVineAnimation(partialTicks);
+	public void render(BolloomBalloonEntity balloon, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+		float[] angles = balloon.getVineAnimation(partialTicks);
 		this.model.x_string.rotateAngleX = angles[0];
 		this.model.x_string.rotateAngleY = angles[1];
 		
@@ -54,11 +54,11 @@ public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity>
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
 		
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(balloon)));
     	this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		
     	matrixStack.pop();
-		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
+		super.render(balloon, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 	
 	@Override
