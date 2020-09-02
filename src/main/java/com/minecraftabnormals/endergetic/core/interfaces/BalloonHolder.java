@@ -9,7 +9,7 @@ public interface BalloonHolder {
 
 	void attachBalloon(BolloomBalloonEntity balloon);
 
-	void unattachBalloon(BolloomBalloonEntity balloonEntity);
+	void detachBalloon(BolloomBalloonEntity balloonEntity);
 
-	void unattachBalloons();
+	void detachBalloons();
 }

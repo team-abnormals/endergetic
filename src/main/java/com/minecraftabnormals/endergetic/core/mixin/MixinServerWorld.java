@@ -44,7 +44,7 @@ public final class MixinServerWorld {
 		BalloonHolder balloonHolder = (BalloonHolder) entity;
 		ServerChunkProvider chunkProvider = ((ServerWorld) (Object) this).getChunkProvider();
 		for (BolloomBalloonEntity balloon : balloonHolder.getBalloons()) {
-			if (!balloon.removed && balloon.attachedEntity == entity) {
+			if (!balloon.removed && balloon.getAttachedEntity() == entity) {
 				if (chunkProvider.isChunkLoaded(balloon)) {
 					balloon.forceSetPosition(balloon.getPosX(), balloon.getPosY(), balloon.getPosZ());
 					balloon.prevRotationYaw = balloon.rotationYaw;
@@ -56,7 +56,29 @@ public final class MixinServerWorld {
 					((ServerWorld) (Object) this).chunkCheck(balloon);
 				}
 			} else {
+				balloon.detachFromEntity();
+			}
+		}
+	}
 
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateRidden()V", shift = At.Shift.AFTER), method = "tickPassenger")
+	private void updateEntityRiddenBalloons(Entity ridingEntity, Entity passenger, CallbackInfo info) {
+		BalloonHolder balloonHolder = (BalloonHolder) passenger;
+		ServerChunkProvider chunkProvider = ((ServerWorld) (Object) this).getChunkProvider();
+		for (BolloomBalloonEntity balloon : balloonHolder.getBalloons()) {
+			if (!balloon.removed && balloon.getAttachedEntity() == passenger) {
+				if (chunkProvider.isChunkLoaded(balloon)) {
+					balloon.forceSetPosition(balloon.getPosX(), balloon.getPosY(), balloon.getPosZ());
+					balloon.prevRotationYaw = balloon.rotationYaw;
+					balloon.prevRotationPitch = balloon.rotationPitch;
+					if (balloon.addedToChunk) {
+						balloon.ticksExisted++;
+						balloon.updateAttachedPosition();
+					}
+					((ServerWorld) (Object) this).chunkCheck(balloon);
+				}
+			} else {
+				balloon.detachFromEntity();
 			}
 		}
 	}

@@ -26,9 +26,8 @@ public final class S2CUpdateBalloons {
 		this.entityId = entity.getEntityId();
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) entity).getBalloons();
 		this.balloonIds = new int[balloons.size()];
-		for (int i = 0; i < balloons.size(); ++i) {
-			BolloomBalloonEntity balloon = balloons.get(i);
-			this.balloonIds[i] = balloon == null ? -1 : balloon.getEntityId();
+		for (int i = 0; i < balloons.size(); i++) {
+			this.balloonIds[i] = balloons.get(i).getEntityId();
 		}
 	}
 
@@ -50,18 +49,11 @@ public final class S2CUpdateBalloons {
 				if (entity == null) {
 					EndergeticExpansion.LOGGER.warn("Received balloons for unknown entity!");
 				} else {
-					BalloonHolder balloonHolder = (BalloonHolder) entity;
-					balloonHolder.unattachBalloons();
-
-					for (int i = 0; i < message.balloonIds.length; i++) {
-						int id = message.balloonIds[i];
-						if (id == -1) {
-							balloonHolder.getBalloons().set(i, null);
-						} else {
-							Entity balloon = world.getEntityByID(id);
-							if (balloon instanceof BolloomBalloonEntity) {
-								balloonHolder.attachBalloon((BolloomBalloonEntity) balloon);
-							}
+					((BalloonHolder) entity).detachBalloons();
+					for (int id : message.balloonIds) {
+						Entity balloon = world.getEntityByID(id);
+						if (balloon instanceof BolloomBalloonEntity) {
+							((BolloomBalloonEntity) balloon).attachToEntity(entity);
 						}
 					}
 				}

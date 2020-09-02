@@ -16,7 +16,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity> {
+public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity> {
+	private static final Minecraft MC = Minecraft.getInstance();
 	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
 	public static final ResourceLocation[] COLORS = new ResourceLocation[] {
 		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/white_bolloom_balloon.png"),
@@ -41,7 +42,7 @@ public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity>
 	
 	public BolloomBalloonRenderer(EntityRendererManager p_i46179_1_) {
 		super(p_i46179_1_);
-		this.model = new BolloomBalloonModel<BolloomBalloonEntity>();
+		this.model = new BolloomBalloonModel<>();
 	}
 	
 	@Override
@@ -64,8 +65,8 @@ public class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity>
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
 		if (balloon.getHideTime() > 0) return false;
-		ClientPlayerEntity player = Minecraft.getInstance().player;
-		return balloon.getRidingEntity() == player && Minecraft.getInstance().gameSettings.thirdPersonView == 0 ? player.rotationPitch < -45.0F : true;
+		ClientPlayerEntity player = MC.player;
+		return balloon.getAttachedEntity() != player || MC.gameSettings.thirdPersonView != 0 || player.rotationPitch < -45.0F;
 	}
 	
 	@Override

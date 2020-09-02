@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import net.minecraft.world.World;
@@ -39,6 +39,17 @@ public final class MixinEntity implements BalloonHolder {
 		});
 	}
 
+	@Inject(at = @At(value = "RETURN"), method = "detach")
+	private void detach(CallbackInfo info) {
+		if (!this.getBalloons().isEmpty()) {
+			this.detachBalloons();
+		}
+
+		if ((Object) this instanceof BolloomBalloonEntity) {
+			((BolloomBalloonEntity) (Object) this).detachFromEntity();
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "onRemovedFromWorld()V", remap = false)
 	private void onRemovedFromWorld(CallbackInfo info) {
 		if ((Object) this instanceof BoatEntity) {
@@ -48,34 +59,22 @@ public final class MixinEntity implements BalloonHolder {
 
 	@Override
 	public List<BolloomBalloonEntity> getBalloons() {
-		return this.balloons;
+		return this.balloons.isEmpty() ? Collections.emptyList() : Lists.newArrayList(this.balloons);
 	}
 
 	@Override
 	public void attachBalloon(BolloomBalloonEntity balloon) {
-		if ((Object) this instanceof BoatEntity) {
-			this.balloons.add(getClosestOpenIndex(this.balloons), balloon);
-		} else {
-			this.balloons.add(balloon);
-		}
-		balloon.attachedEntity = (Entity) (Object) this;
+		this.balloons.add(balloon);
 	}
 
 	@Override
-	public void unattachBalloon(BolloomBalloonEntity balloonEntity) {
-		if ((Object) this instanceof BoatEntity) {
-			this.balloons.set(this.balloons.indexOf(balloonEntity), null);
-		} else {
-			this.balloons.remove(balloonEntity);
-		}
-		if (balloonEntity.attachedEntity.equals(this)) {
-			balloonEntity.attachedEntity = null;
-		}
+	public void detachBalloon(BolloomBalloonEntity balloonEntity) {
+		this.balloons.remove(balloonEntity);
 	}
 
 	@Override
-	public void unattachBalloons() {
-		ImmutableList.copyOf(this.balloons).forEach(this::unattachBalloon);
+	public void detachBalloons() {
+		this.getBalloons().forEach(BolloomBalloonEntity::detachFromEntity);
 	}
 
 	private static int getClosestOpenIndex(List<BolloomBalloonEntity> balloons) {

@@ -58,14 +58,15 @@ public class BolloomBalloonItem extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if (!world.isRemote && !hasEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
 			Entity ridingEntity = player.getRidingEntity();
-			if (ridingEntity instanceof BoatEntity && canAttachBalloonToTarget(ridingEntity)) {
+			boolean isRidingBoat = ridingEntity instanceof BoatEntity;
+			if (isRidingBoat && canAttachBalloonToTarget(ridingEntity)) {
 				attachToEntity(this.balloonColor, ridingEntity);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
 				return ActionResult.resultConsume(stack);
 			}
 			
-			if (canAttachBalloonToTarget(player)) {
+			if (!isRidingBoat && canAttachBalloonToTarget(player)) {
 				attachToEntity(this.balloonColor, player);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
@@ -120,7 +121,7 @@ public class BolloomBalloonItem extends Item {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
 		balloon.setColor(color);
-		((BalloonHolder) target).attachBalloon(balloon);
+		balloon.attachToEntity(target);
 		balloon.updateAttachedPosition();
 		balloon.setUntied();
 		world.addEntity(balloon);

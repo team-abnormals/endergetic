@@ -49,6 +49,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -140,8 +141,9 @@ public class EntityEvents {
 		Entity trackingEntity = event.getTarget();
 		if (trackingEntity instanceof BolloomBalloonEntity) {
 			BolloomBalloonEntity balloon = (BolloomBalloonEntity) trackingEntity;
-			if (balloon.attachedEntity != null) {
-				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(balloon.attachedEntity));
+			Entity attachedEntity = balloon.getAttachedEntity();
+			if (attachedEntity != null) {
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(attachedEntity));
 			}
 		} else {
 			EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(trackingEntity));

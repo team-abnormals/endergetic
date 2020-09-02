@@ -37,6 +37,6 @@ public final class MixinTrackedEntity {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isPassenger()Z"), method = "tick")
 	private boolean redirectPositionUpdate(Entity trackedEntity) {
-		return trackedEntity.isPassenger() || trackedEntity instanceof BolloomBalloonEntity && ((BolloomBalloonEntity) trackedEntity).attachedEntity != null;
+		return trackedEntity.isPassenger() || trackedEntity instanceof BolloomBalloonEntity && ((BolloomBalloonEntity) trackedEntity).isAttachedToEntity();
 	}
 }
