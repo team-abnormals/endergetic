@@ -30,6 +30,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
@@ -146,6 +147,14 @@ public class EntityEvents {
 			}
 		} else {
 			EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(trackingEntity));
+		}
+	}
+
+	@SubscribeEvent
+	public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+		BalloonHolder holder = (BalloonHolder) event.getPlayer();
+		if (!holder.getBalloons().isEmpty()) {
+			holder.detachBalloons();
 		}
 	}
 	
