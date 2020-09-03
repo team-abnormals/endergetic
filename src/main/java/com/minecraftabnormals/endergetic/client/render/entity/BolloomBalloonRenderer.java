@@ -19,24 +19,6 @@ import net.minecraft.util.math.vector.Vector3f;
 public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonEntity> {
 	private static final Minecraft MC = Minecraft.getInstance();
 	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
-	public static final ResourceLocation[] COLORS = new ResourceLocation[] {
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/white_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/orange_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/magenta_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/light_blue_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/yellow_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/lime_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/pink_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/gray_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/light_gray_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/cyan_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/purple_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/blue_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/brown_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/green_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/red_bolloom_balloon.png"),
-		new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/black_bolloom_balloon.png"),
-	};
 
 	public BolloomBalloonModel<BolloomBalloonEntity> model;
 	
@@ -64,13 +46,12 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 	
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
-		if (balloon.getHideTime() > 0) return false;
 		ClientPlayerEntity player = MC.player;
 		return balloon.getAttachedEntity() != player || MC.gameSettings.thirdPersonView != 0 || player.rotationPitch < -45.0F;
 	}
 	
 	@Override
 	public ResourceLocation getEntityTexture(BolloomBalloonEntity balloon) {
-		return balloon.getColor() == null ? DEFAULT_TEXTURE : COLORS[balloon.getColor().getId()];
+		return balloon.getColor().texture;
 	}
 }

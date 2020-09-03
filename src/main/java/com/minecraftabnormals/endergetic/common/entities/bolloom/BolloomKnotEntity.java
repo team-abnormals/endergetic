@@ -7,7 +7,6 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.DyeColor;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -70,7 +69,7 @@ public class BolloomKnotEntity extends Entity {
         return null;
     }
 	
-	public static void createStartingKnot(World world, BlockPos pos, DyeColor balloonColor) {
+	public static void createStartingKnot(World world, BlockPos pos, BalloonColor balloonColor) {
 		BolloomKnotEntity knot = new BolloomKnotEntity(world, pos);
 		BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, knot.getUniqueID(), pos, 0);
 		knot.setBalloonsTied(1);
@@ -79,7 +78,7 @@ public class BolloomKnotEntity extends Entity {
 		world.addEntity(balloon);
 	}
 	
-	public void addBalloon(DyeColor balloonColor) {
+	public void addBalloon(BalloonColor balloonColor) {
 		BolloomBalloonEntity balloon = new BolloomBalloonEntity(this.world, this.getUniqueID(), this.getHangingPos(), 0.1F);
 		balloon.setColor(balloonColor);
 		this.world.addEntity(balloon);

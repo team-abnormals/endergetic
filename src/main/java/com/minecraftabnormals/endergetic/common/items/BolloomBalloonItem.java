@@ -3,8 +3,7 @@ package com.minecraftabnormals.endergetic.common.items;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
@@ -23,7 +22,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -40,16 +38,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 
 public class BolloomBalloonItem extends Item {
-	@Nullable
-	private final DyeColor balloonColor;
+	private final BalloonColor balloonColor;
 	
-	public BolloomBalloonItem(Properties properties, @Nullable DyeColor balloonColor) {
+	public BolloomBalloonItem(Properties properties, BalloonColor balloonColor) {
 		super(properties);
 		this.balloonColor = balloonColor;
 	}
-	
-	@Nullable
-	public DyeColor getBalloonColor() {
+
+	public BalloonColor getBalloonColor() {
 		return this.balloonColor;
 	}
 	
@@ -117,7 +113,7 @@ public class BolloomBalloonItem extends Item {
 		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && ((BalloonHolder) target).getBalloons().size() < (target instanceof BoatEntity ? 4 : 6);
 	}
 	
-	public static void attachToEntity(DyeColor color, Entity target) {
+	public static void attachToEntity(BalloonColor color, Entity target) {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
 		balloon.setColor(color);

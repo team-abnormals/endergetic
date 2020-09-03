@@ -13,12 +13,12 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,14 +58,14 @@ public class BolloomBalloonEntity extends Entity {
 	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
-	private static final DataParameter<Integer> HIDE_TIME = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT);
-	private static final DataParameter<Byte> COLOR = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BYTE);
+	private static final DataParameter<BalloonColor> COLOR = EntityDataManager.createKey(BolloomBalloonEntity.class, EEDataSerializers.BALLOON_COLOR);
 
 	private float prevVineAngle;
 	private float prevAngle;
 	public boolean hasModifiedBoatOrder;
 	@Nullable
 	private Entity attachedEntity;
+	@Nullable
 	private UUID attachedEntityUUID;
 	
 	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
@@ -208,8 +208,7 @@ public class BolloomBalloonEntity extends Entity {
 		this.dataManager.register(SWAY, 0.0F);
 		this.dataManager.register(DESIRED_ANGLE, 0.0F);
 		this.dataManager.register(TICKS_EXISTED, 0);
-		this.dataManager.register(HIDE_TIME, 0);
-		this.dataManager.register(COLOR, (byte) 16);
+		this.dataManager.register(COLOR, BalloonColor.DEFAULT);
 	}
 
 	@Override
@@ -222,7 +221,7 @@ public class BolloomBalloonEntity extends Entity {
 		compound.putFloat("ORIGIN_Y", this.getOriginY());
 		compound.putFloat("ORIGIN_Z", this.getOriginZ());
 		compound.putLong("FENCE_POS", this.getFencePos().toLong());
-		compound.putByte("Color", this.dataManager.get(COLOR));
+		compound.putByte("Color", (byte) this.dataManager.get(COLOR).ordinal());
 		if (this.isAttachedToEntity() && !(this.attachedEntity instanceof PlayerEntity)) {
 			compound.put("Pos", this.newDoubleNBTList(this.attachedEntity.getPosX(), this.attachedEntity.getPosY(), this.attachedEntity.getPosZ()));
 			compound.putUniqueId("AttachedUUID", this.attachedEntity.getUniqueID());
@@ -235,7 +234,7 @@ public class BolloomBalloonEntity extends Entity {
 		this.setUntied(nbt.getBoolean("UNTIED"));
 		this.setOriginPos(nbt.getFloat("ORIGIN_X"), nbt.getFloat("ORIGIN_Y"), nbt.getFloat("ORIGIN_Z"));
 		this.setFencePos(BlockPos.fromLong(nbt.getLong("FENCE_POS")));
-		this.dataManager.set(COLOR, nbt.getByte("Color"));
+		this.dataManager.set(COLOR, BalloonColor.byOrdinal(nbt.getByte("Color")));
 		if (nbt.hasUniqueId("AttachedUUID")) {
 			this.attachedEntityUUID = nbt.getUniqueId("AttachedUUID");
 		}
@@ -325,26 +324,12 @@ public class BolloomBalloonEntity extends Entity {
 		return this.dataManager.get(TICKS_EXISTED);
 	}
 
-	public int getHideTime() {
-		return this.dataManager.get(HIDE_TIME);
+	public BalloonColor getColor() {
+		return this.dataManager.get(COLOR);
 	}
 
-	public void decrementHideTime() {
-		this.dataManager.set(HIDE_TIME, this.getHideTime() - 1);
-	}
-
-	@Nullable
-	public DyeColor getColor() {
-		byte obyte = this.dataManager.get(COLOR);
-		return obyte != 16 && obyte <= 15 ? DyeColor.byId(obyte) : null;
-	}
-
-	public void setColor(@Nullable DyeColor color) {
-		if (color == null) {
-			this.dataManager.set(COLOR, (byte) 16);
-		} else {
-			this.dataManager.set(COLOR, (byte) color.getId());
-		}
+	public void setColor(BalloonColor color) {
+		this.dataManager.set(COLOR, color);
 	}
 
 	public void attachToEntity(Entity entity) {
@@ -449,9 +434,9 @@ public class BolloomBalloonEntity extends Entity {
 	@Override
 	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
-		if (itemstack.getItem() instanceof DyeItem && this.getColor() != ((DyeItem) itemstack.getItem()).getDyeColor()) {
+		if (itemstack.getItem() instanceof DyeItem && this.getColor().color != ((DyeItem) itemstack.getItem()).getDyeColor()) {
 			if (!this.world.isRemote) {
-				this.setColor(((DyeItem) itemstack.getItem()).getDyeColor());
+				this.setColor(BalloonColor.byDyeColor(((DyeItem) itemstack.getItem()).getDyeColor()));
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 			return ActionResultType.CONSUME;
@@ -484,7 +469,7 @@ public class BolloomBalloonEntity extends Entity {
 	
 	@Override
 	public void addVelocity(double x, double y, double z) {
-		if(!this.isUntied()) return;
+		if (!this.isUntied()) return;
 		super.addVelocity(x, y, z);
 	}
 	
@@ -495,7 +480,7 @@ public class BolloomBalloonEntity extends Entity {
 	
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
-		return new ItemStack(EEItems.BOLLOOM_BALLOON.get());
+		return new ItemStack(this.getColor().balloonItem.get());
 	}
     
     @Override
