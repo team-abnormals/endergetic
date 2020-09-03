@@ -11,7 +11,6 @@ import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.block.Blocks;
@@ -119,7 +118,7 @@ public class BolloomBalloonEntity extends Entity {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 
-		if (this.isAttachedToEntity() && !this.attachedEntity.isAlive()) {
+		if (this.isAttachedToEntity() && (!this.attachedEntity.isAlive() || this.attachedEntity.isSpectator())) {
 			this.detachFromEntity();
 		} else if (!this.world.isRemote && this.attachedEntityUUID != null) {
 			Entity entity = ((ServerWorld) this.world).getEntityByUuid(this.attachedEntityUUID);

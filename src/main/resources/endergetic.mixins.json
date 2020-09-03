@@ -13,12 +13,14 @@
   	"MixinBoatEntity",
   	"MixinEntity",
     "MixinPlayerEntity",
+    "MixinServerPlayerEntity",
   	"MixinServerPlayNetHandler",
     "MixinTrackedEntity",
     "MixinPlayerList"
   ],
   "client": [
-    "MixinClientWorld"
+    "MixinClientWorld",
+    "MixinClientPlayNetHandler"
   ],
   "injectors": {
     "defaultRequire": 1
