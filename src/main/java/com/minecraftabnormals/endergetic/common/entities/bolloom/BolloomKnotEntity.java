@@ -23,12 +23,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BolloomKnotEntity extends Entity {
-	protected BlockPos hangingPosition;
+public final class BolloomKnotEntity extends Entity {
+	private BlockPos hangingPosition;
 	private static final DataParameter<Integer> BALLOONS_TIED = EntityDataManager.createKey(BolloomKnotEntity.class, DataSerializers.VARINT);
 	
-	public BolloomKnotEntity(EntityType<? extends BolloomKnotEntity> entityTypeIn, World world) {
-		super(entityTypeIn, world);
+	public BolloomKnotEntity(EntityType<? extends BolloomKnotEntity> entityType, World world) {
+		super(entityType, world);
 	}
 	
 	public BolloomKnotEntity(World world, BlockPos pos) {
@@ -44,19 +44,18 @@ public class BolloomKnotEntity extends Entity {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public void tick() {
 		this.prevPosX = this.getPosX();
 		this.prevPosY = this.getPosY();
 		this.prevPosZ = this.getPosZ();
 		if (!this.world.isRemote) {
-			if(this.getEntityWorld().isAreaLoaded(getHangingPos(), 1)) {
-				if (!this.removed && !this.onValidBlock()) {
+			if (this.world.isAreaLoaded(getHangingPos(), 1)) {
+				if (this.isAlive() && !this.onValidBlock()) {
 					this.remove();
 				}
 			}
 		}
-		if(this.getBalloonsTied() <= 0) {
+		if (this.getBalloonsTied() <= 0) {
 			this.remove();
 		}
 	}
@@ -81,14 +80,14 @@ public class BolloomKnotEntity extends Entity {
 	}
 	
 	public void addBalloon(DyeColor balloonColor) {
-		BolloomBalloonEntity balloon = new BolloomBalloonEntity(this.getEntityWorld(), this.getUniqueID(), this.getHangingPos(), 0.1F);
+		BolloomBalloonEntity balloon = new BolloomBalloonEntity(this.world, this.getUniqueID(), this.getHangingPos(), 0.1F);
 		balloon.setColor(balloonColor);
-		world.addEntity(balloon);
+		this.world.addEntity(balloon);
 		this.setBalloonsTied(this.getBalloonsTied() + 1);
 	}
 	
-	protected boolean onValidBlock() {
-		return this.getEntityWorld().getBlockState(this.hangingPosition).getBlock().isIn(BlockTags.FENCES);
+	private boolean onValidBlock() {
+		return this.world.getBlockState(this.hangingPosition).getBlock().isIn(BlockTags.FENCES);
 	}
 	
 	public boolean canBeCollidedWith() {
@@ -119,7 +118,7 @@ public class BolloomKnotEntity extends Entity {
 	@Override
 	protected void readAdditional(CompoundNBT nbt) {
 		this.hangingPosition = new BlockPos(nbt.getInt("TileX"), nbt.getInt("TileY"), nbt.getInt("TileZ"));
-		this.getDataManager().set(BALLOONS_TIED, nbt.getInt("Ballons_Tied"));
+		this.setBalloonsTied(nbt.getInt("Ballons_Tied"));
 	}
 
 	@Override
@@ -128,7 +127,8 @@ public class BolloomKnotEntity extends Entity {
 		nbt.putInt("TileX", blockpos.getX());
 		nbt.putInt("TileY", blockpos.getY());
 		nbt.putInt("TileZ", blockpos.getZ());
-		nbt.putInt("Ballons_Tied", this.getDataManager().get(BALLOONS_TIED));
+		//Cursed NBT name, rename in 1.16.2
+		nbt.putInt("Ballons_Tied", this.getBalloonsTied());
 	}
 	
 	public BlockPos getHangingPos() {
@@ -152,5 +152,4 @@ public class BolloomKnotEntity extends Entity {
 	public IPacket<?> createSpawnPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-
 }

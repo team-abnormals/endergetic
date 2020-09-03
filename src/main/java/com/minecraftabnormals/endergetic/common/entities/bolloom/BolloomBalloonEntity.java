@@ -1,10 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.bolloom;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -60,24 +56,25 @@ public class BolloomBalloonEntity extends Entity {
 	public static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
 	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
 	
-	private static final DataParameter<Float> ORIGINAL_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGINAL_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGINAL_Y = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGIN_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGIN_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGIN_Y = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.<Optional<UUID>>createKey(BolloomBalloonEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> TICKSEXISTED = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
+	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
 	private static final DataParameter<Integer> HIDE_TIME = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.VARINT);
-	protected static final DataParameter<Byte> COLOR = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BYTE);
-	public float prevVineAngle;
-	public float prevAngle;
-	private boolean hasModifiedBoatIndex;
+	private static final DataParameter<Byte> COLOR = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.BYTE);
 
+	private float prevVineAngle;
+	private float prevAngle;
+	private boolean hasModifiedBoatIndex;
 	@Nullable
 	private Entity attachedEntity;
+	private UUID attachedEntityUUID;
 	
 	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
 		super(entityType, world);
@@ -92,15 +89,16 @@ public class BolloomBalloonEntity extends Entity {
 	 */
 	public BolloomBalloonEntity(World world, UUID ownerKnot, BlockPos pos, float offset) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
-		float xOffset = this.rand.nextBoolean() ? -offset : offset;
-		float zOffset = this.rand.nextBoolean() ? -offset : offset;
-		this.setPosition(pos.getX() + 0.5F + xOffset, pos.getY() + 3, pos.getZ() + 0.5F + zOffset);
-		this.setOriginalPos(pos.getX() + 0.5F + xOffset, pos.getY() + 3, pos.getZ() + 0.5F + zOffset);
-		this.getDataManager().set(FENCE_POS, pos);
+		float posX = pos.getX() + 0.5F + (this.rand.nextBoolean() ? -offset : offset);
+		float posY = pos.getY() + 3;
+		float posZ = pos.getZ() + 0.5F + (this.rand.nextBoolean() ? -offset : offset);
+		this.setPosition(posX, posY, posZ);
+		this.setOriginPos(posX, posY, posZ);
+		this.prevPosX = posX;
+		this.prevPosY = posY;
+		this.prevPosZ = posZ;
+		this.setFencePos(pos);
 		this.setKnotId(ownerKnot);
-		this.prevPosX = pos.getX() + 0.5F + xOffset;
-		this.prevPosY = pos.getY() + 3;
-		this.prevPosZ = pos.getZ() + 0.5F + zOffset;
 	}
 	
 	/*
@@ -108,14 +106,17 @@ public class BolloomBalloonEntity extends Entity {
 	 */
 	public BolloomBalloonEntity(World world, BlockPos pos) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
-		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
-		this.setOriginalPos(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
-		this.setUntied();
-		this.setDesiredAngle((float) (rand.nextDouble() * 2 * Math.PI));
-		this.setAngle((float) (rand.nextDouble() * 2 * Math.PI));
-		this.prevPosX = pos.getX() + 0.5F;
-		this.prevPosY = pos.getY();
-		this.prevPosZ = pos.getZ() + 0.5F;
+		float posX = pos.getX() + 0.5F;
+		float posY = pos.getY();
+		float posZ = pos.getZ() + 0.5F;
+		this.setPosition(posX, posY, posZ);
+		this.setOriginPos(posX, posY, posZ);
+		this.prevPosX = posX;
+		this.prevPosY = posY;
+		this.prevPosZ = posZ;
+		this.setUntied(true);
+		this.setDesiredAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
+		this.setAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
 	}
 
 	@Override
@@ -126,8 +127,16 @@ public class BolloomBalloonEntity extends Entity {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 
-		if (this.attachedEntity != null && !this.attachedEntity.isAlive()) {
+		if (this.isAttachedToEntity() && !this.attachedEntity.isAlive()) {
 			this.detachFromEntity();
+		} else if (!this.world.isRemote && this.attachedEntityUUID != null) {
+			Entity entity = ((ServerWorld) this.world).getEntityByUuid(this.attachedEntityUUID);
+			if (entity != null) {
+				this.attachToEntity(entity);
+			} else {
+				EndergeticExpansion.LOGGER.warn("Could not find entity the balloon was attached to with UUID: {}", this.attachedEntityUUID);
+			}
+			this.attachedEntityUUID = null;
 		}
 		
 		if (this.world.isAreaLoaded(getFencePos(), 1) && !this.isUntied()) {
@@ -135,7 +144,7 @@ public class BolloomBalloonEntity extends Entity {
 				if (!this.world.isRemote && this.getKnot() != null) {
 					((BolloomKnotEntity) this.getKnot()).setBalloonsTied(((BolloomKnotEntity) this.getKnot()).getBalloonsTied() - 1);
 				}
-				this.setUntied();
+				this.setUntied(true);
 			}
 		}
 		
@@ -173,11 +182,11 @@ public class BolloomBalloonEntity extends Entity {
 		if (this.world.isAreaLoaded(this.func_233580_cy_(), 1)) {
 			if (!this.isUntied()) {
 				this.setPosition(
-					this.getDataManager().get(ORIGINAL_X) + this.getSway() * Math.sin(-this.getAngle()),
-					this.getSetY(),
-					this.getDataManager().get(ORIGINAL_Z) + this.getSway() * Math.cos(-this.getAngle())
+					this.getOriginX() + this.getSway() * Math.sin(-this.getAngle()),
+					this.getOriginY(),
+					this.getOriginZ() + this.getSway() * Math.cos(-this.getAngle())
 				);
-			} else if (this.attachedEntity == null) {
+			} else if (!this.isAttachedToEntity()) {
 				this.move(MoverType.SELF, this.getMotion());
 				this.setMotion(Math.sin(this.getAngle()) * Math.cos(this.getAngle()) * 0.05F, Math.toRadians(4), Math.cos(this.getVineAngle()) * Math.cos(-this.getAngle()) * 0.05F);
 			}
@@ -187,7 +196,7 @@ public class BolloomBalloonEntity extends Entity {
 			if (!this.getEntityWorld().isRemote && this.getKnot() != null && !this.isUntied()) {
 				((BolloomKnotEntity) this.getKnot()).setBalloonsTied(((BolloomKnotEntity)this.getKnot()).getBalloonsTied() - 1);
 			}
-			this.setUntied();
+			this.setUntied(true);
 		}
 		
 		/*
@@ -209,94 +218,88 @@ public class BolloomBalloonEntity extends Entity {
 		 */
 		if (this.getHideTime() > 0) this.decrementHideTime();
 
-		if (this.attachedEntity == null) {
+		if (!this.isAttachedToEntity()) {
 			this.incrementTicksExisted();
 		}
 	}
 	
 	@Override
 	protected void registerData() {
-		this.getDataManager().register(KNOT_UNIQUE_ID, Optional.empty());
-		this.getDataManager().register(ORIGINAL_X, 0F);
-		this.getDataManager().register(ORIGINAL_Z, 0F);
-		this.getDataManager().register(ORIGINAL_Y, 0F);
-		this.getDataManager().register(FENCE_POS, BlockPos.ZERO);
-		this.getDataManager().register(UNTIED, false);
-		this.getDataManager().register(ANGLE, 0F);
-		this.getDataManager().register(SWAY, 0F);
-		this.getDataManager().register(DESIRED_ANGLE, 0F);
-		this.getDataManager().register(TICKSEXISTED, 0);
-		this.getDataManager().register(HIDE_TIME, 0);
-		this.getDataManager().register(COLOR, (byte)16);
+		this.dataManager.register(KNOT_UNIQUE_ID, Optional.empty());
+		this.dataManager.register(ORIGIN_X, 0.0F);
+		this.dataManager.register(ORIGIN_Z, 0.0F);
+		this.dataManager.register(ORIGIN_Y, 0.0F);
+		this.dataManager.register(FENCE_POS, BlockPos.ZERO);
+		this.dataManager.register(UNTIED, false);
+		this.dataManager.register(ANGLE, 0.0F);
+		this.dataManager.register(SWAY, 0.0F);
+		this.dataManager.register(DESIRED_ANGLE, 0.0F);
+		this.dataManager.register(TICKS_EXISTED, 0);
+		this.dataManager.register(HIDE_TIME, 0);
+		this.dataManager.register(COLOR, (byte) 16);
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT nbt) {
+	protected void writeAdditional(CompoundNBT compound) {
 		if (this.getKnotId() != null) {
-			nbt.putUniqueId("KnotUUID", this.getKnotId());
+			compound.putUniqueId("KnotUUID", this.getKnotId());
 		}
-		nbt.putBoolean("UNTIED", this.dataManager.get(UNTIED));
-		nbt.putFloat("ORIGIN_X", this.dataManager.get(ORIGINAL_X));
-		nbt.putFloat("ORIGIN_Y", this.dataManager.get(ORIGINAL_Y));
-		nbt.putFloat("ORIGIN_Z", this.dataManager.get(ORIGINAL_Z));
-		nbt.putLong("FENCE_POS", this.dataManager.get(FENCE_POS).toLong());
-		nbt.putByte("Color", this.dataManager.get(COLOR));
+		compound.putBoolean("UNTIED", this.isUntied());
+		compound.putFloat("ORIGIN_X", this.getOriginX());
+		compound.putFloat("ORIGIN_Y", this.getOriginY());
+		compound.putFloat("ORIGIN_Z", this.getOriginZ());
+		compound.putLong("FENCE_POS", this.getFencePos().toLong());
+		compound.putByte("Color", this.dataManager.get(COLOR));
+		if (this.isAttachedToEntity() && !(this.attachedEntity instanceof PlayerEntity)) {
+			compound.put("Pos", this.newDoubleNBTList(this.attachedEntity.getPosX(), this.attachedEntity.getPosY(), this.attachedEntity.getPosZ()));
+			compound.putUniqueId("AttachedUUID", this.attachedEntity.getUniqueID());
+		}
 	}
 	
 	@Override
 	protected void readAdditional(CompoundNBT nbt) {
 		this.setKnotId(nbt.contains("KnotUUID") ? nbt.getUniqueId("KnotUUID") : null);
-		this.dataManager.set(UNTIED, nbt.getBoolean("UNTIED"));
-		this.dataManager.set(ORIGINAL_X, nbt.getFloat("ORIGIN_X"));
-		this.dataManager.set(ORIGINAL_Y, nbt.getFloat("ORIGIN_Y"));
-		this.dataManager.set(ORIGINAL_Z, nbt.getFloat("ORIGIN_Z"));
-		this.dataManager.set(FENCE_POS, BlockPos.fromLong(nbt.getLong("FENCE_POS")));
+		this.setUntied(nbt.getBoolean("UNTIED"));
+		this.setOriginPos(nbt.getFloat("ORIGIN_X"), nbt.getFloat("ORIGIN_Y"), nbt.getFloat("ORIGIN_Z"));
+		this.setFencePos(BlockPos.fromLong(nbt.getLong("FENCE_POS")));
 		this.dataManager.set(COLOR, nbt.getByte("Color"));
-	}
-
-	public void attachToEntity(Entity entity) {
-		this.attachedEntity = entity;
-		((BalloonHolder) entity).attachBalloon(this);
-	}
-
-	public Entity getAttachedEntity() {
-		return this.attachedEntity;
-	}
-
-	public void detachFromEntity() {
-		if (this.attachedEntity != null) {
-			((BalloonHolder) this.attachedEntity).detachBalloon(this);
-			this.attachedEntity = null;
+		if (nbt.hasUniqueId("AttachedUUID")) {
+			this.attachedEntityUUID = nbt.getUniqueId("AttachedUUID");
 		}
 	}
 
-	public boolean isAttachedToEntity() {
-		return this.attachedEntity != null;
+	public void setOriginPos(float x, float y, float z) {
+		this.dataManager.set(ORIGIN_X, x);
+		this.dataManager.set(ORIGIN_Y, y);
+		this.dataManager.set(ORIGIN_Z, z);
 	}
 
-	@Nullable
-	public UUID getKnotId() {
-		return this.dataManager.get(KNOT_UNIQUE_ID).orElse((UUID)null);
+	public float getOriginX() {
+		return this.dataManager.get(ORIGIN_X);
 	}
 
-	public void setKnotId(@Nullable UUID knotUUID) {
-		this.dataManager.set(KNOT_UNIQUE_ID, Optional.ofNullable(knotUUID));
+	public float getOriginY() {
+		return this.dataManager.get(ORIGIN_Y);
+	}
+
+	public float getOriginZ() {
+		return this.dataManager.get(ORIGIN_Z);
 	}
 
 	public void setAngle(float degree) {
-		this.getDataManager().set(ANGLE, degree);
+		this.dataManager.set(ANGLE, degree);
 	}
 
 	public float getAngle() {
-		return this.getDataManager().get(ANGLE);
+		return this.dataManager.get(ANGLE);
 	}
 
 	public void setDesiredAngle(float angle) {
-		this.getDataManager().set(DESIRED_ANGLE, angle);
+		this.dataManager.set(DESIRED_ANGLE, angle);
 	}
 
 	public float getDesiredAngle() {
-		return this.getDataManager().get(DESIRED_ANGLE);
+		return this.dataManager.get(DESIRED_ANGLE);
 	}
 
 	public float getVineAngle() {
@@ -311,62 +314,85 @@ public class BolloomBalloonEntity extends Entity {
 		return this.dataManager.get(SWAY);
 	}
 
-	public void setUntied() {
-		this.getDataManager().set(UNTIED, true);
+	public void setUntied(boolean untied) {
+		this.dataManager.set(UNTIED, untied);
 	}
 
 	public boolean isUntied() {
-		return this.getDataManager().get(UNTIED);
+		return this.dataManager.get(UNTIED);
 	}
 
-	public float getSetY() {
-		return this.getDataManager().get(ORIGINAL_Y);
+	public void setKnotId(@Nullable UUID knotUUID) {
+		this.dataManager.set(KNOT_UNIQUE_ID, Optional.ofNullable(knotUUID));
 	}
 
-	public void setOriginalPos(float x, float y, float z) {
-		this.getDataManager().set(ORIGINAL_X, x);
-		this.getDataManager().set(ORIGINAL_Y, y);
-		this.getDataManager().set(ORIGINAL_Z, z);
+	@Nullable
+	public UUID getKnotId() {
+		return this.dataManager.get(KNOT_UNIQUE_ID).orElse(null);
 	}
 
-	public int getTicksExisted() {
-		return this.getDataManager().get(TICKSEXISTED);
+	@Nullable
+	public Entity getKnot() {
+		return ((ServerWorld) this.world).getEntityByUuid(this.getKnotId());
 	}
 
-	public void incrementTicksExisted() {
-		this.getDataManager().set(TICKSEXISTED, getTicksExisted() + 1);
-	}
-
-	public int getHideTime() {
-		return this.getDataManager().get(HIDE_TIME);
-	}
-
-	public void decrementHideTime() {
-		this.getDataManager().set(HIDE_TIME, this.getHideTime() - 1);
+	public void setFencePos(BlockPos fencePos) {
+		this.dataManager.set(FENCE_POS, fencePos);
 	}
 
 	public BlockPos getFencePos() {
-		return this.getDataManager().get(FENCE_POS);
+		return this.dataManager.get(FENCE_POS);
 	}
-	
+
+	public void incrementTicksExisted() {
+		this.dataManager.set(TICKS_EXISTED, this.getTicksExisted() + 1);
+	}
+
+	public int getTicksExisted() {
+		return this.dataManager.get(TICKS_EXISTED);
+	}
+
+	public int getHideTime() {
+		return this.dataManager.get(HIDE_TIME);
+	}
+
+	public void decrementHideTime() {
+		this.dataManager.set(HIDE_TIME, this.getHideTime() - 1);
+	}
+
 	@Nullable
-	@OnlyIn(Dist.CLIENT)
 	public DyeColor getColor() {
-		Byte obyte = this.dataManager.get(COLOR);
+		byte obyte = this.dataManager.get(COLOR);
 		return obyte != 16 && obyte <= 15 ? DyeColor.byId(obyte) : null;
 	}
-	
+
 	public void setColor(@Nullable DyeColor color) {
-		if(color == null) {
+		if (color == null) {
 			this.dataManager.set(COLOR, (byte) 16);
 		} else {
 			this.dataManager.set(COLOR, (byte) color.getId());
 		}
 	}
-	
+
+	public void attachToEntity(Entity entity) {
+		this.attachedEntity = entity;
+		((BalloonHolder) entity).attachBalloon(this);
+	}
+
 	@Nullable
-	public Entity getKnot() {
-		return ((ServerWorld) this.world).getEntityByUuid(this.getKnotId());
+	public Entity getAttachedEntity() {
+		return this.attachedEntity;
+	}
+
+	public void detachFromEntity() {
+		if (this.attachedEntity != null) {
+			((BalloonHolder) this.attachedEntity).detachBalloon(this);
+			this.attachedEntity = null;
+		}
+	}
+
+	public boolean isAttachedToEntity() {
+		return this.attachedEntity != null;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -402,7 +428,7 @@ public class BolloomBalloonEntity extends Entity {
 			bolloomKnot.setBalloonsTied(bolloomKnot.getBalloonsTied() - 1);
 		}
 		if (this.world instanceof ServerWorld) {
-			((ServerWorld)this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+			((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
 		}
 	}
 
@@ -418,12 +444,11 @@ public class BolloomBalloonEntity extends Entity {
 		super.onKillCommand();
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 		if (this.isInvulnerableTo(source)) {
 			return false;
 		} else {
-			if (!this.removed && !this.world.isRemote) {
+			if (!this.world.isRemote && this.isAlive()) {
 				this.remove();
 				this.markVelocityChanged();
 				this.onBroken();
@@ -438,7 +463,7 @@ public class BolloomBalloonEntity extends Entity {
 
 	@Override
 	public boolean hitByEntity(Entity entityIn) {
-		return entityIn instanceof PlayerEntity ? this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity)entityIn), 0.0F) : false;
+		return entityIn instanceof PlayerEntity && this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) entityIn), 0.0F);
 	}
 	
 	@Override
@@ -476,9 +501,7 @@ public class BolloomBalloonEntity extends Entity {
 						this.hasModifiedBoatIndex = true;
 					}
 				} else {
-					BALLOONS_ON_BOAT_MAP.put(boatUUID, Util.make(Maps.newHashMap(), (map) -> {
-						map.put(this.getUniqueID(), 0);
-					}));
+					BALLOONS_ON_BOAT_MAP.put(boatUUID, Util.make(Maps.newHashMap(), (map) -> map.put(this.getUniqueID(), 0)));
 				}
 			}
 			return true;
@@ -492,7 +515,7 @@ public class BolloomBalloonEntity extends Entity {
 		if (ridingEntity instanceof BoatEntity && !this.isAlive()) {
 			UUID boatUUID = this.getRidingEntity().getUniqueID();
 			UUID uuid = this.getUniqueID();
-			if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID) && BALLOONS_ON_BOAT_MAP.get(boatUUID).containsKey(uuid)) {
+			if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID)) {
 				BALLOONS_ON_BOAT_MAP.get(boatUUID).remove(uuid);
 			}
 			
@@ -568,7 +591,7 @@ public class BolloomBalloonEntity extends Entity {
 	
 	private int getClosestOrder(Map<UUID, Integer> orderMap) {
 		Set<Integer> missingNumbers = Sets.newHashSet();
-		Set<Integer> orders = orderMap.values().stream().collect(Collectors.toSet());
+		Set<Integer> orders = new HashSet<>(orderMap.values());
 		for (int i = 0; i < 4; i++) {
 			if (!orders.contains(i)) {
 				missingNumbers.add(i);
@@ -599,9 +622,8 @@ public class BolloomBalloonEntity extends Entity {
     }
     
 	@Override
-	@SuppressWarnings("deprecation")
 	public boolean canBePushed() {
-		return !removed;
+		return this.isAlive();
 	}
 	
 	@Nullable
@@ -621,7 +643,7 @@ public class BolloomBalloonEntity extends Entity {
     
     @Override
     public boolean isInRangeToRenderDist(double distance) {
-    	if (this.attachedEntity != null) {
+    	if (this.isAttachedToEntity()) {
     		return this.attachedEntity.isInRangeToRenderDist(distance);
     	}
     	return super.isInRangeToRenderDist(distance);

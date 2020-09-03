@@ -12,8 +12,10 @@
   	"MixinEndSpikeFeature",
   	"MixinBoatEntity",
   	"MixinEntity",
+    "MixinPlayerEntity",
   	"MixinServerPlayNetHandler",
-    "MixinTrackedEntity"
+    "MixinTrackedEntity",
+    "MixinPlayerList"
   ],
   "client": [
     "MixinClientWorld"

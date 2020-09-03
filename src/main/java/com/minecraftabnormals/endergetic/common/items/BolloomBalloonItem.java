@@ -123,7 +123,7 @@ public class BolloomBalloonItem extends Item {
 		balloon.setColor(color);
 		balloon.attachToEntity(target);
 		balloon.updateAttachedPosition();
-		balloon.setUntied();
+		balloon.setUntied(true);
 		world.addEntity(balloon);
 	}
 
