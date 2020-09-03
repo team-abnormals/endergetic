@@ -76,13 +76,4 @@ public final class MixinEntity implements BalloonHolder {
 	public void detachBalloons() {
 		this.getBalloons().forEach(BolloomBalloonEntity::detachFromEntity);
 	}
-
-	private static int getClosestOpenIndex(List<BolloomBalloonEntity> balloons) {
-		for (int i = 0; i < balloons.size(); i++) {
-			if (balloons.get(i) != null) {
-				return i;
-			}
-		}
-		return balloons.size();
-	}
 }

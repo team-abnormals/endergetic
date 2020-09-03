@@ -1,16 +1,14 @@
 package com.minecraftabnormals.endergetic.common.entities.bolloom;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
-import com.minecraftabnormals.endergetic.common.network.entity.S2CRemoveBalloonFromOrderMap;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CDetachCustomPositionBalloon;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
+import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
@@ -19,7 +17,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.DyeItem;
@@ -35,9 +32,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -50,12 +45,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 
+//TODO: Merge shared data in the bolloom entities into an abstract bolloom entity class.
 public class BolloomBalloonEntity extends Entity {
-	public static final Map<UUID, Map<UUID, Integer>> BALLOONS_ON_BOAT_MAP = Maps.newHashMap();
-	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
-	
 	private static final DataParameter<Float> ORIGIN_X = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGIN_Z = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> ORIGIN_Y = EntityDataManager.createKey(BolloomBalloonEntity.class, DataSerializers.FLOAT);
@@ -71,7 +63,7 @@ public class BolloomBalloonEntity extends Entity {
 
 	private float prevVineAngle;
 	private float prevAngle;
-	private boolean hasModifiedBoatIndex;
+	public boolean hasModifiedBoatOrder;
 	@Nullable
 	private Entity attachedEntity;
 	private UUID attachedEntityUUID;
@@ -198,25 +190,6 @@ public class BolloomBalloonEntity extends Entity {
 			}
 			this.setUntied(true);
 		}
-		
-		/*
-		 * Sometimes the order of riding and dismounting shifts causing orders to be bumped above 3, this is a fix for it.
-		 */
-		Entity ridingEntity = this.getRidingEntity();
-		if (ridingEntity instanceof BoatEntity) {
-			Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(ridingEntity.getUniqueID());
-			if (orderMap != null) {
-				UUID uuid = this.getUniqueID();
-				if (orderMap.containsKey(uuid) && orderMap.get(uuid) >= 4) {
-					orderMap.put(uuid, this.getClosestOrder(orderMap));
-				}
-			}
-		}
-		
-		/*
-		 * Often it takes a bit too long to sync the position of the Balloon on the boat to the client to the server, so this temporarily hides it.
-		 */
-		if (this.getHideTime() > 0) this.decrementHideTime();
 
 		if (!this.isAttachedToEntity()) {
 			this.incrementTicksExisted();
@@ -376,6 +349,9 @@ public class BolloomBalloonEntity extends Entity {
 
 	public void attachToEntity(Entity entity) {
 		this.attachedEntity = entity;
+		if (entity instanceof CustomBalloonPositioner) {
+			((CustomBalloonPositioner) entity).onBalloonAttached(this);
+		}
 		((BalloonHolder) entity).attachBalloon(this);
 	}
 
@@ -387,6 +363,10 @@ public class BolloomBalloonEntity extends Entity {
 	public void detachFromEntity() {
 		if (this.attachedEntity != null) {
 			((BalloonHolder) this.attachedEntity).detachBalloon(this);
+			if (!this.world.isRemote && this.attachedEntity instanceof CustomBalloonPositioner) {
+				((CustomBalloonPositioner) this.attachedEntity).onBalloonDetachedServer(this);
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.attachedEntity), new S2CDetachCustomPositionBalloon(this.attachedEntity.getEntityId(), this.getEntityId()));
+			}
 			this.attachedEntity = null;
 		}
 	}
@@ -488,116 +468,18 @@ public class BolloomBalloonEntity extends Entity {
 	public boolean canRiderInteract() {
 		return true;
 	}
-	
-	@Override
-	public boolean startRiding(Entity entity, boolean force) {
-		if (super.startRiding(entity, force)) {
-			if (entity instanceof BoatEntity) {
-				UUID boatUUID = entity.getUniqueID();
-				if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID)) {
-					Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(boatUUID);
-					if (!this.hasModifiedBoatIndex) {
-						orderMap.put(this.getUniqueID(), this.getClosestOrder(orderMap));
-						this.hasModifiedBoatIndex = true;
-					}
-				} else {
-					BALLOONS_ON_BOAT_MAP.put(boatUUID, Util.make(Maps.newHashMap(), (map) -> map.put(this.getUniqueID(), 0)));
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public void func_233575_bb_() {
-		Entity ridingEntity = this.getRidingEntity();
-		if (ridingEntity instanceof BoatEntity && !this.isAlive()) {
-			UUID boatUUID = this.getRidingEntity().getUniqueID();
-			UUID uuid = this.getUniqueID();
-			if (BALLOONS_ON_BOAT_MAP.containsKey(boatUUID)) {
-				BALLOONS_ON_BOAT_MAP.get(boatUUID).remove(uuid);
-			}
-			
-			if (!this.world.isRemote) {
-				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new S2CRemoveBalloonFromOrderMap(ridingEntity.getEntityId(), this.getEntityId()));
-			}
-		}
-		super.func_233575_bb_();
-	}
-	
-	public void setRidingPosition() {
-		Entity ridingEntity = this.getRidingEntity();
-		if (ridingEntity instanceof BoatEntity) {
-			Map<UUID, Integer> orderMap = BALLOONS_ON_BOAT_MAP.get(ridingEntity.getUniqueID());
-			UUID uuid = this.getUniqueID();
-			if (orderMap == null || !orderMap.containsKey(uuid)) return;
-			
-			float x = ridingEntity.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? 1.6F : 0.9F, z = 0.5F;
-			switch (orderMap.get(uuid)) {
-				default:
-				case 0:
-					z *= -1.0F;
-					break;
-				case 1: break;
-				case 2:
-					x *= -1.0F;
-					z *= -1.0F;
-					break;
-				case 3:
-					x *= -1.0F;
-					break;
-			}
-			Vector3d ridingOffset = (new Vector3d(x, 0.0D, z)).rotateYaw((float) (-ridingEntity.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
-			this.setPosition(ridingEntity.getPosX() + ridingOffset.getX() + this.getSway() * Math.sin(-this.getAngle()), ridingEntity.getPosY() + this.getMountedYOffset() + this.getRidingEntity().getEyeHeight(), ridingEntity.getPosZ() + ridingOffset.getZ() + this.getSway() * Math.cos(-this.getAngle()));
-		} else {
-			this.setPosition(ridingEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), ridingEntity.getPosY() + this.getMountedYOffset() + this.getRidingEntity().getEyeHeight(), ridingEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
-		}
-	}
-	
-	public void setBoatPosition() {
-		this.setRidingPosition();
-		this.dataManager.set(HIDE_TIME, 2);
-	}
 
 	public void updateAttachedPosition() {
 		this.setMotion(Vector3d.ZERO);
 		if (canUpdate()) {
 			this.tick();
 			this.incrementTicksExisted();
-			if (this.attachedEntity instanceof BoatEntity) {
-				float x = this.attachedEntity.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? 1.6F : 0.9F, z = 0.5F;
-				switch (((BalloonHolder) this.attachedEntity).getBalloons().indexOf(this)) {
-					default:
-					case 0:
-						z *= -1.0F;
-						break;
-					case 1: break;
-					case 2:
-						x *= -1.0F;
-						z *= -1.0F;
-						break;
-					case 3:
-						x *= -1.0F;
-						break;
-				}
-				Vector3d attachedOffset = (new Vector3d(x, 0.0D, z)).rotateYaw((float) (-this.attachedEntity.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
-				this.setPosition(this.attachedEntity.getPosX() + attachedOffset.getX() + this.getSway() * Math.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + attachedOffset.getZ() + this.getSway() * Math.cos(-this.getAngle()));
+			if (this.attachedEntity instanceof CustomBalloonPositioner) {
+				((CustomBalloonPositioner) this.attachedEntity).updateAttachedPosition(this);
 			} else if (this.attachedEntity != null) {
 				this.setPosition(this.attachedEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
 			}
 		}
-	}
-	
-	private int getClosestOrder(Map<UUID, Integer> orderMap) {
-		Set<Integer> missingNumbers = Sets.newHashSet();
-		Set<Integer> orders = new HashSet<>(orderMap.values());
-		for (int i = 0; i < 4; i++) {
-			if (!orders.contains(i)) {
-				missingNumbers.add(i);
-			}
-		}
-		return missingNumbers.isEmpty() ? orders.size() : missingNumbers.stream().sorted(Comparator.comparingInt(Math::abs)).collect(Collectors.toList()).get(0);
 	}
 	
 	@Override

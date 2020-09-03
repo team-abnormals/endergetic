@@ -1,6 +1,13 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonOrder;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
+import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,13 +28,55 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Mixin(BoatEntity.class)
-public abstract class MixinBoatEntity extends Entity {
+public abstract class MixinBoatEntity extends Entity implements CustomBalloonPositioner {
+	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
+	private final Map<UUID, BalloonOrder> orderMap = Maps.newHashMap();
 
 	private MixinBoatEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
 	}
-	
+
+	@Override
+	public void onBalloonAttached(BolloomBalloonEntity balloon) {
+		if (!balloon.hasModifiedBoatOrder) {
+			this.orderMap.put(balloon.getUniqueID(), getClosestOpenOrder(this.orderMap));
+			balloon.hasModifiedBoatOrder = true;
+		}
+	}
+
+	@Override
+	public void onBalloonDetachedServer(BolloomBalloonEntity balloon) {
+		this.orderMap.remove(balloon.getUniqueID());
+	}
+
+	@Override
+	public void onBalloonDetachedClient(BolloomBalloonEntity balloon) {
+		this.orderMap.remove(balloon.getUniqueID());
+	}
+
+	@Override
+	public void updateAttachedPosition(BolloomBalloonEntity balloon) {
+		if (!this.orderMap.containsKey(balloon.getUniqueID())) return;
+		BalloonOrder balloonOrder = this.orderMap.get(balloon.getUniqueID());
+		Vector3d attachedOffset = (new Vector3d(this.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, balloonOrder.normalZ)).rotateYaw((float) (-this.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
+		balloon.setPosition(this.getPosX() + attachedOffset.getX() + balloon.getSway() * Math.sin(-balloon.getAngle()), this.getPosY() + balloon.getMountedYOffset() + balloon.getEyeHeight(), this.getPosZ() + attachedOffset.getZ() + balloon.getSway() * Math.cos(-balloon.getAngle()));
+	}
+
+	private static BalloonOrder getClosestOpenOrder(Map<UUID, BalloonOrder> orderMap) {
+		Set<Integer> missingNumbers = Sets.newHashSet();
+		Set<Integer> orders = BalloonOrder.toOrdinalSet(Sets.newHashSet(orderMap.values()));
+		for (int i = 0; i < 4; i++) {
+			if (!orders.contains(i)) {
+				missingNumbers.add(i);
+			}
+		}
+		return BalloonOrder.byOrdinal(missingNumbers.isEmpty() ? orders.size() : missingNumbers.stream().sorted(Comparator.comparingInt(Math::abs)).collect(Collectors.toList()).get(0));
+	}
+
 	@Inject(at = @At(value = "TAIL"), method = "updateMotion")
 	private void handleBalloonMotion(CallbackInfo info) {
 		int balloons = ((BalloonHolder) this).getBalloons().size();
@@ -56,5 +105,4 @@ public abstract class MixinBoatEntity extends Entity {
 			info.setReturnValue(ActionResultType.CONSUME);
 		}
 	}
-	
 }
