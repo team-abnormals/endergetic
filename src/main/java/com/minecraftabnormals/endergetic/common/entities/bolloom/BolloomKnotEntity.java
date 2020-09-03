@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public final class BolloomKnotEntity extends Entity {
+public class BolloomKnotEntity extends Entity {
 	private BlockPos hangingPosition;
 	private static final DataParameter<Integer> BALLOONS_TIED = EntityDataManager.createKey(BolloomKnotEntity.class, DataSerializers.VARINT);
 	

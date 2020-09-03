@@ -39,6 +39,7 @@ public final class MixinServerWorld {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;addedToChunk:Z", ordinal = 1, shift = At.Shift.AFTER), method = "updateEntity")
 	private void updateBalloons(Entity entity, CallbackInfo info) {
 		BalloonHolder balloonHolder = (BalloonHolder) entity;
@@ -61,6 +62,7 @@ public final class MixinServerWorld {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateRidden()V", shift = At.Shift.AFTER), method = "tickPassenger")
 	private void updateEntityRiddenBalloons(Entity ridingEntity, Entity passenger, CallbackInfo info) {
 		BalloonHolder balloonHolder = (BalloonHolder) passenger;

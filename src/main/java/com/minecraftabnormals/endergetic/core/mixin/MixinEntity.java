@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.BoatEntity;
 
 @Mixin(Entity.class)
 public final class MixinEntity implements BalloonHolder {
@@ -47,13 +46,6 @@ public final class MixinEntity implements BalloonHolder {
 
 		if ((Object) this instanceof BolloomBalloonEntity) {
 			((BolloomBalloonEntity) (Object) this).detachFromEntity();
-		}
-	}
-
-	@Inject(at = @At("HEAD"), method = "onRemovedFromWorld()V", remap = false)
-	private void onRemovedFromWorld(CallbackInfo info) {
-		if ((Object) this instanceof BoatEntity) {
-			BolloomBalloonEntity.BALLOONS_ON_BOAT_MAP.remove(this.entityUniqueID);
 		}
 	}
 
