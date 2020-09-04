@@ -12,8 +12,8 @@ import java.util.Set;
  */
 public enum BalloonOrder {
 	FIRST(0.9F, 1.6F, -0.5F),
-	SECOND(-0.9F, 1.6F, 0.5F),
-	THIRD(-0.9F, 1.6F, -0.5F),
+	SECOND(-0.9F, -1.6F, 0.5F),
+	THIRD(-0.9F, -1.6F, -0.5F),
 	LAST(0.9F, 1.6F, 0.5F);
 
 	public final float normalX, largeX, normalZ;
