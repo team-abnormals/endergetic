@@ -115,10 +115,10 @@ public class BoofloHuntFruitGoal extends Goal {
 
 	protected void tryToCapturePrey(Entity prey, double distToEnemySqr) {
 		double attackReach = this.getAttackReachSqr(prey);
-		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
+		if (distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
-			if(prey instanceof BolloomFruitEntity) {
-				((BolloomFruitEntity)prey).onBroken(this.booflo, false);
+			if (prey instanceof BolloomFruitEntity) {
+				((BolloomFruitEntity)prey).onBroken(false);
 				this.booflo.setCaughtFruit(true);
 				this.booflo.setHungry(false);
 				prey.remove();

@@ -136,11 +136,11 @@ public class AdolescentAttackGoal extends Goal {
 
 	protected void tryToCapturePrey(Entity prey, double distToEnemySqr) {
 		double attackReach = this.getAttackReachSqr(prey);
-		if(distToEnemySqr <= attackReach && this.attackTick <= 0) {
+		if (distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
 			this.attacker.setHasFruit(true);
-			if(prey instanceof BolloomFruitEntity) {
-				((BolloomFruitEntity)prey).onBroken(this.attacker, false);
+			if (prey instanceof BolloomFruitEntity) {
+				((BolloomFruitEntity) prey).onBroken(false);
 				prey.remove();
 			}
 		}
