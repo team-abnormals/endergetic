@@ -27,6 +27,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -206,7 +207,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 			if (this.attachedEntity instanceof CustomBalloonPositioner) {
 				((CustomBalloonPositioner) this.attachedEntity).updateAttachedPosition(this);
 			} else if (this.attachedEntity != null) {
-				this.setPosition(this.attachedEntity.getPosX() + this.getSway() * Math.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + this.getSway() * Math.cos(-this.getAngle()));
+				this.setPosition(this.attachedEntity.getPosX() + this.getSway() * MathHelper.sin(-this.getAngle()), this.attachedEntity.getPosY() + this.getMountedYOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getPosZ() + this.getSway() * MathHelper.cos(-this.getAngle()));
 			}
 		}
 	}

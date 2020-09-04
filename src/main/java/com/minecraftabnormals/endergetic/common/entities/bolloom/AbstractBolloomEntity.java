@@ -65,7 +65,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 		this.prevAngle = this.getAngle();
 
 		this.setSway(MathHelper.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
-		this.updatePositionAndMotion(Math.sin(-this.getAngle()), Math.cos(-this.getAngle()));
+		this.updatePositionAndMotion(MathHelper.sin(-this.getAngle()), MathHelper.cos(-this.getAngle()));
 
 		if (!this.world.isRemote) {
 			if (this.getTicksExisted() % 45 == 0) {
