@@ -5,10 +5,10 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.minecraftabnormals.endergetic.client.particle.EEParticles;
-import com.minecraftabnormals.endergetic.client.render.entity.*;
-import com.minecraftabnormals.endergetic.client.render.entity.booflo.*;
-import com.minecraftabnormals.endergetic.client.render.tile.*;
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
+import com.minecraftabnormals.endergetic.client.renderers.entity.*;
+import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.*;
+import com.minecraftabnormals.endergetic.client.renderers.tile.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;

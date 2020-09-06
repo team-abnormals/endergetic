@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.minecraftabnormals.endergetic.client.particle.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.world.other.PoiseTree;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;

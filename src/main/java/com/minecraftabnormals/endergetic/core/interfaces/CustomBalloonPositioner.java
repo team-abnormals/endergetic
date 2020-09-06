@@ -4,6 +4,7 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonE
 
 /**
  * Implemented on entities to have them have their balloon attachments be unique.
+ * @author SmellyModder (Luke Tonon)
  */
 public interface CustomBalloonPositioner {
 	/**

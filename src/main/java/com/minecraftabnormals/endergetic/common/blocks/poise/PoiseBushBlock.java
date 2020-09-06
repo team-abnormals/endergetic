@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.minecraftabnormals.endergetic.client.particle.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 

@@ -8,7 +8,7 @@ import com.teamabnormals.abnormals_core.common.blocks.BookshelfBlock;
 import com.teamabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
 import com.teamabnormals.abnormals_core.common.blocks.sign.*;
 import com.teamabnormals.abnormals_core.common.blocks.wood.*;
-import com.minecraftabnormals.endergetic.client.render.item.EETileEntityItemRenderer;
+import com.minecraftabnormals.endergetic.client.renderers.item.EETileEntityItemRenderer;
 import com.minecraftabnormals.endergetic.common.EEProperties;
 import com.minecraftabnormals.endergetic.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.blocks.poise.*;

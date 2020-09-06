@@ -20,7 +20,7 @@ import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlying
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
-import com.minecraftabnormals.endergetic.client.particle.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.ai.BoofloAttackGoal;

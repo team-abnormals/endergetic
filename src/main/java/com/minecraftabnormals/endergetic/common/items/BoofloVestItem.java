@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.items;
 
 import com.minecraftabnormals.endergetic.api.util.EndergeticNetworkUtil;
-import com.minecraftabnormals.endergetic.client.model.armor.BoofloVestModel;
+import com.minecraftabnormals.endergetic.client.models.armor.BoofloVestModel;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.other.EEArmorMaterials;
 

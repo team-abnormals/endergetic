@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
  * @author - SmellyModder(Luke Tonon)
  */
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
-public class KeybindHandler {
+public final class KeybindHandler {
 	private static List<KeyBinding> keyBinds = Lists.newArrayList();
 	public static KeyBinding BOOF_VEST = registerKeybind(new KeyBinding("key.endergetic.booflo_vest", 32, "key.categories.movement"));
 	public static KeyBinding BOOFLO_INFLATE = registerKeybind(new KeyBinding("key.endergetic.booflo_inflate", 32, "key.categories.gameplay"));
