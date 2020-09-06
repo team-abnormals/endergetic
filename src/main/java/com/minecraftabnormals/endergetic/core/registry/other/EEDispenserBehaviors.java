@@ -50,6 +50,7 @@ public class EEDispenserBehaviors {
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_GRAY.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_LIGHT_GRAY.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_BLACK.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(EEItems.BOLLOOM_BALLOON_WHITE.get(), new BolloomBalloonItem.BalloonDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE.get(), new PuffBugBottleItem.PuffBugBottleDispenseBehavior());
 		EndergeticExpansion.REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 	}
