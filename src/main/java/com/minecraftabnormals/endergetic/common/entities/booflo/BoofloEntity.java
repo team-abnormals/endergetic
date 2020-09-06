@@ -1337,7 +1337,8 @@ public class BoofloEntity extends EndimatedEntity {
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
-	
+
+	//TODO: Make use new Abnormals Skin Helper.
 	public String getNameSuffix() {
 		Map<List<String>, String> customSkins = Util.make(Maps.newHashMap(), (skins) -> {
 			skins.put(Arrays.asList("cameron"), "cam");

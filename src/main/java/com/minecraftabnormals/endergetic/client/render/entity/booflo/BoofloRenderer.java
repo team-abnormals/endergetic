@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.client.render.entity.booflo;
 
 import com.minecraftabnormals.endergetic.client.model.booflo.BoofloModel;
+import com.minecraftabnormals.endergetic.client.render.entity.layer.BoofloEmissiveLayer;
 import com.minecraftabnormals.endergetic.client.render.entity.layer.EmissiveLayerRenderer;
 import com.minecraftabnormals.endergetic.client.render.entity.layer.LayerRendererBoofloBracelets;
 import com.minecraftabnormals.endergetic.client.render.entity.layer.LayerRendererBoofloFruit;
@@ -21,7 +22,7 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 	
 	public BoofloRenderer(EntityRendererManager manager) {
 		super(manager, new BoofloModel<>(), 1.25F);
-		this.addLayer(new EmissiveLayerRenderer<>(this, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_glow_layer.png")));
+		this.addLayer(new BoofloEmissiveLayer<>(this));
 		this.addLayer(new LayerRendererBoofloBracelets<>(this));
 		this.addLayer(new LayerRendererBoofloFruit(this));
 	}
@@ -29,7 +30,6 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 	@Override
 	public void render(BoofloEntity booflo, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		this.shadowSize = booflo.isBoofed() ? 2.0F : 1.25F;
-		
 		super.render(booflo, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
