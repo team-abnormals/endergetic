@@ -14,7 +14,7 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
-import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloons;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -142,10 +142,10 @@ public class EntityEvents {
 			BolloomBalloonEntity balloon = (BolloomBalloonEntity) trackingEntity;
 			Entity attachedEntity = balloon.getAttachedEntity();
 			if (attachedEntity != null) {
-				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(attachedEntity));
+				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloonsMessage(attachedEntity));
 			}
 		} else {
-			EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloons(trackingEntity));
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloonsMessage(trackingEntity));
 		}
 	}
 

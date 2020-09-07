@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
-import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloons;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import net.minecraft.entity.Entity;
@@ -31,7 +31,7 @@ public final class MixinTrackedEntity {
 		List<BolloomBalloonEntity> currentBalloons = ((BalloonHolder) this.trackedEntity).getBalloons();
 		if (!currentBalloons.equals(this.prevBalloons)) {
 			this.prevBalloons = currentBalloons;
-			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.trackedEntity), new S2CUpdateBalloons(this.trackedEntity));
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.trackedEntity), new S2CUpdateBalloonsMessage(this.trackedEntity));
 		}
 	}
 

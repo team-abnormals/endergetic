@@ -12,10 +12,10 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public final class S2CDetachCustomPositionBalloon {
+public final class S2CDetachCustomPositionBalloonMessage {
 	public final int boatId, balloonId;
 	
-	public S2CDetachCustomPositionBalloon(int boatId, int balloonId) {
+	public S2CDetachCustomPositionBalloonMessage(int boatId, int balloonId) {
 		this.boatId = boatId;
 		this.balloonId = balloonId;
 	}
@@ -25,11 +25,11 @@ public final class S2CDetachCustomPositionBalloon {
 		buf.writeInt(this.balloonId);
 	}
 	
-	public static S2CDetachCustomPositionBalloon deserialize(PacketBuffer buf) {
-		return new S2CDetachCustomPositionBalloon(buf.readInt(), buf.readInt());
+	public static S2CDetachCustomPositionBalloonMessage deserialize(PacketBuffer buf) {
+		return new S2CDetachCustomPositionBalloonMessage(buf.readInt(), buf.readInt());
 	}
 	
-	public static void handle(S2CDetachCustomPositionBalloon message, Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(S2CDetachCustomPositionBalloonMessage message, Supplier<NetworkEvent.Context> ctx) {
 		Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
-import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloons;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import net.minecraft.entity.Entity;
@@ -48,7 +48,7 @@ public final class MixinPlayerList {
 					Entity entity = EntityType.func_220335_a(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.summonEntity(balloon) ? null : balloon));
 					if (entity instanceof BolloomBalloonEntity) {
 						((BolloomBalloonEntity) entity).attachToEntity(player);
-						EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CUpdateBalloons(player));
+						EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CUpdateBalloonsMessage(player));
 					}
 				}
 			}

@@ -13,16 +13,16 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class S2CUpdateBalloons {
+public final class S2CUpdateBalloonsMessage {
 	private int entityId;
 	private int[] balloonIds;
 
-	private S2CUpdateBalloons(int entityId, int[] balloonIds) {
+	private S2CUpdateBalloonsMessage(int entityId, int[] balloonIds) {
 		this.entityId = entityId;
 		this.balloonIds = balloonIds;
 	}
 
-	public S2CUpdateBalloons(Entity entity) {
+	public S2CUpdateBalloonsMessage(Entity entity) {
 		this.entityId = entity.getEntityId();
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) entity).getBalloons();
 		this.balloonIds = new int[balloons.size()];
@@ -36,11 +36,11 @@ public final class S2CUpdateBalloons {
 		buf.writeVarIntArray(this.balloonIds);
 	}
 
-	public static S2CUpdateBalloons deserialize(PacketBuffer buf) {
-		return new S2CUpdateBalloons(buf.readVarInt(), buf.readVarIntArray());
+	public static S2CUpdateBalloonsMessage deserialize(PacketBuffer buf) {
+		return new S2CUpdateBalloonsMessage(buf.readVarInt(), buf.readVarIntArray());
 	}
 
-	public static void handle(S2CUpdateBalloons message, Supplier<NetworkEvent.Context> ctx) {
+	public static void handle(S2CUpdateBalloonsMessage message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {

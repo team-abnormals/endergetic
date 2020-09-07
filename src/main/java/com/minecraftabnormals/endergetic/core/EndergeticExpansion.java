@@ -153,7 +153,7 @@ public class EndergeticExpansion {
 		CHANNEL.registerMessage(id++, SSetPlayerNotBoostingMessage.class, SSetPlayerNotBoostingMessage::serialize, SSetPlayerNotBoostingMessage::deserialize, SSetPlayerNotBoostingMessage::handle);
 		CHANNEL.registerMessage(id++, SSlamMessage.class, SSlamMessage::serialize, SSlamMessage::deserialize, SSlamMessage::handle);
 		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
-		CHANNEL.registerMessage(id++, S2CDetachCustomPositionBalloon.class, S2CDetachCustomPositionBalloon::serialize, S2CDetachCustomPositionBalloon::deserialize, S2CDetachCustomPositionBalloon::handle);
-		CHANNEL.registerMessage(id++, S2CUpdateBalloons.class, S2CUpdateBalloons::serialize, S2CUpdateBalloons::deserialize, S2CUpdateBalloons::handle);
+		CHANNEL.registerMessage(id++, S2CDetachCustomPositionBalloonMessage.class, S2CDetachCustomPositionBalloonMessage::serialize, S2CDetachCustomPositionBalloonMessage::deserialize, S2CDetachCustomPositionBalloonMessage::handle);
+		CHANNEL.registerMessage(id++, S2CUpdateBalloonsMessage.class, S2CUpdateBalloonsMessage::serialize, S2CUpdateBalloonsMessage::deserialize, S2CUpdateBalloonsMessage::handle);
 	}
 }
