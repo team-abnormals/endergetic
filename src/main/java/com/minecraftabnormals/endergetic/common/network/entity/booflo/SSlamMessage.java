@@ -34,7 +34,7 @@ public class SSlamMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				Entity entity = context.getSender().world.getEntityByID(message.entityId);
-				if(entity instanceof BoofloEntity) {
+				if (entity instanceof BoofloEntity) {
 					((BoofloEntity) entity).setDelayExpanding(true);
 					NetworkUtil.setPlayingAnimationMessage((BoofloEntity) entity, BoofloEntity.CHARGE);
 				}

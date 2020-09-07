@@ -36,16 +36,16 @@ public class PuffBugAttackGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		LivingEntity target = this.puffbug.getAttackTarget();
-		if(target == null) {
+		if (target == null) {
 			return false;
-		} else if(!PuffBugEntity.CAN_ANGER.test(target)) {
+		} else if (!PuffBugEntity.CAN_ANGER.test(target)) {
 			return false;
-		} else if(!this.puffbug.isInflated()) {
+		} else if (!this.puffbug.isInflated()) {
 			return false;
 		}
 		
 		Path newPath = this.puffbug.getNavigator().getPathToEntity(target, 0);
-		if(newPath != null) {
+		if (newPath != null) {
 			this.path = newPath;
 		}
 		
@@ -62,7 +62,7 @@ public class PuffBugAttackGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		if(!this.puffbug.isInflated()) {
+		if (!this.puffbug.isInflated()) {
 			return false;
 		}
 		return this.puffbug.getLaunchDirection() == null && this.puffbug.getAttackTarget() != null && PuffBugEntity.CAN_ANGER.test(this.puffbug.getAttackTarget());
@@ -76,13 +76,13 @@ public class PuffBugAttackGoal extends Goal {
 		Entity target = this.puffbug.getAttackTarget();
 		this.puffbug.getLookController().setLookPositionWithEntity(target, 20.0F, 20.0F);
 		
-		if(this.delayCounter <= 0) {
+		if (this.delayCounter <= 0) {
 			Path path = this.puffbug.getNavigator().getPathToPos(target.func_233580_cy_().up(4), 4);
-			if(path != null && this.puffbug.getNavigator().setPath(path, 3.5F)) {
+			if (path != null && this.puffbug.getNavigator().setPath(path, 3.5F)) {
 				this.delayCounter += 5;
 			}
 			
-			if(this.puffbug.getDistance(target) <= SHOOT_RANGE) {
+			if (this.puffbug.getDistance(target) <= SHOOT_RANGE) {
 				Vector3d distance = new Vector3d(target.getPosX() - this.puffbug.getPosX(), target.getPosY() - this.puffbug.getPosY(), target.getPosZ() - this.puffbug.getPosZ());
 				
 				float pitch = -((float) (MathHelper.atan2(distance.getY(), (double) MathHelper.sqrt(distance.getX() * distance.getX() + distance.getZ() * distance.getZ())) * (double) (180F / (float) Math.PI)));
@@ -92,13 +92,13 @@ public class PuffBugAttackGoal extends Goal {
 				startingDistance = startingDistance * startingDistance;
 				RayTraceResult blockTrace = this.traceBlocks(MathHelper.wrapDegrees(pitch), yaw);
 				
-				if(blockTrace != null) {
+				if (blockTrace != null) {
 					startingDistance = blockTrace.getHitVec().squareDistanceTo(this.puffbug.getEyePosition(1.0F));
 				}
 				
 				RayTraceResult rayTrace = RayTraceHelper.rayTraceEntityResult(this.puffbug, MathHelper.wrapDegrees(pitch), yaw, SHOOT_RANGE, startingDistance, 1.0F);
 				
-				if(this.ticksChased >= 30 && this.canFitNewCollisionShape() && rayTrace != null && rayTrace.getType() != Type.BLOCK && pitch > 30.0F) {
+				if (this.ticksChased >= 30 && this.canFitNewCollisionShape() && rayTrace != null && rayTrace.getType() != Type.BLOCK && pitch > 30.0F) {
 					this.puffbug.setLaunchDirection(MathHelper.wrapDegrees(pitch), yaw);
 					this.puffbug.getNavigator().clearPath();
 				}
@@ -108,7 +108,7 @@ public class PuffBugAttackGoal extends Goal {
 	
 	public void resetTask() {
 		Entity target = this.puffbug.getAttackTarget();
-		if(!EntityPredicates.CAN_AI_TARGET.test(target)) {
+		if (!EntityPredicates.CAN_AI_TARGET.test(target)) {
 			this.puffbug.setAttackTarget(null);
 		}
 		this.puffbug.setAggroed(false);

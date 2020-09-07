@@ -62,7 +62,7 @@ public class BolloomBudModel {
     }
     
     public void renderAll(BolloomBudTileEntity bud, MatrixStack matrix, IVertexBuilder builder, int light, int overlay) {
-    	float angle = 1.78F * bud.PEDAL_PROGRESS.getAnimationProgress();
+    	float angle = 1.78F * bud.pedalAnimation.getAnimationProgress();
     	
     	this.Pedal.rotateAngleX = angle;
     	this.Pedal_1.rotateAngleX = angle;

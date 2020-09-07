@@ -32,7 +32,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(this.booflo.isBoofed() || (!this.booflo.func_233570_aj_() && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
+		if (this.booflo.isBoofed() || (!this.booflo.func_233570_aj_() && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
 			return false;
 		} else {
 			this.mate = this.getNearbyMate();
@@ -51,11 +51,11 @@ public class BoofloBreedGoal extends Goal {
 	}
 	
 	public void tick() {
-		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.isBeingRidenOrRiding()) {
+		if (this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.isBeingRidenOrRiding()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
 		}
 		
@@ -64,14 +64,14 @@ public class BoofloBreedGoal extends Goal {
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
 		}
 		
 		this.booflo.getNavigator().tryMoveToEntityLiving(this.mate, 1.0D);
 		
 		this.impregnateDelay++;
-		if(this.impregnateDelay >= 60 && this.booflo.getDistanceSq(this.mate) < 10.0D) {
+		if (this.impregnateDelay >= 60 && this.booflo.getDistanceSq(this.mate) < 10.0D) {
 			this.impregnateBooflo();
 		}
 	}
@@ -79,22 +79,22 @@ public class BoofloBreedGoal extends Goal {
 	protected void impregnateBooflo() {
 		final BabyEntitySpawnEvent event = new net.minecraftforge.event.entity.living.BabyEntitySpawnEvent(this.booflo, this.mate, null);
 		final boolean cancelled = MinecraftForge.EVENT_BUS.post(event);
-		if(cancelled) {
+		if (cancelled) {
 			this.booflo.resetInLove();
 			this.mate.resetInLove();
 			return;
 		}
 		
 		ServerPlayerEntity serverplayerentity = this.booflo.getLoveCause();
-		if(serverplayerentity == null && this.mate.getLoveCause() != null) {
+		if (serverplayerentity == null && this.mate.getLoveCause() != null) {
 			serverplayerentity = this.mate.getLoveCause();
 		}
 
-		if(serverplayerentity != null) {
+		if (serverplayerentity != null) {
 			serverplayerentity.addStat(Stats.ANIMALS_BRED);
 		}
 		
-		if(!this.mate.isPregnant()) {
+		if (!this.mate.isPregnant()) {
 			this.booflo.setPregnant(true);
 		}
 		
@@ -104,7 +104,7 @@ public class BoofloBreedGoal extends Goal {
 		this.mate.breedDelay = 1400;
         
 		this.booflo.world.setEntityState(this.booflo, (byte) 18);
-		if(this.booflo.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+		if (this.booflo.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
 			this.booflo.world.addEntity(new ExperienceOrbEntity(this.booflo.world, this.booflo.getPosX(), this.booflo.getPosY(), this.booflo.getPosZ(), this.booflo.getRNG().nextInt(7) + 1));
 		}
 	}
@@ -115,8 +115,8 @@ public class BoofloBreedGoal extends Goal {
 		double d0 = Double.MAX_VALUE;
 		BoofloEntity booflo = null;
 
-		for(BoofloEntity booflos : list) {
-			if(this.booflo.canMateWith(booflos) && this.booflo.getDistanceSq(booflos) < d0) {
+		for (BoofloEntity booflos : list) {
+			if (this.booflo.canMateWith(booflos) && this.booflo.getDistanceSq(booflos) < d0) {
 				booflo = booflos;
 				d0 = this.booflo.getDistanceSq(booflos);
 			}

@@ -30,7 +30,7 @@ public class LayerRendererPuffBugGlow <T extends PuffBugEntity, M extends Entity
 	
 	@Override
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T puffbug, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if(!puffbug.isInflated()) return;
+		if (!puffbug.isInflated()) return;
 		
 		boolean colorFlag = puffbug.getColor() != -1 && !isLeviationOnlyEffect(puffbug);
 		
@@ -48,14 +48,14 @@ public class LayerRendererPuffBugGlow <T extends PuffBugEntity, M extends Entity
 	}
 	
 	private ResourceLocation getTexture(PuffBugEntity puffbug) {
-		if(this.isLeviationOnlyEffect(puffbug)) {
+		if (this.isLeviationOnlyEffect(puffbug)) {
 			return TEXTURES[2];
 		}
 		return puffbug.getColor() != -1 ? TEXTURES[1] : TEXTURES[0];
 	}
 	
 	private boolean isLeviationOnlyEffect(PuffBugEntity bug) {
-		if(bug.getColor() == 13565951) {
+		if (bug.getColor() == 13565951) {
 			return true;
 		}
 		return false;

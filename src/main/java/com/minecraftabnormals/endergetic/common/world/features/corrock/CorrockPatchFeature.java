@@ -27,14 +27,14 @@ public class CorrockPatchFeature extends Feature<NoFeatureConfig> {
 		for(BlockState blockstate = world.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = world.getBlockState(pos)) {
 			pos = pos.down();
 		}
-		if(world.getBlockState(pos).getBlock() != EEBlocks.CORROCK_END_BLOCK.get()) return false;
+		if (world.getBlockState(pos).getBlock() != EEBlocks.CORROCK_END_BLOCK.get()) return false;
 		int i = 0;
 		
-		for(int j = 0; j < 128; ++j) {
+		for (int j = 0; j < 128; ++j) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(6) - rand.nextInt(6), rand.nextInt(8) - rand.nextInt(8));
-			if(world.isAirBlock(blockpos) && CORROCK.get().isValidPosition(world, blockpos)) {
+			if (world.isAirBlock(blockpos) && CORROCK.get().isValidPosition(world, blockpos)) {
 				boolean chance = world.getBlockState(blockpos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() ? rand.nextFloat() < 0.85F : rand.nextFloat() < 0.25F;
-				if(chance) {
+				if (chance) {
 					world.setBlockState(blockpos, CORROCK.get(), 2);
 					i++;
 				}

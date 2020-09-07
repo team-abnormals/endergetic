@@ -35,13 +35,13 @@ public class PuffBugPullOutGoal extends Goal {
 	
 	@Override
 	public void tick() {
-		if(this.puffbug.isNoEndimationPlaying()) {
-			if(this.pulls > 0) {
+		if (this.puffbug.isNoEndimationPlaying()) {
+			if (this.pulls > 0) {
 				NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.PULL_ANIMATION);
 				this.pulls--;
 			}
-		} else if(this.puffbug.isEndimationPlaying(PuffBugEntity.PULL_ANIMATION)) {
-			if(this.pulls <= 0 && this.puffbug.getAnimationTick() == 5) {
+		} else if (this.puffbug.isEndimationPlaying(PuffBugEntity.PULL_ANIMATION)) {
+			if (this.pulls <= 0 && this.puffbug.getAnimationTick() == 5) {
 				this.puffbug.disableProjectile();
 				this.puffbug.stuckInBlockState = null;
 				

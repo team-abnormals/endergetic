@@ -46,7 +46,7 @@ public class RotateMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(message.entityId);
-				if(entity instanceof PuffBugEntity) {
+				if (entity instanceof PuffBugEntity) {
 					((PuffBugEntity) entity).getRotationController().rotate(message.yaw, message.pitch, message.roll, message.tickLength);
 				}
 			});

@@ -24,11 +24,11 @@ public class BoofloHuntPuffBugGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(!(this.booflo.isBoofed() && !this.booflo.isPregnant() && this.booflo.getBoofloAttackTarget() instanceof PuffBugEntity && this.booflo.getBoofloAttackTarget().isAlive() && !this.booflo.hasCaughtPuffBug())) {
+		if (!(this.booflo.isBoofed() && !this.booflo.isPregnant() && this.booflo.getBoofloAttackTarget() instanceof PuffBugEntity && this.booflo.getBoofloAttackTarget().isAlive() && !this.booflo.hasCaughtPuffBug())) {
 			return false;
 		}
 		this.path = this.booflo.getNavigator().getPathToEntity(this.booflo.getBoofloAttackTarget(), 0);
-		if(this.path != null) {
+		if (this.path != null) {
 			return true;
 		}
 		return false;
@@ -46,7 +46,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 		this.booflo.setAggroed(true);
 		this.delayCounter = 0;
 		
-		if(this.booflo.hasCaughtFruit()) {
+		if (this.booflo.hasCaughtFruit()) {
 			this.booflo.setCaughtFruit(false);
 			this.booflo.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
 		}
@@ -60,21 +60,21 @@ public class BoofloHuntPuffBugGoal extends Goal {
 		
 		this.delayCounter--;
 		
-		if(this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
+		if (this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
 			this.booflo.getLookController().setLookPosition(target.getPosX(), target.getPosY(), target.getPosZ(), 10.0F, 10.0F);
 			
 			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 			
-			if(distToEnemySqr > 256.0D) {
+			if (distToEnemySqr > 256.0D) {
 				this.delayCounter += 5;
 			}
 
-			if(!this.booflo.getNavigator().tryMoveToXYZ(target.getPosX(), target.getPosY(), target.getPosZ(), SPEED)) {
+			if (!this.booflo.getNavigator().tryMoveToXYZ(target.getPosX(), target.getPosY(), target.getPosZ(), SPEED)) {
 				this.delayCounter += 5;
 			}
 		}
 		
-		if(this.booflo.getPassengers().isEmpty() && this.booflo.getRNG().nextFloat() < 0.1F) {
+		if (this.booflo.getPassengers().isEmpty() && this.booflo.getRNG().nextFloat() < 0.1F) {
 			this.tryToCatch(target, distToEnemySqr);
 		}
 	}
@@ -87,7 +87,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 	
 	protected void tryToCatch(PuffBugEntity enemy, double distToEnemySqr) {
 		double attackRange = (this.booflo.getWidth() * 2.0F * this.booflo.getWidth() * 2.0F + enemy.getWidth()) * 0.75F;
-		if(distToEnemySqr <= attackRange) {
+		if (distToEnemySqr <= attackRange) {
 			this.booflo.catchPuffBug(enemy);
 		}
 	}

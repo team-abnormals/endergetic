@@ -35,8 +35,6 @@ public class PoismossBlock extends Block implements IGrowable {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
 			if (!func_220257_b(state, worldIn, pos)) {
 				worldIn.setBlockState(pos, Blocks.END_STONE.getDefaultState());
-			} else {
-				
 			}
 		}
 	}
@@ -59,11 +57,11 @@ public class PoismossBlock extends Block implements IGrowable {
 		BlockPos blockpos = pos.up();
 		BlockState blockstate = EEBlocks.POISE_BUSH.get().getDefaultState();
 
-		for(int i = 0; i < 128; ++i) {
+		for (int i = 0; i < 128; ++i) {
 			BlockPos blockpos1 = blockpos;
 			int j = 0;
 
-			while(true) {
+			while (true) {
 				if (j >= i / 16) {
 					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
@@ -77,18 +75,18 @@ public class PoismossBlock extends Block implements IGrowable {
 					BlockState blockstate1;
 					blockstate1 = blockstate;
 
-				if (blockstate1.isValidPosition(worldIn, blockpos1)) {
-					worldIn.setBlockState(blockpos1, blockstate1, 3);
+					if (blockstate1.isValidPosition(worldIn, blockpos1)) {
+						worldIn.setBlockState(blockpos1, blockstate1, 3);
+					}
+					break;
 				}
-				break;
-			}
 
-			blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
-			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isOpaqueCube(worldIn, blockpos1)) {
-				break;
-			}
+				blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
+				if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isOpaqueCube(worldIn, blockpos1)) {
+					break;
+				}
 
-			++j;
+				j++;
 			}
 		}
 	}

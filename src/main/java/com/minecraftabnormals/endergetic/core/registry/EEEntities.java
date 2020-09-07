@@ -24,7 +24,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class EEEntities {
+public final class EEEntities {
 	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
 	public static final RegistryObject<EntityType<PoiseClusterEntity>> POISE_CLUSTER = HELPER.createLivingEntity("poise_cluster", PoiseClusterEntity::new, EntityClassification.MISC, 1F, 1F);

@@ -9,7 +9,6 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,17 +29,13 @@ public class EEParticles {
 		
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
-			if(checkForNonNullWithReflectionCauseForgeIsBaby(POISE_BUBBLE)) {
+			if (POISE_BUBBLE.isPresent()) {
 				Minecraft.getInstance().particles.registerFactory(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
 			}
-			if(checkForNonNullWithReflectionCauseForgeIsBaby(SHORT_POISE_BUBBLE)) {
+			if (SHORT_POISE_BUBBLE.isPresent()) {
 				Minecraft.getInstance().particles.registerFactory(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
 			}
 		}
 		
-	}
-	
-	private static boolean checkForNonNullWithReflectionCauseForgeIsBaby(RegistryObject<BasicParticleType> registryObject) {
-		return ObfuscationReflectionHelper.getPrivateValue(RegistryObject.class, registryObject, "value") != null;
 	}
 }

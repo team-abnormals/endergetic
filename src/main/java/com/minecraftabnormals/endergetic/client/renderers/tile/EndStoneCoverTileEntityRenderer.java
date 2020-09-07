@@ -29,13 +29,13 @@ public class EndStoneCoverTileEntityRenderer extends TileEntityRenderer<EndStone
 		
 		Direction facing = cover.hasWorld() ? cover.getBlockState().get(HorizontalBlock.HORIZONTAL_FACING) : Direction.NORTH;
 		
-		if(facing == Direction.NORTH) {
+		if (facing == Direction.NORTH) {
 			matrixStack.translate(0.5D, 1.51D, -0.5D);
-		} else if(facing == Direction.SOUTH) {
+		} else if (facing == Direction.SOUTH) {
 			matrixStack.translate(0.5D, 1.51D, 1.5D);
-		} else if(facing == Direction.EAST) {
+		} else if (facing == Direction.EAST) {
 			matrixStack.translate(1.5D, 1.51D, 0.5D);
-		} else if(facing == Direction.WEST) {
+		} else if (facing == Direction.WEST) {
 			matrixStack.translate(-0.5D, 1.51D, 0.5D);
 		}
 		

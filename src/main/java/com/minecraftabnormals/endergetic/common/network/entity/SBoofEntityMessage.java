@@ -3,12 +3,9 @@ package com.minecraftabnormals.endergetic.common.network.entity;
 import java.util.function.Supplier;
 
 import com.minecraftabnormals.endergetic.api.entity.util.EntityMotionHelper;
-import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
-import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.item.PaintingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.LogicalSide;
@@ -41,17 +38,12 @@ public class SBoofEntityMessage {
 	
 	public static void handle(SBoofEntityMessage message, Supplier<NetworkEvent.Context> ctx) {
 		Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				
-				for(Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(message.radius))) {
-					if(entity != player &&
-	        			!(entity instanceof BoofBlockEntity) &&
-	        			!(entity instanceof PaintingEntity) &&
-	        			!(entity instanceof PoiseClusterEntity) &&
-	        			!(entity instanceof ItemFrameEntity)
-	        		) {
+				for (Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(message.radius))) {
+					if (entity != player && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
 	    				boolean reverse = player.getRidingEntity() == entity;
 	    				EntityMotionHelper.knockbackEntity(entity, (float) message.xzForce, (float) message.yForce, reverse, false);
 	    			}

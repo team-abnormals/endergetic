@@ -26,7 +26,7 @@ public class PuffBugDescentGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.getAttackTarget() == null && !this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
+		if (this.puffbug.getAttackTarget() == null && !this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
 			this.budPos = new BlockPos(this.puffbug.getPosX() - 0.5F, this.puffbug.getPosY() - 0.5F, this.puffbug.getPosZ() - 0.5F).down(2);
 			return true;
 		}
@@ -36,7 +36,7 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		TileEntity te = this.world.getTileEntity(this.budPos);
-		if(!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
+		if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 			return false;
 		}
 		return this.puffbug.getAttackTarget() == null && this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.func_233570_aj_() && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ;
@@ -45,7 +45,7 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public void startExecuting() {
 		TileEntity te = this.world.getTileEntity(this.puffbug.getBudPos());
-		if(te instanceof BolloomBudTileEntity) {
+		if (te instanceof BolloomBudTileEntity) {
 			((BolloomBudTileEntity) te).setTeleportingBug(null);
 		}
 		
@@ -63,7 +63,7 @@ public class PuffBugDescentGoal extends Goal {
 	public void tick() {
 		this.ticksPassed++;
 		
-		if(this.ticksPassed > 20) {
+		if (this.ticksPassed > 20) {
 			this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 			this.puffbug.puffCooldown = 25;
 		}
@@ -76,7 +76,7 @@ public class PuffBugDescentGoal extends Goal {
 	@Override
 	public void resetTask() {
 		TileEntity te = this.world.getTileEntity(this.budPos);
-		if((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ && this.puffbug.func_233570_aj_()) {
+		if ((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ && this.puffbug.func_233570_aj_()) {
 			this.puffbug.setPollinationPos(this.budPos);
 		}
 		
@@ -89,7 +89,7 @@ public class PuffBugDescentGoal extends Goal {
 	private boolean isBolloomBudUnder() {
 		BlockPos pos = new BlockPos(this.puffbug.getPosX() - 0.5F, this.puffbug.getPosY() - 0.5F, this.puffbug.getPosZ() - 0.5F);
 		
-		if(this.world.getBlockState(pos.down()).getCollisionShape(this.world, pos.down()).isEmpty() && this.world.getBlockState(pos.down(2)).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
+		if (this.world.getBlockState(pos.down()).getCollisionShape(this.world, pos.down()).isEmpty() && this.world.getBlockState(pos.down(2)).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
 			this.budPos = pos.down(2);
 			return true;
 		}

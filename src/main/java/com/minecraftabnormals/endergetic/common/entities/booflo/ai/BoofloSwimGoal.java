@@ -19,7 +19,7 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 	protected Vector3d getPosition() {
 		Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 2);
 
-		for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
+		for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
 			;
 		}
 		
@@ -28,16 +28,16 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(this.creature.isBeingRidden()) {
+		if (this.creature.isBeingRidden()) {
 			return false;
 		} else {
-			if(this.creature.getRNG().nextInt(this.executionChance) != 0) {
+			if (this.creature.getRNG().nextInt(this.executionChance) != 0) {
 				return false;
 			}
 		}
 
 		Vector3d vec3d = this.getPosition();
-		if(vec3d == null) {
+		if (vec3d == null) {
 			return false;
 		} else {
 			this.x = vec3d.x;

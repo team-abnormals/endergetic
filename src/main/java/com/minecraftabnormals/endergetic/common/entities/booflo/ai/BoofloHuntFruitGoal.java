@@ -30,22 +30,22 @@ public class BoofloHuntFruitGoal extends Goal {
 	
 	public boolean shouldExecute() {
 		long i = this.booflo.world.getGameTime();
-		if(i - this.field_220720_k < 20L) {
+		if (i - this.field_220720_k < 20L) {
 			return false;
 		} else {
 			this.field_220720_k = i;
 			Entity target = this.booflo.getBoofloAttackTarget();
-			if(target == null) {
+			if (target == null) {
 				return false;
-			} else if(!target.isAlive()) {
+			} else if (!target.isAlive()) {
 				return false;
-			} else if(this.booflo.hasAggressiveAttackTarget()) {
+			} else if (this.booflo.hasAggressiveAttackTarget()) {
 				return false;
-			} else if(!this.booflo.isBoofed()) {
+			} else if (!this.booflo.isBoofed()) {
 				return false;
 			} else {
 				this.path = this.booflo.getNavigator().getPathToPos(target.func_233580_cy_(), 0);
-				if(this.path != null) {
+				if (this.path != null) {
 					return true;
 				} else {
 					return this.getAttackReachSqr(target) >= this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
@@ -56,13 +56,13 @@ public class BoofloHuntFruitGoal extends Goal {
 	
 	public boolean shouldContinueExecuting() {
 		Entity target = this.booflo.getBoofloAttackTarget();
-		if(target == null) {
+		if (target == null) {
 			return false;
-		} else if(!target.isAlive()) {
+		} else if (!target.isAlive()) {
 			return false;
-		} else if(!this.booflo.isBoofed()) {
+		} else if (!this.booflo.isBoofed()) {
 			return false;
-		} else if(!this.booflo.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
+		} else if (!this.booflo.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -77,7 +77,7 @@ public class BoofloHuntFruitGoal extends Goal {
 	  
 	public void resetTask() {
 		Entity target = this.booflo.getBoofloAttackTarget();
-		if(!EntityPredicates.CAN_AI_TARGET.test(target)) {
+		if (!EntityPredicates.CAN_AI_TARGET.test(target)) {
 			this.booflo.setBoofloAttackTargetId(0);
 		}
 		this.booflo.setAggroed(false);
@@ -91,20 +91,20 @@ public class BoofloHuntFruitGoal extends Goal {
 		double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		this.booflo.getLookController().setLookPosition(target.getPosX(), target.getPosY(), target.getPosZ(), 10.0F, 10.0F);
 		
-		if(this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
+		if (this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
 			this.targetX = target.getPosX();
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.getPosZ();
 			
 			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
 			
-			if(distToEnemySqr > 1024.0D) {
+			if (distToEnemySqr > 1024.0D) {
 				this.delayCounter += 5;
-			} else if(distToEnemySqr > 256.0D) {
+			} else if (distToEnemySqr > 256.0D) {
 	            this.delayCounter += 5;
 			}
 
-			if(!this.booflo.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
+			if (!this.booflo.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
 				this.delayCounter += 5;
 			}
 		}
@@ -117,7 +117,7 @@ public class BoofloHuntFruitGoal extends Goal {
 		double attackReach = this.getAttackReachSqr(prey);
 		if (distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
-			if (prey instanceof BolloomFruitEntity) {
+			if  (prey instanceof BolloomFruitEntity) {
 				((BolloomFruitEntity)prey).onBroken(false);
 				this.booflo.setCaughtFruit(true);
 				this.booflo.setHungry(false);

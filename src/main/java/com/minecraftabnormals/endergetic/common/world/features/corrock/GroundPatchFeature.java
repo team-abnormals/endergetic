@@ -24,27 +24,27 @@ public class GroundPatchFeature extends Feature<SphereReplaceConfig> {
 		int i = 0;
 		int radius = rand.nextInt(config.radius - 2) + 2;
 		
-		if(config.targets.contains(Blocks.END_STONE.getDefaultState())) {
-			if(config.state == EEBlocks.EUMUS.get().getDefaultState() && rand.nextFloat() < 0.75F) {
+		if (config.targets.contains(Blocks.END_STONE.getDefaultState())) {
+			if (config.state == EEBlocks.EUMUS.get().getDefaultState() && rand.nextFloat() < 0.75F) {
 				return false;
-			} else if(config.state != EEBlocks.EUMUS.get().getDefaultState() && rand.nextFloat() < 0.5F) {
+			} else if (config.state != EEBlocks.EUMUS.get().getDefaultState() && rand.nextFloat() < 0.5F) {
 				return false;
 			}
-		} else if(config.targets.contains(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState()) && rand.nextFloat() < 0.75F) {
+		} else if (config.targets.contains(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState()) && rand.nextFloat() < 0.75F) {
 			return false;
 		}
 
-		for(int x = pos.getX() - radius; x <= pos.getX() + radius; x++) {
-			for(int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++) {
+		for (int x = pos.getX() - radius; x <= pos.getX() + radius; x++) {
+			for (int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++) {
 				int radiusXDistance = x - pos.getX();
 				int radiusZDistance = z - pos.getZ();
 				int distance = radiusXDistance * radiusXDistance + radiusZDistance * radiusZDistance;
-				if(distance <= radius * radius) {
-					for(int y = pos.getY() - config.ySize; y <= pos.getY() + config.ySize; y++) {
+				if (distance <= radius * radius) {
+					for (int y = pos.getY() - config.ySize; y <= pos.getY() + config.ySize; y++) {
 						BlockPos blockpos = new BlockPos(x, y, z);
 						BlockState blockstate = world.getBlockState(blockpos);
 
-						for(BlockState blockstate1 : config.targets) {
+						for (BlockState blockstate1 : config.targets) {
 							if (blockstate1.getBlock() == blockstate.getBlock() && (distance == radius * radius ? rand.nextFloat() < 0.5F : true)) {
 								world.setBlockState(blockpos, config.state, 2);
 								i++;

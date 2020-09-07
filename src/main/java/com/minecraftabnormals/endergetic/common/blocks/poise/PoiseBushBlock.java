@@ -39,7 +39,7 @@ public class PoiseBushBlock extends Block implements IGrowable {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		if(rand.nextFloat() > 0.05F) return;
+		if (rand.nextFloat() > 0.05F) return;
 		
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -71,7 +71,7 @@ public class PoiseBushBlock extends Block implements IGrowable {
 	@Override
 	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state) {
 		PoiseTallBushBlock plant = (PoiseTallBushBlock) EEBlocks.POISE_BUSH_TALL.get();
-		if(plant.getDefaultState().isValidPosition(world, pos) && world.isAirBlock(pos.up())) {
+		if (plant.getDefaultState().isValidPosition(world, pos) && world.isAirBlock(pos.up())) {
 			plant.placeAt(world, pos, 2);
 		}
 	}
@@ -106,9 +106,9 @@ public class PoiseBushBlock extends Block implements IGrowable {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.SEA_PICKLE, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

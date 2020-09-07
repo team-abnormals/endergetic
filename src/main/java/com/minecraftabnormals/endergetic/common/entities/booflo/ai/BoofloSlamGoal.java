@@ -26,7 +26,7 @@ public class BoofloSlamGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		if(!this.isSolidUnderTarget()) {
+		if (!this.isSolidUnderTarget()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.INFLATE);
 			return false;
 		}
@@ -47,8 +47,8 @@ public class BoofloSlamGoal extends Goal {
 	}
 	
 	private boolean isEntityUnder() {
-		for(LivingEntity entity : this.world.getEntitiesWithinAABB(LivingEntity.class, DetectionHelper.expandDownwards(this.booflo.getBoundingBox().grow(1.0F), 12.0F))) {
-			if(entity == this.booflo.getBoofloAttackTarget()) {
+		for (LivingEntity entity : this.world.getEntitiesWithinAABB(LivingEntity.class, DetectionHelper.expandDownwards(this.booflo.getBoundingBox().grow(1.0F), 12.0F))) {
+			if (entity == this.booflo.getBoofloAttackTarget()) {
 				return true;
 			}
 		}
@@ -57,7 +57,7 @@ public class BoofloSlamGoal extends Goal {
 	
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
-		for(int y = 1; y < 4; y++) {
+		for (int y = 1; y < 4; y++) {
 			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.booflo.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.booflo.getBoofloAttackTarget().func_233580_cy_().down(y)), this.world, this.booflo.getBoofloAttackTarget().func_233580_cy_().down(y), Direction.UP) : true;
 		}
 		return isSomewhatSolidUnder;

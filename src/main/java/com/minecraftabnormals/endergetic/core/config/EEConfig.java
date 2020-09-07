@@ -9,7 +9,7 @@ import net.minecraftforge.fml.config.ModConfig;
 /**
  * @author SmellyModder(Luke Tonon)
  */
-public class EEConfig {
+public final class EEConfig {
 
 	public static class Common {
 		public final ConfigValue<Boolean> debugDragonFightManager;

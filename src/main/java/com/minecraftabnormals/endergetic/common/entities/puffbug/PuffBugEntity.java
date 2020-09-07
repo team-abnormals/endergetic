@@ -207,13 +207,13 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public void tick() {
-		if(this.stuckInBlock) {
+		if (this.stuckInBlock) {
 			this.setMotion(Vector3d.ZERO);
 		}
 		
-		if(this.getRidingEntity() instanceof BoofloEntity) {
+		if (this.getRidingEntity() instanceof BoofloEntity) {
 			this.disableProjectile();
-			this.nullifyLaunchDirection();
+			this.removeLaunchDirection();
 			this.setInflated(true);
 		}
 		
@@ -226,49 +226,49 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		
 		Vector3d motion = this.getMotion();
 		
-		if(!this.world.isRemote) {
-			if(this.teleportCooldown > 0) {
+		if (!this.world.isRemote) {
+			if (this.teleportCooldown > 0) {
 				this.teleportCooldown--;
 			}
 			
-			if(this.puffCooldown > 0) {
+			if (this.puffCooldown > 0) {
 				this.puffCooldown--;
 			}
 			
-			if(!this.isPassenger() && this.isInflated() && !this.getRotationController().rotating && this.isNoEndimationPlaying()) {
-				if(this.isBoosting() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK || ((this.onGround || this.isInWater()) && this.puffCooldown <= 0 && this.getPollinationPos() == null && this.getLaunchDirection() == null && this.getFireDirection() == null)) {
+			if (!this.isPassenger() && this.isInflated() && !this.getRotationController().rotating && this.isNoEndimationPlaying()) {
+				if (this.isBoosting() && RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK || ((this.onGround || this.isInWater()) && this.puffCooldown <= 0 && this.getPollinationPos() == null && this.getLaunchDirection() == null && this.getFireDirection() == null)) {
 					NetworkUtil.setPlayingAnimationMessage(this, PUFF_ANIMATION);
 					this.playSound(this.getPuffSound(), 0.15F, this.getSoundPitch());
 				}
 			}
 			
-			if(this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 10) {
+			if (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 10) {
 				this.getTeleportController().bringToDestination();
-			} else if(this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
+			} else if (this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
 				this.setMotion(Vector3d.ZERO);
 			}
 			
-			if(this.getHivePos() == null) {
-				if(this.world.getGameTime() % 5 == 0 && this.getRNG().nextFloat() <= 0.1F) {
+			if (this.getHivePos() == null) {
+				if (this.world.getGameTime() % 5 == 0 && this.getRNG().nextFloat() <= 0.1F) {
 					PuffBugHiveTileEntity hive = this.findNewNearbyHive();
-					if(hive != null) {
+					if (hive != null) {
 						this.addToHive(hive);
-						if(this.isNoEndimationPlaying()) {
+						if (this.isNoEndimationPlaying()) {
 							NetworkUtil.setPlayingAnimationMessage(this, CLAIM_HIVE_ANIMATION);
 						}
 					}
 				}
 				this.ticksAwayFromHive = 0;
 			} else {
-				if(this.getHive() == null) {
+				if (this.getHive() == null) {
 					this.setHivePos(null);
 				} else {
-					if(this.getAttachedHiveSide() == Direction.UP) {
+					if (this.getAttachedHiveSide() == Direction.UP) {
 						this.ticksAwayFromHive++;
 						
-						if(this.ticksAwayFromHive < 1500) {
-							if(this.getAttackTarget() == null && this.getRNG().nextInt(7500) == 0 && !this.isInLove() && !this.getHive().isHiveFull()) {
-								for(PuffBugEntity nearbyHiveMembers : this.world.getEntitiesWithinAABB(PuffBugEntity.class, this.getBoundingBox().grow(9.0F), puffbug -> (puffbug.getHive() != null && puffbug.getHive() == this.getHive()) && this.getDistance(puffbug) < 12.0F)) {
+						if (this.ticksAwayFromHive < 1500) {
+							if (this.getAttackTarget() == null && this.getRNG().nextInt(7500) == 0 && !this.isInLove() && !this.getHive().isHiveFull()) {
+								for (PuffBugEntity nearbyHiveMembers : this.world.getEntitiesWithinAABB(PuffBugEntity.class, this.getBoundingBox().grow(9.0F), puffbug -> (puffbug.getHive() != null && puffbug.getHive() == this.getHive()) && this.getDistance(puffbug) < 12.0F)) {
 									
 									this.setInLove(1000);
 									this.world.setEntityState(this, (byte) 18);
@@ -286,24 +286,24 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				}
 			}
 			
-			if(this.getAttachedHiveSide() != Direction.UP) {
+			if (this.getAttachedHiveSide() != Direction.UP) {
 				this.setInflated(false);
-			} else if(!this.isInflated() && this.getFireDirection() == null) {
+			} else if (!this.isInflated() && this.getFireDirection() == null) {
 				this.setInflated(true);
 			}
 			
-			if(this.getAttackTarget() != null && !CAN_ANGER.test(this.getAttackTarget())) {
+			if (this.getAttackTarget() != null && !CAN_ANGER.test(this.getAttackTarget())) {
 				this.setAttackTarget(null);
 			}
 			
-			if(this.isProjectile() && (this.handleFluidAcceleration(FluidTags.WATER, 1.0F) || this.handleFluidAcceleration(FluidTags.LAVA, 1.0F))) {
+			if (this.isProjectile() && (this.handleFluidAcceleration(FluidTags.WATER, 1.0F) || this.handleFluidAcceleration(FluidTags.LAVA, 1.0F))) {
 				this.disableProjectile();
 			}
 		} else {
 			this.prevSpin = this.spin;
 			Random rand = this.getRNG();
 			
-			if(this.isEndimationPlaying(PUFF_ANIMATION) && this.getAnimationTick() == 5) {
+			if (this.isEndimationPlaying(PUFF_ANIMATION) && this.getAnimationTick() == 5) {
 				for(int i = 0; i < 3; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
@@ -314,7 +314,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
     				
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F, (rand.nextFloat() * 0.05F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F);
 				}
-			} else if(this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 8) {
+			} else if (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 8) {
 				for(int i = 0; i < 6; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
@@ -325,7 +325,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 					
 					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
-			} else if(this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && this.getAnimationTick() == 5) {
+			} else if (this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && this.getAnimationTick() == 5) {
 				for(int i = 0; i < 6; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
@@ -346,25 +346,25 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		
 			this.HIVE_LANDING.setDecrementing(this.getAttachedHiveSide() == Direction.UP);
 			
-			if(this.HIVE_LANDING.isAtMax()) {
-				if(this.HIVE_SLEEP.isDecrementing() && this.HIVE_SLEEP.getTick() == 0) {
+			if (this.HIVE_LANDING.isAtMax()) {
+				if (this.HIVE_SLEEP.isDecrementing() && this.HIVE_SLEEP.getTick() == 0) {
 					this.HIVE_SLEEP.setDecrementing(false);
-				} else if(this.HIVE_SLEEP.isAtMax()) {
+				} else if (this.HIVE_SLEEP.isAtMax()) {
 					this.HIVE_SLEEP.setDecrementing(true);
 				}
 			} else {
 				this.HIVE_SLEEP.setDecrementing(true);
 			}
 			
-			if(this.isProjectile() && this.isEndimationPlaying(FLY_ANIMATION)) {
+			if (this.isProjectile() && this.isEndimationPlaying(FLY_ANIMATION)) {
 				this.spin = this.spin + 55.0F;
 			} else {
 				this.spin = 0.0F;
 			}
 		}
 		
-		if(this.getDesiredHiveSide() != null) {
-			if(this.getHive() != null && this.getDesiredHiveSide() != Direction.DOWN) {
+		if (this.getDesiredHiveSide() != null) {
+			if (this.getHive() != null && this.getDesiredHiveSide() != Direction.DOWN) {
 				float degrees = (this.getDesiredHiveSide() == Direction.SOUTH ? 0 : this.getDesiredHiveSide().getAxisDirection().getOffset()) * (this.getDesiredHiveSide().getAxis() == Axis.Z ? 180.0F : -90.0F);
 				this.rotationYaw = this.prevRotationYaw = degrees;
 				this.rotationYawHead = this.prevRotationYawHead = degrees;
@@ -372,8 +372,8 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			}
 		}
 		
-		if(this.getAttachedHiveSide() != Direction.UP) {
-			if(this.getHive() != null) {
+		if (this.getAttachedHiveSide() != Direction.UP) {
+			if (this.getHive() != null) {
 				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
 				this.getNavigator().clearPath();
 				this.setAIMoveSpeed(0.0F);
@@ -384,31 +384,31 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				this.rotationYawHead = this.prevRotationYawHead;
 				this.renderYawOffset = this.prevRenderYawOffset;
 				
-				if(!this.world.isRemote && !this.isAtCorrectRestLocation(this.getAttachedHiveSide())) {
+				if (!this.world.isRemote && !this.isAtCorrectRestLocation(this.getAttachedHiveSide())) {
 					this.setAttachedHiveSide(Direction.UP);
 				}
 			} else {
-				if(!this.world.isRemote) {
+				if (!this.world.isRemote) {
 					this.setAttachedHiveSide(Direction.UP);
 				}
 			}
 		} else {
-			if((this.getLaunchDirection() != null || this.getFireDirection() != null)) {
+			if ((this.getLaunchDirection() != null || this.getFireDirection() != null)) {
 				this.rotationYaw = 0.0F;
 				this.rotationYawHead = 0.0F;
 				this.renderYawOffset = 0.0F;
 				
 				Vector3d fireDirection = this.getFireDirection();
 				
-				if(fireDirection != null) {
-					if((this.world.isRemote && !this.stuckInBlock) || !this.world.isRemote) {
+				if (fireDirection != null) {
+					if ((this.world.isRemote && !this.stuckInBlock) || !this.world.isRemote) {
 						this.getRotationController().rotate((float) MathHelper.wrapDegrees(fireDirection.getY() - this.rotationYaw), (float) fireDirection.getX() + 90.0F, 0.0F, 5);
 					}
 					
 					LivingEntity target = this.getAttackTarget();
 					
-					if(!this.stuckInBlock) {
-						if(!this.world.isRemote && target != null && this.isEndimationPlaying(FLY_ANIMATION)) {
+					if (!this.stuckInBlock) {
+						if (!this.world.isRemote && target != null && this.isEndimationPlaying(FLY_ANIMATION)) {
 							float seekOffset = target.getPosY() > this.getPosY() ? 0.0F : 0.5F;
 							Vector3d targetVecNoScale = new Vector3d(target.getPosX() - this.getPosX(), target.getPosY() - seekOffset - this.getPosY(), target.getPosZ() - this.getPosZ());
 							Vector3d targetVec = targetVecNoScale.scale(SEEKING_FACTOR);
@@ -436,14 +436,14 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			}
 		}
 		
-		if(this.isProjectile() && !this.isInflated()) {
+		if (this.isProjectile() && !this.isInflated()) {
 			BlockPos blockpos = this.func_233580_cy_();
 			BlockState blockstate = this.world.getBlockState(blockpos);
-			if(!blockstate.isAir(this.world, blockpos) && !this.noClip) {
+			if (!blockstate.isAir(this.world, blockpos) && !this.noClip) {
 				VoxelShape voxelshape = blockstate.getCollisionShape(this.world, blockpos);
-				if(!voxelshape.isEmpty()) {
-					for(AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
-						if(axisalignedbb.offset(blockpos).contains(this.getPositionVec())) {
+				if (!voxelshape.isEmpty()) {
+					for (AxisAlignedBB axisalignedbb : voxelshape.toBoundingBoxList()) {
+						if (axisalignedbb.offset(blockpos).contains(this.getPositionVec())) {
 							this.stuckInBlock = true;
 							break;
 						}
@@ -451,8 +451,8 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				}
 			}
 			
-			if(this.stuckInBlock && !this.noClip) {
-				if(!this.world.isRemote && this.stuckInBlockState != blockstate && this.world.hasNoCollisions(this.getBoundingBox().grow(0.06D))) {
+			if (this.stuckInBlock && !this.noClip) {
+				if (!this.world.isRemote && this.stuckInBlockState != blockstate && this.world.hasNoCollisions(this.getBoundingBox().grow(0.06D))) {
 					this.disableProjectile();
 				}
 				this.setMotion(this.getMotion().mul(0.0F, 1.0F, 0.0F));
@@ -463,11 +463,11 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				RayTraceResult traceResult = this.world.rayTraceBlocks(new RayTraceContext(positionVec, endVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
 				EntityRayTraceResult entityTraceResult = this.traceEntity(positionVec, endVec);
 				
-				if(entityTraceResult != null) {
+				if (entityTraceResult != null) {
 					traceResult = entityTraceResult;
 				}
 				
-				if(traceResult.getType() != Type.MISS) {
+				if (traceResult.getType() != Type.MISS) {
 					this.onSting(traceResult);
 					this.isAirBorne = true;
 				}
@@ -485,23 +485,23 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		this.teleportCooldown = compound.getInt("TeleportCooldown");
 		this.ticksAwayFromHive = compound.getInt("TicksAwayFromHive");
 		
-		if(compound.contains("IsInflated")) {
+		if (compound.contains("IsInflated")) {
 			this.setInflated(compound.getBoolean("IsInflated"));
 		}
 		
-		if(compound.contains("HivePos", 10)) {
+		if (compound.contains("HivePos", 10)) {
 			this.setHivePos(NBTUtil.readBlockPos(compound.getCompound("HivePos")));
 		}
 		
-		if(compound.contains("StuckInBlockState", 10)) {
+		if (compound.contains("StuckInBlockState", 10)) {
 			this.stuckInBlockState = NBTUtil.readBlockState(compound.getCompound("StuckInBlockState"));
 		}
 		
 		CompoundNBT stackToCreate = compound.getCompound("ItemStackToCreate");
 		
-		if(stackToCreate != null) {
+		if (stackToCreate != null) {
 			ItemStack newStackToCreate = ItemStack.read(stackToCreate);
-			if(!newStackToCreate.isEmpty()) {
+			if (!newStackToCreate.isEmpty()) {
 				this.setStackToCreate(newStackToCreate);
 			}
 		}
@@ -520,15 +520,15 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
 		compound.putInt("TicksAwayFromHive", this.ticksAwayFromHive);
 		
-		if(this.getHivePos() != null) {
+		if (this.getHivePos() != null) {
 			compound.put("HivePos", NBTUtil.writeBlockPos(this.getHivePos()));
 		}
 		
-		if(this.hasStackToCreate()) {
+		if (this.hasStackToCreate()) {
 			compound.put("ItemStackToCreate", this.getStackToCreate().write(new CompoundNBT()));
 		}
 		
-		if(this.stuckInBlockState != null) {
+		if (this.stuckInBlockState != null) {
 			compound.put("StuckInBlockState", NBTUtil.writeBlockState(this.stuckInBlockState));
 		}
 		
@@ -547,10 +547,10 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	@Nullable
 	public PuffBugHiveTileEntity getHive() {
 		BlockPos hivePos = this.getHivePos();
-		if(hivePos != null) {
+		if (hivePos != null) {
 			try {
 				TileEntity tileEntity = this.world.getTileEntity(hivePos).getTileEntity();
-				if(tileEntity instanceof PuffBugHiveTileEntity) {
+				if (tileEntity instanceof PuffBugHiveTileEntity) {
 					return (PuffBugHiveTileEntity) tileEntity;
 				}
 			} catch(NullPointerException e) {
@@ -579,7 +579,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	public boolean canAttachToSide(Direction direction) {
-		if(direction == Direction.UP) {
+		if (direction == Direction.UP) {
 			return false;
 		}
 		return this.getHive() != null && PuffBugHiveTileEntity.HiveOccupantData.isHiveSideEmpty(this.getHive(), direction);
@@ -667,11 +667,11 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		this.dataManager.set(FIRE_DIRECTION, Optional.of(new Vector3d(pitch, yaw, 0.0F)));
 	}
 	
-	public void nullifyLaunchDirection() {
+	public void removeLaunchDirection() {
 		this.dataManager.set(LAUNCH_DIRECTION, Optional.empty());
 	}
 	
-	public void nullifyFireDirection() {
+	public void removeFireDirection() {
 		this.dataManager.set(FIRE_DIRECTION, Optional.empty());
 	}
 	
@@ -720,44 +720,44 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public void onEndimationStart(Endimation endimation) {
-		if(endimation == PUFF_ANIMATION) {
+		if (endimation == PUFF_ANIMATION) {
 			float pitch = this.isBeingRidden() ? 1.0F : this.rotationPitch;
 			float xMotion = -MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 			float zMotion = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 			
 			Vector3d motion = new Vector3d(xMotion, 0.65F, zMotion).normalize();
 			
-			if(this.getAttackTarget() != null && CAN_ANGER.test(this.getAttackTarget())) {
+			if (this.getAttackTarget() != null && CAN_ANGER.test(this.getAttackTarget())) {
 				motion.scale(2.0F);
 			}
 			
 			this.addVelocity(motion.getX() * (this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() - 0.1F), motion.getY(), motion.getZ() * (this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() - 0.1F));
-		} else if(endimation == TELEPORT_TO_ANIMATION) {
-			if(!this.world.isRemote) {
+		} else if (endimation == TELEPORT_TO_ANIMATION) {
+			if (!this.world.isRemote) {
 				this.playSound(this.getTeleportSound(false), 0.65F, this.getSoundPitch());
 			}
-		} else if(endimation == FLY_ANIMATION) {
+		} else if (endimation == FLY_ANIMATION) {
 			this.world.playMovingSound(null, this, EESounds.PUFFBUG_LAUNCH.get(), SoundCategory.HOSTILE, 0.25F, this.getRNG().nextFloat() * 0.35F + 0.75F);
 		}
 	}
 	
 	@Override
 	public void onEndimationEnd(Endimation endimation) {
-		if(endimation == TELEPORT_TO_ANIMATION) {
-			if(!this.world.isRemote) {
+		if (endimation == TELEPORT_TO_ANIMATION) {
+			if (!this.world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
 				this.playSound(this.getTeleportSound(true), 0.65F, this.getSoundPitch());
 			}
-		} else if(endimation == POLLINATE_ANIMATION) {
+		} else if (endimation == POLLINATE_ANIMATION) {
 			this.addPotionEffect(new EffectInstance(Effects.LEVITATION, 3000));
-			if(this.getPollinationPos() != null) {
+			if (this.getPollinationPos() != null) {
 				TileEntity te = this.world.getTileEntity(this.getPollinationPos());
-				if(te instanceof BolloomBudTileEntity) {
+				if (te instanceof BolloomBudTileEntity) {
 					BolloomBudTileEntity bud = (BolloomBudTileEntity) te;
-					if(bud.canBeOpened()) {
-						for(BudSide side : BudSide.values()) {
+					if (bud.canBeOpened()) {
+						for (BudSide side : BudSide.values()) {
 							BlockPos sidePos = side.offsetPosition(this.getPollinationPos());
-							if(this.world.getBlockState(sidePos).getCollisionShape(world, this.getPollinationPos()).isEmpty()) {
+							if (this.world.getBlockState(sidePos).getCollisionShape(world, this.getPollinationPos()).isEmpty()) {
 								this.world.destroyBlock(sidePos, true);
 							}
 						}
@@ -772,7 +772,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public void travel(Vector3d moveDirection) {
-		if(this.isServerWorld() && this.isInflated()) {
+		if (this.isServerWorld() && this.isInflated()) {
 			double gravity = this.hasLevitation() ? -0.005D : 0.005D;
 			float speed = this.onGround ? 0.01F : 0.025F;
 			
@@ -781,26 +781,26 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			this.setMotion(this.getMotion().scale(0.75D));
 			this.setMotion(this.getMotion().subtract(0, gravity, 0));
 		} else {
-			if(this.stuckInBlock) {
+			if (this.stuckInBlock) {
 				this.setMotion(0.0F, this.getMotion().getY(), 0.0F);
 			}
 			boolean noVerticalMotion = this.isInflated() && (this.getAttachedHiveSide() != Direction.UP || this.getDesiredHiveSide() != null);
 			
-			if(noVerticalMotion) {
+			if (noVerticalMotion) {
 				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
 			}
 			
 			super.travel(Vector3d.ZERO);
 			
-			if(noVerticalMotion) {
+			if (noVerticalMotion) {
 				this.setMotion(this.getMotion().mul(1.0F, 0.0F, 1.0F));
 			}
 			
-			if(this.isProjectile()) {
+			if (this.isProjectile()) {
 				this.setMotion(this.getMotion().subtract(0.0F, 0.005F, 0.0F));
 			}
 			
-			if(this.stuckInBlock) {
+			if (this.stuckInBlock) {
 				this.setMotion(0.0F, this.getMotion().getY(), 0.0F);
 			}
 		}
@@ -815,11 +815,11 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	public PuffBugHiveTileEntity findNewNearbyHive() {
 		BlockPos pos = this.func_233580_cy_();
 		double xyDistance = 16.0D;
-		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-xyDistance, -6.0D, -xyDistance), pos.add(xyDistance, 6.0D, xyDistance))) {
-			if(blockpos.withinDistance(this.getPositionVec(), xyDistance)) {
-				if(this.world.getBlockState(blockpos).getBlock() == EEBlocks.PUFFBUG_HIVE.get() && this.world.getTileEntity(blockpos) instanceof PuffBugHiveTileEntity) {
+		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-xyDistance, -6.0D, -xyDistance), pos.add(xyDistance, 6.0D, xyDistance))) {
+			if (blockpos.withinDistance(this.getPositionVec(), xyDistance)) {
+				if (this.world.getBlockState(blockpos).getBlock() == EEBlocks.PUFFBUG_HIVE.get() && this.world.getTileEntity(blockpos) instanceof PuffBugHiveTileEntity) {
 					PuffBugHiveTileEntity hive = (PuffBugHiveTileEntity) this.world.getTileEntity(blockpos);
-					if(!hive.isHiveFull() && this.getHive() == null) {
+					if (!hive.isHiveFull() && this.getHive() == null) {
 						return hive;
 					}
 				}
@@ -829,22 +829,22 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	protected void setBottleData(ItemStack bottle) {
-		if(this.hasCustomName()) {
+		if (this.hasCustomName()) {
 			bottle.setDisplayName(this.getCustomName());
 		}
 		
 		CompoundNBT nbt = bottle.getOrCreateTag();
 		
-		if(this.getColor() != -1) {
+		if (this.getColor() != -1) {
 			nbt.putInt("ColorTag", this.getColor());
 		}
 		
 		nbt.putInt("TeleportCooldown", this.teleportCooldown);
 		
-		if(!this.getActivePotionEffects().isEmpty()) {
+		if (!this.getActivePotionEffects().isEmpty()) {
 			ListNBT listnbt = new ListNBT();
 
-			for(EffectInstance effectinstance : this.getActivePotionEffects()) {
+			for (EffectInstance effectinstance : this.getActivePotionEffects()) {
 				listnbt.add(effectinstance.write(new CompoundNBT()));
 			}
 
@@ -857,9 +857,9 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	private void keepEffectsAbsorbed() {
 		Iterator<Effect> iterator = this.getActivePotionMap().keySet().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
             Effect effect = iterator.next();
-            if(effect != Effects.LEVITATION) {
+            if (effect != Effects.LEVITATION) {
             	EffectInstance effectInstance = this.getActivePotionMap().get(effect);
             	this.getActivePotionMap().put(effect, new EffectInstance(effect, 1600, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.doesShowParticles()));
             }
@@ -874,13 +874,13 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		List<BlockPos> avaliablePositions = Lists.newArrayList();
 		PuffBugHiveTileEntity hive = this.getHive();
 		
-		if(hive == null || (hive != null && !hive.canTeleportTo()) || (this.getAttachedHiveSide() == Direction.UP && Math.sqrt(this.getDistanceSq(Vector3d.func_237489_a_((pos)))) < 5.0F) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
+		if (hive == null || (hive != null && !hive.canTeleportTo()) || (this.getAttachedHiveSide() == Direction.UP && Math.sqrt(this.getDistanceSq(Vector3d.func_237489_a_((pos)))) < 5.0F) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
 			return;
 		}
 		
-		for(int x = 0; x < 6; x++) {
-			for(int y = 0; y < 6; y++) {
-				for(int z = 0; z < 6; z++) {
+		for (int x = 0; x < 6; x++) {
+			for (int y = 0; y < 6; y++) {
+				for (int z = 0; z < 6; z++) {
 					positions.setPos(pos.add(x, y, z));
 							
 					if(this.world.isAirBlock(positions)) {
@@ -890,10 +890,10 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			}
 		}
 				
-		if(!avaliablePositions.isEmpty() && !this.isProjectile()) {
+		if (!avaliablePositions.isEmpty() && !this.isProjectile()) {
 			this.getTeleportController().destination = GenerationUtils.getClosestPositionToPos(avaliablePositions, this.func_233580_cy_());
 			this.getNavigator().clearPath();
-			if(!this.isEndimationPlaying(TELEPORT_TO_ANIMATION)) {
+			if (!this.isEndimationPlaying(TELEPORT_TO_ANIMATION)) {
 				this.getTeleportController().processTeleportation();
 			}
 		}
@@ -901,16 +901,16 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	private void onSting(RayTraceResult result) {
 		RayTraceResult.Type resultType = result.getType();
-		if(resultType == RayTraceResult.Type.ENTITY) {
+		if (resultType == RayTraceResult.Type.ENTITY) {
 			EntityRayTraceResult entityResult = (EntityRayTraceResult) result;
 			Entity entity = entityResult.getEntity();
-			if(entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue())) {
+			if (entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue())) {
 				this.setInflated(true);
-				this.nullifyFireDirection();
+				this.removeFireDirection();
 				this.stuckInBlock = false;
 				
-				if(!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
-					for(EffectInstance effects : this.getActivePotionEffects()) {
+				if (!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
+					for (EffectInstance effects : this.getActivePotionEffects()) {
 						((LivingEntity) entity).addPotionEffect(effects);
 					}
 					this.clearActivePotions();
@@ -925,7 +925,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			this.setPosition(end.getX(), end.getY(), end.getZ());
 			this.setMotion(Vector3d.ZERO);
 			
-			if(!this.world.isRemote) {
+			if (!this.world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, LAND_ANIMATION);
 			}
 			
@@ -943,7 +943,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	public void disableProjectile() {
 		this.stuckInBlock = false;
 		this.setInflated(true);
-		this.nullifyFireDirection();
+		this.removeFireDirection();
 		this.world.setEntityState(this, (byte) 38);
 	}
 	
@@ -957,11 +957,11 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	public boolean isAtCorrectRestLocation(Direction side) {
 		TileEntity te = side == Direction.DOWN ? this.isChild() ? this.world.getTileEntity(this.func_233580_cy_().up(1)) : this.world.getTileEntity(this.func_233580_cy_().up(2)) : this.isChild() ? this.world.getTileEntity(this.func_233580_cy_().offset(side.getOpposite())) : this.world.getTileEntity(this.func_233580_cy_().up(1).offset(side.getOpposite()));
-		if(te != this.getHive()) {
+		if (te != this.getHive()) {
 			return false;
 		}
 		
-		switch(side) {
+		switch (side) {
 			case UP:
 				return false;
 			case DOWN:
@@ -987,7 +987,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void handleStatusUpdate(byte id) {
-		if(id == 38) {
+		if (id == 38) {
 			this.stuckInBlock = false;
 		} else {
 			super.handleStatusUpdate(id);
@@ -998,7 +998,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public boolean isInRangeToRenderDist(double distance) {
 		double boundingBoxLength = this.getBoundingBox().getAverageEdgeLength() * 2.5D;
-		if(Double.isNaN(boundingBoxLength)) {
+		if (Double.isNaN(boundingBoxLength)) {
 			boundingBoxLength = 1.0D;
 		}
 
@@ -1009,13 +1009,13 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	public float getBrightness() {
 		BlockPos blockpos = new BlockPos(this.getPosX(), this.getPosY() + (double)this.getEyeHeight(), this.getPosZ());
-		if(this.stuckInBlock && !this.isInflated()) {
+		if (this.stuckInBlock && !this.isInflated()) {
 			boolean rotationFlag = true;
 			float[] rotations = this.getRotationController().getRotations(1.0F);
 			Direction horizontalOffset = Direction.fromAngle(rotations[0]).getOpposite();
 			Direction verticalOffset = (rotations[1] <= 180.0F && rotations[1] > 100.0F) ? Direction.UP : Direction.DOWN;
 			
-			if(rotations[1] >= 80.0F && rotations[1] <= 100.0F) {
+			if (rotations[1] >= 80.0F && rotations[1] <= 100.0F) {
 				rotationFlag = false;
 			}
 			
@@ -1039,7 +1039,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		super.updatePotionMetadata();
 		Collection<EffectInstance> effects = this.getActivePotionEffects();
 		
-		if(!effects.isEmpty()) {
+		if (!effects.isEmpty()) {
 			this.setColor(PotionUtils.getPotionColorFromEffectList(effects));
 		} else {
 			this.setColor(-1);
@@ -1071,17 +1071,17 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		
-		if(!this.isAlive() || this.isAggressive()) return ActionResultType.FAIL;
+		if (!this.isAlive() || this.isAggressive()) return ActionResultType.FAIL;
 	
-		if(item == Items.GLASS_BOTTLE) {
+		if (item == Items.GLASS_BOTTLE) {
 			this.playSound(SoundEvents.ITEM_BOTTLE_FILL_DRAGONBREATH, 1.0F, 1.0F);
 			itemstack.shrink(1);
 			ItemStack bottle = new ItemStack(EEItems.PUFFBUG_BOTTLE.get());
 			this.setBottleData(bottle);
         	
-			if(itemstack.isEmpty()) {
+			if (itemstack.isEmpty()) {
 				player.setHeldItem(hand, bottle);
-			} else if(!player.inventory.addItemStackToInventory(bottle)) {
+			} else if (!player.inventory.addItemStackToInventory(bottle)) {
 				player.dropItem(bottle, false);
 			}
 
@@ -1089,7 +1089,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			return ActionResultType.SUCCESS;
 		} else if(!this.hasStackToCreate() && this.hasLevitation()) {
 			ItemStack newStackToCreate = item == EEItems.BOLLOOM_FRUIT.get() ? new ItemStack(EEBlocks.BOLLOOM_BUD.get()) : this.isBreedingItem(itemstack) ? new ItemStack(EEBlocks.PUFFBUG_HIVE.get()) : null;
-			if(newStackToCreate != null) {
+			if (newStackToCreate != null) {
 				this.setStackToCreate(newStackToCreate);
 				this.consumeItemFromStack(player, itemstack);
 				return ActionResultType.CONSUME;
@@ -1104,37 +1104,37 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
 		Random rng = this.getRNG();
 		
-		if(dataTag != null) {
+		if (dataTag != null) {
 			int age = dataTag.getBoolean("IsChild") ? -24000 : 0;
 			
 			this.setGrowingAge(age);
 			this.teleportCooldown = dataTag.getInt("TeleportCooldown");
 			this.setFromBottle(dataTag.getBoolean("IsFromBottle"));
 			
-			if(dataTag.contains("ColorTag", 3)) {
+			if (dataTag.contains("ColorTag", 3)) {
 				this.setColor(dataTag.getInt("ColorTag"));
 			}
 			
-			if(dataTag.contains("CustomPotionEffects")) {
-				for(EffectInstance effectinstance : PotionUtils.getFullEffectsFromTag(dataTag)) {
+			if (dataTag.contains("CustomPotionEffects")) {
+				for (EffectInstance effectinstance : PotionUtils.getFullEffectsFromTag(dataTag)) {
 					this.addPotionEffect(effectinstance);
 				}
 			}
 		}
 		
-		if(reason == SpawnReason.STRUCTURE) {
+		if (reason == SpawnReason.STRUCTURE) {
 			this.ticksAwayFromHive = rng.nextInt(1500) + 1500;
 			
-			if(rng.nextFloat() < 0.1F) {
+			if (rng.nextFloat() < 0.1F) {
 				this.growingAge = -24000;
 			}
-		} else if(reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
-			if(rng.nextFloat() < 0.05F) {
+		} else if (reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
+			if (rng.nextFloat() < 0.05F) {
 				int swarmSize = rng.nextInt(11) + 10;
-				for(int i = 0; i < swarmSize; i++) {
+				for (int i = 0; i < swarmSize; i++) {
 					Vector3d spawnPos = Vector3d.func_237489_a_(this.func_233580_cy_()).add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
 					
-					if(this.world.isAirBlock(new BlockPos(spawnPos))) {
+					if (this.world.isAirBlock(new BlockPos(spawnPos))) {
 						PuffBugEntity swarmChild = EEEntities.PUFF_BUG.get().create(this.world);
 						swarmChild.setLocationAndAngles(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0.0F, 0.0F);
 						swarmChild.onInitialSpawn(this.world, this.world.getDifficultyForLocation(new BlockPos(spawnPos)), SpawnReason.EVENT, null, null);
@@ -1162,17 +1162,17 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	@Override
 	protected void collideWithEntity(Entity entity) {
 		if(!this.isInflated() && entity instanceof PuffBugEntity) {
-			if(entity instanceof PuffBugEntity) {
+			if (entity instanceof PuffBugEntity) {
 				return;
 			} else {
-				if(this.isProjectile()) {
-					if(entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
+				if (this.isProjectile()) {
+					if (entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
 						this.setInflated(true);
-						this.nullifyFireDirection();
+						this.removeFireDirection();
 						this.stuckInBlock = false;
 						
-						if(!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
-							for(EffectInstance effects : this.getActivePotionEffects()) {
+						if (!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
+							for (EffectInstance effects : this.getActivePotionEffects()) {
 								((LivingEntity) entity).addPotionEffect(effects);
 							}
 							this.clearActivePotions();
@@ -1273,12 +1273,12 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 
 		public void tick() {
-			if(!this.puffbug.isInflated()) {
+			if (!this.puffbug.isInflated()) {
 				this.puffbug.setAIMoveSpeed(0.0F);
 				return;
 			}
 			
-			if(this.action == MovementController.Action.MOVE_TO && !this.puffbug.getNavigator().noPath()) {
+			if (this.action == MovementController.Action.MOVE_TO && !this.puffbug.getNavigator().noPath()) {
 				double xDistance = this.posX - this.puffbug.getPosX();
 				double yDistance = this.posY - this.puffbug.getPosY();
 				double zDistance = this.posZ - this.puffbug.getPosZ();
@@ -1293,7 +1293,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				
 				float speed = (float) (this.speed * this.puffbug.getAttribute(Attributes.FLYING_SPEED).getValue());
 				
-				if(verticalVelocity < 0.0F) {
+				if (verticalVelocity < 0.0F) {
 					this.puffbug.setAIMoveSpeed(MathHelper.lerp(0.125F, this.puffbug.getAIMoveSpeed(), speed));
 					this.puffbug.setMotion(this.puffbug.getMotion().add(0.0D, (double) this.puffbug.getAIMoveSpeed() * verticalVelocity * 0.05D, 0.0D));
 					this.puffbug.setBoosting(false);
@@ -1319,7 +1319,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		public void processTeleportation() {
-			if(!this.hasNoDestination() && !this.world.isRemote) {
+			if (!this.hasNoDestination() && !this.world.isRemote) {
 				this.puffbug.getNavigator().clearPath();
 				NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.TELEPORT_TO_ANIMATION);
 				
@@ -1328,14 +1328,14 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		protected void bringToDestination() {
-			if(!this.world.isRemote) {
+			if (!this.world.isRemote) {
 				Direction side = this.puffbug.getTeleportHiveSide();
 				
 				float xOffset = side == null || side == Direction.DOWN ? 0.5F : this.getOffsetForDirection(side)[0];
 				float yOffset = side == Direction.DOWN ? this.puffbug.isChild() ? 0.45F : -0.15F : this.puffbug.isChild() ? 0.2F : -0.2F;
 				float zOffset = side == null || side == Direction.DOWN ? 0.5F : this.getOffsetForDirection(side)[1];
 				
-				if(side == null) {
+				if (side == null) {
 					NetworkUtil.teleportEntity(this.puffbug, this.destination.getX() + 0.5F, this.destination.getY() + 0.5F, this.destination.getZ() + 0.5F);
 				} else {
 					NetworkUtil.teleportEntity(this.puffbug, this.destination.getX() + xOffset, this.destination.getY() + yOffset, this.destination.getZ() + zOffset);
@@ -1346,7 +1346,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				this.puffbug.getNavigator().clearPath();
 				this.puffbug.setMotion(Vector3d.ZERO);
 				
-				if(side != null) {
+				if (side != null) {
 					this.puffbug.setDesiredHiveSide(side);
 					this.puffbug.setTeleportHiveSide(null);
 				}
@@ -1357,14 +1357,14 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		public boolean tryToCreateDesinationTo(BlockPos pos, @Nullable Direction direction) {
 			boolean directionFlag = direction != null ? this.world.isAirBlock(pos.offset(direction)) : true;
 			
-			if(direction != null && direction != Direction.DOWN) {
-				if(!this.world.isAirBlock(pos.up()) || !this.world.isAirBlock(pos.down())) {
+			if (direction != null && direction != Direction.DOWN) {
+				if (!this.world.isAirBlock(pos.up()) || !this.world.isAirBlock(pos.down())) {
 					directionFlag = false;
 				}
 			}
 			
-			if(this.puffbug.ticksExisted > 5 && this.world.isAirBlock(pos) && directionFlag && this.hasNoDestination()) {
-				if(this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos)).isEmpty()) {
+			if (this.puffbug.ticksExisted > 5 && this.world.isAirBlock(pos) && directionFlag && this.hasNoDestination()) {
+				if (this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos)).isEmpty()) {
 					this.destination = pos;
 					return true;
 				}
@@ -1412,17 +1412,17 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			this.prevYaw = this.yaw;
 			this.prevPitch = this.pitch;
 			
-			if(!this.rotating) {
+			if (!this.rotating) {
 				this.ticksSinceNotRotating++;
 				
-				if(this.ticksSinceNotRotating > 5) {
-					if(this.setYaw != 0.0F) {
+				if (this.ticksSinceNotRotating > 5) {
+					if (this.setYaw != 0.0F) {
 						this.startingYaw = this.yaw;
 					}
 				
-					if(this.setPitch != 0.0F) {
+					if (this.setPitch != 0.0F) {
 						this.startingPitch = this.pitch;
-						if(this.puffbug.isNoEndimationPlaying()) {
+						if (this.puffbug.isNoEndimationPlaying()) {
 							NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.ROTATE_ANIMATION);
 						}
 					}
@@ -1452,13 +1452,13 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		public void rotate(float yaw, float pitch, float roll, int tickLength) {
-			if(this.setYaw != yaw) {
+			if (this.setYaw != yaw) {
 				this.startingYaw = this.yaw;
 			}
 			
-			if(this.setPitch != pitch) {
+			if (this.setPitch != pitch) {
 				this.startingPitch = this.pitch;
-				if(tickLength >= 20 && this.puffbug.isNoEndimationPlaying()) {
+				if (tickLength >= 20 && this.puffbug.isNoEndimationPlaying()) {
 					NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.ROTATE_ANIMATION);
 				}
 			}
@@ -1469,7 +1469,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			this.rotating = true;
 			this.ticksSinceNotRotating = 0;
 			
-			if(!this.puffbug.world.isRemote) {
+			if (!this.puffbug.world.isRemote) {
 				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.puffbug), new RotateMessage(this.puffbug.getEntityId(), tickLength, yaw, pitch, roll));
 			}
 		}

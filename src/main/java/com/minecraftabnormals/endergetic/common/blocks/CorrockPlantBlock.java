@@ -68,7 +68,7 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-		if(!this.petrified && !this.isInProperDimension(world)) {
+		if (!this.petrified && !this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_OVERWORLD).get().getDefaultState());
 		}
 	}
@@ -77,14 +77,14 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 		if (facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos)) {
 			return Blocks.AIR.getDefaultState();
 		} else {
-			if(stateIn.get(WATERLOGGED)) {
+			if (stateIn.get(WATERLOGGED)) {
 				worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-				if(!this.petrified) {
+				if (!this.petrified) {
 					return EntityEvents.convertCorrockBlock(stateIn);
 				}
 			}
 			
-			if(!this.isInProperDimension(worldIn.getWorld())) {
+			if (!this.isInProperDimension(worldIn.getWorld())) {
 				worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 			}
 			return stateIn;

@@ -18,8 +18,8 @@ public class BoofloEatPuffBugGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.booflo.isPlayerNear(1.0F)) {
-			if(!this.booflo.isTamed()) {
+		if (this.booflo.isPlayerNear(1.0F)) {
+			if (!this.booflo.isTamed()) {
 				return false;
 			}
 		}
@@ -29,17 +29,17 @@ public class BoofloEatPuffBugGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		boolean flag = true;
-		if(!this.booflo.hasCaughtPuffBug()) {
-			if(this.booflo.getAnimationTick() < 140) {
+		if (!this.booflo.hasCaughtPuffBug()) {
+			if (this.booflo.getAnimationTick() < 140) {
 				flag = false;
 			}
 		}
 		
-		if(this.booflo.isPlayerNear(0.6F)) {
-			if(!this.booflo.isTamed()) {
+		if (this.booflo.isPlayerNear(0.6F)) {
+			if (!this.booflo.isTamed()) {
 				this.booflo.hopDelay = 0;
 				for(PlayerEntity players : this.booflo.getNearbyPlayers(0.6F)) {
-					if(!this.booflo.hasAggressiveAttackTarget()) {
+					if (!this.booflo.hasAggressiveAttackTarget()) {
 						this.booflo.setBoofloAttackTargetId(players.getEntityId());
 					}
 				}
@@ -64,13 +64,13 @@ public class BoofloEatPuffBugGoal extends Goal {
 
 	@Override
 	public void tick() {
-		if(this.soundDelay > 0) this.soundDelay--;
+		if (this.soundDelay > 0) this.soundDelay--;
 		
 		this.booflo.rotationYaw = this.originalYaw;
 		this.booflo.prevRotationYaw = this.originalYaw;
 		
-		if(this.booflo.isPlayerNear(1.0F) && this.soundDelay == 0) {
-			if(!this.booflo.isTamed()) {
+		if (this.booflo.isPlayerNear(1.0F) && this.soundDelay == 0) {
+			if (!this.booflo.isTamed()) {
 				this.booflo.playSound(this.booflo.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.booflo.getRNG().nextFloat() * 1.0, 0.95F, 1.0F));
 				this.soundDelay = 50;
 			}

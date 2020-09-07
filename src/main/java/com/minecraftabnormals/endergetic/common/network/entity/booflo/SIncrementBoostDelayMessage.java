@@ -33,7 +33,7 @@ public class SIncrementBoostDelayMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				Entity entity = context.getSender().world.getEntityByID(message.entityId);
-				if(entity instanceof BoofloEntity) {
+				if (entity instanceof BoofloEntity) {
 					((BoofloEntity) entity).setRideControlDelay(((BoofloEntity) entity).getRideControlDelay() + 10);
 					((BoofloEntity) entity).setPlayerBoosting(true);
 				}

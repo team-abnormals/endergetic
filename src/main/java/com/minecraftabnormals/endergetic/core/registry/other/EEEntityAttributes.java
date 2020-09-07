@@ -7,7 +7,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 
-public class EEEntityAttributes {
+public final class EEEntityAttributes {
 	
 	public static void putAttributes() {
 		GlobalEntityTypeAttributes.put(EEEntities.BOOFLO.get(),

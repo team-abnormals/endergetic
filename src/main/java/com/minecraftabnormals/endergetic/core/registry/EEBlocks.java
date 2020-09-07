@@ -39,8 +39,8 @@ import net.minecraftforge.fml.common.Mod;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EEBlocks {
-	public static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+public final class EEBlocks {
+	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
 	public static final RegistryObject<Block> CORROCK_OVERWORLD_BLOCK           = HELPER.createBlock("overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> PETRIFIED_CORROCK_OVERWORLD_BLOCK = HELPER.createBlock("petrified_overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), true), null);

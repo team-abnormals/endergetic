@@ -30,13 +30,13 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 	
 	@Override
 	public void tick() {
-		if(this.age % 5 == 0) {
+		if (this.age % 5 == 0) {
 			this.angle = (float) Math.random() * ((float) Math.PI * 2F);
 		}
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
-		if(this.age++ >= this.maxAge) {
+		if (this.age++ >= this.maxAge) {
 			this.setExpired();
 		} else {
 			this.motionY -= 0.04D * this.particleGravity;
@@ -57,7 +57,7 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 		int j = i & 255;
 		int k = i >> 16 & 255;
 		j += (int) (f * 15f * 16f);
-		if(j > 240) {
+		if (j > 240) {
 			j = 240;
 		}
 		return j | k << 16;

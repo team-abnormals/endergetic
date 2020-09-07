@@ -25,13 +25,13 @@ public class BoofloBoofGoal extends Goal {
 		boolean onGround = this.booflo.isOnGround();
 		boolean flagChance = !this.booflo.hasAggressiveAttackTarget() ? this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.getAnimationTick() == 20 : this.booflo.getAnimationTick() >= 20;
 		
-		if(this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
+		if (this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
 			return this.booflo.isNoEndimationPlaying();
 		}
 		
-		if(!onGround) {
-			if(this.shouldJumpForFall() && !this.booflo.isBoofed() && this.booflo.getRideControlDelay() <= 0) {
-				if(this.booflo.isBeingRidden()) {
+		if (!onGround) {
+			if (this.shouldJumpForFall() && !this.booflo.isBoofed() && this.booflo.getRideControlDelay() <= 0) {
+				if (this.booflo.isBeingRidden()) {
 					this.booflo.setDelayExpanding(true);
 					this.booflo.setDelayDecrementing(false);
 				}
@@ -54,12 +54,12 @@ public class BoofloBoofGoal extends Goal {
 	
 	private boolean shouldJumpForFall() {
 		BlockPos pos = this.booflo.func_233580_cy_();
-		for(int i = 0; i < 12; i++) {
+		for (int i = 0; i < 12; i++) {
 			pos = pos.down(i);
 			FluidState fluidState = this.booflo.world.getFluidState(pos);
-			if(!Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP) && i > 6 || fluidState.isTagged(FluidTags.LAVA)) {
+			if (!Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP) && i > 6 || fluidState.isTagged(FluidTags.LAVA)) {
 				return true;
-			} else if(Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP)) {
+			} else if (Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP)) {
 				return false;
 			}
 		}

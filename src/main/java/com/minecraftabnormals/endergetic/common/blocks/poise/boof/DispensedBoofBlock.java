@@ -104,9 +104,9 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 		if (!state.get(WATERLOGGED) && fluidStateIn.getFluid() == Fluids.WATER) {
 			if (!worldIn.isRemote()) {
 				worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(true)), 3);
-	            worldIn.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-	         }
-	         return true;
+				worldIn.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+			}
+			return true;
 		} else {
 			return false;
 	    }
@@ -116,5 +116,4 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
 	}
-	
 }

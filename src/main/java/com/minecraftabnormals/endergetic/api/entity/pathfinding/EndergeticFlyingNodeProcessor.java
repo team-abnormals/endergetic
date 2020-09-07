@@ -34,9 +34,9 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	public int func_222859_a(PathPoint[] pathPoints, PathPoint pathNode) {
 		int i = 0;
 
-		for(Direction direction : Direction.values()) {
+		for (Direction direction : Direction.values()) {
 			PathPoint pathpoint = this.getNode(pathNode.x + direction.getXOffset(), pathNode.y + direction.getYOffset(), pathNode.z + direction.getZOffset());
-			if(pathpoint != null && !pathpoint.visited) {
+			if (pathpoint != null && !pathpoint.visited) {
 				pathPoints[i++] = pathpoint;
 			}
 		}
@@ -68,11 +68,11 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 		PathPoint pathpoint = null;
 		PathNodeType pathnodetype = this.getPathNodeType(this.entity.world, x, y, z);
 		float f = this.entity.getPathPriority(pathnodetype);
-		if(f >= 0.0F) {
+		if (f >= 0.0F) {
 			pathpoint = super.openPoint(x, y, z);
 			pathpoint.nodeType = pathnodetype;
 			pathpoint.costMalus = Math.max(pathpoint.costMalus, f);
-			if(this.blockaccess.getFluidState(new BlockPos(x, y, z)).isEmpty()) {
+			if (this.blockaccess.getFluidState(new BlockPos(x, y, z)).isEmpty()) {
 				pathpoint.costMalus += 8.0F;
 			}
 		}
@@ -84,16 +84,16 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	private PathNodeType isFree(int x, int y, int z) {
 		BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
-		for(int i = x; i < x + this.entitySizeX; ++i) {
-			for(int j = y; j < y + this.entitySizeY; ++j) {
-				for(int k = z; k < z + this.entitySizeZ; ++k) {
+		for (int i = x; i < x + this.entitySizeX; ++i) {
+			for (int j = y; j < y + this.entitySizeY; ++j) {
+				for (int k = z; k < z + this.entitySizeZ; ++k) {
 					FluidState ifluidstate = this.blockaccess.getFluidState(blockpos$mutableblockpos.setPos(i, j, k));
 					BlockState blockstate = this.blockaccess.getBlockState(blockpos$mutableblockpos.setPos(i, j, k));
-					if(ifluidstate.isEmpty() && blockstate.allowsMovement(this.blockaccess, blockpos$mutableblockpos.down(), PathType.AIR) && blockstate.isAir()) {
+					if (ifluidstate.isEmpty() && blockstate.allowsMovement(this.blockaccess, blockpos$mutableblockpos.down(), PathType.AIR) && blockstate.isAir()) {
 						return PathNodeType.WALKABLE;
 					}
 
-					if(ifluidstate.isTagged(FluidTags.WATER)) {
+					if (ifluidstate.isTagged(FluidTags.WATER)) {
 						return PathNodeType.BLOCKED;
 					}
 				}
@@ -101,7 +101,7 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 		}
 
 		BlockState blockstate1 = this.blockaccess.getBlockState(blockpos$mutableblockpos);
-		if(blockstate1.allowsMovement(this.blockaccess, blockpos$mutableblockpos, PathType.AIR)) {
+		if (blockstate1.allowsMovement(this.blockaccess, blockpos$mutableblockpos, PathType.AIR)) {
 	         return PathNodeType.WALKABLE;
 		} else {
 			return PathNodeType.BLOCKED;

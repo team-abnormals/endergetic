@@ -23,7 +23,7 @@ public class GlowingPoiseLogBlock extends RotatedPillarBlock {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		if(rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty()) return;
+		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty()) return;
 		
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);

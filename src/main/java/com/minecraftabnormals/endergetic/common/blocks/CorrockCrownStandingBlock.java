@@ -57,7 +57,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!this.petrified && !this.isInProperDimension(world)) {
+		if (!this.petrified && !this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get().getDefaultState()
 				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
 				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
@@ -70,13 +70,13 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	}
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(stateIn.get(WATERLOGGED)) {
+		if (stateIn.get(WATERLOGGED)) {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-			if(!this.petrified) {
+			if (!this.petrified) {
 				return EntityEvents.convertCorrockBlock(stateIn);
 			}
 		}
-		if(!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
+		if (!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 		
@@ -90,7 +90,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 		if (!this.isInProperDimension(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
 		}
-		if(context.getWorld().getBlockState(context.getPos().down()).getBlock() instanceof CorrockCrownStandingBlock) {
+		if (context.getWorld().getBlockState(context.getPos().down()).getBlock() instanceof CorrockCrownStandingBlock) {
 			return null;
 		}
 		return direction == Direction.UP ? 

@@ -42,7 +42,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class EndergeticDragonFightManager extends DragonFightManager {
+public final class EndergeticDragonFightManager extends DragonFightManager {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(0.0D, 128.0D, 0.0D, 192.0D));
 	

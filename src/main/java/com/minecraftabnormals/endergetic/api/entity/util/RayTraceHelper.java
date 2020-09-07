@@ -67,7 +67,7 @@ public class RayTraceHelper {
 		Entity entity = null;
 		Vector3d Vector3d = null;
 
-		for(Entity entity1 : world.getEntitiesInAABBexcluding(p_221273_0_, p_221273_3_, p_221273_4_)) {
+		for (Entity entity1 : world.getEntitiesInAABBexcluding(p_221273_0_, p_221273_3_, p_221273_4_)) {
 			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)entity1.getCollisionBorderSize());
 			Optional<Vector3d> optional = axisalignedbb.rayTrace(p_221273_1_, p_221273_2_);
 			if (axisalignedbb.contains(p_221273_1_)) {

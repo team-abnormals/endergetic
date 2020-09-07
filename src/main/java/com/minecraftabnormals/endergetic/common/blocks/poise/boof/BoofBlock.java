@@ -71,7 +71,7 @@ public class BoofBlock extends ContainerBlock {
 	
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
-		if(entity instanceof PlayerEntity) {
+		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
 			player.entityCollisionReduction = Float.MAX_VALUE;
 			player.fallDistance = 0;
@@ -79,7 +79,7 @@ public class BoofBlock extends ContainerBlock {
 	}
 	
 	public static void doBoof(World world, BlockPos pos) {
-		if(!world.isRemote) {
+		if (!world.isRemote) {
 			BoofBlockEntity boofBlock = new BoofBlockEntity(world, pos);
 			world.addEntity(boofBlock);
 			
@@ -106,7 +106,7 @@ public class BoofBlock extends ContainerBlock {
 			this.func_239796_a_(true);
             BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
             BlockState blockstate = world.getBlockState(blockpos);
-            if(!blockstate.getMaterial().isReplaceable()) {
+            if (!blockstate.getMaterial().isReplaceable()) {
             	this.func_239796_a_(false);
             } else {
             	this.func_239796_a_(true);
@@ -114,14 +114,13 @@ public class BoofBlock extends ContainerBlock {
             
             if (this.func_239795_a_()) {
             	FluidState fluidstate = world.getFluidState(blockpos);
-            	if(fluidstate.getFluid() == Fluids.WATER) {
+            	if (fluidstate.getFluid() == Fluids.WATER) {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.WATERLOGGED, true).with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	} else {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));
             	}
             	world.playSound(null, blockpos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.rand.nextFloat() * 0.15F);
             }
-            
             return stack;
 		}
 		

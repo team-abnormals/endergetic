@@ -24,7 +24,7 @@ public class LayerRendererBoofloAdolescentFruit extends LayerRenderer<BoofloAdol
 	
 	@Override
 	public void render(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn, BoofloAdolescentEntity adolescent, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if(adolescent.hasFruit()) {
+		if (adolescent.hasFruit()) {
 			matrixStack.push();
 			matrixStack.translate(0.0F, 1.1F, -0.2F);
 			

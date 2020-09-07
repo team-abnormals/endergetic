@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;
 
-public class EndergeticRegistryHelper extends RegistryHelper {
+public final class EndergeticRegistryHelper extends RegistryHelper {
 
 	public EndergeticRegistryHelper(String modId) {
 		super(modId);

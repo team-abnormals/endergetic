@@ -28,7 +28,7 @@ public class PuffbugHiveHangerBlock extends Block {
 	
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
-		if(!(entity instanceof PuffBugEntity)) {
+		if (!(entity instanceof PuffBugEntity)) {
 			entity.setMotionMultiplier(state, new Vector3d(0.25D, 0.05D, 0.25D));
 		}
 	}
@@ -45,7 +45,7 @@ public class PuffbugHiveHangerBlock extends Block {
 	@Override
 	@SuppressWarnings("deprecation")
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(worldIn.getBlockState(currentPos.up()).isAir() || worldIn.getBlockState(currentPos.down()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
+		if (worldIn.getBlockState(currentPos.up()).isAir() || worldIn.getBlockState(currentPos.down()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
 			return Blocks.AIR.getDefaultState();
 		}
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);

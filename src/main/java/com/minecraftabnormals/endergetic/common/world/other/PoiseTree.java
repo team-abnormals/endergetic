@@ -9,7 +9,7 @@ import com.minecraftabnormals.endergetic.common.world.features.PoiseTreeFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
-public class PoiseTree extends EndergeticTree {
+public final class PoiseTree extends EndergeticTree {
 
 	@Override
 	@Nullable

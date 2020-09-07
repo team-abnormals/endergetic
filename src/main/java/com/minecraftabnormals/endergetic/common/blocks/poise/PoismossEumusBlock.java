@@ -31,18 +31,18 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 
 	@Override
 	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-		if(!worldIn.isRemote) {
-			if(!worldIn.isAreaLoaded(pos, 3)) return;
+		if (!worldIn.isRemote) {
+			if (!worldIn.isAreaLoaded(pos, 3)) return;
 			
-			if(!isLightCoveringPos(state, worldIn, pos)) {
+			if (!isLightCoveringPos(state, worldIn, pos)) {
 				worldIn.setBlockState(pos, EEBlocks.EUMUS.get().getDefaultState());
 			} else {
-				if(worldIn.getLight(pos.up()) >= 9) {
+				if (worldIn.getLight(pos.up()) >= 9) {
 					BlockState blockstate = this.getDefaultState();
 
-					for(int i = 0; i < 4; ++i) {
+					for (int i = 0; i < 4; ++i) {
 						BlockPos blockpos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-						if(worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() && shouldGrowOnto(blockstate, worldIn, blockpos)) {
+						if (worldIn.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() && shouldGrowOnto(blockstate, worldIn, blockpos)) {
 							worldIn.setBlockState(blockpos, EEBlocks.POISMOSS_EUMUS.get().getDefaultState());
 						}
 					}
@@ -72,11 +72,11 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 		BlockPos blockpos = pos.up();
 		BlockState blockstate = EEBlocks.POISE_BUSH.get().getDefaultState();
 
-		for(int i = 0; i < 128; ++i) {
+		for (int i = 0; i < 128; ++i) {
 			BlockPos blockpos1 = blockpos;
 			int j = 0;
 
-			while(true) {
+			while (true) {
 				if (j >= i / 16) {
 					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
@@ -90,18 +90,18 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 					BlockState blockstate1;
 					blockstate1 = blockstate;
 
-				if (blockstate1.isValidPosition(worldIn, blockpos1)) {
-					worldIn.setBlockState(blockpos1, blockstate1, 3);
+					if (blockstate1.isValidPosition(worldIn, blockpos1)) {
+						worldIn.setBlockState(blockpos1, blockstate1, 3);
+					}
+					break;
 				}
-				break;
-			}
 
-			blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
-			if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isOpaqueCube(worldIn, blockpos1)) {
-				break;
-			}
+				blockpos1 = blockpos1.add(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
+				if (worldIn.getBlockState(blockpos1.down()).getBlock() != this || worldIn.getBlockState(blockpos1).isOpaqueCube(worldIn, blockpos1)) {
+					break;
+				}
 
-			++j;
+				j++;
 			}
 		}
 	}

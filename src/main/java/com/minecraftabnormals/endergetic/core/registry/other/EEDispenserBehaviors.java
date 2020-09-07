@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 
-public class EEDispenserBehaviors {
+public final class EEDispenserBehaviors {
 	
 	static DefaultDispenseItemBehavior spawnEggItemBehavior = new DefaultDispenseItemBehavior() {
     	

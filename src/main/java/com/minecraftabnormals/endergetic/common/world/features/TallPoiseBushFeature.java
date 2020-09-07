@@ -8,6 +8,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
@@ -29,9 +30,9 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		boolean flag = false;
 
-		for(int i = 0; i < 64; ++i) {
+		for (int i = 0; i < 64; ++i) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-			if (!isNearBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && POISE_BUSH_TALL.get().isValidPosition(world, blockpos)) {
+			if (!isTouchingBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && POISE_BUSH_TALL.get().isValidPosition(world, blockpos)) {
 				((PoiseTallBushBlock) POISE_BUSH_TALL.get().getBlock()).placeAt(world, blockpos, 2);
 				flag = true;
 			}
@@ -40,10 +41,13 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 		return flag;
 	}
 	
-	protected boolean isNearBolloomBud(IWorld world, BlockPos pos) {
-		if(world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD.get()
-			|| world.getBlockState(pos.north().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west().up()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
-			return true;
+	private boolean isTouchingBolloomBud(IWorld world, BlockPos pos) {
+		BlockPos.Mutable mutable = pos.func_239590_i_();
+		for (Direction direction : Direction.Plane.HORIZONTAL) {
+			BlockPos offset = mutable.offset(direction);
+			if (world.getBlockState(offset).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(offset.up()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -30,7 +30,7 @@ public class CorrockCrownSBlockItem extends BlockItem {
 		IWorldReader iworldreaderbase = context.getWorld();
 		BlockPos blockpos = context.getPos();
 
-		for(Direction enumfacing : context.getNearestLookingDirections()) {
+		for (Direction enumfacing : context.getNearestLookingDirections()) {
 	        BlockState iblockstate2 = enumfacing == Direction.UP || enumfacing == Direction.DOWN ? this.getBlock().getStateForPlacement(context) : iblockstate;
 	        if (iblockstate2 != null && iblockstate2.isValidPosition(iworldreaderbase, blockpos)) {
 	        	iblockstate1 = iblockstate2;
@@ -41,6 +41,7 @@ public class CorrockCrownSBlockItem extends BlockItem {
 		return iblockstate1 != null && iworldreaderbase.func_226663_a_(iblockstate1, blockpos, ISelectionContext.dummy()) ? iblockstate1 : null;
 	}
 
+	@Override
 	public void addToBlockToItemMap(Map<Block, Item> blockToItemMap, Item itemIn) {
 		super.addToBlockToItemMap(blockToItemMap, itemIn);
 		blockToItemMap.put(this.wallBlock.get(), itemIn);

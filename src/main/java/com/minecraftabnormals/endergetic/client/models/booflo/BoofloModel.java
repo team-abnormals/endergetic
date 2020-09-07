@@ -127,7 +127,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
     	this.animateModel(this.entity);
     	
-    	if(this.entity.isBoofed()) {
+    	if (this.entity.isBoofed()) {
     		this.HeadInflated.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     	} else {
     		this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -140,7 +140,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     	
     	this.revertBoxesToDefaultValues();
     	
-    	if(booflo.isBoofed()) {
+    	if (booflo.isBoofed()) {
     		this.HeadInflated.rotateAngleY = netHeadYaw * (float) (Math.PI / 180F);
     		this.HeadInflated.rotateAngleX = headPitch * (float) (Math.PI / 180F);
     	
@@ -152,7 +152,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     public void animateModel(E booflo) {
     	super.animateModel(booflo);
     	
-    	if(booflo.isEndimationPlaying(BoofloEntity.CROAK)) {
+    	if (booflo.isEndimationPlaying(BoofloEntity.CROAK)) {
     		this.setEndimationToPlay(BoofloEntity.CROAK);
     		
     		this.startKeyframe(5);
@@ -164,7 +164,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.startKeyframe(5);
     		this.rotate(this.Jaw, -0.0F, 0.0F, 0.0F);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.HOP)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.HOP)) {
     		this.setEndimationToPlay(BoofloEntity.HOP);
     		
     		this.startKeyframe(10);
@@ -202,7 +202,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		 */
     		this.startKeyframe(10);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.HURT)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.HURT)) {
     		this.setEndimationToPlay(BoofloEntity.HURT);
     		
     		this.startKeyframe(5);
@@ -227,7 +227,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		 */
     		this.startKeyframe(5);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.BIRTH)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.BIRTH)) {
     		this.setEndimationToPlay(BoofloEntity.BIRTH);
     		
     		this.startKeyframe(10);
@@ -239,7 +239,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.startKeyframe(10);
     		this.rotate(this.Head, 0.00F, 0.0F, 0.0F);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.EAT)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.EAT)) {
     		this.setEndimationToPlay(BoofloEntity.EAT);
     		
     		/*
@@ -382,7 +382,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		 * End
     		 */
     		this.resetKeyframe(20);
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.GROWL)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.GROWL)) {
     		this.setEndimationToPlay(BoofloEntity.GROWL);
     		
     		this.startKeyframe(10);
@@ -394,7 +394,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.startKeyframe(5);
     		this.rotate(this.Jaw, -0.0F, 0.0F, 0.0F);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.INFLATE)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.INFLATE)) {
     		this.setEndimationToPlay(BoofloEntity.INFLATE);
     		
     		this.startKeyframe(5);
@@ -413,7 +413,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.startKeyframe(5);
     		this.scale(this.HeadInflated, 0.0F, 0.0F, 0.0F);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.SWIM)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.SWIM)) {
     		this.setEndimationToPlay(BoofloEntity.SWIM);
     		
     		this.startKeyframe(10);
@@ -432,12 +432,8 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.move(this.HeadInflated, 0.0F, -0.3F, 0.0F);
     		this.endKeyframe();
     		
-    		/*
-    		 * Returns to defaults
-    		 */
-    		this.startKeyframe(10);
-    		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.CHARGE)) {
+    		this.resetKeyframe(10);
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.CHARGE)) {
     		this.setEndimationToPlay(BoofloEntity.CHARGE);
     		
     		this.startKeyframe(15);
@@ -452,7 +448,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
     		this.endKeyframe();
     		
     		this.setStaticKeyframe(60);
-    	} else if(booflo.isEndimationPlaying(BoofloEntity.SLAM)) {
+    	} else if (booflo.isEndimationPlaying(BoofloEntity.SLAM)) {
     		this.setEndimationToPlay(BoofloEntity.SLAM);
     		
     		this.startKeyframe(4);

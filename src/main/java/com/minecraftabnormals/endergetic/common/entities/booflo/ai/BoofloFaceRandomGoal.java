@@ -25,12 +25,12 @@ public class BoofloFaceRandomGoal extends Goal {
 
 	@Override
 	public void tick() {
-		if(this.nextRandomizeTime-- <= 0) {
+		if (this.nextRandomizeTime-- <= 0) {
 			this.nextRandomizeTime = 30 + this.booflo.getRNG().nextInt(60);
 			this.chosenDegrees = this.booflo.getRNG().nextInt(360);
 		}
 
-		if(booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(this.chosenDegrees, false);
 		}
 	}

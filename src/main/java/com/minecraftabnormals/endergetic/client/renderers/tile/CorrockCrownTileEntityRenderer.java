@@ -42,7 +42,7 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCr
 		
 		matrixStack.push();
 		
-		if(isStanding) {
+		if (isStanding) {
 			matrixStack.translate(0.5F, 1.5F, 0.5F);
 			float angle = -((float) (state.get(StandingSignBlock.ROTATION) * 360) / 16.0F);
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(angle));
@@ -54,13 +54,13 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCr
 			matrixStack.translate(0.0F, -0.4F, 0.05F);
 		}
 		
-		if(isStanding && state.get(CorrockCrownStandingBlock.UPSIDE_DOWN)) {
+		if (isStanding && state.get(CorrockCrownStandingBlock.UPSIDE_DOWN)) {
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, 2.0F, 0.0F);
 		}
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 		
-		if(isStanding) {
+		if (isStanding) {
 			IVertexBuilder ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
 			this.standingModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		} else {
@@ -73,9 +73,9 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCr
 	
 	public int getTexture(CorrockCrownTileEntity te) {
 		Block block = te.getBlockState().getBlock();
-		if(block == EEBlocks.CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.CORROCK_CROWN_END_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()) {
+		if (block == EEBlocks.CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.CORROCK_CROWN_END_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()) {
 			return 0;
-		} else if(block == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.CORROCK_CROWN_NETHER_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get()) {
+		} else if (block == EEBlocks.CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.CORROCK_CROWN_NETHER_WALL.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get() || block == EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get()) {
 			return 1;
 		} else {
 			return 2;

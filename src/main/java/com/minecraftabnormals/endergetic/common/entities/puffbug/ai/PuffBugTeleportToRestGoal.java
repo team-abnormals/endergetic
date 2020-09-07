@@ -21,12 +21,12 @@ public class PuffBugTeleportToRestGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.getAttackTarget() == null && this.puffbug.wantsToRest() && this.puffbug.getRNG().nextInt(50) == 0 && !this.puffbug.isInLove() && !this.puffbug.hasLevitation() && this.puffbug.getAttachedHiveSide() == Direction.UP && this.puffbug.getHive() != null && this.puffbug.getPollinationPos() == null && this.puffbug.getTeleportController().canTeleport()) {
+		if (this.puffbug.getAttackTarget() == null && this.puffbug.wantsToRest() && this.puffbug.getRNG().nextInt(50) == 0 && !this.puffbug.isInLove() && !this.puffbug.hasLevitation() && this.puffbug.getAttachedHiveSide() == Direction.UP && this.puffbug.getHive() != null && this.puffbug.getPollinationPos() == null && this.puffbug.getTeleportController().canTeleport()) {
 			PuffBugHiveTileEntity hive = this.puffbug.getHive();
-			for(Direction directions : Direction.values()) {
-				if(HiveOccupantData.isHiveSideEmpty(hive, directions)) {
+			for (Direction directions : Direction.values()) {
+				if (HiveOccupantData.isHiveSideEmpty(hive, directions)) {
 					BlockPos offset = hive.getPos().offset(directions);
-					if(!hive.isSideBeingTeleportedTo(directions) && this.puffbug.getTeleportController().tryToCreateDesinationTo(offset, directions)) {
+					if (!hive.isSideBeingTeleportedTo(directions) && this.puffbug.getTeleportController().tryToCreateDesinationTo(offset, directions)) {
 						this.puffbug.setTeleportHiveSide(directions);
 						hive.setBeingTeleportedToBy(this.puffbug, directions);
 						return true;

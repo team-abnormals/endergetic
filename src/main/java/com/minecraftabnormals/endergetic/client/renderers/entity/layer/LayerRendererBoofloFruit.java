@@ -25,7 +25,7 @@ public class LayerRendererBoofloFruit extends LayerRenderer<BoofloEntity, Entity
 	
 	@Override
 	public void render(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn, BoofloEntity booflo, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if(booflo.hasCaughtFruit() && !booflo.isBoofed() && booflo.isEndimationPlaying(BoofloEntity.EAT) && booflo.getAnimationTick() > 20) {
+		if (booflo.hasCaughtFruit() && !booflo.isBoofed() && booflo.isEndimationPlaying(BoofloEntity.EAT) && booflo.getAnimationTick() > 20) {
 			matrixStack.push();
 			
 			Vector3d fruitPos = (new Vector3d(-1.25D, 0.0D, 0.0D)).rotateYaw(-netHeadYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));

@@ -76,7 +76,7 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 		double offset = direction == Direction.UP ? 0.1D : direction == Direction.DOWN ? 1D : 0.5D;
 		double xOffset;
 		double zOffset;
-		switch(direction) {
+		switch (direction) {
 			default:
 			case NORTH:
 				xOffset = 0.5D;
@@ -95,14 +95,14 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 				zOffset = 0.5D;
 				break;
 		}
-		if(direction == Direction.UP || direction == Direction.DOWN) {
+		if (direction == Direction.UP || direction == Direction.DOWN) {
 			xOffset = 0.55D;
 			zOffset = 0.55D;
 		}
 		double d0 = pos.getX() + xOffset - (double)(rand.nextFloat() * 0.1F);
 		double d1 = pos.getY() + offset - (double)(rand.nextFloat() * 0.1F);
 		double d2 = pos.getZ() + zOffset - (double)(rand.nextFloat() * 0.1F);
-		if(rand.nextFloat() <= 0.65F) {
+		if (rand.nextFloat() <= 0.65F) {
 			worldIn.addParticle(ParticleTypes.DRAGON_BREATH, d0, d1 + direction.getYOffset(), d2, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D);
 		}
 	}

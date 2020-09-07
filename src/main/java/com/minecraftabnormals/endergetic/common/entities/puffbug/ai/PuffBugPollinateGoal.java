@@ -20,9 +20,9 @@ public class PuffBugPollinateGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(this.puffbug.getPollinationPos() != null) {
+		if (this.puffbug.getPollinationPos() != null) {
 			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
-			if(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
+			if (te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
 				return true;
 			}
 		}
@@ -31,9 +31,9 @@ public class PuffBugPollinateGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		if(this.puffbug.getPollinationPos() != null) {
+		if (this.puffbug.getPollinationPos() != null) {
 			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
-			if(!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
+			if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 				return false;
 			}
 		} else {

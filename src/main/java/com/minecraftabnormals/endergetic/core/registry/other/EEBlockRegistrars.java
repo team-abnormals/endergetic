@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 
-public class EEBlockRegistrars {
+public final class EEBlockRegistrars {
 	public static void registerFireInfo() {
 		DataUtils.registerFlammable(EEBlocks.POISE_PLANKS.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_SLAB.get(), 5, 20);
@@ -40,7 +40,7 @@ public class EEBlockRegistrars {
 		setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
 	}
 	
-	private static synchronized void setRenderLayer(Block block, RenderType type) {
+	private static void setRenderLayer(Block block, RenderType type) {
 		RenderTypeLookup.setRenderLayer(block, type::equals);
 	}
 }

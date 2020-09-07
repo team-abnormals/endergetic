@@ -8,7 +8,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 
-public class EETags {
+public final class EETags {
 	
 	public static class Items {
 		@SuppressWarnings("unused")

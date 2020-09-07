@@ -37,22 +37,22 @@ public class AdolescentAttackGoal extends Goal {
 
 	public boolean shouldExecute() {
 		long i = this.attacker.world.getGameTime();
-		if(i - this.field_220720_k < 20L) {
+		if (i - this.field_220720_k < 20L) {
 			return false;
-		} else if(!this.attacker.isHungry()) {
+		} else if (!this.attacker.isHungry()) {
 			return false;
 		} else {
 			this.field_220720_k = i;
 			Entity target = this.attacker.getBoofloAttackTarget();
-			if(target == null) {
+			if (target == null) {
 				return false;
-			} else if(!target.isAlive()) {
+			} else if (!target.isAlive()) {
 				return false;
-			} else if(this.attacker.hasFruit()) {
+			} else if (this.attacker.hasFruit()) {
 				return false;
 			} else {
-				if(canPenalize) {
-					if(--this.delayCounter <= 0) {
+				if (this.canPenalize) {
+					if (--this.delayCounter <= 0) {
 						this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
 						this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 						return this.path != null;
@@ -61,7 +61,7 @@ public class AdolescentAttackGoal extends Goal {
 					}
 				}
 				this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
-				if(this.path != null) {
+				if (this.path != null) {
 					return true;
 				} else {
 					return this.getAttackReachSqr(target) >= this.attacker.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
@@ -72,17 +72,17 @@ public class AdolescentAttackGoal extends Goal {
 	
 	public boolean shouldContinueExecuting() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		if(target == null) {
+		if (target == null) {
 			return false;
-		} else if(!target.isAlive()) {
+		} else if (!target.isAlive()) {
 			return false;
-		} else if(this.attacker.hasFruit()) {
+		} else if (this.attacker.hasFruit()) {
 			return false;
-		} else if(!this.attacker.isHungry()) {
+		} else if (!this.attacker.isHungry()) {
 			return false;
-		} else if(!this.longMemory) {
+		} else if (!this.longMemory) {
 			return !this.attacker.getNavigator().noPath();
-		} else if(!this.attacker.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
+		} else if (!this.attacker.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -97,7 +97,7 @@ public class AdolescentAttackGoal extends Goal {
 	  
 	public void resetTask() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		if(!EntityPredicates.CAN_AI_TARGET.test(target)) {
+		if (!EntityPredicates.CAN_AI_TARGET.test(target)) {
 			this.attacker.setBoofloAttackTarget(null);
 		}
 		this.attacker.setAggroed(false);
@@ -112,20 +112,20 @@ public class AdolescentAttackGoal extends Goal {
 		
 		this.delayCounter--;
 		
-		if((this.longMemory || this.attacker.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
+		if ((this.longMemory || this.attacker.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
 			this.targetX = target.getPosX();
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.getPosZ();
 			
 			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
 			
-			if(distToEnemySqr > 1024.0D) {
+			if (distToEnemySqr > 1024.0D) {
 				this.delayCounter += 10;
-			} else if(distToEnemySqr > 256.0D) {
+			} else if (distToEnemySqr > 256.0D) {
 	            this.delayCounter += 5;
 			}
 
-			if(!this.attacker.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
+			if (!this.attacker.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
 				this.delayCounter += 15;
 			}
 		}
@@ -136,10 +136,10 @@ public class AdolescentAttackGoal extends Goal {
 
 	protected void tryToCapturePrey(Entity prey, double distToEnemySqr) {
 		double attackReach = this.getAttackReachSqr(prey);
-		if (distToEnemySqr <= attackReach && this.attackTick <= 0) {
+		if  (distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
 			this.attacker.setHasFruit(true);
-			if (prey instanceof BolloomFruitEntity) {
+			if  (prey instanceof BolloomFruitEntity) {
 				((BolloomFruitEntity) prey).onBroken(false);
 				prey.remove();
 			}
@@ -155,8 +155,8 @@ public class AdolescentAttackGoal extends Goal {
 		BlockPos pos = entity.func_233580_cy_();
 		for(int y = 0; y < 8; y++) {
 			pos = pos.down(y);
-			if(!entity.getEntityWorld().isRemote) {
-				if(entity.getEntityWorld().getBlockState(pos).isSolid() || !entity.getEntityWorld().getBlockState(pos).getFluidState().isEmpty()) {
+			if (!entity.getEntityWorld().isRemote) {
+				if (entity.getEntityWorld().getBlockState(pos).isSolid() || !entity.getEntityWorld().getBlockState(pos).getFluidState().isEmpty()) {
 					return this.attacker.getNavigator().getPathToPos(pos, 0);
 				}
 			}

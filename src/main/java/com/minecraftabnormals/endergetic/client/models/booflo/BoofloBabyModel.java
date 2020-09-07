@@ -60,12 +60,12 @@ public class BoofloBabyModel<E extends BoofloBabyEntity> extends EndimatorEntity
     	
     	this.Head.rotateAngleX = headPitch * (float) (Math.PI / 180F);
     	
-    	if(entityIn.isBeingBorn()) {
+    	if (entityIn.isBeingBorn()) {
     		float angle = MathHelper.lerp(ClientInfo.getPartialTicks(), (180 % 360), (180 % 360));
     		this.Head.rotateAngleX = angle * (float) (Math.PI / 180F);
     	}
 		
-		if(entityIn.isMoving()) {
+		if (entityIn.isMoving()) {
 			this.Head.rotateAngleY += -1.1F * 0.2F * MathHelper.sin(0.55F * ageInTicks);
 		}
 		

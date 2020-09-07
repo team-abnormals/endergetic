@@ -36,7 +36,7 @@ public class PoiseClusterBlock extends Block {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		if(rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty()) return;
+		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty()) return;
 		
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -52,16 +52,16 @@ public class PoiseClusterBlock extends Block {
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		ItemStack stack = player.getHeldItemMainhand();
 		Item item = stack.getItem();
-		if(!(item instanceof ShearsItem)) {
-			if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
-				if(!world.isRemote) {
+		if (!(item instanceof ShearsItem)) {
+			if (world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
+				if (!world.isRemote) {
 					PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
 					world.addEntity(cluster);
 					
 					Random rand = player.getRNG();
 					
-					for(int i = 0; i < 8; i++) {
+					for (int i = 0; i < 8; i++) {
 						double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 						double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 					
@@ -84,13 +84,13 @@ public class PoiseClusterBlock extends Block {
 	@Override
 	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
 		BlockPos pos = hit.getPos();
-		if(world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos.up())).isEmpty()) {
-			if(!world.isRemote) {
+		if (world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos.up())).isEmpty()) {
+			if (!world.isRemote) {
 				PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 				cluster.setBlocksToMoveUp(10);
 				world.addEntity(cluster);
 				
-				if(projectile instanceof ArrowEntity) {
+				if (projectile instanceof ArrowEntity) {
 					projectile.remove();
 				}
 				
@@ -98,7 +98,7 @@ public class PoiseClusterBlock extends Block {
 				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
 					
 				Random rand = new Random();
-				for(int i = 0; i < 8; i++) {
+				for (int i = 0; i < 8; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 					

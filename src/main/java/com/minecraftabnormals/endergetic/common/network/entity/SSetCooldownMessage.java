@@ -50,25 +50,26 @@ public class SSetCooldownMessage {
 	}
 	
 	public static void handle(SSetCooldownMessage message, Supplier<NetworkEvent.Context> ctx) {
-		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
-			ctx.get().enqueueWork(() -> {
+		NetworkEvent.Context context = ctx.get();
+		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+			context.enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
-				if(message.isVest) {
+				if (message.isVest) {
 					ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
+					if (!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
 						player.getCooldownTracker().setCooldown(vest.getItem(), SSetCooldownMessage.getDelayForBoofedAmount(vest));
 					}
 				}
 			});
-			ctx.get().setPacketHandled(true);
+			context.setPacketHandled(true);
 		}
 	}
 	
 	public static int getDelayForBoofedAmount(ItemStack stack) {
-		if(stack.hasTag()) {
-			if(stack.getTag().getInt("timesBoofed") < 5) {
+		if (stack.hasTag()) {
+			if (stack.getTag().getInt("timesBoofed") < 5) {
 				return 7;
-			} else if(stack.getTag().getInt("timesBoofed") > 4) {
+			} else if (stack.getTag().getInt("timesBoofed") > 4) {
 				return (int) (0.5 * (stack.getTag().getInt("timesBoofed")) * 20);
 			}
 		}

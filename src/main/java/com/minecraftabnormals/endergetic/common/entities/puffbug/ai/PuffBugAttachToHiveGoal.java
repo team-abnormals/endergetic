@@ -17,8 +17,8 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		Direction side = this.puffbug.getDesiredHiveSide();
-		if(side != null && this.puffbug.getHive() != null) {
-			if(this.puffbug.isAtCorrectRestLocation(side)) {
+		if (side != null && this.puffbug.getHive() != null) {
+			if (this.puffbug.isAtCorrectRestLocation(side)) {
 				return true;
 			}
 		}
@@ -42,7 +42,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 		
 		this.puffbug.setMotion(this.puffbug.getMotion().mul(1.0F, 0.0F, 1.0F));
 		
-		if(this.ticksPassed > 25) {
+		if (this.ticksPassed > 25) {
 			this.puffbug.setAttachedHiveSide(this.puffbug.getDesiredHiveSide());
 			this.puffbug.setDesiredHiveSide(null);
 		}

@@ -55,7 +55,6 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 				worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(true)), 3);
 	            worldIn.getPendingFluidTicks().scheduleTick(pos, fluidStateIn.getFluid(), fluidStateIn.getFluid().getTickRate(worldIn));
 			}
-			
 	        return true;
 		} else {
 			return false;

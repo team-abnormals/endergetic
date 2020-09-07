@@ -17,7 +17,7 @@ import net.minecraft.world.gen.layer.ZoomLayer;
 import net.minecraft.world.gen.layer.traits.IAreaTransformer0;
 import net.minecraft.world.gen.layer.traits.IAreaTransformer1;
 
-public class EndergeticLayerUtil {
+public final class EndergeticLayerUtil {
 
 	public static <T extends IArea, C extends IExtendedNoiseRandom<T>> IAreaFactory<T> createBiomeFactory(IAreaFactory<T> landFactory, LongFunction<C> contextFactory) {
 		IAreaFactory<T> biomeFactory = EndergeticGenLayerBiome.INSTANCE.apply(contextFactory.apply(1L));
@@ -30,7 +30,7 @@ public class EndergeticLayerUtil {
 		
 		IAreaFactory<T> biomesFactory = createBiomeFactory(landFactory, contextFactory);
 		
-		for(int i = 0; i < 3; i++) {
+		for (int i = 0; i < 3; i++) {
 			biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1000L + (long) i), biomesFactory);
 		}
 		
@@ -41,15 +41,13 @@ public class EndergeticLayerUtil {
 	}
 	
 	public static Layer[] createGenLayers(long seed) {
-		ImmutableList<IAreaFactory<LazyArea>> factoryList = createAreaFactories((seedModifier) -> {
-			return new LazyAreaContextEndergetic(25, seed, seedModifier);
-		});
+		ImmutableList<IAreaFactory<LazyArea>> factoryList = createAreaFactories((seedModifier) -> new LazyAreaContextEndergetic(25, seed, seedModifier));
 		Layer biomesLayer = new Layer(factoryList.get(0));
 		Layer voroniZoomBiomesLayer = new Layer(factoryList.get(1));
 		Layer biomesLayer2 = new Layer(factoryList.get(2));
 		return new Layer[] {
-			biomesLayer, 
-			voroniZoomBiomesLayer, 
+			biomesLayer,
+			voroniZoomBiomesLayer,
 			biomesLayer2
 		};
 	}
@@ -107,4 +105,5 @@ public class EndergeticLayerUtil {
 			return p_215722_1_ >> 2;
 		}
 	}
+
 }

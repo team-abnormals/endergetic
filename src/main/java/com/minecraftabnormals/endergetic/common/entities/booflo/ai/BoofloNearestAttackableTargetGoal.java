@@ -39,14 +39,14 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	public boolean shouldExecute() {
-		if(this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0) {
+		if (this.targetChance > 0 && this.goalOwner.getRNG().nextInt(this.targetChance) != 0) {
 	         return false;
-		} else if(this.goalOwner instanceof BoofloAdolescentEntity && !((BoofloAdolescentEntity)this.goalOwner).isHungry()) {
+		} else if (this.goalOwner instanceof BoofloAdolescentEntity && !((BoofloAdolescentEntity)this.goalOwner).isHungry()) {
 			return false;
-		} else if(this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).getBoofloAttackTarget() != null || !((BoofloEntity)this.goalOwner).isBoofed() || !((BoofloEntity)this.goalOwner).isHungry())) {
+		} else if (this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).getBoofloAttackTarget() != null || !((BoofloEntity)this.goalOwner).isBoofed() || !((BoofloEntity)this.goalOwner).isHungry())) {
 			return false;
 		} else {
-			if(this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).isTamed() && this.targetClass == PuffBugEntity.class)) {
+			if (this.goalOwner instanceof BoofloEntity && (((BoofloEntity) this.goalOwner).isTamed() && this.targetClass == PuffBugEntity.class)) {
 				return false;
 			}
 			
@@ -64,7 +64,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	public void startExecuting() {
-		if(this.goalOwner instanceof BoofloEntity) {
+		if (this.goalOwner instanceof BoofloEntity) {
 			((BoofloEntity) this.goalOwner).setBoofloAttackTargetId(this.nearestTarget.getEntityId());
 		} else {
 			((BoofloAdolescentEntity) this.goalOwner).setBoofloAttackTarget(this.nearestTarget);
@@ -82,10 +82,10 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 		double d0 = -1.0D;
 		E e = null;
 
-		for(E e1 : p_217361_1_) {
-			if(this.canTarget(attacker, e1)) {
+		for (E e1 : p_217361_1_) {
+			if (this.canTarget(attacker, e1)) {
 				double d1 = e1.getDistanceSq(p_217361_4_, p_217361_6_, p_217361_8_);
-				if(d0 == -1.0D || d1 < d0) {
+				if (d0 == -1.0D || d1 < d0) {
 					d0 = d1;
 					e = e1;
 				}
@@ -96,32 +96,32 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 	
 	public boolean canTarget(@Nullable LivingEntity attacker, Entity target) {
-		if(attacker == target) {
+		if (attacker == target) {
 			return false;
-		} else if(target.isSpectator()) {
+		} else if (target.isSpectator()) {
 			return false;
-		} else if(!target.isAlive()) {
+		} else if (!target.isAlive()) {
 			return false;
-		} else if(target.isInvulnerable()) {
+		} else if (target.isInvulnerable()) {
 			return false;
 		} else {
-			if(attacker != null) {
-				if(!attacker.canAttack(target.getType())) {
+			if (attacker != null) {
+				if (!attacker.canAttack(target.getType())) {
 					return false;
 				}
-				if(attacker.isOnSameTeam(target)) {
+				if (attacker.isOnSameTeam(target)) {
 					return false;
 				}
 			
-				if(this.getTargetDistance() > 0.0D) {
+				if (this.getTargetDistance() > 0.0D) {
 					double d1 = this.getTargetDistance();
 					double d2 = attacker.getDistanceSq(target.getPosX(), target.getPosY(), target.getPosZ());
-					if(d2 > d1 * d1) {
+					if (d2 > d1 * d1) {
 						return false;
 					}
 				}
 
-				if(attacker instanceof MobEntity && !((MobEntity)attacker).getEntitySenses().canSee(target)) {
+				if (attacker instanceof MobEntity && !((MobEntity)attacker).getEntitySenses().canSee(target)) {
 					return false;
 				}
 			}

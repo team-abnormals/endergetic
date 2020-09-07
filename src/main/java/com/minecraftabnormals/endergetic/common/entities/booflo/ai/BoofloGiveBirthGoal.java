@@ -39,7 +39,7 @@ public class BoofloGiveBirthGoal extends Goal {
 	
 	@Override
 	public void resetTask() {
-		if(this.birthTicks >= 70) {
+		if (this.birthTicks >= 70) {
 			this.mother.setPregnant(false);
 		}
 		this.mother.hopDelay = this.mother.getDefaultGroundHopDelay();
@@ -52,7 +52,7 @@ public class BoofloGiveBirthGoal extends Goal {
 		
 		this.mother.rotationYaw = this.originalYaw;
 	
-		if(this.birthTicks % 20 == 0 && this.birthTicks > 0 && this.birthTicks < 70) {
+		if (this.birthTicks % 20 == 0 && this.birthTicks > 0 && this.birthTicks < 70) {
 			World world = this.mother.world;
 			Random rand = this.mother.getRNG();
 			

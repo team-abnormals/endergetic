@@ -11,8 +11,8 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EETileEntities {
-	public static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+public final class EETileEntities {
+	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
 	public static final RegistryObject<TileEntityType<CorrockCrownTileEntity>> CORROCK_CROWN = HELPER.createTileEntity("corrock_crown", CorrockCrownTileEntity::new, () -> new Block[] {
 		EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.CORROCK_CROWN_NETHER_STANDING.get(),

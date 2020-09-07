@@ -18,7 +18,7 @@ public class AdolescentEatGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if(this.adolescent.isPlayerNear()) {
+		if (this.adolescent.isPlayerNear()) {
 			return false;
 		}
 		return this.adolescent.getRNG().nextInt(40) == 0 && this.adolescent.hasFruit() && this.isSafePos();
@@ -26,13 +26,13 @@ public class AdolescentEatGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		if(this.adolescent.isPlayerNear()) {
+		if (this.adolescent.isPlayerNear()) {
 			return false;
 		}
 		
-		if(this.adolescent.isDescenting()) {
+		if (this.adolescent.isDescenting()) {
 			return this.isSafePos() && this.adolescent.hasFruit();
-		} else if(this.adolescent.isEating()) {
+		} else if (this.adolescent.isEating()) {
 			return this.adolescent.func_233570_aj_() && this.adolescent.hasFruit() && this.eatingTicks < 61;
 		}
 		
@@ -48,10 +48,10 @@ public class AdolescentEatGoal extends Goal {
 	
 	@Override
 	public void resetTask() {
-		if(this.adolescent.isDescenting()) {
+		if (this.adolescent.isDescenting()) {
 			this.adolescent.setDescenting(false);
 		}
-		if(this.adolescent.isEating()) {
+		if (this.adolescent.isEating()) {
 			this.adolescent.setEating(false);
 			this.adolescent.dropFruit();
 			this.adolescent.resetEndimation();
@@ -64,22 +64,22 @@ public class AdolescentEatGoal extends Goal {
 		this.adolescent.setAIMoveSpeed(0.0F);
 		this.adolescent.getNavigator().clearPath();
 		
-		if(this.adolescent.isDescenting()) {
-			if(this.adolescent.func_233570_aj_()) {
+		if (this.adolescent.isDescenting()) {
+			if (this.adolescent.func_233570_aj_()) {
 				this.adolescent.setEating(true);
 				this.adolescent.setDescenting(false);
 			}
-		} else if(this.adolescent.isEating()) {
+		} else if (this.adolescent.isEating()) {
 			this.eatingTicks++;
 			
-			if(this.eatingTicks % 10 == 0) {
+			if (this.eatingTicks % 10 == 0) {
 				NetworkUtil.setPlayingAnimationMessage(this.adolescent, BoofloAdolescentEntity.EATING_ANIMATION);
-				if(this.eatingTicks < 60) {
+				if (this.eatingTicks < 60) {
 					this.adolescent.setPlayingEndimation(BoofloAdolescentEntity.EATING_ANIMATION);
 				}
 			}
 			
-			if(this.eatingTicks == 60) {
+			if (this.eatingTicks == 60) {
 				this.adolescent.resetEndimation();
 				this.adolescent.setHungry(false);
 				this.adolescent.setHasFruit(false);
@@ -91,10 +91,10 @@ public class AdolescentEatGoal extends Goal {
 
 	private boolean isSafePos() {
 		BlockPos pos = this.adolescent.func_233580_cy_();
-		for(int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++) {
 			pos = pos.down(i);
-			if(Block.hasSolidSide(this.adolescent.world.getBlockState(pos), this.adolescent.world, pos, Direction.UP) && i >= 4) {
-				if(this.adolescent.world.getBlockState(pos).getFluidState().isEmpty() && !this.adolescent.world.getBlockState(pos).isBurning(this.adolescent.world, pos)) {
+			if (Block.hasSolidSide(this.adolescent.world.getBlockState(pos), this.adolescent.world, pos, Direction.UP) && i >= 4) {
+				if (this.adolescent.world.getBlockState(pos).getFluidState().isEmpty() && !this.adolescent.world.getBlockState(pos).isBurning(this.adolescent.world, pos)) {
 					return true;
 				}
 			}

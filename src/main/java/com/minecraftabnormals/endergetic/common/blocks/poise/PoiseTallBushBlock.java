@@ -57,7 +57,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World world, BlockPos pos, Random rand) {
-		if(stateIn.get(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
+		if (stateIn.get(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
 		
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -68,7 +68,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 		
 		world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
 		
-		if(rand.nextInt(8) == 0) {
+		if (rand.nextInt(8) == 0) {
 			float rngFloat = rand.nextFloat();
 			SoundEvent soundToPlay = rngFloat > 0.9F ? EESounds.POISE_BUSH_AMBIENT_LONG.get() : EESounds.POISE_BUSH_AMBIENT.get();
 			float volume = rngFloat < 0.9F ? 0.1F + rand.nextFloat() * 0.075F : 0.05F + rand.nextFloat() * 0.05F;
@@ -140,10 +140,10 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 		DoubleBlockHalf doubleblockhalf = state.get(HALF);
 		BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
 		BlockState blockstate = worldIn.getBlockState(blockpos);
-		if(blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
+		if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
 			worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
 			worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
-			if(!worldIn.isRemote && !player.isCreative()) {
+			if (!worldIn.isRemote && !player.isCreative()) {
 				spawnDrops(state, worldIn, pos, null, player, player.getHeldItemMainhand());
 				spawnDrops(blockstate, worldIn, blockpos, null, player, player.getHeldItemMainhand());
 			}
@@ -196,9 +196,9 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if(ItemStackUtils.isInGroup(this.asItem(), group)) {
+		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
 			int targetIndex = ItemStackUtils.findIndexOfItem(Items.LARGE_FERN, items);
-			if(targetIndex != -1) {
+			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {
 				super.fillItemGroup(group, items);

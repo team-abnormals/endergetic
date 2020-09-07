@@ -29,7 +29,7 @@ public class CorrockCrownBlockItem extends BlockItem {
 		IWorldReader iworldreaderbase = context.getWorld();
 		BlockPos blockpos = context.getPos();
 
-		for(Direction enumfacing : context.getNearestLookingDirections()) {
+		for (Direction enumfacing : context.getNearestLookingDirections()) {
 	        BlockState iblockstate2 = enumfacing == Direction.UP || enumfacing == Direction.DOWN ? this.getBlock().getStateForPlacement(context) : iblockstate;
 	        if (iblockstate2 != null && iblockstate2.isValidPosition(iworldreaderbase, blockpos)) {
 	        	iblockstate1 = iblockstate2;

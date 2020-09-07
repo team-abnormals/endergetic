@@ -27,16 +27,16 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 		World world = context.getWorld();
 		BlockPos blockpos = context.getPos();
 		BlockState blockstate = world.getBlockState(blockpos);
-		if(!blockstate.getBlock().isIn(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
+		if (!blockstate.getBlock().isIn(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
 			return ActionResultType.FAIL;
 		} else {
 			BlockPos blockpos1 = blockpos.up();
 			if (!world.isAirBlock(blockpos1)) {
 				return ActionResultType.FAIL;
 			} else {
-				double d0 = (double)blockpos1.getX();
-				double d1 = (double)blockpos1.getY();
-				double d2 = (double)blockpos1.getZ();
+				double d0 = blockpos1.getX();
+				double d1 = blockpos1.getY();
+				double d2 = blockpos1.getZ();
 				List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D));
 				if (!list.isEmpty()) {
 					return ActionResultType.FAIL;

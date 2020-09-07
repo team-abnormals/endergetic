@@ -15,7 +15,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.ServerPlayNetHandler;
 
 @Mixin(ServerPlayNetHandler.class)
-public class MixinServerPlayNetHandler {
+public final class MixinServerPlayNetHandler {
 	@Shadow
 	private ServerPlayerEntity player;
 	

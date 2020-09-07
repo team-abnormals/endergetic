@@ -51,7 +51,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!this.isInProperDimension(world)) {
+		if (!this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get().getDefaultState().with(FACING, world.getBlockState(pos).get(FACING)));
 		}
 	}
@@ -75,11 +75,11 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		BlockPos blockpos = context.getPos();
 		Direction[] aDirection = context.getNearestLookingDirections();
 		
-		if(!this.petrified && !this.isInProperDimension(context.getWorld())) {
+		if (!this.petrified && !this.isInProperDimension(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
 		}
 
-		for(Direction Direction : aDirection) {
+		for (Direction Direction : aDirection) {
 			if (Direction.getAxis().isHorizontal()) {
 				Direction Direction1 = Direction.getOpposite();
 				state = state.with(FACING, Direction1);
@@ -92,16 +92,16 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	}
 
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if(stateIn.get(WATERLOGGED)) {
+		if (stateIn.get(WATERLOGGED)) {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-			if(!this.petrified) {
+			if (!this.petrified) {
 				return EntityEvents.convertCorrockBlock(stateIn);
 			}
-		}
-		if(!stateIn.get(WATERLOGGED) && !this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
+		} else if (!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
-		if(facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos)) {
+		
+		if (facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos)) {
 	         return Blocks.AIR.getDefaultState();
 		}
 		return facing.getOpposite() == stateIn.get(FACING) && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : stateIn;

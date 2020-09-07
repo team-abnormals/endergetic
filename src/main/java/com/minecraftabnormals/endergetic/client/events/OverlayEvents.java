@@ -15,14 +15,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
-public class OverlayEvents {
+public final class OverlayEvents {
 	private static final Minecraft MC = Minecraft.getInstance();
 	
 	@SubscribeEvent
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
 		ClientPlayerEntity player = MC.player;
-		if(!MC.gameSettings.hideGUI && event.getType() == ElementType.EXPERIENCE) {
-			if(player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
+		if (!MC.gameSettings.hideGUI && event.getType() == ElementType.EXPERIENCE) {
+			if (player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
 				event.setCanceled(true);
 				
 				int scaledWidth = event.getWindow().getScaledWidth();
@@ -36,7 +36,7 @@ public class OverlayEvents {
 				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 				
 				OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
-				if(progress > 0) {
+				if (progress > 0) {
 					OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
 				}
 				

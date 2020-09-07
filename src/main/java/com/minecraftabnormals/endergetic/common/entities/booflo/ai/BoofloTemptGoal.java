@@ -26,7 +26,7 @@ public class BoofloTemptGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		this.tempter = this.booflo.world.getClosestPlayer(SHOULD_FOLLOW, this.booflo);
-		if(this.tempter == null) {
+		if (this.tempter == null) {
 			return false;
 		} else {
 			return !this.booflo.isTamed() && !this.booflo.hasCaughtFruit() && !this.booflo.isInLove() && this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.booflo.isBoofed() && this.booflo.func_233570_aj_() && this.isTemptedBy(this.tempter.getHeldItemMainhand()) || this.isTemptedBy(this.tempter.getHeldItemOffhand());
@@ -36,7 +36,7 @@ public class BoofloTemptGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		this.tempter = this.booflo.world.getClosestPlayer(SHOULD_FOLLOW, this.booflo);
-		if(this.tempter == null) {
+		if (this.tempter == null) {
 			return false;
 		} else {
 			return this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.booflo.isTamed() && !this.booflo.isInLove() && !this.booflo.isBoofed();
@@ -45,11 +45,11 @@ public class BoofloTemptGoal extends Goal {
 	
 	@Override
 	public void tick() {
-		if(this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying()) {
+		if (this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying()) {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.0D);
 		}
 		
@@ -58,7 +58,7 @@ public class BoofloTemptGoal extends Goal {
 		
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
 		}
 		

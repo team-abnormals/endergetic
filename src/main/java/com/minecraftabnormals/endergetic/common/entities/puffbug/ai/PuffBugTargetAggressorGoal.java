@@ -15,7 +15,7 @@ public class PuffBugTargetAggressorGoal extends HurtByTargetGoal {
 	public void startExecuting() {
 		super.startExecuting();
 		
-		for(PuffBugEntity bugs : this.goalOwner.world.getEntitiesWithinAABB(PuffBugEntity.class, this.goalOwner.getBoundingBox().grow(16.0D), (puffbug) -> puffbug.getAttackTarget() == null)) {
+		for (PuffBugEntity bugs : this.goalOwner.world.getEntitiesWithinAABB(PuffBugEntity.class, this.goalOwner.getBoundingBox().grow(16.0D), (puffbug) -> puffbug.getAttackTarget() == null)) {
 			bugs.setAttackTarget(this.goalOwner.getAttackTarget());
 		}
 	}

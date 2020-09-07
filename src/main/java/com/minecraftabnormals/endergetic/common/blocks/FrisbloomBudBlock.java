@@ -48,34 +48,34 @@ public class FrisbloomBudBlock extends Block {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!world.isAreaLoaded(pos, 1)) return;
+		if (!world.isAreaLoaded(pos, 1)) return;
 		
-		if(random.nextInt(2) == 1 && world.isAirBlock(pos.up())) {
+		if (random.nextInt(2) == 1 && world.isAirBlock(pos.up())) {
 			this.grow(state, world, pos, random);
 		}
 		
-		if(state.get(LAYER) == 3) {
+		if (state.get(LAYER) == 3) {
 			world.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(FrisbloomStemBlock.LAYER, 4));
 		}
 	}
 	
 	public void grow(BlockState state, World worldIn, BlockPos pos, Random random) {
-		if(state.get(LAYER) == 0) {
+		if (state.get(LAYER) == 0) {
 			worldIn.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(FrisbloomStemBlock.LAYER, 1));
 			worldIn.setBlockState(pos.up(), this.getDefaultState().with(LAYER, this.getProbabilityForLayer(random, 1)), 2);
-		} else if(state.get(LAYER) == 1) {
+		} else if (state.get(LAYER) == 1) {
 			worldIn.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(FrisbloomStemBlock.LAYER, 2));
 			worldIn.setBlockState(pos.up(), this.getDefaultState().with(LAYER, this.getProbabilityForLayer(random, 2)), 2);
-		} else if(state.get(LAYER) == 2) {
+		} else if (state.get(LAYER) == 2) {
 			worldIn.setBlockState(pos, EEBlocks.FRISBLOOM_STEM.getDefaultState().with(FrisbloomStemBlock.LAYER, 3));
 			worldIn.setBlockState(pos.up(), this.getDefaultState().with(LAYER, this.getProbabilityForLayer(random, 3)), 2);
 		}
 	}
 	
 	public int getProbabilityForLayer(Random random, int layer) {
-		if(layer == 1) {
+		if (layer == 1) {
 			return random.nextInt(3) == 1 ? 1 : 0;
-		} else if(layer == 1) {
+		} else if (layer == 1) {
 			return random.nextInt(2) == 1 ? 2 : 1;
 		}
 		return random.nextInt(2) == 1 ? 3 : 2;

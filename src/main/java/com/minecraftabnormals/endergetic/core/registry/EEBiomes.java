@@ -13,7 +13,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class EEBiomes {
+public final class EEBiomes {
 	private static int TOTAL_WEIGHT;
 	public static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, EndergeticExpansion.MOD_ID);
 	
@@ -25,8 +25,8 @@ public class EEBiomes {
 	public static void applyBiomeInfo() {
 		BIOMES.getEntries().forEach((biome) -> {
 			Biome endBiome = biome.get();
-			if(endBiome instanceof EndergeticBiome) {
-				if(endBiome != null) {
+			if (endBiome instanceof EndergeticBiome) {
+				if (endBiome != null) {
 					BiomeDictionary.addTypes(endBiome, ((EndergeticBiome) endBiome).getBiomeTypes());
 					((EndergeticBiome) endBiome).addSpawnsAndFeatures();
 				}

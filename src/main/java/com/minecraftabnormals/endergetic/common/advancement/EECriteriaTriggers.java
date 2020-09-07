@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
-public class EECriteriaTriggers {
+public final class EECriteriaTriggers {
 	public static final EmptyTrigger TAME_BOOFLO = CriteriaTriggers.register(new EmptyTrigger(prefix("tamed_booflo")));
 	public static final EmptyTrigger UP_UP_AND_AWAY = CriteriaTriggers.register(new EmptyTrigger(prefix("up_up_and_away")));
 	

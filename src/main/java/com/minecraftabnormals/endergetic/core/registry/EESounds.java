@@ -9,8 +9,8 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EESounds {
-	public static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+public final class EESounds {
+	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
 	public static final RegistryObject<SoundEvent> POISE_FOREST_LOOP = HELPER.createSoundEvent("ambient.poise_forest.loop");
 	public static final RegistryObject<SoundEvent> POISE_FOREST_ADDITIONS = HELPER.createSoundEvent("ambient.poise_forest.additions");

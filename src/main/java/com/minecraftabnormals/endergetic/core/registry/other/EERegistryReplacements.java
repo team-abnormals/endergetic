@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EERegistryReplacements {
+public final class EERegistryReplacements {
 	
 	@ObjectHolder("minecraft:end_crystal")
 	public static Item END_CRYSTAL;

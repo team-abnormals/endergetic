@@ -37,7 +37,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 	
 	@Override
 	public void resetTask() {
-		if(this.puffbug.getLaunchDirection() != null && this.ticksPassed >= this.ticksToRotate) {
+		if (this.puffbug.getLaunchDirection() != null && this.ticksPassed >= this.ticksToRotate) {
 			Vector3d launch = this.puffbug.getLaunchDirection();
 			
 			float yaw = (float) launch.getY() - this.puffbug.rotationYaw;
@@ -52,11 +52,11 @@ public class PuffBugRotateToFireGoal extends Goal {
 			this.puffbug.setMotion(this.puffbug.getMotion().add(motion.scale(1.0F)));
 			
 			this.puffbug.setFireDirection((float) launch.getX(), (float) launch.getY());
-			this.puffbug.nullifyLaunchDirection();
+			this.puffbug.removeLaunchDirection();
 			this.puffbug.setInflated(false);
 			NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.FLY_ANIMATION);
 			
-			for(int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) {
 				Vector3d pos = this.puffbug.getPositionVec();
 				
 				float particleX = MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));

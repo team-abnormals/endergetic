@@ -125,7 +125,7 @@ public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel
     	this.vine_x_6.showModel = true;
     	this.vine_z_6.showModel = true;
         
-        switch(height) {
+        switch (height) {
         	case 1:
         		this.vine_x_1.showModel = false;
         		this.vine_z_1.showModel = false;

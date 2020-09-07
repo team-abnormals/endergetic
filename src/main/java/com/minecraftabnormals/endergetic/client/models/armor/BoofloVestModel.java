@@ -39,13 +39,7 @@ public class BoofloVestModel<T extends LivingEntity> extends BipedModel<T> {
     	
     	matrixStack.push();
     	matrixStack.scale(1.25F, 1.25F, 1.25F);
-    	
-    	if(this.wearer.isSneaking()) {
-    		matrixStack.translate(-0.25F, -0.05F, -0.125F);
-    	} else {
-    		matrixStack.translate(-0.25F, -0.05F, -0.125F);
-    	}
-    	
+    	matrixStack.translate(-0.25F, -0.05F, -0.125F);
     	
     	//Temporary get around for lighting bug with forge armor model
     	float partialTicks = ClientInfo.getPartialTicks();

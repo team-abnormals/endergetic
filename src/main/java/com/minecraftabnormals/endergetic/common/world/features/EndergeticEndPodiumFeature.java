@@ -35,18 +35,18 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	
 	@Override
 	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		for(BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
+		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
 			boolean flag = blockpos.withinDistance(pos, 2.5D);
-			if(flag || blockpos.withinDistance(pos, 3.5D)) {
-				if(blockpos.getY() < pos.getY()) {
-					if(flag) {
+			if (flag || blockpos.withinDistance(pos, 3.5D)) {
+				if (blockpos.getY() < pos.getY()) {
+					if (flag) {
 						this.setBlockState(worldIn, blockpos.up(), MYSTICAL_OBSIDIAN);
 					} else if (blockpos.getY() < pos.getY()) {
 						this.setBlockState(worldIn, blockpos.up(), Blocks.END_STONE.getDefaultState());
 					}
-				} else if(blockpos.getY() > pos.getY()) {
+				} else if (blockpos.getY() > pos.getY()) {
 					this.setBlockState(worldIn, blockpos.up(), Blocks.AIR.getDefaultState());
-				} else if(!flag) {
+				} else if (!flag) {
 					this.setBlockState(worldIn, blockpos.up(), MYSTICAL_OBSIDIAN);
 				} else if(this.activePortal) {
 					this.setBlockState(worldIn, blockpos.up(), Blocks.END_PORTAL.getDefaultState());
@@ -61,19 +61,19 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 		this.setBlockState(worldIn, pos.up(2).south(2).east(2), MYSTICAL_OBSIDIAN_WALL);
 		this.setBlockState(worldIn, pos.up(2).south(2).west(2), MYSTICAL_OBSIDIAN_WALL);
 		
-		for(int i = 1; i < 6; i++) {
-			if(i > 3) {
+		for (int i = 1; i < 6; i++) {
+			if (i > 3) {
 				this.setBlockState(worldIn, pos.up(i), MYSTICAL_OBSIDIAN_WALL);
 			} else {
 				this.setBlockState(worldIn, pos.up(i), MYSTICAL_OBSIDIAN);
 			}
 		}
 		
-		for(int i = 2; i < 6; i++) {
+		for (int i = 2; i < 6; i++) {
 			this.createRuneSide(worldIn, pos, Direction.byIndex(i), this.activePortal);
 		}
 		
-		if(this.activePortal) {
+		if (this.activePortal) {
 			this.setBlockState(worldIn, pos.up(3).north(2).east(2), ACIDIAN_LANTERN);
 			this.setBlockState(worldIn, pos.up(3).north(2).west(2), ACIDIAN_LANTERN);
 			this.setBlockState(worldIn, pos.up(3).south(2).east(2), ACIDIAN_LANTERN);

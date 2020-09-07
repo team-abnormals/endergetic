@@ -17,23 +17,21 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Events for compatibility with the Savage & Ravage mod.
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
-public class CompatEvents {
+public final class CompatEvents {
     @SubscribeEvent
     public static void onPotionExpire(PotionEvent.PotionExpiryEvent event) {
         LivingEntity affected = event.getEntityLiving();
         boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
-        if(isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
-            if(!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity)affected).growUp();
-            if(affected instanceof BoofloAdolescentEntity) {
-                if(isBabyEffect) {
+        if (isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
+            if (!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity)affected).growUp();
+            if (affected instanceof BoofloAdolescentEntity) {
+                if (isBabyEffect) {
                     ((BoofloAdolescentEntity) affected).growDown();
-                } 
-                else {
+                } else {
                     ((BoofloAdolescentEntity) affected).growUp();
                 }
             }
-            if(isBabyEffect && affected instanceof BoofloEntity) ((BoofloEntity)affected).growDown();
+            if (isBabyEffect && affected instanceof BoofloEntity) ((BoofloEntity) affected).growDown();
         }
-
     }
 }

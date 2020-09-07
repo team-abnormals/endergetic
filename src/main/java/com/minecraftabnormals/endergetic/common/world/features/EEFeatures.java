@@ -14,7 +14,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class EEFeatures {
+public final class EEFeatures {
 	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, EndergeticExpansion.MOD_ID);
 	
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_GRASS       = createFeature("poise_bush", () -> new PoiseBushFeature(NoFeatureConfig.field_236558_a_));

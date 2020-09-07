@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @author - SmellyModder(Luke Tonon)
  * This class holds a list of useful network functions
  */
-public class EndergeticNetworkUtil {
+public final class EndergeticNetworkUtil {
 	/**
 	 * @param stack - The stack that the message will update the nbt for
 	 * Used for updating the server nbt from the client. For example it's used in booflo vest keybinds
@@ -54,7 +54,7 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void inflateBooflo(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof BoofloEntity) {
+		if (entity instanceof BoofloEntity) {
 			BoofloEntity booflo = (BoofloEntity) entity;
 			EndergeticExpansion.CHANNEL.sendToServer(new SInflateMessage(entityId));
 			booflo.setBoofed(true);
@@ -70,7 +70,7 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void slamBooflo(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof BoofloEntity) {
+		if (entity instanceof BoofloEntity) {
 			EndergeticExpansion.CHANNEL.sendToServer(new SSlamMessage(entityId));
 		}
 	}
@@ -82,7 +82,7 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void incrementBoofloBoostTimer(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof BoofloEntity) {
+		if (entity instanceof BoofloEntity) {
 			EndergeticExpansion.CHANNEL.sendToServer(new SIncrementBoostDelayMessage(entityId));
 		}
 	}
@@ -94,7 +94,7 @@ public class EndergeticNetworkUtil {
 	@OnlyIn(Dist.CLIENT)
 	public static void setPlayerNotBoosting(int entityId) {
 		Entity entity = ClientInfo.getClientPlayerWorld().getEntityByID(entityId);
-		if(entity instanceof BoofloEntity) {
+		if (entity instanceof BoofloEntity) {
 			EndergeticExpansion.CHANNEL.sendToServer(new SSetPlayerNotBoostingMessage(entityId));
 		}
 	}

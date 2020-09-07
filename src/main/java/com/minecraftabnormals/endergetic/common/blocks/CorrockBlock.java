@@ -50,7 +50,7 @@ public class CorrockBlock extends Block {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!this.petrified && !this.isInProperDimension(world)) {
+		if (!this.petrified && !this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().getDefaultState());
 		}
 	}
@@ -65,7 +65,7 @@ public class CorrockBlock extends Block {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 		
-		if(this.isSubmerged(worldIn, currentPos)) {
+		if (this.isSubmerged(worldIn, currentPos)) {
 			return !this.petrified ? EntityEvents.convertCorrockBlock(stateIn) : stateIn;
 		}
 		
@@ -86,9 +86,9 @@ public class CorrockBlock extends Block {
 	}
 	
 	public boolean isSubmerged(IWorld world, BlockPos pos) {
-		for(Direction offsets : Direction.values()) {
+		for (Direction offsets : Direction.values()) {
 			FluidState fluidState = world.getFluidState(pos.offset(offsets));
-			if(!fluidState.isEmpty() && fluidState.isTagged(FluidTags.WATER)) {
+			if (!fluidState.isEmpty() && fluidState.isTagged(FluidTags.WATER)) {
 				return true;
 			}
 		}

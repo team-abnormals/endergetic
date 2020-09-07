@@ -23,7 +23,7 @@ public class BabyFollowParentGoal extends Goal {
 		BoofloEntity booflo = null;
 		double d0 = Double.MAX_VALUE;
 
-		for(BoofloEntity booflos : list) {
+		for (BoofloEntity booflos : list) {
 			double d1 = this.baby.getDistanceSq(booflos);
 			if (!(d1 > d0)) {
 				d0 = d1;

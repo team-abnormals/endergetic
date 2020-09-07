@@ -55,7 +55,7 @@ public class BolloomBudBlock extends Block {
 	}
 	
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		if(stateIn.isValidPosition(world, currentPos)) {
+		if (stateIn.isValidPosition(world, currentPos)) {
 			boolean opened = stateIn.get(OPENED);
 			return this.placePedals(world.getWorld(), currentPos, opened) && opened ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
 		}
@@ -68,17 +68,17 @@ public class BolloomBudBlock extends Block {
 	}
 	
 	public boolean placePedals(World world, BlockPos pos, boolean opened) {
-		if(!world.getBlockState(pos).get(OPENED) && this.canPutDownPedals(world, pos)) {
-			if(opened) {
-				for(BudSide side : BudSide.values()) {
+		if (!world.getBlockState(pos).get(OPENED) && this.canPutDownPedals(world, pos)) {
+			if (opened) {
+				for (BudSide side : BudSide.values()) {
 					BlockPos sidePos = side.offsetPosition(pos);
-					if(world.getBlockState(sidePos).getCollisionShape(world, pos).isEmpty()) {
+					if (world.getBlockState(sidePos).getCollisionShape(world, pos).isEmpty()) {
 						world.destroyBlock(sidePos, true);
 					}
 				}
 			}
 			return true;
-		} else if(opened) {
+		} else if (opened) {
 			return false;
 		}
 		return false;
@@ -86,8 +86,8 @@ public class BolloomBudBlock extends Block {
 	
 	public static boolean isAcrossOrAdjacentToBud(IWorldReader world, BlockPos pos) {
 		Block block = EEBlocks.BOLLOOM_BUD.get();
-		for(Direction directions : Direction.values()) {
-			if(world.getBlockState(pos.offset(directions, 2)).getBlock() == block) {
+		for (Direction directions : Direction.values()) {
+			if (world.getBlockState(pos.offset(directions, 2)).getBlock() == block) {
 				return true;
 			}
 		}
@@ -95,16 +95,16 @@ public class BolloomBudBlock extends Block {
 		BlockPos north = pos.offset(Direction.NORTH);
 		BlockPos south = pos.offset(Direction.SOUTH);
 		
-		if(world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block) {
+		if (world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block) {
 			return true;
 		}
 		return false;
 	}
 	
 	private boolean canPutDownPedals(World world, BlockPos pos) {
-		for(BudSide sides : BudSide.values()) {
+		for (BudSide sides : BudSide.values()) {
 			BlockPos sidePos = sides.offsetPosition(pos);
-			if(!world.getFluidState(sidePos).isEmpty() || !world.getBlockState(sidePos).getCollisionShape(world, sidePos).isEmpty()) {
+			if (!world.getFluidState(sidePos).isEmpty() || !world.getBlockState(sidePos).getCollisionShape(world, sidePos).isEmpty()) {
 				return false;
 			}
 		}
@@ -112,7 +112,7 @@ public class BolloomBudBlock extends Block {
 	}
 	
 	private BlockState resetBud(IWorld world, BlockPos pos) {
-		if(world.getTileEntity(pos) instanceof BolloomBudTileEntity) {
+		if (world.getTileEntity(pos) instanceof BolloomBudTileEntity) {
 			((BolloomBudTileEntity) world.getTileEntity(pos)).resetGrowing();
 		}
 		return this.getDefaultState();

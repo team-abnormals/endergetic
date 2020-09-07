@@ -47,14 +47,9 @@ public class BolloomKnotEntity extends Entity {
 		this.prevPosX = this.getPosX();
 		this.prevPosY = this.getPosY();
 		this.prevPosZ = this.getPosZ();
-		if (!this.world.isRemote) {
-			if (this.world.isAreaLoaded(getHangingPos(), 1)) {
-				if (this.isAlive() && !this.onValidBlock()) {
-					this.remove();
-				}
-			}
-		}
-		if (this.getBalloonsTied() <= 0) {
+		if (!this.world.isRemote && this.isAlive() && this.world.isAreaLoaded(this.getHangingPos(), 1) && !this.onValidBlock()) {
+			this.remove();
+		} else if (this.getBalloonsTied() <= 0) {
 			this.remove();
 		}
 	}

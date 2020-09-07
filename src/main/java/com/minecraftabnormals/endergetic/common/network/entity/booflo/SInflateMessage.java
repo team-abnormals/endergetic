@@ -34,7 +34,7 @@ public class SInflateMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				Entity entity = context.getSender().world.getEntityByID(message.entityId);
-				if(entity instanceof BoofloEntity) {
+				if (entity instanceof BoofloEntity) {
 					BoofloEntity booflo = (BoofloEntity) entity;
 					booflo.setBoofed(true);
 					booflo.setDelayExpanding(true);

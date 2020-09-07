@@ -21,7 +21,7 @@ public class BoofloGroundHopGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
+		if (RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
 		return this.booflo.getMoveHelper() instanceof GroundMoveHelperController && this.booflo.isOnGround() && !this.booflo.isBoofed() && this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.booflo.isPassenger() && this.booflo.getPassengers().isEmpty();
@@ -46,7 +46,7 @@ public class BoofloGroundHopGoal extends Goal {
 	public void tick() {
 		this.ticksPassed++;
 		
-		if(this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
+		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
 		}
 	}

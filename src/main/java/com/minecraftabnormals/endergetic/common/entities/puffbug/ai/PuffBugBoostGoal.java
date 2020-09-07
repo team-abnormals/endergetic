@@ -17,17 +17,17 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 	}
 	
 	public boolean shouldExecute() {
-		if(this.creature.isBeingRidden()) {
+		if (this.creature.isBeingRidden()) {
 			return false;
 		} else {
-			if(!this.mustUpdate) {
-				if(this.creature.getRNG().nextInt(this.executionChance) != 0) {
+			if (!this.mustUpdate) {
+				if (this.creature.getRNG().nextInt(this.executionChance) != 0) {
 					return false;
 				}
 			}
 
 			Vector3d destination = this.getPosition();
-			if(destination == null) {
+			if (destination == null) {
 				return false;
 			} else {
 				this.x = destination.x;
@@ -43,7 +43,7 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 	protected Vector3d getPosition() {
 		Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5);
 
-		for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
+		for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
 			;
 		}
 		

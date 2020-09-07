@@ -56,27 +56,25 @@ public class PuffBugBottleItem extends Item {
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		World world = context.getWorld();
-		if(world.isRemote) {
+		if (world.isRemote) {
 			return ActionResultType.SUCCESS;
 		} else {
-			
 			ItemStack itemstack = context.getItem();
 			BlockPos blockpos = context.getPos();
 			Direction direction = context.getFace();
 			BlockState blockstate = world.getBlockState(blockpos);
 			
 			BlockPos blockpos1;
-			if(blockstate.getCollisionShape(world, blockpos).isEmpty()) {
+			if (blockstate.getCollisionShape(world, blockpos).isEmpty()) {
 				blockpos1 = blockpos;
 			} else {
 				blockpos1 = blockpos.offset(direction);
 			}
 			
 			EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-			if(entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
+			if (entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
 				this.emptyBottle(context.getPlayer(), context.getHand());
 			}
-			
 			return ActionResultType.SUCCESS;
 		}
 	}
@@ -118,7 +116,7 @@ public class PuffBugBottleItem extends Item {
 					return new ActionResult<>(ActionResultType.PASS, itemstack);
 				} else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
 					EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-					if(entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
+					if (entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
 						return new ActionResult<>(ActionResultType.PASS, itemstack);
 					} else {
 						if (!playerIn.abilities.isCreativeMode) {
@@ -138,9 +136,9 @@ public class PuffBugBottleItem extends Item {
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		CompoundNBT nbt = stack.getTag();
-		if(nbt != null && nbt.contains("CustomPotionEffects")) {
+		if (nbt != null && nbt.contains("CustomPotionEffects")) {
 			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").func_240699_a_(TextFormatting.DARK_PURPLE));
-			for(EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
+			for (EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
 				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).func_240701_a_(potionTextFormat));
 			}
@@ -149,12 +147,12 @@ public class PuffBugBottleItem extends Item {
 	
 	private TextFormatting getEffectTextColor(EffectInstance effect) {
 		Map<Attribute, AttributeModifier> map = effect.getPotion().getAttributeModifierMap();
-		if(!map.isEmpty()) {
-        	for(Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
+		if (!map.isEmpty()) {
+        	for (Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
         		AttributeModifier entryValue = entry.getValue();
         		AttributeModifier modifier = new AttributeModifier(entryValue.getName(), effect.getPotion().getAttributeModifierAmount(effect.getAmplifier(), entryValue), entryValue.getOperation());
         		
-        		if(modifier.getAmount() <= 0.0F) {
+        		if (modifier.getAmount() <= 0.0F) {
         			return TextFormatting.RED;
         		}
         	}
@@ -163,7 +161,7 @@ public class PuffBugBottleItem extends Item {
 	}
 	
 	private void emptyBottle(PlayerEntity player, Hand hand) {
-		if(!player.isCreative()) {
+		if (!player.isCreative()) {
 			EquipmentSlotType slot = hand == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND;
 			player.setItemStackToSlot(slot, new ItemStack(Items.GLASS_BOTTLE));
 		}
@@ -173,7 +171,7 @@ public class PuffBugBottleItem extends Item {
 		
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-			if(source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
+			if (source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
 				EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
 				entitytype.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
 				stack = new ItemStack(Items.GLASS_BOTTLE);

@@ -31,17 +31,17 @@ public class BoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBoo
 		matrixStack.push();
 		matrixStack.translate(0.5F, 1.5F, 0.5F);
 		
-		if(facing == Direction.DOWN) {
+		if (facing == Direction.DOWN) {
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
 			matrixStack.translate(0.0F, 1.125F, 1.0F);
-		} else if(facing == Direction.UP){
+		} else if (facing == Direction.UP){
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
 			matrixStack.translate(0.0F, 1.125F, -1.0F);
-		} else if(facing == Direction.NORTH) {
+		} else if (facing == Direction.NORTH) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
-		} else if(facing == Direction.EAST) {
+		} else if (facing == Direction.EAST) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-		} else if(facing == Direction.WEST) {
+		} else if (facing == Direction.WEST) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
 		}
 		

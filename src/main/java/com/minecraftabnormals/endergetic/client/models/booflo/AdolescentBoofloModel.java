@@ -84,18 +84,18 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
     	
     	this.Tail.rotateAngleY = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
     	
-    	if(!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && !entityIn.isInWater()) {
-    		if(entityIn.getRidingEntity() == null && !entityIn.isEating()) {
+    	if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && !entityIn.isInWater()) {
+    		if (entityIn.getRidingEntity() == null && !entityIn.isEating()) {
     			this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     			this.Jaw.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     		}
-    		if(!entityIn.isEating()) {
+    		if (!entityIn.isEating()) {
     			this.KneeLeft.rotateAngleZ += 0.1F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
     			this.KneeRight.rotateAngleZ += 0.1F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
     			this.ArmLeft.rotateAngleZ += 0.3F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
     			this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
     		}
-    	} else if(!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && entityIn.isInWater()) {
+    	} else if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && entityIn.isInWater()) {
     		this.Head.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     		this.Jaw.rotationPointY += 0.5F * MathHelper.sin(0.4F * ageInTicks);
     		this.KneeLeft.rotateAngleZ += 0.1F * -MathHelper.sin(0.6F * ageInTicks);
@@ -104,7 +104,7 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
     		this.ArmRight.rotateAngleZ += 0.3F * MathHelper.sin(0.6F * ageInTicks) + 0.17F;
     	}
     	
-    	if(entityIn.isAggressive()) {
+    	if (entityIn.isAggressive()) {
     		this.Jaw.rotateAngleX += 0.2F * MathHelper.sin(0.3F * ageInTicks) + 0.4F;
     	}
     }
@@ -113,7 +113,7 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
     public void animateModel(E booflo) {
     	super.animateModel(booflo);
     	
-    	if(booflo.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION)) {
+    	if (booflo.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION)) {
     		this.setEndimationToPlay(BoofloAdolescentEntity.BOOF_ANIMATION);
     		
     		this.startKeyframe(3);
@@ -148,7 +148,7 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
     		this.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
     		this.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
     		this.endKeyframe();
-    	} else if(booflo.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION)) {
+    	} else if (booflo.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION)) {
     		this.setEndimationToPlay(BoofloAdolescentEntity.EATING_ANIMATION);
     		
     		this.startKeyframe(5);

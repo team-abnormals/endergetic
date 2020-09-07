@@ -135,16 +135,16 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
     	Entity ridingEntity = this.entity.getRidingEntity();
-    	if(ridingEntity instanceof BoofloEntity && !(((BoofloEntity) ridingEntity).isEndimationPlaying(BoofloEntity.EAT) && ((BoofloEntity) ridingEntity).getAnimationTick() >= 20)) {
+    	if (ridingEntity instanceof BoofloEntity && !(((BoofloEntity) ridingEntity).isEndimationPlaying(BoofloEntity.EAT) && ((BoofloEntity) ridingEntity).getAnimationTick() >= 20)) {
     		return;
     	}
     	
-    	if(!this.entity.isInflated() && this.entity.stuckInBlock) {
+    	if (!this.entity.isInflated() && this.entity.stuckInBlock) {
     		packedLightIn = this.getPackedLightForStuck(this.entity);
     	}
     	
     	this.animateModel(this.entity);
-    	if(this.entity.isInflated()) {
+    	if (this.entity.isInflated()) {
     		this.Body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     	} else {
     		if(this.entity.isProjectile()) {
@@ -167,7 +167,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 		Direction horizontalOffset = Direction.fromAngle(rotations[0]).getOpposite();
 		Direction verticalOffset = (rotations[1] <= 180.0F && rotations[1] > 100.0F) ? Direction.UP : Direction.DOWN;
 		
-		if(rotations[1] >= 80.0F && rotations[1] <= 100.0F) {
+		if (rotations[1] >= 80.0F && rotations[1] <= 100.0F) {
 			rotationFlag = false;
 		}
 		
@@ -181,13 +181,13 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     	
     	this.revertBoxesToDefaultValues();
     	
-    	if(!puffBug.isEndimationPlaying(PuffBugEntity.PUFF_ANIMATION) && !puffBug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION)) {
+    	if (!puffBug.isEndimationPlaying(PuffBugEntity.PUFF_ANIMATION) && !puffBug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION)) {
     		float angle = 0.1F * MathHelper.sin(0.25F * ageInTicks);
     		this.Sensor1.rotateAngleZ += angle;
     		this.Sensor2.rotateAngleX += angle;
     	}
     	
-    	if(!puffBug.isEndimationPlaying(PuffBugEntity.FLY_ANIMATION)) {
+    	if (!puffBug.isEndimationPlaying(PuffBugEntity.FLY_ANIMATION)) {
     		this.Head.rotateAngleX += 0.075F * MathHelper.sin(0.1F * ageInTicks);
     		this.HeadDeflated.rotateAngleX = this.Head.rotateAngleX;
     	}
@@ -197,7 +197,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     	this.Body.rotateAngleY = rotations[0] * (float) (Math.PI / 180F);
     	this.Body.rotateAngleX = rotations[1] * (float) (Math.PI / 180F);
     	
-    	if(puffBug.isPassenger()) {
+    	if (puffBug.isPassenger()) {
     		this.Body.rotateAngleZ = 1.57F;
     	}
     	
@@ -219,7 +219,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     	this.Sensor1.rotateAngleZ = this.Sensor1Deflated.rotateAngleZ;
     	this.Sensor2.rotateAngleX = this.Sensor2Deflated.rotateAngleX;
     	
-    	if(puffBug.isProjectile()) {
+    	if (puffBug.isProjectile()) {
     		this.Neck.rotateAngleY = 0.0F;
     		this.NeckDeflated.rotateAngleY = 0.0F;
     		
@@ -242,7 +242,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     public void animateModel(E puffbug) {
     	super.animateModel(puffbug);
     	
-    	if(puffbug.isEndimationPlaying(PuffBugEntity.CLAIM_HIVE_ANIMATION)) {
+    	if (puffbug.isEndimationPlaying(PuffBugEntity.CLAIM_HIVE_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.CLAIM_HIVE_ANIMATION);
     		
     		this.startKeyframe(5);
@@ -258,7 +258,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(5);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.PUFF_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.PUFF_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.PUFF_ANIMATION);
     		
     		this.startKeyframe(10);
@@ -274,7 +274,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(10);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION)) {
     		this.Body.setShouldScaleChildren(true);
     		
     		this.setEndimationToPlay(PuffBugEntity.TELEPORT_TO_ANIMATION);
@@ -288,7 +288,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.setStaticKeyframe(7);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_FROM_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_FROM_ANIMATION)) {
     		this.Body.setShouldScaleChildren(true);
     		
     		this.setEndimationToPlay(PuffBugEntity.TELEPORT_FROM_ANIMATION);
@@ -298,7 +298,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(5);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.ROTATE_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.ROTATE_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.ROTATE_ANIMATION);
     		
     		this.startKeyframe(10);
@@ -308,7 +308,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(10);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.POLLINATE_ANIMATION);
     		
     		this.startKeyframe(5);
@@ -406,7 +406,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(10);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.MAKE_ITEM_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.MAKE_ITEM_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.MAKE_ITEM_ANIMATION);
     		
     		this.startKeyframe(10);
@@ -450,7 +450,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(10);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.LAND_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.LAND_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.LAND_ANIMATION);
     		
     		this.setStaticKeyframe(3);
@@ -494,7 +494,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
     		this.endKeyframe();
     		
     		this.resetKeyframe(2);
-    	} else if(puffbug.isEndimationPlaying(PuffBugEntity.PULL_ANIMATION)) {
+    	} else if (puffbug.isEndimationPlaying(PuffBugEntity.PULL_ANIMATION)) {
     		this.setEndimationToPlay(PuffBugEntity.PULL_ANIMATION);
     		
     		this.startKeyframe(5);

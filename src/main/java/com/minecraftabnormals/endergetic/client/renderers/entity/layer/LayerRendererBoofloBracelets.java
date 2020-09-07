@@ -25,7 +25,7 @@ public class LayerRendererBoofloBracelets<E extends BoofloEntity, M extends Enti
 	
 	@Override
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, E booflo, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if(!booflo.isTamed()) return;
+		if (!booflo.isTamed()) return;
 		
 		ResourceLocation texture = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/bracelets/booflo_ring_" + booflo.getBraceletsColor().getTranslationKey() + ".png");
 		ClientInfo.MINECRAFT.getTextureManager().bindTexture(texture);

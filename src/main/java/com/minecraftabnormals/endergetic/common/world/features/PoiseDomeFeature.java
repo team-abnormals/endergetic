@@ -25,10 +25,9 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE && isViableDomeArea(world, pos) && this.isGroundViable(world, pos.down(3), rand)) {
+		if (world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE && isViableDomeArea(world, pos) && this.isGroundViable(world, pos.down(3), rand)) {
 			this.buildDomeBase(world, pos, rand);
 			this.buildDome(world, pos, rand);
-			
 			this.buildGround(world, pos, rand);
 		}
 		return false;
@@ -36,89 +35,89 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	
 	private void buildDomeBase(IWorld world, BlockPos pos, Random rand) {
 		BlockPos origin = pos;
-		for(int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
-			for(int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
-				if(x == origin.getX() - 13 || x == origin.getX() + 13) {
+		for (int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
+			for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
+				if (x == origin.getX() - 13 || x == origin.getX() + 13) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 12; x <= origin.getX() + 12; x++) {
-			for(int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
-				if(x == origin.getX() - 12 || x == origin.getX() + 12) {
+		for (int x = origin.getX() - 12; x <= origin.getX() + 12; x++) {
+			for (int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
+				if (x == origin.getX() - 12 || x == origin.getX() + 12) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 11; x <= origin.getX() + 11; x++) {
-			for(int z = origin.getZ() - 7; z <= origin.getZ() + 7; z++) {
-				if(x == origin.getX() - 11 || x == origin.getX() + 11) {
+		for (int x = origin.getX() - 11; x <= origin.getX() + 11; x++) {
+			for (int z = origin.getZ() - 7; z <= origin.getZ() + 7; z++) {
+				if (x == origin.getX() - 11 || x == origin.getX() + 11) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 10; x <= origin.getX() + 10; x++) {
-			for(int z = origin.getZ() - 8; z <= origin.getZ() + 8; z++) {
-				if(x == origin.getX() - 10 || x == origin.getX() + 10) {
+		for (int x = origin.getX() - 10; x <= origin.getX() + 10; x++) {
+			for (int z = origin.getZ() - 8; z <= origin.getZ() + 8; z++) {
+				if (x == origin.getX() - 10 || x == origin.getX() + 10) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 9; x <= origin.getX() + 9; x++) {
-			for(int z = origin.getZ() - 9; z <= origin.getZ() + 9; z++) {
-				if(x == origin.getX() - 9 || x == origin.getX() + 9) {
+		for (int x = origin.getX() - 9; x <= origin.getX() + 9; x++) {
+			for (int z = origin.getZ() - 9; z <= origin.getZ() + 9; z++) {
+				if (x == origin.getX() - 9 || x == origin.getX() + 9) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 8; x <= origin.getX() + 8; x++) {
-			for(int z = origin.getZ() - 10; z <= origin.getZ() + 10; z++) {
-				if(x == origin.getX() - 8 || x == origin.getX() + 8) {
+		for (int x = origin.getX() - 8; x <= origin.getX() + 8; x++) {
+			for (int z = origin.getZ() - 10; z <= origin.getZ() + 10; z++) {
+				if (x == origin.getX() - 8 || x == origin.getX() + 8) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 7; x <= origin.getX() + 7; x++) {
-			for(int z = origin.getZ() - 11; z <= origin.getZ() + 11; z++) {
-				if(x == origin.getX() - 7 || x == origin.getX() + 7 || x == origin.getX() - 6 || x == origin.getX() + 6) {
+		for (int x = origin.getX() - 7; x <= origin.getX() + 7; x++) {
+			for (int z = origin.getZ() - 11; z <= origin.getZ() + 11; z++) {
+				if (x == origin.getX() - 7 || x == origin.getX() + 7 || x == origin.getX() - 6 || x == origin.getX() + 6) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
-			for(int z = origin.getZ() - 12; z <= origin.getZ() + 12; z++) {
-				if(x <= origin.getX() - 3 || x >= origin.getX() + 3) {
+		for (int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
+			for (int z = origin.getZ() - 12; z <= origin.getZ() + 12; z++) {
+				if (x <= origin.getX() - 3 || x >= origin.getX() + 3) {
 					this.setPoiseLog(world, new BlockPos(x, origin.getY(), z), rand);
 				} else {
 					this.setPoismoss(world, new BlockPos(x, origin.getY(), z));
 				}
 			}
 		}
-		for(int x = 0; x <= 4; x++) {
+		for (int x = 0; x <= 4; x++) {
 			this.setPoiseLog(world, origin.north(13).east(2).west(x), rand);
 			this.setPoiseLog(world, origin.south(13).east(2).west(x), rand);
 		}
 		
 		//Doors
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.north(12).west(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.north(12).west(2).up(4), rand);
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.north(12).east(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.north(12).east(2).up(4), rand);
@@ -126,11 +125,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		this.setPoiseLog(world, origin.north(12).west().up(5), rand);
 		this.setPoiseLog(world, origin.north(12).up(5), rand);
 		this.setPoiseLog(world, origin.north(12).east().up(5), rand);
-		if(rand.nextFloat() <= 0.25F) {
-			if(rand.nextInt(3) == 0) {
+		if (rand.nextFloat() <= 0.25F) {
+			if (rand.nextInt(3) == 0) {
 				this.setPoiseLog(world, origin.north(12).up(6), rand);
 			} else {
-				if(rand.nextInt(2) == 0) {
+				if (rand.nextInt(2) == 0) {
 					this.setPoiseLog(world, origin.north(12).west().up(6), rand);
 				} else {
 					this.setPoiseLog(world, origin.north(12).east().up(6), rand);
@@ -138,11 +137,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 			}
 		}
 		
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.east(12).north(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.east(12).north(2).up(4), rand);
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.east(12).south(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.east(12).south(2).up(4), rand);
@@ -150,11 +149,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		this.setPoiseLog(world, origin.east(12).north().up(5), rand);
 		this.setPoiseLog(world, origin.east(12).up(5), rand);
 		this.setPoiseLog(world, origin.east(12).south().up(5), rand);
-		if(rand.nextFloat() <= 0.25F) {
-			if(rand.nextInt(3) == 0) {
+		if (rand.nextFloat() <= 0.25F) {
+			if (rand.nextInt(3) == 0) {
 				this.setPoiseLog(world, origin.east(12).up(6), rand);
 			} else {
-				if(rand.nextInt(2) == 0) {
+				if (rand.nextInt(2) == 0) {
 					this.setPoiseLog(world, origin.east(12).north().up(6), rand);
 				} else {
 					this.setPoiseLog(world, origin.east(12).south().up(6), rand);
@@ -162,11 +161,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 			}
 		}
 		
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.south(12).east(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.south(12).east(2).up(4), rand);
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.south(12).west(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.south(12).west(2).up(4), rand);
@@ -174,11 +173,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		this.setPoiseLog(world, origin.south(12).east().up(5), rand);
 		this.setPoiseLog(world, origin.south(12).up(5), rand);
 		this.setPoiseLog(world, origin.south(12).west().up(5), rand);
-		if(rand.nextFloat() <= 0.25F) {
-			if(rand.nextInt(3) == 0) {
+		if (rand.nextFloat() <= 0.25F) {
+			if (rand.nextInt(3) == 0) {
 				this.setPoiseLog(world, origin.south(12).up(6), rand);
 			} else {
-				if(rand.nextInt(2) == 0) {
+				if (rand.nextInt(2) == 0) {
 					this.setPoiseLog(world, origin.south(12).east().up(6), rand);
 				} else {
 					this.setPoiseLog(world, origin.south(12).west().up(6), rand);
@@ -186,11 +185,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 			}
 		}
 		
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.west(12).south(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.west(12).south(2).up(4), rand);
-		for(int y = 1; y <= 3; y++) {
+		for (int y = 1; y <= 3; y++) {
 			this.setPoiseLog(world, origin.west(12).north(3).up(y), rand);
 		}
 		this.setPoiseLog(world, origin.west(12).north(2).up(4), rand);
@@ -198,11 +197,11 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		this.setPoiseLog(world, origin.west(12).south().up(5), rand);
 		this.setPoiseLog(world, origin.west(12).up(5), rand);
 		this.setPoiseLog(world, origin.west(12).north().up(5), rand);
-		if(rand.nextFloat() <= 0.25F) {
-			if(rand.nextInt(3) == 0) {
+		if (rand.nextFloat() <= 0.25F) {
+			if (rand.nextInt(3) == 0) {
 				this.setPoiseLog(world, origin.west(12).up(6), rand);
 			} else {
-				if(rand.nextInt(2) == 0) {
+				if (rand.nextInt(2) == 0) {
 					this.setPoiseLog(world, origin.west(12).south().up(6), rand);
 				} else {
 					this.setPoiseLog(world, origin.west(12).north().up(6), rand);
@@ -594,7 +593,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		 */
 		GenerationUtils.fillAreaWithBlockCube(world, origin.up(16).north(3).west(3).getX(), origin.up(16).north(3).west(3).getY(), origin.up(16).north(3).west(3).getZ(), origin.up(16).south(3).east(3).getX(), origin.up(16).south(3).east(3).getY(), origin.up(16).south(3).east(3).getZ(), EEBlocks.POISE_CLUSTER.get().getDefaultState());
 		
-		if(rand.nextFloat() <= 0.25F) {
+		if (rand.nextFloat() <= 0.25F) {
 			int i = rand.nextInt(4);
 			this.buildDomeHole(world, origin.up(16), rand, true, i);
 		}
@@ -604,16 +603,16 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 			rand.nextBoolean(),
 			rand.nextBoolean()
 		};
-		if(doSide[0]) {
+		if (doSide[0]) {
 			this.buildDomeHole(world, origin.up(16), rand, false, 0);
 		}
-		if(doSide[1]) {
+		if (doSide[1]) {
 			this.buildDomeHole(world, origin.up(16), rand, false, 1);
 		}
-		if(doSide[2]) {
+		if (doSide[2]) {
 			this.buildDomeHole(world, origin.up(16), rand, false, 2);
 		}
-		if(doSide[3]) {
+		if (doSide[3]) {
 			this.buildDomeHole(world, origin.up(16), rand, false, 3);
 		}
 		
@@ -623,44 +622,44 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 			rand.nextFloat() <= 0.25F ? true : false,
 			rand.nextFloat() <= 0.25F ? true : false,
 		};
-		if(doHangerSide[0]) {
-			if(rand.nextBoolean()) {
+		if (doHangerSide[0]) {
+			if (rand.nextBoolean()) {
 				this.buildPoiseHanger(world, origin.up(8).north(10).east(rand.nextInt(3)), rand, 0, false);
 			} else {
 				this.buildPoiseHanger(world, origin.up(8).north(10).west(rand.nextInt(3)), rand, 0, false);
 			}
 		}
-		if(doHangerSide[1]) {
-			if(rand.nextBoolean()) {
+		if (doHangerSide[1]) {
+			if (rand.nextBoolean()) {
 				this.buildPoiseHanger(world, origin.up(8).east(10).south(rand.nextInt(3)), rand, 1, false);
 			} else {
 				this.buildPoiseHanger(world, origin.up(8).east(10).north(rand.nextInt(3)), rand, 1, false);
 			}
 		}
-		if(doHangerSide[2]) {
-			if(rand.nextBoolean()) {
+		if (doHangerSide[2]) {
+			if (rand.nextBoolean()) {
 				this.buildPoiseHanger(world, origin.up(8).south(10).west(rand.nextInt(3)), rand, 2, false);
 			} else {
 				this.buildPoiseHanger(world, origin.up(8).south(10).east(rand.nextInt(3)), rand, 2, false);
 			}
 		}
-		if(doHangerSide[3]) {
-			if(rand.nextBoolean()) {
+		if (doHangerSide[3]) {
+			if (rand.nextBoolean()) {
 				this.buildPoiseHanger(world, origin.up(8).west(10).south(rand.nextInt(3)), rand, 3, false);
 			} else {
 				this.buildPoiseHanger(world, origin.up(8).west(10).north(rand.nextInt(3)), rand, 3, false);
 			}
 		}
-		if(rand.nextFloat() <= 0.25F) {
+		if (rand.nextFloat() <= 0.25F) {
 			this.buildPoiseHanger(world, origin.up(5).north(9).east(8), rand, 0, true);
 		}
-		if(rand.nextFloat() <= 0.25F) {
+		if (rand.nextFloat() <= 0.25F) {
 			this.buildPoiseHanger(world, origin.up(5).north(8).west(9), rand, 1, true);
 		}
-		if(rand.nextFloat() <= 0.25F) {
+		if (rand.nextFloat() <= 0.25F) {
 			this.buildPoiseHanger(world, origin.up(5).south(8).east(9), rand, 2, true);
 		}
-		if(rand.nextFloat() <= 0.25F) {
+		if (rand.nextFloat() <= 0.25F) {
 			this.buildPoiseHanger(world, origin.up(5).south(9).west(8), rand, 3, true);
 		}
 	}
@@ -671,7 +670,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		this.placePoismossCircle(world, reader, pos.west().south(2));
 		this.placePoismossCircle(world, reader, pos.east(2).south(2));
 
-		for(int i = 0; i < 5; ++i) {
+		for (int i = 0; i < 5; ++i) {
 			int j = random.nextInt(64);
 			int k = j % 8;
 			int l = j / 8;
@@ -682,8 +681,8 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private void placePoismossCircle(IWorld world, IWorldGenerationReader reader, BlockPos center) {
-		for(int i = -2; i <= 2; ++i) {
-			for(int j = -2; j <= 2; ++j) {
+		for (int i = -2; i <= 2; ++i) {
+			for (int j = -2; j <= 2; ++j) {
 				if (Math.abs(i) != 2 || Math.abs(j) != 2) {
 					this.placePoismossAt(world, reader, center.add(i, 0, j));
 				}
@@ -692,8 +691,8 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private void buildDomeHole(IWorld world, BlockPos pos, Random rand, boolean top, int variant) {
-		if(top) {
-			switch(variant) {
+		if (top) {
+			switch (variant) {
 				case 0:
 					this.setPoiseLogUnsafe(world, pos, rand);
 					this.setPoiseLogUnsafe(world, pos.north(), rand);
@@ -844,7 +843,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					break;
 			}
 		} else {
-			switch(variant) {
+			switch (variant) {
 				case 0:
 					this.setPoiseLogUnsafe(world, pos.down(6).north(8).east(8), rand);
 					
@@ -1003,55 +1002,55 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	
 	private void buildGround(IWorld world, BlockPos pos, Random rand) {
 		BlockPos origin = pos.down();
-		for(int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
-			for(int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
+		for (int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
+			for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 12; x <= origin.getX() + 12; x++) {
-			for(int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
+		for (int x = origin.getX() - 12; x <= origin.getX() + 12; x++) {
+			for (int z = origin.getZ() - 5; z <= origin.getZ() + 5; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 11; x <= origin.getX() + 11; x++) {
-			for(int z = origin.getZ() - 7; z <= origin.getZ() + 7; z++) {
+		for (int x = origin.getX() - 11; x <= origin.getX() + 11; x++) {
+			for (int z = origin.getZ() - 7; z <= origin.getZ() + 7; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 10; x <= origin.getX() + 10; x++) {
-			for(int z = origin.getZ() - 8; z <= origin.getZ() + 8; z++) {
+		for (int x = origin.getX() - 10; x <= origin.getX() + 10; x++) {
+			for (int z = origin.getZ() - 8; z <= origin.getZ() + 8; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 9; x <= origin.getX() + 9; x++) {
-			for(int z = origin.getZ() - 9; z <= origin.getZ() + 9; z++) {
+		for (int x = origin.getX() - 9; x <= origin.getX() + 9; x++) {
+			for (int z = origin.getZ() - 9; z <= origin.getZ() + 9; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 8; x <= origin.getX() + 8; x++) {
-			for(int z = origin.getZ() - 10; z <= origin.getZ() + 10; z++) {
+		for (int x = origin.getX() - 8; x <= origin.getX() + 8; x++) {
+			for (int z = origin.getZ() - 10; z <= origin.getZ() + 10; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 7; x <= origin.getX() + 7; x++) {
-			for(int z = origin.getZ() - 11; z <= origin.getZ() + 11; z++) {
+		for (int x = origin.getX() - 7; x <= origin.getX() + 7; x++) {
+			for (int z = origin.getZ() - 11; z <= origin.getZ() + 11; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
-			for(int z = origin.getZ() - 12; z <= origin.getZ() + 12; z++) {
+		for (int x = origin.getX() - 5; x <= origin.getX() + 5; x++) {
+			for (int z = origin.getZ() - 12; z <= origin.getZ() + 12; z++) {
 				world.setBlockState(new BlockPos(x, origin.getY(), z), Blocks.END_STONE.getDefaultState(), 2);
 				world.setBlockState(new BlockPos(x, origin.getY() - 1, z), Blocks.END_STONE.getDefaultState(), 2);
 			}
 		}
-		for(int x = 0; x <= 4; x++) {
+		for (int x = 0; x <= 4; x++) {
 			world.setBlockState(origin.down().north(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
 			world.setBlockState(origin.north(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
 			world.setBlockState(origin.down().south(13).east(2).west(x), Blocks.END_STONE.getDefaultState(), 2);
@@ -1060,7 +1059,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private void buildPoiseHanger(IWorld world, BlockPos pos, Random rand, int direction, boolean corner) {
-		if(!corner) {
+		if (!corner) {
 			switch(direction) {
 				case 0:
 					this.setPoiseLogHighProb(world, pos, rand);
@@ -1180,7 +1179,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					break;
 			}
 		} else {
-			switch(direction) {
+			switch (direction) {
 				case 0:
 					this.setPoiseLogHighProb(world, pos, rand);
 					this.setPoiseLogHighProb(world, pos.up(), rand);
@@ -1320,7 +1319,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	private boolean isGroundViable(IWorld world, BlockPos pos, Random rand) {
 		for (int xx = pos.north(13).west(13).getX(); xx <= pos.south(13).east(13).getX(); xx++) {
 			for (int zz = pos.north(13).west(13).getZ(); zz <= pos.south(13).east(13).getZ(); zz++) {
-				if(!isProperBlock(world, new BlockPos(xx, pos.getY(), zz))) {
+				if (!isProperBlock(world, new BlockPos(xx, pos.getY(), zz))) {
 					return false;
 				}
 			}
@@ -1334,28 +1333,28 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
 		BlockPos blockpos = pos.up();
-		if(world.getBlockState(blockpos).getBlock() == Blocks.AIR) {
+		if (world.getBlockState(blockpos).getBlock() == Blocks.AIR) {
 			BlockState newGround = EEBlocks.POISMOSS.get().getDefaultState();
 			world.setBlockState(blockpos, newGround, 2);
 		}
 	}
 	
 	private void setPoiseCluster(IWorld world, BlockPos pos, Random rand) {
-		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
+		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, EEBlocks.POISE_CLUSTER.get().getDefaultState(), 2);
 		}
 	}
 	
 	private void setPoiseLogHighProb(IWorld world, BlockPos pos, Random rand) {
 		BlockState logState = rand.nextFloat() <= 0.35F ? EEBlocks.POISE_LOG.get().getDefaultState() : EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
-		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
+		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}
 	}
 	
 	private void setPoiseLog(IWorld world, BlockPos pos, Random rand) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.get().getDefaultState() : EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
-		if(world.getBlockState(pos).getMaterial().isReplaceable()) {
+		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}
 	}

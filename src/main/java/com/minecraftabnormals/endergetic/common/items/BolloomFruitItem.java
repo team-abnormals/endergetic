@@ -13,13 +13,11 @@ public class BolloomFruitItem extends Item {
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-		ItemStack itemstack = super.onItemUseFinish(stack, worldIn, entityLiving);
+	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity eater) {
+		ItemStack itemstack = super.onItemUseFinish(stack, worldIn, eater);
 		
-		if(!worldIn.isRemote) {
-			if(entityLiving instanceof PlayerEntity) {
-	            ((PlayerEntity)entityLiving).getCooldownTracker().setCooldown(this, 25);
-	        }
+		if (!worldIn.isRemote && eater instanceof PlayerEntity) {
+			((PlayerEntity) eater).getCooldownTracker().setCooldown(this, 25);
 		}
 		
 		return itemstack;

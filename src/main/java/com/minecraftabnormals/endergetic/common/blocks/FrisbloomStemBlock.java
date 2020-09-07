@@ -48,8 +48,7 @@ public class FrisbloomStemBlock extends Block {
 	
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if(!world.isAreaLoaded(pos, 0)) return;
-		
+		if (!world.isAreaLoaded(pos, 0)) return;
 		if (!state.isValidPosition(world, pos)) {
 			world.destroyBlock(pos, true);
 		}
@@ -63,7 +62,6 @@ public class FrisbloomStemBlock extends Block {
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
-		
 		return isValidPosition(stateIn, worldIn, currentPos) ? worldIn.getBlockState(currentPos) : Blocks.AIR.getDefaultState();
 	}
 	
@@ -72,9 +70,9 @@ public class FrisbloomStemBlock extends Block {
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		World world = context.getWorld();
 		BlockPos pos = context.getPos().down();
-		if(world.getBlockState(pos).getBlock() == Blocks.END_STONE) {
+		if (world.getBlockState(pos).getBlock() == Blocks.END_STONE) {
 			return this.getDefaultState();
-		} else if(world.getBlockState(pos).getBlock() == this) {
+		} else if (world.getBlockState(pos).getBlock() == this) {
 			return world.getBlockState(pos).with(LAYER, world.getBlockState(pos).get(LAYER) + 1);
 		}
 		return null;

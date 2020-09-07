@@ -26,7 +26,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
  * @author - SmellyModder(Luke Tonon)
  */
 public class BolloomBudFeature extends Feature<NoFeatureConfig> {
-	protected static final Supplier<BlockState> BOLLOOM_BUD = () -> EEBlocks.BOLLOOM_BUD.get().getDefaultState();
+	private static final Supplier<BlockState> BOLLOOM_BUD = () -> EEBlocks.BOLLOOM_BUD.get().getDefaultState();
 
 	public BolloomBudFeature(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
@@ -34,17 +34,17 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 
 	@Override
 	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(rand.nextFloat() > 0.75) {
-			if(this.isValidPos(world, pos)) {
+		if (rand.nextFloat() > 0.75) {
+			if (this.isValidPos(world, pos)) {
 				world.setBlockState(pos, BOLLOOM_BUD.get(), 2);
 				return true;
 			}
 		} else {
 			int maxHeight = this.calculateFruitMaxHeight(world, pos);
-			if(this.isValidPos(world, pos) && this.canFitCross(world, pos) && GenerationUtils.isAreaAir(world, pos.getX() - 1, pos.getY() + 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1) && maxHeight > 1) {
+			if (this.isValidPos(world, pos) && this.canFitCross(world, pos) && GenerationUtils.isAreaAir(world, pos.getX() - 1, pos.getY() + 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 2, pos.getZ() + 1) && maxHeight > 1) {
 				world.setBlockState(pos, BOLLOOM_BUD.get().with(BolloomBudBlock.OPENED, true), 2);
 				TileEntity te = world.getTileEntity(pos);
-				if(te instanceof BolloomBudTileEntity) {
+				if (te instanceof BolloomBudTileEntity) {
 					((BolloomBudTileEntity) te).startGrowing(rand, maxHeight, true);
 				}
 				return true;
@@ -61,9 +61,9 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 	private int calculateFruitMaxHeight(IWorld world, BlockPos pos) {
 		int[] maxHeights = new int[4];
 		
-		for(BudSide sides : BudSide.values()) {
-			for(int y = 1; y < 7; y++) {
-				if(world.isAirBlock(sides.offsetPosition(pos.up(y)))) {
+		for (BudSide sides : BudSide.values()) {
+			for (int y = 1; y < 7; y++) {
+				if (world.isAirBlock(sides.offsetPosition(pos.up(y)))) {
 					maxHeights[sides.id] = y;
 					continue;
 				} else {
@@ -76,8 +76,8 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean canFitCross(IWorld world, BlockPos pos) {
-		for(BudSide sides : BudSide.values()) {
-			if(!world.isAirBlock(sides.offsetPosition(pos))) {
+		for (BudSide sides : BudSide.values()) {
+			if (!world.isAirBlock(sides.offsetPosition(pos))) {
 				return false;
 			}
 		}

@@ -12,7 +12,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class EESurfaceBuilders {
+public final class EESurfaceBuilders {
 	public static final DeferredRegister<SurfaceBuilder<?>> SURFACE_BUILDERS = DeferredRegister.create(ForgeRegistries.SURFACE_BUILDERS, EndergeticExpansion.MOD_ID);
 	
 	public static final Supplier<SurfaceBuilderConfig> END_STONE_CONFIG = () -> new SurfaceBuilderConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());

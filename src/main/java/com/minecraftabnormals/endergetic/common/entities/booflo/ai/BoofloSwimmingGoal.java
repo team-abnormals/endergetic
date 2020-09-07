@@ -19,7 +19,7 @@ public class BoofloSwimmingGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-		if(RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
+		if (RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
 		return this.booflo.hasPath() && this.booflo.isNoEndimationPlaying() && this.booflo.isMovingInAir() && this.booflo.isBoofed();

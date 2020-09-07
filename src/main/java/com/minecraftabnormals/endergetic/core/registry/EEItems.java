@@ -12,8 +12,8 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class EEItems {
-	public static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+public final class EEItems {
+	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 	
 	public static final RegistryObject<Item> EUMUS_BRICK = HELPER.createItem("eumus_brick", () -> new Item(RegistryHelper.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
 	

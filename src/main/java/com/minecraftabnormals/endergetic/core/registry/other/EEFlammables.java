@@ -3,7 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 import com.teamabnormals.abnormals_core.core.utils.DataUtils;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-public class EEFlammables {
+public final class EEFlammables {
 
 	public static void registerFlammables() {
 		DataUtils.registerFlammable(EEBlocks.POISE_LOG.get(), 5, 5);

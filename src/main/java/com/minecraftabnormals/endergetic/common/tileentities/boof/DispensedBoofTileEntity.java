@@ -29,20 +29,21 @@ public class DispensedBoofTileEntity extends TileEntity implements ITickableTile
 		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
 		entities.removeIf((entity) -> EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()));
 		
-		for(int i = 0; i < entities.size(); i++) {
+		Direction facing = this.getBlockState().get(DispensedBoofBlock.FACING);
+		for (int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
 			
-			if(this.getBlockState().get(DispensedBoofBlock.FACING) == Direction.UP) {
+			if (facing == Direction.UP) {
 				entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 0.1F * 0.1F, 0.25D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 0.1F * 0.1F);
-			} else if(this.getBlockState().get(DispensedBoofBlock.FACING) == Direction.DOWN) {
+			} else if (facing == Direction.DOWN) {
 				entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 0.1F * 0.1F, -0.45D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 0.1F * 0.1F);
 			} else {
 				entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3F * 0.1F, 0.45D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3F * 0.1F);
 			}
 		}
 		
-		if(this.ticksExisted >= 10) {
-			this.getWorld().setBlockState(this.pos, Blocks.AIR.getDefaultState());
+		if (this.ticksExisted >= 10) {
+			this.world.setBlockState(this.pos, Blocks.AIR.getDefaultState());
 		}
 	}
 }
