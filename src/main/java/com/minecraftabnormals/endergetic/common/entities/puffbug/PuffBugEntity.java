@@ -960,17 +960,19 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		if (te != this.getHive()) {
 			return false;
 		}
-		
+
+		BlockPos hivePos = this.getHivePos();
 		switch (side) {
 			case UP:
 				return false;
 			case DOWN:
 				float yOffsetDown = this.isChild() ? 0.45F : -0.15F;
-				return Vector3d.func_237489_a_((this.getHivePos().down()).add(0.5F, yOffsetDown, 0.5F)).distanceTo(this.getPositionVec()) < 0.25F;
+				return Vector3d.func_237489_a_((hivePos.down()).add(0.5F, yOffsetDown, 0.5F)).distanceTo(this.getPositionVec()) < 0.25F;
 			default:
 				float yOffset = this.isChild() ? 0.2F : -0.2F;
-				return this.world.isAirBlock(this.getHivePos().offset(side).up()) && this.world.isAirBlock(this.getHivePos().offset(side).down())
-					&& Vector3d.func_237489_a_(this.getHivePos().offset(side)).add(this.getTeleportController().getOffsetForDirection(side)[0], yOffset, this.getTeleportController().getOffsetForDirection(side)[1]).distanceTo(this.getPositionVec()) < (this.isChild() ? 0.1F : 0.25F);
+				BlockPos sideOffset = hivePos.offset(side);
+				return this.world.isAirBlock(sideOffset.up()) && this.world.isAirBlock(sideOffset.down())
+					&& Vector3d.func_237491_b_(sideOffset).add(this.getTeleportController().getOffsetForDirection(side)[0], yOffset, this.getTeleportController().getOffsetForDirection(side)[1]).distanceTo(this.getPositionVec()) < (this.isChild() ? 0.1F : 0.25F);
 		}
 	}
 	
