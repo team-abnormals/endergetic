@@ -147,7 +147,7 @@ public class AdolescentAttackGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(Entity attackTarget) {
-		return (double)(this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
+		return (this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
 	}
 	
 	@Nullable

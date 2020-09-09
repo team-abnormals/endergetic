@@ -1,27 +1,27 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class PuffBugPollinateGoal extends Goal {
-	private PuffBugEntity puffbug;
+public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	private World world;
 	private float originalPosX, originalPosY, originalPosZ;
 	
 	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
-		this.puffbug = puffbug;
-		this.world = this.puffbug.world;
+		super(puffbug);
+		this.world = puffbug.world;
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		if (this.puffbug.getPollinationPos() != null) {
-			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
+		if (this.entity.getPollinationPos() != null) {
+			TileEntity te = this.world.getTileEntity(this.entity.getPollinationPos());
 			if (te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
 				return true;
 			}
@@ -31,8 +31,8 @@ public class PuffBugPollinateGoal extends Goal {
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		if (this.puffbug.getPollinationPos() != null) {
-			TileEntity te = this.world.getTileEntity(this.puffbug.getPollinationPos());
+		if (this.entity.getPollinationPos() != null) {
+			TileEntity te = this.world.getTileEntity(this.entity.getPollinationPos());
 			if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 				return false;
 			}
@@ -40,42 +40,47 @@ public class PuffBugPollinateGoal extends Goal {
 			return false;
 		}
 		return
-			!this.puffbug.hasLevitation() &&
-			this.puffbug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION) &&
-			this.puffbug.getPosX() == this.originalPosX &&
-			this.puffbug.getPosZ() == this.originalPosZ &&
-			Math.abs(this.originalPosY - this.puffbug.getPosY()) < 0.5F
+			!this.entity.hasLevitation() &&
+			this.entity.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION) &&
+			this.entity.getPosX() == this.originalPosX &&
+			this.entity.getPosZ() == this.originalPosZ &&
+			Math.abs(this.originalPosY - this.entity.getPosY()) < 0.5F
 		;
 	}
 	
 	@Override
 	public void tick() {
-		this.puffbug.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
-		this.puffbug.puffCooldown = 10;
+		this.entity.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
+		this.entity.puffCooldown = 10;
 		
-		this.puffbug.setBoosting(false);
-		this.puffbug.setAIMoveSpeed(0.0F);
-		this.puffbug.getNavigator().clearPath();
+		this.entity.setBoosting(false);
+		this.entity.setAIMoveSpeed(0.0F);
+		this.entity.getNavigator().clearPath();
 	}
 	
 	@Override
 	public void startExecuting() {
-		this.puffbug.setBoosting(false);
-		this.puffbug.setAIMoveSpeed(0.0F);
-		this.puffbug.getNavigator().clearPath();
+		this.entity.setBoosting(false);
+		this.entity.setAIMoveSpeed(0.0F);
+		this.entity.getNavigator().clearPath();
 		
-		this.originalPosX = (float) this.puffbug.getPosX();
-		this.originalPosY = (float) this.puffbug.getPosY();
-		this.originalPosZ = (float) this.puffbug.getPosZ();
-		
-		NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.POLLINATE_ANIMATION);
+		this.originalPosX = (float) this.entity.getPosX();
+		this.originalPosY = (float) this.entity.getPosY();
+		this.originalPosZ = (float) this.entity.getPosZ();
+
+		this.playEndimation();
 	}
 	
 	@Override
 	public void resetTask() {
-		this.puffbug.setPollinationPos(null);
+		this.entity.setPollinationPos(null);
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
 		
-		NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.BLANK_ANIMATION);
+		NetworkUtil.setPlayingAnimationMessage(this.entity, PuffBugEntity.BLANK_ANIMATION);
+	}
+
+	@Override
+	protected Endimation getEndimation() {
+		return PuffBugEntity.POLLINATE_ANIMATION;
 	}
 }

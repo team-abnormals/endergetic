@@ -2,6 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
@@ -10,31 +12,30 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.Gro
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.RayTraceResult.Type;
 
-public class BoofloGroundHopGoal extends Goal {
-	private final BoofloEntity booflo;
+public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 	private int ticksPassed;
 
 	public BoofloGroundHopGoal(BoofloEntity booflo) {
-		this.booflo = booflo;
+		super(booflo);
 		this.setMutexFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		if (RayTraceHelper.rayTrace(this.booflo, 1.5D, 1.0F).getType() == Type.BLOCK) {
+		if (RayTraceHelper.rayTrace(this.entity, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
-		return this.booflo.getMoveHelper() instanceof GroundMoveHelperController && this.booflo.isOnGround() && !this.booflo.isBoofed() && this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.booflo.isPassenger() && this.booflo.getPassengers().isEmpty();
+		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.entity.isOnGround() && !this.entity.isBoofed() && this.entity.hopDelay == 0 && this.entity.isNoEndimationPlaying() && !this.entity.isPassenger() && this.entity.getPassengers().isEmpty();
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.getMoveHelper() instanceof GroundMoveHelperController && this.ticksPassed <= 10;
+		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.ticksPassed <= 10;
 	}
 	
 	@Override
 	public void startExecuting() {
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
+		this.playEndimation();
 	}
 	
 	@Override
@@ -46,8 +47,13 @@ public class BoofloGroundHopGoal extends Goal {
 	public void tick() {
 		this.ticksPassed++;
 		
-		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.25D);
+		if (this.entity.getMoveHelper() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.entity.getMoveHelper()).setSpeed(1.25D);
 		}
+	}
+
+	@Override
+	protected Endimation getEndimation() {
+		return BoofloEntity.HOP;
 	}
 }

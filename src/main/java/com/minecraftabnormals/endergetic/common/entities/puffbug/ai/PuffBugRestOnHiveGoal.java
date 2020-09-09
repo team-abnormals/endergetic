@@ -5,12 +5,16 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 
+import java.util.Random;
+
 public class PuffBugRestOnHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
+	private final Random random;
 	private int ticksRested;
 	
 	public PuffBugRestOnHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
+		this.random = puffbug.getRNG();
 	}
 
 	@Override
@@ -22,7 +26,7 @@ public class PuffBugRestOnHiveGoal extends Goal {
 	public void tick() {
 		this.ticksRested++;
 		
-		if (this.ticksRested > 1000 && this.puffbug.getRNG().nextFloat() < 0.25F) {
+		if (this.ticksRested > 1000 && this.random.nextFloat() < 0.25F) {
 			this.puffbug.setAttachedHiveSide(Direction.UP);
 			this.puffbug.setInflated(true);
 		}
@@ -39,8 +43,8 @@ public class PuffBugRestOnHiveGoal extends Goal {
 		/*
 		 * snore...
 		 */
-		if (this.puffbug.getRNG().nextInt(200) == 0) {
-			float pitch = this.puffbug.isChild() ? (this.puffbug.getRNG().nextFloat() - this.puffbug.getRNG().nextFloat()) * 0.2F + 1.5F : (this.puffbug.getRNG().nextFloat() - this.puffbug.getRNG().nextFloat()) * 0.2F + 1.0F;
+		if (this.random.nextInt(200) == 0) {
+			float pitch = this.puffbug.isChild() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F;
 			this.puffbug.playSound(this.puffbug.getSleepSound(), 0.1F, pitch);
 		}
 	}

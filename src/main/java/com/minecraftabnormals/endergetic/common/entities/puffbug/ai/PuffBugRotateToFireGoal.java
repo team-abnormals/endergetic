@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import java.util.EnumSet;
+import java.util.Random;
 
 import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
@@ -11,12 +12,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class PuffBugRotateToFireGoal extends Goal {
-	private PuffBugEntity puffbug;
+	private final PuffBugEntity puffbug;
+	private final Random random;
 	private int ticksPassed;
 	private int ticksToRotate;
 	
 	public PuffBugRotateToFireGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
+		this.random = puffbug.getRNG();
 		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
@@ -32,7 +35,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 	
 	@Override
 	public void startExecuting() {
-		this.ticksToRotate = this.puffbug.getRNG().nextInt(5) + 12;
+		this.ticksToRotate = this.random.nextInt(5) + 12;
 	}
 	
 	@Override
@@ -55,17 +58,19 @@ public class PuffBugRotateToFireGoal extends Goal {
 			this.puffbug.removeLaunchDirection();
 			this.puffbug.setInflated(false);
 			NetworkUtil.setPlayingAnimationMessage(this.puffbug, PuffBugEntity.FLY_ANIMATION);
-			
+
+			Vector3d pos = this.puffbug.getPositionVec();
+			double posX = pos.getX();
+			double posY = pos.getY();
+			double posZ = pos.getZ();
 			for (int i = 0; i < 3; i++) {
-				Vector3d pos = this.puffbug.getPositionVec();
-				
 				float particleX = MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 				float particleY = -MathHelper.sin(pitch * ((float) Math.PI / 180F));
 				float particleZ = -MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 				
 				Vector3d particleMotion = new Vector3d(particleX, particleY, particleZ).normalize().scale(0.5F);
 				
-				NetworkUtil.spawnParticle("endergetic:short_poise_bubble", pos.getX(), pos.getY(), pos.getZ(), particleMotion.getX() + MathUtils.makeNegativeRandomly((this.puffbug.getRNG().nextFloat() * 0.25F), this.puffbug.getRNG()), particleMotion.getY() + (this.puffbug.getRNG().nextFloat() * 0.05F), MathUtils.makeNegativeRandomly(particleMotion.getZ() + (this.puffbug.getRNG().nextFloat() * 0.25F), this.puffbug.getRNG()));
+				NetworkUtil.spawnParticle("endergetic:short_poise_bubble", posX, posY, posZ, particleMotion.getX() + MathUtils.makeNegativeRandomly((this.random.nextFloat() * 0.25F), this.random), particleMotion.getY() + (this.random.nextFloat() * 0.05F), MathUtils.makeNegativeRandomly(particleMotion.getZ() + (this.random.nextFloat() * 0.25F), this.random));
 			}
 		}
 		this.ticksPassed = 0;

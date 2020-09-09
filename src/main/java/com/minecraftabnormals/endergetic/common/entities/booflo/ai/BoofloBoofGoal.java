@@ -2,67 +2,74 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
+import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class BoofloBoofGoal extends Goal {
-	private BoofloEntity booflo;
+public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
+	private final World world;
 	
 	public BoofloBoofGoal(BoofloEntity booflo) {
-		this.booflo = booflo;
+		super(booflo);
+		this.world = booflo.world;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
 	public boolean shouldExecute() {
-		boolean onGround = this.booflo.isOnGround();
-		boolean flagChance = !this.booflo.hasAggressiveAttackTarget() ? this.booflo.getRNG().nextFloat() < 0.25F && this.booflo.getAnimationTick() == 20 : this.booflo.getAnimationTick() >= 20;
+		boolean onGround = this.entity.isOnGround();
+		boolean flagChance = !this.entity.hasAggressiveAttackTarget() ? this.entity.getRNG().nextFloat() < 0.25F && this.isEndimationAtTick(20) : this.isEndimationPastOrAtTick(20);
 		
-		if (this.booflo.hasAggressiveAttackTarget() && !this.booflo.isBoofed()) {
-			return this.booflo.isNoEndimationPlaying();
+		if (this.entity.hasAggressiveAttackTarget() && !this.entity.isBoofed()) {
+			return this.entity.isNoEndimationPlaying();
 		}
 		
 		if (!onGround) {
-			if (this.shouldJumpForFall() && !this.booflo.isBoofed() && this.booflo.getRideControlDelay() <= 0) {
-				if (this.booflo.isBeingRidden()) {
-					this.booflo.setDelayExpanding(true);
-					this.booflo.setDelayDecrementing(false);
+			if (this.shouldJumpForFall() && !this.entity.isBoofed() && this.entity.getRideControlDelay() <= 0) {
+				if (this.entity.isBeingRidden()) {
+					this.entity.setDelayExpanding(true);
+					this.entity.setDelayDecrementing(false);
 				}
 				return true;
 			}
 		}
-		return (this.booflo.hasCaughtPuffBug() || this.booflo.getPassengers().isEmpty()) && !onGround && !this.booflo.isTempted() && flagChance && this.booflo.isEndimationPlaying(BoofloEntity.HOP);
+		return (this.entity.hasCaughtPuffBug() || this.entity.getPassengers().isEmpty()) && !onGround && !this.entity.isTempted() && flagChance && this.entity.isEndimationPlaying(BoofloEntity.HOP);
 	}
 	
 	@Override
 	public boolean shouldContinueExecuting() {
-		return this.booflo.isEndimationPlaying(BoofloEntity.INFLATE);
+		return this.isEndimationPlaying();
 	}
 	
 	@Override
 	public void startExecuting() {
-		this.booflo.setBoofed(true);
-		NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.INFLATE);
+		this.entity.setBoofed(true);
+		this.playEndimation();
 	}
 	
 	private boolean shouldJumpForFall() {
-		BlockPos pos = this.booflo.func_233580_cy_();
+		BlockPos pos = this.entity.func_233580_cy_();
 		for (int i = 0; i < 12; i++) {
 			pos = pos.down(i);
-			FluidState fluidState = this.booflo.world.getFluidState(pos);
-			if (!Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP) && i > 6 || fluidState.isTagged(FluidTags.LAVA)) {
+			FluidState fluidState = this.world.getFluidState(pos);
+			if (!Block.hasSolidSide(this.world.getBlockState(pos), this.world, pos, Direction.UP) && i > 6 || fluidState.isTagged(FluidTags.LAVA)) {
 				return true;
-			} else if (Block.hasSolidSide(this.booflo.world.getBlockState(pos), this.booflo.world, pos, Direction.UP)) {
+			} else if (Block.hasSolidSide(this.world.getBlockState(pos), this.world, pos, Direction.UP)) {
 				return false;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	protected Endimation getEndimation() {
+		return BoofloEntity.INFLATE;
 	}
 }
