@@ -27,11 +27,13 @@ public final class GenerationUtils {
     }
 	
 	public static void fillAreaWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
-						world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+					mutable.setPos(xx, yy, zz);
+					if (world.getBlockState(mutable).getMaterial().isReplaceable()) {
+						world.setBlockState(mutable, block, 2);
 					}
 				}
 			}
@@ -39,46 +41,45 @@ public final class GenerationUtils {
 	}
 	
 	public static void fillAreaWithBlockCubeEdged(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for(int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable() && (xx == x2 || zz == z2)) {
-						world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+					mutable.setPos(xx, yy, zz);
+					if (world.getBlockState(mutable).getMaterial().isReplaceable() && (xx == x2 || zz == z2)) {
+						world.setBlockState(mutable, block, 2);
 					}
 				}
 			}
 		}
 	}
 	
-	public static void fillAreaWithBlockCubeUnsafe(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+	public static void forceFillAreaWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+					world.setBlockState(mutable.setPos(xx, yy, zz), block, 2);
 				}
 			}
 		}
 	}
 	
-	public static void fillAreaWithBlockCubeUnsafeReverse(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
-		for (int yy = y1; yy <= y2; yy++) {
-			for (int xx = x1; xx >= x2; xx--) {
-				for (int zz = z1; zz >= z2; zz--) {
-					world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
-				}
-			}
-		}
+	public static void forceFillAreaReversedWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
+		fillAreaWithBlockCube(world, x2, y2, z2, x1, y1, z2, block);
 	}
 	
 	public static void fillWithRandomTwoBlocksCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, Random rand, BlockState block, BlockState block2, float chance) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+					mutable.setPos(xx, yy, zz);
+					if (world.getBlockState(mutable).getMaterial().isReplaceable()) {
 						if (rand.nextFloat() <= chance) {
-							world.setBlockState(new BlockPos(xx, yy, zz), block2, 2);
+							world.setBlockState(mutable, block2, 2);
 						} else {
-							world.setBlockState(new BlockPos(xx, yy, zz), block, 2);
+							world.setBlockState(mutable, block, 2);
 						}
 					}
 				}
@@ -87,10 +88,11 @@ public final class GenerationUtils {
 	}
 	
 	public static boolean isAreaReplacable(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (!world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+					if (!world.getBlockState(mutable.setPos(xx, yy, zz)).getMaterial().isReplaceable()) {
 						return false;
 					}
 				}
@@ -100,10 +102,11 @@ public final class GenerationUtils {
 	}
 	
 	public static boolean isAreaAir(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (!world.isAirBlock(new BlockPos(xx, yy, zz))) {
+					if (!world.isAirBlock(mutable.setPos(xx, yy, zz))) {
 						return false;
 					}
 				}
@@ -113,10 +116,11 @@ public final class GenerationUtils {
 	}
 	
 	public static boolean isAreaCompletelySolid(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.getBlockState(new BlockPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+					if (world.getBlockState(mutable.setPos(xx, yy, zz)).getMaterial().isReplaceable()) {
 						return false;
 					}
 				}

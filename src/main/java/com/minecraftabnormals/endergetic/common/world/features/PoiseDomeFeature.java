@@ -725,10 +725,10 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					this.setPoiseLogUnsafe(world, pos.south().east(), rand);
 					
 					//Air
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.north(2).east().getX(), pos.north(2).east().getY(), pos.north(2).east().getZ(), pos.east().getX(), pos.east().getY(), pos.east().getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down().north(4).east(2).getX(), pos.down().north(4).east(2).getY(), pos.down().north(4).east(2).getZ(), pos.south().east(4).getX(), pos.south().east(4).getY(), pos.south().east(4).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).north(5).east(4).getX(), pos.down(2).north(5).east(4).getY(), pos.down(2).north(5).east(4).getZ(), pos.down().east(6).getX(), pos.down().east(6).getY(), pos.down().east(6).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).north(4).east(7).getX(), pos.down(2).north(4).east(7).getY(), pos.down(2).north(4).east(7).getZ(), pos.down(2).north(2).east(7).getX(), pos.down(2).north(2).east(7).getY(), pos.down(2).north(2).east(7).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.north(2).east().getX(), pos.north(2).east().getY(), pos.north(2).east().getZ(), pos.east().getX(), pos.east().getY(), pos.east().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down().north(4).east(2).getX(), pos.down().north(4).east(2).getY(), pos.down().north(4).east(2).getZ(), pos.south().east(4).getX(), pos.south().east(4).getY(), pos.south().east(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down(2).north(5).east(4).getX(), pos.down(2).north(5).east(4).getY(), pos.down(2).north(5).east(4).getZ(), pos.down().east(6).getX(), pos.down().east(6).getY(), pos.down().east(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down(2).north(4).east(7).getX(), pos.down(2).north(4).east(7).getY(), pos.down(2).north(4).east(7).getZ(), pos.down(2).north(2).east(7).getX(), pos.down(2).north(2).east(7).getY(), pos.down(2).north(2).east(7).getZ(), Blocks.AIR.getDefaultState());
 					break;
 				case 1:
 					this.setPoiseLogUnsafe(world, pos, rand);
@@ -762,10 +762,10 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					this.setPoiseLogUnsafe(world, pos.west().south(), rand);
 					
 					//Air
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.east(2).south().getX(), pos.east(2).south().getY(), pos.east(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down().east(4).south(4).getX(), pos.down().east(4).south(4).getY(), pos.down().east(4).south(4).getZ(), pos.west().south(2).getX(), pos.west().south(2).getY(), pos.west().south(2).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).east(5).south(6).getX(), pos.down(2).east(5).south(6).getY(), pos.down(2).east(5).south(6).getZ(), pos.down().south(4).getX(), pos.down().south(4).getY(), pos.down().south(4).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).east(4).south(7).getX(), pos.down(2).east(4).south(7).getY(), pos.down(2).east(4).south(7).getZ(), pos.down(2).east(2).south(7).getX(), pos.down(2).east(2).south(7).getY(), pos.down(2).east(2).south(7).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.east(2).south().getX(), pos.east(2).south().getY(), pos.east(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down().east(4).south(4).getX(), pos.down().east(4).south(4).getY(), pos.down().east(4).south(4).getZ(), pos.west().south(2).getX(), pos.west().south(2).getY(), pos.west().south(2).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down(2).east(5).south(6).getX(), pos.down(2).east(5).south(6).getY(), pos.down(2).east(5).south(6).getZ(), pos.down().south(4).getX(), pos.down().south(4).getY(), pos.down().south(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down(2).east(4).south(7).getX(), pos.down(2).east(4).south(7).getY(), pos.down(2).east(4).south(7).getZ(), pos.down(2).east(2).south(7).getX(), pos.down(2).east(2).south(7).getY(), pos.down(2).east(2).south(7).getZ(), Blocks.AIR.getDefaultState());
 					break;
 				case 2:
 					this.setPoiseLogUnsafe(world, pos, rand);
@@ -799,10 +799,10 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					this.setPoiseLogUnsafe(world, pos.north().west(), rand);
 					
 					//Air
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.south(2).west().getX(), pos.south(2).west().getY(), pos.south(2).west().getZ(), pos.west().getX(), pos.west().getY(), pos.west().getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down().south(4).west(2).getX(), pos.down().south(4).west(2).getY(), pos.down().south(4).west(2).getZ(), pos.north().west(4).getX(), pos.north().west(4).getY(), pos.north().west(4).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).south(5).west(4).getX(), pos.down(2).south(5).west(4).getY(), pos.down(2).south(5).west(4).getZ(), pos.down().west(6).getX(), pos.down().west(6).getY(), pos.down().west(6).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafeReverse(world, pos.down(2).south(4).west(7).getX(), pos.down(2).south(4).west(7).getY(), pos.down(2).south(4).west(7).getZ(), pos.down(2).south(2).west(7).getX(), pos.down(2).south(2).west(7).getY(), pos.down(2).south(2).west(7).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.south(2).west().getX(), pos.south(2).west().getY(), pos.south(2).west().getZ(), pos.west().getX(), pos.west().getY(), pos.west().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down().south(4).west(2).getX(), pos.down().south(4).west(2).getY(), pos.down().south(4).west(2).getZ(), pos.north().west(4).getX(), pos.north().west(4).getY(), pos.north().west(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down(2).south(5).west(4).getX(), pos.down(2).south(5).west(4).getY(), pos.down(2).south(5).west(4).getZ(), pos.down().west(6).getX(), pos.down().west(6).getY(), pos.down().west(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaReversedWithBlockCube(world, pos.down(2).south(4).west(7).getX(), pos.down(2).south(4).west(7).getY(), pos.down(2).south(4).west(7).getZ(), pos.down(2).south(2).west(7).getX(), pos.down(2).south(2).west(7).getY(), pos.down(2).south(2).west(7).getZ(), Blocks.AIR.getDefaultState());
 					break;
 				case 3:
 					this.setPoiseLogUnsafe(world, pos, rand);
@@ -836,10 +836,10 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 					this.setPoiseLogUnsafe(world, pos.east().south(), rand);
 					
 					//Air
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.west(2).south().getX(), pos.west(2).south().getY(), pos.west(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down().west(4).south(2).getX(), pos.down().west(4).south(2).getY(), pos.down().west(4).south(2).getZ(), pos.east().south(4).getX(), pos.east().south(4).getY(), pos.east().south(4).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).west(5).south(4).getX(), pos.down(2).west(5).south(4).getY(), pos.down(2).west(5).south(4).getZ(), pos.down().south(6).getX(), pos.down().south(6).getY(), pos.down().south(6).getZ(), Blocks.AIR.getDefaultState());
-					GenerationUtils.fillAreaWithBlockCubeUnsafe(world, pos.down(2).west(4).south(7).getX(), pos.down(2).west(4).south(7).getY(), pos.down(2).west(4).south(7).getZ(), pos.down(2).west(2).south(7).getX(), pos.down(2).west(2).south(7).getY(), pos.down(2).west(2).south(7).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.west(2).south().getX(), pos.west(2).south().getY(), pos.west(2).south().getZ(), pos.south().getX(), pos.south().getY(), pos.south().getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down().west(4).south(2).getX(), pos.down().west(4).south(2).getY(), pos.down().west(4).south(2).getZ(), pos.east().south(4).getX(), pos.east().south(4).getY(), pos.east().south(4).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down(2).west(5).south(4).getX(), pos.down(2).west(5).south(4).getY(), pos.down(2).west(5).south(4).getZ(), pos.down().south(6).getX(), pos.down().south(6).getY(), pos.down().south(6).getZ(), Blocks.AIR.getDefaultState());
+					GenerationUtils.forceFillAreaWithBlockCube(world, pos.down(2).west(4).south(7).getX(), pos.down(2).west(4).south(7).getY(), pos.down(2).west(4).south(7).getZ(), pos.down(2).west(2).south(7).getX(), pos.down(2).west(2).south(7).getY(), pos.down(2).west(2).south(7).getZ(), Blocks.AIR.getDefaultState());
 					break;
 			}
 		} else {
