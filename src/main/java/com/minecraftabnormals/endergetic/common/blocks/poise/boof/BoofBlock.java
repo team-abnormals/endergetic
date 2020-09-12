@@ -82,7 +82,6 @@ public class BoofBlock extends ContainerBlock {
 		if (!world.isRemote) {
 			BoofBlockEntity boofBlock = new BoofBlockEntity(world, pos);
 			world.addEntity(boofBlock);
-			
 			world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
 		}
 		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BOOFED, true));

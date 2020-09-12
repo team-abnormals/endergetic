@@ -24,7 +24,6 @@ public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<Dis
 		this.model = new BoofBlockDispenserModel();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
 		Direction facing = boof.hasWorld() ? boof.getBlockState().get(DispensedBoofBlock.FACING) : Direction.NORTH;

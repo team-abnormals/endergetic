@@ -44,15 +44,15 @@ public class BoofBlockEntity extends LivingEntity {
 	
 	@Override
 	protected void registerData() {
-		this.getDataManager().register(ORIGIN, BlockPos.ZERO);
-		this.getDataManager().register(FOR_PROJECTILE, false);
 		super.registerData();
+		this.dataManager.register(ORIGIN, BlockPos.ZERO);
+		this.dataManager.register(FOR_PROJECTILE, false);
 	}
 	
 	@Override
 	public void tick() {
 		AxisAlignedBB bb = this.getBoundingBox().grow(0, 0.25F, 0);
-		List<Entity> entities = this.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
+		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
 		for (int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
 				
@@ -79,7 +79,7 @@ public class BoofBlockEntity extends LivingEntity {
 			if (this.world.isAreaLoaded(this.getOrigin(), 1) && this.world.getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK.get() && !this.isForProjectile()) {
 				this.world.setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
 			} else if (this.world.isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
-				this.getEntityWorld().setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
+				this.world.setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
 			}
 			this.remove();
 		}
