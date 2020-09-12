@@ -14,10 +14,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 
-public class DispensedBoofTileEntity extends TileEntity implements ITickableTileEntity {
+public class DispensedBlockBoofTileEntity extends TileEntity implements ITickableTileEntity {
 	private int ticksExisted;
 	
-	public DispensedBoofTileEntity() {
+	public DispensedBlockBoofTileEntity() {
 		super(EETileEntities.BOOF_BLOCK_DISPENSED.get());
 	}
 
@@ -26,8 +26,7 @@ public class DispensedBoofTileEntity extends TileEntity implements ITickableTile
 		this.ticksExisted++;
 		
 		AxisAlignedBB bb = new AxisAlignedBB(this.pos).grow(0.1F, 0.1F, 0.1F);
-		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
-		entities.removeIf((entity) -> EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()));
+		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb, (entity -> !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())));
 		
 		Direction facing = this.getBlockState().get(DispensedBoofBlock.FACING);
 		for (int i = 0; i < entities.size(); i++) {

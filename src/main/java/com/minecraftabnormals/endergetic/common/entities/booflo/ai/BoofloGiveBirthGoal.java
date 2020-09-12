@@ -4,12 +4,10 @@ import java.util.Random;
 
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
@@ -23,7 +21,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public boolean shouldExecute() {
-		return !this.entity.hasCaughtFruit() && !this.entity.isBoofed() && this.entity.isNoEndimationPlaying() && this.entity.isPregnant() && (this.entity.func_233570_aj_() || this.entity.isPassenger());
+		return !this.entity.hasCaughtFruit() && !this.entity.isBoofed() && this.entity.isNoEndimationPlaying() && this.entity.isPregnant() && (this.entity.isOnGround() || this.entity.isPassenger());
 	}
 	
 	@Override

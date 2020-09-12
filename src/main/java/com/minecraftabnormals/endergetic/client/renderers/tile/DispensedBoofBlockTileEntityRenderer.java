@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.client.renderers.tile;
 
 import com.minecraftabnormals.endergetic.client.models.BoofBlockDispenserModel;
 import com.minecraftabnormals.endergetic.common.blocks.poise.boof.DispensedBoofBlock;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBoofTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -15,36 +15,30 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class BoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBoofTileEntity> {
-	public BoofBlockDispenserModel model;
+public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBlockBoofTileEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
-	
-	public BoofBlockTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
+	private final BoofBlockDispenserModel model;
+
+	public DispensedBoofBlockTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new BoofBlockDispenserModel();
 	}
-	
+
 	@Override
-	public void render(DispensedBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
 		Direction facing = boof.hasWorld() ? boof.getBlockState().get(DispensedBoofBlock.FACING) : Direction.NORTH;
 		
 		matrixStack.push();
 		matrixStack.translate(0.5F, 1.5F, 0.5F);
-		
-		if (facing == Direction.DOWN) {
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
-			matrixStack.translate(0.0F, 1.125F, 1.0F);
-		} else if (facing == Direction.UP){
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
-			matrixStack.translate(0.0F, 1.125F, -1.0F);
-		} else if (facing == Direction.NORTH) {
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
-		} else if (facing == Direction.EAST) {
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-		} else if (facing == Direction.WEST) {
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+
+		if (facing.getAxis().isVertical()) {
+			float offset = -facing.getAxisDirection().getOffset();
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F * offset));
+			matrixStack.translate(0.0F, 1.125F, 1.0F * offset);
+		} else {
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(-facing.getHorizontalAngle()));
 		}
-		
+
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 		
 		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.getEntityCutout(TEXTURE));

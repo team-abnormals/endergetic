@@ -60,7 +60,7 @@ public final class KeybindHandler {
 			Random rand = player.getRNG();
 			ItemStack stack = player.inventory.armorItemInSlot(2);
         	
-			if (!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.func_233570_aj_() && !player.isSpectator()) {
+			if (!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
 				BoofloVestItem vest = (BoofloVestItem) stack.getItem();
 				if (vest.canBoof(stack, player)) {
 					CompoundNBT tag = stack.getTag();

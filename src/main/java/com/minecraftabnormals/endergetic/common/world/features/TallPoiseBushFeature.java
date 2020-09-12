@@ -42,7 +42,7 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isTouchingBolloomBud(IWorld world, BlockPos pos) {
-		BlockPos.Mutable mutable = pos.func_239590_i_();
+		BlockPos.Mutable mutable = pos.toMutable();
 		for (Direction direction : Direction.Plane.HORIZONTAL) {
 			BlockPos offset = mutable.offset(direction);
 			if (world.getBlockState(offset).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(offset.up()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {

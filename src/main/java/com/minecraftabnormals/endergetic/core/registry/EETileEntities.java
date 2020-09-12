@@ -28,6 +28,6 @@ public final class EETileEntities {
 	 */
 	public static final RegistryObject<TileEntityType<BolloomBudTileEntity>> BOLLOOM_BUD = HELPER.createTileEntity("bolloom_bud", BolloomBudTileEntity::new, () -> new Block[] {EEBlocks.BOLLOOM_BUD.get()});
 	public static final RegistryObject<TileEntityType<PuffBugHiveTileEntity>> PUFFBUG_HIVE = HELPER.createTileEntity("puffbug_hive", PuffBugHiveTileEntity::new, () -> new Block[] {EEBlocks.PUFFBUG_HIVE.get()});
-	public static final RegistryObject<TileEntityType<BoofTileEntity>> BOOF_BLOCK = HELPER.createTileEntity("boof_block", BoofTileEntity::new, () -> new Block[] {EEBlocks.BOOF_BLOCK.get()});
-	public static final RegistryObject<TileEntityType<DispensedBoofTileEntity>> BOOF_BLOCK_DISPENSED = HELPER.createTileEntity("boof_block_dispensed", DispensedBoofTileEntity::new, () -> new Block[] {EEBlocks.BOOF_BLOCK_DISPENSED.get()});
+	public static final RegistryObject<TileEntityType<BoofBlockTileEntity>> BOOF_BLOCK = HELPER.createTileEntity("boof_block", BoofBlockTileEntity::new, () -> new Block[] {EEBlocks.BOOF_BLOCK.get()});
+	public static final RegistryObject<TileEntityType<DispensedBlockBoofTileEntity>> BOOF_BLOCK_DISPENSED = HELPER.createTileEntity("boof_block_dispensed", DispensedBlockBoofTileEntity::new, () -> new Block[] {EEBlocks.BOOF_BLOCK_DISPENSED.get()});
 }

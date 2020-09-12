@@ -32,7 +32,7 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 		if (this.entity.isDescenting()) {
 			return this.isSafePos() && this.entity.hasFruit();
 		} else if (this.entity.isEating()) {
-			return this.entity.func_233570_aj_() && this.entity.hasFruit() && this.eatingTicks < 61;
+			return this.entity.isOnGround() && this.entity.hasFruit() && this.eatingTicks < 61;
 		}
 		
 		return false;
@@ -66,7 +66,7 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 		this.entity.getNavigator().clearPath();
 		
 		if (this.entity.isDescenting()) {
-			if (this.entity.func_233570_aj_()) {
+			if (this.entity.isOnGround()) {
 				this.entity.setEating(true);
 				this.entity.setDescenting(false);
 			}
@@ -91,7 +91,7 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	}
 
 	private boolean isSafePos() {
-		BlockPos pos = this.entity.func_233580_cy_();
+		BlockPos pos = this.entity.getPosition();
 		for (int i = 0; i < 10; i++) {
 			pos = pos.down(i);
 			if (Block.hasSolidSide(this.entity.world.getBlockState(pos), this.entity.world, pos, Direction.UP) && i >= 4) {

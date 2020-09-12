@@ -32,7 +32,7 @@ public class BoofloBreedGoal extends Goal {
 	
 	@Override
 	public boolean shouldExecute() {
-		if (this.booflo.isBoofed() || (!this.booflo.func_233570_aj_() && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
+		if (this.booflo.isBoofed() || (!this.booflo.isOnGround() && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
 			return false;
 		} else {
 			this.mate = this.getNearbyMate();

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise.boof;
 
 import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofBlockTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
@@ -82,7 +82,6 @@ public class BoofBlock extends ContainerBlock {
 		if (!world.isRemote) {
 			BoofBlockEntity boofBlock = new BoofBlockEntity(world, pos);
 			world.addEntity(boofBlock);
-			
 			world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
 		}
 		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BOOFED, true));
@@ -90,7 +89,7 @@ public class BoofBlock extends ContainerBlock {
 	
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return new BoofTileEntity();
+		return new BoofBlockTileEntity();
 	}
 	
 	@Override
@@ -103,16 +102,16 @@ public class BoofBlock extends ContainerBlock {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			World world = source.getWorld();
-			this.func_239796_a_(true);
+			this.setSuccessful(true);
             BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
             BlockState blockstate = world.getBlockState(blockpos);
             if (!blockstate.getMaterial().isReplaceable()) {
-            	this.func_239796_a_(false);
+            	this.setSuccessful(false);
             } else {
-            	this.func_239796_a_(true);
+            	this.setSuccessful(true);
             }
             
-            if (this.func_239795_a_()) {
+            if (this.isSuccessful()) {
             	FluidState fluidstate = world.getFluidState(blockpos);
             	if (fluidstate.getFluid() == Fluids.WATER) {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.WATERLOGGED, true).with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));

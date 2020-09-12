@@ -214,7 +214,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 
 	@Override
 	public void updatePositionAndMotion(double angleX, double angleZ) {
-		if (this.world.isAreaLoaded(this.func_233580_cy_(), 1)) {
+		if (this.world.isAreaLoaded(this.getPosition(), 1)) {
 			if (!this.isUntied()) {
 				this.setPosition(
 						this.getOriginX() + this.getSway() * angleX,
@@ -264,7 +264,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	public boolean isAttachmentBlocked() {
-		BlockPos.Mutable mutable = this.getFencePos().up(3).func_239590_i_();
+		BlockPos.Mutable mutable = this.getFencePos().up(3).toMutable();
 		for (int i = 0; i < 3; i++) {
 			BlockPos pos = mutable.down(i);
 			if (this.world.isAreaLoaded(pos, 1)) {

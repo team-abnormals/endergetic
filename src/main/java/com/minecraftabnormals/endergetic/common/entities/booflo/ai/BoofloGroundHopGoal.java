@@ -4,12 +4,10 @@ import java.util.EnumSet;
 
 import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 
-import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {

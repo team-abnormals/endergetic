@@ -88,7 +88,7 @@ public class PuffBugBottleItem extends Item {
 				PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world);
 				puffbug.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
 				EntityType.applyItemNBT(world, player, puffbug, stack.getOrCreateTag());
-				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(puffbug.func_233580_cy_()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
+				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(puffbug.getPosition()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
 				world.addEntity(puffbug);
 				booflo.catchPuffBug(puffbug);
 				if (!player.abilities.isCreativeMode) {
@@ -137,10 +137,10 @@ public class PuffBugBottleItem extends Item {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		CompoundNBT nbt = stack.getTag();
 		if (nbt != null && nbt.contains("CustomPotionEffects")) {
-			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").func_240699_a_(TextFormatting.DARK_PURPLE));
+			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").mergeStyle(TextFormatting.DARK_PURPLE));
 			for (EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[] {TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).func_240701_a_(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).mergeStyle(potionTextFormat));
 			}
 		}
 	}

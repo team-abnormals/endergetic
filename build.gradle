@@ -29,7 +29,7 @@ archivesBaseName = 'The-Endergetic-Expansion-1.16.1'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200707-1.16.1'
+    mappings channel: 'snapshot', version: '20200723-1.16.1'
     
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -38,7 +38,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-	    arg "-mixin.config=endergetic.mixins.json"
+	        arg "-mixin.config=endergetic.mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -50,7 +50,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-	    arg "-mixin.config=endergetic.mixins.json"
+	        arg "-mixin.config=endergetic.mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main

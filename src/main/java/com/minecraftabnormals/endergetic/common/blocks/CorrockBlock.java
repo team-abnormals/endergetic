@@ -96,9 +96,9 @@ public class CorrockBlock extends Block {
 	}
 	
 	public static class DimensionTypeAccessor extends DimensionType {
-		public static final DimensionType OVERWORLD = field_236004_h_;
-		public static final DimensionType THE_NETHER = field_236005_i_;
-		public static final DimensionType THE_END = field_236006_j_;
+		public static final DimensionType OVERWORLD = OVERWORLD_TYPE;
+		public static final DimensionType THE_NETHER = NETHER_TYPE;
+		public static final DimensionType THE_END = END_TYPE;
 		
 		private DimensionTypeAccessor(OptionalLong p_i241243_1_, boolean p_i241243_2_, boolean p_i241243_3_, boolean p_i241243_4_, boolean p_i241243_5_, boolean p_i241243_6_, boolean p_i241243_7_, boolean p_i241243_8_, boolean p_i241243_9_, boolean p_i241243_10_, boolean p_i241243_11_, int p_i241243_12_, IBiomeMagnifier p_i241243_13_, ResourceLocation p_i241243_14_, float p_i241243_15_) {
 			super(p_i241243_1_, p_i241243_2_, p_i241243_3_, p_i241243_4_, p_i241243_5_, p_i241243_6_, p_i241243_7_, p_i241243_8_, p_i241243_9_, p_i241243_10_, p_i241243_11_, p_i241243_12_, p_i241243_13_, p_i241243_14_, p_i241243_15_);

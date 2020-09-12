@@ -77,7 +77,7 @@ public class PuffBugAttackGoal extends Goal {
 		this.puffbug.getLookController().setLookPositionWithEntity(target, 20.0F, 20.0F);
 		
 		if (this.delayCounter <= 0) {
-			Path path = this.puffbug.getNavigator().getPathToPos(target.func_233580_cy_().up(4), 4);
+			Path path = this.puffbug.getNavigator().getPathToPos(target.getPosition().up(4), 4);
 			if (path != null && this.puffbug.getNavigator().setPath(path, 3.5F)) {
 				this.delayCounter += 5;
 			}

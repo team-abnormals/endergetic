@@ -437,7 +437,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 		
 		if (this.isProjectile() && !this.isInflated()) {
-			BlockPos blockpos = this.func_233580_cy_();
+			BlockPos blockpos = this.getPosition();
 			BlockState blockstate = this.world.getBlockState(blockpos);
 			if (!blockstate.isAir(this.world, blockpos) && !this.noClip) {
 				VoxelShape voxelshape = blockstate.getCollisionShape(this.world, blockpos);
@@ -813,7 +813,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	@Nullable
 	public PuffBugHiveTileEntity findNewNearbyHive() {
-		BlockPos pos = this.func_233580_cy_();
+		BlockPos pos = this.getPosition();
 		double xyDistance = 16.0D;
 		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-xyDistance, -6.0D, -xyDistance), pos.add(xyDistance, 6.0D, xyDistance))) {
 			if (blockpos.withinDistance(this.getPositionVec(), xyDistance)) {
@@ -874,7 +874,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		List<BlockPos> avaliablePositions = Lists.newArrayList();
 		PuffBugHiveTileEntity hive = this.getHive();
 		
-		if (hive == null || (hive != null && !hive.canTeleportTo()) || (this.getAttachedHiveSide() == Direction.UP && Math.sqrt(this.getDistanceSq(Vector3d.func_237489_a_((pos)))) < 5.0F) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
+		if (hive == null || (hive != null && !hive.canTeleportTo()) || (this.getAttachedHiveSide() == Direction.UP && Math.sqrt(this.getDistanceSq(Vector3d.copyCentered((pos)))) < 5.0F) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
 			return;
 		}
 		
@@ -891,7 +891,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		}
 				
 		if (!avaliablePositions.isEmpty() && !this.isProjectile()) {
-			this.getTeleportController().destination = GenerationUtils.getClosestPositionToPos(avaliablePositions, this.func_233580_cy_());
+			this.getTeleportController().destination = GenerationUtils.getClosestPositionToPos(avaliablePositions, this.getPosition());
 			this.getNavigator().clearPath();
 			if (!this.isEndimationPlaying(TELEPORT_TO_ANIMATION)) {
 				this.getTeleportController().processTeleportation();
@@ -956,7 +956,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	}
 	
 	public boolean isAtCorrectRestLocation(Direction side) {
-		TileEntity te = side == Direction.DOWN ? this.isChild() ? this.world.getTileEntity(this.func_233580_cy_().up(1)) : this.world.getTileEntity(this.func_233580_cy_().up(2)) : this.isChild() ? this.world.getTileEntity(this.func_233580_cy_().offset(side.getOpposite())) : this.world.getTileEntity(this.func_233580_cy_().up(1).offset(side.getOpposite()));
+		TileEntity te = side == Direction.DOWN ? this.isChild() ? this.world.getTileEntity(this.getPosition().up(1)) : this.world.getTileEntity(this.getPosition().up(2)) : this.isChild() ? this.world.getTileEntity(this.getPosition().offset(side.getOpposite())) : this.world.getTileEntity(this.getPosition().up(1).offset(side.getOpposite()));
 		if (te != this.getHive()) {
 			return false;
 		}
@@ -967,12 +967,12 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				return false;
 			case DOWN:
 				float yOffsetDown = this.isChild() ? 0.45F : -0.15F;
-				return Vector3d.func_237489_a_((hivePos.down()).add(0.5F, yOffsetDown, 0.5F)).distanceTo(this.getPositionVec()) < 0.25F;
+				return Vector3d.copyCentered((hivePos.down()).add(0.5F, yOffsetDown, 0.5F)).distanceTo(this.getPositionVec()) < 0.25F;
 			default:
 				float yOffset = this.isChild() ? 0.2F : -0.2F;
 				BlockPos sideOffset = hivePos.offset(side);
 				return this.world.isAirBlock(sideOffset.up()) && this.world.isAirBlock(sideOffset.down())
-					&& Vector3d.func_237491_b_(sideOffset).add(this.getTeleportController().getOffsetForDirection(side)[0], yOffset, this.getTeleportController().getOffsetForDirection(side)[1]).distanceTo(this.getPositionVec()) < (this.isChild() ? 0.1F : 0.25F);
+					&& Vector3d.copy(sideOffset).add(this.getTeleportController().getOffsetForDirection(side)[0], yOffset, this.getTeleportController().getOffsetForDirection(side)[1]).distanceTo(this.getPositionVec()) < (this.isChild() ? 0.1F : 0.25F);
 		}
 	}
 	
@@ -1133,8 +1133,9 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		} else if (reason == SpawnReason.NATURAL || reason == SpawnReason.SPAWNER) {
 			if (rng.nextFloat() < 0.05F) {
 				int swarmSize = rng.nextInt(11) + 10;
+				Vector3d centeredPos = Vector3d.copyCentered(this.getPosition());
 				for (int i = 0; i < swarmSize; i++) {
-					Vector3d spawnPos = Vector3d.func_237489_a_(this.func_233580_cy_()).add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
+					Vector3d spawnPos = centeredPos.add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
 					
 					if (this.world.isAirBlock(new BlockPos(spawnPos))) {
 						PuffBugEntity swarmChild = EEEntities.PUFF_BUG.get().create(this.world);
