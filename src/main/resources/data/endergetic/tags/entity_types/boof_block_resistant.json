@@ -9,5 +9,9 @@
     "minecraft:painting",
     "minecraft:vex",
     "minecraft:item_frame"
+  ],
+  "optional": [
+    "quark:glass_frame",
+    "quark:colored_frame"
   ]
 }
