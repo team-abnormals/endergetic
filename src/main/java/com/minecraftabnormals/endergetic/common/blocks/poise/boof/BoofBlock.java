@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise.boof;
 
 import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofBlockTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
@@ -90,7 +90,7 @@ public class BoofBlock extends ContainerBlock {
 	
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return new BoofTileEntity();
+		return new BoofBlockTileEntity();
 	}
 	
 	@Override

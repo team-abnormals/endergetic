@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBoofTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -67,7 +67,7 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return new DispensedBoofTileEntity();
+		return new DispensedBlockBoofTileEntity();
 	}
 	
 	@Override
