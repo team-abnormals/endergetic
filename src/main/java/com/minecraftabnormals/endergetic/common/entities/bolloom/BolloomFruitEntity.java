@@ -131,13 +131,13 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	public void onBroken(boolean dropFruit) {
 		super.onBroken(dropFruit);
 		if (dropFruit) {
-			Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
+			Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean isOpenPathBelowFruit() {
-		BlockPos.Mutable mutable = this.func_233580_cy_().func_239590_i_();
+		BlockPos.Mutable mutable = this.getPosition().toMutable();
 		for (int i = 0; i < this.getVineHeight(); i++) {
 			BlockPos pos = mutable.down(i);
 			if (this.world.isAreaLoaded(pos, 1)) {

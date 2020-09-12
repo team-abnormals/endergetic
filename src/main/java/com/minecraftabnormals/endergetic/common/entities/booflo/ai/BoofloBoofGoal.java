@@ -55,7 +55,7 @@ public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 	}
 	
 	private boolean shouldJumpForFall() {
-		BlockPos pos = this.entity.func_233580_cy_();
+		BlockPos pos = this.entity.getPosition();
 		for (int i = 0; i < 12; i++) {
 			pos = pos.down(i);
 			FluidState fluidState = this.world.getFluidState(pos);

@@ -45,7 +45,7 @@ public final class MixinPlayerList {
 			ListNBT balloonsTag = compound.getList("Balloons", 10);
 			if (!balloonsTag.isEmpty()) {
 				for (int i = 0; i < balloonsTag.size(); i++) {
-					Entity entity = EntityType.func_220335_a(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.summonEntity(balloon) ? null : balloon));
+					Entity entity = EntityType.loadEntityAndExecute(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.summonEntity(balloon) ? null : balloon));
 					if (entity instanceof BolloomBalloonEntity) {
 						((BolloomBalloonEntity) entity).attachToEntity(player);
 						EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CUpdateBalloonsMessage(player));

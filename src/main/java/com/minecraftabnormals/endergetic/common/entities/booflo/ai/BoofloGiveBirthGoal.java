@@ -21,7 +21,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public boolean shouldExecute() {
-		return !this.entity.hasCaughtFruit() && !this.entity.isBoofed() && this.entity.isNoEndimationPlaying() && this.entity.isPregnant() && (this.entity.func_233570_aj_() || this.entity.isPassenger());
+		return !this.entity.hasCaughtFruit() && !this.entity.isBoofed() && this.entity.isNoEndimationPlaying() && this.entity.isPregnant() && (this.entity.isOnGround() || this.entity.isPassenger());
 	}
 	
 	@Override

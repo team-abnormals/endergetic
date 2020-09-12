@@ -113,13 +113,13 @@ public final class EntityEvents {
 				boolean isFalling = entity.getMotion().y <= 0.0D;
 				
 				if (isFalling && balloonCount < 3 && hasABalloon) {
-					if (!gravity.hasModifier(SLOW_BALLOON)) gravity.func_233767_b_(SLOW_BALLOON);
+					if (!gravity.hasModifier(SLOW_BALLOON)) gravity.applyNonPersistentModifier(SLOW_BALLOON);
 				} else if (gravity.hasModifier(SLOW_BALLOON)) {
 					gravity.removeModifier(SLOW_BALLOON);
 				}
 				
 				if (isFalling && balloonCount == 3) {
-					if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.func_233767_b_(SUPER_SLOW_BALLOON);
+					if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
 				} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
 					gravity.removeModifier(SUPER_SLOW_BALLOON);
 				}

@@ -61,7 +61,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	
 	@Nullable
 	private BolloomBudTileEntity findNearbyBud() {
-		BlockPos pos = this.puffbug.func_233580_cy_();
+		BlockPos pos = this.puffbug.getPosition();
 		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-AREA_CHECK_SIZE, -AREA_CHECK_SIZE / 2, -AREA_CHECK_SIZE), pos.add(AREA_CHECK_SIZE, AREA_CHECK_SIZE / 2, AREA_CHECK_SIZE))) {
 			if (blockpos.withinDistance(this.puffbug.getPositionVec(), AREA_CHECK_SIZE)) {
 				if (this.world.getBlockState(blockpos).getBlock() == EEBlocks.BOLLOOM_BUD.get() && this.world.getTileEntity(blockpos) instanceof BolloomBudTileEntity) {

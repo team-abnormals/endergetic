@@ -65,10 +65,10 @@ public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 		worldIn.setBlockState(pos.down(3), MYSTICAL_OBSIDIAN_WALL.get(), 2);
 		worldIn.setBlockState(pos.up(3), MYSTICAL_OBSIDIAN_WALL.get(), 2);
 		
-		worldIn.setBlockState(pos.north().east().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.field_235614_d_, WallHeight.LOW).with(WallBlock.field_235615_e_, WallHeight.LOW), 2);
-		worldIn.setBlockState(pos.north().west().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.field_235614_d_, WallHeight.LOW).with(WallBlock.field_235612_b_, WallHeight.LOW), 2);
-		worldIn.setBlockState(pos.south().east().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.field_235613_c_, WallHeight.LOW).with(WallBlock.field_235615_e_, WallHeight.LOW), 2);
-		worldIn.setBlockState(pos.south().west().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.field_235613_c_, WallHeight.LOW).with(WallBlock.field_235612_b_, WallHeight.LOW), 2);
+		worldIn.setBlockState(pos.north().east().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.WALL_HEIGHT_SOUTH, WallHeight.LOW).with(WallBlock.WALL_HEIGHT_WEST, WallHeight.LOW), 2);
+		worldIn.setBlockState(pos.north().west().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.WALL_HEIGHT_SOUTH, WallHeight.LOW).with(WallBlock.WALL_HEIGHT_EAST, WallHeight.LOW), 2);
+		worldIn.setBlockState(pos.south().east().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.WALL_HEIGHT_NORTH, WallHeight.LOW).with(WallBlock.WALL_HEIGHT_WEST, WallHeight.LOW), 2);
+		worldIn.setBlockState(pos.south().west().up(), MYSTICAL_OBSIDIAN_WALL.get().with(WallBlock.WALL_HEIGHT_NORTH, WallHeight.LOW).with(WallBlock.WALL_HEIGHT_EAST, WallHeight.LOW), 2);
 		
 		worldIn.setBlockState(pos.up(4), ACIDIAN_LANTERN.get().with(AcidianLanternBlock.FACING, Direction.UP), 2);
 		worldIn.setBlockState(pos.down(4), ACIDIAN_LANTERN.get().with(AcidianLanternBlock.FACING, Direction.DOWN), 2);

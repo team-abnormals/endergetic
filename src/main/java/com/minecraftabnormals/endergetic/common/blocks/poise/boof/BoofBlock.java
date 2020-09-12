@@ -102,16 +102,16 @@ public class BoofBlock extends ContainerBlock {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			World world = source.getWorld();
-			this.func_239796_a_(true);
+			this.setSuccessful(true);
             BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
             BlockState blockstate = world.getBlockState(blockpos);
             if (!blockstate.getMaterial().isReplaceable()) {
-            	this.func_239796_a_(false);
+            	this.setSuccessful(false);
             } else {
-            	this.func_239796_a_(true);
+            	this.setSuccessful(true);
             }
             
-            if (this.func_239795_a_()) {
+            if (this.isSuccessful()) {
             	FluidState fluidstate = world.getFluidState(blockpos);
             	if (fluidstate.getFluid() == Fluids.WATER) {
             		world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.WATERLOGGED, true).with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));

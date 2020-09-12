@@ -9,6 +9,7 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
@@ -21,7 +22,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.entity.getPassengers().isEmpty() && this.entity.isEndimationPlaying(BoofloEntity.SWIM) && !this.entity.func_233570_aj_() && (this.entity.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.entity.getPassengers().isEmpty() && this.entity.isEndimationPlaying(BoofloEntity.SWIM) && !this.entity.isOnGround() && (this.entity.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 	
 	@Override
@@ -30,7 +31,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 			NetworkUtil.setPlayingAnimationMessage(this.entity, BoofloEntity.INFLATE);
 			return false;
 		}
-		return !this.entity.func_233570_aj_() && this.entity.hasAggressiveAttackTarget() && this.isEndimationPlaying();
+		return !this.entity.isOnGround() && this.entity.hasAggressiveAttackTarget() && this.isEndimationPlaying();
 	}
 	
 	@Override
@@ -57,8 +58,9 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 	
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
+		BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().getPosition().toMutable();
 		for (int y = 1; y < 4; y++) {
-			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.entity.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(this.entity.getBoofloAttackTarget().func_233580_cy_().down(y)), this.world, this.entity.getBoofloAttackTarget().func_233580_cy_().down(y), Direction.UP) : true;
+			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.entity.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(mutable.down(y)), this.world, mutable.down(y), Direction.UP) : true;
 		}
 		return isSomewhatSolidUnder;
 	}

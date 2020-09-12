@@ -1391,7 +1391,7 @@ public class BoofloEntity extends EndimatedEntity {
 				this.mob.setMoveForward(0.0F);
 			} else {
 				this.action = MovementController.Action.WAIT;
-				if (this.mob.func_233570_aj_()) {
+				if (this.mob.isOnGround()) {
 					this.mob.setAIMoveSpeed((float) (this.speed * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 					if (this.booflo.hopDelay == 0 && this.booflo.isEndimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
 						this.booflo.getJumpController().setJumping();

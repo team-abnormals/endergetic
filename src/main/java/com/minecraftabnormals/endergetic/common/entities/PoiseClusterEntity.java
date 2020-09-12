@@ -132,7 +132,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			}
 			
 			if (this.isBlockBlockingPath(true) && this.ticksExisted > 10) {
-				BlockPos pos = this.func_233580_cy_();
+				BlockPos pos = this.getPosition();
 				
 				for (int i = 0; i < 8; i++) {
 					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
@@ -213,7 +213,7 @@ public class PoiseClusterEntity extends LivingEntity {
 		this.setTimesHit(this.getTimesHit() + 1);
 		if (this.getTimesHit() >= 3) {
 			if (!this.world.isRemote) {
-				Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+				Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 			}
 			this.remove();
 			return true;
@@ -230,7 +230,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			
 			if (this.getTimesHit() >= 3) {
 				if (!this.getEntityWorld().isRemote) {
-					Block.spawnAsEntity(this.world, this.func_233580_cy_(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+					Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 				}
 				this.remove();
 			}
@@ -308,7 +308,7 @@ public class PoiseClusterEntity extends LivingEntity {
 						} else {
 							entity.move(MoverType.SELF, new Vector3d(0.0F, distanceMotion, 0.0F));
 						}
-						entity.func_230245_c_(true);
+						entity.setOnGround(true);
 					}
 				}
 			}

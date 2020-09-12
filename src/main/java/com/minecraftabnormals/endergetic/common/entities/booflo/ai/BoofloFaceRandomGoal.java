@@ -20,7 +20,7 @@ public class BoofloFaceRandomGoal extends Goal {
 
 	@Override
 	public boolean shouldExecute() {
-    	return !this.booflo.isBoofed() && this.booflo.getAttackTarget() == null && (this.booflo.func_233570_aj_() || this.booflo.isPotionActive(Effects.LEVITATION)) && this.booflo.getMoveHelper() instanceof BoofloEntity.GroundMoveHelperController;
+    	return !this.booflo.isBoofed() && this.booflo.getAttackTarget() == null && (this.booflo.isOnGround() || this.booflo.isPotionActive(Effects.LEVITATION)) && this.booflo.getMoveHelper() instanceof BoofloEntity.GroundMoveHelperController;
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 				f1 = (float)((double)f1 * Vector3d1.length() * 6.0D);
 			}
 
-			Vector3d Vector3d2 = Vector3d.func_237492_c_(this.currentPath.getCurrentPos());
+			Vector3d Vector3d2 = Vector3d.copyCenteredHorizontally(this.currentPath.getCurrentPos());
 			if (Math.abs(this.entity.getPosX() - (Vector3d2.x + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosZ() - (Vector3d2.z + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosY() - Vector3d2.y) < (double)(f1 * 2.0F)) {
 				this.currentPath.incrementPathIndex();
 			}
@@ -107,7 +107,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 				this.timeoutTimer += Util.milliTime() - this.lastTimeoutCheck;
 			} else {
 				this.timeoutCachedNode = vector3i;
-				double d0 = positionVec3.distanceTo(Vector3d.func_237489_a_(this.timeoutCachedNode));
+				double d0 = positionVec3.distanceTo(Vector3d.copyCentered(this.timeoutCachedNode));
 				this.timeoutLimit = this.entity.getAIMoveSpeed() > 0.0F ? d0 / this.entity.getAIMoveSpeed() * 100.0D : 0.0D;
 			}
 

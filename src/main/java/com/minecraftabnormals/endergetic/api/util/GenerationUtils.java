@@ -130,7 +130,7 @@ public final class GenerationUtils {
 		BlockPos currentPos = null;
 		
 		for (BlockPos listOfPositions : positions) {
-			double newDistance = Vector3d.func_237489_a_(pos).squareDistanceTo(Vector3d.func_237489_a_((listOfPositions)));
+			double newDistance = Vector3d.copy(pos).squareDistanceTo(Vector3d.copy((listOfPositions)));
 			if (distance == -1.0D || newDistance < distance) {
 				distance = newDistance;
 				currentPos = listOfPositions;

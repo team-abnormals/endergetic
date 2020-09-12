@@ -44,7 +44,7 @@ public class BoofloHuntFruitGoal extends Goal {
 			} else if (!this.booflo.isBoofed()) {
 				return false;
 			} else {
-				this.path = this.booflo.getNavigator().getPathToPos(target.func_233580_cy_(), 0);
+				this.path = this.booflo.getNavigator().getPathToPos(target.getPosition(), 0);
 				if (this.path != null) {
 					return true;
 				} else {
@@ -62,7 +62,7 @@ public class BoofloHuntFruitGoal extends Goal {
 			return false;
 		} else if (!this.booflo.isBoofed()) {
 			return false;
-		} else if (!this.booflo.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
+		} else if (!this.booflo.isWithinHomeDistanceFromPosition(target.getPosition())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();

@@ -66,7 +66,7 @@ public class BoofloAttackGoal extends Goal {
 			return false;
 		} else if (!this.booflo.isBoofed()) {
 			return false;
-		} else if (this.booflo.func_233580_cy_().distanceSq(this.upperAirPos) > UPPER_DISTANCE) {
+		} else if (this.booflo.getPosition().distanceSq(this.upperAirPos) > UPPER_DISTANCE) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -113,7 +113,7 @@ public class BoofloAttackGoal extends Goal {
 	
 	@Nullable
 	private BlockPos getUpperPosToTarget(Entity target, Random rand) {
-		BlockPos startingPos = target.func_233580_cy_();
+		BlockPos startingPos = target.getPosition();
 		BlockPos targetPos = BlockPos.ZERO;
 		boolean isOpenBelow = true;
 		for (int y = 0; y < UPPER_DISTANCE; y++) {

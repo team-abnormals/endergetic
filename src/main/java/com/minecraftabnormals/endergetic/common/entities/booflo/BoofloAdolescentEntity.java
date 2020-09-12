@@ -132,7 +132,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			
 			@Override
 			public boolean canEntityStandOnPos(BlockPos pos) {
-				return !this.entity.func_233570_aj_();
+				return !this.entity.isOnGround();
 			}
 			
 		};
@@ -212,7 +212,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 		
 		//Helps them not fall off the edge
-		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.func_233580_cy_(), 3)) {
+		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3)) {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
 			
@@ -222,7 +222,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			}
 		}
 		
-		if (!this.onGround && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.func_233580_cy_(), 3) && !this.isWorldRemote()) {
+		if (!this.onGround && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F, 0, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F);
 		}
 		

@@ -82,7 +82,7 @@ public class AdolescentAttackGoal extends Goal {
 			return false;
 		} else if (!this.longMemory) {
 			return !this.attacker.getNavigator().noPath();
-		} else if (!this.attacker.isWithinHomeDistanceFromPosition(target.func_233580_cy_())) {
+		} else if (!this.attacker.isWithinHomeDistanceFromPosition(target.getPosition())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
@@ -152,7 +152,7 @@ public class AdolescentAttackGoal extends Goal {
 	
 	@Nullable
 	public Path getPathToEntity(Entity entity) {
-		BlockPos pos = entity.func_233580_cy_();
+		BlockPos pos = entity.getPosition();
 		for(int y = 0; y < 8; y++) {
 			pos = pos.down(y);
 			if (!entity.getEntityWorld().isRemote) {
@@ -161,6 +161,6 @@ public class AdolescentAttackGoal extends Goal {
 				}
 			}
 		}
-		return this.attacker.getNavigator().getPathToPos(entity.func_233580_cy_(), 0);
+		return this.attacker.getNavigator().getPathToPos(entity.getPosition(), 0);
 	}
 }
