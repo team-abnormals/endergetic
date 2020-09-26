@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 
 public final class EEBlockRegistrars {
+
 	public static void registerFireInfo() {
 		DataUtils.registerFlammable(EEBlocks.POISE_PLANKS.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_SLAB.get(), 5, 20);
@@ -43,4 +44,5 @@ public final class EEBlockRegistrars {
 	private static void setRenderLayer(Block block, RenderType type) {
 		RenderTypeLookup.setRenderLayer(block, type::equals);
 	}
+
 }

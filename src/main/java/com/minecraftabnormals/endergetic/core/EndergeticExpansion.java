@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.core;
 
 import java.util.Arrays;
 
+import com.minecraftabnormals.endergetic.core.registry.other.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,11 +23,6 @@ import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-import com.minecraftabnormals.endergetic.core.registry.other.EEBlockRegistrars;
-import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
-import com.minecraftabnormals.endergetic.core.registry.other.EEDispenserBehaviors;
-import com.minecraftabnormals.endergetic.core.registry.other.EEEntityAttributes;
-import com.minecraftabnormals.endergetic.core.registry.other.EEFlammables;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 
@@ -106,6 +102,7 @@ public class EndergeticExpansion {
 			EEFlammables.registerFlammables();
 			EEBiomes.applyBiomeInfo();
 			EEBlockRegistrars.registerFireInfo();
+			EECompostables.registerCompostables();
 			EEWorldGenHandler.overrideFeatures();
 			EEEntityAttributes.putAttributes();
 		});
