@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "minecraft:end_stone",
+    "minecraft:end_stone_bricks",
     "endergetic:eumus",
     "endergetic:eumus_poismoss",
     "endergetic:poismoss",
