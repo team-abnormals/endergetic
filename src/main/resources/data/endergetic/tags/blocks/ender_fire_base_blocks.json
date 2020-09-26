@@ -10,5 +10,19 @@
     "endergetic:mystical_obsidian_rune",
     "endergetic:mystical_obsidian_activation_rune",
     "endergetic:activated_mystical_obsidian_activation_rune"
+  ],
+  "optional": [
+    "quark:biotite_ore",
+    "quark:biotite_block",
+    "quark:smooth_biotite",
+    "quark:chiseled_biotite_block",
+    "quark:biotite_pillar",
+    "quark:biotite_bricks",
+    "quark:basalt",
+    "quark:polished_basalt",
+    "quark:basalt_bricks",
+    "quark:chiseled_basalt_bricks",
+    "quark:basalt_pavement",
+    "quark:basalt_pillar"
   ]
 }
