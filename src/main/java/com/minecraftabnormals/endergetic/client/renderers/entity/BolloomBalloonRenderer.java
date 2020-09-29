@@ -46,6 +46,9 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 	
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
+		if (!balloon.isInRangeToRender3d(camX, camY, camZ)) {
+			return false;
+		}
 		ClientPlayerEntity player = MC.player;
 		return balloon.getAttachedEntity() != player || MC.gameSettings.thirdPersonView != 0 || player.rotationPitch < -45.0F;
 	}
