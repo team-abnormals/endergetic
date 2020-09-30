@@ -1,17 +1,17 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-	maven { url = 'https://dist.creeper.host/Sponge/maven' }
+        maven { url = 'https://dist.creeper.host/Sponge/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-	classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 plugins {
-  id "com.wynprice.cursemaven" version "2.1.1"
+    id "com.wynprice.cursemaven" version "2.1.1"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
@@ -38,7 +38,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-	        arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=endergetic.mixins.json"
             jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
@@ -51,7 +51,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-	        arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=endergetic.mixins.json"
             jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
