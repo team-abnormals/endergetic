@@ -1,8 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -10,7 +8,6 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Maps;
 import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
@@ -82,7 +79,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -1339,23 +1335,6 @@ public class BoofloEntity extends EndimatedEntity {
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
-	}
-
-	//TODO: Make use new Abnormals Skin Helper.
-	public String getNameSuffix() {
-		Map<List<String>, String> customSkins = Util.make(Maps.newHashMap(), (skins) -> {
-			skins.put(Arrays.asList("cameron"), "cam");
-			skins.put(Arrays.asList("snakeblock", "theforsakenone"), "snake");
-		});
-		
-		if (this.hasCustomName()) {
-			for(Map.Entry<List<String>, String> entries : customSkins.entrySet()) {
-				if (entries.getKey().contains(this.getName().getString().toLowerCase().replaceAll("\\s+",""))) {
-					return "_" + entries.getValue();
-				}
-			}
-		}
-		return "";
 	}
 	
 	public static class GroundMoveHelperController extends MovementController {

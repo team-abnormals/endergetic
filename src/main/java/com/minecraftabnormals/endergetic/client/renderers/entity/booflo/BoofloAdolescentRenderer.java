@@ -14,7 +14,7 @@ public class BoofloAdolescentRenderer extends MobRenderer<BoofloAdolescentEntity
 
 	public BoofloAdolescentRenderer(EntityRendererManager manager) {
 		super(manager, new AdolescentBoofloModel<>(), 0.5F);
-		this.addLayer(new EmissiveLayerRenderer<>(this, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_adolescent_glow_layer.png")));
+		this.addLayer(new EmissiveLayerRenderer<>(this, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_adolescent_emissive.png")));
 		this.addLayer(new LayerRendererBoofloAdolescentFruit(this));
 	}
 

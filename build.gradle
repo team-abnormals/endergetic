@@ -39,6 +39,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 	        arg "-mixin.config=endergetic.mixins.json"
+            jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -51,6 +52,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 	        arg "-mixin.config=endergetic.mixins.json"
+            jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -74,7 +76,7 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.1-32.0.72'
-    implementation fg.deobf("curse.maven:abnormals-core:3025510")
+    implementation fg.deobf("curse.maven:abnormals-core:3063658")
 }
 
 jar {

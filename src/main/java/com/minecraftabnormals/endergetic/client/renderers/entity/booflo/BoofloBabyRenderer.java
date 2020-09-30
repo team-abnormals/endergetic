@@ -13,7 +13,7 @@ public class BoofloBabyRenderer extends MobRenderer<BoofloBabyEntity, BoofloBaby
 
 	public BoofloBabyRenderer(EntityRendererManager manager) {
 		super(manager, new BoofloBabyModel<>(), 0.3F);
-		this.addLayer(new EmissiveLayerRenderer<>(this, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_baby_glow_layer.png")));
+		this.addLayer(new EmissiveLayerRenderer<>(this, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_baby_emissive.png")));
 	}
 
 	@Override
