@@ -5,7 +5,6 @@ import java.util.*;
 import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
-import com.minecraftabnormals.endergetic.common.network.entity.S2CDetachCustomPositionBalloonMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
@@ -33,7 +32,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 /**
  * @author - SmellyModder (Luke Tonon)
@@ -182,9 +180,8 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	public void detachFromEntity() {
 		if (this.attachedEntity != null) {
 			((BalloonHolder) this.attachedEntity).detachBalloon(this);
-			if (!this.world.isRemote && this.attachedEntity instanceof CustomBalloonPositioner) {
-				((CustomBalloonPositioner) this.attachedEntity).onBalloonDetachedServer(this);
-				EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.attachedEntity), new S2CDetachCustomPositionBalloonMessage(this.attachedEntity.getEntityId(), this.getEntityId()));
+			if (this.attachedEntity instanceof CustomBalloonPositioner) {
+				((CustomBalloonPositioner) this.attachedEntity).onBalloonDetached(this);
 			}
 			this.attachedEntity = null;
 		}

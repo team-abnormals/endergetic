@@ -6,6 +6,8 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonOrder;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +36,6 @@ import java.util.stream.Collectors;
 @Mixin(BoatEntity.class)
 public abstract class MixinBoatEntity extends Entity implements CustomBalloonPositioner {
 	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
-	private final Map<UUID, BalloonOrder> orderMap = Maps.newHashMap();
 
 	private MixinBoatEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
@@ -42,26 +43,28 @@ public abstract class MixinBoatEntity extends Entity implements CustomBalloonPos
 
 	@Override
 	public void onBalloonAttached(BolloomBalloonEntity balloon) {
-		if (!balloon.hasModifiedBoatOrder) {
-			this.orderMap.put(balloon.getUniqueID(), getClosestOpenOrder(this.orderMap));
+		if (!balloon.world.isRemote && !balloon.hasModifiedBoatOrder) {
+			Map<UUID, BalloonOrder> orderMap = Maps.newHashMap(((IDataManager) this).getValue(EEDataProcessors.ORDER_DATA));
+			orderMap.put(balloon.getUniqueID(), getClosestOpenOrder(orderMap));
+			((IDataManager) this).setValue(EEDataProcessors.ORDER_DATA, orderMap);
 			balloon.hasModifiedBoatOrder = true;
 		}
 	}
 
 	@Override
-	public void onBalloonDetachedServer(BolloomBalloonEntity balloon) {
-		this.orderMap.remove(balloon.getUniqueID());
-	}
-
-	@Override
-	public void onBalloonDetachedClient(BolloomBalloonEntity balloon) {
-		this.orderMap.remove(balloon.getUniqueID());
+	public void onBalloonDetached(BolloomBalloonEntity balloon) {
+		if (!balloon.world.isRemote) {
+			Map<UUID, BalloonOrder> orderMap = Maps.newHashMap(((IDataManager) this).getValue(EEDataProcessors.ORDER_DATA));
+			orderMap.remove(balloon.getUniqueID());
+			((IDataManager) this).setValue(EEDataProcessors.ORDER_DATA, orderMap);
+		}
 	}
 
 	@Override
 	public void updateAttachedPosition(BolloomBalloonEntity balloon) {
-		if (!this.orderMap.containsKey(balloon.getUniqueID())) return;
-		BalloonOrder balloonOrder = this.orderMap.get(balloon.getUniqueID());
+		Map<UUID, BalloonOrder> orderMap = ((IDataManager) this).getValue(EEDataProcessors.ORDER_DATA);
+		if (!orderMap.containsKey(balloon.getUniqueID())) return;
+		BalloonOrder balloonOrder = orderMap.get(balloon.getUniqueID());
 		Vector3d attachedOffset = (new Vector3d(this.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, balloonOrder.normalZ)).rotateYaw((float) (-this.rotationYaw * (Math.PI / 180F) - (Math.PI / 2F)));
 		balloon.setPosition(this.getPosX() + attachedOffset.getX() + balloon.getSway() * Math.sin(-balloon.getAngle()), this.getPosY() + balloon.getMountedYOffset() + balloon.getEyeHeight(), this.getPosZ() + attachedOffset.getZ() + balloon.getSway() * Math.cos(-balloon.getAngle()));
 	}
