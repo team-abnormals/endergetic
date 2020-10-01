@@ -220,7 +220,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 				);
 			} else if (!this.isAttachedToEntity()) {
 				this.move(MoverType.SELF, this.getMotion());
-				this.setMotion(angleX * angleZ * 0.05F, 0.07F, angleZ * angleZ * 0.05F);
+				this.setMotion(angleX * 0.05F, 0.07F, angleZ * 0.05F);
 			}
 		}
 	}
