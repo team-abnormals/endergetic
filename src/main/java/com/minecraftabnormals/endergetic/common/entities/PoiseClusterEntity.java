@@ -160,20 +160,15 @@ public class PoiseClusterEntity extends LivingEntity {
 		int entityCount = entities.size();
 		boolean hasEntity = entityCount > 0;
 		if (hasEntity && this.isAscending()) {
-			
-			for (int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
-				
+			for (Entity entity : entities) {
 				if (entity instanceof PoiseClusterEntity) {
 					if (!this.world.isRemote) {
 						this.setAscending(false);
 					}
 					this.setBlocksToMoveUp(0);
 				}
-				
 				entity.fallDistance = 0.0F;
 			}
-			
 		}
 		
 		/*
@@ -297,8 +292,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			AxisAlignedBB clusterBB = this.getBoundingBox().offset(0.0F, 0.01F, 0.0F);
 			List<Entity> entitiesAbove = this.world.getEntitiesWithinAABBExcludingEntity(null, clusterBB);
 			if (!entitiesAbove.isEmpty()) {
-				for (int i = 0; i < entitiesAbove.size(); i++) {
-					Entity entity = entitiesAbove.get(i);
+				for (Entity entity : entitiesAbove) {
 					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity || (entity instanceof PlayerEntity && !afterTick)) && entity.getPushReaction() != PushReaction.IGNORE) {
 						AxisAlignedBB entityBB = entity.getBoundingBox();
 						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
@@ -430,11 +424,11 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	private class PoiseClusterSound extends TickableSound {
+	private static class PoiseClusterSound extends TickableSound {
 		private final PoiseClusterEntity cluster;
 		private int ticksRemoved;
 		
-		protected PoiseClusterSound(PoiseClusterEntity cluster) {
+		private PoiseClusterSound(PoiseClusterEntity cluster) {
 			super(EESounds.POISE_CLUSTER_AMBIENT.get(), SoundCategory.NEUTRAL);
 			this.cluster = cluster;
 			this.repeat = true;

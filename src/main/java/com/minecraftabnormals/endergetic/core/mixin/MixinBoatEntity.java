@@ -88,7 +88,7 @@ public abstract class MixinBoatEntity extends Entity implements CustomBalloonPos
 			if (motion.getY() <= 0.0F && balloons <= 2) {
 				this.setMotion(motion.mul(1.0F, 0.85F / balloons, 1.0F));
 			} else if (balloons > 2) {
-				float boost = (balloons / 2) * 0.045F;
+				float boost = (balloons / 2.0F) * 0.045F;
 				this.setMotion(new Vector3d(motion.getX(), MathHelper.clamp(motion.getY() + boost, -1.0F, boost), motion.getZ()));
 			}
 		}

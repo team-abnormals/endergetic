@@ -62,18 +62,18 @@ public final class EntityEvents {
 	private static final AttributeModifier SUPER_SLOW_BALLOON = new AttributeModifier(UUID.fromString("b5c9b111-62b3-40da-b396-f90a138583ad"), "Super slow falling acceleration reduction", -0.075, AttributeModifier.Operation.ADDITION);
 	
 	public static final Map<Supplier<Block>, Supplier<Block>> PETRIFICATION_MAP = Util.make(Maps.newHashMap(), (petrifications) -> {
-		petrifications.put(() -> EEBlocks.CORROCK_END.get(), () -> EEBlocks.PETRIFIED_CORROCK_END.get());
-		petrifications.put(() -> EEBlocks.CORROCK_NETHER.get(), () -> EEBlocks.PETRIFIED_CORROCK_NETHER.get());
-		petrifications.put(() -> EEBlocks.CORROCK_OVERWORLD.get(), () -> EEBlocks.PETRIFIED_CORROCK_OVERWORLD.get());
-		petrifications.put(() -> EEBlocks.CORROCK_END_BLOCK.get(), () -> EEBlocks.PETRIFIED_CORROCK_END_BLOCK.get());
-		petrifications.put(() -> EEBlocks.CORROCK_NETHER_BLOCK.get(), () -> EEBlocks.PETRIFIED_CORROCK_NETHER_BLOCK.get());
-		petrifications.put(() -> EEBlocks.CORROCK_OVERWORLD_BLOCK.get(), () -> EEBlocks.PETRIFIED_CORROCK_OVERWORLD_BLOCK.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_END_STANDING.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_NETHER_STANDING.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_END_WALL.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_NETHER_WALL.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get());
-		petrifications.put(() -> EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get(), () -> EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get());
+		petrifications.put(EEBlocks.CORROCK_END, EEBlocks.PETRIFIED_CORROCK_END);
+		petrifications.put(EEBlocks.CORROCK_NETHER, EEBlocks.PETRIFIED_CORROCK_NETHER);
+		petrifications.put(EEBlocks.CORROCK_OVERWORLD, EEBlocks.PETRIFIED_CORROCK_OVERWORLD);
+		petrifications.put(EEBlocks.CORROCK_END_BLOCK, EEBlocks.PETRIFIED_CORROCK_END_BLOCK);
+		petrifications.put(EEBlocks.CORROCK_NETHER_BLOCK, EEBlocks.PETRIFIED_CORROCK_NETHER_BLOCK);
+		petrifications.put(EEBlocks.CORROCK_OVERWORLD_BLOCK, EEBlocks.PETRIFIED_CORROCK_OVERWORLD_BLOCK);
+		petrifications.put(EEBlocks.CORROCK_CROWN_END_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING::get);
+		petrifications.put(EEBlocks.CORROCK_CROWN_NETHER_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING::get);
+		petrifications.put(EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING::get);
+		petrifications.put(EEBlocks.CORROCK_CROWN_END_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL::get);
+		petrifications.put(EEBlocks.CORROCK_CROWN_NETHER_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL::get);
+		petrifications.put(EEBlocks.CORROCK_CROWN_OVERWORLD_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL::get);
 	});
 	
 	@SubscribeEvent
@@ -105,30 +105,28 @@ public final class EntityEvents {
 	public static void onLivingTick(LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
 		if (!entity.world.isRemote) {
-			if (entity instanceof LivingEntity) {
-				int balloonCount = ((BalloonHolder) entity).getBalloons().size();
-				ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
-				boolean hasABalloon = balloonCount > 0;
-				if (hasABalloon) entity.fallDistance = 0.0F;
-				boolean isFalling = entity.getMotion().y <= 0.0D;
+			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
+			ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+			boolean hasABalloon = balloonCount > 0;
+			if (hasABalloon) entity.fallDistance = 0.0F;
+			boolean isFalling = entity.getMotion().y <= 0.0D;
+
+			if (isFalling && balloonCount < 3 && hasABalloon) {
+				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.applyNonPersistentModifier(SLOW_BALLOON);
+			} else if (gravity.hasModifier(SLOW_BALLOON)) {
+				gravity.removeModifier(SLOW_BALLOON);
+			}
 				
-				if (isFalling && balloonCount < 3 && hasABalloon) {
-					if (!gravity.hasModifier(SLOW_BALLOON)) gravity.applyNonPersistentModifier(SLOW_BALLOON);
-				} else if (gravity.hasModifier(SLOW_BALLOON)) {
-					gravity.removeModifier(SLOW_BALLOON);
-				}
+			if (isFalling && balloonCount == 3) {
+				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
+			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
+				gravity.removeModifier(SUPER_SLOW_BALLOON);
+			}
 				
-				if (isFalling && balloonCount == 3) {
-					if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
-				} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
-					gravity.removeModifier(SUPER_SLOW_BALLOON);
-				}
-				
-				if (balloonCount > 3) {
-					entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
-					if (entity instanceof ServerPlayerEntity) {
-						EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity); 
-					}
+			if (balloonCount > 3) {
+				entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
+				if (entity instanceof ServerPlayerEntity) {
+					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity);
 				}
 			}
 		}
@@ -164,7 +162,7 @@ public final class EntityEvents {
 			ClientPlayerEntity player = ClientInfo.getClientPlayer();
 			if (player.rotationPitch > -25.0F) return;
 			Entity ridingEntity = player.getRidingEntity();
-			if (ridingEntity instanceof BoatEntity && !BolloomBalloonItem.hasEntityTarget(player) && EntityUtils.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
+			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtils.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
 					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));

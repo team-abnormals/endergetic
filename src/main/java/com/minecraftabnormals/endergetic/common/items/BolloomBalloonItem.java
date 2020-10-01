@@ -52,7 +52,7 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && !hasEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
+		if (!world.isRemote && hasNoEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
 			Entity ridingEntity = player.getRidingEntity();
 			boolean isRidingBoat = ridingEntity instanceof BoatEntity;
 			if (isRidingBoat && canAttachBalloonToTarget(ridingEntity)) {
@@ -116,27 +116,23 @@ public class BolloomBalloonItem extends Item {
 	public static void attachToEntity(BalloonColor color, Entity target) {
 		World world = target.world;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
-		balloon.setColor(color);
-		balloon.attachToEntity(target);
-		balloon.updateAttachedPosition();
-		balloon.setUntied(true);
-		world.addEntity(balloon);
+		if (balloon != null) {
+			balloon.setColor(color);
+			balloon.attachToEntity(target);
+			balloon.updateAttachedPosition();
+			balloon.setUntied(true);
+			world.addEntity(balloon);
+		}
 	}
 
 	private void attachToFence(BlockPos fencePos, World world, ItemStack stack) {
-		for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(fencePos))) {
-			if (entity instanceof BolloomKnotEntity) {
-				if (!((BolloomKnotEntity) entity).hasMaxBalloons()) {
-					BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, fencePos);
-					setKnot.addBalloon(this.getBalloonColor());
-					stack.shrink(1);
-				}
-			}
-        }
-		if (BolloomKnotEntity.getKnotForPosition(world, fencePos) == null) {
+		BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, fencePos);
+		if (setKnot != null && !setKnot.hasMaxBalloons()) {
+			setKnot.addBalloon(this.getBalloonColor());
+		} else if (setKnot == null) {
 			BolloomKnotEntity.createStartingKnot(world, fencePos, this.getBalloonColor());
-			stack.shrink(1);
 		}
+		stack.shrink(1);
 	}
 	
 	private boolean isAirUpwards(World world, BlockPos pos) {
@@ -154,21 +150,19 @@ public class BolloomBalloonItem extends Item {
 		return (player.isCreative() ? reach : reach - 0.5F);
 	}
 	
-	public static boolean hasEntityTarget(PlayerEntity player) {
+	public static boolean hasNoEntityTarget(PlayerEntity player) {
 		double distance = getPlayerReach(player);
 		Vector3d vec3d = player.getEyePosition(1.0F);
 		Vector3d vec3d1 = player.getLook(1.0F).scale(distance);
 		Vector3d vec3d2 = vec3d.add(vec3d1);
 		AxisAlignedBB axisalignedbb = player.getBoundingBox().expand(vec3d1).grow(1.0D);
 		double sqrDistance = distance * distance;
-		Predicate<Entity> predicate = (p_217727_0_) -> {
-			return !p_217727_0_.isSpectator() && p_217727_0_.canBeCollidedWith();
-		};
+		Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.canBeCollidedWith();
 		EntityRayTraceResult entityraytraceresult = rayTraceEntities(player, vec3d, vec3d2, axisalignedbb, predicate, sqrDistance);
 		if (entityraytraceresult == null) {
-			return false;
+			return true;
 		} else {
-			return !(vec3d.squareDistanceTo(entityraytraceresult.getHitVec()) > sqrDistance);
+			return vec3d.squareDistanceTo(entityraytraceresult.getHitVec()) > sqrDistance;
 		}
 	}
 	
@@ -182,7 +176,7 @@ public class BolloomBalloonItem extends Item {
 		Vector3d vector3d = null;
 
 		for (Entity entity1 : world.getEntitiesInAABBexcluding(shooter, boundingBox, filter)) {
-			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) entity1.getCollisionBorderSize());
+			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow(entity1.getCollisionBorderSize());
 			Optional<Vector3d> optional = axisalignedbb.rayTrace(startVec, endVec);
 			if (axisalignedbb.contains(startVec)) {
 				if (d0 >= 0.0D) {
@@ -234,22 +228,18 @@ public class BolloomBalloonItem extends Item {
 			} else if (!state.getMaterial().isReplaceable() && !state.getBlock().isIn(BlockTags.FENCES)) {
 				return super.dispenseStack(source, stack);
 			} else if (state.getBlock().isIn(BlockTags.FENCES)) {
-				if (BolloomKnotEntity.getKnotForPosition(world, blockpos) == null) {
+				BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, blockpos);
+				if (setKnot == null) {
 					BolloomKnotEntity.createStartingKnot(world, blockpos, ((BolloomBalloonItem) stack.getItem()).getBalloonColor());
 					stack.shrink(1);
 					return stack;
 				} else {
-					for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blockpos))) {
-						if (entity instanceof BolloomKnotEntity) {
-							if (!((BolloomKnotEntity) entity).hasMaxBalloons()) {
-								BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, blockpos);
-								setKnot.addBalloon(((BolloomBalloonItem) stack.getItem()).getBalloonColor());
-								stack.shrink(1);
-							} else {
-								return super.dispenseStack(source, stack);
-							}
-						}
-			        }
+					if (!setKnot.hasMaxBalloons()) {
+						setKnot.addBalloon(((BolloomBalloonItem) stack.getItem()).getBalloonColor());
+						stack.shrink(1);
+					} else {
+						return super.dispenseStack(source, stack);
+					}
 				}
 			} else {
 				return super.dispenseStack(source, stack);
