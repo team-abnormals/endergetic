@@ -138,7 +138,7 @@ public class BolloomKnotEntity extends Entity {
 	}
 	
 	public boolean hasMaxBalloons() {
-		return this.getDataManager().get(BALLOONS_TIED) > 3;
+		return this.dataManager.get(BALLOONS_TIED) > 3;
 	}
 
 	@Nonnull

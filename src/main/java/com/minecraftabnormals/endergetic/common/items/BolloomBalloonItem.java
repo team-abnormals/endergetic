@@ -81,7 +81,11 @@ public class BolloomBalloonItem extends Item {
 		if (block instanceof FenceBlock) {
 			if (this.isAirUpwards(world, pos)) {
 				if (!world.isRemote) {
-					this.attachToFence(pos, world, context.getItem());
+					ItemStack stack = context.getItem();
+					if (this.attachToFence(pos, world, stack)) {
+						stack.shrink(1);
+						return ActionResultType.SUCCESS;
+					}
 				}
 			} else {
 				return ActionResultType.FAIL;
@@ -125,14 +129,16 @@ public class BolloomBalloonItem extends Item {
 		}
 	}
 
-	private void attachToFence(BlockPos fencePos, World world, ItemStack stack) {
+	private boolean attachToFence(BlockPos fencePos, World world, ItemStack stack) {
 		BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, fencePos);
 		if (setKnot != null && !setKnot.hasMaxBalloons()) {
 			setKnot.addBalloon(this.getBalloonColor());
+			return true;
 		} else if (setKnot == null) {
 			BolloomKnotEntity.createStartingKnot(world, fencePos, this.getBalloonColor());
+			return true;
 		}
-		stack.shrink(1);
+		return false;
 	}
 	
 	private boolean isAirUpwards(World world, BlockPos pos) {
