@@ -29,6 +29,7 @@ public class EndergeticMidlandsBiome extends EndergeticBiome {
 	
 	@Override
 	public void addSpawnsAndFeatures() {
+		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Placement.TOP_SOLID_HEIGHTMAP_NOISE_BIASED.configure(new TopSolidWithNoiseConfig(2, 5.0D, 0.0D, Heightmap.Type.WORLD_SURFACE_WG))));
 		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.CORROCK_TOWER.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Placement.TOP_SOLID_HEIGHTMAP_NOISE_BIASED.configure(new TopSolidWithNoiseConfig(2, 5.0D, 0.0D, Heightmap.Type.WORLD_SURFACE_WG))));
 		this.addFeature(Decoration.VEGETAL_DECORATION, EEFeatures.CORROCK_PATCH.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Placement.NOISE_HEIGHTMAP_DOUBLE.configure(new NoiseDependant(-0.8D, 5, 10))));
 	}
