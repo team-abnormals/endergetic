@@ -26,6 +26,9 @@ import net.minecraft.world.gen.feature.ProbabilityConfig;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 
+/**
+ * @author SmellyModder (Luke Tonon)
+ */
 public class CorrockBranchFeature extends AbstractCorrockFeature {
 
 	public CorrockBranchFeature(Codec<ProbabilityConfig> configFactory) {
@@ -68,9 +71,8 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 							}
 						}
 					}
-					
-					BlockPos downPos = pos.down();
-					BlockPos groundModifierPos = new BlockPos(downPos.getX() + (rand.nextInt(3) - rand.nextInt(3)), downPos.getY(), downPos.getZ() + (rand.nextInt(3) - rand.nextInt(3)));
+
+					BlockPos groundModifierPos = new BlockPos(pos.getX() - 1 + (rand.nextInt(3) - rand.nextInt(3)), pos.getY() - 1, pos.getZ() - 1 + (rand.nextInt(3) - rand.nextInt(3)));
 					EEFeatures.GROUND_PATCH.get().func_230362_a_(world, manager, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
 					
 					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
@@ -133,6 +135,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 		return piece;
 	}
 
+	/**
+	 * Tries to make the area below the cluster around the origin have no air spaces.
+	 */
 	private boolean tryToMakeAreaBelowPlacableOn(GenerationPiece piece, IWorld world, BlockPos pos) {
 		BlockPos down = pos.down();
 		if (world.isAirBlock(down) && !world.isAirBlock(pos.down(3))) {
@@ -145,80 +150,34 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Tries to create an amount (count) of branches. Each branch has a {@link GenerationPiece} for its formation and a {@link ChorusPlantPart} if it has a chorus growth at the top.
+	 */
 	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(IWorld world, BlockPos pos, Random rand, int count, int height) {
 		List<Pair<GenerationPiece, ChorusPlantPart>> pieces = Lists.newArrayList();
+		BlockPos branchStart = pos.up(height - 1);
 		for (int i = 0; i < count; i++) {
-			pieces.add(this.createBranch(world, pos, rand, height));
+			GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isAirBlock(part.pos));
+			pieces.add(new Pair<>(basePiece, this.createBranch(world, branchStart, rand, basePiece, this.randomHorizontalDirection(rand), rand.nextInt(2) + 1)));
 		}
 		return pieces;
 	}
-	
-	private Pair<GenerationPiece, ChorusPlantPart> createBranch(IWorld world, BlockPos pos, Random rand, int height) {
-		GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isAirBlock(part.pos));
-		ChorusPlantPart chorusPlantPart = null;
-		BlockPos startPos = pos.up(height - 1);
-		Direction horizontalStep = this.randomHorizontalDirection(rand);
-		boolean shouldStep = rand.nextBoolean();
-		
-		if (shouldStep) {
-			for (int y = 0; y < 3; y++) {
-				basePiece.addBlockPiece(CORROCK_BLOCK.get(), startPos.offset(horizontalStep).up(y));
-			}
-
-			int branchHeight = rand.nextInt(3) + 4;
-			for (int y = 0; y < branchHeight; y++) {
-				basePiece.addBlockPiece(CORROCK_BLOCK.get(), startPos.offset(horizontalStep, 2).up(2).up(y));
-
-				if (y == branchHeight - 1 && rand.nextFloat() < 0.85F) {
-					this.createCrownOrbit(basePiece, world, startPos.offset(horizontalStep, 2).up(2).up(y), rand);
-				}
-			}
-
-			Direction sideStep = this.randomHorizontalDirection(rand);
-			int sideYPos = branchHeight / 2;
-
-			for (int offset = 0; offset < 2; offset++) {
-				basePiece.addBlockPiece(CORROCK_BLOCK.get(), startPos.offset(horizontalStep, 2).offset(sideStep, offset).up(2).up(sideYPos));
-			}
-
-			int lastBranchHeight = rand.nextInt(3) + 4;
-			for (int y = 0; y < lastBranchHeight; y++) {
-				basePiece.addBlockPiece(CORROCK_BLOCK.get(), startPos.offset(horizontalStep, 2).offset(sideStep, 2).up(2).up(sideYPos).up(y));
-
-				if (y == lastBranchHeight - 1 && rand.nextFloat() < 0.85F) {
-					BlockPos crownOrigin = startPos.offset(horizontalStep, 2).offset(sideStep, 2).up(2).up(sideYPos).up(y);
-					this.createCrownOrbit(basePiece, world, crownOrigin, rand);
-					ChorusPlantPart chorusPart = this.tryToCreateChorusPlantPart(world, crownOrigin, rand);
-					if (chorusPart != null) {
-						chorusPlantPart = chorusPart;
-					}
-				}
-			}
-		} else {
-			ChorusPlantPart stepBranch = this.createStepBranch(world, startPos, rand, basePiece, horizontalStep, 1);
-			if (stepBranch != null) {
-				chorusPlantPart = stepBranch;
-			}
-		}
-		return new Pair<>(basePiece, chorusPlantPart);
-	}
 
 	/**
-	 * This is a new more extensible stepping branch algorithm.
-	 * Only used for 1 branched forms currently.
-	 * TODO: Combine logic of double stepped form into this to support maxIndex > 1
+	 * Creates a branch starting from a position and a direction with a max amount of sub-branches.
 	 */
 	@Nullable
-	private ChorusPlantPart createStepBranch(IWorld world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int maxIndex) {
+	private ChorusPlantPart createBranch(IWorld world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int subBranches) {
 		ChorusPlantPart chorusPlantPart = null;
 		int branched = 0;
+		int prevBranchHeight = 0;
 		int branchHeight = rand.nextInt(3) + 4;
 		BlockPos offset = pos.offset(horizontalStep);
 		for (int y = 0; y < branchHeight; y++) {
 			basePiece.addBlockPiece(CORROCK_BLOCK.get(), offset.up(y));
 			if (y == branchHeight - 1) {
-				boolean lastBranched = branched == maxIndex;
+				boolean lastBranched = branched == subBranches;
 				if (rand.nextBoolean()) {
 					BlockPos crownOrigin = offset.up(y);
 					this.createCrownOrbit(basePiece, world, crownOrigin, rand);
@@ -237,24 +196,30 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					horizontalStep = rand.nextBoolean() ? horizontalStep.rotateY() : horizontalStep.rotateYCCW();
 				}
 
-				boolean beforeLastBranched = branched == maxIndex - 1;
+				boolean beforeLastBranched = branched == subBranches - 1;
 				if (beforeLastBranched) {
-					int middle = branchHeight / 2;
+					int middle = prevBranchHeight + (branchHeight - prevBranchHeight) / 2;
 					y -= branchHeight - middle;
 					branchHeight = middle;
 					basePiece.addBlockPiece(CORROCK_BLOCK.get(), offset.up(branchHeight).offset(horizontalStep));
 					offset = offset.offset(horizontalStep, 2);
 				} else {
 					offset = offset.offset(horizontalStep);
+					y--;
+					branchHeight--;
 				}
 
+				prevBranchHeight = branchHeight;
 				branchHeight += rand.nextInt(3) + 4;
 				branched++;
 			}
 		}
 		return chorusPlantPart;
 	}
-	
+
+	/**
+	 * Creates corrock crowns 'orbiting' (i.e. attached to all open sides) a position.
+	 */
 	private void createCrownOrbit(GenerationPiece branch, IWorld world, BlockPos pos, Random rand) {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			BlockPos placingPos = pos.offset(horizontal);
@@ -267,6 +232,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 		}
 	}
 
+	/**
+	 * Tries to create a chorus growth at a position.
+	 */
 	@Nullable
 	private ChorusPlantPart tryToCreateChorusPlantPart(IWorld world, BlockPos pos, Random rand) {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
