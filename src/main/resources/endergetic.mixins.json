@@ -16,7 +16,10 @@
     "MixinServerPlayerEntity",
   	"MixinServerPlayNetHandler",
     "MixinTrackedEntity",
-    "MixinPlayerList"
+    "MixinPlayerList",
+    "chorus.MixinChorusPlantFeature",
+    "chorus.MixinChorusPlantBlock",
+    "chorus.MixinChorusFlowerBlock"
   ],
   "client": [
     "MixinClientWorld",

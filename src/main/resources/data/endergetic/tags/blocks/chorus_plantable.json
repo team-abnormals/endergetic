@@ -4,6 +4,9 @@
     "endergetic:end_corrock_block",
     "endergetic:nether_corrock_block",
     "endergetic:overworld_corrock_block",
+    "endergetic:petrified_end_corrock_block",
+    "endergetic:petrified_nether_corrock_block",
+    "endergetic:petrified_overworld_corrock_block",
     "minecraft:end_stone"
   ]
 }
