@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ChorusPlantBlock.class)
-public final class MixinChorusPlantBlock {
+public final class ChorusPlantBlockMixin {
 
 	@Inject(at = @At(value = "RETURN", shift = At.Shift.BEFORE), method = "makeConnections", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private void makePlantConnections(IBlockReader blockReader, BlockPos pos, CallbackInfoReturnable<BlockState> info, Block block, Block block1, Block block2, Block block3, Block block4, Block block5) {

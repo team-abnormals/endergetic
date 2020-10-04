@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientWorld.class)
-public abstract class MixinClientWorld {
+public abstract class ClientWorldMixin {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isPassenger()Z"), method = "tickEntities")
 	private boolean shouldNotTick(Entity entity) {

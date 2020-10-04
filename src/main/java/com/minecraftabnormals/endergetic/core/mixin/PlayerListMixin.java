@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(PlayerList.class)
-public final class MixinPlayerList {
+public final class PlayerListMixin {
 
 	@SuppressWarnings("deprecation")
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;writePlayerData(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "playerLoggedOut")

@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(TrackedEntity.class)
-public final class MixinTrackedEntity {
+public final class TrackedEntityMixin {
 	private List<BolloomBalloonEntity> prevBalloons = Lists.newArrayList();
 
 	@Shadow

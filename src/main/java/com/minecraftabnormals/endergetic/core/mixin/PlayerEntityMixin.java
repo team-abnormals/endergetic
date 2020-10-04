@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(PlayerEntity.class)
-public final class MixinPlayerEntity {
+public final class PlayerEntityMixin {
 
 	@Inject(at = @At("RETURN"), method = "writeAdditional")
 	private void writeBalloons(CompoundNBT compound, CallbackInfo info) {

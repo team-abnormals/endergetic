@@ -17,7 +17,7 @@ import java.util.Random;
  * @author SmellyModder (Luke Tonon)
  */
 @Mixin(ChorusFlowerBlock.class)
-public final class MixinChorusFlowerBlock {
+public final class ChorusFlowerBlockMixin {
 	@Shadow
 	@Final
 	private ChorusPlantBlock plantBlock;

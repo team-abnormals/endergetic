@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 
 @Mixin(ChorusPlantFeature.class)
-public final class MixinChorusPlantFeature {
+public final class ChorusPlantFeatureMixin {
 
 	@Inject(at = @At("HEAD"), method = "func_230362_a_", cancellable = true)
 	private void allowGenerationOnTag(ISeedReader seedReader, StructureManager p_230362_2_, ChunkGenerator p_230362_3_, Random p_230362_4_, BlockPos pos, NoFeatureConfig p_230362_6_, CallbackInfoReturnable<Boolean> info) {

@@ -20,7 +20,7 @@ import net.minecraft.world.gen.SimplexNoiseGenerator;
 import net.minecraft.world.gen.layer.Layer;
 
 @Mixin(EndBiomeProvider.class)
-public abstract class MixinEndBiomeProvider extends BiomeProvider {
+public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	private static Layer noiseBiomeLayer;
 	
 	@Shadow
@@ -31,7 +31,7 @@ public abstract class MixinEndBiomeProvider extends BiomeProvider {
 	@Final
 	private long field_235315_h_;
 	
-	protected MixinEndBiomeProvider(List<Biome> p_i231634_1_) {
+	protected EndBiomeProviderMixin(List<Biome> p_i231634_1_) {
 		super(p_i231634_1_);
 	}
 

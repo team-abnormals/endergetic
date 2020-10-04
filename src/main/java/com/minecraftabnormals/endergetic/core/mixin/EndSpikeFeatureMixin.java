@@ -15,7 +15,7 @@ import net.minecraft.world.gen.feature.EndSpikeFeature;
 import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
 
 @Mixin(EndSpikeFeature.class)
-public final class MixinEndSpikeFeature {
+public final class EndSpikeFeatureMixin {
 
 	@Inject(at = @At("TAIL"), method = "placeSpike")
 	private void placeCrystalHolder(IWorld world, Random rand, EndSpikeFeatureConfig config, EndSpikeFeature.EndSpike spike, CallbackInfo info) {

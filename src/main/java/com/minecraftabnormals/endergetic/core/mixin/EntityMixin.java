@@ -19,7 +19,7 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonE
 import net.minecraft.entity.Entity;
 
 @Mixin(Entity.class)
-public final class MixinEntity implements BalloonHolder {
+public final class EntityMixin implements BalloonHolder {
 	private List<BolloomBalloonEntity> balloons = Lists.newArrayList();
 
 	@Shadow

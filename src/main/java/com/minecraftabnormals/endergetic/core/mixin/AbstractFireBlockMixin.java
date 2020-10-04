@@ -15,9 +15,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 @Mixin(AbstractFireBlock.class)
-public final class MixinAbstractFireBlock extends Block {
+public final class AbstractFireBlockMixin extends Block {
 
-	private MixinAbstractFireBlock(Properties properties) {
+	private AbstractFireBlockMixin(Properties properties) {
 		super(properties);
 	}
 	

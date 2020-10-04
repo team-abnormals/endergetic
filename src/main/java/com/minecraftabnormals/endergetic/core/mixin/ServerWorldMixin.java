@@ -28,7 +28,7 @@ import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
 
 @Mixin(ServerWorld.class)
-public final class MixinServerWorld {
+public final class ServerWorldMixin {
 	@Shadow(remap = false)
 	public DragonFightManager field_241105_O_;
 	

@@ -34,10 +34,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Mixin(BoatEntity.class)
-public abstract class MixinBoatEntity extends Entity implements CustomBalloonPositioner {
+public abstract class BoatEntityMixin extends Entity implements CustomBalloonPositioner {
 	private static final ResourceLocation LARGE_BOAT_NAME = new ResourceLocation("extraboats", "large_boat");
 
-	private MixinBoatEntity(EntityType<?> entityType, World world) {
+	private BoatEntityMixin(EntityType<?> entityType, World world) {
 		super(entityType, world);
 	}
 

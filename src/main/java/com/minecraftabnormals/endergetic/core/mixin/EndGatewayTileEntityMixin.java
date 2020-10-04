@@ -15,7 +15,7 @@ import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.server.ServerWorld;
 
 @Mixin(EndGatewayTileEntity.class)
-public abstract class MixinEndGatewayTileEntity extends EndPortalTileEntity implements ITickableTileEntity {
+public abstract class EndGatewayTileEntityMixin extends EndPortalTileEntity implements ITickableTileEntity {
 
 	@Overwrite
 	private void func_227016_a_(ServerWorld world, BlockPos pos) {

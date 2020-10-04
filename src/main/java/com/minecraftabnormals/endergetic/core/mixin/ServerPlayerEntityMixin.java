@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
-public final class MixinServerPlayerEntity {
+public final class ServerPlayerEntityMixin {
 
 	@Inject(at = @At(value = "JUMP", ordinal = 0, shift = At.Shift.AFTER), method = "setGameType")
 	private void detachBalloons(GameType gameType, CallbackInfo info) {
