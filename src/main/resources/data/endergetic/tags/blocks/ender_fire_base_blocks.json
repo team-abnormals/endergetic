@@ -18,7 +18,9 @@
     "endergetic:crystal_holder",
     "endergetic:mystical_obsidian_rune",
     "endergetic:mystical_obsidian_activation_rune",
-    "endergetic:activated_mystical_obsidian_activation_rune"
+    "endergetic:activated_mystical_obsidian_activation_rune",
+    "endergetic:mystical_obsidian",
+    "endergetic:mystical_obsidian_wall"
   ],
   "optional": [
     "quark:end_stone_brick_vertical_slab",
