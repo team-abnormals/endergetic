@@ -72,7 +72,13 @@
 	"block.endergetic.mystical_obsidian_activation_rune": "Runa de activación de obsidiana mística",
 	"block.endergetic.activated_mystical_obsidian_activation_rune": "Runa de activación de obsidiana mística activa",
 	"block.endergetic.acidian_lantern": "Linterna acidiana",
-	"block.endergetic.crystal_holder": "Soporte de cristal",
+	"block.endergetic.crystal_holder": "Soporte de cristales",
+
+	"block.endergetic.ender_campfire": "Hoguera de ender",
+  "block.endergetic.ender_torch": "Antorcha de ender",
+  "block.endergetic.ender_wall_torch": "Antorcha de ender en pared",
+  "block.endergetic.ender_lantern": "Farolillo de ender",
+  "block.endergetic.ender_fire": "Fuego de ender",
 
 	"_comment_": "Items",
 	"item.endergetic.poise_boat": "Barca equilibrada",
