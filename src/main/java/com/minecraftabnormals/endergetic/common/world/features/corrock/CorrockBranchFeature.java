@@ -182,10 +182,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					BlockPos crownOrigin = offset.up(y);
 					this.createCrownOrbit(basePiece, world, crownOrigin, rand);
 					if (lastBranched) {
-						ChorusPlantPart chorusPart = this.tryToCreateChorusPlantPart(world, crownOrigin, rand);
-						if (chorusPart != null) {
-							chorusPlantPart = chorusPart;
-						}
+						chorusPlantPart = new ChorusPlantPart(crownOrigin);
 						break;
 					}
 				} else if (lastBranched) {
@@ -227,25 +224,11 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 				branch.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, horizontal), placingPos);
 			}
 		}
-		if (rand.nextBoolean()) {
+		if (rand.nextBoolean() && world.isAirBlock(pos.up())) {
 			branch.addBlockPiece(this.randomStandingCorrockCrown(rand), pos.up());
 		}
 	}
 
-	/**
-	 * Tries to create a chorus growth at a position.
-	 */
-	@Nullable
-	private ChorusPlantPart tryToCreateChorusPlantPart(IWorld world, BlockPos pos, Random rand) {
-		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
-			BlockPos placingPos = pos.offset(horizontal);
-			if (rand.nextFloat() < 0.3F && world.isAirBlock(placingPos)) {
-				return new ChorusPlantPart(placingPos, horizontal);
-			}
-		}
-		return null;
-	}
-	
 	private Direction randomHorizontalDirection(Random rand) {
 		return Direction.byHorizontalIndex(rand.nextInt(6));
 	}

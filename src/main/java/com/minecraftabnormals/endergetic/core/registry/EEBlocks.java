@@ -66,8 +66,7 @@ public final class EEBlocks {
 	public static final RegistryObject<CorrockCrownWallBlock> PETRIFIED_CORROCK_CROWN_END_WALL       = HELPER.createBlockNoItem("petrified_end_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true));
 	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_END_STANDING                 = HELPER.createCorrockStandingBlock("end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
 	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_END_STANDING       = HELPER.createCorrockStandingBlock("petrified_end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true), () -> PETRIFIED_CORROCK_CROWN_END_WALL.get(), null);
-	public static final RegistryObject<Block> ENDSTONE_COVER                                         = HELPER.createBlockNoItem("endstone_cover", () -> new EndStoneCoverBlock(Block.Properties.create(Material.TALL_PLANTS, MaterialColor.PURPLE_TERRACOTTA).hardnessAndResistance(1.5F, 6.0F).doesNotBlockMovement()));
-	
+
 	/*
 	 * Poise Forest
 	 */

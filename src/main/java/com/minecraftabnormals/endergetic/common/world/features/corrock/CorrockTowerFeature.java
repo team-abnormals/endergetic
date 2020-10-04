@@ -316,7 +316,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 				BlockPos placingPos = new BlockPos(x, pos.getY(), z);
 				if (!corners.contains(placingPos)) {
 					if (!this.isCloseToAnotherGrowth(growths, placingPos.down()) && rand.nextFloat() < 0.1F && world.isAirBlock(placingPos) && world.isAirBlock(placingPos.up())) {
-						growths.add(new ChorusPlantPart(placingPos.down(), null));
+						growths.add(new ChorusPlantPart(placingPos.down()));
 						
 						for (Direction direction : Direction.values()) {
 							if (direction != Direction.UP) {

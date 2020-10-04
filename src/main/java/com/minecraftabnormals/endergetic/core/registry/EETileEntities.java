@@ -20,7 +20,6 @@ public final class EETileEntities {
 		EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING.get(),
 		EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()
 	});
-	public static final RegistryObject<TileEntityType<EndStoneCoverTileEntity>> ENDSTONE_COVER = HELPER.createTileEntity("endstone_cover", EndStoneCoverTileEntity::new, () -> new Block[] {EEBlocks.ENDSTONE_COVER.get()});
 	public static final RegistryObject<TileEntityType<FrisbloomStemTileEntity>> FRISBLOOM_STEM = HELPER.createTileEntity("frisbloom_stem", FrisbloomStemTileEntity::new, () -> new Block[] {EEBlocks.FRISBLOOM_STEM});
 	
 	/*
