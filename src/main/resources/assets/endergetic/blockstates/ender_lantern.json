@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "endergetic:block/ender_lantern"
+    },
+    "hanging=true": {
+      "model": "endergetic:block/ender_lantern_hanging"
+    }
+  }
+}

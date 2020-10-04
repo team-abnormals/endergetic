@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import com.teamabnormals.abnormals_core.core.utils.DataUtils;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
+import com.teamabnormals.abnormals_core.core.utils.DataUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
@@ -27,8 +27,13 @@ public final class EEBlockRegistrars {
 		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_END.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_NETHER.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.PETRIFIED_CORROCK_OVERWORLD.get(), RenderType.getCutout());
-		setRenderLayer(EEBlocks.ENDER_FIRE.get(), RenderType.getCutout());
 		
+		setRenderLayer(EEBlocks.ENDER_FIRE.get(), RenderType.getCutout());
+      	setRenderLayer(EEBlocks.ENDER_TORCH.get(), RenderType.getCutout());
+    	setRenderLayer(EEBlocks.ENDER_WALL_TORCH.get(), RenderType.getCutout());
+    	setRenderLayer(EEBlocks.ENDER_LANTERN.get(), RenderType.getCutout());
+    	setRenderLayer(EEBlocks.ENDER_CAMPFIRE.get(), RenderType.getCutout());
+    	
 		setRenderLayer(EEBlocks.POISE_BUSH_POT.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_DOOR.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_TRAPDOOR.get(), RenderType.getCutout());

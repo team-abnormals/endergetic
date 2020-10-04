@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:end_stone",
+    "endergetic:eumus",
+    "endergetic:eumus_poismoss",
+    "endergetic:poismoss"
+  ],
+  "optional": [
+    "quark:basalt"
+  ]
+}

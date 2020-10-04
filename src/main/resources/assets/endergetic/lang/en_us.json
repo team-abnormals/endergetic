@@ -73,6 +73,12 @@
 	"block.endergetic.activated_mystical_obsidian_activation_rune": "Activated Mystical Obsidian Activation Rune",
 	"block.endergetic.acidian_lantern": "Acidian Lantern",
 	"block.endergetic.crystal_holder": "Crystal Holder",
+	
+	"block.endergetic.ender_campfire": "Ender Campfire",
+  "block.endergetic.ender_torch": "Ender Torch",
+  "block.endergetic.ender_wall_torch": "Ender Wall Torch",
+  "block.endergetic.ender_lantern": "Ender Lantern",
+  "block.endergetic.ender_fire": "Ender Fire",
 
 	"_comment_": "Items",
 	"item.endergetic.poise_boat": "Poise Boat",

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "S#S",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "#": {
+      "tag": "endergetic:ender_fire_base_blocks"
+    }
+  },
+  "result": {
+    "item": "endergetic:ender_campfire"
+  }
+}

@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.client.particles;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -18,6 +19,7 @@ public class EEParticles {
 	
 	public static final RegistryObject<BasicParticleType> POISE_BUBBLE = createBasicParticleType(true, "poise_bubble");
 	public static final RegistryObject<BasicParticleType> SHORT_POISE_BUBBLE = createBasicParticleType(true, "short_poise_bubble");
+	public static final RegistryObject<BasicParticleType> ENDER_FLAME = createBasicParticleType(true, "ender_flame");
 	
 	private static RegistryObject<BasicParticleType> createBasicParticleType(boolean alwaysShow, String name) {
 		RegistryObject<BasicParticleType> particleType = PARTICLES.register(name, () -> new BasicParticleType(alwaysShow));
@@ -29,6 +31,9 @@ public class EEParticles {
 		
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
+			if (ENDER_FLAME.isPresent()) {
+				Minecraft.getInstance().particles.registerFactory(ENDER_FLAME.get(), FlameParticle.Factory::new);
+			}
 			if (POISE_BUBBLE.isPresent()) {
 				Minecraft.getInstance().particles.registerFactory(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
 			}

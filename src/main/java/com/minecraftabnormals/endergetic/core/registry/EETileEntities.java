@@ -21,7 +21,8 @@ public final class EETileEntities {
 		EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING.get(), EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL.get()
 	});
 	public static final RegistryObject<TileEntityType<FrisbloomStemTileEntity>> FRISBLOOM_STEM = HELPER.createTileEntity("frisbloom_stem", FrisbloomStemTileEntity::new, () -> new Block[] {EEBlocks.FRISBLOOM_STEM});
-	
+	public static final RegistryObject<TileEntityType<EnderCampfireTileEntity>> ENDER_CAMPFIRE = HELPER.createTileEntity("ender_campfire", EnderCampfireTileEntity::new, () -> new Block[] {EEBlocks.ENDER_CAMPFIRE.get()});
+
 	/*
 	 * Poise Forest
 	 */

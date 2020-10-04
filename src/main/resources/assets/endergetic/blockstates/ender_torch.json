@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "endergetic:block/ender_torch"
+    }
+  }
+}
