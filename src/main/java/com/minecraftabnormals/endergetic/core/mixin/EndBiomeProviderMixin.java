@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.minecraftabnormals.endergetic.common.world.util.EndergeticLayerUtil;
@@ -21,8 +22,6 @@ import net.minecraft.world.gen.layer.Layer;
 
 @Mixin(EndBiomeProvider.class)
 public abstract class EndBiomeProviderMixin extends BiomeProvider {
-	private static Layer noiseBiomeLayer;
-	
 	@Shadow
 	@Final
 	private SimplexNoiseGenerator generator;
@@ -30,23 +29,27 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	@Shadow(remap = false)
 	@Final
 	private long field_235315_h_;
-	
-	protected EndBiomeProviderMixin(List<Biome> p_i231634_1_) {
-		super(p_i231634_1_);
+
+	private Layer noiseBiomeLayer;
+
+	private EndBiomeProviderMixin(List<Biome> biomes) {
+		super(biomes);
+	}
+
+	@Inject(at = @At("RETURN"), method = "<init>")
+	private void init(long seed, CallbackInfo info) {
+		this.noiseBiomeLayer = EndergeticLayerUtil.createGenLayers(this.field_235315_h_)[1];
 	}
 
 	@Inject(at = @At("HEAD"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
 	private void addEndergeticBiomes(int x, int y, int z, CallbackInfoReturnable<Biome> info) {
-		if (noiseBiomeLayer == null) {
-			noiseBiomeLayer = EndergeticLayerUtil.createGenLayers(this.field_235315_h_)[1];
-		}
 		int i = x >> 2;
 		int j = z >> 2;
 		if ((long) i * (long) i + (long) j * (long) j <= 4096L) {
 			info.setReturnValue(Biomes.THE_END);
 		} else {
 			float f = EndBiomeProvider.func_235317_a_(this.generator, i * 2 + 1, j * 2 + 1);
-			Biome biome = noiseBiomeLayer.func_215738_a(x, z);
+			Biome biome = this.noiseBiomeLayer.func_215738_a(x, z);
 			boolean isChorus = biome == EEBiomes.CHORUS_PLAINS.get();
 			if (f > 40.0F) {
 				info.setReturnValue(isChorus ? Biomes.END_HIGHLANDS : biome);
