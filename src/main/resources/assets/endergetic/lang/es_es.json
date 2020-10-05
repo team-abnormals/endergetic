@@ -75,10 +75,10 @@
 	"block.endergetic.crystal_holder": "Soporte de cristales",
 
 	"block.endergetic.ender_campfire": "Hoguera de ender",
-  "block.endergetic.ender_torch": "Antorcha de ender",
-  "block.endergetic.ender_wall_torch": "Antorcha de ender en pared",
-  "block.endergetic.ender_lantern": "Farolillo de ender",
-  "block.endergetic.ender_fire": "Fuego de ender",
+	"block.endergetic.ender_torch": "Antorcha de ender",
+	"block.endergetic.ender_wall_torch": "Antorcha de ender en pared",
+	"block.endergetic.ender_lantern": "Farolillo de ender",
+	"block.endergetic.ender_fire": "Fuego de ender",
 
 	"_comment_": "Items",
 	"item.endergetic.poise_boat": "Barca equilibrada",
