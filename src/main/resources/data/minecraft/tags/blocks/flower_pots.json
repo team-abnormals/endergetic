@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "endergetic:potted_poise_bush"
+    "endergetic:potted_poise_bush",
+    "endergetic:potted_tall_poise_bush"
   ]
 }

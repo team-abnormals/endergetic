@@ -18,7 +18,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
  * @author - SmellyModder(Luke Tonon)
  */
 public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
-	private static final BlockState GLOWING_POISE_LOG = EEBlocks.POISE_WOOD_GLOWING.get().getDefaultState();
+	private static final BlockState GLOWING_POISE_LOG = EEBlocks.GLOWING_POISE_WOOD.get().getDefaultState();
 	private static final BlockState POISE_CLUSTER = EEBlocks.POISE_CLUSTER.get().getDefaultState();
 
 	public PoiseClusterFeature(Codec<NoFeatureConfig> configFactoryIn) {
@@ -96,7 +96,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private void setBlockIfReplacable(IWorld world, BlockPos pos, BlockState newState) {
-		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.POISE_BUSH_TALL.get() && world.getBlockState(pos.down()).getBlock() != EEBlocks.POISE_BUSH_TALL.get()) {
+		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.TALL_POISE_BUSH.get() && world.getBlockState(pos.down()).getBlock() != EEBlocks.TALL_POISE_BUSH.get()) {
 			world.setBlockState(pos, newState, 2);
 		}
 	}

@@ -70,7 +70,7 @@ public class PoiseBushBlock extends Block implements IGrowable {
 	
 	@Override
 	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state) {
-		PoiseTallBushBlock plant = (PoiseTallBushBlock) EEBlocks.POISE_BUSH_TALL.get();
+		PoiseTallBushBlock plant = (PoiseTallBushBlock) EEBlocks.TALL_POISE_BUSH.get();
 		if (plant.getDefaultState().isValidPosition(world, pos) && world.isAirBlock(pos.up())) {
 			plant.placeAt(world, pos, 2);
 		}

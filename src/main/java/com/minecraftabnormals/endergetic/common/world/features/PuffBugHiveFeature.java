@@ -36,7 +36,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		if(rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.down();
 		
-		if (world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_LOG_GLOWING.get()) {
+		if (world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
 			if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 				world.setBlockState(pos, this.HIVE_STATE(true).get(), 2);
 				world.setBlockState(hivePos, this.HIVE_STATE(false).get(), 2);

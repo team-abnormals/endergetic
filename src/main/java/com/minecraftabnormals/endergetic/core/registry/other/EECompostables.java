@@ -11,7 +11,7 @@ public final class EECompostables {
 
 	public static void registerCompostables() {
 		DataUtils.registerCompostable(EEBlocks.POISE_BUSH.get(), 0.3F);
-		DataUtils.registerCompostable(EEBlocks.POISE_BUSH_TALL.get(), 0.5F);
+		DataUtils.registerCompostable(EEBlocks.TALL_POISE_BUSH.get(), 0.5F);
 		DataUtils.registerCompostable(EEBlocks.POISE_CLUSTER.get(), 0.85F);
 		DataUtils.registerCompostable(EEBlocks.BOLLOOM_BUD.get(), 1.0F);
 		DataUtils.registerCompostable(EEItems.BOLLOOM_FRUIT.get(), 0.65F);

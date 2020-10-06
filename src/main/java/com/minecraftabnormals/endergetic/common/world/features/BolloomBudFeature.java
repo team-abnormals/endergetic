@@ -55,7 +55,7 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 	
 	private boolean isValidPos(IWorld world, BlockPos pos) {
 		Block block = world.getBlockState(pos.down()).getBlock();
-		return world.isAirBlock(pos) && world.isAirBlock(pos.up()) && block == EEBlocks.POISMOSS.get() || block == EEBlocks.POISMOSS_EUMUS.get() || block == EEBlocks.EUMUS.get();
+		return world.isAirBlock(pos) && world.isAirBlock(pos.up()) && block == EEBlocks.POISMOSS.get() || block == EEBlocks.EUMUS_POISMOSS.get() || block == EEBlocks.EUMUS.get();
 	}
 	
 	private int calculateFruitMaxHeight(IWorld world, BlockPos pos) {

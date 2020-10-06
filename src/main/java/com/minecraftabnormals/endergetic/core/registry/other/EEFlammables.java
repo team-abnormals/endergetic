@@ -6,10 +6,10 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 public final class EEFlammables {
 
 	public static void registerFlammables() {
-		DataUtils.registerFlammable(EEBlocks.POISE_LOG.get(), 5, 5);
+		DataUtils.registerFlammable(EEBlocks.POISE_STEM.get(), 5, 5);
 		DataUtils.registerFlammable(EEBlocks.POISE_WOOD.get(), 5, 5);
-		DataUtils.registerFlammable(EEBlocks.POISE_LOG_STRIPPED.get(), 5, 5);
-		DataUtils.registerFlammable(EEBlocks.POISE_WOOD_STRIPPED.get(), 5, 5);
+		DataUtils.registerFlammable(EEBlocks.STRIPPED_POISE_STEM.get(), 5, 5);
+		DataUtils.registerFlammable(EEBlocks.STRIPPED_POISE_WOOD.get(), 5, 5);
 		DataUtils.registerFlammable(EEBlocks.POISE_PLANKS.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_SLAB.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_STAIRS.get(), 5, 20);
@@ -18,6 +18,7 @@ public final class EEFlammables {
 		DataUtils.registerFlammable(EEBlocks.POISE_VERTICAL_PLANKS.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_VERTICAL_SLAB.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_BOOKSHELF.get(), 30, 20);
+		DataUtils.registerFlammable(EEBlocks.POISE_BEEHIVE.get(), 5, 20);
 	}
 	
 }

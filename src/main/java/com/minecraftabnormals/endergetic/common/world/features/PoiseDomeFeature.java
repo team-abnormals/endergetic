@@ -1328,7 +1328,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private boolean isProperBlock(IWorld world, BlockPos pos) {
-		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS.get() || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS_EUMUS.get();
+		return world.getBlockState(pos).getBlock() == Blocks.END_STONE || world.getBlockState(pos).getBlock() == EEBlocks.POISMOSS.get() || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(pos).getBlock() == EEBlocks.EUMUS_POISMOSS.get();
 	}
 	
 	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
@@ -1346,21 +1346,21 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 	
 	private void setPoiseLogHighProb(IWorld world, BlockPos pos, Random rand) {
-		BlockState logState = rand.nextFloat() <= 0.35F ? EEBlocks.POISE_LOG.get().getDefaultState() : EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
+		BlockState logState = rand.nextFloat() <= 0.35F ? EEBlocks.POISE_STEM.get().getDefaultState() : EEBlocks.GLOWING_POISE_STEM.get().getDefaultState();
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}
 	}
 	
 	private void setPoiseLog(IWorld world, BlockPos pos, Random rand) {
-		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.get().getDefaultState() : EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
+		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_STEM.get().getDefaultState() : EEBlocks.GLOWING_POISE_STEM.get().getDefaultState();
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}
 	}
 	
 	private void setPoiseLogUnsafe(IWorld world, BlockPos pos, Random rand) {
-		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_LOG.get().getDefaultState() : EEBlocks.POISE_LOG_GLOWING.get().getDefaultState();
+		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_STEM.get().getDefaultState() : EEBlocks.GLOWING_POISE_STEM.get().getDefaultState();
 		world.setBlockState(pos, logState, 2);
 	}
 	

@@ -24,7 +24,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().getDefaultState();
 	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(AcidianLanternBlock.FACING, Direction.UP);
 	private static final BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
-		return active ? EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
+		return active ? EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
 	}
 	private final boolean activePortal;
 

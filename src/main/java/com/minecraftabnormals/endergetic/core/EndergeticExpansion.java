@@ -101,9 +101,8 @@ public class EndergeticExpansion {
 	void setupCommon(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 			EEDispenserBehaviors.registerAll();
-			EEFlammables.registerFlammables();
 			EEBiomes.applyBiomeInfo();
-			EEBlockRegistrars.registerFireInfo();
+			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 			EEWorldGenHandler.overrideFeatures();
 			EEEntityAttributes.putAttributes();
@@ -112,7 +111,7 @@ public class EndergeticExpansion {
 	
 	@OnlyIn(Dist.CLIENT)
 	void setupClient(final FMLClientSetupEvent event) {
-		EEBlockRegistrars.setupRenderLayers();
+		EERenderLayers.setupRenderLayers();
 		
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.FRISBLOOM_STEM.get(), FrisbloomStemTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);

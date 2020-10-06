@@ -21,7 +21,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
  * @author - SmellyModder(Luke Tonon)
  */
 public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
-	private static final Supplier<BlockState> POISE_BUSH_TALL = () -> EEBlocks.POISE_BUSH_TALL.get().getDefaultState();
+	private static final Supplier<BlockState> TALL_POISE_BUSH = () -> EEBlocks.TALL_POISE_BUSH.get().getDefaultState();
 	
 	public TallPoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
@@ -32,8 +32,8 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 
 		for (int i = 0; i < 64; ++i) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-			if (!isTouchingBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && POISE_BUSH_TALL.get().isValidPosition(world, blockpos)) {
-				((PoiseTallBushBlock) POISE_BUSH_TALL.get().getBlock()).placeAt(world, blockpos, 2);
+			if (!isTouchingBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && TALL_POISE_BUSH.get().isValidPosition(world, blockpos)) {
+				((PoiseTallBushBlock) TALL_POISE_BUSH.get().getBlock()).placeAt(world, blockpos, 2);
 				flag = true;
 			}
 		}

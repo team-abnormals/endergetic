@@ -248,7 +248,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 		
 		for(Direction directions : Direction.Plane.HORIZONTAL) {
 			BlockPos side = up.offset(directions, 3);
-			if(world.getBlockState(side).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() || world.getBlockState(side).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE_ACTIVE.get()) {
+			if(world.getBlockState(side).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() || world.getBlockState(side).getBlock() == EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get()) {
 				if(world.getBlockState(side.offset(directions.rotateY())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get() && world.getBlockState(side.offset(directions.rotateYCCW())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get()) {
 					if(world.getBlockState(up).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
 						if(world.getBlockState(up.north(2).east(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.north(2).west(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.south(2).east(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.south(2).west(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {

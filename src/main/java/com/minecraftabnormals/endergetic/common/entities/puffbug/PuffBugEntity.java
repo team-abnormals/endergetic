@@ -1060,7 +1060,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	
 	@Override
 	public boolean isBreedingItem(ItemStack stack) {
-		return stack.getItem() == EEBlocks.POISE_BUSH_TALL.get().asItem();
+		return stack.getItem() == EEBlocks.TALL_POISE_BUSH.get().asItem();
 	}
 	
 	@Override

@@ -1,0 +1,6 @@
+{
+  "parent": "block/flower_pot_cross",
+  "textures": {
+    "plant": "endergetic:block/tall_poise_bush_pot"
+  }
+}

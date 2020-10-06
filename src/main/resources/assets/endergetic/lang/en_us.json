@@ -53,6 +53,10 @@
 	"block.endergetic.poise_ladder": "Poise Ladder",
 	"block.endergetic.poise_sign": "Poise Sign",
 	"block.endergetic.poise_wall_sign": "Poise Wall Sign",
+	"block.endergetic.poise_chest": "Poise Chest",
+  "block.endergetic.poise_trapped_chest": "Poise Trapped Chest",
+  "block.endergetic.poise_beehive": "Poise Beehive",
+  "block.endergetic.bolloom_fruit_crate": "Bolloom Fruit Crate",
 	"block.endergetic.bolloom_bud": "Bolloom Bud",
 	"block.endergetic.puffbug_hive": "Puff Bug Hive",
 	"block.endergetic.hive_hanger": "Hive Hanger",
@@ -65,6 +69,7 @@
 	"block.endergetic.eumus_brick_stairs": "Eumus Brick Stairs",
 	"block.endergetic.eumus_brick_wall": "Eumus Brick Wall",
 	"block.endergetic.potted_poise_bush": "Potted Poise Bush",
+	"block.endergetic.potted_tall_poise_bush": "Potted Tall Poise Bush",
 
 	"block.endergetic.mystical_obsidian": "Mystical Obsidian",
 	"block.endergetic.mystical_obsidian_wall": "Mystical Obsidian Wall",

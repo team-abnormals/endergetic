@@ -1,0 +1,10 @@
+{
+  "parent": "block/orientable_with_bottom",
+  "textures": {
+    "particle": "endergetic:block/poise_beehive_side",
+    "bottom": "endergetic:block/poise_beehive_end",
+    "top": "endergetic:block/poise_beehive_end",
+    "front": "endergetic:block/poise_beehive_front_honey",
+    "side": "endergetic:block/poise_beehive_side"
+  }
+}
