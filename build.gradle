@@ -10,9 +10,7 @@ buildscript {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
-plugins {
-    id "com.wynprice.cursemaven" version "2.1.1"
-}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
@@ -38,8 +36,8 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             arg "-mixin.config=endergetic.mixins.json"
-            jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -51,8 +49,8 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             arg "-mixin.config=endergetic.mixins.json"
-            jvmArg "-Dmixin.env.disableRefMap=true"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -74,9 +72,15 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.1-32.0.72'
-    implementation fg.deobf("curse.maven:abnormals-core:3063658")
+    implementation fg.deobf("curse.maven:abnormals-core:3072976")
 }
 
 jar {
