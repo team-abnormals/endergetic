@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "top": "endergetic:block/bolloom_crate_top",
+    "bottom": "endergetic:block/bolloom_crate_bottom",
+    "side": "endergetic:block/bolloom_crate_side"
+  }
+}

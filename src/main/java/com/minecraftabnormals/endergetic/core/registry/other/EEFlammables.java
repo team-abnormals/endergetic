@@ -19,6 +19,7 @@ public final class EEFlammables {
 		DataUtils.registerFlammable(EEBlocks.POISE_VERTICAL_SLAB.get(), 5, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_BOOKSHELF.get(), 30, 20);
 		DataUtils.registerFlammable(EEBlocks.POISE_BEEHIVE.get(), 5, 20);
+		DataUtils.registerFlammable(EEBlocks.BOLLOOM_CRATE.get(), 5, 20);
 	}
 	
 }

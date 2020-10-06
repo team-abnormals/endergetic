@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "endergetic:block/tall_poise_bush_bottom"
+        "layer0": "endergetic:block/tall_poise_bush_top"
     }
 }

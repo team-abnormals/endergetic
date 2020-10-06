@@ -44,7 +44,7 @@ public final class EEProperties {
 	public static final Block.Properties EUMUS_BRICKS      = Block.Properties.create(Material.ROCK, EEMaterialColors.EUMUS).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).hardnessAndResistance(2, 30);
 	public static final Block.Properties MYSTICAL_OBSIDIAN = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(-1.0F, 3600000.0F).noDrops();
 	public static final Block.Properties ACIDIAN_LANTERN   = Block.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).setLightLevel(state -> 15).harvestLevel(2).harvestTool(ToolType.PICKAXE);
-	
+	public static final Block.Properties BOLLOOM_CRATE     = Block.Properties.create(Material.WOOD, MaterialColor.YELLOW_TERRACOTTA).hardnessAndResistance(1.5F).sound(SoundType.WOOD);
 	public static Block.Properties PUFFBUG_HIVE(boolean hanger) {
 		return !hanger ? Block.Properties.create(Material.ORGANIC, MaterialColor.WOOL).notSolid().doesNotBlockMovement() : Block.Properties.create(Material.WOOD, MaterialColor.WOOL).hardnessAndResistance(2.5F);
 	}

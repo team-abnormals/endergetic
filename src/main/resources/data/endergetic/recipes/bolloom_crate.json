@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "endergetic:bolloom_fruit"
+    }
+  },
+  "result": {
+    "item": "endergetic:bolloom_crate",
+    "count": 1
+  },
+  "conditions": [
+    {
+      "type": "abnormals_core:quark_flag",
+       "flag": "apple_crate"
+    }
+  ]
+}

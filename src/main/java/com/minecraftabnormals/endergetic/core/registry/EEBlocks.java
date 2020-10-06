@@ -108,7 +108,8 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE      = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK            = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> BOOF_BLOCK_DISPENSED  = HELPER.createBlockNoItem("dispensed_boof_block", () -> new DispensedBoofBlock(EEProperties.BOOF_BLOCK.doesNotBlockMovement().notSolid().hardnessAndResistance(-1, 3600000.0F)));
-	
+	public static final RegistryObject<Block> BOLLOOM_CRATE			= HELPER.createCompatBlock("quark", "bolloom_crate", () -> new Block(EEProperties.BOLLOOM_CRATE), ItemGroup.DECORATIONS);
+
 	/*
 	 * Vibra Jungle(Unused)
 	 */
