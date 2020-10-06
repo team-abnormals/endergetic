@@ -45,7 +45,7 @@ public final class EEDataProcessors {
 
 	};
 
-	public static final TrackedData<Map<UUID, BalloonOrder>> ORDER_DATA = TrackedData.Builder.create(ORDER_PROCESSOR).setDefaultValue(Maps.newHashMap()).build();
+	public static final TrackedData<Map<UUID, BalloonOrder>> ORDER_DATA = TrackedData.Builder.create(ORDER_PROCESSOR, () -> Maps.newHashMap()).build();
 
 	public static void registerTrackedData() {
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(EndergeticExpansion.MOD_ID, "ballooon_order"), ORDER_DATA);
