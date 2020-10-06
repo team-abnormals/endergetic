@@ -13,7 +13,7 @@ public final class EEDataSerializers {
 		@Override
 		public void write(PacketBuffer buf, Optional<Vector3d> value) {
 			buf.writeBoolean(value.isPresent());
-			
+
 			if (value.isPresent()) {
 				Vector3d vec3d = value.get();
 				buf.writeDouble(vec3d.getX());
@@ -49,7 +49,7 @@ public final class EEDataSerializers {
 			return value;
 		}
 	};
-	
+
 	public static void registerSerializers() {
 		DataSerializers.registerSerializer(OPTIONAL_VEC3D);
 		DataSerializers.registerSerializer(BALLOON_COLOR);

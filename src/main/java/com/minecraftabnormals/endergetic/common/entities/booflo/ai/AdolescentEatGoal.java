@@ -22,29 +22,29 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 		}
 		return this.entity.getRNG().nextInt(40) == 0 && this.entity.hasFruit() && this.isSafePos();
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		if (this.entity.isPlayerNear()) {
 			return false;
 		}
-		
+
 		if (this.entity.isDescenting()) {
 			return this.isSafePos() && this.entity.hasFruit();
 		} else if (this.entity.isEating()) {
 			return this.entity.isOnGround() && this.entity.hasFruit() && this.eatingTicks < 61;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.entity.setDescenting(true);
 		this.entity.setAIMoveSpeed(0.0F);
 		this.entity.getNavigator().clearPath();
 	}
-	
+
 	@Override
 	public void resetTask() {
 		if (this.entity.isDescenting()) {
@@ -59,12 +59,12 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 
 		this.eatingTicks = 0;
 	}
-	
+
 	@Override
 	public void tick() {
 		this.entity.setAIMoveSpeed(0.0F);
 		this.entity.getNavigator().clearPath();
-		
+
 		if (this.entity.isDescenting()) {
 			if (this.entity.isOnGround()) {
 				this.entity.setEating(true);
@@ -72,14 +72,14 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 			}
 		} else if (this.entity.isEating()) {
 			this.eatingTicks++;
-			
+
 			if (this.eatingTicks % 10 == 0) {
 				this.playEndimation();
 				if (this.eatingTicks < 60) {
 					this.playEndimation();
 				}
 			}
-			
+
 			if (this.eatingTicks == 60) {
 				this.entity.resetEndimation();
 				this.entity.setHungry(false);

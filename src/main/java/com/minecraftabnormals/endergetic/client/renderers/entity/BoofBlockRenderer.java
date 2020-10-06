@@ -10,12 +10,12 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class BoofBlockRenderer extends LivingRenderer<BoofBlockEntity, BoofBlockModel<BoofBlockEntity>>{
+public class BoofBlockRenderer extends LivingRenderer<BoofBlockEntity, BoofBlockModel<BoofBlockEntity>> {
 
 	public BoofBlockRenderer(EntityRendererManager renderManager) {
-        super(renderManager, new BoofBlockModel<>(), 0.0F);
-    }
-	
+		super(renderManager, new BoofBlockModel<>(), 0.0F);
+	}
+
 	@Override
 	public void render(BoofBlockEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		entity.prevRenderYawOffset = 0;
@@ -32,5 +32,5 @@ public class BoofBlockRenderer extends LivingRenderer<BoofBlockEntity, BoofBlock
 	protected boolean canRenderName(BoofBlockEntity entity) {
 		return false;
 	}
-	
+
 }

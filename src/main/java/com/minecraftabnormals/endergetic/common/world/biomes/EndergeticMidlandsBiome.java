@@ -26,7 +26,7 @@ public class EndergeticMidlandsBiome extends EndergeticBiome {
 		this.func_235063_a_(DefaultBiomeFeatures.END_CITY);
 		this.addSpawn(EntityClassification.MONSTER, new Biome.SpawnListEntry(EntityType.ENDERMAN, 10, 4, 4));
 	}
-	
+
 	@Override
 	public void addSpawnsAndFeatures() {
 		this.addFeature(Decoration.SURFACE_STRUCTURES, EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Placement.TOP_SOLID_HEIGHTMAP_NOISE_BIASED.configure(new TopSolidWithNoiseConfig(2, 5.0D, 0.0D, Heightmap.Type.WORLD_SURFACE_WG))));

@@ -60,7 +60,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public final class EntityEvents {
 	private static final AttributeModifier SLOW_BALLOON = new AttributeModifier(UUID.fromString("eb2242e0-d3be-11ea-87d0-0242ac130003"), "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION);
 	private static final AttributeModifier SUPER_SLOW_BALLOON = new AttributeModifier(UUID.fromString("b5c9b111-62b3-40da-b396-f90a138583ad"), "Super slow falling acceleration reduction", -0.075, AttributeModifier.Operation.ADDITION);
-	
+
 	public static final Map<Supplier<Block>, Supplier<Block>> PETRIFICATION_MAP = Util.make(Maps.newHashMap(), (petrifications) -> {
 		petrifications.put(EEBlocks.CORROCK_END, EEBlocks.PETRIFIED_CORROCK_END);
 		petrifications.put(EEBlocks.CORROCK_NETHER, EEBlocks.PETRIFIED_CORROCK_NETHER);
@@ -75,32 +75,32 @@ public final class EntityEvents {
 		petrifications.put(EEBlocks.CORROCK_CROWN_NETHER_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL::get);
 		petrifications.put(EEBlocks.CORROCK_CROWN_OVERWORLD_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL::get);
 	});
-	
+
 	@SubscribeEvent
 	public static void onThrowableImpact(final ProjectileImpactEvent.Throwable event) {
 		ThrowableEntity projectileEntity = event.getThrowable();
 
-		if(projectileEntity instanceof PotionEntity) {
+		if (projectileEntity instanceof PotionEntity) {
 			PotionEntity potionEntity = ((PotionEntity) projectileEntity);
 			ItemStack itemstack = potionEntity.getItem();
 			Potion potion = PotionUtils.getPotionFromItem(itemstack);
 			List<EffectInstance> list = PotionUtils.getEffectsFromStack(itemstack);
 
-			if(potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
+			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
 				World world = potionEntity.world;
 				BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) event.getRayTraceResult();
 				Direction direction = blockraytraceresult.getFace();
 				BlockPos blockpos = blockraytraceresult.getPos().offset(Direction.DOWN).offset(direction);
-            	
+
 				tryToConvertCorrockBlock(world, blockpos);
 				tryToConvertCorrockBlock(world, blockpos.offset(direction.getOpposite()));
-				for(Direction horizontals : Direction.Plane.HORIZONTAL) {
+				for (Direction horizontals : Direction.Plane.HORIZONTAL) {
 					tryToConvertCorrockBlock(world, blockpos.offset(horizontals));
 				}
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onLivingTick(LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
@@ -116,13 +116,13 @@ public final class EntityEvents {
 			} else if (gravity.hasModifier(SLOW_BALLOON)) {
 				gravity.removeModifier(SLOW_BALLOON);
 			}
-				
+
 			if (isFalling && balloonCount == 3) {
 				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
 			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
 				gravity.removeModifier(SUPER_SLOW_BALLOON);
 			}
-				
+
 			if (balloonCount > 3) {
 				entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
 				if (entity instanceof ServerPlayerEntity) {
@@ -154,7 +154,7 @@ public final class EntityEvents {
 			holder.detachBalloons();
 		}
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
@@ -171,7 +171,7 @@ public final class EntityEvents {
 			}
 		}
 	}
-	
+
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
@@ -179,7 +179,7 @@ public final class EntityEvents {
 			world.setBlockState(pos, convertCorrockBlock(state));
 		}
 	}
-	
+
 	public static BlockState convertCorrockBlock(BlockState state) {
 		Block block = state.getBlock();
 		for (Map.Entry<Supplier<Block>, Supplier<Block>> entries : PETRIFICATION_MAP.entrySet()) {
@@ -187,13 +187,13 @@ public final class EntityEvents {
 			if (entries.getKey().get() == block) {
 				if (block instanceof CorrockPlantBlock) {
 					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
-				} else if(block instanceof CorrockBlock) {
+				} else if (block instanceof CorrockBlock) {
 					return petrifiedBlock.getDefaultState();
-				} else if(block instanceof CorrockCrownStandingBlock) {
+				} else if (block instanceof CorrockCrownStandingBlock) {
 					return petrifiedBlock.getDefaultState()
-						.with(CorrockCrownStandingBlock.ROTATION, state.get(CorrockCrownStandingBlock.ROTATION))
-						.with(CorrockCrownStandingBlock.UPSIDE_DOWN, state.get(CorrockCrownStandingBlock.UPSIDE_DOWN))
-						.with(CorrockCrownStandingBlock.WATERLOGGED, state.get(CorrockCrownStandingBlock.WATERLOGGED));
+							.with(CorrockCrownStandingBlock.ROTATION, state.get(CorrockCrownStandingBlock.ROTATION))
+							.with(CorrockCrownStandingBlock.UPSIDE_DOWN, state.get(CorrockCrownStandingBlock.UPSIDE_DOWN))
+							.with(CorrockCrownStandingBlock.WATERLOGGED, state.get(CorrockCrownStandingBlock.WATERLOGGED));
 				}
 				return petrifiedBlock.getDefaultState().with(CorrockCrownWallBlock.WATERLOGGED, state.get(CorrockCrownWallBlock.WATERLOGGED)).with(CorrockCrownWallBlock.FACING, state.get(CorrockCrownWallBlock.FACING));
 			}

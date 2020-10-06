@@ -23,12 +23,12 @@ public class PoismossBlock extends Block implements IGrowable {
 	public PoismossBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.PICKAXE;
 	}
-	
+
 	@Override
 	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
 		if (!worldIn.isRemote) {
@@ -38,19 +38,19 @@ public class PoismossBlock extends Block implements IGrowable {
 			}
 		}
 	}
-	
+
 	private static boolean func_220257_b(BlockState p_220257_0_, IWorldReader p_220257_1_, BlockPos p_220257_2_) {
 		BlockPos blockpos = p_220257_2_.up();
 		BlockState blockstate = p_220257_1_.getBlockState(blockpos);
 		int i = LightEngine.func_215613_a(p_220257_1_, p_220257_0_, p_220257_2_, blockstate, blockpos, Direction.UP, blockstate.getOpacity(p_220257_1_, blockpos));
 		return i < p_220257_1_.getMaxLightLevel();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return worldIn.getBlockState(pos.up()).isAir();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
@@ -65,7 +65,7 @@ public class PoismossBlock extends Block implements IGrowable {
 				if (j >= i / 16) {
 					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
-						((IGrowable)blockstate.getBlock()).grow(worldIn, rand, blockpos1, blockstate2);
+						((IGrowable) blockstate.getBlock()).grow(worldIn, rand, blockpos1, blockstate2);
 					}
 
 					if (!blockstate2.isAir()) {
@@ -94,12 +94,12 @@ public class PoismossBlock extends Block implements IGrowable {
 	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
 		return true;
 	}
-	
+
 	@Override
 	public int getHarvestLevel(BlockState state) {
 		return 2;
 	}
-	
+
 	@Override
 	public SoundType getSoundType(BlockState p_220072_1_) {
 		return SoundType.STONE;

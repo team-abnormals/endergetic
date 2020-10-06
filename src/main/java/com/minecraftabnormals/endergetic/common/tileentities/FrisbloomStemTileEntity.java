@@ -9,5 +9,5 @@ public class FrisbloomStemTileEntity extends TileEntity {
 	public FrisbloomStemTileEntity() {
 		super(EETileEntities.FRISBLOOM_STEM.get());
 	}
-	
+
 }

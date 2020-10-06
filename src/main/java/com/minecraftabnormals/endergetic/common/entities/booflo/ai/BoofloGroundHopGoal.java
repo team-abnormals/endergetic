@@ -25,17 +25,17 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.entity.isOnGround() && !this.entity.isBoofed() && this.entity.hopDelay == 0 && this.entity.isNoEndimationPlaying() && !this.entity.isPassenger() && this.entity.getPassengers().isEmpty();
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.ticksPassed <= 10;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.playEndimation();
 	}
-	
+
 	@Override
 	public void resetTask() {
 		this.ticksPassed = 0;
@@ -44,7 +44,7 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 	@Override
 	public void tick() {
 		this.ticksPassed++;
-		
+
 		if (this.entity.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.entity.getMoveHelper()).setSpeed(1.25D);
 		}

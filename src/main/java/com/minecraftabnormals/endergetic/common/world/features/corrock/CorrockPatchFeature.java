@@ -17,19 +17,19 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class CorrockPatchFeature extends Feature<NoFeatureConfig> {
 	private static final Supplier<BlockState> CORROCK = () -> EEBlocks.CORROCK_END.get().getDefaultState();
-	
+
 	public CorrockPatchFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		for(BlockState blockstate = world.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = world.getBlockState(pos)) {
+		for (BlockState blockstate = world.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = world.getBlockState(pos)) {
 			pos = pos.down();
 		}
 		if (world.getBlockState(pos).getBlock() != EEBlocks.CORROCK_END_BLOCK.get()) return false;
 		int i = 0;
-		
+
 		for (int j = 0; j < 128; ++j) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(6) - rand.nextInt(6), rand.nextInt(8) - rand.nextInt(8));
 			if (world.isAirBlock(blockpos) && CORROCK.get().isValidPosition(world, blockpos)) {

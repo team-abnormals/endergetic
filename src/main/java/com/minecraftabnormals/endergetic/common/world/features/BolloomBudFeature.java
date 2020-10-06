@@ -52,15 +52,15 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 		}
 		return false;
 	}
-	
+
 	private boolean isValidPos(IWorld world, BlockPos pos) {
 		Block block = world.getBlockState(pos.down()).getBlock();
 		return world.isAirBlock(pos) && world.isAirBlock(pos.up()) && block == EEBlocks.POISMOSS.get() || block == EEBlocks.EUMUS_POISMOSS.get() || block == EEBlocks.EUMUS.get();
 	}
-	
+
 	private int calculateFruitMaxHeight(IWorld world, BlockPos pos) {
 		int[] maxHeights = new int[4];
-		
+
 		for (BudSide sides : BudSide.values()) {
 			for (int y = 1; y < 7; y++) {
 				if (world.isAirBlock(sides.offsetPosition(pos.up(y)))) {
@@ -71,10 +71,10 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 				}
 			}
 		}
-		
+
 		return MathUtils.getLowestValueInIntArray(maxHeights);
 	}
-	
+
 	private boolean canFitCross(IWorld world, BlockPos pos) {
 		for (BudSide sides : BudSide.values()) {
 			if (!world.isAirBlock(sides.offsetPosition(pos))) {

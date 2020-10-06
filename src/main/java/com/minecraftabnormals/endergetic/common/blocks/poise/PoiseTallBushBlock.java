@@ -53,21 +53,21 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(STAGE, 0).with(HALF, DoubleBlockHalf.LOWER));
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World world, BlockPos pos, Random rand) {
 		if (stateIn.get(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
-		
+
 		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		
+
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
 		double z = pos.getZ() + 0.5D + offsetZ;
-		
+
 		world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
-		
+
 		if (rand.nextInt(8) == 0) {
 			float rngFloat = rand.nextFloat();
 			SoundEvent soundToPlay = rngFloat > 0.9F ? EESounds.POISE_BUSH_AMBIENT_LONG.get() : EESounds.POISE_BUSH_AMBIENT.get();
@@ -75,26 +75,26 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 			world.playSound(pos.getX(), pos.getY(), pos.getZ(), soundToPlay, SoundCategory.BLOCKS, volume, 0.9F + rand.nextFloat() * 0.15F, false);
 		}
 	}
-	
+
 	@Override
 	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
 		return 60;
 	}
-	
+
 	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
 		return SHAPE;
 	}
-	
+
 	@Override
 	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
 		return state.get(STAGE) > 0 ? false : true;
 	}
-	
+
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
 		return block.isIn(EETags.Blocks.POISE_PLANTABLE) || block.isIn(EETags.Blocks.END_PLANTABLE);
 	}
-	   
+
 	@SuppressWarnings("deprecation")
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		DoubleBlockHalf doubleblockhalf = stateIn.get(HALF);
@@ -120,7 +120,8 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 			return this.isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos);
 		} else {
 			BlockState blockstate = worldIn.getBlockState(pos.down());
-			if (state.getBlock() != this) this.isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
+			if (state.getBlock() != this)
+				this.isValidGround(worldIn.getBlockState(pos.down()), worldIn, pos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
 			return blockstate.getBlock() == this && blockstate.get(HALF) == DoubleBlockHalf.LOWER;
 		}
 	}
@@ -182,7 +183,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
 		this.grow(worldIn, pos, state, rand);
 	}
-	
+
 	public void grow(ServerWorld worldIn, BlockPos pos, BlockState state, Random rand) {
 		if (state.get(STAGE) == 0) {
 			worldIn.setBlockState(pos, state.func_235896_a_(STAGE), 4);
@@ -193,7 +194,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 			tree.spawn(worldIn, worldIn.getChunkProvider().getChunkGenerator(), treePos, state, rand);
 		}
 	}
-	
+
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		if (ItemStackUtils.isInGroup(this.asItem(), group)) {

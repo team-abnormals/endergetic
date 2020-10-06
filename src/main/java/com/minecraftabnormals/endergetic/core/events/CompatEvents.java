@@ -18,20 +18,20 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public final class CompatEvents {
-    @SubscribeEvent
-    public static void onPotionExpire(PotionEvent.PotionExpiryEvent event) {
-        LivingEntity affected = event.getEntityLiving();
-        boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
-        if (isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
-            if (!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity)affected).growUp();
-            if (affected instanceof BoofloAdolescentEntity) {
-                if (isBabyEffect) {
-                    ((BoofloAdolescentEntity) affected).growDown();
-                } else {
-                    ((BoofloAdolescentEntity) affected).growUp();
-                }
-            }
-            if (isBabyEffect && affected instanceof BoofloEntity) ((BoofloEntity) affected).growDown();
-        }
-    }
+	@SubscribeEvent
+	public static void onPotionExpire(PotionEvent.PotionExpiryEvent event) {
+		LivingEntity affected = event.getEntityLiving();
+		boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
+		if (isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
+			if (!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity) affected).growUp();
+			if (affected instanceof BoofloAdolescentEntity) {
+				if (isBabyEffect) {
+					((BoofloAdolescentEntity) affected).growDown();
+				} else {
+					((BoofloAdolescentEntity) affected).growUp();
+				}
+			}
+			if (isBabyEffect && affected instanceof BoofloEntity) ((BoofloEntity) affected).growDown();
+		}
+	}
 }

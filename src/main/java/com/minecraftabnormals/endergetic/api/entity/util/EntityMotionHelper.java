@@ -12,7 +12,7 @@ public class EntityMotionHelper {
 			setOrAddVelocity(entity, MathHelper.sin((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, yForce, -MathHelper.cos((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, setVelocity);
 		}
 	}
-	
+
 	private static void setOrAddVelocity(Entity entity, float x, float y, float z, boolean set) {
 		if (set) {
 			entity.setVelocity(x, y, z);
@@ -20,5 +20,5 @@ public class EntityMotionHelper {
 			entity.addVelocity(x, y, z);
 		}
 	}
-	
+
 }

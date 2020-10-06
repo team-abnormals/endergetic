@@ -46,15 +46,15 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	private Entity attachedEntity;
 	@Nullable
 	private UUID attachedEntityUUID;
-	
+
 	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
 		super(entityType, world);
 	}
-	
+
 	public BolloomBalloonEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 	}
-	
+
 	/*
 	 * Used for Adding onto a fence
 	 */
@@ -71,7 +71,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		this.setFencePos(pos);
 		this.setKnotId(ownerKnot);
 	}
-	
+
 	/*
 	 * Used for Dispensers
 	 */
@@ -105,7 +105,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		}
 		super.tick();
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -127,7 +127,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 			compound.putUniqueId("AttachedUUID", this.attachedEntity.getUniqueID());
 		}
 	}
-	
+
 	@Override
 	protected void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
@@ -284,7 +284,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		}
 		super.onKillCommand();
 	}
-	
+
 	@Override
 	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d vec, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
@@ -302,17 +302,17 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	public double getMountedYOffset() {
 		return 1.75F;
 	}
-	
+
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(this.getColor().balloonItem.get());
 	}
-    
-    @Override
-    public boolean isInRangeToRenderDist(double distance) {
-    	if (this.isAttachedToEntity()) {
-    		return this.attachedEntity.isInRangeToRenderDist(distance);
-    	}
-    	return super.isInRangeToRenderDist(distance);
-    }
+
+	@Override
+	public boolean isInRangeToRenderDist(double distance) {
+		if (this.isAttachedToEntity()) {
+			return this.attachedEntity.isInRangeToRenderDist(distance);
+		}
+		return super.isInRangeToRenderDist(distance);
+	}
 }

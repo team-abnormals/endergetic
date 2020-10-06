@@ -13,7 +13,7 @@ import net.minecraft.util.math.vector.Vector3d;
 
 public class PuffBugTeleportToRestGoal extends Goal {
 	private PuffBugEntity puffbug;
-	
+
 	public PuffBugTeleportToRestGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
@@ -36,18 +36,18 @@ public class PuffBugTeleportToRestGoal extends Goal {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.puffbug.getTeleportController().processTeleportation();
 		this.puffbug.setMotion(Vector3d.ZERO);
 	}
-	
+
 	@Override
 	public void tick() {
 		this.puffbug.setMotion(Vector3d.ZERO);
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);

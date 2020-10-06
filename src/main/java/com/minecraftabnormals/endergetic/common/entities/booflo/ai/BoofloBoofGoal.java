@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 	private final World world;
-	
+
 	public BoofloBoofGoal(BoofloEntity booflo) {
 		super(booflo);
 		this.world = booflo.world;
@@ -26,11 +26,11 @@ public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 	public boolean shouldExecute() {
 		boolean onGround = this.entity.isOnGround();
 		boolean flagChance = !this.entity.hasAggressiveAttackTarget() ? this.entity.getRNG().nextFloat() < 0.25F && this.isEndimationAtTick(20) : this.isEndimationPastOrAtTick(20);
-		
+
 		if (this.entity.hasAggressiveAttackTarget() && !this.entity.isBoofed()) {
 			return this.entity.isNoEndimationPlaying();
 		}
-		
+
 		if (!onGround) {
 			if (this.shouldJumpForFall() && !this.entity.isBoofed() && this.entity.getRideControlDelay() <= 0) {
 				if (this.entity.isBeingRidden()) {
@@ -42,18 +42,18 @@ public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return (this.entity.hasCaughtPuffBug() || this.entity.getPassengers().isEmpty()) && !onGround && !this.entity.isTempted() && flagChance && this.entity.isEndimationPlaying(BoofloEntity.HOP);
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return this.isEndimationPlaying();
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.entity.setBoofed(true);
 		this.playEndimation();
 	}
-	
+
 	private boolean shouldJumpForFall() {
 		BlockPos pos = this.entity.getPosition();
 		for (int i = 0; i < 12; i++) {

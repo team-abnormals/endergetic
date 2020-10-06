@@ -13,14 +13,14 @@ import net.minecraftforge.registries.ObjectHolder;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EERegistryReplacements {
-	
+
 	@ObjectHolder("minecraft:end_crystal")
 	public static Item END_CRYSTAL;
-	
+
 	@SubscribeEvent
 	public static void registerItemReplacements(RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(
-			new EndergeticEnderCrystalItem(RegistryHelper.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
+				new EndergeticEnderCrystalItem(RegistryHelper.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
 		);
 	}
 

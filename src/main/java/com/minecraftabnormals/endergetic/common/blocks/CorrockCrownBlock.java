@@ -20,17 +20,17 @@ import net.minecraft.world.IWorld;
 public abstract class CorrockCrownBlock extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
 	public final boolean petrified;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	
+
 	protected CorrockCrownBlock(Properties builder, boolean petrified) {
 		super(builder);
 		this.petrified = petrified;
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		return new CorrockCrownTileEntity();
 	}
-	
+
 	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state) {
 		if (state.get(WATERLOGGED)) {
 			worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(false)), 3);
@@ -53,14 +53,14 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 		if (!state.get(WATERLOGGED) && fluidStateIn.getFluid() == Fluids.WATER) {
 			if (!worldIn.isRemote()) {
 				worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(true)), 3);
-	            worldIn.getPendingFluidTicks().scheduleTick(pos, fluidStateIn.getFluid(), fluidStateIn.getFluid().getTickRate(worldIn));
+				worldIn.getPendingFluidTicks().scheduleTick(pos, fluidStateIn.getFluid(), fluidStateIn.getFluid().getTickRate(worldIn));
 			}
-	        return true;
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;

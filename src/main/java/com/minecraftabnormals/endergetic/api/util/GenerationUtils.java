@@ -12,20 +12,21 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.IWorldGenerationBaseReader;
 
 public final class GenerationUtils {
-	
+
 	@SuppressWarnings("deprecation")
 	public static boolean isAir(IWorldGenerationBaseReader worldIn, BlockPos pos) {
-		if (!(worldIn instanceof net.minecraft.world.IBlockReader)) return worldIn.hasBlockState(pos, BlockState::isAir);
-		else return worldIn.hasBlockState(pos, state -> state.isAir((net.minecraft.world.IBlockReader)worldIn, pos));
+		if (!(worldIn instanceof net.minecraft.world.IBlockReader))
+			return worldIn.hasBlockState(pos, BlockState::isAir);
+		else return worldIn.hasBlockState(pos, state -> state.isAir((net.minecraft.world.IBlockReader) worldIn, pos));
 	}
-	
+
 	public static <B extends BlockState> boolean isProperBlock(B blockState, Block[] validBlocks, boolean orSolid) {
 		if (!Arrays.asList(validBlocks).contains(blockState.getBlock()) && orSolid) {
 			return blockState.isSolid();
 		}
-    	return Arrays.asList(validBlocks).contains(blockState.getBlock());
-    }
-	
+		return Arrays.asList(validBlocks).contains(blockState.getBlock());
+	}
+
 	public static void fillAreaWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -39,10 +40,10 @@ public final class GenerationUtils {
 			}
 		}
 	}
-	
+
 	public static void fillAreaWithBlockCubeEdged(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		for(int yy = y1; yy <= y2; yy++) {
+		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
 					mutable.setPos(xx, yy, zz);
@@ -53,7 +54,7 @@ public final class GenerationUtils {
 			}
 		}
 	}
-	
+
 	public static void forceFillAreaWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -64,11 +65,11 @@ public final class GenerationUtils {
 			}
 		}
 	}
-	
+
 	public static void forceFillAreaReversedWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
 		fillAreaWithBlockCube(world, x2, y2, z2, x1, y1, z2, block);
 	}
-	
+
 	public static void fillWithRandomTwoBlocksCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, Random rand, BlockState block, BlockState block2, float chance) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -86,7 +87,7 @@ public final class GenerationUtils {
 			}
 		}
 	}
-	
+
 	public static boolean isAreaReplacable(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -100,7 +101,7 @@ public final class GenerationUtils {
 		}
 		return true;
 	}
-	
+
 	public static boolean isAreaAir(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -114,7 +115,7 @@ public final class GenerationUtils {
 		}
 		return true;
 	}
-	
+
 	public static boolean isAreaCompletelySolid(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int yy = y1; yy <= y2; yy++) {
@@ -128,11 +129,11 @@ public final class GenerationUtils {
 		}
 		return true;
 	}
-	
+
 	public static BlockPos getClosestPositionToPos(List<BlockPos> positions, BlockPos pos) {
 		double distance = -1.0D;
 		BlockPos currentPos = null;
-		
+
 		for (BlockPos listOfPositions : positions) {
 			double newDistance = Vector3d.copy(pos).squareDistanceTo(Vector3d.copy((listOfPositions)));
 			if (distance == -1.0D || newDistance < distance) {
@@ -140,8 +141,8 @@ public final class GenerationUtils {
 				currentPos = listOfPositions;
 			}
 		}
-		
+
 		return currentPos;
 	}
-	
+
 }

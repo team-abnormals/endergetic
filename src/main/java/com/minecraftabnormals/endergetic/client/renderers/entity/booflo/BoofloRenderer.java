@@ -31,7 +31,7 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 		this.addLayer(new LayerRendererBoofloBracelets<>(this));
 		this.addLayer(new LayerRendererBoofloFruit(this));
 	}
-	
+
 	@Override
 	public void render(BoofloEntity booflo, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		this.shadowSize = booflo.isBoofed() ? 2.0F : 1.25F;

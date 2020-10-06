@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 	private World world;
-	
+
 	public BoofloSlamGoal(BoofloEntity booflo) {
 		super(booflo);
 		this.world = booflo.world;
@@ -24,7 +24,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 	public boolean shouldExecute() {
 		return this.entity.getPassengers().isEmpty() && this.entity.isEndimationPlaying(BoofloEntity.SWIM) && !this.entity.isOnGround() && (this.entity.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		if (!this.isSolidUnderTarget()) {
@@ -33,20 +33,20 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return !this.entity.isOnGround() && this.entity.hasAggressiveAttackTarget() && this.isEndimationPlaying();
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.playEndimation();
 	}
-	
+
 	@Override
 	public void tick() {
 		this.entity.getNavigator().clearPath();
 		this.entity.setAIMoveSpeed(0.0F);
-		
+
 		this.entity.rotationPitch = 0.0F;
 	}
-	
+
 	private boolean isEntityUnder() {
 		for (LivingEntity entity : this.world.getEntitiesWithinAABB(LivingEntity.class, DetectionHelper.expandDownwards(this.entity.getBoundingBox().grow(1.0F), 12.0F))) {
 			if (entity == this.entity.getBoofloAttackTarget()) {
@@ -55,7 +55,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return false;
 	}
-	
+
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
 		BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().getPosition().toMutable();

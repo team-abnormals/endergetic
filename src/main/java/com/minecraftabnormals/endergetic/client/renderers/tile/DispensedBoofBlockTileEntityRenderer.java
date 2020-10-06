@@ -27,7 +27,7 @@ public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<Dis
 	@Override
 	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
 		Direction facing = boof.hasWorld() ? boof.getBlockState().get(DispensedBoofBlock.FACING) : Direction.NORTH;
-		
+
 		matrixStack.push();
 		matrixStack.translate(0.5F, 1.5F, 0.5F);
 
@@ -40,10 +40,10 @@ public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<Dis
 		}
 
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
-		
+
 		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.getEntityCutout(TEXTURE));
 		this.model.renderAll(matrixStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-		
+
 		matrixStack.pop();
 	}
 }

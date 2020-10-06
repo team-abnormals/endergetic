@@ -21,29 +21,29 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
 
 	public BolloomBalloonModel<BolloomBalloonEntity> model;
-	
+
 	public BolloomBalloonRenderer(EntityRendererManager p_i46179_1_) {
 		super(p_i46179_1_);
 		this.model = new BolloomBalloonModel<>();
 	}
-	
+
 	@Override
 	public void render(BolloomBalloonEntity balloon, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		float[] angles = balloon.getVineAnimation(partialTicks);
 		this.model.x_string.rotateAngleX = angles[0];
 		this.model.x_string.rotateAngleY = angles[1];
-		
+
 		matrixStack.push();
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
-		
+
 		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(balloon)));
-    	this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		
-    	matrixStack.pop();
+		this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+		matrixStack.pop();
 		super.render(balloon, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
-	
+
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
 		if (!balloon.isInRangeToRender3d(camX, camY, camZ)) {
@@ -52,7 +52,7 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 		ClientPlayerEntity player = MC.player;
 		return balloon.getAttachedEntity() != player || MC.gameSettings.thirdPersonView != 0 || player.rotationPitch < -45.0F;
 	}
-	
+
 	@Override
 	public ResourceLocation getEntityTexture(BolloomBalloonEntity balloon) {
 		return balloon.getColor().texture;

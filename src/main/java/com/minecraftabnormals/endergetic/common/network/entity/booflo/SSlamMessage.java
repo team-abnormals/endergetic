@@ -12,23 +12,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * Message that tells the server to slam the booflo
+ *
  * @author - SmellyModder(Luke Tonon)
  */
 public class SSlamMessage {
 	private int entityId;
-	
+
 	public SSlamMessage(int entityId) {
-        this.entityId = entityId;
-    }
-	
+		this.entityId = entityId;
+	}
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeInt(this.entityId);
 	}
-	
+
 	public static SSlamMessage deserialize(PacketBuffer buf) {
 		return new SSlamMessage(buf.readInt());
 	}
-	
+
 	public static void handle(SSlamMessage message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {

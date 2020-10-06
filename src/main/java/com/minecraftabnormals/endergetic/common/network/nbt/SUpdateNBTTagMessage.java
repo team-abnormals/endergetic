@@ -18,10 +18,11 @@ public class SUpdateNBTTagMessage {
 	private String itemName;
 	private boolean isVest;
 
-	public SUpdateNBTTagMessage() {}
+	public SUpdateNBTTagMessage() {
+	}
 
 	public SUpdateNBTTagMessage(ItemStack stack) {
-		if(!stack.isEmpty() && stack.hasTag()){
+		if (!stack.isEmpty() && stack.hasTag()) {
 			tag = stack.getTag();
 			itemName = stack.getTranslationKey();
 		}
@@ -53,21 +54,21 @@ public class SUpdateNBTTagMessage {
 
 	public static boolean handle(SUpdateNBTTagMessage message, Supplier<NetworkEvent.Context> ctx) {
 		Context context = ctx.get();
-		if(context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
 				PlayerEntity player = ctx.get().getSender();
 				ItemStack vest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-				if(message.isVest) {
-					if(!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
+				if (message.isVest) {
+					if (!vest.isEmpty() && vest.getItem() == EEItems.BOOFLO_VEST.get()) {
 						vest.setTag(message.tag);
 					}
 				} else {
-					if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
+					if (!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem().getTranslationKey().equals(message.itemName))
 						player.inventory.getCurrentItem().setTag(message.tag);
 				}
 			});
 		}
-		
+
 		return true;
 	}
 }

@@ -74,7 +74,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 
 					BlockPos groundModifierPos = new BlockPos(pos.getX() - 1 + (rand.nextInt(3) - rand.nextInt(3)), pos.getY() - 1, pos.getZ() - 1 + (rand.nextInt(3) - rand.nextInt(3)));
 					EEFeatures.GROUND_PATCH.get().func_230362_a_(world, manager, generator, rand, groundModifierPos, new SphereReplaceConfig(CORROCK_BLOCK.get(), 3, 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
-					
+
 					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
 					for (int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
 						for (int y = pos.getY(); y < pos.getY() + baseHeight + 10; y++) {
@@ -232,7 +232,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 	private Direction randomHorizontalDirection(Random rand) {
 		return Direction.byHorizontalIndex(rand.nextInt(6));
 	}
-	
+
 	private BlockState randomStandingCorrockCrown(Random rand) {
 		return CORROCK_CROWN(false).get().with(CorrockCrownStandingBlock.ROTATION, rand.nextInt(16));
 	}

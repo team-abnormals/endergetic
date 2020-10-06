@@ -20,7 +20,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	private static final int AREA_CHECK_SIZE = 26;
 	private PuffBugEntity puffbug;
 	private World world;
-	
+
 	public PuffBugTeleportToBudGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.world = puffbug.world;
@@ -42,23 +42,23 @@ public class PuffBugTeleportToBudGoal extends Goal {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.puffbug.getTeleportController().processTeleportation();
 		this.puffbug.setMotion(Vector3d.ZERO);
 	}
-	
+
 	@Override
 	public void tick() {
 		this.puffbug.setMotion(Vector3d.ZERO);
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);
 	}
-	
+
 	@Nullable
 	private BolloomBudTileEntity findNearbyBud() {
 		BlockPos pos = this.puffbug.getPosition();
@@ -74,7 +74,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 		}
 		return null;
 	}
-	
+
 	@Nullable
 	private BlockPos createUpperPosition(BlockPos pos) {
 		BlockPos foundPos = null;
@@ -88,7 +88,7 @@ public class PuffBugTeleportToBudGoal extends Goal {
 		}
 		return foundPos;
 	}
-	
+
 	private boolean isPathNotBlockedByEntity(BolloomBudTileEntity bud) {
 		return this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(bud.getPos()).expand(0.0F, 3.0F, 0.0F)).isEmpty();
 	}

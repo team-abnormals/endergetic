@@ -18,18 +18,18 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 
 public final class EEDispenserBehaviors {
-	
+
 	static DefaultDispenseItemBehavior spawnEggItemBehavior = new DefaultDispenseItemBehavior() {
-    	
-        public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-           Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-           EntityType<?> entitytype = ((SpawnEggItem)stack.getItem()).getType(stack.getTag());
-           entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
-           stack.shrink(1);
-           return stack;
-        }
-        
-    };
+
+		public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+			EntityType<?> entitytype = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
+			entitytype.spawn(source.getWorld(), stack, (PlayerEntity) null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+			stack.shrink(1);
+			return stack;
+		}
+
+	};
 
 
 	public static void registerAll() {
@@ -54,5 +54,5 @@ public final class EEDispenserBehaviors {
 		DispenserBlock.registerDispenseBehavior(EEItems.PUFFBUG_BOTTLE.get(), new PuffBugBottleItem.PuffBugBottleDispenseBehavior());
 		EndergeticExpansion.REGISTRY_HELPER.processSpawnEggDispenseBehaviors();
 	}
-	
+
 }

@@ -17,9 +17,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockReader;
 
 public class EndergeticFlyingNodeProcessor extends NodeProcessor {
-	
-	public EndergeticFlyingNodeProcessor() {}
-	
+
 	@Override
 	public PathPoint getStart() {
 		return super.openPoint(MathHelper.floor(this.entity.getBoundingBox().minX), MathHelper.floor(this.entity.getBoundingBox().minY + 0.5D), MathHelper.floor(this.entity.getBoundingBox().minZ));
@@ -27,7 +25,7 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 
 	@Override
 	public FlaggedPathPoint func_224768_a(double p_224768_1_, double p_224768_3_, double p_224768_5_) {
-		return new FlaggedPathPoint(super.openPoint(MathHelper.floor(p_224768_1_ - (double)(this.entity.getWidth() / 2.0F)), MathHelper.floor(p_224768_3_ + 0.5D), MathHelper.floor(p_224768_5_ - (double)(this.entity.getWidth() / 2.0F))));
+		return new FlaggedPathPoint(super.openPoint(MathHelper.floor(p_224768_1_ - (double) (this.entity.getWidth() / 2.0F)), MathHelper.floor(p_224768_3_ + 0.5D), MathHelper.floor(p_224768_5_ - (double) (this.entity.getWidth() / 2.0F))));
 	}
 
 	@Override
@@ -40,15 +38,15 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 				pathPoints[i++] = pathpoint;
 			}
 		}
-		
+
 		return i;
 	}
-	
+
 	@Override
 	public PathNodeType getPathNodeType(IBlockReader blockaccessIn, int x, int y, int z, MobEntity entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
 		return this.getPathNodeType(blockaccessIn, x, y, z);
 	}
-	
+
 	@Override
 	public PathNodeType getPathNodeType(IBlockReader blockaccessIn, int x, int y, int z) {
 		BlockPos blockpos = new BlockPos(x, y, z);
@@ -61,7 +59,7 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 		PathNodeType pathnodetype = this.isFree(x, y, z);
 		return (pathnodetype != PathNodeType.BREACH) && pathnodetype != PathNodeType.WALKABLE ? null : this.openPoint(x, y, z);
 	}
-	
+
 	@Nullable
 	@Override
 	protected PathPoint openPoint(int x, int y, int z) {
@@ -76,10 +74,10 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 				pathpoint.costMalus += 8.0F;
 			}
 		}
-		
+
 		return pathnodetype == PathNodeType.OPEN ? pathpoint : pathpoint;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private PathNodeType isFree(int x, int y, int z) {
 		BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
@@ -102,10 +100,10 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 
 		BlockState blockstate1 = this.blockaccess.getBlockState(blockpos$mutableblockpos);
 		if (blockstate1.allowsMovement(this.blockaccess, blockpos$mutableblockpos, PathType.AIR)) {
-	         return PathNodeType.WALKABLE;
+			return PathNodeType.WALKABLE;
 		} else {
 			return PathNodeType.BLOCKED;
 		}
 	}
-	
+
 }

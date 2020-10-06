@@ -28,48 +28,48 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 	//DOWN, UP, NORTH, SOUTH, WEST, EAST
 	protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final VoxelShape[] SHAPES = new VoxelShape[] {
-		VoxelShapes.or(Block.makeCuboidShape(6.0D, 8.0D, 6.0D, 10.0D, 16.0D, 10.0D), Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 8.0D, 12.0D)),
-		VoxelShapes.or(Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 8.0D, 10.0D), Block.makeCuboidShape(4.0D, 8.0D, 4.0D, 12.0D, 16.0D, 12.0D)),
-		VoxelShapes.or(Block.makeCuboidShape(6.0D, 6.0D, 8.0D, 10.0D, 10.0D, 16.0D), Block.makeCuboidShape(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 8.0D)),
-		VoxelShapes.or(Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 8.0D), Block.makeCuboidShape(4.0D, 4.0D, 8.0D, 12.0D, 12.0D, 16.0D)),
-		VoxelShapes.or(Block.makeCuboidShape(8.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D), Block.makeCuboidShape(0.0D, 4.0D, 4.0D, 8.0D, 12.0D, 12.0D)),
-		VoxelShapes.or(Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 8.0D, 10.0D, 10.0D), Block.makeCuboidShape(8.0D, 4.0D, 4.0D, 16.0D, 12.0D, 12.0D)),
+	private static final VoxelShape[] SHAPES = new VoxelShape[]{
+			VoxelShapes.or(Block.makeCuboidShape(6.0D, 8.0D, 6.0D, 10.0D, 16.0D, 10.0D), Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 8.0D, 12.0D)),
+			VoxelShapes.or(Block.makeCuboidShape(6.0D, 0.0D, 6.0D, 10.0D, 8.0D, 10.0D), Block.makeCuboidShape(4.0D, 8.0D, 4.0D, 12.0D, 16.0D, 12.0D)),
+			VoxelShapes.or(Block.makeCuboidShape(6.0D, 6.0D, 8.0D, 10.0D, 10.0D, 16.0D), Block.makeCuboidShape(4.0D, 4.0D, 0.0D, 12.0D, 12.0D, 8.0D)),
+			VoxelShapes.or(Block.makeCuboidShape(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 8.0D), Block.makeCuboidShape(4.0D, 4.0D, 8.0D, 12.0D, 12.0D, 16.0D)),
+			VoxelShapes.or(Block.makeCuboidShape(8.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D), Block.makeCuboidShape(0.0D, 4.0D, 4.0D, 8.0D, 12.0D, 12.0D)),
+			VoxelShapes.or(Block.makeCuboidShape(0.0D, 6.0D, 6.0D, 8.0D, 10.0D, 10.0D), Block.makeCuboidShape(8.0D, 4.0D, 4.0D, 16.0D, 12.0D, 12.0D)),
 	};
-	
+
 	public AcidianLanternBlock(Properties builder) {
 		super(builder);
 		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false).with(FACING, Direction.UP));
 	}
-	
+
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
 	}
-	
+
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return SHAPES[state.get(FACING).getIndex()];
 	}
-	
+
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		FluidState fluidState = context.getWorld().getFluidState(context.getPos());
 		return super.getStateForPlacement(context).with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
 	}
-	
+
 	@Override
 	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		if(state.get(WATERLOGGED)) {
+		if (state.get(WATERLOGGED)) {
 			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 		return state;
 	}
-	
+
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
 		Direction direction = stateIn.get(FACING);
@@ -99,9 +99,9 @@ public class AcidianLanternBlock extends EndRodBlock implements IWaterLoggable {
 			xOffset = 0.55D;
 			zOffset = 0.55D;
 		}
-		double d0 = pos.getX() + xOffset - (double)(rand.nextFloat() * 0.1F);
-		double d1 = pos.getY() + offset - (double)(rand.nextFloat() * 0.1F);
-		double d2 = pos.getZ() + zOffset - (double)(rand.nextFloat() * 0.1F);
+		double d0 = pos.getX() + xOffset - (double) (rand.nextFloat() * 0.1F);
+		double d1 = pos.getY() + offset - (double) (rand.nextFloat() * 0.1F);
+		double d2 = pos.getZ() + zOffset - (double) (rand.nextFloat() * 0.1F);
 		if (rand.nextFloat() <= 0.65F) {
 			worldIn.addParticle(ParticleTypes.DRAGON_BREATH, d0, d1 + direction.getYOffset(), d2, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D, rand.nextGaussian() * 0.005D);
 		}

@@ -16,6 +16,7 @@ import net.minecraft.world.gen.feature.ProbabilityConfig;
 public abstract class AbstractCorrockFeature extends Feature<ProbabilityConfig> {
 	protected static final Supplier<BlockState> CORROCK = () -> EEBlocks.CORROCK_END.get().getDefaultState();
 	protected static final Supplier<BlockState> CORROCK_BLOCK = () -> EEBlocks.CORROCK_END_BLOCK.get().getDefaultState();
+
 	protected static Supplier<BlockState> CORROCK_CROWN(boolean wall) {
 		return wall ? () -> EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState() : () -> EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState();
 	}
@@ -23,10 +24,10 @@ public abstract class AbstractCorrockFeature extends Feature<ProbabilityConfig> 
 	public AbstractCorrockFeature(Codec<ProbabilityConfig> configFactory) {
 		super(configFactory);
 	}
-	
+
 	protected static class ChorusPlantPart {
 		public final BlockPos pos;
-		
+
 		public ChorusPlantPart(BlockPos pos) {
 			this.pos = pos;
 		}

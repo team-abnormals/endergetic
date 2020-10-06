@@ -12,23 +12,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * Message that tells the server to inflate the booflo
+ *
  * @author - SmellyModder(Luke Tonon)
  */
 public class SInflateMessage {
 	private int entityId;
-	
+
 	public SInflateMessage(int entityId) {
-        this.entityId = entityId;
-    }
-	
+		this.entityId = entityId;
+	}
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeInt(this.entityId);
 	}
-	
+
 	public static SInflateMessage deserialize(PacketBuffer buf) {
 		return new SInflateMessage(buf.readInt());
 	}
-	
+
 	public static void handle(SInflateMessage message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {

@@ -14,5 +14,5 @@ public class EumusBlock extends Block {
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.SHOVEL;
 	}
-	
+
 }

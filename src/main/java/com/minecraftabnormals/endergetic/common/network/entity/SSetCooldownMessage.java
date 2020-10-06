@@ -16,16 +16,17 @@ public class SSetCooldownMessage {
 	private int cooldown;
 	boolean isVest;
 
-	public SSetCooldownMessage() {}
+	public SSetCooldownMessage() {
+	}
 
 	public SSetCooldownMessage(ItemStack stack, int cooldown, boolean isVest) {
-		if(!stack.isEmpty() && stack.hasTag()){
+		if (!stack.isEmpty() && stack.hasTag()) {
 			itemName = stack.getTranslationKey();
 		}
 		this.cooldown = cooldown;
 		this.isVest = isVest;
 	}
-	
+
 	public void fromBytes(PacketBuffer buf) {
 		this.itemName = buf.readString(Integer.MAX_VALUE / 4);
 		this.cooldown = buf.readInt();
@@ -48,7 +49,7 @@ public class SSetCooldownMessage {
 		message.fromBytes(packet);
 		return message;
 	}
-	
+
 	public static void handle(SSetCooldownMessage message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
@@ -64,7 +65,7 @@ public class SSetCooldownMessage {
 			context.setPacketHandled(true);
 		}
 	}
-	
+
 	public static int getDelayForBoofedAmount(ItemStack stack) {
 		if (stack.hasTag()) {
 			if (stack.getTag().getInt("timesBoofed") < 5) {

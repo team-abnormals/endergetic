@@ -10,7 +10,7 @@ public class EnderCampfireTileEntity extends CampfireTileEntity {
 	public EnderCampfireTileEntity() {
 		super();
 	}
-	
+
 	public TileEntityType<?> getType() {
 		return EETileEntities.ENDER_CAMPFIRE.get();
 	}

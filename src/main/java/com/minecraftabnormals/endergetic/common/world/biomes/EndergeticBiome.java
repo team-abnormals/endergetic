@@ -24,43 +24,44 @@ public abstract class EndergeticBiome extends Biome {
 		super(biomeBuilder);
 		this.surfaceBuilder = surfaceBuilder;
 	}
-	
+
 	@Override
 	public void buildSurface(Random random, IChunk chunkIn, int x, int z, int startHeight, double noise, BlockState defaultBlock, BlockState defaultFluid, int seaLevel, long seed) {
 		this.surfaceBuilder.get().setSeed(seed);
 		this.surfaceBuilder.get().buildSurface(random, chunkIn, this, x, z, startHeight, noise, defaultBlock, defaultFluid, seaLevel, seed);
 	}
-	
+
 	@Override
 	public ConfiguredSurfaceBuilder<?> getSurfaceBuilder() {
 		return this.surfaceBuilder.get();
 	}
-	
+
 	@Override
 	public ISurfaceBuilderConfig getSurfaceBuilderConfig() {
 		return this.surfaceBuilder.get().getConfig();
 	}
-	
+
 	/**
 	 * Used for adding spawns and features to the biome using DeferredRegister; gets called in common setup
 	 */
-	public void addSpawnsAndFeatures() {}
-	
+	public void addSpawnsAndFeatures() {
+	}
+
 	protected void addCreatureSpawn(EntityType<?> entity, int weight, int minGroupCount, int maxGroupCount) {
 		this.addSpawn(EEEntityClassifications.END_CREATURE, new SpawnListEntry(entity, weight, minGroupCount, maxGroupCount));
 	}
-	
+
 	public int getWeight() {
 		return 0;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public int getSkyColor() {
 		return 0;
 	}
-	
+
 	@Nonnull
 	public Type[] getBiomeTypes() {
-		return new Type[] {Type.END};
+		return new Type[]{Type.END};
 	}
 }

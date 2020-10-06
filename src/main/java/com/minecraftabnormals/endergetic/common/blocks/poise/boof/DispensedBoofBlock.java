@@ -32,30 +32,30 @@ import net.minecraft.world.IWorld;
 public class DispensedBoofBlock extends DirectionalBlock implements IBucketPickupHandler, ILiquidContainer {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(
-		Direction.NORTH, Block.makeCuboidShape(2.0D, 0.0D, 4.0D, 14.0D, 12.0D, 16.0D),
-		Direction.SOUTH, Block.makeCuboidShape(2.0D, 0.0D, 0.0D, 14.0D, 12.0D, 12.0D),
-		Direction.EAST, Block.makeCuboidShape(0.0D, 0.0D, 2.0D, 12.0D, 12.0D, 14.0D),
-		Direction.WEST, Block.makeCuboidShape(4.0D, 0.0D, 2.0D, 16.0D, 12.0D, 14.0D),
-		Direction.UP, Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D)
+			Direction.NORTH, Block.makeCuboidShape(2.0D, 0.0D, 4.0D, 14.0D, 12.0D, 16.0D),
+			Direction.SOUTH, Block.makeCuboidShape(2.0D, 0.0D, 0.0D, 14.0D, 12.0D, 12.0D),
+			Direction.EAST, Block.makeCuboidShape(0.0D, 0.0D, 2.0D, 12.0D, 12.0D, 14.0D),
+			Direction.WEST, Block.makeCuboidShape(4.0D, 0.0D, 2.0D, 16.0D, 12.0D, 14.0D),
+			Direction.UP, Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D)
 	));
 
 	public DispensedBoofBlock(Properties builder) {
 		super(builder.doesNotBlockMovement());
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
-	
+
 	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
 		return p_220053_1_.get(FACING) != Direction.DOWN ? SHAPES.get(p_220053_1_.get(FACING)) : Block.makeCuboidShape(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 	}
-	
+
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		FluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 		return this.getDefaultState()
-			.with(FACING, context.getNearestLookingDirection().getOpposite())
-			.with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER)
-		);
+				.with(FACING, context.getNearestLookingDirection().getOpposite())
+				.with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER)
+				);
 	}
-	
+
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.get(WATERLOGGED)) {
@@ -63,23 +63,23 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 		}
 		return stateIn;
 	}
-	
+
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new DispensedBlockBoofTileEntity();
 	}
-	
+
 	@Override
 	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
-	
+
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public FluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
@@ -89,16 +89,16 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 	public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
 		return !state.get(WATERLOGGED) && fluidIn == Fluids.WATER;
 	}
-	
+
 	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state) {
 		if (state.get(WATERLOGGED)) {
 			worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(false)), 3);
-	        return Fluids.WATER;
-	    } else {
-	    	return Fluids.EMPTY;
-	    }
+			return Fluids.WATER;
+		} else {
+			return Fluids.EMPTY;
+		}
 	}
-	
+
 	@Override
 	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
 		if (!state.get(WATERLOGGED) && fluidStateIn.getFluid() == Fluids.WATER) {
@@ -109,7 +109,7 @@ public class DispensedBoofBlock extends DirectionalBlock implements IBucketPicku
 			return true;
 		} else {
 			return false;
-	    }
+		}
 	}
 
 	@Override

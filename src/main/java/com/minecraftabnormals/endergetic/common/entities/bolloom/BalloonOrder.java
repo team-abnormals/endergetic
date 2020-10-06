@@ -26,6 +26,7 @@ public enum BalloonOrder {
 
 	/**
 	 * Converts a {@link Set} of {@link BalloonOrder}s to a {@link Set} of integers representing the orders' ordinal values.
+	 *
 	 * @param orders - The {@link Set} of {@link BalloonOrder}s.
 	 * @return - A {@link Set} of integers representing the orders' ordinal values
 	 */
@@ -39,6 +40,7 @@ public enum BalloonOrder {
 
 	/**
 	 * Gets a {@link BalloonOrder} by its ordinal value.
+	 *
 	 * @param ordinal - The ordinal.
 	 * @return a {@link BalloonOrder} with its ordinal matching the supplied ordinal.
 	 */

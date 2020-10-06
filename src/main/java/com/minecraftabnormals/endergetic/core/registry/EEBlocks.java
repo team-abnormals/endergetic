@@ -44,7 +44,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEBlocks {
 	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
-	
+
 	public static final RegistryObject<Block> CORROCK_OVERWORLD_BLOCK           = HELPER.createBlock("overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> PETRIFIED_CORROCK_OVERWORLD_BLOCK = HELPER.createBlock("petrified_overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), true), null);
 	public static final RegistryObject<Block> CORROCK_NETHER_BLOCK              = HELPER.createBlock("nether_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.RED_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
@@ -78,7 +78,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_BUSH            = HELPER.createBlock("poise_bush", () -> new PoiseBushBlock(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> TALL_POISE_BUSH       = HELPER.createBlock("tall_poise_bush", () -> new PoiseTallBushBlock(EEProperties.POISE_GRASS(true)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> POISE_CLUSTER         = HELPER.createBlock("poise_cluster", () -> new PoiseClusterBlock(EEProperties.POISE_CLUSTER.tickRandomly()), ItemGroup.BUILDING_BLOCKS);
-	
+
 	public static final RegistryObject<Block> STRIPPED_POISE_STEM    = HELPER.createBlock("stripped_poise_stem", () -> new StrippedLogBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> STRIPPED_POISE_WOOD   = HELPER.createBlock("stripped_poise_wood", () -> new StrippedWoodBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_STEM            = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(() -> EEBlocks.STRIPPED_POISE_STEM.get(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
@@ -115,7 +115,7 @@ public final class EEBlocks {
 	 */
 	public static Block FRISBLOOM_STEM    = new FrisbloomStemBlock(EEProperties.FRISBLOOM_STEM).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_stem");
 	public static Block FRISBLOOM_BUD     = new FrisbloomBudBlock(EEProperties.FRISBLOOM_BUD.doesNotBlockMovement()).setRegistryName(EndergeticExpansion.MOD_ID, "frisbloom_seeds");
-	
+
 	/*
 	 * Misc
 	 */
@@ -137,18 +137,18 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_RUNE    = HELPER.createBlock("mystical_obsidian_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE 			= HELPER.createBlock("mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
 	public static final RegistryObject<Block> ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE 	= HELPER.createBlock("activated_mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.setLightLevel(state -> 5)), null);
-	
+
 	public static final RegistryObject<Block> ENDER_FIRE 		= HELPER.createBlockNoItem("ender_fire", () -> new EnderFireBlock(Properties.from(Blocks.FIRE)));
 	public static final RegistryObject<Block> ENDER_CAMPFIRE	= HELPER.createBlock("ender_campfire", () -> new EnderCampfireBlock(Block.Properties.from(Blocks.CAMPFIRE)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> ENDER_LANTERN		= HELPER.createBlock("ender_lantern", () -> new LanternBlock(Block.Properties.from(Blocks.LANTERN)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> ENDER_WALL_TORCH	= HELPER.createBlockNoItem("ender_wall_torch", () -> new EnderWallTorchBlock(Block.Properties.from(Blocks.TORCH)));
 	public static final RegistryObject<Block> ENDER_TORCH		= HELPER.createWallOrFloorBlock("ender_torch", () -> new EnderTorchBlock(Block.Properties.from(Blocks.TORCH)), () -> ENDER_WALL_TORCH.get(), ItemGroup.DECORATIONS);
-	
+
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {
 		return () -> new EETileEntityItemRenderer<TileEntity>(BolloomBudTileEntity::new);
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> puffbugHiveISTER() {
 		return () -> new EETileEntityItemRenderer<TileEntity>(PuffBugHiveTileEntity::new);

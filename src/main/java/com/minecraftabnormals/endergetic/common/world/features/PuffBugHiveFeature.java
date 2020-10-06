@@ -22,7 +22,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
-	
+
 	private Supplier<BlockState> HIVE_STATE(boolean hanger) {
 		return hanger ? () -> EEBlocks.HIVE_HANGER.get().getDefaultState() : () -> EEBlocks.PUFFBUG_HIVE.get().getDefaultState();
 	}
@@ -30,12 +30,12 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 	public PuffBugHiveFeature(Codec<NoFeatureConfig> configFactoryIn) {
 		super(configFactoryIn);
 	}
-	
+
 	@Override
 	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		if(rand.nextFloat() < 0.1F) return false;
+		if (rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.down();
-		
+
 		if (world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
 			if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 				world.setBlockState(pos, this.HIVE_STATE(true).get(), 2);
@@ -55,7 +55,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		}
 		return false;
 	}
-	
+
 	private void spawnPuffBugs(IWorld world, BlockPos pos, Random rand) {
 		int maxPuffBugs = rand.nextInt(4) + 2;
 
@@ -72,7 +72,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 			if (maxPuffBugs-- <= 0) break;
 		}
 	}
-	
+
 	private List<Direction> getOpenSides(IWorld world, BlockPos pos) {
 		List<Direction> openDirections = Lists.newArrayList();
 		for (Direction directions : Direction.values()) {

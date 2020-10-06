@@ -21,5 +21,5 @@ public abstract class EndGatewayTileEntityMixin extends EndPortalTileEntity impl
 	private void func_227016_a_(ServerWorld world, BlockPos pos) {
 		EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(this.getPos(), false)).func_236265_a_(world, world.func_241112_a_(), world.getChunkProvider().getChunkGenerator(), new Random(), pos);
 	}
-	
+
 }

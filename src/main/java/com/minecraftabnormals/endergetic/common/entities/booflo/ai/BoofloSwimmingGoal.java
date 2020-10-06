@@ -10,7 +10,7 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public class BoofloSwimmingGoal extends EndimatedGoal<BoofloEntity> {
-	
+
 	public BoofloSwimmingGoal(BoofloEntity booflo) {
 		super(booflo);
 		this.setMutexFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
@@ -20,12 +20,12 @@ public class BoofloSwimmingGoal extends EndimatedGoal<BoofloEntity> {
 	public boolean shouldExecute() {
 		return this.entity.hasPath() && this.entity.isNoEndimationPlaying() && this.entity.isMovingInAir() && this.entity.isBoofed() && RayTraceHelper.rayTrace(this.entity, 1.5D, 1.0F).getType() != Type.BLOCK;
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return this.isEndimationPlaying() && this.entity.isBoofed();
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.playEndimation();
@@ -35,5 +35,5 @@ public class BoofloSwimmingGoal extends EndimatedGoal<BoofloEntity> {
 	protected Endimation getEndimation() {
 		return BoofloEntity.SWIM;
 	}
-	
+
 }

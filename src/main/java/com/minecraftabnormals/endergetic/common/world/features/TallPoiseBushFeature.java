@@ -22,7 +22,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
  */
 public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 	private static final Supplier<BlockState> TALL_POISE_BUSH = () -> EEBlocks.TALL_POISE_BUSH.get().getDefaultState();
-	
+
 	public TallPoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
@@ -40,7 +40,7 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 
 		return flag;
 	}
-	
+
 	private boolean isTouchingBolloomBud(IWorld world, BlockPos pos) {
 		BlockPos.Mutable mutable = pos.toMutable();
 		for (Direction direction : Direction.Plane.HORIZONTAL) {

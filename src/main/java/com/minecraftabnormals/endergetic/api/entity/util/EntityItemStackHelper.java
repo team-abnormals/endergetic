@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 public class EntityItemStackHelper {
 
 	public static void consumeItemFromStack(PlayerEntity player, ItemStack stack) {
-		if(!player.abilities.isCreativeMode) stack.shrink(1);
+		if (!player.abilities.isCreativeMode) stack.shrink(1);
 	}
-	
+
 }

@@ -13,23 +13,24 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * Message that tells the server to set player no longer boosting on the booflo
+ *
  * @author - SmellyModder(Luke Tonon)
  */
 public class SSetPlayerNotBoostingMessage {
 	private int entityId;
-	
+
 	public SSetPlayerNotBoostingMessage(int entityId) {
-        this.entityId = entityId;
-    }
-	
+		this.entityId = entityId;
+	}
+
 	public void serialize(PacketBuffer buf) {
 		buf.writeInt(this.entityId);
 	}
-	
+
 	public static SSetPlayerNotBoostingMessage deserialize(PacketBuffer buf) {
 		return new SSetPlayerNotBoostingMessage(buf.readInt());
 	}
-	
+
 	public static void handle(SSetPlayerNotBoostingMessage message, Supplier<NetworkEvent.Context> ctx) {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {

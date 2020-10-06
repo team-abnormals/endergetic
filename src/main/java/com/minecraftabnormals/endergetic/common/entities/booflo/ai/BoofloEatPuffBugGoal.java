@@ -25,7 +25,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return this.entity.isNoEndimationPlaying() && this.entity.hasCaughtPuffBug() && !this.entity.isBoofed() && this.entity.isOnGround() && !this.entity.isInLove();
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		boolean flag = true;
@@ -34,7 +34,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 				flag = false;
 			}
 		}
-		
+
 		if (this.entity.isPlayerNear(0.6F)) {
 			if (!this.entity.isTamed()) {
 				this.entity.hopDelay = 0;
@@ -48,14 +48,14 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 		}
 		return this.isEndimationPlaying() && flag && !this.entity.isBoofed() && this.entity.isOnGround();
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.playEndimation();
 		this.originalYaw = this.entity.rotationYaw;
 		this.entity.setLockedYaw(this.originalYaw);
 	}
-	
+
 	@Override
 	public void resetTask() {
 		this.originalYaw = 0;

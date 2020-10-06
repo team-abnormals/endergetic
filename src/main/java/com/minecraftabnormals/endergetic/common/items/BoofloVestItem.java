@@ -24,11 +24,11 @@ public class BoofloVestItem extends ArmorItem {
 	private static final String TICKS_BOOFED_TAG = "ticksBoofed";
 	public static final String BOOFED_TAG = "boofed";
 	public static final String TIMES_BOOFED_TAG = "timesBoofed";
-	
+
 	public BoofloVestItem(Properties properties) {
 		super(EEArmorMaterials.BOOFLO, EquipmentSlotType.CHEST, properties);
 	}
-	
+
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
 		if (this.hasTag(stack)) {
@@ -54,12 +54,12 @@ public class BoofloVestItem extends ArmorItem {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isDamageable() {
 		return true;
 	}
-	
+
 	public boolean hasTag(ItemStack stack) {
 		if (!stack.hasTag()) {
 			stack.setTag(new CompoundNBT());
@@ -67,18 +67,18 @@ public class BoofloVestItem extends ArmorItem {
 		}
 		return true;
 	}
-	
+
 	public boolean canBoof(ItemStack stack, PlayerEntity player) {
 		if (this.hasTag(stack)) {
 			return !player.getCooldownTracker().hasCooldown(stack.getItem()) && !stack.getTag().getBoolean(BOOFED_TAG);
 		}
 		return !player.getCooldownTracker().hasCooldown(stack.getItem());
 	}
-	
+
 	public void setDelayForBoofedAmount(ItemStack stack, PlayerEntity player) {
 		EndergeticNetworkUtil.setSItemCooldown(stack, 100, true);
 	}
-	
+
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
 		if (stack.hasTag()) {
@@ -89,7 +89,7 @@ public class BoofloVestItem extends ArmorItem {
 		return EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest.png";
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public <A extends BipedModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlotType armorSlot, A _default) {

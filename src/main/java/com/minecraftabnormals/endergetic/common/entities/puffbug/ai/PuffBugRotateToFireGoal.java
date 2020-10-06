@@ -16,7 +16,7 @@ public class PuffBugRotateToFireGoal extends Goal {
 	private final Random random;
 	private int ticksPassed;
 	private int ticksToRotate;
-	
+
 	public PuffBugRotateToFireGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.random = puffbug.getRNG();
@@ -27,33 +27,33 @@ public class PuffBugRotateToFireGoal extends Goal {
 	public boolean shouldExecute() {
 		return !this.puffbug.isPassenger() && !this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_FROM_ANIMATION) && this.puffbug.isInflated() && this.puffbug.getLaunchDirection() != null;
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return this.shouldExecute() && this.ticksPassed <= this.ticksToRotate;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.ticksToRotate = this.random.nextInt(5) + 12;
 	}
-	
+
 	@Override
 	public void resetTask() {
 		if (this.puffbug.getLaunchDirection() != null && this.ticksPassed >= this.ticksToRotate) {
 			Vector3d launch = this.puffbug.getLaunchDirection();
-			
+
 			float yaw = (float) launch.getY() - this.puffbug.rotationYaw;
 			float pitch = MathHelper.wrapSubtractDegrees((float) launch.getX(), 0.0F);
-			
+
 			float x = -MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 			float y = -MathHelper.sin(pitch * ((float) Math.PI / 180F));
 			float z = MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
-			
+
 			Vector3d motion = new Vector3d(x, -y, z).normalize();
-			
+
 			this.puffbug.setMotion(this.puffbug.getMotion().add(motion.scale(1.0F)));
-			
+
 			this.puffbug.setFireDirection((float) launch.getX(), (float) launch.getY());
 			this.puffbug.removeLaunchDirection();
 			this.puffbug.setInflated(false);
@@ -67,9 +67,9 @@ public class PuffBugRotateToFireGoal extends Goal {
 				float particleX = MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
 				float particleY = -MathHelper.sin(pitch * ((float) Math.PI / 180F));
 				float particleZ = -MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
-				
+
 				Vector3d particleMotion = new Vector3d(particleX, particleY, particleZ).normalize().scale(0.5F);
-				
+
 				NetworkUtil.spawnParticle("endergetic:short_poise_bubble", posX, posY, posZ, particleMotion.getX() + MathUtils.makeNegativeRandomly((this.random.nextFloat() * 0.25F), this.random), particleMotion.getY() + (this.random.nextFloat() * 0.05F), MathUtils.makeNegativeRandomly(particleMotion.getZ() + (this.random.nextFloat() * 0.25F), this.random));
 			}
 		}
@@ -80,11 +80,11 @@ public class PuffBugRotateToFireGoal extends Goal {
 	@Override
 	public void tick() {
 		this.ticksPassed++;
-		
+
 		this.puffbug.getNavigator().clearPath();
-		
+
 		Vector3d launchDirection = this.puffbug.getLaunchDirection();
-		
+
 		this.puffbug.getRotationController().rotate((float) MathHelper.wrapDegrees(launchDirection.getY() - this.puffbug.rotationYaw), (float) launchDirection.getX() + 90.0F, 0.0F, 10);
 	}
 }

@@ -18,10 +18,10 @@ import net.minecraft.network.play.ServerPlayNetHandler;
 public final class ServerPlayNetHandlerMixin {
 	@Shadow
 	private ServerPlayerEntity player;
-	
+
 	@Shadow
 	private int vehicleFloatingTickCount;
-	
+
 	@Inject(at = @At("TAIL"), method = "tick()V")
 	private void preventFlyingKick(CallbackInfo info) {
 		Entity ridingEntity = this.player.getRidingEntity();

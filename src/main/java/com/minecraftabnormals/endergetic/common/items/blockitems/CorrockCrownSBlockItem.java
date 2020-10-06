@@ -31,13 +31,13 @@ public class CorrockCrownSBlockItem extends BlockItem {
 		BlockPos blockpos = context.getPos();
 
 		for (Direction enumfacing : context.getNearestLookingDirections()) {
-	        BlockState iblockstate2 = enumfacing == Direction.UP || enumfacing == Direction.DOWN ? this.getBlock().getStateForPlacement(context) : iblockstate;
-	        if (iblockstate2 != null && iblockstate2.isValidPosition(iworldreaderbase, blockpos)) {
-	        	iblockstate1 = iblockstate2;
-	        	break;
-	        }
+			BlockState iblockstate2 = enumfacing == Direction.UP || enumfacing == Direction.DOWN ? this.getBlock().getStateForPlacement(context) : iblockstate;
+			if (iblockstate2 != null && iblockstate2.isValidPosition(iworldreaderbase, blockpos)) {
+				iblockstate1 = iblockstate2;
+				break;
+			}
 		}
-		
+
 		return iblockstate1 != null && iworldreaderbase.func_226663_a_(iblockstate1, blockpos, ISelectionContext.dummy()) ? iblockstate1 : null;
 	}
 

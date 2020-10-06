@@ -15,12 +15,12 @@ import net.minecraft.util.ResourceLocation;
 public class PuffBugRenderer extends MobRenderer<PuffBugEntity, EntityModel<PuffBugEntity>> {
 	private static final ResourceLocation DEFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_deflated.png");
 	private static final ResourceLocation INFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated.png");
-	
+
 	public PuffBugRenderer(EntityRendererManager manager) {
 		super(manager, new PuffBugModel<>(), 0.3F);
 		this.addLayer(new LayerRendererPuffBugGlow<>(this));
 	}
-	
+
 	@Override
 	public void render(PuffBugEntity puffbug, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 		if (puffbug.isChild()) {
@@ -28,12 +28,12 @@ public class PuffBugRenderer extends MobRenderer<PuffBugEntity, EntityModel<Puff
 		}
 		super.render(puffbug, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
-	
+
 	@Override
 	public ResourceLocation getEntityTexture(PuffBugEntity puffbug) {
 		return puffbug.isInflated() ? INFLATED : DEFLATED;
 	}
-	
+
 	@Override
 	protected void preRenderCallback(PuffBugEntity puffbug, MatrixStack matrixStack, float partialTickTime) {
 		matrixStack.scale(1.0F, 1.0F, 1.0F);

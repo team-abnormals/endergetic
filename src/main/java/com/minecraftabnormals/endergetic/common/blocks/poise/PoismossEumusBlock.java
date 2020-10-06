@@ -23,7 +23,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 	public PoismossEumusBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.SHOVEL;
@@ -33,7 +33,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
 		if (!worldIn.isRemote) {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
-			
+
 			if (!isLightCoveringPos(state, worldIn, pos)) {
 				worldIn.setBlockState(pos, EEBlocks.EUMUS.get().getDefaultState());
 			} else {
@@ -50,23 +50,23 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 			}
 		}
 	}
-	
+
 	private static boolean isLightCoveringPos(BlockState p_220257_0_, IWorldReader p_220257_1_, BlockPos p_220257_2_) {
 		BlockPos blockpos = p_220257_2_.up();
 		BlockState blockstate = p_220257_1_.getBlockState(blockpos);
 		int i = LightEngine.func_215613_a(p_220257_1_, p_220257_0_, p_220257_2_, blockstate, blockpos, Direction.UP, blockstate.getOpacity(p_220257_1_, blockpos));
 		return i < p_220257_1_.getMaxLightLevel();
 	}
-	
+
 	private static boolean shouldGrowOnto(BlockState p_220256_0_, IWorldReader p_220256_1_, BlockPos p_220256_2_) {
 		BlockPos blockpos = p_220256_2_.up();
 		return isLightCoveringPos(p_220256_0_, p_220256_1_, p_220256_2_) && !p_220256_1_.getFluidState(blockpos).isTagged(FluidTags.WATER);
 	}
-	
+
 	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return worldIn.getBlockState(pos.up()).isAir();
 	}
-	
+
 	@Override
 	public void grow(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.up();
@@ -80,7 +80,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 				if (j >= i / 16) {
 					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
-						((IGrowable)blockstate.getBlock()).grow(worldIn, rand, blockpos1, blockstate2);
+						((IGrowable) blockstate.getBlock()).grow(worldIn, rand, blockpos1, blockstate2);
 					}
 
 					if (!blockstate2.isAir()) {

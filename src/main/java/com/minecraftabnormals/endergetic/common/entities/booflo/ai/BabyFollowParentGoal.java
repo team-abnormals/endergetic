@@ -12,7 +12,7 @@ public class BabyFollowParentGoal extends Goal {
 	private BoofloEntity parent;
 	private final double moveSpeed;
 	private int delayCounter;
-	
+
 	public BabyFollowParentGoal(BoofloBabyEntity booflo, double speed) {
 		this.baby = booflo;
 		this.moveSpeed = speed;
@@ -36,14 +36,14 @@ public class BabyFollowParentGoal extends Goal {
 		} else if (d0 < 9.0D) {
 			return false;
 		} else {
-			if(this.baby.getRNG().nextFloat() < 0.25F) {
+			if (this.baby.getRNG().nextFloat() < 0.25F) {
 				this.parent = booflo;
 				return true;
 			}
 			return false;
 		}
 	}
-	
+
 	public boolean shouldContinueExecuting() {
 		if (!this.parent.isAlive()) {
 			return false;
@@ -52,7 +52,7 @@ public class BabyFollowParentGoal extends Goal {
 			return !(d0 < 9.0D) && !(d0 > 256.0D);
 		}
 	}
-	
+
 	public void startExecuting() {
 		this.delayCounter = 0;
 	}

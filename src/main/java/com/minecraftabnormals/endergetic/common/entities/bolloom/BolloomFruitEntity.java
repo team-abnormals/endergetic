@@ -27,16 +27,16 @@ import net.minecraft.world.World;
 public class BolloomFruitEntity extends AbstractBolloomEntity {
 	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(BolloomFruitEntity.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(BolloomFruitEntity.class, DataSerializers.VARINT);
-	
+
 	public BolloomFruitEntity(EntityType<? extends BolloomFruitEntity> type, World world) {
 		super(EEEntities.BOLLOOM_FRUIT.get(), world);
 		this.setNoGravity(true);
 	}
-	
+
 	public BolloomFruitEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 	}
-	
+
 	public BolloomFruitEntity(World world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getOffset());
@@ -47,12 +47,12 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 		this.setOrigin(xPos, yPos, zPos);
 		this.setBudPos(budPos);
 		this.setVineHeight(height);
-		
+
 		this.prevPosX = this.getPosX();
 		this.prevPosY = this.getPosY();
 		this.prevPosZ = this.getPosZ();
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -94,7 +94,7 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	public void setVineHeight(int height) {
 		this.dataManager.set(VINE_HEIGHT, height);
 	}
-	
+
 	public int getVineHeight() {
 		return this.dataManager.get(VINE_HEIGHT);
 	}
@@ -148,12 +148,12 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.BOLLOOM_FRUIT.get());
 	}
-	
+
 	@Override
 	public void applyEntityCollision(Entity entity) {
 		if (entity instanceof BolloomFruitEntity) {
@@ -169,7 +169,7 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	public boolean isInRangeToRenderDist(double distance) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isInRangeToRender3d(double x, double y, double z) {
 		return true;

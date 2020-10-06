@@ -32,34 +32,34 @@ import java.util.List;
 
 public class PuffBugHiveBlock extends Block {
 	private static final VoxelShape HIVE_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 3.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D));
-	
+
 	public PuffBugHiveBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return HIVE_SHAPE;
 	}
-	
+
 	@Override
 	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
 		destroyBlock(worldIn, pos, player);
 		super.harvestBlock(worldIn, player, pos, state, te, stack);
 	}
-	
+
 	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
 		destroyBlock(worldIn, pos, player);
 		super.onBlockHarvested(worldIn, pos, state, player);
 	}
-	
+
 	@Override
 	public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
 		destroyBlock(world, pos, explosion.getExplosivePlacedBy());
 		super.onExplosionDestroy(world, pos, explosion);
 	}
-	
+
 	@Override
 	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
 		TileEntity tileEntity = world.getTileEntity(hit.getPos());
@@ -67,7 +67,7 @@ public class PuffBugHiveBlock extends Block {
 			((PuffBugHiveTileEntity) tileEntity).alertPuffBugs(null);
 		}
 	}
-	
+
 	@Override
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		TileEntity tileEntity = world.getTileEntity(pos);
@@ -75,13 +75,13 @@ public class PuffBugHiveBlock extends Block {
 			((PuffBugHiveTileEntity) tileEntity).alertPuffBugs(null);
 		}
 	}
-	
+
 	@Override
 	@Nonnull
 	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
 		return !isValidPosition(state, world, currentPos) ? destroyBlock(world, currentPos, null) : state;
 	}
-	
+
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockPos blockpos = context.getPos();
@@ -105,14 +105,14 @@ public class PuffBugHiveBlock extends Block {
 		}
 		return null;
 	}
-	
+
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		BlockState down = worldIn.getBlockState(pos.down());
 		return (hasHanger(worldIn, pos) || down.isSolid() || down.getBlock() instanceof PuffBugHiveBlock) && super.isValidPosition(state, worldIn, pos);
 	}
-	
+
 	@Override
 	public ToolType getHarvestTool(BlockState state) {
 		return ToolType.PICKAXE;
@@ -122,27 +122,27 @@ public class PuffBugHiveBlock extends Block {
 	public boolean hasTileEntity(BlockState state) {
 		return true;
 	}
-	
+
 	@Nullable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new PuffBugHiveTileEntity();
 	}
-	
+
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-	
+
 	private static boolean hasHanger(IWorldReader world, BlockPos pos) {
 		return world.getBlockState(pos.up()).getBlock() instanceof PuffbugHiveHangerBlock;
 	}
-	
+
 	private static BlockState destroyBlock(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
 		if (hasHanger(world, pos)) {
 			world.destroyBlock(pos.up(), false);
 		}
-		
+
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof PuffBugHiveTileEntity) {
 			PuffBugHiveTileEntity hive = (PuffBugHiveTileEntity) tile;

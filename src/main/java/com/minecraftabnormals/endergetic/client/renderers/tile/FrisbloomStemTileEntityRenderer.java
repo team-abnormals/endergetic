@@ -19,23 +19,23 @@ import net.minecraft.util.math.BlockPos;
 @SuppressWarnings("unused")
 public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<FrisbloomStemTileEntity> {
 	private FrisbloomStemModel model;
-	
+
 	private FrisbloomFlowerModel modelFlower;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_stem.png");
 	private static final ResourceLocation TEXTURE_FLOWER = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_flower.png");
-	
+
 	public FrisbloomStemTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new FrisbloomStemModel();
 		this.modelFlower = new FrisbloomFlowerModel();
 	}
-	
+
 	@Override
 	public void render(FrisbloomStemTileEntity te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		Random rnd = new Random(((this.getLongForPos(te.getPos()) / 12)) ^ 5);
 		int rndRot = rnd.nextInt(12) - 6;
 		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.getDefaultState();
-		
+
 //		GlStateManager.pushMatrix();
 //		
 //		if(state.get(BlockFrisbloomStem.LAYER) == 4) {
@@ -91,7 +91,7 @@ public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<Frisbloo
 //			GlStateManager.popMatrix();
 //		}
 	}
-	
+
 	public long getLongForPos(BlockPos pos) {
 		return (pos.getX() + pos.getY() + pos.getZ() * pos.toLong());
 	}

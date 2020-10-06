@@ -56,22 +56,22 @@ public class EndergeticExpansion {
 	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
 	public static final EndergeticRegistryHelper REGISTRY_HELPER = new EndergeticRegistryHelper(MOD_ID);
-	
+
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
-		.networkProtocolVersion(() -> NETWORK_PROTOCOL)
-		.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
-		.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
-		.simpleChannel();
-    
+			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
+			.clientAcceptedVersions(NETWORK_PROTOCOL::equals)
+			.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
+			.simpleChannel();
+
 	public EndergeticExpansion() {
 		instance = this;
-		
+
 		this.setupMessages();
 		EEDataSerializers.registerSerializers();
 		EEDataProcessors.registerTrackedData();
-		
+
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		
+
 		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
 		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
@@ -81,23 +81,23 @@ public class EndergeticExpansion {
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
-		
+
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == EEConfig.COMMON_SPEC) {
 				EEConfig.ValuesHolder.updateCommonValuesFromConfig(config);
 			}
 		});
-		
+
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
 		});
-		
+
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
 	}
-	
+
 	void setupCommon(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 			EEDispenserBehaviors.registerAll();
@@ -108,11 +108,11 @@ public class EndergeticExpansion {
 			EEEntityAttributes.putAttributes();
 		});
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	void setupClient(final FMLClientSetupEvent event) {
 		EERenderLayers.setupRenderLayers();
-		
+
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.FRISBLOOM_STEM.get(), FrisbloomStemTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
@@ -129,18 +129,18 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), BoofloBabyRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), BoofloRenderer::new);
-		
+
 		KeybindHandler.registerKeys();
-		
+
 		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Arrays.asList(() -> EEBiomes.POISE_FOREST.get()), () -> EESounds.POISE_FOREST_LOOP.get(), () -> EESounds.POISE_FOREST_ADDITIONS.get(), () -> EESounds.POISE_FOREST_MOOD.get());
 		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	private void registerItemColors(ColorHandlerEvent.Item event) {
 		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
-    
+
 	private void setupMessages() {
 		int id = -1;
 		CHANNEL.registerMessage(id++, SUpdateNBTTagMessage.class, SUpdateNBTTagMessage::serialize, SUpdateNBTTagMessage::deserialize, SUpdateNBTTagMessage::handle);

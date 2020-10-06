@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class BoofloSinkGoal extends Goal {
 	private BoofloEntity booflo;
-	
+
 	public BoofloSinkGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
@@ -21,7 +21,7 @@ public class BoofloSinkGoal extends Goal {
 	public boolean shouldExecute() {
 		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.isOnGround() && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		if (!this.isSafePos()) {
@@ -29,12 +29,12 @@ public class BoofloSinkGoal extends Goal {
 		}
 		return !this.booflo.isOnGround() && this.booflo.isBoofed() && (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug());
 	}
-	
+
 	@Override
 	public void tick() {
 		this.booflo.getNavigator().clearPath();
 	}
-	
+
 	private boolean isSafePos() {
 		BlockPos pos = this.booflo.getPosition();
 		for (int i = 0; i < 10; i++) {

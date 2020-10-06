@@ -30,32 +30,32 @@ import net.minecraft.world.World;
 public class BoofBlockEntity extends LivingEntity {
 	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(BoofBlockEntity.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(BoofBlockEntity.class, DataSerializers.BOOLEAN);
-	
+
 	public BoofBlockEntity(EntityType<? extends BoofBlockEntity> type, World world) {
 		super(EEEntities.BOOF_BLOCK.get(), world);
 		this.setNoGravity(true);
 	}
-	
+
 	public BoofBlockEntity(World world, BlockPos pos) {
 		this(EEEntities.BOOF_BLOCK.get(), world);
 		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		this.setOrigin(pos);
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
 		this.dataManager.register(ORIGIN, BlockPos.ZERO);
 		this.dataManager.register(FOR_PROJECTILE, false);
 	}
-	
+
 	@Override
 	public void tick() {
 		AxisAlignedBB bb = this.getBoundingBox().grow(0, 0.25F, 0);
 		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
 		for (int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
-				
+
 			if (!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
 				if (entity instanceof TridentEntity || entity instanceof AbstractArrowEntity) {
 					this.setForProjectile(true);
@@ -74,7 +74,7 @@ public class BoofBlockEntity extends LivingEntity {
 				}
 			}
 		}
-		
+
 		if (this.ticksExisted >= 10) {
 			if (this.world.isAreaLoaded(this.getOrigin(), 1) && this.world.getBlockState(getOrigin()).getBlock() == EEBlocks.BOOF_BLOCK.get() && !this.isForProjectile()) {
 				this.world.setBlockState(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().getDefaultState());
@@ -83,18 +83,18 @@ public class BoofBlockEntity extends LivingEntity {
 			}
 			this.remove();
 		}
-		
+
 		this.setMotion(Vector3d.ZERO);
 		super.tick();
 	}
-	
+
 	@Override
 	public void readAdditional(CompoundNBT nbt) {
 		super.readAdditional(nbt);
 		this.setOrigin(new BlockPos(nbt.getInt("OriginX"), nbt.getInt("OriginY"), nbt.getInt("OriginZ")));
 		this.setForProjectile(nbt.getBoolean("ForProjectile"));
 	}
-	
+
 	@Override
 	public void writeAdditional(CompoundNBT nbt) {
 		super.writeAdditional(nbt);
@@ -104,51 +104,53 @@ public class BoofBlockEntity extends LivingEntity {
 		nbt.putInt("OriginZ", blockpos.getZ());
 		nbt.putBoolean("ForProjectile", this.isForProjectile());
 	}
-	
+
 	@Override
 	public boolean isInvulnerable() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isAlive() {
 		return false;
 	}
-	
+
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {return false;}
-	
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		return false;
+	}
+
 	public boolean isForProjectile() {
 		return this.getDataManager().get(FOR_PROJECTILE);
 	}
-	
+
 	@Override
 	public boolean canRenderOnFire() {
 		return false;
 	}
-	
+
 	public void setForProjectile(boolean forProjectile) {
 		this.getDataManager().set(FOR_PROJECTILE, forProjectile);
 	}
-	
+
 	public void setOrigin(BlockPos pos) {
 		this.getDataManager().set(ORIGIN, pos);
 	}
-	
+
 	public BlockPos getOrigin() {
 		return this.getDataManager().get(ORIGIN);
 	}
-	
+
 	@Override
 	public boolean canBePushed() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isPushedByWater() {
 		return false;
 	}
-	
+
 	@Override
 	public Iterable<ItemStack> getArmorInventoryList() {
 		return NonNullList.withSize(4, ItemStack.EMPTY);
@@ -160,7 +162,8 @@ public class BoofBlockEntity extends LivingEntity {
 	}
 
 	@Override
-	public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {}
+	public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
+	}
 
 	@Override
 	public HandSide getPrimaryHand() {

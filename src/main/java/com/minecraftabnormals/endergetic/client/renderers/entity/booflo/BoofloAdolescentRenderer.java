@@ -22,5 +22,5 @@ public class BoofloAdolescentRenderer extends MobRenderer<BoofloAdolescentEntity
 	public ResourceLocation getEntityTexture(BoofloAdolescentEntity entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_adolescent.png");
 	}
-	
+
 }

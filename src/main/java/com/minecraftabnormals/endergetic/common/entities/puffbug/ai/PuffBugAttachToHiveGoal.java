@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
 public class PuffBugAttachToHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
 	private int ticksPassed;
-	
+
 	public PuffBugAttachToHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 	}
@@ -24,30 +24,30 @@ public class PuffBugAttachToHiveGoal extends Goal {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void startExecuting() {
 		this.puffbug.getNavigator().clearPath();
 		this.puffbug.setAIMoveSpeed(0.0F);
-		
+
 		this.puffbug.setMotion(Vector3d.ZERO);
 	}
-	
+
 	@Override
 	public void tick() {
 		this.ticksPassed++;
-		
+
 		this.puffbug.getNavigator().clearPath();
 		this.puffbug.setAIMoveSpeed(0.0F);
-		
+
 		this.puffbug.setMotion(this.puffbug.getMotion().mul(1.0F, 0.0F, 1.0F));
-		
+
 		if (this.ticksPassed > 25) {
 			this.puffbug.setAttachedHiveSide(this.puffbug.getDesiredHiveSide());
 			this.puffbug.setDesiredHiveSide(null);
 		}
 	}
-	
+
 	@Override
 	public void resetTask() {
 		this.ticksPassed = 0;

@@ -20,7 +20,7 @@ public final class AbstractFireBlockMixin extends Block {
 	private AbstractFireBlockMixin(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Inject(at = @At("HEAD"), method = "getFireForPlacement(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", cancellable = true)
 	private static void enderFirePlacement(IBlockReader reader, BlockPos pos, CallbackInfoReturnable<BlockState> info) {
 		if (EnderFireBlock.isEnderFireBase(reader.getBlockState(pos.down()).getBlock())) {

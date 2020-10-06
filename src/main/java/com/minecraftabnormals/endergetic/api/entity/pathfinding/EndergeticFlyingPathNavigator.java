@@ -14,7 +14,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 public class EndergeticFlyingPathNavigator extends PathNavigator {
-	
+
 	public EndergeticFlyingPathNavigator(MobEntity entitylivingIn, World worldIn) {
 		super(entitylivingIn, worldIn);
 	}
@@ -23,7 +23,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 		this.nodeProcessor = new EndergeticFlyingNodeProcessor();
 		return new PathFinder(this.nodeProcessor, idleTime);
 	}
-	
+
 	@Override
 	protected boolean canNavigate() {
 		return !this.isInLiquid();
@@ -31,7 +31,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 
 	@Override
 	protected Vector3d getEntityPosition() {
-		return new Vector3d(this.entity.getPosX(), this.entity.getPosY() + (double)this.entity.getHeight() * 0.5D, this.entity.getPosZ());
+		return new Vector3d(this.entity.getPosX(), this.entity.getPosY() + (double) this.entity.getHeight() * 0.5D, this.entity.getPosZ());
 	}
 
 	@Override
@@ -52,14 +52,14 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 			}
 
 			DebugPacketSender.sendPath(this.world, this.entity, this.currentPath, this.maxDistanceToWaypoint);
-			
+
 			if (!this.noPath()) {
 				Vector3d Vector3d1 = this.currentPath.getPosition(this.entity);
-	            this.entity.getMoveHelper().setMoveTo(Vector3d1.x, Vector3d1.y, Vector3d1.z, this.speed);
+				this.entity.getMoveHelper().setMoveTo(Vector3d1.x, Vector3d1.y, Vector3d1.z, this.speed);
 			}
 		}
 	}
-	
+
 	@Override
 	protected void pathFollow() {
 		if (this.currentPath != null) {
@@ -68,11 +68,11 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 			float f1 = f > 0.75F ? f / 2.0F : 0.75F - f / 2.0F;
 			Vector3d Vector3d1 = this.entity.getMotion();
 			if (Math.abs(Vector3d1.x) > 0.2D || Math.abs(Vector3d1.z) > 0.2D) {
-				f1 = (float)((double)f1 * Vector3d1.length() * 6.0D);
+				f1 = (float) ((double) f1 * Vector3d1.length() * 6.0D);
 			}
 
 			Vector3d Vector3d2 = Vector3d.copyCenteredHorizontally(this.currentPath.getCurrentPos());
-			if (Math.abs(this.entity.getPosX() - (Vector3d2.x + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosZ() - (Vector3d2.z + 0.5D)) < (double)f1 && Math.abs(this.entity.getPosY() - Vector3d2.y) < (double)(f1 * 2.0F)) {
+			if (Math.abs(this.entity.getPosX() - (Vector3d2.x + 0.5D)) < (double) f1 && Math.abs(this.entity.getPosZ() - (Vector3d2.z + 0.5D)) < (double) f1 && Math.abs(this.entity.getPosY() - Vector3d2.y) < (double) (f1 * 2.0F)) {
 				this.currentPath.incrementPathIndex();
 			}
 
@@ -87,10 +87,10 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 			this.checkForStuck(entityPos);
 		}
 	}
-	
+
 	/**
- 	* Checks if entity haven't been moved when last checked and if so, clears current 
- 	*/
+	 * Checks if entity haven't been moved when last checked and if so, clears current
+	 */
 	@Override
 	protected void checkForStuck(Vector3d positionVec3) {
 		if (this.totalTicks - this.ticksAtLastPos > 100) {
@@ -124,10 +124,10 @@ public class EndergeticFlyingPathNavigator extends PathNavigator {
 
 	@Override
 	protected boolean isDirectPathBetweenPoints(Vector3d posVec31, Vector3d posVec32, int sizeX, int sizeY, int sizeZ) {
-		Vector3d Vector3d = new Vector3d(posVec32.x, posVec32.y + (double)this.entity.getHeight() * 0.5D, posVec32.z);
+		Vector3d Vector3d = new Vector3d(posVec32.x, posVec32.y + (double) this.entity.getHeight() * 0.5D, posVec32.z);
 		return this.world.rayTraceBlocks(new RayTraceContext(posVec31, Vector3d, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this.entity)).getType() == RayTraceResult.Type.MISS;
 	}
-	
+
 	@Override
 	public boolean canEntityStandOnPos(BlockPos pos) {
 		return this.world.isAirBlock(pos);

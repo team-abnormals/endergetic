@@ -21,13 +21,13 @@ public class BoofloHuntFruitGoal extends Goal {
 	private double targetY;
 	private double targetZ;
 	private long field_220720_k;
-	
+
 	public BoofloHuntFruitGoal(BoofloEntity booflo, double speed) {
 		this.booflo = booflo;
 		this.speedTowardsTarget = speed;
 		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
-	
+
 	public boolean shouldExecute() {
 		long i = this.booflo.world.getGameTime();
 		if (i - this.field_220720_k < 20L) {
@@ -49,11 +49,11 @@ public class BoofloHuntFruitGoal extends Goal {
 					return true;
 				} else {
 					return this.getAttackReachSqr(target) >= this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
-	            }
+				}
 			}
 		}
 	}
-	
+
 	public boolean shouldContinueExecuting() {
 		Entity target = this.booflo.getBoofloAttackTarget();
 		if (target == null) {
@@ -65,7 +65,7 @@ public class BoofloHuntFruitGoal extends Goal {
 		} else if (!this.booflo.isWithinHomeDistanceFromPosition(target.getPosition())) {
 			return false;
 		} else {
-			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity)target).isCreative();
+			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
 		}
 	}
 
@@ -74,7 +74,7 @@ public class BoofloHuntFruitGoal extends Goal {
 		this.booflo.setAggroed(true);
 		this.delayCounter = 0;
 	}
-	  
+
 	public void resetTask() {
 		Entity target = this.booflo.getBoofloAttackTarget();
 		if (!EntityPredicates.CAN_AI_TARGET.test(target)) {
@@ -87,21 +87,21 @@ public class BoofloHuntFruitGoal extends Goal {
 	public void tick() {
 		this.delayCounter--;
 		Entity target = this.booflo.getBoofloAttackTarget();
-		
+
 		double distToEnemySqr = this.booflo.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
 		this.booflo.getLookController().setLookPosition(target.getPosX(), target.getPosY(), target.getPosZ(), 10.0F, 10.0F);
-		
+
 		if (this.delayCounter <= 0 || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRNG().nextFloat() < 0.05F) {
 			this.targetX = target.getPosX();
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.getPosZ();
-			
+
 			this.delayCounter = 4 + this.booflo.getRNG().nextInt(7);
-			
+
 			if (distToEnemySqr > 1024.0D) {
 				this.delayCounter += 5;
 			} else if (distToEnemySqr > 256.0D) {
-	            this.delayCounter += 5;
+				this.delayCounter += 5;
 			}
 
 			if (!this.booflo.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
@@ -117,8 +117,8 @@ public class BoofloHuntFruitGoal extends Goal {
 		double attackReach = this.getAttackReachSqr(prey);
 		if (distToEnemySqr <= attackReach && this.attackTick <= 0) {
 			this.attackTick = 20;
-			if  (prey instanceof BolloomFruitEntity) {
-				((BolloomFruitEntity)prey).onBroken(false);
+			if (prey instanceof BolloomFruitEntity) {
+				((BolloomFruitEntity) prey).onBroken(false);
 				this.booflo.setCaughtFruit(true);
 				this.booflo.setHungry(false);
 				prey.remove();

@@ -83,14 +83,14 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	private float swimmingAnimation;
 	private float swimmingAnimationSpeed;
 	public boolean wasBred;
-	
+
 	public BoofloAdolescentEntity(EntityType<? extends BoofloAdolescentEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.moveController = new BoofloAdolescentEntity.BoofloAdolescentMoveController(this);
 		this.tailAnimation = this.rand.nextFloat();
 		this.prevTailAnimation = this.tailAnimation;
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -104,16 +104,16 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		this.dataManager.register(FALL_SPEED, 0.0F);
 		this.dataManager.register(BOOF_BOOST_COOLDOWN, 0);
 	}
-	
+
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(1, new AdolescentEatGoal(this));
 		this.goalSelector.addGoal(4, new AdolescentAttackGoal(this, 1.1D, true));
 		this.goalSelector.addGoal(6, new BoofloAdolescentEntity.RandomFlyingGoal(this, 1.1D, 5));
-		
+
 		this.targetSelector.addGoal(4, new BoofloNearestAttackableTargetGoal<>(this, BolloomFruitEntity.class, true));
 	}
-	
+
 	@Override
 	public void travel(Vector3d vec3d) {
 		if (this.isServerWorld() && !this.isInWater()) {
@@ -125,46 +125,46 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			super.travel(vec3d);
 		}
 	}
-	
+
 	@Override
 	protected PathNavigator createNavigator(World worldIn) {
-		return new EndergeticFlyingPathNavigator(this, worldIn) { 
-			
+		return new EndergeticFlyingPathNavigator(this, worldIn) {
+
 			@Override
 			public boolean canEntityStandOnPos(BlockPos pos) {
 				return !this.entity.isOnGround();
 			}
-			
+
 		};
 	}
-	
+
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();
-		
+
 		if (this.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION) && this.getAnimationTick() == 9) {
 			if (this.world instanceof ServerWorld) {
-				((ServerWorld)this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05D);
+				((ServerWorld) this.world).spawnParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 10, (double) (this.getWidth() / 4.0F), (double) (this.getHeight() / 4.0F), (double) (this.getWidth() / 4.0F), 0.05D);
 			}
 			this.playSound(SoundEvents.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
 		}
 	}
-	
+
 	@Override
 	public void livingTick() {
 		super.livingTick();
-		
+
 		if (this.getRidingEntity() == null) this.setFallSpeed(this.getFallSpeed() + 0.1F);
-		
+
 		if (this.getRNG().nextInt(50000) < 10 && !this.isHungry() && !this.hasFruit()) {
 			this.setHungry(true);
 		}
-		
-		if (this.world.isRemote) {	
+
+		if (this.world.isRemote) {
 			this.prevTailAnimation = this.tailAnimation;
 			this.prevSwimmingAnimation = this.swimmingAnimation;
 			if (!this.isInWater()) {
@@ -191,15 +191,15 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			this.tailAnimation += this.tailSpeed;
 			this.swimmingAnimation += this.swimmingAnimationSpeed;
 		}
-		
+
 		if (this.getBoofBoostCooldown() > 0) {
 			this.setBoofBoostCooldown(this.getBoofBoostCooldown() - 1);
 		}
-		
+
 		if ((this.onGround || this.isPassenger()) && this.doesWantToGrow() && this.world.hasNoCollisions(this.getBoundingBox().grow(2.0F, 0.0F, 2.0F))) {
 			this.growUp();
 		}
-		
+
 		if (!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.areEyesInFluid(FluidTags.WATER)))) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 			this.setPlayingEndimation(BOOF_ANIMATION);
@@ -210,26 +210,26 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 				this.setBoofBoostCooldown(20);
 			}
 		}
-		
+
 		//Helps them not fall off the edge
 		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3)) {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
-			
+
 			if (this.getPosY() <= 50) {
 				this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F, (rand.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * (5 * (rand.nextFloat() + 0.1F)) * 0.1F);
 				this.setPlayingEndimation(BOOF_ANIMATION);
 			}
 		}
-		
+
 		if (!this.onGround && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F, 0, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F);
 		}
-		
+
 		if (this.getBoofloAttackTarget() != null && this.canEntityBeSeen(this.getBoofloAttackTarget())) {
 			this.rotationYaw = this.rotationYawHead;
 		}
-		
+
 		if (this.world.isRemote) {
 			if (this.forcedAgeTimer > 0) {
 				if (this.forcedAgeTimer % 4 == 0) {
@@ -242,27 +242,28 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			int growingAge = this.getGrowingAge();
 			if (growingAge < 0) {
 				growingAge++;
-	            this.setGrowingAge(growingAge);
+				this.setGrowingAge(growingAge);
 			} else if (growingAge > 0) {
 				growingAge--;
 				this.setGrowingAge(growingAge);
 			}
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
-	
+
 	@Override
 	public boolean onLivingFall(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {}
-	
+	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
+
 	@Override
 	public void onDeath(DamageSource cause) {
 		if (this.hasFruit() && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
@@ -270,7 +271,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 		super.onDeath(cause);
 	}
-	
+
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
@@ -304,7 +305,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		this.forcedAge = compound.getInt("ForcedAge");
 		this.wasBred = compound.getBoolean("WasBred");
 	}
-	
+
 	public boolean isMoving() {
 		return this.dataManager.get(MOVING);
 	}
@@ -312,7 +313,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setMoving(boolean moving) {
 		this.dataManager.set(MOVING, moving);
 	}
-	
+
 	public boolean hasFruit() {
 		return this.dataManager.get(HAS_FRUIT);
 	}
@@ -320,7 +321,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setHasFruit(boolean hasFruit) {
 		this.dataManager.set(HAS_FRUIT, hasFruit);
 	}
-	
+
 	public boolean isDescenting() {
 		return this.dataManager.get(DESCENTING);
 	}
@@ -328,7 +329,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setDescenting(boolean descenting) {
 		this.dataManager.set(DESCENTING, descenting);
 	}
-	
+
 	public boolean isEating() {
 		return this.dataManager.get(EATING);
 	}
@@ -336,7 +337,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setEating(boolean eating) {
 		this.dataManager.set(EATING, eating);
 	}
-	
+
 	public boolean isHungry() {
 		return this.dataManager.get(HUNGRY);
 	}
@@ -344,7 +345,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setHungry(boolean hungry) {
 		this.dataManager.set(HUNGRY, hungry);
 	}
-	
+
 	public boolean hasEaten() {
 		return this.dataManager.get(EATEN);
 	}
@@ -352,7 +353,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setEaten(boolean eaten) {
 		this.dataManager.set(EATEN, eaten);
 	}
-	
+
 	public boolean doesWantToGrow() {
 		return this.dataManager.get(WANTS_TO_GROW);
 	}
@@ -360,7 +361,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setWantsToGrow(boolean wantsToGrow) {
 		this.dataManager.set(WANTS_TO_GROW, wantsToGrow);
 	}
-	
+
 	public float getFallSpeed() {
 		return this.dataManager.get(FALL_SPEED);
 	}
@@ -368,7 +369,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setFallSpeed(float speed) {
 		this.dataManager.set(FALL_SPEED, speed);
 	}
-	
+
 	public int getBoofBoostCooldown() {
 		return this.dataManager.get(BOOF_BOOST_COOLDOWN);
 	}
@@ -376,7 +377,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setBoofBoostCooldown(int ticks) {
 		this.dataManager.set(BOOF_BOOST_COOLDOWN, ticks);
 	}
-	
+
 	@Nullable
 	public Entity getBoofloAttackTarget() {
 		return this.boofloAttackTarget;
@@ -385,7 +386,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	public void setBoofloAttackTarget(@Nullable Entity entity) {
 		this.boofloAttackTarget = entity;
 	}
-	
+
 	public int getGrowingAge() {
 		if (this.world.isRemote) {
 			return -1;
@@ -393,7 +394,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			return this.growingAge;
 		}
 	}
-	
+
 	public void setGrowingAge(int age) {
 		int oldAge = this.growingAge;
 		this.growingAge = age;
@@ -401,11 +402,11 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			this.setWantsToGrow(true);
 		}
 	}
-	
+
 	public void addGrowth(int growth) {
 		this.ageUp(growth, false);
 	}
-	
+
 	public void ageUp(int growthSeconds, boolean updateForcedAge) {
 		int growingAge = this.getGrowingAge();
 		int j = growingAge;
@@ -415,7 +416,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 
 		int k = growingAge - j;
-		
+
 		this.setGrowingAge(growingAge);
 		if (updateForcedAge) {
 			this.forcedAge += k;
@@ -424,36 +425,36 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			}
 		}
 
-		if  (this.getGrowingAge() == 0) {
+		if (this.getGrowingAge() == 0) {
 			this.setGrowingAge(this.forcedAge);
 		}
 	}
-	
+
 	public void growUp() {
 		if (!this.world.isRemote && this.isAlive()) {
 			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
-			
+
 			BoofloEntity booflo = EEEntities.BOOFLO.get().create(this.world);
 			booflo.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
-			
+
 			if (this.hasCustomName()) {
-    			booflo.setCustomName(this.getCustomName());
-    			booflo.setCustomNameVisible(this.isCustomNameVisible());
-    		}
-			
+				booflo.setCustomName(this.getCustomName());
+				booflo.setCustomNameVisible(this.isCustomNameVisible());
+			}
+
 			if (this.getLeashed()) {
 				booflo.setLeashHolder(this.getLeashHolder(), true);
 				this.clearLeashed(true, false);
 			}
-			
+
 			if (this.getRidingEntity() != null) {
 				booflo.startRiding(this.getRidingEntity());
 			}
-			
+
 			booflo.wasBred = this.wasBred;
 			booflo.setHealth(booflo.getMaxHealth());
 			this.world.addEntity(booflo);
-			
+
 			this.remove();
 		}
 	}
@@ -484,17 +485,17 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			this.remove();
 		}
 	}
-	
-	@OnlyIn(Dist.CLIENT)	
+
+	@OnlyIn(Dist.CLIENT)
 	public float getTailAnimation(float ptc) {
 		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
 	}
-	
-	@OnlyIn(Dist.CLIENT)	
+
+	@OnlyIn(Dist.CLIENT)
 	public float getSwimmingAnimation(float ptc) {
 		return MathHelper.lerp(ptc, this.prevSwimmingAnimation, this.swimmingAnimation);
 	}
-	
+
 	public boolean isSafePos(BlockPos pos, int muliplier) {
 		BlockPos newPos = pos;
 		for (int y = 0; y < 10 * muliplier; y++) {
@@ -506,29 +507,29 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 		return false;
 	}
-	
+
 	public void dropFruit() {
 		if (!this.isWorldRemote()) {
 			this.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
 			this.setHasFruit(false);
 		}
 	}
-	
+
 	public boolean isPlayerNear() {
 		return this.world.getEntitiesWithinAABB(PlayerEntity.class, this.getBoundingBox().grow(2.0F), BoofloEntity.IS_SCARED_BY).size() > 0;
 	}
-	
+
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
 		return source == DamageSource.IN_WALL || source == DamageSource.FLY_INTO_WALL || super.isInvulnerableTo(source);
 	}
-	
+
 	@Override
 	protected ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
-		
-		if (item instanceof SpawnEggItem && ((SpawnEggItem)item).hasType(itemstack.getTag(), EEEntities.BOOFLO.get())) {
+
+		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).hasType(itemstack.getTag(), EEEntities.BOOFLO.get())) {
 			if (!this.world.isRemote) {
 				BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(this.world);
 				baby.setGrowingAge(-24000);
@@ -537,40 +538,40 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 				if (itemstack.hasDisplayName()) {
 					baby.setCustomName(itemstack.getDisplayName());
 				}
-				
+
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
 			return ActionResultType.PASS;
 		} else if (item == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
-            this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
-            this.setEaten(true);
-            return ActionResultType.CONSUME;
+			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
+			this.setEaten(true);
+			return ActionResultType.CONSUME;
 		}
 		return ActionResultType.PASS;
 	}
-	
+
 	@Override
 	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
 		this.setGrowingAge(-24000);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
-	
+
 	@Override
 	public Endimation[] getEndimations() {
-		return new Endimation[] {
-			BOOF_ANIMATION,
-			EATING_ANIMATION
+		return new Endimation[]{
+				BOOF_ANIMATION,
+				EATING_ANIMATION
 		};
 	}
-	
+
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return !this.wasBred;
 	}
-	
+
 	static class RandomFlyingGoal extends RandomWalkingGoal {
-		
+
 		public RandomFlyingGoal(CreatureEntity booflo, double speed, int chance) {
 			super(booflo, speed, chance);
 		}
@@ -578,26 +579,26 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		@Nullable
 		protected Vector3d getPosition() {
 			Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0);
-			
-			for(int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0)) {
+
+			for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 0)) {
 				;
 			}
-			
+
 			return vec3d;
 		}
-		
+
 		@Override
 		public boolean shouldExecute() {
 			return super.shouldExecute() && !this.creature.isInWater();
 		}
-		
+
 		@Override
 		public boolean shouldContinueExecuting() {
 			return super.shouldContinueExecuting() && !this.creature.isInWater();
 		}
-		
+
 	}
-	
+
 	static class BoofloAdolescentMoveController extends MovementController {
 		private final BoofloAdolescentEntity booflo;
 
@@ -609,16 +610,16 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		public void tick() {
 			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
 				Vector3d vec3d = this.booflo.getMoveControllerPathDistance(this.posX, this.posY, this.posZ);
-				
+
 				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
 				this.booflo.renderYawOffset = this.booflo.rotationYaw;
 				this.booflo.rotationYawHead = this.booflo.rotationYaw;
-				
+
 				float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
-				
+
 				this.booflo.setAIMoveSpeed(f2);
-				
+
 				this.booflo.setMoving(true);
 			} else {
 				this.booflo.setMoving(false);

@@ -25,7 +25,7 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	@Shadow
 	@Final
 	private SimplexNoiseGenerator generator;
-	
+
 	@Shadow(remap = false)
 	@Final
 	private long field_235315_h_;

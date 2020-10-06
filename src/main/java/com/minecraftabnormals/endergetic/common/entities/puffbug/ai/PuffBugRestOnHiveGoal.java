@@ -11,7 +11,7 @@ public class PuffBugRestOnHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
 	private final Random random;
 	private int ticksRested;
-	
+
 	public PuffBugRestOnHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
 		this.random = puffbug.getRNG();
@@ -21,25 +21,25 @@ public class PuffBugRestOnHiveGoal extends Goal {
 	public boolean shouldExecute() {
 		return this.puffbug.getAttackTarget() == null && !this.puffbug.isInflated() && this.puffbug.getAttachedHiveSide() != Direction.UP;
 	}
-	
+
 	@Override
 	public void tick() {
 		this.ticksRested++;
-		
+
 		if (this.ticksRested > 1000 && this.random.nextFloat() < 0.25F) {
 			this.puffbug.setAttachedHiveSide(Direction.UP);
 			this.puffbug.setInflated(true);
 		}
-		
+
 		if (this.puffbug.getAttachedHiveSide() != Direction.UP && this.puffbug.getAttachedHiveSide() != Direction.DOWN) {
 			int ticks = this.puffbug.ticksExisted > 10 ? 20 : 5;
 			this.puffbug.getRotationController().rotate(0.0F, -115.0F, 0.0F, ticks);
 		}
-		
+
 		if (this.puffbug.world.getGameTime() % 60 == 0) {
 			this.puffbug.heal(2.0F);
 		}
-		
+
 		/*
 		 * snore...
 		 */
@@ -48,7 +48,7 @@ public class PuffBugRestOnHiveGoal extends Goal {
 			this.puffbug.playSound(this.puffbug.getSleepSound(), 0.1F, pitch);
 		}
 	}
-	
+
 	@Override
 	public void resetTask() {
 		this.ticksRested = 0;

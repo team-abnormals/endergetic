@@ -8,7 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class DetectionHelper {
-	
+
 	public static AxisAlignedBB expandDownwards(AxisAlignedBB bb, double y) {
 		double d0 = bb.minX;
 		double d1 = bb.minY - y;
@@ -18,7 +18,7 @@ public class DetectionHelper {
 		double d5 = bb.maxZ;
 		return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
 	}
-	
+
 	public static AxisAlignedBB checkOnGround(AxisAlignedBB bb) {
 		double d0 = bb.minX;
 		double d1 = bb.minY - 0.07F;
@@ -28,7 +28,7 @@ public class DetectionHelper {
 		double d5 = bb.maxZ;
 		return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
 	}
-	
+
 	@Nullable
 	public static <E extends LivingEntity> E getClosestEntity(List<? extends E> list, double posX, double posY, double posZ) {
 		double d0 = -1.0D;
@@ -42,7 +42,7 @@ public class DetectionHelper {
 			}
 		}
 
-	 	return entity;
+		return entity;
 	}
 
 }

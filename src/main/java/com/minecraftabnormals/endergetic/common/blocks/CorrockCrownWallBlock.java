@@ -43,30 +43,30 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	});
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.makeCuboidShape(0.0D, 4.5D, 14.0D, 16.0D, 12.5D, 16.0D), Direction.SOUTH, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 16.0D, 12.5D, 2.0D), Direction.EAST, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 2.0D, 12.5D, 16.0D), Direction.WEST, Block.makeCuboidShape(14.0D, 4.5D, 0.0D, 16.0D, 12.5D, 16.0D)));
-	   
+
 	public CorrockCrownWallBlock(Properties builder, boolean petrified) {
 		super(builder, petrified);
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, Boolean.valueOf(false)));
 	}
-	
+
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if (!this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get().getDefaultState().with(FACING, world.getBlockState(pos).get(FACING)));
 		}
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
 		return SHAPES.get(state.get(FACING));
 	}
-	
+
 	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
 		Direction direction = state.get(FACING);
 		BlockPos blockpos = pos.offset(direction.getOpposite());
 		return Block.hasEnoughSolidSide(world, blockpos, direction);
 	}
-	
+
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockState state = this.getDefaultState();
@@ -74,7 +74,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		IWorldReader iworldreaderbase = context.getWorld();
 		BlockPos blockpos = context.getPos();
 		Direction[] aDirection = context.getNearestLookingDirections();
-		
+
 		if (!this.petrified && !this.isInProperDimension(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
 		}
@@ -83,12 +83,12 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 			if (Direction.getAxis().isHorizontal()) {
 				Direction Direction1 = Direction.getOpposite();
 				state = state.with(FACING, Direction1);
-	            if (state.isValidPosition(iworldreaderbase, blockpos) && !(iworldreaderbase.getBlockState(blockpos.offset(state.get(FACING).getOpposite())).getBlock() instanceof CorrockCrownWallBlock) && !(iworldreaderbase.getBlockState(blockpos.offset(state.get(FACING).getOpposite())).getBlock() instanceof CorrockCrownStandingBlock)) {
-	            	return state.with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
-	            }
+				if (state.isValidPosition(iworldreaderbase, blockpos) && !(iworldreaderbase.getBlockState(blockpos.offset(state.get(FACING).getOpposite())).getBlock() instanceof CorrockCrownWallBlock) && !(iworldreaderbase.getBlockState(blockpos.offset(state.get(FACING).getOpposite())).getBlock() instanceof CorrockCrownStandingBlock)) {
+					return state.with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
+				}
 			}
 		}
-	    return null;
+		return null;
 	}
 
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
@@ -100,13 +100,13 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		} else if (!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
-		
+
 		if (facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos)) {
-	         return Blocks.AIR.getDefaultState();
+			return Blocks.AIR.getDefaultState();
 		}
 		return facing.getOpposite() == stateIn.get(FACING) && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : stateIn;
 	}
-	
+
 	public boolean isInProperDimension(World world) {
 		return !this.petrified && CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get() == this;
 	}
@@ -114,12 +114,12 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(FACING, rot.rotate(state.get(FACING)));
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
 	}
-	
+
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
 	}

@@ -12,7 +12,7 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
 public class SparseCorrockSurfaceBuilder extends DefaultSurfaceBuilder {
-	
+
 	public SparseCorrockSurfaceBuilder(Codec<SurfaceBuilderConfig> config) {
 		super(config);
 	}

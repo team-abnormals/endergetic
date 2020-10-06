@@ -33,7 +33,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 		}
 		return false;
 	}
-	
+
 	private void createGlob(int variation, IWorld world, BlockPos pos, Random rand) {
 		this.setBlockIfReplacable(world, pos, GLOWING_POISE_LOG);
 		this.setBlockIfReplacable(world, pos.north(), POISE_CLUSTER);
@@ -41,30 +41,30 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 		this.setBlockIfReplacable(world, pos.south(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.west(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.up(), POISE_CLUSTER);
-		
+
 		this.setBlockIfReplacable(world, pos.north().up(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.east().up(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.south().up(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.west().up(), POISE_CLUSTER);
-		
+
 		this.setBlockIfReplacable(world, pos.north(2), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.east(2), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.south(2), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.west(2), POISE_CLUSTER);
-		
+
 		this.setBlockIfReplacable(world, pos.north().east(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.north().west(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.south().east(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.south().west(), POISE_CLUSTER);
-		
+
 		if (variation <= 2) {
 			this.setBlockIfReplacable(world, pos.up().up(), POISE_CLUSTER);
-		} else if(variation >= 3 && variation <= 7) {
+		} else if (variation >= 3 && variation <= 7) {
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north().west().up(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north().east().up(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.south().west().up(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.south().east().up(), POISE_CLUSTER);
-			
+
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north(2).west(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north(2).east(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.south(2).west(), POISE_CLUSTER);
@@ -94,7 +94,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 			}
 		}
 	}
-	
+
 	private void setBlockIfReplacable(IWorld world, BlockPos pos, BlockState newState) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.up()).getBlock() != EEBlocks.TALL_POISE_BUSH.get() && world.getBlockState(pos.down()).getBlock() != EEBlocks.TALL_POISE_BUSH.get()) {
 			world.setBlockState(pos, newState, 2);

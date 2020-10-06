@@ -44,31 +44,31 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	});
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
 	public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
-	
+
 	public CorrockCrownStandingBlock(Properties properties, boolean petrified) {
 		super(properties, petrified);
 		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, false).with(UPSIDE_DOWN, false));
 	}
-	
+
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return state.get(UPSIDE_DOWN) ? Block.makeCuboidShape(2.0D, 2.0D, 2.0D, 14.0D, 16.0D, 14.0D) : Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
 	}
-	
+
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if (!this.petrified && !this.isInProperDimension(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get().getDefaultState()
-				.with(ROTATION, world.getBlockState(pos).get(ROTATION))
-				.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
+					.with(ROTATION, world.getBlockState(pos).get(ROTATION))
+					.with(UPSIDE_DOWN, world.getBlockState(pos).get(UPSIDE_DOWN))
 			);
 		}
 	}
-	
+
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		return state.get(UPSIDE_DOWN) ? worldIn.getBlockState(pos.up()).isSolidSide(worldIn, pos.up(), Direction.DOWN) : worldIn.getBlockState(pos.down()).isSolidSide(worldIn, pos.down(), Direction.UP);
 	}
-	
+
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.get(WATERLOGGED)) {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
@@ -79,7 +79,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 		if (!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
-		
+
 		return this.isValidPosition(stateIn, worldIn, currentPos) ? stateIn : Blocks.AIR.getDefaultState();
 	}
 
@@ -93,15 +93,15 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 		if (context.getWorld().getBlockState(context.getPos().down()).getBlock() instanceof CorrockCrownStandingBlock) {
 			return null;
 		}
-		return direction == Direction.UP ? 
-			this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8)
-			: this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double)((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(UPSIDE_DOWN, true).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8);
+		return direction == Direction.UP ?
+				this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double) ((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8)
+				: this.getDefaultState().with(ROTATION, Integer.valueOf(MathHelper.floor((double) ((180.0F + context.getPlacementYaw()) * 16.0F / 360.0F) + 0.5D) & 15)).with(UPSIDE_DOWN, true).with(WATERLOGGED, ifluidstate.isTagged(FluidTags.WATER) && ifluidstate.getLevel() >= 8);
 	}
-	
+
 	public boolean isInProperDimension(World world) {
 		return !this.petrified && CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING).get() == this;
 	}
-	
+
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(ROTATION, Integer.valueOf(rot.rotate(state.get(ROTATION), 16)));
 	}
@@ -109,7 +109,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
 		return state.with(ROTATION, Integer.valueOf(mirrorIn.mirrorRotation(state.get(ROTATION), 16)));
 	}
-	
+
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(ROTATION, WATERLOGGED, UPSIDE_DOWN);
 	}

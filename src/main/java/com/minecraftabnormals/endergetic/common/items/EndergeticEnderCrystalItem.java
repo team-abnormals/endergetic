@@ -21,7 +21,7 @@ public class EndergeticEnderCrystalItem extends EnderCrystalItem {
 	public EndergeticEnderCrystalItem(Properties props) {
 		super(props);
 	}
-	
+
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		World world = context.getWorld();

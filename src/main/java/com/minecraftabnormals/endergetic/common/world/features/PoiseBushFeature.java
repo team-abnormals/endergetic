@@ -22,7 +22,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 @SuppressWarnings("deprecation")
 public class PoiseBushFeature extends Feature<NoFeatureConfig> {
 	private static final Supplier<BlockState> POISE_BUSH = () -> EEBlocks.POISE_BUSH.get().getDefaultState();
-	
+
 	public PoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
@@ -31,7 +31,7 @@ public class PoiseBushFeature extends Feature<NoFeatureConfig> {
 		for (BlockState blockstate = worldIn.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = worldIn.getBlockState(pos)) {
 			pos = pos.down();
 		}
-		
+
 		int i = 0;
 		for (int j = 0; j < 128; ++j) {
 			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
@@ -43,7 +43,7 @@ public class PoiseBushFeature extends Feature<NoFeatureConfig> {
 
 		return i > 0;
 	}
-	
+
 	protected boolean isNearBolloomBud(IWorld world, BlockPos pos) {
 		return world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD.get();
 	}

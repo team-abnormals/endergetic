@@ -14,11 +14,11 @@ public class RotatableBlock extends HorizontalBlock {
 		super(builder);
 		this.setDefaultState(this.stateContainer.getBaseState().with(HORIZONTAL_FACING, Direction.NORTH));
 	}
-	
+
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().rotateY());
 	}
-	
+
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.with(HORIZONTAL_FACING, rot.rotate(state.get(HORIZONTAL_FACING)));
 	}
@@ -26,5 +26,5 @@ public class RotatableBlock extends HorizontalBlock {
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(HORIZONTAL_FACING);
 	}
-	
+
 }

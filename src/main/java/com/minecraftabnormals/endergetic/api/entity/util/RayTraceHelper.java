@@ -18,24 +18,24 @@ public class RayTraceHelper {
 
 	public static RayTraceResult rayTrace(Entity entity, double distance, float delta) {
 		return entity.world.rayTraceBlocks(new RayTraceContext(
-			entity.getEyePosition(delta),
-			entity.getEyePosition(delta).add(entity.getLook(delta).scale(distance)),
-			RayTraceContext.BlockMode.COLLIDER,
-			RayTraceContext.FluidMode.NONE,
-			entity
+				entity.getEyePosition(delta),
+				entity.getEyePosition(delta).add(entity.getLook(delta).scale(distance)),
+				RayTraceContext.BlockMode.COLLIDER,
+				RayTraceContext.FluidMode.NONE,
+				entity
 		));
 	}
-	
+
 	public static RayTraceResult rayTraceWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
 		return entity.world.rayTraceBlocks(new RayTraceContext(
-			entity.getEyePosition(delta),
-			entity.getEyePosition(delta).add(getVectorForRotation(pitch, yaw).scale(distance)),
-			RayTraceContext.BlockMode.COLLIDER,
-			RayTraceContext.FluidMode.NONE,
-			entity
+				entity.getEyePosition(delta),
+				entity.getEyePosition(delta).add(getVectorForRotation(pitch, yaw).scale(distance)),
+				RayTraceContext.BlockMode.COLLIDER,
+				RayTraceContext.FluidMode.NONE,
+				entity
 		));
 	}
-	
+
 	public static EntityRayTraceResult rayTraceEntityResult(Entity entity, float pitch, float yaw, double distance, double sqDistance, float delta) {
 		Vector3d look = getVectorForRotation(pitch, yaw);
 		Vector3d endVec = entity.getEyePosition(delta).add(look.scale(distance));
@@ -45,7 +45,7 @@ public class RayTraceHelper {
 		}, sqDistance);
 		return entityRaytraceResult;
 	}
-	
+
 	public static final Vector3d getVectorForRotation(float pitch, float yaw) {
 		float f = pitch * ((float) Math.PI / 180F);
 		float f1 = -yaw * ((float) Math.PI / 180F);
@@ -55,7 +55,7 @@ public class RayTraceHelper {
 		float f5 = MathHelper.sin(f);
 		return new Vector3d((double) (f3 * f4), (double) (-f5), (double) (f2 * f4));
 	}
-	
+
 	/**
 	 * Copied from Vanilla
 	 * It's a raytracing method, but Vanilla's is client only
@@ -68,7 +68,7 @@ public class RayTraceHelper {
 		Vector3d Vector3d = null;
 
 		for (Entity entity1 : world.getEntitiesInAABBexcluding(p_221273_0_, p_221273_3_, p_221273_4_)) {
-			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)entity1.getCollisionBorderSize());
+			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) entity1.getCollisionBorderSize());
 			Optional<Vector3d> optional = axisalignedbb.rayTrace(p_221273_1_, p_221273_2_);
 			if (axisalignedbb.contains(p_221273_1_)) {
 				if (d0 >= 0.0D) {

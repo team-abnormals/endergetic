@@ -185,7 +185,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 
 	@OnlyIn(Dist.CLIENT)
 	public float[] getVineAnimation(float partialTicks) {
-		return new float[] {
+		return new float[]{
 				MathHelper.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
 				MathHelper.lerp(partialTicks, this.prevAngle, this.getAngle()),
 		};
@@ -206,7 +206,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 
 	protected void doParticles() {
 		if (this.world instanceof ServerWorld) {
-			((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double)this.getHeight() / 1.5D, this.getPosZ(), 10, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
+			((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 10, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
 		}
 	}
 
@@ -261,7 +261,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 
 	@Override
 	public void addVelocity(double x, double y, double z) {
-		if(!this.isUntied()) return;
+		if (!this.isUntied()) return;
 		super.addVelocity(x, y, z);
 	}
 

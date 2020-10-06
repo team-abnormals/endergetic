@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class BoofloSwimGoal extends RandomWalkingGoal {
-	
+
 	public BoofloSwimGoal(CreatureEntity booflo, double p_i48937_2_, int p_i48937_4_) {
 		super(booflo, p_i48937_2_, p_i48937_4_);
 	}
@@ -22,10 +22,10 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 		for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
 			;
 		}
-		
+
 		return vec3d;
 	}
-	
+
 	@Override
 	public boolean shouldExecute() {
 		if (this.creature.isBeingRidden()) {
@@ -47,10 +47,10 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 			return !this.creature.isInWater();
 		}
 	}
-	
+
 	@Override
 	public boolean shouldContinueExecuting() {
 		return super.shouldContinueExecuting() && !this.creature.isInWater();
 	}
-	
+
 }

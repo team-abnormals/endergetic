@@ -25,14 +25,14 @@ public class PuffbugHiveHangerBlock extends Block {
 	public PuffbugHiveHangerBlock(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
 		if (!(entity instanceof PuffBugEntity)) {
 			entity.setMotionMultiplier(state, new Vector3d(0.25D, 0.05D, 0.25D));
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
 		return new ItemStack(EEBlocks.PUFFBUG_HIVE.get());
@@ -41,7 +41,7 @@ public class PuffbugHiveHangerBlock extends Block {
 	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
 		return SHAPE;
 	}
-	
+
 	@Override
 	@SuppressWarnings("deprecation")
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {

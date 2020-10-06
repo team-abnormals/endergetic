@@ -32,5 +32,5 @@ public class EnderFireBlock extends AbstractFireBlock {
 	protected boolean canBurn(BlockState stateIn) {
 		return true;
 	}
-	
+
 }

@@ -12,7 +12,7 @@ import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilderConfig;
 
 public class PoiseForestSurfaceBuilder extends DefaultSurfaceBuilder {
-	
+
 	public PoiseForestSurfaceBuilder(Codec<SurfaceBuilderConfig> config) {
 		super(config);
 	}
