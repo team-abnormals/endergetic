@@ -132,9 +132,9 @@ public final class EEBlocks {
 	 * Compatibility
 	 */
 	public static final RegistryObject<Block> POISE_VERTICAL_PLANKS = HELPER.createCompatBlock("quark", "vertical_poise_planks", () -> new Block(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_VERTICAL_SLAB   = HELPER.createCompatBlock("quark", "poise_vertical_slab", () -> new VerticalSlabBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_BOOKSHELF       = HELPER.createCompatBlock("quark", "poise_bookshelf", () -> new BookshelfBlock(Properties.from(Blocks.BOOKSHELF)), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_LADDER          = HELPER.createCompatBlock("quark", "poise_ladder", () -> new AbnormalsLadderBlock(Properties.from(Blocks.LADDER)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> POISE_VERTICAL_SLAB   = HELPER.createCompatFuelBlock("quark", "poise_vertical_slab", () -> new VerticalSlabBlock(EEProperties.POISE_WOOD), 150, ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_BOOKSHELF       = HELPER.createCompatFuelBlock("quark", "poise_bookshelf", () -> new BookshelfBlock(Properties.from(Blocks.BOOKSHELF)), 300, ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_LADDER          = HELPER.createCompatFuelBlock("quark", "poise_ladder", () -> new AbnormalsLadderBlock(Properties.from(Blocks.LADDER)), 300, ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> EUMUS_BRICK_VERTICAL_SLAB = HELPER.createCompatBlock("quark", "eumus_brick_vertical_slab", () -> new VerticalSlabBlock(EEProperties.EUMUS_BRICKS), ItemGroup.BUILDING_BLOCKS);
 	
 	@OnlyIn(Dist.CLIENT)
