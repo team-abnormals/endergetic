@@ -17,12 +17,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -102,27 +101,15 @@ public class BoofBlock extends ContainerBlock {
 		@Override
 		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
 			World world = source.getWorld();
-			this.setSuccessful(true);
-			BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
-			BlockState blockstate = world.getBlockState(blockpos);
-			if (!blockstate.getMaterial().isReplaceable()) {
-				this.setSuccessful(false);
-			} else {
+			Direction facing = source.getBlockState().get(DispenserBlock.FACING);
+			BlockPos pos = source.getBlockPos().offset(facing);
+			if (world.getBlockState(pos).getMaterial().isReplaceable()) {
+				world.setBlockState(pos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.FACING, facing).with(DispensedBoofBlock.WATERLOGGED, world.getFluidState(pos).isTagged(FluidTags.WATER)));
+				world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.rand.nextFloat() * 0.15F);
 				this.setSuccessful(true);
-			}
-
-			if (this.isSuccessful()) {
-				FluidState fluidstate = world.getFluidState(blockpos);
-				if (fluidstate.getFluid() == Fluids.WATER) {
-					world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.WATERLOGGED, true).with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));
-				} else {
-					world.setBlockState(blockpos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.FACING, source.getBlockState().get(DispenserBlock.FACING)));
-				}
-				world.playSound(null, blockpos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.rand.nextFloat() * 0.15F);
 			}
 			return stack;
 		}
 
 	}
-
 }
