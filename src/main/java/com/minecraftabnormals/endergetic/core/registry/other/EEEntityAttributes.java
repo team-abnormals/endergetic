@@ -46,9 +46,6 @@ public final class EEEntityAttributes {
 		GlobalEntityTypeAttributes.put(EEEntities.POISE_CLUSTER.get(),
 				LivingEntity.registerAttributes().create()
 		);
-		GlobalEntityTypeAttributes.put(EEEntities.BOOF_BLOCK.get(),
-				LivingEntity.registerAttributes().create()
-		);
 	}
 
 }

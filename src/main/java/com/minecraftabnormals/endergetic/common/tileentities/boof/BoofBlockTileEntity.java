@@ -22,6 +22,7 @@ public class BoofBlockTileEntity extends TileEntity implements ITickableTileEnti
 
 	@Override
 	public void tick() {
+		if (this.getBlockState().get(BoofBlock.BOOFED)) return;
 		AxisAlignedBB bb = new AxisAlignedBB(this.getPos()).grow(0.05F);
 		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
 

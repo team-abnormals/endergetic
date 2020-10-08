@@ -9,42 +9,43 @@ import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.TridentEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BoofBlockEntity extends LivingEntity {
+//TODO: Refactor this a bit, it's kinda weird how some things are done internally.
+public class BoofBlockEntity extends Entity {
 	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(BoofBlockEntity.class, DataSerializers.BLOCK_POS);
 	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.createKey(BoofBlockEntity.class, DataSerializers.BOOLEAN);
 
 	public BoofBlockEntity(EntityType<? extends BoofBlockEntity> type, World world) {
 		super(EEEntities.BOOF_BLOCK.get(), world);
-		this.setNoGravity(true);
+	}
+
+	public BoofBlockEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+		this(EEEntities.BOOF_BLOCK.get(), world);
 	}
 
 	public BoofBlockEntity(World world, BlockPos pos) {
 		this(EEEntities.BOOF_BLOCK.get(), world);
-		this.setPosition(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+		this.setPosition(pos.getX() + 0.5F, pos.getY() - 0.375F, pos.getZ() + 0.5F);
 		this.setOrigin(pos);
 	}
 
 	@Override
 	protected void registerData() {
-		super.registerData();
 		this.dataManager.register(ORIGIN, BlockPos.ZERO);
 		this.dataManager.register(FOR_PROJECTILE, false);
 	}
@@ -52,12 +53,10 @@ public class BoofBlockEntity extends LivingEntity {
 	@Override
 	public void tick() {
 		AxisAlignedBB bb = this.getBoundingBox().grow(0, 0.25F, 0);
-		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb);
-		for (int i = 0; i < entities.size(); i++) {
-			Entity entity = entities.get(i);
-
+		List<Entity> entities = this.world.getEntitiesWithinAABB(Entity.class, bb, (entity -> !entity.isPassenger()));
+		for (Entity entity : entities) {
 			if (!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
-				if (entity instanceof TridentEntity || entity instanceof AbstractArrowEntity) {
+				if (entity instanceof AbstractArrowEntity) {
 					this.setForProjectile(true);
 					this.world.setBlockState(getOrigin(), Blocks.AIR.getDefaultState());
 					entity.addVelocity(MathHelper.sin((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.rotationYaw * Math.PI / 180.0F)) * 3 * 0.1F);
@@ -72,6 +71,9 @@ public class BoofBlockEntity extends LivingEntity {
 						entity.addVelocity(result.x * amount, this.rand.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
 				}
+				if (!(entity instanceof PlayerEntity)) {
+					entity.velocityChanged = true;
+				}
 			}
 		}
 
@@ -83,31 +85,21 @@ public class BoofBlockEntity extends LivingEntity {
 			}
 			this.remove();
 		}
-
-		this.setMotion(Vector3d.ZERO);
-		super.tick();
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT nbt) {
-		super.readAdditional(nbt);
 		this.setOrigin(new BlockPos(nbt.getInt("OriginX"), nbt.getInt("OriginY"), nbt.getInt("OriginZ")));
 		this.setForProjectile(nbt.getBoolean("ForProjectile"));
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT nbt) {
-		super.writeAdditional(nbt);
 		BlockPos blockpos = this.getOrigin();
 		nbt.putInt("OriginX", blockpos.getX());
 		nbt.putInt("OriginY", blockpos.getY());
 		nbt.putInt("OriginZ", blockpos.getZ());
 		nbt.putBoolean("ForProjectile", this.isForProjectile());
-	}
-
-	@Override
-	public boolean isInvulnerable() {
-		return true;
 	}
 
 	@Override
@@ -152,21 +144,7 @@ public class BoofBlockEntity extends LivingEntity {
 	}
 
 	@Override
-	public Iterable<ItemStack> getArmorInventoryList() {
-		return NonNullList.withSize(4, ItemStack.EMPTY);
-	}
-
-	@Override
-	public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
-	}
-
-	@Override
-	public HandSide getPrimaryHand() {
-		return HandSide.RIGHT;
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }
