@@ -8,7 +8,7 @@ license="https://github.com/minecraftabnormals/The-Endergetic-Expansion/blob/mas
     version="2.1.0"
     logoFile="logo.png"
     displayName="The Endergetic Expansion"
-    authors="SmellyModder, Endergized, Timinations, Minecraft Abnormals"
+    authors="SmellyModder, Endergized, Timinations, Bagel, and Minecraft Abnormals"
     description='''Ever since the end was first introduced to the game it's always been a dull place; and it has great potential to be something greater. This mod expands the end greatly by adding tons of new biomes, mobs, bosses, items, blocks, etc to the end! Venture to new places like the Poise Forest or explore old places like the chorus biome which have been revamped!'''
 
 [[dependencies.endergetic]]
