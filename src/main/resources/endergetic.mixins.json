@@ -5,27 +5,27 @@
   "minVersion": "0.8",
   "refmap": "endergetic.refmap.json",
   "mixins": [
-  	"AbstractFireBlockMixin",
-  	"ServerWorldMixin",
-  	"EndBiomeProviderMixin",
-  	"EndGatewayTileEntityMixin",
-  	"EndSpikeFeatureMixin",
-  	"BoatEntityMixin",
-  	"EntityMixin",
-    "PlayerEntityMixin",
-    "ServerPlayerEntityMixin",
-  	"ServerPlayNetHandlerMixin",
-    "TrackedEntityMixin",
-    "PlayerListMixin",
-    "chorus.ChorusPlantFeatureMixin",
-    "chorus.ChorusPlantBlockMixin",
-    "chorus.ChorusFlowerBlockMixin"
+	"AbstractFireBlockMixin",
+	"ServerWorldMixin",
+	"EndBiomeProviderMixin",
+	"EndGatewayTileEntityMixin",
+	"EndSpikeFeatureMixin",
+	"BoatEntityMixin",
+	"EntityMixin",
+	"PlayerEntityMixin",
+	"ServerPlayerEntityMixin",
+	"ServerPlayNetHandlerMixin",
+	"TrackedEntityMixin",
+	"PlayerListMixin",
+	"chorus.ChorusPlantFeatureMixin",
+	"chorus.ChorusPlantBlockMixin",
+	"chorus.ChorusFlowerBlockMixin"
   ],
   "client": [
-    "ClientWorldMixin",
-    "ClientPlayNetHandlerMixin"
+	"ClientWorldMixin",
+	"ClientPlayNetHandlerMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+	"defaultRequire": 1
   }
 }
