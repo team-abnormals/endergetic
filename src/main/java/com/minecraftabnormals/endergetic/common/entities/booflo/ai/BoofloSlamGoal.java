@@ -22,16 +22,18 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public boolean shouldExecute() {
-		return this.entity.getPassengers().isEmpty() && this.entity.isEndimationPlaying(BoofloEntity.SWIM) && !this.entity.isOnGround() && (this.entity.hasAggressiveAttackTarget()) && this.isEntityUnder() && this.isSolidUnderTarget();
+		return this.entity.hasAggressiveAttackTarget() && this.entity.getPassengers().isEmpty() && this.entity.isEndimationPlaying(BoofloEntity.SWIM) && !this.entity.isOnGround() && this.isEntityUnder() && this.isSolidUnderTarget();
 	}
 
 	@Override
 	public boolean shouldContinueExecuting() {
+		if (!this.entity.hasAggressiveAttackTarget()) return false;
+
 		if (!this.isSolidUnderTarget()) {
 			NetworkUtil.setPlayingAnimationMessage(this.entity, BoofloEntity.INFLATE);
 			return false;
 		}
-		return !this.entity.isOnGround() && this.entity.hasAggressiveAttackTarget() && this.isEndimationPlaying();
+		return !this.entity.isOnGround() && this.isEndimationPlaying();
 	}
 
 	@Override
