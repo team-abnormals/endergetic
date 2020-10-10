@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class BoofBlockRenderer extends EntityRenderer<BoofBlockEntity> {
-	private final BoofBlockModel model = new BoofBlockModel();
+	private final BoofBlockModel<?> model = new BoofBlockModel<>();
 
 	public BoofBlockRenderer(EntityRendererManager renderManager) {
 		super(renderManager);
