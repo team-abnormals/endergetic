@@ -9,7 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -43,43 +42,31 @@ public class PuffBugHiveBlock extends Block {
 	}
 
 	@Override
-	public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, TileEntity te, ItemStack stack) {
-		destroyBlock(worldIn, pos, player);
-		super.harvestBlock(worldIn, player, pos, state, te, stack);
-	}
-
-	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		destroyBlock(worldIn, pos, player);
-		super.onBlockHarvested(worldIn, pos, state, player);
+	public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+		alertPuffBugs(world, pos, player);
+		super.onBlockHarvested(world, pos, state, player);
 	}
 
 	@Override
 	public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
-		destroyBlock(world, pos, explosion.getExplosivePlacedBy());
+		alertPuffBugs(world, pos, explosion.getExplosivePlacedBy());
 		super.onExplosionDestroy(world, pos, explosion);
 	}
 
 	@Override
 	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
-		TileEntity tileEntity = world.getTileEntity(hit.getPos());
-		if (tileEntity instanceof PuffBugHiveTileEntity) {
-			((PuffBugHiveTileEntity) tileEntity).alertPuffBugs(null);
-		}
+		alertPuffBugs(world, hit.getPos(), null);
 	}
 
 	@Override
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if (tileEntity instanceof PuffBugHiveTileEntity) {
-			((PuffBugHiveTileEntity) tileEntity).alertPuffBugs(null);
-		}
+		alertPuffBugs(world, pos, player);
 	}
 
 	@Override
 	@Nonnull
 	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		return !isValidPosition(state, world, currentPos) ? destroyBlock(world, currentPos, null) : state;
+		return !isValidPosition(state, world, currentPos) ? alertPuffBugs(world, currentPos, null) : state;
 	}
 
 	@Nullable
@@ -108,9 +95,9 @@ public class PuffBugHiveBlock extends Block {
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		BlockState down = worldIn.getBlockState(pos.down());
-		return (hasHanger(worldIn, pos) || down.isSolid() || down.getBlock() instanceof PuffBugHiveBlock) && super.isValidPosition(state, worldIn, pos);
+	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
+		BlockState down = world.getBlockState(pos.down());
+		return (world.getBlockState(pos.up()).getBlock() instanceof PuffbugHiveHangerBlock) || down.isSolid() || down.getBlock() instanceof PuffBugHiveBlock;
 	}
 
 	@Override
@@ -134,20 +121,18 @@ public class PuffBugHiveBlock extends Block {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
-	private static boolean hasHanger(IWorldReader world, BlockPos pos) {
-		return world.getBlockState(pos.up()).getBlock() instanceof PuffbugHiveHangerBlock;
-	}
-
-	private static BlockState destroyBlock(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
-		if (hasHanger(world, pos)) {
-			world.destroyBlock(pos.up(), false);
-		}
-
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof PuffBugHiveTileEntity) {
-			PuffBugHiveTileEntity hive = (PuffBugHiveTileEntity) tile;
-			if (breaker != null && PuffBugEntity.CAN_ANGER.test(breaker)) {
-				hive.alertPuffBugs(breaker);
+	public static BlockState alertPuffBugs(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
+		if (!world.isRemote()) {
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile instanceof PuffBugHiveTileEntity) {
+				PuffBugHiveTileEntity hive = (PuffBugHiveTileEntity) tile;
+				if (breaker == null) {
+					hive.alertPuffBugs(null);
+				} else {
+					if (PuffBugEntity.CAN_ANGER.test(breaker)) {
+						hive.alertPuffBugs(breaker);
+					}
+				}
 			}
 		}
 		return Blocks.AIR.getDefaultState();
