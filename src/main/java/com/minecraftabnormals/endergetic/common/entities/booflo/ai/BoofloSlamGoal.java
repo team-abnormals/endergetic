@@ -60,9 +60,11 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
-		BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().getPosition().toMutable();
-		for (int y = 1; y < 4; y++) {
-			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.entity.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(mutable.down(y)), this.world, mutable.down(y), Direction.UP) : true;
+		if (this.entity.getBoofloAttackTarget() !=null) {
+			BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().getPosition().toMutable();
+			for (int y = 1; y < 4; y++) {
+				isSomewhatSolidUnder = isSomewhatSolidUnder || this.entity.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(mutable.down(y)), this.world, mutable.down(y), Direction.UP);
+			}
 		}
 		return isSomewhatSolidUnder;
 	}
