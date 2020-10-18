@@ -3,13 +3,49 @@ name: PullRequest
 on: [pull_request]
 
 jobs:
-  buildTest:
-    name: Build
+  buildMod:
+    name: build mod
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.2
         with:
           fetch-depth: 0
-      - name: Build project
-        run:  ./gradlew genIntellijRuns
+      - name: prepare client
+        run:  ./gradlew build
+      - name: grab artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: Endergetic mod
+          path: build/libs/The-Endergetic*.jar
+  prepareClient:
+    name: prepare client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.2
+        with:
+          fetch-depth: 0
+      - name: prepare client
+        run:  ./gradlew prepareRunClient --info
+  prepareServer:
+    name: prepare server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.2
+        with:
+          fetch-depth: 0
+      - name: prepare server
+        run:  ./gradlew prepareRunServer --info
+  prepareData:
+    name: prepare Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.2
+        with:
+          fetch-depth: 0
+      - name: prepare Data
+        run:  ./gradlew prepareRunData --info
