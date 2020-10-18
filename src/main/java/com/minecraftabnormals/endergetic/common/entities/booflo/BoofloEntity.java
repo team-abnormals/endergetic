@@ -782,7 +782,7 @@ public class BoofloEntity extends EndimatedEntity {
 	@Nullable
 	public Entity getBoofloAttackTarget() {
 		Entity entity = this.world.getEntityByID(this.getBoofloAttackTargetId());
-		if (entity == null || entity != null && !entity.isAlive() || entity instanceof BoofloEntity) {
+		if (entity == null || !entity.isAlive() || entity instanceof BoofloEntity) {
 			this.setBoofloAttackTargetId(0);
 		}
 
@@ -915,7 +915,6 @@ public class BoofloEntity extends EndimatedEntity {
 		float verticalStrength = 1.0F;
 
 		if (this.getBoostPower() > 0.0F && !this.isEndimationPlaying(SLAM)) {
-			internalStrength *= this.getBoostPower();
 			offensiveStrength *= MathHelper.clamp((this.getBoostPower() / 2), 0.5F, 1.85F);
 			verticalStrength *= MathHelper.clamp(this.getBoostPower(), 0.35F, 1.5F);
 
