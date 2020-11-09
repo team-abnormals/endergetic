@@ -1,6 +1,5 @@
 package com.minecraftabnormals.endergetic.common.items;
 
-import com.minecraftabnormals.endergetic.api.util.EndergeticNetworkUtil;
 import com.minecraftabnormals.endergetic.client.models.armor.BoofloVestModel;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.other.EEArmorMaterials;
@@ -21,11 +20,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
+
 /**
  * @author - SmellyModder(Luke Tonon)
  */
 public class BoofloVestItem extends ArmorItem {
-	private static final String TICKS_BOOFED_TAG = "ticksBoofed";
+	private static final String DEFAULT_TEXTURE = EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest.png";
+	private static final String BOOFED_TEXTURE = EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest_boofed.png";
+	public static final String TICKS_BOOFED_TAG = "ticksBoofed";
 	public static final String BOOFED_TAG = "boofed";
 	public static final String TIMES_BOOFED_TAG = "timesBoofed";
 
@@ -35,27 +38,27 @@ public class BoofloVestItem extends ArmorItem {
 
 	@Override
 	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		if (this.hasTag(stack)) {
-			CompoundNBT tag = stack.getTag();
-			int ticksBoofed = tag.getInt(TICKS_BOOFED_TAG);
-			if (tag.getBoolean(BOOFED_TAG)) {
-				tag.putInt(TICKS_BOOFED_TAG, ticksBoofed + 1);
-			} else {
-				tag.putInt(TICKS_BOOFED_TAG, 0);
-			}
-			if (ticksBoofed >= 10) {
-				tag.putBoolean(BOOFED_TAG, false);
-			}
+		CompoundNBT tag = stack.getOrCreateTag();
+		int ticksBoofed = tag.getInt(TICKS_BOOFED_TAG);
+		if (tag.getBoolean(BOOFED_TAG)) {
+			ticksBoofed++;
+			tag.putInt(TICKS_BOOFED_TAG, ticksBoofed);
+		} else {
+			tag.putInt(TICKS_BOOFED_TAG, 0);
+		}
 
-			if (tag.getInt(TICKS_BOOFED_TAG) == 10) {
-				player.getItemStackFromSlot(EquipmentSlotType.CHEST).damageItem(2, player, (onBroken) -> {
-					onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
-				});
-			}
+		if (ticksBoofed >= 10) {
+			tag.putBoolean(BOOFED_TAG, false);
+		}
 
-			if (player.isOnGround() || (player.isPassenger() && player.getRidingEntity().isOnGround())) {
-				tag.putInt(TIMES_BOOFED_TAG, 0);
-			}
+		if (tag.getInt(TICKS_BOOFED_TAG) == 10) {
+			player.getItemStackFromSlot(EquipmentSlotType.CHEST).damageItem(2, player, (onBroken) -> {
+				onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
+			});
+		}
+
+		if (player.isOnGround() || (player.isPassenger() && player.getRidingEntity().isOnGround())) {
+			tag.putInt(TIMES_BOOFED_TAG, 0);
 		}
 	}
 
@@ -69,44 +72,20 @@ public class BoofloVestItem extends ArmorItem {
 		return true;
 	}
 
-	public boolean hasTag(ItemStack stack) {
-		if (!stack.hasTag()) {
-			stack.setTag(new CompoundNBT());
-			return false;
-		}
-		return true;
-	}
-
-	public boolean canBoof(ItemStack stack, PlayerEntity player) {
-		if (this.hasTag(stack)) {
-			return !player.getCooldownTracker().hasCooldown(stack.getItem()) && !stack.getTag().getBoolean(BOOFED_TAG);
-		}
-		return !player.getCooldownTracker().hasCooldown(stack.getItem());
-	}
-
-	public void setDelayForBoofedAmount(ItemStack stack, PlayerEntity player) {
-		EndergeticNetworkUtil.setSItemCooldown(stack, 100, true);
+	public static boolean canBoof(ItemStack stack, PlayerEntity player) {
+		return !player.getCooldownTracker().hasCooldown(stack.getItem()) && !stack.getOrCreateTag().getBoolean(BOOFED_TAG);
 	}
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-		if (stack.hasTag()) {
-			if (stack.getTag().getBoolean(BOOFED_TAG)) {
-				return EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest_boofed.png";
-			}
-		}
-		return EndergeticExpansion.MOD_ID + ":textures/models/armor/booflo_vest.png";
+		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BOOFED_TEXTURE : DEFAULT_TEXTURE;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	@Override
+	@Nullable
 	@OnlyIn(Dist.CLIENT)
 	public <A extends BipedModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlotType armorSlot, A _default) {
-		if (stack.hasTag()) {
-			if (stack.getTag().getBoolean(BOOFED_TAG)) {
-				return (A) new BoofloVestModel(wearer, 1.0F);
-			}
-		}
-		return super.getArmorModel(wearer, stack, armorSlot, _default);
+		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? (A) BoofloVestModel.INSTANCE : null;
 	}
 }

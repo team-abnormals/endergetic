@@ -1,7 +1,8 @@
 package com.minecraftabnormals.endergetic.core;
 
-import java.util.Arrays;
+import java.util.Collections;
 
+import com.minecraftabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,6 @@ import com.minecraftabnormals.endergetic.client.renderers.tile.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
-import com.minecraftabnormals.endergetic.common.network.nbt.*;
 import com.minecraftabnormals.endergetic.common.world.EEWorldGenHandler;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
@@ -132,7 +132,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Arrays.asList(() -> EEBiomes.POISE_FOREST.get()), () -> EESounds.POISE_FOREST_LOOP.get(), () -> EESounds.POISE_FOREST_ADDITIONS.get(), () -> EESounds.POISE_FOREST_MOOD.get());
+		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Collections.singletonList(EEBiomes.POISE_FOREST::get), EESounds.POISE_FOREST_LOOP, EESounds.POISE_FOREST_ADDITIONS, EESounds.POISE_FOREST_MOOD::get);
 		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 	}
 
@@ -143,14 +143,12 @@ public class EndergeticExpansion {
 
 	private void setupMessages() {
 		int id = -1;
-		CHANNEL.registerMessage(id++, SUpdateNBTTagMessage.class, SUpdateNBTTagMessage::serialize, SUpdateNBTTagMessage::deserialize, SUpdateNBTTagMessage::handle);
-		CHANNEL.registerMessage(id++, SSetCooldownMessage.class, SSetCooldownMessage::serialize, SSetCooldownMessage::deserialize, SSetCooldownMessage::handle);
-		CHANNEL.registerMessage(id++, SBoofEntityMessage.class, SBoofEntityMessage::serialize, SBoofEntityMessage::deserialize, SBoofEntityMessage::handle);
 		CHANNEL.registerMessage(id++, SInflateMessage.class, SInflateMessage::serialize, SInflateMessage::deserialize, SInflateMessage::handle);
 		CHANNEL.registerMessage(id++, SIncrementBoostDelayMessage.class, SIncrementBoostDelayMessage::serialize, SIncrementBoostDelayMessage::deserialize, SIncrementBoostDelayMessage::handle);
 		CHANNEL.registerMessage(id++, SSetPlayerNotBoostingMessage.class, SSetPlayerNotBoostingMessage::serialize, SSetPlayerNotBoostingMessage::deserialize, SSetPlayerNotBoostingMessage::handle);
 		CHANNEL.registerMessage(id++, SSlamMessage.class, SSlamMessage::serialize, SSlamMessage::deserialize, SSlamMessage::handle);
 		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
 		CHANNEL.registerMessage(id++, S2CUpdateBalloonsMessage.class, S2CUpdateBalloonsMessage::serialize, S2CUpdateBalloonsMessage::deserialize, S2CUpdateBalloonsMessage::handle);
+		CHANNEL.registerMessage(id++, C2SInflateBoofloVestMessage.class, C2SInflateBoofloVestMessage::serialize, C2SInflateBoofloVestMessage::deserialize, C2SInflateBoofloVestMessage::handle);
 	}
 }

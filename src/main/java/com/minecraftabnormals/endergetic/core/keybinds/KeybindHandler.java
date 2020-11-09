@@ -1,27 +1,21 @@
 package com.minecraftabnormals.endergetic.core.keybinds;
 
 import java.util.List;
-import java.util.Random;
 
 import com.google.common.collect.Lists;
-import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityMotionHelper;
 import com.minecraftabnormals.endergetic.api.util.EndergeticNetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.items.BoofloVestItem;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
-import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -56,46 +50,18 @@ public final class KeybindHandler {
 		PlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		if (BOOF_VEST.isPressed()) {
-			Random rand = player.getRNG();
+		if (BOOF_VEST.isPressed() && !player.abilities.isFlying) {
 			ItemStack stack = player.inventory.armorItemInSlot(2);
-
-			if (!stack.isEmpty() && stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
-				BoofloVestItem vest = (BoofloVestItem) stack.getItem();
-				if (vest.canBoof(stack, player)) {
-					CompoundNBT tag = stack.getTag();
-
-					tag.putBoolean(BoofloVestItem.BOOFED_TAG, true);
-					tag.putInt(BoofloVestItem.TIMES_BOOFED_TAG, tag.getInt(BoofloVestItem.TIMES_BOOFED_TAG) + 1);
-					vest.setDelayForBoofedAmount(stack, player);
-
-					EndergeticNetworkUtil.updateSItemNBT(stack);
+			if (stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
+				if (BoofloVestItem.canBoof(stack, player)) {
 					EntityMotionHelper.knockbackEntity(player, 4.0F, 0.75F, true, true);
-
-					for (Entity entity : player.getEntityWorld().getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(2.0D))) {
-						if (entity != player && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
-							boolean reverse = player.getRidingEntity() == entity;
-							EntityMotionHelper.knockbackEntity(entity, 4.0F, 0.75F, reverse, false);
-						}
-					}
-
-					for (int i = 0; i < 8; i++) {
-						double x = player.getPosX() + MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
-						double y = player.getPosY() + (rand.nextFloat() * 0.05F) + 1.25F;
-						double z = player.getPosZ() + MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
-
-						NetworkUtil.spawnParticleC2S2C("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
-					}
-
-					player.playSound(EESounds.BOOFLO_VEST_INFLATE.get(), 1.0F, MathHelper.clamp(1.3F - (tag.getInt(BoofloVestItem.TIMES_BOOFED_TAG) * 0.15F), 0.25F, 1.0F));
-
-					EndergeticNetworkUtil.SBoofEntity(4.0F, 0.75F, 2);
+					EndergeticExpansion.CHANNEL.sendToServer(new C2SInflateBoofloVestMessage());
 				}
 			}
 		}
 		if (BOOFLO_INFLATE.isKeyDown()) {
 			Entity ridingEntity = player.getRidingEntity();
-			if (KeybindHandler.isRidingBooflo(player) && !((BoofloEntity) ridingEntity).isOnGround()) {
+			if (KeybindHandler.isRidingBooflo(player) && !ridingEntity.isOnGround()) {
 				BoofloEntity booflo = (BoofloEntity) ridingEntity;
 				if (booflo.isBoofed() && booflo.canPassengerSteer()) {
 					if (!booflo.isDelayDecrementing() && !booflo.isDelayExpanding() && booflo.getRideControlDelay() <= 182) {
