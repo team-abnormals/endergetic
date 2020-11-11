@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 
 public final class C2SInflateBoofloVestMessage {
 	private static final String POISE_BUBBLE_ID = "endergetic:short_poise_bubble";
-	private static final float HORIZONTAL_BOOST_FORCE = 4.0F;
-	private static final float VERTICAL_BOOST_FORCE = 0.75F;
+	public static final float HORIZONTAL_BOOST_FORCE = 4.0F;
+	public static final float VERTICAL_BOOST_FORCE = 0.75F;
 	private static final int DEFAULT_DELAY = 7;
 	private static final int DELAY_INCREASE_THRESHOLD = 5;
 	private static final int DELAY_MULTIPLIER = 5;

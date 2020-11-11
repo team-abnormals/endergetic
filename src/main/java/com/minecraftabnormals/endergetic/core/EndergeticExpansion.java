@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.core;
 
 import java.util.Collections;
 
-import com.minecraftabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +10,7 @@ import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.renderers.entity.*;
 import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.*;
 import com.minecraftabnormals.endergetic.client.renderers.tile.*;
+import com.minecraftabnormals.endergetic.common.network.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
@@ -132,7 +132,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Collections.singletonList(EEBiomes.POISE_FOREST::get), EESounds.POISE_FOREST_LOOP, EESounds.POISE_FOREST_ADDITIONS, EESounds.POISE_FOREST_MOOD::get);
+		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Collections.singletonList(EEBiomes.POISE_FOREST::get), EESounds.POISE_FOREST_LOOP, EESounds.POISE_FOREST_ADDITIONS, EESounds.POISE_FOREST_MOOD);
 		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 	}
 
@@ -143,10 +143,9 @@ public class EndergeticExpansion {
 
 	private void setupMessages() {
 		int id = -1;
-		CHANNEL.registerMessage(id++, SInflateMessage.class, SInflateMessage::serialize, SInflateMessage::deserialize, SInflateMessage::handle);
-		CHANNEL.registerMessage(id++, SIncrementBoostDelayMessage.class, SIncrementBoostDelayMessage::serialize, SIncrementBoostDelayMessage::deserialize, SIncrementBoostDelayMessage::handle);
-		CHANNEL.registerMessage(id++, SSetPlayerNotBoostingMessage.class, SSetPlayerNotBoostingMessage::serialize, SSetPlayerNotBoostingMessage::deserialize, SSetPlayerNotBoostingMessage::handle);
-		CHANNEL.registerMessage(id++, SSlamMessage.class, SSlamMessage::serialize, SSlamMessage::deserialize, SSlamMessage::handle);
+		CHANNEL.registerMessage(id++, C2SInflateMessage.class, C2SInflateMessage::serialize, C2SInflateMessage::deserialize, C2SInflateMessage::handle);
+		CHANNEL.registerMessage(id++, C2SBoostMessage.class, C2SBoostMessage::serialize, C2SBoostMessage::deserialize, C2SBoostMessage::handle);
+		CHANNEL.registerMessage(id++, C2SSlamMessage.class, C2SSlamMessage::serialize, C2SSlamMessage::deserialize, C2SSlamMessage::handle);
 		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
 		CHANNEL.registerMessage(id++, S2CUpdateBalloonsMessage.class, S2CUpdateBalloonsMessage::serialize, S2CUpdateBalloonsMessage::deserialize, S2CUpdateBalloonsMessage::handle);
 		CHANNEL.registerMessage(id++, C2SInflateBoofloVestMessage.class, C2SInflateBoofloVestMessage::serialize, C2SInflateBoofloVestMessage::deserialize, C2SInflateBoofloVestMessage::handle);

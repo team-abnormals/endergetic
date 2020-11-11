@@ -32,10 +32,10 @@ public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 		}
 
 		if (!onGround) {
-			if (this.shouldJumpForFall() && !this.entity.isBoofed() && this.entity.getRideControlDelay() <= 0) {
+			if (this.shouldJumpForFall() && !this.entity.isBoofed() && this.entity.getBoostPower() <= 0) {
 				if (this.entity.isBeingRidden()) {
-					this.entity.setDelayExpanding(true);
-					this.entity.setDelayDecrementing(false);
+					this.entity.setBoostExpanding(true);
+					this.entity.setBoostLocked(true);
 				}
 				return true;
 			}

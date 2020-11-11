@@ -29,7 +29,7 @@ public final class OverlayEvents {
 				int scaledHeight = event.getWindow().getScaledHeight();
 				int top = scaledHeight - 32 + 3;
 				int left = scaledWidth / 2 - 91;
-				int progress = ((BoofloEntity) player.getRidingEntity()).getRideControlDelay();
+				int progress = ((BoofloEntity) player.getRidingEntity()).getBoostPower();
 
 				MatrixStack stack = event.getMatrixStack();
 				stack.push();
