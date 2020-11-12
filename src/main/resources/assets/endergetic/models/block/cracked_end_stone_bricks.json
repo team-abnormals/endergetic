@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "endergetic:block/cracked_end_stone_bricks"
+    }
+}

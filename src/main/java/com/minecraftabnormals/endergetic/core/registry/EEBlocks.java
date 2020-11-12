@@ -22,15 +22,8 @@ import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEnti
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 
+import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.LanternBlock;
-import net.minecraft.block.PressurePlateBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.block.WallBlock;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemGroup;
@@ -143,6 +136,11 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> ENDER_LANTERN		= HELPER.createBlock("ender_lantern", () -> new LanternBlock(Block.Properties.from(Blocks.LANTERN)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> ENDER_WALL_TORCH	= HELPER.createBlockNoItem("ender_wall_torch", () -> new EnderWallTorchBlock(Block.Properties.from(Blocks.TORCH)));
 	public static final RegistryObject<Block> ENDER_TORCH		= HELPER.createWallOrFloorBlock("ender_torch", () -> new EnderTorchBlock(Block.Properties.from(Blocks.TORCH)), () -> ENDER_WALL_TORCH.get(), ItemGroup.DECORATIONS);
+
+	public static final RegistryObject<Block> CHISELED_END_STONE_BRICKS = HELPER.createBlock("chiseled_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CRACKED_END_STONE_BRICKS  = HELPER.createBlock("cracked_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CRACKED_PURPUR_BLOCK 		= HELPER.createBlock("cracked_purpur_block", () -> new Block(AbstractBlock.Properties.from(Blocks.PURPUR_BLOCK)), ItemGroup.BUILDING_BLOCKS);
+
 
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {
