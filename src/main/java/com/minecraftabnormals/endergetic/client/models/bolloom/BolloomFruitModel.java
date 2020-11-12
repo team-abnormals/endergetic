@@ -7,14 +7,13 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEnt
 
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 
 /**
  * ModelBolloomFruit - Endergized
  * Created using Tabula 7.0.0
  */
 public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel<T> {
-	private T fruitEntity;
-
 	public ModelRenderer vine_x;
 	public ModelRenderer fruit;
 	public ModelRenderer vine_z;
@@ -108,7 +107,20 @@ public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel
 
 	@Override
 	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		int height = this.fruitEntity.getVineHeight();
+		this.fruit.render(matrixStackIn, bufferIn, 240, packedOverlayIn, red, green, blue, alpha);
+	}
+
+	public void renderVine(MatrixStack matrix, IVertexBuilder vertexBuilder, int light) {
+		this.vine_x.render(matrix, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	@Override
+	public void setRotationAngles(T fruit, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		float[] angles = fruit.getVineAnimation(ClientInfo.getPartialTicks());
+		this.vine_x.rotateAngleX = angles[0];
+		this.vine_x.rotateAngleY = angles[1];
+
+		int height = fruit.getVineHeight();
 
 		this.vine_x.showModel = true;
 		this.vine_z.showModel = true;
@@ -151,17 +163,6 @@ public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel
 				this.vine_z_6.showModel = false;
 				break;
 		}
-		this.fruit.render(matrixStackIn, bufferIn, 240, packedOverlayIn, red, green, blue, alpha);
-		this.vine_x.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-	}
-
-	@Override
-	public void setRotationAngles(T fruit, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.fruitEntity = fruit;
-
-		float[] angles = fruit.getVineAnimation(ClientInfo.getPartialTicks());
-		this.vine_x.rotateAngleX = angles[0];
-		this.vine_x.rotateAngleY = angles[1];
 	}
 
 	public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
