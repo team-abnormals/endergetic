@@ -1,6 +1,7 @@
 {
-    "parent": "block/cube_all",
+    "parent": "block/cube_column",
     "textures": {
-        "all": "endergetic:block/chiseled_eumus_bricks"
+	"end": "endergetic:block/chiseled_eumus_bricks_top",
+        "side": "endergetic:block/chiseled_eumus_bricks"
     }
 }

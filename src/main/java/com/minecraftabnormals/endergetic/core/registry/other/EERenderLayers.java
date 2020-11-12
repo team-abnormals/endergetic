@@ -23,14 +23,14 @@ public final class EERenderLayers {
 		setRenderLayer(EEBlocks.ENDER_CAMPFIRE.get(), RenderType.getCutout());
 
 		setRenderLayer(EEBlocks.POTTED_POISE_BUSH.get(), RenderType.getCutout());
-		setRenderLayer(EEBlocks.POTTED_TALL_POISE_BUSH.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.POTTED_TALL_POISE_BUSH.get(), RenderType.getTranslucent());
 		setRenderLayer(EEBlocks.POISE_DOOR.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_TRAPDOOR.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_LADDER.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.EUMUS_POISMOSS.get(), RenderType.getCutoutMipped());
 		setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
 		setRenderLayer(EEBlocks.POISE_BUSH.get(), RenderType.getCutout());
-		setRenderLayer(EEBlocks.TALL_POISE_BUSH.get(), RenderType.getCutout());
+		setRenderLayer(EEBlocks.TALL_POISE_BUSH.get(), RenderType.getTranslucent());
 		setRenderLayer(EEBlocks.POISE_CLUSTER.get(), RenderType.getTranslucent());
 		setRenderLayer(EEBlocks.HIVE_HANGER.get(), RenderType.getCutout());
 	}
