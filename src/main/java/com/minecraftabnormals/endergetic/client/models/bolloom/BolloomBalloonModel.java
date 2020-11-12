@@ -4,8 +4,10 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonE
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import com.teamabnormals.abnormals_core.client.ClientInfo;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 
 /**
  * ModelBolloomBalloon - Endergized
@@ -46,11 +48,17 @@ public class BolloomBalloonModel<T extends BolloomBalloonEntity> extends EntityM
 	@Override
 	public void render(MatrixStack matrix, IVertexBuilder arg1, int f, int f1, float f2, float f3, float f4, float f5) {
 		this.balloon.render(matrix, arg1, 240, f1, f5, f5, f5, f5);
-		this.x_string.render(matrix, arg1, f, f1, f5, f5, f5, f5);
+	}
+
+	public void renderString(MatrixStack matrix, IVertexBuilder vertexBuilder, int light) {
+		this.x_string.render(matrix, vertexBuilder, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
-	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setRotationAngles(T balloon, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		float[] angles = balloon.getVineAnimation(ClientInfo.getPartialTicks());
+		this.x_string.rotateAngleX = angles[0];
+		this.x_string.rotateAngleY = angles[1];
 	}
 
 	/**

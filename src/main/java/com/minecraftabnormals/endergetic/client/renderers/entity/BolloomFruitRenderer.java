@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity;
 
+import com.minecraftabnormals.endergetic.client.EERenderTypes;
 import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomFruitModel;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
@@ -14,7 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 
 public class BolloomFruitRenderer extends EntityRenderer<BolloomFruitEntity> {
-	public BolloomFruitModel<BolloomFruitEntity> model;
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_fruit.png");
+	private final BolloomFruitModel<BolloomFruitEntity> model;
 
 	public BolloomFruitRenderer(EntityRendererManager renderManager) {
 		super(renderManager);
@@ -22,22 +24,22 @@ public class BolloomFruitRenderer extends EntityRenderer<BolloomFruitEntity> {
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BolloomFruitEntity entity) {
-		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_fruit.png");
-	}
-
-	@Override
 	public void render(BolloomFruitEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		float[] angles = entity.getVineAnimation(partialTicks);
-		this.model.vine_x.rotateAngleX = angles[0];
-		this.model.vine_x.rotateAngleY = angles[1];
-		this.model.setRotationAngles(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 		matrixStack.push();
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+
 		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
+		this.model.setRotationAngles(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 		this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.model.renderVine(matrixStack, bufferIn.getBuffer(EERenderTypes.BOLLOOM_VINE), packedLightIn);
+
 		matrixStack.pop();
 		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
+	}
+
+	@Override
+	public ResourceLocation getEntityTexture(BolloomFruitEntity entity) {
+		return TEXTURE;
 	}
 }
