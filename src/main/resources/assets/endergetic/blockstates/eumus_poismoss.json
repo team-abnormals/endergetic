@@ -1,5 +1,21 @@
 {
-   	"variants": {
-        "": { "model": "endergetic:block/eumus_poismoss" }
-    }
+  "variants": {
+	"": [
+	  {
+		"model": "endergetic:block/eumus_poismoss"
+	  },
+	  {
+		"model": "endergetic:block/eumus_poismoss",
+		"y": 90
+	  },
+	  {
+		"model": "endergetic:block/eumus_poismoss",
+		"y": 180
+	  },
+	  {
+		"model": "endergetic:block/eumus_poismoss",
+		"y": 270
+	  }
+	]
+  }
 }
