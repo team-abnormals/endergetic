@@ -27,6 +27,6 @@ license="https://github.com/minecraftabnormals/The-Endergetic-Expansion/blob/mas
 [[dependencies.endergetic]]
     modId="abnormals_core"
     mandatory=true
-    versionRange="[2.0.5,)"
+    versionRange="[2.0.7,)"
     ordering="AFTER"
     side="BOTH"

@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.Mod;
 public final class EESounds {
 	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
 
+	public static final RegistryObject<SoundEvent> KILOBYTE = HELPER.createSoundEvent("music.record.kilobyte");
+
 	public static final RegistryObject<SoundEvent> POISE_FOREST_LOOP = HELPER.createSoundEvent("ambient.poise_forest.loop");
 	public static final RegistryObject<SoundEvent> POISE_FOREST_ADDITIONS = HELPER.createSoundEvent("ambient.poise_forest.additions");
 	public static final RegistryObject<SoundEvent> POISE_FOREST_MOOD = HELPER.createSoundEvent("ambient.poise_forest.mood");

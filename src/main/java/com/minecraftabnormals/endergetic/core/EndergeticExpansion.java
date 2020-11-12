@@ -101,6 +101,7 @@ public class EndergeticExpansion {
 	void setupCommon(final FMLCommonSetupEvent event) {
 		DeferredWorkQueue.runLater(() -> {
 			EEDispenserBehaviors.registerAll();
+			EELootInjectors.registerLootInjectors();
 			EEBiomes.applyBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();

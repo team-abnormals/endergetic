@@ -324,7 +324,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		if (itemstack.getItem() == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
-			return ActionResultType.CONSUME;
+			return ActionResultType.func_233537_a_(this.world.isRemote);
 		}
 		return super.func_230254_b_(player, hand);
 	}

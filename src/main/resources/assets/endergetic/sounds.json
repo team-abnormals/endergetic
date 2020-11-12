@@ -1,268 +1,362 @@
 {
-	"entity.booflo.croak": {
-		"category": "neutral",
- 		"subtitle": "subtitles.endergetic.booflo.croak",
-		"sounds": [
-        	"endergetic:entity/booflo/booflo_croak_0",
-        	"endergetic:entity/booflo/booflo_croak_1",
-        	"endergetic:entity/booflo/booflo_croak_2",
-        	"endergetic:entity/booflo/booflo_croak_3"
-        ]
-    },
-    "entity.booflo.growl":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.growl",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_growl" }
-        ]
-    },
-    "entity.booflo.hop":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.hop",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_hop" }
-        ]
-    },
-    "entity.booflo.hop_land":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.hop_land",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_land" }
-        ]
-    },
-    "entity.booflo.slam":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.slam",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_slam" }
-        ]
-    },
-    "entity.booflo.inflate":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.inflate",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_inflate" }
-        ]
-    },
-    "entity.booflo.deflate":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.deflate",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_deflate" }
-        ]
-    },
-    "entity.booflo.hurt":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.hurt",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_0" },
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_1" },
-        	{ "name": "endergetic:entity/booflo/booflo_hurt_2" }
-        ]
-    },
-    "entity.booflo.death":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.booflo.death",
-        "sounds": [
-        	{ "name": "endergetic:entity/booflo/booflo_death" }
-        ]
-    },
-    "entity.puffbug.puff":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.puff",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_puff" }
-        ]
-    },
-    "entity.puffbug.teleport_to":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.teleport_to",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_to" }
-        ]
-    },
-    "entity.puffbug.teleport_from":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.teleport_from",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_teleport_from" }
-        ]
-    },
-    "entity.puffbug.sleep":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.sleep",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_0" },
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_1" },
-        	{ "name": "endergetic:entity/puffbug/puffbug_sleep_2" }
-        ]
-    },
-    "entity.puffbug.create_item":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.create_item",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_creation" }
-        ]
-    },
-    "entity.puffbug.launch":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.launch",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_launch" }
-        ]
-    },
-    "entity.puffbug.land":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.land",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_land" }
-        ]
-    },
-    "entity.puffbug.hurt":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.hurt",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_0" },
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_1" },
-        	{ "name": "endergetic:entity/puffbug/puffbug_hurt_2" }
-        ]
-    },
-    "entity.puffbug.death":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.puffbug.death",
-        "sounds": [
-        	{ "name": "endergetic:entity/puffbug/puffbug_death" }
-        ]
-    },
-    "entity.boof_block.inflate":
-    {
-        "category": "neutral",
-        "subtitle": "subtitles.endergetic.boof_block.inflate",
-        "sounds": [
-        	{ "name": "endergetic:entity/block/boof_block_inflate" }
-        ]
-    },
-	"block.cluster.place":
-    {
-        "category": "block",
-        "subtitle": "subtitles.block.generic.place",
-        "sounds": [
-        	{ "name": "endergetic:block/cluster_place_0" },
-        	{ "name": "endergetic:block/cluster_place_1" }
-        ]
-    },
-    "block.cluster.break":
-    {
-        "category": "block",
-        "subtitle": "subtitles.block.generic.break",
-        "sounds": [
-        	{ "name": "endergetic:block/cluster_break_0" }
-        ]
-    },
-    "block.cluster.step":
-    {
-        "category": "block",
-        "subtitle": "subtitles.block.generic.footsteps",
-        "sounds": [
-        	{ "name": "endergetic:block/cluster_step_0" },
-        	{ "name": "endergetic:block/cluster_step_1" },
-        	{ "name": "endergetic:block/cluster_step_2" }
-        ]
-    },
-    "block.cluster.hit":
-    {
-        "category": "block",
-        "subtitle": "subtitles.block.generic.hit",
-        "sounds": [
-        	{ "name": "endergetic:block/cluster_hit" }
-        ]
-    },
-    "block.poise_bush.ambient":
-    {
-        "category": "block",
-        "subtitle": "subtitles.endergetic.poise_bush.ambient",
-        "sounds": [
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_0" },
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_1" },
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_2" }
-        ]
-    },
-    "block.poise_bush.ambient_long":
-    {
-        "category": "block",
-        "subtitle": "subtitles.endergetic.poise_bush.ambient",
-        "sounds": [
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_0" },
-        	{ "name": "endergetic:block/ambient/poise_bush_ambient_long_1" }
-        ]
-    },
-    "block.poise_cluster.ambient":
-    {
-        "category": "neutral",
-        "sounds": [
-        	{ "name": "endergetic:block/ambient/poise_cluster_ambient" }
-        ]
-    },
-    "item.booflo_vest.inflate":
-    {
-        "category": "player",
-        "subtitle": "subtitles.endergetic.booflo_vest.inflate",
-        "sounds": [
-        	{ "name": "endergetic:item/booflo_vest_inflate" }
-        ]
-    },
-    "ambient.poise_forest.loop":
-    {
-        "category": "ambient",
-        "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_ambience" }
-        ]
-    },
-    "ambient.poise_forest.additions":
-    {
-        "category": "ambient",
-        "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_1" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_0" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_1" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_drift_2" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_0" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1" }
-        ]
-    },
-    "ambient.poise_forest.mood":
-    {
-        "category": "ambient",
-        "sounds": [
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_0" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_1" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_2" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_3" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_puffs" },
-        	{ "name": "endergetic:ambient/poise_forest/poise_forest_shine" }
-        ]
-    }
+  "music.record.kilobyte": {
+    "category": "master",
+    "sounds": [
+      {
+        "name": "endergetic:record/kilobyte",
+        "stream": true
+      }
+    ]
+  },
+  "entity.booflo.croak": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.croak",
+    "sounds": [
+      "endergetic:entity/booflo/booflo_croak_0",
+      "endergetic:entity/booflo/booflo_croak_1",
+      "endergetic:entity/booflo/booflo_croak_2",
+      "endergetic:entity/booflo/booflo_croak_3"
+    ]
+  },
+  "entity.booflo.growl": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.growl",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_growl"
+      }
+    ]
+  },
+  "entity.booflo.hop": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.hop",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_hop"
+      }
+    ]
+  },
+  "entity.booflo.hop_land": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.hop_land",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_land"
+      }
+    ]
+  },
+  "entity.booflo.slam": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.slam",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_slam"
+      }
+    ]
+  },
+  "entity.booflo.inflate": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.inflate",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_inflate"
+      }
+    ]
+  },
+  "entity.booflo.deflate": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.deflate",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_deflate"
+      }
+    ]
+  },
+  "entity.booflo.hurt": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.hurt",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_hurt_0"
+      },
+      {
+        "name": "endergetic:entity/booflo/booflo_hurt_1"
+      },
+      {
+        "name": "endergetic:entity/booflo/booflo_hurt_2"
+      }
+    ]
+  },
+  "entity.booflo.death": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.booflo.death",
+    "sounds": [
+      {
+        "name": "endergetic:entity/booflo/booflo_death"
+      }
+    ]
+  },
+  "entity.puffbug.puff": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.puff",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_puff"
+      }
+    ]
+  },
+  "entity.puffbug.teleport_to": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.teleport_to",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_teleport_to"
+      }
+    ]
+  },
+  "entity.puffbug.teleport_from": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.teleport_from",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_teleport_from"
+      }
+    ]
+  },
+  "entity.puffbug.sleep": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.sleep",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_sleep_0"
+      },
+      {
+        "name": "endergetic:entity/puffbug/puffbug_sleep_1"
+      },
+      {
+        "name": "endergetic:entity/puffbug/puffbug_sleep_2"
+      }
+    ]
+  },
+  "entity.puffbug.create_item": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.create_item",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_creation"
+      }
+    ]
+  },
+  "entity.puffbug.launch": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.launch",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_launch"
+      }
+    ]
+  },
+  "entity.puffbug.land": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.land",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_land"
+      }
+    ]
+  },
+  "entity.puffbug.hurt": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.hurt",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_hurt_0"
+      },
+      {
+        "name": "endergetic:entity/puffbug/puffbug_hurt_1"
+      },
+      {
+        "name": "endergetic:entity/puffbug/puffbug_hurt_2"
+      }
+    ]
+  },
+  "entity.puffbug.death": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.puffbug.death",
+    "sounds": [
+      {
+        "name": "endergetic:entity/puffbug/puffbug_death"
+      }
+    ]
+  },
+  "entity.boof_block.inflate": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.boof_block.inflate",
+    "sounds": [
+      {
+        "name": "endergetic:entity/block/boof_block_inflate"
+      }
+    ]
+  },
+  "block.cluster.place": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      {
+        "name": "endergetic:block/cluster_place_0"
+      },
+      {
+        "name": "endergetic:block/cluster_place_1"
+      }
+    ]
+  },
+  "block.cluster.break": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "endergetic:block/cluster_break_0"
+      }
+    ]
+  },
+  "block.cluster.step": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [
+      {
+        "name": "endergetic:block/cluster_step_0"
+      },
+      {
+        "name": "endergetic:block/cluster_step_1"
+      },
+      {
+        "name": "endergetic:block/cluster_step_2"
+      }
+    ]
+  },
+  "block.cluster.hit": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.hit",
+    "sounds": [
+      {
+        "name": "endergetic:block/cluster_hit"
+      }
+    ]
+  },
+  "block.poise_bush.ambient": {
+    "category": "block",
+    "subtitle": "subtitles.endergetic.poise_bush.ambient",
+    "sounds": [
+      {
+        "name": "endergetic:block/ambient/poise_bush_ambient_0"
+      },
+      {
+        "name": "endergetic:block/ambient/poise_bush_ambient_1"
+      },
+      {
+        "name": "endergetic:block/ambient/poise_bush_ambient_2"
+      }
+    ]
+  },
+  "block.poise_bush.ambient_long": {
+    "category": "block",
+    "subtitle": "subtitles.endergetic.poise_bush.ambient",
+    "sounds": [
+      {
+        "name": "endergetic:block/ambient/poise_bush_ambient_long_0"
+      },
+      {
+        "name": "endergetic:block/ambient/poise_bush_ambient_long_1"
+      }
+    ]
+  },
+  "block.poise_cluster.ambient": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "endergetic:block/ambient/poise_cluster_ambient"
+      }
+    ]
+  },
+  "item.booflo_vest.inflate": {
+    "category": "player",
+    "subtitle": "subtitles.endergetic.booflo_vest.inflate",
+    "sounds": [
+      {
+        "name": "endergetic:item/booflo_vest_inflate"
+      }
+    ]
+  },
+  "ambient.poise_forest.loop": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_ambience"
+      }
+    ]
+  },
+  "ambient.poise_forest.additions": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_booflo_0"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_booflo_1"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_booflo_2"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_0"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_1"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_bubbles_2"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_drift_0"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_drift_1"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_drift_2"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_0"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_teleports_1"
+      }
+    ]
+  },
+  "ambient.poise_forest.mood": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_0"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_1"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_2"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_mood_drift_3"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_puffbug_puffs"
+      },
+      {
+        "name": "endergetic:ambient/poise_forest/poise_forest_shine"
+      }
+    ]
+  }
 }

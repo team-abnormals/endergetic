@@ -1094,7 +1094,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 			if (newStackToCreate != null) {
 				this.setStackToCreate(newStackToCreate);
 				this.consumeItemFromStack(player, itemstack);
-				return ActionResultType.CONSUME;
+				return ActionResultType.func_233537_a_(this.world.isRemote);
 			}
 			return ActionResultType.PASS;
 		} else {

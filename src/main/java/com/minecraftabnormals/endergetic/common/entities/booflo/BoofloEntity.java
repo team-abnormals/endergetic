@@ -1055,11 +1055,11 @@ public class BoofloEntity extends EndimatedEntity {
 
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
-			return ActionResultType.CONSUME;
+			return ActionResultType.func_233537_a_(this.world.isRemote);
 		} else if (item == EEBlocks.POISE_CLUSTER.get().asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
-			return ActionResultType.CONSUME;
+			return ActionResultType.func_233537_a_(this.world.isRemote);
 		} else if (item == EEItems.BOLLOOM_FRUIT.get() && !this.isAggressive() && !this.hasCaughtFruit() && this.onGround) {
 			IParticleData particle = ParticleTypes.HEART;
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
@@ -1092,7 +1092,7 @@ public class BoofloEntity extends EndimatedEntity {
 					this.world.addParticle(particle, this.getPosX() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), this.getPosY() + 0.5D + (double) (this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), d0, d1, d2);
 				}
 			}
-			return ActionResultType.CONSUME;
+			return ActionResultType.func_233537_a_(this.world.isRemote);
 		} else if (item instanceof DyeItem && this.isTamed()) {
 			DyeColor dyecolor = ((DyeItem) item).getDyeColor();
 			if (dyecolor != this.getBraceletsColor()) {
@@ -1100,7 +1100,7 @@ public class BoofloEntity extends EndimatedEntity {
 				if (!player.abilities.isCreativeMode) {
 					itemstack.shrink(1);
 				}
-				return ActionResultType.CONSUME;
+				return ActionResultType.func_233537_a_(this.world.isRemote);
 			}
 		} else {
 			ActionResultType result = itemstack.interactWithEntity(player, this, hand);

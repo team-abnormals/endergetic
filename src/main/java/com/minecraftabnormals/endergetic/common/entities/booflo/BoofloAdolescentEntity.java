@@ -546,7 +546,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
 			this.setEaten(true);
-			return ActionResultType.CONSUME;
+			return ActionResultType.func_233537_a_(this.world.isRemote);
 		}
 		return ActionResultType.PASS;
 	}
