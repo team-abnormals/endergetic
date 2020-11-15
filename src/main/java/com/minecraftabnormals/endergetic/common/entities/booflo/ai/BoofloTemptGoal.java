@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
 public class BoofloTemptGoal extends Goal {
-	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().allowInvulnerable();
+	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().setSkipAttackChecks().allowInvulnerable();
 	private BoofloEntity booflo;
 	private PlayerEntity tempter;
 
