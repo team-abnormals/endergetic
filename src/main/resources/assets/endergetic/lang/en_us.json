@@ -170,5 +170,7 @@
   "subtitles.endergetic.booflo_vest.inflate": "Booflo vest inflates",
   "subtitles.endergetic.poise_bush.ambient": "Poise bush bubbles",
   "________comment": "Config",
-  "endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager"
+  "endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager",
+  "_________comment": "Messages",
+  "overlay.mount.booflo": "Press %1$s to dismount. Press %2$s to slam"
 }
