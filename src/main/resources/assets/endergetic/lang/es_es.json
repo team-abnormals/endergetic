@@ -170,5 +170,7 @@
   "subtitles.endergetic.booflo_vest.inflate": "Chaleco de buflote se infla",
   "subtitles.endergetic.poise_bush.ambient": "Burbujas de arbusto equilibrado",
   "________comment": "Config",
-  "endergetic.config.debug_dragon_fight_manager": "Gestor debug de pelea de dragón"
+  "endergetic.config.debug_dragon_fight_manager": "Gestor debug de pelea de dragón",
+  "_________comment": "Messages",
+  "overlay.mount.booflo": "Pulsa %1$s para bajarte. Pulsa %2$s para aplastar"
 }
