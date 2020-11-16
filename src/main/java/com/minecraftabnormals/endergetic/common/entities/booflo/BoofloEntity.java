@@ -99,8 +99,8 @@ public class BoofloEntity extends EndimatedEntity {
 		return false;
 	};
 	private static final int BOOST_POWER_INCREMENT = 10;
-	private static final int BOOST_POWER_DECREMENT = 2;
 	private static final int MAX_BOOST_POWER = 182;
+	private static final int HALF_BOOST_POWER = 91;
 	private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(BoofloEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<Optional<UUID>> LAST_FED_UNIQUE_ID = EntityDataManager.createKey(BoofloEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 	private static final DataParameter<Boolean> ON_GROUND = EntityDataManager.createKey(BoofloEntity.class, DataSerializers.BOOLEAN);
@@ -231,7 +231,7 @@ public class BoofloEntity extends EndimatedEntity {
 
 			int power = this.getBoostPower();
 			if (power > 0 && !this.isBoostExpanding()) {
-				this.setBoostPower(Math.max(0, power - BOOST_POWER_DECREMENT));
+				this.setBoostPower(Math.max(0, power - (this.isOnGround() ? 3 : 2)));
 				if (this.getBoostPower() <= 0) {
 					this.setBoostLocked(false);
 				}
