@@ -237,7 +237,15 @@ public class BoofloEntity extends EndimatedEntity {
 				}
 			} else if (this.isBoostExpanding()) {
 				if (power < MAX_BOOST_POWER) {
-					this.setBoostPower(Math.min(MAX_BOOST_POWER, power + BOOST_POWER_INCREMENT));
+					if (this.isBoostLocked()) {
+						int incremented = power + BOOST_POWER_INCREMENT;
+						this.setBoostPower(Math.min(HALF_BOOST_POWER, incremented));
+						if (incremented >= HALF_BOOST_POWER) {
+							this.setBoostExpanding(false);
+						}
+					} else {
+						this.setBoostPower(Math.min(MAX_BOOST_POWER, power + BOOST_POWER_INCREMENT));
+					}
 				} else {
 					if (!this.isBoostLocked() && this.getControllingPassenger() instanceof PlayerEntity) {
 						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
