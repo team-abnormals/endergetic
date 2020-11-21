@@ -1,14 +1,22 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import java.util.Optional;
-
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.registries.DataSerializerEntry;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Optional;
+
+/**
+ * @author SmellyModder (Luke Tonon)
+ */
 public final class EEDataSerializers {
+	public static final DeferredRegister<DataSerializerEntry> SERIALIZERS = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
+
 	public static final IDataSerializer<Optional<Vector3d>> OPTIONAL_VEC3D = new IDataSerializer<Optional<Vector3d>>() {
 		@Override
 		public void write(PacketBuffer buf, Optional<Vector3d> value) {
@@ -50,8 +58,8 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static void registerSerializers() {
-		DataSerializers.registerSerializer(OPTIONAL_VEC3D);
-		DataSerializers.registerSerializer(BALLOON_COLOR);
+	static {
+		SERIALIZERS.register("optional_vec3d", () -> new DataSerializerEntry(OPTIONAL_VEC3D));
+		SERIALIZERS.register("balloon_color", () -> new DataSerializerEntry(BALLOON_COLOR));
 	}
 }

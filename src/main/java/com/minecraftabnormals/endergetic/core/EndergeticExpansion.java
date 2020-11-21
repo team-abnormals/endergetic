@@ -67,7 +67,6 @@ public class EndergeticExpansion {
 		instance = this;
 
 		this.setupMessages();
-		EEDataSerializers.registerSerializers();
 		EEDataProcessors.registerTrackedData();
 
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -81,6 +80,7 @@ public class EndergeticExpansion {
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEBiomes.BIOMES.register(modEventBus);
+		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
