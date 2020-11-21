@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import com.teamabnormals.abnormals_core.core.library.api.IAgeableEntity;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
 import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
@@ -60,7 +61,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class BoofloAdolescentEntity extends EndimatedEntity {
+public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> DESCENTING = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);

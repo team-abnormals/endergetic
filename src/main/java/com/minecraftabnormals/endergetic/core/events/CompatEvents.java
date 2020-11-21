@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
- * @author tessdotcpp
+ * @author abigailfails
  * Events for compatibility with the Savage & Ravage mod.
  */
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
@@ -22,7 +22,7 @@ public final class CompatEvents {
 	public static void onPotionExpire(PotionEvent.PotionExpiryEvent event) {
 		LivingEntity affected = event.getEntityLiving();
 		boolean isBabyEffect = event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:shrinking"));
-		if (isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growth"))) {
+		if (isBabyEffect || event.getPotionEffect().getPotion() == ForgeRegistries.POTIONS.getValue(new ResourceLocation("savageandravage:growing"))) {
 			if (!isBabyEffect && affected instanceof BoofloBabyEntity) ((BoofloBabyEntity) affected).growUp();
 			if (affected instanceof BoofloAdolescentEntity) {
 				if (isBabyEffect) {

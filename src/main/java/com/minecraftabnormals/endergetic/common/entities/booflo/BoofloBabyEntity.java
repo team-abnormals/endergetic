@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import com.teamabnormals.abnormals_core.core.library.api.IAgeableEntity;
 import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
 import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
@@ -45,7 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BoofloBabyEntity extends EndimatedEntity {
+public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.VARINT);
