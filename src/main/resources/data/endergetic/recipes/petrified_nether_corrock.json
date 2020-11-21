@@ -1,26 +1,21 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "group": "endergetic",
-    "pattern":
-    [
-    	"CCC",
-    	"CBC",
-        "CCC"
-    ],
-    "key":
-    {
-        "C":
-        {
-            "item": "endergetic:nether_corrock"
-        },
-        "B":
-        {
-            "item": "minecraft:water_bucket"
-        }
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "endergetic:nether_corrock"
     },
-    "result":
-    {
-        "item": "endergetic:petrified_nether_corrock",
-        "count": 8
+    "B": {
+      "tag": "forge:buckets/water"
     }
+  },
+  "result": {
+    "item": "endergetic:petrified_nether_corrock",
+    "count": 8
+  }
 }
