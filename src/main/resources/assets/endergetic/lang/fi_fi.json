@@ -189,5 +189,8 @@
   "subtitles.endergetic.poise_bush.ambient": "Kohopensas kuplii",
   
   "________comment": "Config",
-  "endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager"
+  "endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager",
+  
+  "_________comment": "Messages",
+  "overlay.mount.booflo": "Hyppää pois painamalla %1$s. Tömähdä painamalla %2$s"
 }
