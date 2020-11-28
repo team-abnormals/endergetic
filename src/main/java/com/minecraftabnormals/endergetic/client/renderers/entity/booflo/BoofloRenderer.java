@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<BoofloEntity>> {
 	private static final ResourceLocation DEFAULT = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo.png");
 	private static final EntitySkinHelper<BoofloEntity> SKIN_HELPER = EntitySkinHelper.create(EndergeticExpansion.MOD_ID, "textures/entity/booflo/", "booflo", (skinHelper) -> {
-		skinHelper.putSkins("snake", "snake", "snakeblock", "theforsakenone");
+		skinHelper.putSkins("snake", "snake", "snake block", "the forsaken one");
 		skinHelper.putSkins("cam", "cameron", "cam");
 	});
 

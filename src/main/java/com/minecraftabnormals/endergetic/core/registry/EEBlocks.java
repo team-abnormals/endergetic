@@ -136,7 +136,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> ENDER_CAMPFIRE	= HELPER.createBlock("ender_campfire", () -> new EnderCampfireBlock(Block.Properties.from(Blocks.CAMPFIRE)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> ENDER_LANTERN		= HELPER.createBlock("ender_lantern", () -> new LanternBlock(Block.Properties.from(Blocks.LANTERN)), ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> ENDER_WALL_TORCH	= HELPER.createBlockNoItem("ender_wall_torch", () -> new EnderWallTorchBlock(Block.Properties.from(Blocks.TORCH)));
-	public static final RegistryObject<Block> ENDER_TORCH		= HELPER.createWallOrFloorBlock("ender_torch", () -> new EnderTorchBlock(Block.Properties.from(Blocks.TORCH)), () -> ENDER_WALL_TORCH.get(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> ENDER_TORCH		= HELPER.createWallOrFloorBlock("ender_torch", () -> new EnderTorchBlock(Block.Properties.from(Blocks.TORCH)), ENDER_WALL_TORCH, ItemGroup.DECORATIONS);
 
 	public static final RegistryObject<Block> CHISELED_END_STONE_BRICKS = HELPER.createBlock("chiseled_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> CRACKED_END_STONE_BRICKS  = HELPER.createBlock("cracked_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
