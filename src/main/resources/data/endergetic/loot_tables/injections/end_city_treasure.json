@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -17,7 +17,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 21
+          "weight": 23
         }
       ]
     }
