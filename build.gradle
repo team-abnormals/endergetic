@@ -1,42 +1,40 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://dist.creeper.host/Sponge/maven' }
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = "https://dist.creeper.host/Sponge/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
+apply plugin: "org.spongepowered.mixin"
 
 mixin {
     add sourceSets.main, "endergetic.refmap.json"
 }
 
-version = '2.1.2'
-group = 'com.minecraftabnormals'
-archivesBaseName = 'The-Endergetic-Expansion-1.16.1'
+version = "2.1.2"
+group = "com.minecraftabnormals"
+archivesBaseName = "The-Endergetic-Expansion-1.16.1"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200723-1.16.1'
-    
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
+    mappings channel: "snapshot", version: "20200723-1.16.1"
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            property "mixin.env.disableRefMap", "true"
             arg "-mixin.config=endergetic.mixins.json"
             mods {
                 endergetic {
@@ -44,12 +42,11 @@ minecraft {
                 }
             }
         }
-
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            property "mixin.env.disableRefMap", "true"
             arg "-mixin.config=endergetic.mixins.json"
             mods {
                 endergetic {
@@ -57,12 +54,11 @@ minecraft {
                 }
             }
         }
-
         data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'endergetic', '--all', '--output', file('src/generated/resources/')
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
+            property "forge.logging.console.level", "debug"
+            args "--mod", "endergetic", "--all", "--output", file("src/generated/resources/")
             mods {
                 endergetic {
                     source sourceSets.main
@@ -79,21 +75,21 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.72'
+    minecraft "net.minecraftforge:forge:1.16.1-32.0.72"
     implementation fg.deobf("curse.maven:abnormals-core:3091840")
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title": "The Endergetic Expansion",
-            "Specification-Vendor": "Team Abnormals",
-            "Specification-Version": "1",
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor": "Team Abnormals",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "endergetic.mixins.json"
+                "Specification-Title"     : "The Endergetic Expansion",
+                "Specification-Vendor"    : "Team Abnormals",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "Team Abnormals",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "endergetic.mixins.json"
         ])
     }
 }
