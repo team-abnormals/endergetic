@@ -2,8 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
@@ -14,7 +13,7 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 	private int ticksPassed;
 
 	public BoofloGroundHopGoal(BoofloEntity booflo) {
-		super(booflo);
+		super(booflo, BoofloEntity.HOP);
 		this.setMutexFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
 	}
 
@@ -48,10 +47,5 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 		if (this.entity.getMoveHelper() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.entity.getMoveHelper()).setSpeed(1.25D);
 		}
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloEntity.HOP;
 	}
 }

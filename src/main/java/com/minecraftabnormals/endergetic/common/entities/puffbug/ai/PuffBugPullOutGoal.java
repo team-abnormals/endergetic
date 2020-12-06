@@ -2,9 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import java.util.EnumSet;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
 import net.minecraft.util.math.MathHelper;
@@ -14,7 +13,7 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	private int pulls;
 
 	public PuffBugPullOutGoal(PuffBugEntity puffbug) {
-		super(puffbug);
+		super(puffbug, PuffBugEntity.PULL_ANIMATION);
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
 
@@ -51,7 +50,6 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 			float motionZ = -MathHelper.cos(rotations[1] * ((float) Math.PI / 180F)) * MathHelper.cos(rotations[0] * ((float) Math.PI / 180F));
 
 			Vector3d popOutMotion = new Vector3d(motionX, motionY, motionZ).normalize().scale(0.25F);
-
 			this.entity.setMotion(popOutMotion);
 		}
 	}
@@ -59,10 +57,5 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	@Override
 	public void resetTask() {
 		NetworkUtil.setPlayingAnimationMessage(this.entity, PuffBugEntity.BLANK_ANIMATION);
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return PuffBugEntity.PULL_ANIMATION;
 	}
 }

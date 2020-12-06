@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.world.util;
 
 import java.util.function.LongFunction;
 
-import com.google.common.collect.ImmutableList;
-import com.minecraftabnormals.endergetic.common.world.EndergeticGenLayerBiome;
-
+import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.IExtendedNoiseRandom;
 import net.minecraft.world.gen.INoiseRandom;
 import net.minecraft.world.gen.area.IArea;
@@ -19,44 +19,28 @@ import net.minecraft.world.gen.layer.traits.IAreaTransformer1;
 
 public final class EndergeticLayerUtil {
 
-	public static <T extends IArea, C extends IExtendedNoiseRandom<T>> IAreaFactory<T> createBiomeFactory(IAreaFactory<T> landFactory, LongFunction<C> contextFactory) {
-		IAreaFactory<T> biomeFactory = EndergeticGenLayerBiome.INSTANCE.apply(contextFactory.apply(1L));
-		biomeFactory = LayerUtil.repeat(100L, ZoomLayer.NORMAL, biomeFactory, 2, contextFactory);
-		return biomeFactory;
-	}
-
-	public static <T extends IArea, C extends IExtendedNoiseRandom<T>> ImmutableList<IAreaFactory<T>> createAreaFactories(LongFunction<C> contextFactory) {
-		IAreaFactory<T> landFactory = GenLayerLand.INSTANCE.apply(contextFactory.apply(1L));
-
-		IAreaFactory<T> biomesFactory = createBiomeFactory(landFactory, contextFactory);
+	public static <C extends IExtendedNoiseRandom<LazyArea>> Layer createBiomeLayer(Registry<Biome> lookupRegistry, LongFunction<C> contextFactory) {
+		IAreaFactory<LazyArea> biomesFactory = new EndergeticBiomesLayer(lookupRegistry).apply(contextFactory.apply(1L));
+		biomesFactory = LayerUtil.repeat(100L, ZoomLayer.NORMAL, biomesFactory, 2, contextFactory);
 
 		for (int i = 0; i < 3; i++) {
 			biomesFactory = ZoomLayer.NORMAL.apply(contextFactory.apply(1000L + (long) i), biomesFactory);
 		}
 
 		biomesFactory = SmoothLayer.INSTANCE.apply(contextFactory.apply(100L), biomesFactory);
-
-		IAreaFactory<T> voroniZoomBiomesFactory = VoroniZoomLayer.INSTANCE.apply(contextFactory.apply(10L), biomesFactory);
-		return ImmutableList.of(biomesFactory, voroniZoomBiomesFactory, biomesFactory);
+		return new Layer(VoroniZoomLayer.INSTANCE.apply(contextFactory.apply(10L), biomesFactory));
 	}
 
-	public static Layer[] createGenLayers(long seed) {
-		ImmutableList<IAreaFactory<LazyArea>> factoryList = createAreaFactories((seedModifier) -> new LazyAreaContextEndergetic(25, seed, seedModifier));
-		Layer biomesLayer = new Layer(factoryList.get(0));
-		Layer voroniZoomBiomesLayer = new Layer(factoryList.get(1));
-		Layer biomesLayer2 = new Layer(factoryList.get(2));
-		return new Layer[]{
-				biomesLayer,
-				voroniZoomBiomesLayer,
-				biomesLayer2
-		};
-	}
+	static class EndergeticBiomesLayer implements IAreaTransformer0 {
+		private final Registry<Biome> lookupRegistry;
 
-	public enum GenLayerLand implements IAreaTransformer0 {
-		INSTANCE;
+		EndergeticBiomesLayer(Registry<Biome> lookupRegistry) {
+			this.lookupRegistry = lookupRegistry;
+		}
 
+		@Override
 		public int apply(INoiseRandom random, int x, int z) {
-			return 1;
+			return this.lookupRegistry.getId(this.lookupRegistry.getValueForKey(EEBiomes.getRandomBiome(random)));
 		}
 	}
 

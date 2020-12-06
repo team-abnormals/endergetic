@@ -3,8 +3,8 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 
 import net.minecraft.block.BlockState;
@@ -34,8 +34,8 @@ public class GlowingPoiseLogBlock extends RotatedPillarBlock {
 		if (rand.nextFloat() > 0.05F) {
 			BlockPos up = pos.up();
 			if (worldIn.getBlockState(up).getCollisionShape(worldIn, up).isEmpty()) {
-				double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-				double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+				double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 				double x = pos.getX() + 0.5D + offsetX;
 				double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -49,7 +49,7 @@ public class GlowingPoiseLogBlock extends RotatedPillarBlock {
 	//TODO: Convert to item group filling system in AC in 1.16.4
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this.asItem(), this.fillAfterItem.get(), group, items);
+		ItemStackUtil.fillAfterItemForGroup(this.asItem(), this.fillAfterItem.get(), group, items);
 	}
 
 	@Override

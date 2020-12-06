@@ -33,7 +33,7 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 
 	public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state) {
 		if (state.get(WATERLOGGED)) {
-			worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(false)), 3);
+			worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.FALSE), 3);
 			return Fluids.WATER;
 		} else {
 			return Fluids.EMPTY;
@@ -52,7 +52,7 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 	public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
 		if (!state.get(WATERLOGGED) && fluidStateIn.getFluid() == Fluids.WATER) {
 			if (!worldIn.isRemote()) {
-				worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.valueOf(true)), 3);
+				worldIn.setBlockState(pos, state.with(WATERLOGGED, Boolean.TRUE), 3);
 				worldIn.getPendingFluidTicks().scheduleTick(pos, fluidStateIn.getFluid(), fluidStateIn.getFluid().getTickRate(worldIn));
 			}
 			return true;

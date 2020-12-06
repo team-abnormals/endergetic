@@ -1,14 +1,12 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -16,7 +14,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 	private World world;
 
 	public BoofloSlamGoal(BoofloEntity booflo) {
-		super(booflo);
+		super(booflo, BoofloEntity.CHARGE);
 		this.world = booflo.world;
 	}
 
@@ -62,13 +60,8 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 		boolean isSomewhatSolidUnder = false;
 		BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().getPosition().toMutable();
 		for (int y = 1; y < 4; y++) {
-			isSomewhatSolidUnder = !isSomewhatSolidUnder ? this.entity.getBoofloAttackTarget() != null && Block.hasSolidSide(this.world.getBlockState(mutable.down(y)), this.world, mutable.down(y), Direction.UP) : true;
+			isSomewhatSolidUnder = isSomewhatSolidUnder || this.entity.getBoofloAttackTarget() != null && Block.hasSolidSideOnTop(this.world, mutable.down(y));
 		}
 		return isSomewhatSolidUnder;
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloEntity.CHARGE;
 	}
 }

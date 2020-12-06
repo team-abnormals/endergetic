@@ -3,10 +3,9 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 import java.util.EnumSet;
 import java.util.Random;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
 import net.minecraft.entity.item.ItemEntity;
@@ -17,7 +16,7 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 	private float originalHealth;
 
 	public PuffBugCreateItemGoal(PuffBugEntity puffbug) {
-		super(puffbug);
+		super(puffbug, PuffBugEntity.MAKE_ITEM_ANIMATION);
 		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
 
@@ -64,14 +63,14 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 				double posY = this.entity.getPosY();
 				double posZ = this.entity.getPosZ();
 				for (int i = 0; i < 6; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 
 					double x = posX + offsetX;
 					double y = posY + (rand.nextFloat() * 0.05F) + 0.5F;
 					double z = posZ + offsetZ;
 
-					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
 			} else if (this.isEndimationAtTick(85)) {
 				this.entity.playSound(this.entity.getItemCreationSound(), 0.1F, this.entity.isChild() ? (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.5F : (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
@@ -83,10 +82,5 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 	public void resetTask() {
 		this.ticksPassed = 0;
 		this.originalHealth = 0.0F;
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return PuffBugEntity.MAKE_ITEM_ANIMATION;
 	}
 }

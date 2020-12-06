@@ -2,9 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
@@ -16,7 +15,7 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 	private int soundDelay = 0;
 
 	public BoofloEatFruitGoal(BoofloEntity booflo) {
-		super(booflo);
+		super(booflo, BoofloEntity.EAT);
 		this.setMutexFlags(EnumSet.of(Flag.LOOK));
 	}
 
@@ -82,10 +81,5 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 				this.soundDelay = 50;
 			}
 		}
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloEntity.EAT;
 	}
 }

@@ -10,11 +10,11 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.IEndimatedEntity;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
@@ -97,8 +97,9 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -205,6 +206,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		this.targetSelector.addGoal(2, new PuffBugTargetAggressorGoal(this));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void tick() {
 		if (this.stuckInBlock) {
@@ -305,36 +307,36 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 
 			if (this.isEndimationPlaying(PUFF_ANIMATION) && this.getAnimationTick() == 5) {
 				for (int i = 0; i < 3; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 
 					double x = this.getPosX() + offsetX;
 					double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
 					double z = this.getPosZ() + offsetZ;
 
-					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F, (rand.nextFloat() * 0.05F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F);
+					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F, (rand.nextFloat() * 0.05F) + 0.025F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.05F);
 				}
 			} else if (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) && this.getAnimationTick() == 8) {
 				for (int i = 0; i < 6; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 
 					double x = this.getPosX() + offsetX;
 					double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
 					double z = this.getPosZ() + offsetZ;
 
-					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
 			} else if (this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && this.getAnimationTick() == 5) {
 				for (int i = 0; i < 6; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 
 					double x = this.getPosX() + offsetX;
 					double y = this.getPosY() + (rand.nextFloat() * 0.05F) + 0.7F;
 					double z = this.getPosZ() + offsetZ;
 
-					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+					this.world.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
 			}
 
@@ -1103,7 +1105,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		Random rng = this.getRNG();
 
 		if (dataTag != null) {
@@ -1135,12 +1137,12 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				int swarmSize = rng.nextInt(11) + 10;
 				Vector3d centeredPos = Vector3d.copyCentered(this.getPosition());
 				for (int i = 0; i < swarmSize; i++) {
-					Vector3d spawnPos = centeredPos.add(MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtils.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
+					Vector3d spawnPos = centeredPos.add(MathUtil.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng), MathUtil.makeNegativeRandomly(rng.nextFloat() * 2.0F, rng), MathUtil.makeNegativeRandomly(rng.nextFloat() * 5.5F, rng));
 
 					if (this.world.isAirBlock(new BlockPos(spawnPos))) {
 						PuffBugEntity swarmChild = EEEntities.PUFF_BUG.get().create(this.world);
 						swarmChild.setLocationAndAngles(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0.0F, 0.0F);
-						swarmChild.onInitialSpawn(this.world, this.world.getDifficultyForLocation(new BlockPos(spawnPos)), SpawnReason.EVENT, null, null);
+						swarmChild.onInitialSpawn(worldIn, this.world.getDifficultyForLocation(new BlockPos(spawnPos)), SpawnReason.EVENT, null, null);
 						swarmChild.setGrowingAge(-24000);
 
 						this.world.addEntity(swarmChild);
@@ -1148,7 +1150,6 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 				}
 			}
 		}
-
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 
@@ -1164,22 +1165,18 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 
 	@Override
 	protected void collideWithEntity(Entity entity) {
-		if (!this.isInflated() && entity instanceof PuffBugEntity) {
-			if (entity instanceof PuffBugEntity) {
-				return;
-			} else {
-				if (this.isProjectile()) {
-					if (entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
-						this.setInflated(true);
-						this.removeFireDirection();
-						this.stuckInBlock = false;
+		if (!this.isInflated() && !(entity instanceof PuffBugEntity)) {
+			if (this.isProjectile()) {
+				if (entity.attackEntityFrom(DamageSource.causeMobDamage(this).setProjectile(), 5.0F)) {
+					this.setInflated(true);
+					this.removeFireDirection();
+					this.stuckInBlock = false;
 
-						if (!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
-							for (EffectInstance effects : this.getActivePotionEffects()) {
-								((LivingEntity) entity).addPotionEffect(effects);
-							}
-							this.clearActivePotions();
+					if (!this.getActivePotionEffects().isEmpty() && entity instanceof LivingEntity) {
+						for (EffectInstance effects : this.getActivePotionEffects()) {
+							((LivingEntity) entity).addPotionEffect(effects);
 						}
+						this.clearActivePotions();
 					}
 				}
 			}
@@ -1207,8 +1204,9 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		return false;
 	}
 
+	@Nullable
 	@Override
-	public AgeableEntity createChild(AgeableEntity ageable) {
+	public AgeableEntity func_241840_a(ServerWorld world, AgeableEntity ageableEntity) {
 		return EEEntities.PUFF_BUG.get().create(this.world);
 	}
 

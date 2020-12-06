@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
+import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -46,6 +46,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class PuffBugBottleItem extends Item {
 
@@ -72,7 +73,7 @@ public class PuffBugBottleItem extends Item {
 			}
 
 			EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-			if (entitytype.spawn(world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
+			if (entitytype.spawn((ServerWorld) world, itemstack, context.getPlayer(), blockpos1, SpawnReason.BUCKET, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
 				this.emptyBottle(context.getPlayer(), context.getHand());
 			}
 			return ActionResultType.SUCCESS;
@@ -86,13 +87,15 @@ public class PuffBugBottleItem extends Item {
 			if (!booflo.hasCaughtFruit() && !booflo.hasCaughtPuffBug() && booflo.isTamed()) {
 				World world = player.world;
 				PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world);
-				puffbug.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
-				EntityType.applyItemNBT(world, player, puffbug, stack.getOrCreateTag());
-				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(puffbug.getPosition()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
-				world.addEntity(puffbug);
-				booflo.catchPuffBug(puffbug);
-				if (!player.abilities.isCreativeMode) {
-					this.emptyBottle(player, hand);
+				if (puffbug != null) {
+					puffbug.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
+					EntityType.applyItemNBT(world, player, puffbug, stack.getOrCreateTag());
+					puffbug.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(puffbug.getPosition()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
+					world.addEntity(puffbug);
+					booflo.catchPuffBug(puffbug);
+					if (!player.abilities.isCreativeMode) {
+						this.emptyBottle(player, hand);
+					}
 				}
 				return ActionResultType.CONSUME;
 			}
@@ -116,7 +119,7 @@ public class PuffBugBottleItem extends Item {
 					return new ActionResult<>(ActionResultType.PASS, itemstack);
 				} else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
 					EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-					if (entitytype.spawn(worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
+					if (entitytype.spawn((ServerWorld) worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
 						return new ActionResult<>(ActionResultType.PASS, itemstack);
 					} else {
 						if (!playerIn.abilities.isCreativeMode) {
@@ -140,7 +143,7 @@ public class PuffBugBottleItem extends Item {
 			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").mergeStyle(TextFormatting.DARK_PURPLE));
 			for (EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[]{TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtils.intToRomanNumerals(effects.getAmplifier() + 1)).mergeStyle(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtil.intToRomanNumerals(effects.getAmplifier() + 1)).mergeStyle(potionTextFormat));
 			}
 		}
 	}

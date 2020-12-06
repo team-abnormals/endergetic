@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.PushReaction;
@@ -116,15 +116,15 @@ public class PoiseClusterEntity extends LivingEntity {
 				this.setMotion(0, -0.05F, 0);
 			} else if (Math.ceil(this.getPosY()) == this.getOrigin().getY() && this.ticksExisted > 10) {
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetX = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 
 					double x = this.getOrigin().getX() + 0.5D + offsetX;
 					double y = this.getOrigin().getY() + 0.5D + (this.rand.nextFloat() * 0.05F);
 					double z = this.getOrigin().getZ() + 0.5D + offsetZ;
 
 					if (this.isServerWorld()) {
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 					}
 				}
 				this.world.setBlockState(this.getOrigin(), EEBlocks.POISE_CLUSTER.get().getDefaultState());
@@ -135,15 +135,15 @@ public class PoiseClusterEntity extends LivingEntity {
 				BlockPos pos = this.getPosition();
 
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetX = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 
 					double x = pos.getX() + 0.5D + offsetX;
 					double y = pos.getY() + 0.5D + (this.rand.nextFloat() * 0.05F);
 					double z = pos.getZ() + 0.5D + offsetZ;
 
 					if (this.isServerWorld()) {
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F);
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F);
 					}
 				}
 
@@ -457,7 +457,7 @@ public class PoiseClusterEntity extends LivingEntity {
 			} else {
 				this.ticksRemoved++;
 				if (this.ticksRemoved > 10) {
-					this.func_239509_o_();
+					this.finishPlaying();
 				}
 			}
 

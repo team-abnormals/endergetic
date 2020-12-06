@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.AcidianLanternBlock;
-import com.minecraftabnormals.endergetic.common.world.biomes.EndergeticBiome;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
@@ -21,7 +20,6 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 	private static final Supplier<BlockState> MYSTICAL_OBSIDIAN = () -> EEBlocks.MYSTICAL_OBSIDIAN.get().getDefaultState();
@@ -32,8 +30,8 @@ public class EndergeticEndGatewayFeature extends Feature<EndGatewayConfig> {
 		super(config);
 	}
 
-	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, EndGatewayConfig config) {
-		if (worldIn.getBiome(pos) instanceof EndergeticBiome && !GenerationUtils.isAreaReplacable(worldIn, pos.getX() - 1, pos.getY() - 4, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 4, pos.getZ() + 1))
+	public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, EndGatewayConfig config) {
+		if (!GenerationUtils.isAreaReplacable(worldIn, pos.getX() - 1, pos.getY() - 4, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 4, pos.getZ() + 1))
 			return false;
 
 		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-1, -2, -1), pos.add(1, 2, 1))) {

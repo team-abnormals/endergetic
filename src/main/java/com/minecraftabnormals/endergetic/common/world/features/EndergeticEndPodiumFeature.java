@@ -15,7 +15,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.EndPodiumFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
@@ -24,7 +23,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().getDefaultState();
 	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(AcidianLanternBlock.FACING, Direction.UP);
 
-	private static final BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
+	private static BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
 		return active ? EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
 	}
 
@@ -36,7 +35,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader worldIn, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
 			boolean flag = blockpos.withinDistance(pos, 2.5D);
 			if (flag || blockpos.withinDistance(pos, 3.5D)) {

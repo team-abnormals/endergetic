@@ -1,8 +1,17 @@
 package com.minecraftabnormals.endergetic.core;
 
-import java.util.Collections;
-
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
+import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.EndGatewayConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,17 +23,13 @@ import com.minecraftabnormals.endergetic.common.network.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
-import com.minecraftabnormals.endergetic.common.world.EEWorldGenHandler;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
 import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
-import com.teamabnormals.abnormals_core.core.library.api.AmbienceMusicPlayer;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
@@ -32,7 +37,6 @@ import net.minecraft.client.renderer.tileentity.CampfireTileEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
@@ -48,6 +52,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import java.util.EnumSet;
+
 @SuppressWarnings("deprecation")
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
@@ -55,7 +61,9 @@ public class EndergeticExpansion {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID.toUpperCase());
 	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
-	public static final EndergeticRegistryHelper REGISTRY_HELPER = new EndergeticRegistryHelper(MOD_ID);
+	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
+		helper.putSubHelper(ForgeRegistries.BLOCKS, new EndergeticBlockSubRegistryHelper(helper));
+	});
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
 			.networkProtocolVersion(() -> NETWORK_PROTOCOL)
@@ -71,15 +79,10 @@ public class EndergeticExpansion {
 
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-		REGISTRY_HELPER.getDeferredItemRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredBlockRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredSoundRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredTileEntityRegister().register(modEventBus);
-		REGISTRY_HELPER.getDeferredEntityRegister().register(modEventBus);
+		REGISTRY_HELPER.register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
-		EEBiomes.BIOMES.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
@@ -90,7 +93,6 @@ public class EndergeticExpansion {
 		});
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			modEventBus.addListener(EventPriority.LOWEST, this::registerItemColors);
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
 		});
 
@@ -102,11 +104,11 @@ public class EndergeticExpansion {
 		DeferredWorkQueue.runLater(() -> {
 			EEDispenserBehaviors.registerAll();
 			EELootInjectors.registerLootInjectors();
-			EEBiomes.applyBiomeInfo();
+			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
-			EEWorldGenHandler.overrideFeatures();
 			EEEntityAttributes.putAttributes();
+			BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(ServerWorld.field_241108_a_, true))));
 		});
 	}
 
@@ -133,13 +135,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		AmbienceMusicPlayer.registerBiomeAmbientSoundPlayer(Collections.singletonList(EEBiomes.POISE_FOREST::get), EESounds.POISE_FOREST_LOOP, EESounds.POISE_FOREST_ADDITIONS, EESounds.POISE_FOREST_MOOD);
 		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private void registerItemColors(ColorHandlerEvent.Item event) {
-		REGISTRY_HELPER.processSpawnEggColors(event);
 	}
 
 	private void setupMessages() {

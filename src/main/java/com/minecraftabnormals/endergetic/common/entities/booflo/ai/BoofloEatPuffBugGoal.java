@@ -1,8 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,10 +8,10 @@ import net.minecraft.util.math.MathHelper;
 
 public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	private float originalYaw;
-	private int soundDelay = 0;
+	private int soundDelay;
 
 	public BoofloEatPuffBugGoal(BoofloEntity booflo) {
-		super(booflo);
+		super(booflo, BoofloEntity.EAT);
 	}
 
 	@Override
@@ -59,7 +57,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	@Override
 	public void resetTask() {
 		this.originalYaw = 0;
-		NetworkUtil.setPlayingAnimationMessage(this.entity, BoofloEntity.BLANK_ANIMATION);
+		this.playEndimation(BoofloEntity.BLANK_ANIMATION);
 	}
 
 	@Override
@@ -75,10 +73,5 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 				this.soundDelay = 50;
 			}
 		}
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloEntity.EAT;
 	}
 }

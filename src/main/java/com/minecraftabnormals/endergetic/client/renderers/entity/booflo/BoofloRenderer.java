@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.booflo;
 
+import com.minecraftabnormals.abnormals_core.client.EntitySkinHelper;
 import com.minecraftabnormals.endergetic.client.models.booflo.BoofloModel;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.BoofloEmissiveLayer;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.LayerRendererBoofloBracelets;
@@ -8,7 +9,6 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import com.teamabnormals.abnormals_core.client.EntitySkinHelper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;

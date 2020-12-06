@@ -15,7 +15,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -27,7 +26,7 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 		super(config);
 	}
 
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		boolean flag = false;
 
 		for (int i = 0; i < 64; ++i) {
@@ -51,5 +50,4 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 		}
 		return false;
 	}
-
 }

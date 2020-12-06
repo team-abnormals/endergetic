@@ -38,7 +38,7 @@ public class CorrockCrownSBlockItem extends BlockItem {
 			}
 		}
 
-		return iblockstate1 != null && iworldreaderbase.func_226663_a_(iblockstate1, blockpos, ISelectionContext.dummy()) ? iblockstate1 : null;
+		return iblockstate1 != null && iworldreaderbase.placedBlockCollides(iblockstate1, blockpos, ISelectionContext.dummy()) ? iblockstate1 : null;
 	}
 
 	@Override

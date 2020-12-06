@@ -75,7 +75,7 @@ public class PuffBugHiveBlock extends Block {
 		World world = context.getWorld();
 		for (Direction enumfacing : context.getNearestLookingDirections()) {
 			if (enumfacing == Direction.UP) {
-				if (world.isAirBlock(blockpos.down()) && Block.hasSolidSide(world.getBlockState(blockpos.up()), world, blockpos, Direction.DOWN)) {
+				if (world.isAirBlock(blockpos.down()) && Block.hasSolidSideOnTop(world, blockpos)) {
 					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
 					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
 					if (entities.size() > 0) {
@@ -94,7 +94,6 @@ public class PuffBugHiveBlock extends Block {
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
 		BlockState down = world.getBlockState(pos.down());
 		return (world.getBlockState(pos.up()).getBlock() instanceof PuffbugHiveHangerBlock) || down.isSolid() || down.getBlock() instanceof PuffBugHiveBlock;

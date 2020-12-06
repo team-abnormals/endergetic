@@ -12,7 +12,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -26,7 +25,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.down()).getBlock() == EEBlocks.POISMOSS.get()) {
 			this.createGlob(rand.nextInt(12), world, pos, rand);
 			return true;
@@ -59,7 +58,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 
 		if (variation <= 2) {
 			this.setBlockIfReplacable(world, pos.up().up(), POISE_CLUSTER);
-		} else if (variation >= 3 && variation <= 7) {
+		} else if (variation <= 7) {
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north().west().up(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north().east().up(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.south().west().up(), POISE_CLUSTER);
@@ -69,7 +68,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.north(2).east(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.south(2).west(), POISE_CLUSTER);
 			if (rand.nextInt(2) == 1) this.setBlockIfReplacable(world, pos.west(2).east(), POISE_CLUSTER);
-		} else if (variation >= 8 && variation <= 10) {
+		} else if (variation <= 10) {
 			int i = rand.nextInt(4);
 			if (i == 0) {
 				this.setBlockIfReplacable(world, pos.north().up().east(), POISE_CLUSTER);

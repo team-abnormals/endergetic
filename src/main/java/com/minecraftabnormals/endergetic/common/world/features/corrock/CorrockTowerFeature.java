@@ -6,9 +6,9 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
+import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.teamabnormals.abnormals_core.core.library.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -22,7 +22,6 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class CorrockTowerFeature extends AbstractCorrockFeature {
 
@@ -32,7 +31,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
 		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			float chance = rand.nextFloat();
@@ -151,12 +150,12 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 	@Nullable
 	private GenerationPiece getSmallBase(IWorld world, BlockPos pos, Random rand) {
 		int successfulSides = 0;
-		GenerationPiece piece = new GenerationPiece((w, p) -> w.isAirBlock(p.pos) && Block.hasSolidSide(w.getBlockState(p.pos.down()), w, p.pos.down(), Direction.UP));
+		GenerationPiece piece = new GenerationPiece((w, p) -> w.isAirBlock(p.pos) && Block.hasSolidSideOnTop(w, p.pos.down()));
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			int length = 0;
 			for (int i = 1; i < 3; i++) {
 				BlockPos offset = pos.offset(horizontal, i);
-				if (world.isAirBlock(offset) && Block.hasSolidSide(world.getBlockState(offset.down()), world, offset.down(), Direction.UP)) {
+				if (world.isAirBlock(offset) && Block.hasSolidSideOnTop(world, offset.down())) {
 					length++;
 				} else {
 					break;

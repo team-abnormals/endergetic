@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
 import com.google.common.collect.Maps;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataProcessor;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonOrder;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.IDataProcessor;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedData;
-import com.teamabnormals.abnormals_core.common.world.storage.tracking.TrackedDataManager;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
@@ -45,7 +45,7 @@ public final class EEDataProcessors {
 
 	};
 
-	public static final TrackedData<Map<UUID, BalloonOrder>> ORDER_DATA = TrackedData.Builder.create(ORDER_PROCESSOR, () -> Maps.newHashMap()).build();
+	public static final TrackedData<Map<UUID, BalloonOrder>> ORDER_DATA = TrackedData.Builder.create(ORDER_PROCESSOR, Maps::newHashMap).build();
 
 	public static void registerTrackedData() {
 		TrackedDataManager.INSTANCE.registerData(new ResourceLocation(EndergeticExpansion.MOD_ID, "ballooon_order"), ORDER_DATA);

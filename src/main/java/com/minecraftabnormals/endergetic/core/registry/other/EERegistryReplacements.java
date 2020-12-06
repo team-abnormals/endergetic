@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import com.teamabnormals.abnormals_core.core.utils.RegistryHelper;
+import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.items.EndergeticEnderCrystalItem;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
@@ -11,6 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
 
+//TODO: Move to Mixin
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EERegistryReplacements {
 
@@ -20,7 +21,7 @@ public final class EERegistryReplacements {
 	@SubscribeEvent
 	public static void registerItemReplacements(RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(
-				new EndergeticEnderCrystalItem(RegistryHelper.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
+				new EndergeticEnderCrystalItem(ItemSubRegistryHelper.createSimpleItemProperty(64, ItemGroup.DECORATIONS)).setRegistryName("minecraft:end_crystal")
 		);
 	}
 

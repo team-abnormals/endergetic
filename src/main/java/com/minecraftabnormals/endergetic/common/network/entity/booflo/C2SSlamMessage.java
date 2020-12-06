@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;

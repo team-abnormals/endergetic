@@ -3,13 +3,13 @@ package com.minecraftabnormals.endergetic.common.items;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import com.teamabnormals.abnormals_core.core.utils.EntityUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -52,7 +52,7 @@ public class BolloomBalloonItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (!world.isRemote && hasNoEntityTarget(player) && EntityUtils.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
+		if (!world.isRemote && hasNoEntityTarget(player) && EntityUtil.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isSneaking()) {
 			Entity ridingEntity = player.getRidingEntity();
 			boolean isRidingBoat = ridingEntity instanceof BoatEntity;
 			if (isRidingBoat && canAttachBalloonToTarget(ridingEntity)) {

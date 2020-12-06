@@ -17,9 +17,12 @@ import net.minecraft.world.server.ServerWorld;
 @Mixin(EndGatewayTileEntity.class)
 public abstract class EndGatewayTileEntityMixin extends EndPortalTileEntity implements ITickableTileEntity {
 
+	/**
+	 * Overrite since not overwriting it would have basically the same effect as a redirect.
+	 */
 	@Overwrite
 	private void func_227016_a_(ServerWorld world, BlockPos pos) {
-		EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(this.getPos(), false)).func_236265_a_(world, world.func_241112_a_(), world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+		EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(this.getPos(), false)).generate(world, world.getChunkProvider().getChunkGenerator(), new Random(), pos);
 	}
 
 }

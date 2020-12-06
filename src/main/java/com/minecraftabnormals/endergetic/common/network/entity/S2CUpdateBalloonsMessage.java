@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.common.network.entity;
 
+import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import com.teamabnormals.abnormals_core.client.ClientInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;

@@ -21,7 +21,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.IWorldGenerationReader;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -36,7 +35,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		int treeHeight = rand.nextInt(19) + 13;
 		int size = 0;
 		//Random tree top size; small(45%), medium(40%), large(15%)
@@ -105,7 +104,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 				} else {
 					return false;
 				}
-			} else if (size == 2) {
+			} else {
 				if (GenerationUtils.isAreaReplacable(world, pos.north().west().getX(), pos.north().west().getY(), pos.north().west().getZ(), pos.south().east().up(treeHeight).getX(), pos.south().east().up(treeHeight).getY(), pos.south().east().up(treeHeight).getZ())) {
 					if (isSutableForSizes[2]) {
 						this.buildTreeBase(world, pos, rand);
@@ -380,10 +379,10 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 			}
 			//Corner bits
 			boolean[] doCornerFeature = new boolean[]{
-					rand.nextInt(4) == 0 ? true : false,
-					rand.nextInt(4) == 0 ? true : false,
-					rand.nextInt(4) == 0 ? true : false,
-					rand.nextInt(4) == 0 ? true : false,
+					rand.nextInt(4) == 0,
+					rand.nextInt(4) == 0,
+					rand.nextInt(4) == 0,
+					rand.nextInt(4) == 0,
 			};
 			if (doCornerFeature[0]) {
 				BlockPos cornerOrigin = origin.up(3).north(3).west(2);

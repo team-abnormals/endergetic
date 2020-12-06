@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.client.models.bolloom;
 
+import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import com.teamabnormals.abnormals_core.client.ClientInfo;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;

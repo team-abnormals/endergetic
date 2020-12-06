@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -46,7 +47,7 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 			return false;
 		}
 		ClientPlayerEntity player = MC.player;
-		return balloon.getAttachedEntity() != player || MC.gameSettings.thirdPersonView != 0 || player.rotationPitch < -45.0F;
+		return balloon.getAttachedEntity() != player || MC.gameSettings.getPointOfView() != PointOfView.FIRST_PERSON || player.rotationPitch < -45.0F;
 	}
 
 	@Override

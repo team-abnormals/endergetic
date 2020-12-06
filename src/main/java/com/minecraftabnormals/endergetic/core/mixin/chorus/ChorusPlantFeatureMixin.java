@@ -7,7 +7,6 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ChorusPlantFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,8 +17,8 @@ import java.util.Random;
 @Mixin(ChorusPlantFeature.class)
 public final class ChorusPlantFeatureMixin {
 
-	@Inject(at = @At("HEAD"), method = "func_230362_a_", cancellable = true)
-	private void allowGenerationOnTag(ISeedReader seedReader, StructureManager p_230362_2_, ChunkGenerator p_230362_3_, Random p_230362_4_, BlockPos pos, NoFeatureConfig p_230362_6_, CallbackInfoReturnable<Boolean> info) {
+	@Inject(at = @At("HEAD"), method = "generate", cancellable = true)
+	private void allowGenerationOnTag(ISeedReader seedReader, ChunkGenerator p_230362_3_, Random p_230362_4_, BlockPos pos, NoFeatureConfig p_230362_6_, CallbackInfoReturnable<Boolean> info) {
 		if (seedReader.isAirBlock(pos.up()) && seedReader.getBlockState(pos).isIn(EETags.Blocks.CHORUS_PLANTABLE)) {
 			ChorusFlowerBlock.generatePlant(seedReader, pos.up(), p_230362_4_, 8);
 			info.setReturnValue(true);

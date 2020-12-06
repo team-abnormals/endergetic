@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock.DimensionTypeAccessor;
@@ -49,10 +49,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -212,7 +209,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 
 		//Helps them not fall off the edge
-		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3)) {
+		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.world.getDimensionType() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3)) {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
 
@@ -222,7 +219,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			}
 		}
 
-		if (!this.onGround && this.world.func_230315_m_() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3) && !this.isWorldRemote()) {
+		if (!this.onGround && this.world.getDimensionType() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.getPosition(), 3) && !this.isWorldRemote()) {
 			this.addVelocity(-MathHelper.sin((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F, 0, MathHelper.cos((float) (this.rotationYaw * Math.PI / 180.0F)) * 0.01F);
 		}
 
@@ -551,8 +548,9 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		return ActionResultType.PASS;
 	}
 
+	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		this.setGrowingAge(-24000);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}

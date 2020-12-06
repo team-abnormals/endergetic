@@ -19,7 +19,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 
@@ -32,7 +31,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if (rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.down();
 
@@ -56,7 +55,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		return false;
 	}
 
-	private void spawnPuffBugs(IWorld world, BlockPos pos, Random rand) {
+	private void spawnPuffBugs(ISeedReader world, BlockPos pos, Random rand) {
 		int maxPuffBugs = rand.nextInt(4) + 2;
 
 		List<Direction> openSides = this.getOpenSides(world, pos);

@@ -1,18 +1,16 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	private int eatingTicks;
 
 	public AdolescentEatGoal(BoofloAdolescentEntity adolescent) {
-		super(adolescent);
+		super(adolescent, BoofloAdolescentEntity.EATING_ANIMATION);
 	}
 
 	@Override
@@ -94,17 +92,12 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 		BlockPos pos = this.entity.getPosition();
 		for (int i = 0; i < 10; i++) {
 			pos = pos.down(i);
-			if (Block.hasSolidSide(this.entity.world.getBlockState(pos), this.entity.world, pos, Direction.UP) && i >= 4) {
+			if (Block.hasSolidSideOnTop(this.entity.world, pos) && i >= 4) {
 				if (this.entity.world.getBlockState(pos).getFluidState().isEmpty() && !this.entity.world.getBlockState(pos).isBurning(this.entity.world, pos)) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloAdolescentEntity.EATING_ANIMATION;
 	}
 }

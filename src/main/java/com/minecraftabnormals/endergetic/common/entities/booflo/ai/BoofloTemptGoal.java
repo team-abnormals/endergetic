@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;

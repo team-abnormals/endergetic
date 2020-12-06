@@ -3,8 +3,8 @@ package com.minecraftabnormals.endergetic.common.world.features;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.mojang.serialization.Codec;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.poise.BolloomBudBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
@@ -20,7 +20,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -33,7 +32,7 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if (rand.nextFloat() > 0.75) {
 			if (this.isValidPos(world, pos)) {
 				world.setBlockState(pos, BOLLOOM_BUD.get(), 2);
@@ -65,14 +64,13 @@ public class BolloomBudFeature extends Feature<NoFeatureConfig> {
 			for (int y = 1; y < 7; y++) {
 				if (world.isAirBlock(sides.offsetPosition(pos.up(y)))) {
 					maxHeights[sides.id] = y;
-					continue;
 				} else {
 					break;
 				}
 			}
 		}
 
-		return MathUtils.getLowestValueInIntArray(maxHeights);
+		return MathUtil.getLowestValueInIntArray(maxHeights);
 	}
 
 	private boolean canFitCross(IWorld world, BlockPos pos) {

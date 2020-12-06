@@ -7,8 +7,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.api.util.StringUtils;
 import com.minecraftabnormals.endergetic.common.blocks.poise.BolloomBudBlock;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
@@ -247,14 +247,13 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 			for (int y = 1; y < 7; y++) {
 				if (this.world.isAirBlock(sides.offsetPosition(this.pos.up(y)))) {
 					maxHeights[sides.id] = y;
-					continue;
 				} else {
 					break;
 				}
 			}
 		}
 
-		return MathUtils.getLowestValueInIntArray(maxHeights);
+		return MathUtil.getLowestValueInIntArray(maxHeights);
 	}
 
 	public enum BudSide {
@@ -280,14 +279,14 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 		}
 	}
 
-	class SideData {
+	static class SideData {
 		@Nullable
 		private UUID fruitUUID;
 		private int growTimer;
 		private boolean growing;
 
 		public BolloomFruitEntity getFruit(World world) {
-			if (!world.isRemote()) {
+			if (!world.isRemote() && this.fruitUUID != null) {
 				Entity entity = ((ServerWorld) world).getEntityByUuid(this.fruitUUID);
 				if (entity instanceof BolloomFruitEntity) {
 					return (BolloomFruitEntity) entity;

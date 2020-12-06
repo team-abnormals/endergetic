@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 
 import java.util.Random;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.item.filling.TargetedItemGroupFiller;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
@@ -30,6 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PoiseBushBlock extends Block implements IGrowable {
+	private static final TargetedItemGroupFiller FILLER = new TargetedItemGroupFiller(() -> Items.SEA_PICKLE);
 	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 13.0D, 14.0D);
 
 	public PoiseBushBlock(Properties properties) {
@@ -41,8 +42,8 @@ public class PoiseBushBlock extends Block implements IGrowable {
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
 		if (rand.nextFloat() > 0.05F) return;
 
-		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -106,13 +107,6 @@ public class PoiseBushBlock extends Block implements IGrowable {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.SEA_PICKLE, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemGroup(group, items);
-			}
-		}
+		FILLER.fillItem(this.asItem(), group, items);
 	}
 }

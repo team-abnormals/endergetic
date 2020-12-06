@@ -1,8 +1,8 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
+import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teamabnormals.abnormals_core.client.ACRenderTypes;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownWallModel;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;

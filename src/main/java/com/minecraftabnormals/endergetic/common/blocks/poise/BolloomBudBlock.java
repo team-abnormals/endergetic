@@ -57,7 +57,7 @@ public class BolloomBudBlock extends Block {
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.isValidPosition(world, currentPos)) {
 			boolean opened = stateIn.get(OPENED);
-			return this.placePedals(world.getWorld(), currentPos, opened) && opened ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
+			return this.placePedals(world, currentPos, opened) && opened ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
 		}
 		return Blocks.AIR.getDefaultState();
 	}
@@ -67,7 +67,7 @@ public class BolloomBudBlock extends Block {
 		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !isAcrossOrAdjacentToBud(worldIn, pos);
 	}
 
-	public boolean placePedals(World world, BlockPos pos, boolean opened) {
+	public boolean placePedals(IWorld world, BlockPos pos, boolean opened) {
 		if (!world.getBlockState(pos).get(OPENED) && this.canPutDownPedals(world, pos)) {
 			if (opened) {
 				for (BudSide side : BudSide.values()) {
@@ -101,7 +101,7 @@ public class BolloomBudBlock extends Block {
 		return false;
 	}
 
-	private boolean canPutDownPedals(World world, BlockPos pos) {
+	private boolean canPutDownPedals(IWorld world, BlockPos pos) {
 		for (BudSide sides : BudSide.values()) {
 			BlockPos sidePos = sides.offsetPosition(pos);
 			if (!world.getFluidState(sidePos).isEmpty() || !world.getBlockState(sidePos).getCollisionShape(world, sidePos).isEmpty()) {

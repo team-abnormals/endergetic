@@ -4,8 +4,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.world.other.PoiseTree;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
@@ -59,8 +59,8 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 	public void animateTick(BlockState stateIn, World world, BlockPos pos, Random rand) {
 		if (stateIn.get(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
 
-		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -197,8 +197,8 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		if (ItemStackUtils.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtils.findIndexOfItem(Items.LARGE_FERN, items);
+		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
+			int targetIndex = ItemStackUtil.findIndexOfItem(Items.LARGE_FERN, items);
 			if (targetIndex != -1) {
 				items.add(targetIndex + 1, new ItemStack(this));
 			} else {

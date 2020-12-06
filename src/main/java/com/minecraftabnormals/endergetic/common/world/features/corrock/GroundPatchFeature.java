@@ -12,7 +12,6 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class GroundPatchFeature extends Feature<SphereReplaceConfig> {
 
@@ -20,9 +19,9 @@ public class GroundPatchFeature extends Feature<SphereReplaceConfig> {
 		super(config);
 	}
 
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, SphereReplaceConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, SphereReplaceConfig config) {
 		int i = 0;
-		int radius = rand.nextInt(config.radius - 2) + 2;
+		int radius = rand.nextInt(config.radius.func_242259_a(rand));
 
 		if (config.targets.contains(Blocks.END_STONE.getDefaultState())) {
 			if (config.state == EEBlocks.EUMUS.get().getDefaultState() && rand.nextFloat() < 0.75F) {
@@ -40,12 +39,12 @@ public class GroundPatchFeature extends Feature<SphereReplaceConfig> {
 				int radiusZDistance = z - pos.getZ();
 				int distance = radiusXDistance * radiusXDistance + radiusZDistance * radiusZDistance;
 				if (distance <= radius * radius) {
-					for (int y = pos.getY() - config.ySize; y <= pos.getY() + config.ySize; y++) {
+					for (int y = pos.getY() - config.field_242809_d; y <= pos.getY() + config.field_242809_d; y++) {
 						BlockPos blockpos = new BlockPos(x, y, z);
 						BlockState blockstate = world.getBlockState(blockpos);
 
 						for (BlockState blockstate1 : config.targets) {
-							if (blockstate1.getBlock() == blockstate.getBlock() && (distance == radius * radius ? rand.nextFloat() < 0.5F : true)) {
+							if (blockstate1.getBlock() == blockstate.getBlock() && (distance != radius * radius || rand.nextFloat() < 0.5F)) {
 								world.setBlockState(blockpos, config.state, 2);
 								i++;
 								break;

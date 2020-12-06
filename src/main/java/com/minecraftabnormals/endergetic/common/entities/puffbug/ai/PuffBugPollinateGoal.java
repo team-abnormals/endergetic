@@ -1,8 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 
@@ -14,7 +12,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	private float originalPosX, originalPosY, originalPosZ;
 
 	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
-		super(puffbug);
+		super(puffbug, PuffBugEntity.POLLINATE_ANIMATION);
 		this.world = puffbug.world;
 	}
 
@@ -75,12 +73,6 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	public void resetTask() {
 		this.entity.setPollinationPos(null);
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
-
-		NetworkUtil.setPlayingAnimationMessage(this.entity, PuffBugEntity.BLANK_ANIMATION);
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return PuffBugEntity.POLLINATE_ANIMATION;
+		this.playEndimation(PuffBugEntity.BLANK_ANIMATION);
 	}
 }

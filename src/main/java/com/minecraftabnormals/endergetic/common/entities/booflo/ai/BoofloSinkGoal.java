@@ -6,7 +6,6 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 public class BoofloSinkGoal extends Goal {
@@ -39,7 +38,7 @@ public class BoofloSinkGoal extends Goal {
 		BlockPos pos = this.booflo.getPosition();
 		for (int i = 0; i < 10; i++) {
 			BlockPos newPos = pos.down(i);
-			if (Block.hasSolidSide(this.booflo.world.getBlockState(newPos), this.booflo.world, newPos, Direction.UP)) {
+			if (Block.hasSolidSideOnTop(this.booflo.world, newPos)) {
 				if (this.booflo.world.getBlockState(newPos).getFluidState().isEmpty() && !this.booflo.world.getBlockState(newPos).isBurning(this.booflo.world, newPos)) {
 					return true;
 				}

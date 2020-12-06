@@ -32,27 +32,26 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	private static final Map<DimensionType, Supplier<CorrockCrownWallBlock>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, () -> EEBlocks.CORROCK_CROWN_OVERWORLD_WALL.get());
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, () -> EEBlocks.CORROCK_CROWN_NETHER_WALL.get());
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, () -> EEBlocks.CORROCK_CROWN_END_WALL.get());
+		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_CROWN_OVERWORLD_WALL);
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_CROWN_NETHER_WALL);
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_CROWN_END_WALL);
 	});
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.makeCuboidShape(0.0D, 4.5D, 14.0D, 16.0D, 12.5D, 16.0D), Direction.SOUTH, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 16.0D, 12.5D, 2.0D), Direction.EAST, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 2.0D, 12.5D, 16.0D), Direction.WEST, Block.makeCuboidShape(14.0D, 4.5D, 0.0D, 16.0D, 12.5D, 16.0D)));
 
 	public CorrockCrownWallBlock(Properties builder, boolean petrified) {
 		super(builder, petrified);
-		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, Boolean.valueOf(false)));
+		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
 
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (!this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get().getDefaultState().with(FACING, world.getBlockState(pos).get(FACING)));
+		if (this.shouldConvert(world)) {
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get().getDefaultState().with(FACING, world.getBlockState(pos).get(FACING)));
 		}
 	}
 
@@ -75,7 +74,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		BlockPos blockpos = context.getPos();
 		Direction[] aDirection = context.getNearestLookingDirections();
 
-		if (!this.petrified && !this.isInProperDimension(context.getWorld())) {
+		if (this.shouldConvert(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
 		}
 
@@ -97,7 +96,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 			if (!this.petrified) {
 				return EntityEvents.convertCorrockBlock(stateIn);
 			}
-		} else if (!this.petrified && !this.isInProperDimension(worldIn.getWorld())) {
+		} else if (this.shouldConvert(worldIn)) {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
@@ -105,10 +104,6 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 			return Blocks.AIR.getDefaultState();
 		}
 		return facing.getOpposite() == stateIn.get(FACING) && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : stateIn;
-	}
-
-	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get() == this;
 	}
 
 	public BlockState rotate(BlockState state, Rotation rot) {
@@ -122,5 +117,9 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
+	}
+
+	private boolean shouldConvert(IWorld world) {
+		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get() != this;
 	}
 }

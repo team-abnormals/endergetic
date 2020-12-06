@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
+import com.minecraftabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.util.SoundEvent;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EESounds {
-	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+	private static final SoundSubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getSoundSubHelper();
 
 	public static final RegistryObject<SoundEvent> KILOBYTE = HELPER.createSoundEvent("music.record.kilobyte");
 

@@ -8,7 +8,7 @@ public final class StringUtils {
 		} else if (string.length() == 0) {
 			return "";
 		} else {
-			return new StringBuilder(string.length()).append(Character.toTitleCase(string.charAt(0))).append(string, 1, string.length()).toString();
+			return Character.toTitleCase(string.charAt(0)) + string.substring(1);
 		}
 	}
 

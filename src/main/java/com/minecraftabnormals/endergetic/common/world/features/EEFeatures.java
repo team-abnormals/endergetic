@@ -27,8 +27,8 @@ public final class EEFeatures {
 
 	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH = createFeature("corrock_patch", () -> new CorrockPatchFeature(NoFeatureConfig.field_236558_a_));
 	public static final RegistryObject<Feature<SphereReplaceConfig>> GROUND_PATCH = createFeature("ground_patch", () -> new GroundPatchFeature(SphereReplaceConfig.field_236516_a_));
-	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig.field_236576_b_));
-	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig.field_236576_b_));
+	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig.CODEC));
+	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig.CODEC));
 
 	public static final RegistryObject<Feature<EndGatewayConfig>> ENDERGETIC_GATEWAY = createFeature("gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_));
 

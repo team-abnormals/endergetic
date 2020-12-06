@@ -17,20 +17,20 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "forge"
     mandatory = true
-    versionRange = "[32.0.72,)"
+    versionRange = "[35.0.10,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.endergetic]]
     modId = "abnormals_core"
     mandatory = true
-    versionRange = "[2.0.7,)"
+    versionRange = "[3.0.1,)"
     ordering = "AFTER"
     side = "BOTH"
 
 [[dependencies.endergetic]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.16.1]"
+    versionRange = "[1.16.3,1.17]"
     ordering = "AFTER"
     side = "BOTH"

@@ -2,6 +2,9 @@ package com.minecraftabnormals.endergetic.core.mixin;
 
 import java.util.List;
 
+import com.minecraftabnormals.endergetic.common.world.util.LazyAreaContextEndergetic;
+
+import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +17,6 @@ import com.minecraftabnormals.endergetic.common.world.util.EndergeticLayerUtil;
 import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.biome.provider.EndBiomeProvider;
 import net.minecraft.world.gen.SimplexNoiseGenerator;
@@ -26,19 +28,37 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 	@Final
 	private SimplexNoiseGenerator generator;
 
-	@Shadow(remap = false)
+	@Shadow
 	@Final
-	private long field_235315_h_;
+	private Registry<Biome> lookupRegistry;
+
+	@Shadow
+	@Final
+	private Biome theEndBiome;
+	@Shadow
+	@Final
+	private Biome endHighlandsBiome;
+	@Shadow
+	@Final
+	private Biome endMidlandsBiome;
+	@Shadow
+	@Final
+	private Biome smallEndIslandsBiome;
+	@Shadow
+	@Final
+	private Biome endBarrensBiome;
 
 	private Layer noiseBiomeLayer;
+	private Biome chorusPlains;
 
 	private EndBiomeProviderMixin(List<Biome> biomes) {
 		super(biomes);
 	}
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void init(long seed, CallbackInfo info) {
-		this.noiseBiomeLayer = EndergeticLayerUtil.createGenLayers(this.field_235315_h_)[1];
+	private void init(Registry<Biome> lookupRegistry, long seed, CallbackInfo info) {
+		this.noiseBiomeLayer = EndergeticLayerUtil.createBiomeLayer(lookupRegistry, (seedModifier) -> new LazyAreaContextEndergetic(25, seed, seedModifier));
+		this.chorusPlains = this.lookupRegistry.getValueForKey(EEBiomes.CHORUS_PLAINS.getKey());
 	}
 
 	@Inject(at = @At("HEAD"), method = "getNoiseBiome(III)Lnet/minecraft/world/biome/Biome;", cancellable = true)
@@ -46,17 +66,17 @@ public abstract class EndBiomeProviderMixin extends BiomeProvider {
 		int i = x >> 2;
 		int j = z >> 2;
 		if ((long) i * (long) i + (long) j * (long) j <= 4096L) {
-			info.setReturnValue(Biomes.THE_END);
+			info.setReturnValue(this.theEndBiome);
 		} else {
-			float f = EndBiomeProvider.func_235317_a_(this.generator, i * 2 + 1, j * 2 + 1);
-			Biome biome = this.noiseBiomeLayer.func_215738_a(x, z);
-			boolean isChorus = biome == EEBiomes.CHORUS_PLAINS.get();
-			if (f > 40.0F) {
-				info.setReturnValue(isChorus ? Biomes.END_HIGHLANDS : biome);
-			} else if (f >= 0.0F) {
-				info.setReturnValue(isChorus ? Biomes.END_MIDLANDS : biome);
+			float noise = EndBiomeProvider.getRandomNoise(this.generator, i * 2 + 1, j * 2 + 1);
+			Biome biome = this.noiseBiomeLayer.func_242936_a(this.lookupRegistry, x, z);
+			boolean isChorus = biome == this.chorusPlains;
+			if (noise > 40.0F) {
+				info.setReturnValue(isChorus ? this.endHighlandsBiome : biome);
+			} else if (noise >= 0.0F) {
+				info.setReturnValue(isChorus ? this.endMidlandsBiome : biome);
 			} else {
-				info.setReturnValue(f < -20.0F ? Biomes.SMALL_END_ISLANDS : isChorus ? Biomes.END_BARRENS : biome);
+				info.setReturnValue(noise < -20.0F ? this.smallEndIslandsBiome : isChorus ? this.endBarrensBiome : biome);
 			}
 		}
 	}

@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.common.items;
 
+import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.models.armor.BoofloVestModel;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.other.EEArmorMaterials;
 
-import com.teamabnormals.abnormals_core.core.utils.ItemStackUtils;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +33,7 @@ public class BoofloVestItem extends ArmorItem {
 	public static final String TIMES_BOOFED_TAG = "timesBoofed";
 
 	public BoofloVestItem(Properties properties) {
-		super(EEArmorMaterials.BOOFLO, EquipmentSlotType.CHEST, properties);
+		super(EEArmorMaterials.BOOFLO_VEST, EquipmentSlotType.CHEST, properties);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class BoofloVestItem extends ArmorItem {
 
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtils.fillAfterItemForGroup(this, Items.TURTLE_HELMET, group, items);
+		ItemStackUtil.fillAfterItemForGroup(this, Items.TURTLE_HELMET, group, items);
 	}
 
 	@Override

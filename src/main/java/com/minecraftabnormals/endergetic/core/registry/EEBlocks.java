@@ -2,15 +2,16 @@ package com.minecraftabnormals.endergetic.core.registry;
 
 import java.util.concurrent.Callable;
 
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.mojang.datafixers.util.Pair;
-import com.teamabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.teamabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
-import com.teamabnormals.abnormals_core.common.blocks.BookshelfBlock;
-import com.teamabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
-import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
-import com.teamabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
-import com.teamabnormals.abnormals_core.common.blocks.sign.*;
-import com.teamabnormals.abnormals_core.common.blocks.wood.*;
+import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.BookshelfBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.sign.*;
+import com.minecraftabnormals.abnormals_core.common.blocks.wood.*;
 import com.minecraftabnormals.endergetic.client.renderers.item.EETileEntityItemRenderer;
 import com.minecraftabnormals.endergetic.common.EEProperties;
 import com.minecraftabnormals.endergetic.common.blocks.*;
@@ -20,7 +21,6 @@ import com.minecraftabnormals.endergetic.common.blocks.poise.hive.*;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 
 import net.minecraft.block.*;
 import net.minecraft.block.AbstractBlock.Properties;
@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEBlocks {
-	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+	private static final EndergeticBlockSubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getBlockSubHelper();
 
 	public static final RegistryObject<Block> CORROCK_OVERWORLD_BLOCK           = HELPER.createBlock("overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), false), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> PETRIFIED_CORROCK_OVERWORLD_BLOCK = HELPER.createBlock("petrified_overworld_corrock_block", () -> new CorrockBlock(EEProperties.CORROCK_BASE(MaterialColor.BROWN_TERRACOTTA, true), true), null);
@@ -52,16 +52,16 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> PETRIFIED_CORROCK_END             = HELPER.createBlock("petrified_end_corrock", () -> new CorrockPlantBlock(EEProperties.CORROCK_BASE(MaterialColor.PURPLE_TERRACOTTA, false), true), null);
 	public static final RegistryObject<CorrockCrownWallBlock> CORROCK_CROWN_OVERWORLD_WALL           = HELPER.createBlockNoItem("overworld_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), false));
 	public static final RegistryObject<CorrockCrownWallBlock> PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL = HELPER.createBlockNoItem("petrified_overworld_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), true));
-	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_OVERWORLD_STANDING           = HELPER.createCorrockStandingBlock("overworld_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), false), () -> CORROCK_CROWN_OVERWORLD_WALL.get(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING = HELPER.createCorrockStandingBlock("petrified_overworld_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), true), () -> PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL.get(), null);
+	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_OVERWORLD_STANDING           = HELPER.createCorrockStandingBlock("overworld_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), false), CORROCK_CROWN_OVERWORLD_WALL, ItemGroup.DECORATIONS);
+	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING = HELPER.createCorrockStandingBlock("petrified_overworld_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.BROWN), true), PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL, null);
 	public static final RegistryObject<CorrockCrownWallBlock> CORROCK_CROWN_NETHER_WALL              = HELPER.createBlockNoItem("nether_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), false));
 	public static final RegistryObject<CorrockCrownWallBlock> PETRIFIED_CORROCK_CROWN_NETHER_WALL    = HELPER.createBlockNoItem("petrified_nether_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), true));
-	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_NETHER_STANDING              = HELPER.createCorrockStandingBlock("nether_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), false), () -> CORROCK_CROWN_NETHER_WALL.get(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_NETHER_STANDING    = HELPER.createCorrockStandingBlock("petrified_nether_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), true), () -> PETRIFIED_CORROCK_CROWN_NETHER_WALL.get(), null);
+	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_NETHER_STANDING              = HELPER.createCorrockStandingBlock("nether_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), false), CORROCK_CROWN_NETHER_WALL, ItemGroup.DECORATIONS);
+	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_NETHER_STANDING    = HELPER.createCorrockStandingBlock("petrified_nether_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.RED), true), PETRIFIED_CORROCK_CROWN_NETHER_WALL, null);
 	public static final RegistryObject<CorrockCrownWallBlock> CORROCK_CROWN_END_WALL                 = HELPER.createBlockNoItem("end_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false));
 	public static final RegistryObject<CorrockCrownWallBlock> PETRIFIED_CORROCK_CROWN_END_WALL       = HELPER.createBlockNoItem("petrified_end_wall_corrock_crown", () -> new CorrockCrownWallBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true));
-	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_END_STANDING                 = HELPER.createCorrockStandingBlock("end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false), () -> CORROCK_CROWN_END_WALL.get(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_END_STANDING       = HELPER.createCorrockStandingBlock("petrified_end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true), () -> PETRIFIED_CORROCK_CROWN_END_WALL.get(), null);
+	public static final RegistryObject<CorrockCrownBlock> CORROCK_CROWN_END_STANDING                 = HELPER.createCorrockStandingBlock("end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), false), CORROCK_CROWN_END_WALL, ItemGroup.DECORATIONS);
+	public static final RegistryObject<CorrockCrownBlock> PETRIFIED_CORROCK_CROWN_END_STANDING       = HELPER.createCorrockStandingBlock("petrified_end_corrock_crown", () -> new CorrockCrownStandingBlock(EEProperties.CORROCK_BASE_GLOWING(MaterialColor.PURPLE), true), PETRIFIED_CORROCK_CROWN_END_WALL, null);
 
 	/*
 	 * Poise Forest
@@ -74,8 +74,8 @@ public final class EEBlocks {
 
 	public static final RegistryObject<Block> STRIPPED_POISE_STEM    = HELPER.createBlock("stripped_poise_stem", () -> new StrippedLogBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> STRIPPED_POISE_WOOD   = HELPER.createBlock("stripped_poise_wood", () -> new StrippedWoodBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_STEM            = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(() -> EEBlocks.STRIPPED_POISE_STEM.get(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_WOOD            = HELPER.createBlock("poise_wood", () -> new WoodBlock(() -> EEBlocks.STRIPPED_POISE_WOOD.get(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_STEM            = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(EEBlocks.STRIPPED_POISE_STEM, EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_WOOD            = HELPER.createBlock("poise_wood", () -> new WoodBlock(EEBlocks.STRIPPED_POISE_WOOD, EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> GLOWING_POISE_STEM   	= HELPER.createBlock("glowing_poise_stem", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING, () -> POISE_STEM.get().asItem()), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> GLOWING_POISE_WOOD   	= HELPER.createBlock("glowing_poise_wood", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING, () -> POISE_WOOD.get().asItem()), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_PLANKS          = HELPER.createBlock("poise_planks", () -> new PlanksBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
@@ -95,8 +95,8 @@ public final class EEBlocks {
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN  = HELPER.createSignBlock("poise", MaterialColor.PURPLE_TERRACOTTA);
 	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> 	 POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.PURPLE_TERRACOTTA);
 
-	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.POISE_WOOD_OTHER(true, false)), () -> bolloomBudISTER(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.PUFFBUG_HIVE(true)), () -> puffbugHiveISTER(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.POISE_WOOD_OTHER(true, false)), EEBlocks::bolloomBudISTER, ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.PUFFBUG_HIVE(true)), EEBlocks::puffbugHiveISTER, ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> HIVE_HANGER 			= HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.PUFFBUG_HIVE(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE      = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.POISE_WOOD_OTHER(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK            = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);

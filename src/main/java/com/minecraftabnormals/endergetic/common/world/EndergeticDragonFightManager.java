@@ -285,7 +285,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 				;
 			}
 		}
-		endpodium.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
+		endpodium.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
 	}
 
 	@Override
@@ -295,7 +295,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
 			this.world.playEvent(3000, pos, 0);
-			EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a()).func_236265_a_(this.world, this.world.func_241112_a_(), this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+			EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a()).generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
 		}
 	}
 }

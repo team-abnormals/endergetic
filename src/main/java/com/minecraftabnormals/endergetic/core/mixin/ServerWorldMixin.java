@@ -33,9 +33,9 @@ public final class ServerWorldMixin {
 	public DragonFightManager field_241105_O_;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void replaceDragonFightManager(MinecraftServer server, Executor p_i232604_2_, SaveFormat.LevelSave p_i232604_3_, IServerWorldInfo p_i232604_4_, RegistryKey<World> p_i232604_5_, RegistryKey<DimensionType> p_i232604_6_, DimensionType p_i232604_7_, IChunkStatusListener p_i232604_8_, ChunkGenerator p_i232604_9_, boolean p_i232604_10_, long p_i232604_11_, List<ISpecialSpawner> p_i232604_13_, boolean p_i232604_14_, CallbackInfo info) {
+	private void replaceDragonFightManager(MinecraftServer server, Executor p_i232604_2_, SaveFormat.LevelSave p_i232604_3_, IServerWorldInfo p_i232604_4_, RegistryKey<World> p_i232604_5_, DimensionType p_i232604_7_, IChunkStatusListener p_i232604_8_, ChunkGenerator p_i232604_9_, boolean p_i232604_10_, long p_i232604_11_, List<ISpecialSpawner> p_i232604_13_, boolean p_i232604_14_, CallbackInfo info) {
 		if (this.field_241105_O_ != null) {
-			this.field_241105_O_ = new EndergeticDragonFightManager(this.field_241105_O_.world, server.func_240793_aU_().getDimensionGeneratorSettings().getSeed(), server.func_240793_aU_().getDragonFightData());
+			this.field_241105_O_ = new EndergeticDragonFightManager(this.field_241105_O_.world, server.getServerConfiguration().getDimensionGeneratorSettings().getSeed(), server.getServerConfiguration().getDragonFightData());
 		}
 	}
 

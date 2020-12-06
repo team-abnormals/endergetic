@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.network;
 
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityMotionHelper;
 import com.minecraftabnormals.endergetic.common.items.BoofloVestItem;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -65,10 +65,10 @@ public final class C2SInflateBoofloVestMessage {
 						double posZ = player.getPosZ();
 						Random rand = player.getRNG();
 						for (int i = 0; i < 8; i++) {
-							double x = posX + MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+							double x = posX + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
 							double y = posY + (rand.nextFloat() * 0.05F) + 1.25F;
-							double z = posZ + MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
-							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+							double z = posZ + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 						}
 
 						player.world.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundCategory.PLAYERS, 1.0F, MathHelper.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));

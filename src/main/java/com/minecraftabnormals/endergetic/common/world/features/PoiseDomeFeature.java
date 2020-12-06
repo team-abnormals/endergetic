@@ -15,7 +15,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.IWorldGenerationReader;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 
@@ -24,7 +23,7 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_230362_a_(ISeedReader world, StructureManager manager, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if (world.getBlockState(pos.down()).getBlock() == Blocks.END_STONE && isViableDomeArea(world, pos) && this.isGroundViable(world, pos.down(3), rand)) {
 			this.buildDomeBase(world, pos, rand);
 			this.buildDome(world, pos, rand);

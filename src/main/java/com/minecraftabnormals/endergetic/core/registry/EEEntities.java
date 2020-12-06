@@ -2,12 +2,12 @@ package com.minecraftabnormals.endergetic.core.registry;
 
 import java.util.Random;
 
+import com.minecraftabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.entities.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.*;
 import com.minecraftabnormals.endergetic.common.entities.booflo.*;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.*;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.minecraftabnormals.endergetic.core.registry.util.EndergeticRegistryHelper;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityClassification;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EEEntities {
-	private static final EndergeticRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER;
+	private static final EntitySubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final RegistryObject<EntityType<PoiseClusterEntity>> POISE_CLUSTER = HELPER.createLivingEntity("poise_cluster", PoiseClusterEntity::new, EntityClassification.MISC, 1F, 1F);
 	public static final RegistryObject<EntityType<BolloomFruitEntity>> BOLLOOM_FRUIT = HELPER.createEntity("bolloom_fruit", BolloomFruitEntity::new, BolloomFruitEntity::new, EntityClassification.MISC, 0.5F, 0.5F);

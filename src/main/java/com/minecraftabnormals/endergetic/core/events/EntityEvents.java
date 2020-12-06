@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
+import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
@@ -18,8 +20,6 @@ import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloons
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-import com.teamabnormals.abnormals_core.client.ClientInfo;
-import com.teamabnormals.abnormals_core.core.utils.EntityUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -162,7 +162,7 @@ public final class EntityEvents {
 			ClientPlayerEntity player = ClientInfo.getClientPlayer();
 			if (player.rotationPitch > -25.0F) return;
 			Entity ridingEntity = player.getRidingEntity();
-			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtils.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
+			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
 					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));

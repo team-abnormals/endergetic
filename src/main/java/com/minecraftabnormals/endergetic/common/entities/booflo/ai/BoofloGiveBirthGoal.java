@@ -2,8 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.Random;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.EndimatedGoal;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -16,7 +15,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 	private float originalYaw;
 
 	public BoofloGiveBirthGoal(BoofloEntity mother) {
-		super(mother);
+		super(mother, BoofloEntity.BIRTH);
 	}
 
 	@Override
@@ -61,18 +60,14 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 			this.entity.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.3F, 0.6F);
 
 			BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(world);
-			baby.setBeingBorn(true);
-			baby.setGrowingAge(-24000);
-			baby.setPosition(this.entity.getPosX() + dx, this.entity.getPosY() + 0.9F + (rand.nextFloat() * 0.05F), this.entity.getPosZ() + dz);
-			baby.startRiding(this.entity, true);
-			baby.wasBred = this.entity.ticksExisted > 200;
-
-			world.addEntity(baby);
+			if (baby != null) {
+				baby.setBeingBorn(true);
+				baby.setGrowingAge(-24000);
+				baby.setPosition(this.entity.getPosX() + dx, this.entity.getPosY() + 0.9F + (rand.nextFloat() * 0.05F), this.entity.getPosZ() + dz);
+				baby.startRiding(this.entity, true);
+				baby.wasBred = this.entity.ticksExisted > 200;
+				world.addEntity(baby);
+			}
 		}
-	}
-
-	@Override
-	protected Endimation getEndimation() {
-		return BoofloEntity.BIRTH;
 	}
 }

@@ -8,11 +8,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.ControlledEndimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
@@ -85,7 +85,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -621,14 +621,14 @@ public class BoofloEntity extends EndimatedEntity {
 		}
 	}
 
+	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		if (reason == SpawnReason.NATURAL) {
 			Random rand = new Random();
 			if (rand.nextFloat() < 0.2F) {
 				this.setPregnant(true);
 			}
-
 			this.setFruitsNeeded(rand.nextInt(3) + 2);
 		}
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
@@ -907,15 +907,15 @@ public class BoofloEntity extends EndimatedEntity {
 
 		if (slam) {
 			for (int i = 0; i < 12; i++) {
-				double offsetX = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
-				double offsetZ = MathUtils.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+				double offsetX = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+				double offsetZ = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
 
 				double x = this.getPosX() + 0.5D + offsetX;
 				double y = this.getPosY() + 0.5D + (this.rand.nextFloat() * 0.05F);
 				double z = this.getPosZ() + 0.5D + offsetZ;
 
 				if (this.isWorldRemote()) {
-					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F);
+					this.world.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.3F), this.rand) + 0.025F);
 				}
 			}
 		}

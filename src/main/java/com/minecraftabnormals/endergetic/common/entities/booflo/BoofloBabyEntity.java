@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import com.teamabnormals.abnormals_core.core.library.endimator.Endimation;
-import com.teamabnormals.abnormals_core.core.library.endimator.entity.EndimatedEntity;
+import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
+import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.ai.BabyFollowParentGoal;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -40,7 +40,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -61,7 +61,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 	public BoofloBabyEntity(EntityType<? extends BoofloBabyEntity> type, World worldIn) {
 		super(type, worldIn);
 		this.moveController = new BoofloBabyEntity.BoofloBabyMoveContoller(this);
-		this.lookController = new BoofloBabyEntity.BoofloBabyLookController(this, 10);
+		this.lookController = new BoofloBabyLookController(this, 10);
 		this.tailAnimation = this.rand.nextFloat();
 		this.prevTailAnimation = this.tailAnimation;
 	}
@@ -329,8 +329,9 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		return super.func_230254_b_(player, hand);
 	}
 
+	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		this.setGrowingAge(-24000);
 		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
@@ -419,8 +420,8 @@ public class BoofloBabyEntity extends EndimatedEntity {
 
 				this.booflo.setAIMoveSpeed(f2);
 
-				double d3 = Math.cos((double) (this.booflo.rotationYaw * ((float) Math.PI / 180F)));
-				double d4 = Math.sin((double) (this.booflo.rotationYaw * ((float) Math.PI / 180F)));
+				double d3 = Math.cos(this.booflo.rotationYaw * ((float) Math.PI / 180F));
+				double d4 = Math.sin(this.booflo.rotationYaw * ((float) Math.PI / 180F));
 				double d5 = Math.sin((double) (this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
 
 				if (!this.booflo.isInWater()) {
@@ -439,7 +440,7 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		}
 	}
 
-	class BoofloBabyLookController extends LookController {
+	static class BoofloBabyLookController extends LookController {
 		private final int angleLimit;
 
 		public BoofloBabyLookController(BoofloBabyEntity baby, int angleLimit) {

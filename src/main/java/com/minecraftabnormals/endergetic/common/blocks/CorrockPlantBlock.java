@@ -32,14 +32,13 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, () -> EEBlocks.CORROCK_OVERWORLD.get());
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, () -> EEBlocks.CORROCK_NETHER.get());
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, () -> EEBlocks.CORROCK_END.get());
+		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD);
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER);
+		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_END);
 	});
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
@@ -68,8 +67,8 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-		if (!this.petrified && !this.isInProperDimension(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_OVERWORLD).get().getDefaultState());
+		if (!this.petrified && this.shouldConvert(world)) {
+			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD).get().getDefaultState());
 		}
 	}
 
@@ -84,7 +83,7 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 				}
 			}
 
-			if (!this.isInProperDimension(worldIn.getWorld())) {
+			if (this.shouldConvert(worldIn)) {
 				worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 			}
 			return stateIn;
@@ -99,15 +98,11 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		if (!this.isInProperDimension(context.getWorld())) {
+		if (this.shouldConvert(context.getWorld())) {
 			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
 		}
 		FluidState fluidState = context.getWorld().getFluidState(context.getPos());
-		return super.getStateForPlacement(context).with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
-	}
-
-	public boolean isInProperDimension(World world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.func_230315_m_(), EEBlocks.CORROCK_OVERWORLD).get() == this;
+		return this.getDefaultState().with(WATERLOGGED, fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() >= 8);
 	}
 
 	@Override
@@ -118,5 +113,9 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	@Override
 	public OffsetType getOffsetType() {
 		return OffsetType.NONE;
+	}
+
+	private boolean shouldConvert(IWorld world) {
+		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD).get() != this;
 	}
 }

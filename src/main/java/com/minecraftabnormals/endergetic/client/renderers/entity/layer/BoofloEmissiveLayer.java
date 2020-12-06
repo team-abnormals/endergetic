@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 
+import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
+import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.minecraftabnormals.abnormals_core.client.EntitySkinHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.teamabnormals.abnormals_core.client.ACRenderTypes;
-import com.teamabnormals.abnormals_core.client.ClientInfo;
-import com.teamabnormals.abnormals_core.client.EntitySkinHelper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;

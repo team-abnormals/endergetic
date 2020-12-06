@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 
 import java.util.Random;
 
-import com.teamabnormals.abnormals_core.core.utils.MathUtils;
-import com.teamabnormals.abnormals_core.core.utils.NetworkUtil;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
@@ -39,8 +39,8 @@ public class PoiseClusterBlock extends Block {
 		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty())
 			return;
 
-		double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -63,14 +63,14 @@ public class PoiseClusterBlock extends Block {
 					Random rand = player.getRNG();
 
 					for (int i = 0; i < 8; i++) {
-						double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-						double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+						double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+						double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 						double x = pos.getX() + 0.5D + offsetX;
 						double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
 						double z = pos.getZ() + 0.5D + offsetZ;
 
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 					}
 				}
 				world.removeBlock(pos, false);
@@ -100,14 +100,14 @@ public class PoiseClusterBlock extends Block {
 
 				Random rand = new Random();
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-					double offsetZ = MathUtils.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 					double x = pos.getX() + 0.5D + offsetX;
 					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
 					double z = pos.getZ() + 0.5D + offsetZ;
 
-					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtils.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 				}
 			}
 		}
