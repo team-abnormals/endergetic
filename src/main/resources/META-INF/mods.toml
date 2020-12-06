@@ -5,7 +5,7 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 
 [[mods]]
     modId = "endergetic"
-    version = "${file.jarVersion}"
+    version = "2.2.0"
     logoFile = "logo.png"
     authors = "Team Abnormals"
     credits = "SmellyModder, Endergized, Timinations, and bageldotjpg"
