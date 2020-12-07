@@ -69,7 +69,6 @@ public class EndergeticExpansion {
 			.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
 			.simpleChannel();
 
-	@SuppressWarnings("deprecation")
 	public EndergeticExpansion() {
 		instance = this;
 
@@ -91,7 +90,7 @@ public class EndergeticExpansion {
 			}
 		});
 
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
 		});
 
