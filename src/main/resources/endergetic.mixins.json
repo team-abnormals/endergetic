@@ -17,6 +17,7 @@
 	"ServerPlayNetHandlerMixin",
 	"TrackedEntityMixin",
 	"PlayerListMixin",
+	"EnderCrystalItemMixin",
 	"chorus.ChorusPlantFeatureMixin",
 	"chorus.ChorusPlantBlockMixin",
 	"chorus.ChorusFlowerBlockMixin"
