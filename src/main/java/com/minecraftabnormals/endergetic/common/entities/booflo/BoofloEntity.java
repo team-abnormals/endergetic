@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
@@ -91,7 +92,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BoofloEntity extends EndimatedEntity {
+public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
 		if (entity instanceof PlayerEntity) {
 			return !entity.isSpectator() && !((PlayerEntity) entity).isCreative();
@@ -932,8 +933,8 @@ public class BoofloEntity extends EndimatedEntity {
 		}
 	}
 
-	public void growDown() {
-		if (!this.world.isRemote && this.isAlive()) {
+	public LivingEntity growDown() {
+		if (this.isAlive()) {
 			BoofloAdolescentEntity boofloAdolescent = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
 			boofloAdolescent.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
 
@@ -954,9 +955,10 @@ public class BoofloEntity extends EndimatedEntity {
 			boofloAdolescent.wasBred = this.wasBred;
 			boofloAdolescent.setHealth(boofloAdolescent.getMaxHealth());
 			this.world.addEntity(boofloAdolescent);
-
 			this.remove();
+			return boofloAdolescent;
 		}
+		return this;
 	}
 
 	public void catchPuffBug(PuffBugEntity puffbug) {
@@ -1308,6 +1310,27 @@ public class BoofloEntity extends EndimatedEntity {
 	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
+	}
+
+	@Override
+	public boolean hasGrowthProgress() {
+		return false;
+	}
+
+	@Override
+	public void resetGrowthProgress() {
+
+	}
+
+	@Override
+	public boolean canAge(boolean isGrowing) {
+		return !isGrowing;
+	}
+
+	@Override
+	public LivingEntity attemptAging(boolean isGrowing) {
+		if(!isGrowing) return growDown();
+		return this;
 	}
 
 	public static class GroundMoveHelperController extends MovementController {

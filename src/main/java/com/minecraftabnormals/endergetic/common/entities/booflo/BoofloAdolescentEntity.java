@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
@@ -16,14 +17,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -57,7 +51,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class BoofloAdolescentEntity extends EndimatedEntity {
+public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> DESCENTING = EntityDataManager.createKey(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
@@ -427,8 +421,8 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 		}
 	}
 
-	public void growUp() {
-		if (!this.world.isRemote && this.isAlive()) {
+	public LivingEntity growUp() {
+		if (this.isAlive()) {
 			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
 
 			BoofloEntity booflo = EEEntities.BOOFLO.get().create(this.world);
@@ -451,13 +445,15 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			booflo.wasBred = this.wasBred;
 			booflo.setHealth(booflo.getMaxHealth());
 			this.world.addEntity(booflo);
-
 			this.remove();
+
+			return booflo;
 		}
+		return this;
 	}
 
-	public void growDown() {
-		if (!this.world.isRemote && this.isAlive()) {
+	public LivingEntity growDown() {
+		if (this.isAlive()) {
 			BoofloBabyEntity boofloBaby = EEEntities.BOOFLO_BABY.get().create(this.world);
 			boofloBaby.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
 
@@ -478,9 +474,11 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 			boofloBaby.wasBred = this.wasBred;
 			boofloBaby.setHealth(boofloBaby.getMaxHealth());
 			this.world.addEntity(boofloBaby);
-
 			this.remove();
+
+			return boofloBaby;
 		}
+		return this;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -566,6 +564,26 @@ public class BoofloAdolescentEntity extends EndimatedEntity {
 	@Override
 	public boolean canDespawn(double distanceToClosestPlayer) {
 		return !this.wasBred;
+	}
+
+	@Override
+	public boolean hasGrowthProgress() {
+		return true;
+	}
+
+	@Override
+	public void resetGrowthProgress() {
+		this.setGrowingAge(-24000);
+	}
+
+	@Override
+	public boolean canAge(boolean isGrowing) {
+		return true;
+	}
+
+	@Override
+	public LivingEntity attemptAging(boolean isGrowing) {
+		return isGrowing ? growUp() : growDown();
 	}
 
 	static class RandomFlyingGoal extends RandomWalkingGoal {
