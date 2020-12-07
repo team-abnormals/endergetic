@@ -69,6 +69,7 @@ public class EndergeticExpansion {
 			.serverAcceptedVersions(NETWORK_PROTOCOL::equals)
 			.simpleChannel();
 
+	@SuppressWarnings("deprecation")
 	public EndergeticExpansion() {
 		instance = this;
 
