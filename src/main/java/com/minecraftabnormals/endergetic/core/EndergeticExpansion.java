@@ -39,7 +39,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -54,7 +53,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.EnumSet;
 
-@SuppressWarnings("deprecation")
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
 	public static final String MOD_ID = "endergetic";
@@ -101,7 +99,7 @@ public class EndergeticExpansion {
 	}
 
 	void setupCommon(final FMLCommonSetupEvent event) {
-		DeferredWorkQueue.runLater(() -> {
+		event.enqueueWork(() -> {
 			EEDispenserBehaviors.registerAll();
 			EELootInjectors.registerLootInjectors();
 			EEBiomes.setupBiomeInfo();
