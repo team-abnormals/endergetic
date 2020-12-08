@@ -12,7 +12,6 @@ import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModi
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BiomeSubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
-import com.minecraftabnormals.endergetic.common.world.placements.NoiseHeightmap32;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
@@ -22,16 +21,6 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.INoiseRandom;
-import net.minecraft.world.gen.feature.EndGatewayConfig;
-import net.minecraft.world.gen.feature.Features;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.NoiseDependant;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.Mod;
 
@@ -56,25 +45,25 @@ public final class EEBiomes {
 		BiPredicate<RegistryKey<Biome>, Biome> poiseOnly = BiomeModificationPredicates.forBiomeKey(POISE_FOREST.getKey());
 		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(poiseOnly, EntityClassification.CREATURE,
 				Sets.newHashSet(
-						new BiomeSpawnsModifier.SpawnInfo(() -> EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2),
-						new BiomeSpawnsModifier.SpawnInfo(() -> EEEntities.BOOFLO.get(), 15, 1, 3),
-						new BiomeSpawnsModifier.SpawnInfo(() -> EEEntities.PUFF_BUG.get(), 10, 2, 4)
+						new BiomeSpawnsModifier.SpawnInfo(EEEntities.BOOFLO_ADOLESCENT, 5, 1, 2),
+						new BiomeSpawnsModifier.SpawnInfo(EEEntities.BOOFLO, 15, 1, 3),
+						new BiomeSpawnsModifier.SpawnInfo(EEEntities.PUFF_BUG, 10, 2, 4)
 				)
 		));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStage.Decoration.SURFACE_STRUCTURES,
 				Sets.newHashSet(
-						() -> EEFeatures.POISE_DOME.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(3, 0.02F, 1))),
-						() -> EEFeatures.POISE_TREE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(2, 0.05F, 1))),
-						() -> EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(ServerWorld.field_241108_a_, true)).withPlacement(Placement.END_GATEWAY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
+						() -> EEFeatures.Configs.POISE_DOME,
+						() -> EEFeatures.Configs.POISE_TREE,
+						() -> EEFeatures.Configs.END_GATEWAY
 				)
 		));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStage.Decoration.VEGETAL_DECORATION,
 				Sets.newHashSet(
-						() -> EEFeatures.POISE_CLUSTER.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(NoiseHeightmap32.INSTANCE.configure(new NoiseDependant(-0.8D, 4, 22))),
-						() -> EEFeatures.PUFFBUG_HIVE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(NoiseHeightmap32.INSTANCE.configure(new NoiseDependant(-0.8D, 9, 25))),
-						() -> EEFeatures.BOLLOOM_BUD.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(NoiseHeightmap32.INSTANCE.configure(new NoiseDependant(-0.9D, 90, 90))),
-						() -> EEFeatures.POISE_TALLGRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(NoiseHeightmap32.INSTANCE.configure(new NoiseDependant(-0.8D, 0, 7))),
-						() -> EEFeatures.POISE_GRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_SPREAD_DOUBLE_PLACEMENT).withPlacement(Placement.COUNT_NOISE.configure(new NoiseDependant(-0.8D, 5, 10)))
+						() -> EEFeatures.Configs.POISE_CLUSTER,
+						() -> EEFeatures.Configs.PUFFBUG_HIVE,
+						() -> EEFeatures.Configs.BOLLOOM_BUD,
+						() -> EEFeatures.Configs.TALL_POISE_GRASS,
+						() -> EEFeatures.Configs.POISE_GRASS
 				)
 		));
 	}
@@ -96,7 +85,7 @@ public final class EEBiomes {
 		builder
 				.withGenerationSettings(
 						new BiomeGenerationSettings.Builder()
-								.withSurfaceBuilder(() -> new ConfiguredSurfaceBuilder<>(EESurfaceBuilders.POISE_SURFACE_BUILDER.get(), SurfaceBuilder.END_STONE_CONFIG))
+								.withSurfaceBuilder(() -> EESurfaceBuilders.Configs.POISE_FOREST)
 								.build()
 				)
 				.withMobSpawnSettings(

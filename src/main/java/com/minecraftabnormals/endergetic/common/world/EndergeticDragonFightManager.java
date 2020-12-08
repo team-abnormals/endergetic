@@ -36,7 +36,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
@@ -295,7 +294,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
 			this.world.playEvent(3000, pos, 0);
-			EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a()).generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+			EEFeatures.Configs.END_GATEWAY_DELAYED.generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
 		}
 	}
 }

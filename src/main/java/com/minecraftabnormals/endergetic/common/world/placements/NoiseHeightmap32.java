@@ -14,7 +14,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public final class NoiseHeightmap32 extends Placement<NoiseDependant> {
-	public static final NoiseHeightmap32 INSTANCE = new NoiseHeightmap32(NoiseDependant.CODEC);
 
 	public NoiseHeightmap32(Codec<NoiseDependant> codec) {
 		super(codec);
@@ -31,4 +30,5 @@ public final class NoiseHeightmap32 extends Placement<NoiseDependant> {
 			return y <= 0 ? null : new BlockPos(x, random.nextInt(y), z);
 		}).filter(Objects::nonNull);
 	}
+
 }
