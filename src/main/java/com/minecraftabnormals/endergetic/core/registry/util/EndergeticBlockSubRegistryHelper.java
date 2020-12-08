@@ -7,18 +7,14 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public final class EndergeticBlockSubRegistryHelper extends BlockSubRegistryHelper {
-	//TODO: Remove field in AC 3.0.2
-	private final DeferredRegister<Item> itemRegister;
 
 	public EndergeticBlockSubRegistryHelper(RegistryHelper parent) {
 		super(parent);
-		this.itemRegister = parent.getItemSubHelper().getDeferredRegister();
 	}
 
 	public <B extends Block> RegistryObject<B> createCorrockStandingBlock(String name, Supplier<? extends B> standingSupplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
@@ -26,4 +22,5 @@ public final class EndergeticBlockSubRegistryHelper extends BlockSubRegistryHelp
 		this.itemRegister.register(name, () -> new CorrockCrownSBlockItem(standingBlock.get(), wallSupplier::get, new Item.Properties().group(group)));
 		return standingBlock;
 	}
+
 }
