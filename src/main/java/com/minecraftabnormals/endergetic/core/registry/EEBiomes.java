@@ -61,6 +61,15 @@ public final class EEBiomes {
 						() -> EEFeatures.Configs.POISE_GRASS
 				)
 		));
+		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(poiseOnly, () -> new BiomeAmbience.Builder()
+				.withSkyColor(0)
+				.setWaterColor(4159204)
+				.setWaterFogColor(329011)
+				.setFogColor(10518688)
+				.setAmbientSound(EESounds.POISE_FOREST_LOOP.get())
+				.setAdditionsSound(new SoundAdditionsAmbience(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
+				.setMoodSound(new MoodSoundAmbience(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
+				.build()));
 	}
 
 	/**
