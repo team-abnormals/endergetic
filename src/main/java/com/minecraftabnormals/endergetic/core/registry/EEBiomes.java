@@ -6,17 +6,13 @@ import java.util.function.BiPredicate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
+import com.minecraftabnormals.abnormals_core.common.world.modification.*;
 import com.minecraftabnormals.abnormals_core.core.util.registry.BiomeSubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStage;
@@ -40,10 +36,9 @@ public final class EEBiomes {
 		addEndBiome(POISE_FOREST.getKey(), 6);
 		addEndBiome(CHORUS_PLAINS.getKey(), 15);
 
-		//TODO: Possibly move to json?
 		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
 		BiPredicate<RegistryKey<Biome>, Biome> poiseOnly = BiomeModificationPredicates.forBiomeKey(POISE_FOREST.getKey());
-		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(poiseOnly, EntityClassification.CREATURE,
+		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(poiseOnly, EEEntities.END_CREATURE,
 				Sets.newHashSet(
 						new BiomeSpawnsModifier.SpawnInfo(EEEntities.BOOFLO_ADOLESCENT, 5, 1, 2),
 						new BiomeSpawnsModifier.SpawnInfo(EEEntities.BOOFLO, 15, 1, 3),
@@ -108,8 +103,7 @@ public final class EEBiomes {
 				.scale(0.2F)
 				.temperature(0.5F)
 				.downfall(0.5F);
-		Biome biome = builder.build();
-		return HELPER.createBiome("poise_forest", () -> biome);
+		return HELPER.createBiome("poise_forest", builder::build);
 	}
 
 	public static RegistryKey<Biome> getRandomBiome(INoiseRandom context) {

@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EEEntities {
+	public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "end_creature", 20, false, true, 128);
 	private static final EntitySubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final RegistryObject<EntityType<PoiseClusterEntity>> POISE_CLUSTER = HELPER.createLivingEntity("poise_cluster", PoiseClusterEntity::new, EntityClassification.MISC, 1F, 1F);
@@ -46,9 +47,5 @@ public final class EEEntities {
 
 	private static boolean endIslandCondition(EntityType<? extends CreatureEntity> entityType, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
 		return pos.getY() >= 40;
-	}
-
-	public static class EEEntityClassifications {
-		public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "END_CREATURE", 20, false, true, 128);
 	}
 }
