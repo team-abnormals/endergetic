@@ -4,13 +4,12 @@ import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeat
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.EndGatewayConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,6 +80,7 @@ public class EndergeticExpansion {
 		EEParticles.PARTICLES.register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
+		EEPlacements.PLACEMENTS.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfig.ModConfigEvent event) -> {
@@ -102,11 +102,13 @@ public class EndergeticExpansion {
 		event.enqueueWork(() -> {
 			EEDispenserBehaviors.registerAll();
 			EELootInjectors.registerLootInjectors();
+			EESurfaceBuilders.Configs.registerConfiguredSurfaceBuilders();
+			EEFeatures.Configs.registerConfiguredFeatures();
 			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 			EEEntityAttributes.putAttributes();
-			BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(ServerWorld.field_241108_a_, true))));
+			BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configs.END_GATEWAY));
 		});
 	}
 
