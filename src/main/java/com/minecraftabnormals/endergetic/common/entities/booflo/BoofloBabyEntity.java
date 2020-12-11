@@ -384,8 +384,7 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 	@Override
 	public LivingEntity attemptAging(boolean isGrowing) {
-		if (isGrowing) return growUp();
-		return this;
+		return isGrowing ? this.growUp() : this;
 	}
 
 	static class RandomFlyingGoal extends RandomWalkingGoal {

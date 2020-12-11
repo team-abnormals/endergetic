@@ -583,7 +583,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 	@Override
 	public LivingEntity attemptAging(boolean isGrowing) {
-		return isGrowing ? growUp() : growDown();
+		return isGrowing ? this.growUp() : this.growDown();
 	}
 
 	static class RandomFlyingGoal extends RandomWalkingGoal {

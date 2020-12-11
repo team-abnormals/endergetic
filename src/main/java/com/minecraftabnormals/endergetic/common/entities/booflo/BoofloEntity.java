@@ -1329,8 +1329,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	public LivingEntity attemptAging(boolean isGrowing) {
-		if(!isGrowing) return growDown();
-		return this;
+		return isGrowing ? this : this.growDown();
 	}
 
 	public static class GroundMoveHelperController extends MovementController {
