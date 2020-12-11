@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
+import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
@@ -10,12 +11,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
@@ -45,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BoofloBabyEntity extends EndimatedEntity {
+public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity {
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
 	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.VARINT);
@@ -266,8 +262,8 @@ public class BoofloBabyEntity extends EndimatedEntity {
 		}
 	}
 
-	public void growUp() {
-		if (!this.world.isRemote && this.isAlive()) {
+	public LivingEntity growUp() {
+		if (this.isAlive()) {
 			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
 
 			BoofloAdolescentEntity booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
@@ -291,9 +287,11 @@ public class BoofloBabyEntity extends EndimatedEntity {
 			booflo.setGrowingAge(-24000);
 			booflo.wasBred = this.wasBred;
 			this.world.addEntity(booflo);
-
 			this.remove();
+
+			return booflo;
 		}
+		return this;
 	}
 
 	public void ageUp(int growthSeconds, boolean updateForcedAge) {
@@ -367,6 +365,26 @@ public class BoofloBabyEntity extends EndimatedEntity {
 
 	@Override
 	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	}
+
+	@Override
+	public boolean hasGrowthProgress() {
+		return true;
+	}
+
+	@Override
+	public void resetGrowthProgress() {
+		this.setGrowingAge(-24000);
+	}
+
+	@Override
+	public boolean canAge(boolean isGrowing) {
+		return isGrowing;
+	}
+
+	@Override
+	public LivingEntity attemptAging(boolean isGrowing) {
+		return isGrowing ? this.growUp() : this;
 	}
 
 	static class RandomFlyingGoal extends RandomWalkingGoal {
