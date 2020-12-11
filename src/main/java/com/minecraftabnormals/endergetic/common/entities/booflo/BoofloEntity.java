@@ -1319,7 +1319,6 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	public void resetGrowthProgress() {
-
 	}
 
 	@Override
