@@ -31,6 +31,6 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "abnormals_core"
     mandatory = true
-    versionRange = "[3.0.2,)"
+    versionRange = "[3.0.3,)"
     ordering = "AFTER"
     side = "BOTH"
