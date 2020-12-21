@@ -211,6 +211,11 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
+	public boolean func_241845_aY() {
+		return true;
+	}
+
+	@Override
 	public boolean canBeCollidedWith() {
 		return true;
 	}
