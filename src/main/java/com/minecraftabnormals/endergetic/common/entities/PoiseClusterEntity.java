@@ -94,8 +94,10 @@ public class PoiseClusterEntity extends LivingEntity {
 
 	@Override
 	public void tick() {
-		this.moveEntitiesUp(false);
 		super.tick();
+		if (this.isAscending()) {
+			this.moveEntitiesUp();
+		}
 
 		this.renderYawOffset = this.prevRenderYawOffset = 180.0F;
 		this.rotationYaw = this.prevRotationYaw = 180.0F;
@@ -176,11 +178,11 @@ public class PoiseClusterEntity extends LivingEntity {
 		 */
 		if (this.isAscending()) {
 			if (this.prevPosY == this.getPosY() && this.isBlockBlockingPath(false)) {
-				this.descentCluster();
+				this.beingDescending();
 			}
 
 			if (this.prevPosY == this.getPosY() && this.ticksExisted % 25 == 0 && this.getPosY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
-				this.descentCluster();
+				this.beingDescending();
 			}
 		}
 
@@ -199,8 +201,6 @@ public class PoiseClusterEntity extends LivingEntity {
 				this.playedSound = true;
 			}
 		}
-
-		this.moveEntitiesUp(true);
 	}
 
 	@Override
@@ -267,11 +267,6 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public boolean isAlive() {
-		return false;
-	}
-
-	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntitySize size) {
 		return size.height;
 	}
@@ -287,13 +282,13 @@ public class PoiseClusterEntity extends LivingEntity {
 		)).getType() != Type.MISS;
 	}
 
-	private void moveEntitiesUp(boolean afterTick) {
+	private void moveEntitiesUp() {
 		if (this.getMotion().length() > 0 && this.isAscending()) {
 			AxisAlignedBB clusterBB = this.getBoundingBox().offset(0.0F, 0.01F, 0.0F);
-			List<Entity> entitiesAbove = this.world.getEntitiesWithinAABBExcludingEntity(null, clusterBB);
+			List<Entity> entitiesAbove = this.world.getEntitiesWithinAABBExcludingEntity(this, clusterBB);
 			if (!entitiesAbove.isEmpty()) {
 				for (Entity entity : entitiesAbove) {
-					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity || (entity instanceof PlayerEntity && !afterTick)) && entity.getPushReaction() != PushReaction.IGNORE) {
+					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity) && entity.getPushReaction() != PushReaction.IGNORE) {
 						AxisAlignedBB entityBB = entity.getBoundingBox();
 						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
 
@@ -309,7 +304,7 @@ public class PoiseClusterEntity extends LivingEntity {
 		}
 	}
 
-	protected void descentCluster() {
+	private void beingDescending() {
 		if (!this.world.isRemote) {
 			this.setAscending(false);
 		}
@@ -353,6 +348,10 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
+	protected void collideWithEntity(Entity entityIn) {
+	}
+
+	@Override
 	public CreatureAttribute getCreatureAttribute() {
 		return CreatureAttribute.ILLAGER;
 	}
@@ -361,6 +360,11 @@ public class PoiseClusterEntity extends LivingEntity {
 	@Override
 	public boolean canRenderOnFire() {
 		return false;
+	}
+
+	@Override
+	public boolean func_241845_aY() {
+		return true;
 	}
 
 	@Nullable
