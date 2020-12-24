@@ -34,6 +34,7 @@ public final class EESurfaceBuilders {
 		public static final Supplier<SurfaceBuilderConfig> CORROCK_CONFIG = () -> new SurfaceBuilderConfig(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.PETRIFIED_CORROCK_END_BLOCK.get().getDefaultState());
 
 		public static final ConfiguredSurfaceBuilder<?> POISE_FOREST = POISE_SURFACE_BUILDER.get().func_242929_a(SurfaceBuilder.END_STONE_CONFIG);
+		public static final ConfiguredSurfaceBuilder<?> SPARSE_CORROCK = SPARSE_CORROCK_SURFACE_BUILDER.get().func_242929_a(SurfaceBuilder.END_STONE_CONFIG);
 
 		private static <SC extends ISurfaceBuilderConfig> void register(String name, ConfiguredSurfaceBuilder<SC> configuredSurfaceBuilder) {
 			Registry.register(WorldGenRegistries.CONFIGURED_SURFACE_BUILDER, new ResourceLocation(EndergeticExpansion.MOD_ID, name), configuredSurfaceBuilder);
@@ -41,6 +42,7 @@ public final class EESurfaceBuilders {
 
 		public static void registerConfiguredSurfaceBuilders() {
 			register("poise_forest", POISE_FOREST);
+			register("sparse_corrock", SPARSE_CORROCK);
 		}
 	}
 }

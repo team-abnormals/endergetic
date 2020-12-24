@@ -30,7 +30,7 @@ import net.minecraft.world.gen.feature.SphereReplaceConfig;
  * @author SmellyModder (Luke Tonon)
  */
 public class CorrockBranchFeature extends AbstractCorrockFeature {
-	private static final SphereReplaceConfig SPHERE_CONFIG = new SphereReplaceConfig(CORROCK_BLOCK.get(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState()));
+	private static final SphereReplaceConfig SPHERE_CONFIG = new SphereReplaceConfig(CORROCK_BLOCK_STATE.getValue(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState()));
 
 	public CorrockBranchFeature(Codec<ProbabilityConfig> configFactory) {
 		super(configFactory);
@@ -82,8 +82,8 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 							for (int z = pos.getZ() - 4; z < pos.getZ() + 4; z++) {
 								corrockPlantPos.setPos(x, y, z);
 								boolean isCorrockBelow = world.getBlockState(corrockPlantPos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get();
-								if ((isCorrockBelow && rand.nextFloat() < 0.5F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isAirBlock(corrockPlantPos) && CORROCK.get().isValidPosition(world, corrockPlantPos)) {
-									world.setBlockState(corrockPlantPos, CORROCK.get(), 2);
+								if ((isCorrockBelow && rand.nextFloat() < 0.5F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isAirBlock(corrockPlantPos) && CORROCK_STATE.getValue().isValidPosition(world, corrockPlantPos)) {
+									world.setBlockState(corrockPlantPos, CORROCK_STATE.getValue(), 2);
 								}
 							}
 						}
@@ -100,10 +100,11 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 	 */
 	private GenerationPiece createBase(IWorld world, BlockPos pos, Random rand, int height) {
 		GenerationPiece piece = new GenerationPiece((iworld, part) -> iworld.isAirBlock(part.pos));
+		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
 		int heightMinusOne = height - 1;
 		BlockPos topPos = pos.up(height);
 		for (int y = 0; y < height; y++) {
-			piece.addBlockPiece(CORROCK_BLOCK.get(), pos.up(y));
+			piece.addBlockPiece(corrockState, pos.up(y));
 
 			if (y == heightMinusOne && rand.nextFloat() < 0.85F) {
 				piece.addBlockPiece(this.randomStandingCorrockCrown(rand), topPos);
@@ -127,7 +128,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					if (this.tryToMakeAreaBelowPlacableOn(piece, world, mutable)) {
 						int randSideHeight = rand.nextInt(heightMinusOne) + 1;
 						for (int y = 0; y < randSideHeight; y++) {
-							piece.addBlockPiece(CORROCK_BLOCK.get(), mutable.up(y));
+							piece.addBlockPiece(corrockState, mutable.up(y));
 						}
 					}
 				}
@@ -140,12 +141,13 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 	 * Tries to make the area below the cluster around the origin have no air spaces.
 	 */
 	private boolean tryToMakeAreaBelowPlacableOn(GenerationPiece piece, IWorld world, BlockPos pos) {
+		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
 		BlockPos down = pos.down();
 		if (world.isAirBlock(down) && !world.isAirBlock(pos.down(3))) {
-			piece.addBlockPiece(CORROCK_BLOCK.get(), down);
+			piece.addBlockPiece(corrockState, down);
 			BlockPos doubleDown = pos.down(2);
 			if (world.isAirBlock(doubleDown)) {
-				piece.addBlockPiece(CORROCK_BLOCK.get(), doubleDown);
+				piece.addBlockPiece(corrockState, doubleDown);
 			}
 			return true;
 		}
@@ -175,8 +177,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 		int prevBranchHeight = 0;
 		int branchHeight = rand.nextInt(3) + 4;
 		BlockPos offset = pos.offset(horizontalStep);
+		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
 		for (int y = 0; y < branchHeight; y++) {
-			basePiece.addBlockPiece(CORROCK_BLOCK.get(), offset.up(y));
+			basePiece.addBlockPiece(corrockState, offset.up(y));
 			if (y == branchHeight - 1) {
 				boolean lastBranched = branched == subBranches;
 				if (rand.nextBoolean()) {
@@ -199,7 +202,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 					int middle = prevBranchHeight + (branchHeight - prevBranchHeight) / 2;
 					y -= branchHeight - middle;
 					branchHeight = middle;
-					basePiece.addBlockPiece(CORROCK_BLOCK.get(), offset.up(branchHeight).offset(horizontalStep));
+					basePiece.addBlockPiece(corrockState, offset.up(branchHeight).offset(horizontalStep));
 					offset = offset.offset(horizontalStep, 2);
 				} else {
 					offset = offset.offset(horizontalStep);

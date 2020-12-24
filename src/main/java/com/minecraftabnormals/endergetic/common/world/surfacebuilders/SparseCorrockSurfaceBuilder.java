@@ -26,4 +26,5 @@ public class SparseCorrockSurfaceBuilder extends DefaultSurfaceBuilder {
 			SurfaceBuilder.DEFAULT.buildSurface(random, chunkIn, biomeIn, x, z, startHeight, noise, defaultBlock, defaultFluid, seaLevel, seed, EESurfaceBuilders.Configs.END_STONE_CONFIG.get());
 		}
 	}
+
 }

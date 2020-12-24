@@ -7,6 +7,8 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
@@ -51,6 +53,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.EnumSet;
+import java.util.function.BiPredicate;
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
@@ -103,13 +106,26 @@ public class EndergeticExpansion {
 			EEDispenserBehaviors.registerAll();
 			EELootInjectors.registerLootInjectors();
 			EESurfaceBuilders.Configs.registerConfiguredSurfaceBuilders();
-			EEFeatures.Configs.registerConfiguredFeatures();
+			EEFeatures.Configured.registerConfiguredFeatures();
 			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 			EEEntityAttributes.putAttributes();
-			BiomeModificationManager.INSTANCE.addModifier(BiomeFeatureModifier.createFeatureReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS), EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configs.END_GATEWAY));
 		});
+		modifyBiomes();
+	}
+
+	private static void modifyBiomes() {
+		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
+		BiPredicate<RegistryKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
+		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
+//		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOnly, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
+//		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(highlandsOnly, GenerationStage.Decoration.VEGETAL_DECORATION, () -> EEFeatures.Configured.CORROCK_PATCH));
+//		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
+//				() -> EEFeatures.Configured.CORROCK_BRANCH,
+//				() -> EEFeatures.Configured.CORROCK_TOWER
+//		)));
+//		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.CORROCK_BRANCH));
 	}
 
 	@OnlyIn(Dist.CLIENT)

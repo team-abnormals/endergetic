@@ -1,19 +1,14 @@
 package com.minecraftabnormals.endergetic.common.world.features.corrock;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -22,6 +17,10 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
 public class CorrockTowerFeature extends AbstractCorrockFeature {
 
@@ -35,9 +34,10 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			float chance = rand.nextFloat();
-			if (chance > 0.5F) {
+			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
+			if (chance < 0.5F) {
 				GenerationPiece base = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
-				this.fillUp(base, pos, 3);
+				this.fillUp(base, corrockBlockState, pos, 3);
 
 				if (!base.canPlace(world)) return false;
 
@@ -48,7 +48,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 							for (int z = downPos.getZ() - 1; z <= downPos.getZ() + 1; z++) {
 								BlockPos currentPos = new BlockPos(x, y, z);
 								if (world.isAirBlock(currentPos)) {
-									base.addBlockPiece(CORROCK_BLOCK.get(), currentPos);
+									base.addBlockPiece(corrockBlockState, currentPos);
 								}
 							}
 						}
@@ -60,30 +60,30 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 				for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 					BlockPos offset = pos.offset(horizontal);
 					BlockPos doubleOffset = pos.offset(horizontal, 2);
-					this.fillUp(base, offset, 3);
+					this.fillUp(base, corrockBlockState, offset, 3);
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), offset.offset(horizontal.rotateY()));
+						base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateY()));
 					}
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), offset.offset(horizontal.rotateYCCW()));
+						base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateYCCW()));
 					}
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), offset.up(2).offset(horizontal.rotateY()));
+						base.addBlockPiece(corrockBlockState, offset.up(2).offset(horizontal.rotateY()));
 					}
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), offset.up(2).offset(horizontal.rotateYCCW()));
+						base.addBlockPiece(corrockBlockState, offset.up(2).offset(horizontal.rotateYCCW()));
 					}
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), doubleOffset);
+						base.addBlockPiece(corrockBlockState, doubleOffset);
 					}
 
 					if (rand.nextFloat() < 0.5F) {
-						base.addBlockPiece(CORROCK_BLOCK.get(), doubleOffset.up(2));
+						base.addBlockPiece(corrockBlockState, doubleOffset.up(2));
 					}
 				}
 
@@ -100,14 +100,14 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 					});
 					return true;
 				}
-			} else if (chance < 0.5F) {
+			} else if (chance < 0.85F) {
 				GenerationPiece base = this.getSmallBase(world, pos, rand);
 				if (base != null) {
 					GenerationPiece topPiece = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
 					for (int x = -1; x < 2; x++) {
 						for (int z = -1; z < 2; z++) {
 							BlockPos placingPos = pos.add(x, 1, z);
-							topPiece.addBlockPiece(CORROCK_BLOCK.get(), placingPos);
+							topPiece.addBlockPiece(corrockBlockState, placingPos);
 							if (rand.nextFloat() < 0.25F) {
 								topPiece.addBlockPiece(CORROCK_CROWN(false).get().rotate(Rotation.randomRotation(rand)), placingPos.up());
 							}
@@ -119,17 +119,17 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 						BlockPos rightPos = sidePos.offset(horizontal.rotateY());
 						BlockPos leftPos = sidePos.offset(horizontal.rotateYCCW());
 
-						topPiece.addBlockPiece(CORROCK_BLOCK.get(), sidePos);
+						topPiece.addBlockPiece(corrockBlockState, sidePos);
 						if (rand.nextFloat() < 0.3F) {
 							topPiece.addBlockPiece(CORROCK_CROWN(false).get().rotate(Rotation.randomRotation(rand)), sidePos.up());
 						}
 
-						topPiece.addBlockPiece(CORROCK_BLOCK.get(), rightPos);
+						topPiece.addBlockPiece(corrockBlockState, rightPos);
 						if (rand.nextFloat() < 0.3F) {
 							topPiece.addBlockPiece(CORROCK_CROWN(false).get().rotate(Rotation.randomRotation(rand)), rightPos.up());
 						}
 
-						topPiece.addBlockPiece(CORROCK_BLOCK.get(), leftPos);
+						topPiece.addBlockPiece(corrockBlockState, leftPos);
 						if (rand.nextFloat() < 0.3F) {
 							topPiece.addBlockPiece(CORROCK_CROWN(false).get().rotate(Rotation.randomRotation(rand)), leftPos.up());
 						}
@@ -138,9 +138,12 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 					if (topPiece.canPlace(world)) {
 						base.place(world);
 						topPiece.place(world);
-						world.setBlockState(pos, CORROCK_BLOCK.get(), 2);
+						world.setBlockState(pos, corrockBlockState, 2);
 						return true;
 					}
+				} else if (chance < 1.0F) {
+
+					return true;
 				}
 			}
 		}
@@ -151,6 +154,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 	private GenerationPiece getSmallBase(IWorld world, BlockPos pos, Random rand) {
 		int successfulSides = 0;
 		GenerationPiece piece = new GenerationPiece((w, p) -> w.isAirBlock(p.pos) && Block.hasSolidSideOnTop(w, p.pos.down()));
+		BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			int length = 0;
 			for (int i = 1; i < 3; i++) {
@@ -163,7 +167,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 			}
 			if (length > 0) {
 				for (int i2 = 1; i2 < length + 1; i2++) {
-					piece.addBlockPiece(CORROCK_BLOCK.get(), pos.offset(horizontal, i2));
+					piece.addBlockPiece(corrockBlockState, pos.offset(horizontal, i2));
 				}
 				successfulSides++;
 			}
@@ -179,9 +183,10 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		int variant = rand.nextInt(4);
 
 		BlockPos startNPos = pos.offset(Direction.NORTH, 4).add(-2, 0, 0);
+		BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startNPos.add(i, 0, 0);
-			top.addBlockPiece(CORROCK_BLOCK.get(), placePos);
+			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < 0.5F) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, Direction.NORTH), placePos.offset(Direction.NORTH));
@@ -194,7 +199,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		BlockPos startEPos = pos.offset(Direction.EAST, 3).add(0, 0, 1);
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startEPos.add(0, 0, -i);
-			top.addBlockPiece(CORROCK_BLOCK.get(), placePos);
+			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < 0.5F) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, Direction.EAST), placePos.offset(Direction.EAST));
@@ -207,7 +212,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		BlockPos startSPos = pos.offset(Direction.SOUTH, 3).add(1, 0, 0);
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startSPos.add(-i, 0, 0);
-			top.addBlockPiece(CORROCK_BLOCK.get(), placePos);
+			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < 0.5F) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, Direction.SOUTH), placePos.offset(Direction.SOUTH));
@@ -220,7 +225,7 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 		BlockPos startWPos = pos.offset(Direction.WEST, 4).add(0, 0, 1);
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startWPos.add(0, 0, -i);
-			top.addBlockPiece(CORROCK_BLOCK.get(), placePos);
+			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < 0.5F) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, Direction.WEST), placePos.offset(Direction.WEST));
@@ -319,26 +324,26 @@ public class CorrockTowerFeature extends AbstractCorrockFeature {
 
 						for (Direction direction : Direction.values()) {
 							if (direction != Direction.UP) {
-								top.addBlockPiece(CORROCK_BLOCK.get(), placingPos.down().offset(direction));
+								top.addBlockPiece(corrockBlockState, placingPos.down().offset(direction));
 							}
 						}
 					} else {
-						top.addBlockPiece(CORROCK_BLOCK.get(), placingPos.down());
+						top.addBlockPiece(corrockBlockState, placingPos.down());
 					}
 				}
 			}
 		}
 
 		for (BlockPos positions : corners) {
-			top.addBlockPiece(CORROCK_BLOCK.get(), positions);
+			top.addBlockPiece(corrockBlockState, positions);
 		}
 
 		return Pair.of(top, growths);
 	}
 
-	private void fillUp(GenerationPiece piece, BlockPos pos, int height) {
+	private void fillUp(GenerationPiece piece, BlockState state, BlockPos pos, int height) {
 		for (int i = 0; i < height; i++) {
-			piece.addBlockPiece(CORROCK_BLOCK.get(), pos.up(i));
+			piece.addBlockPiece(state, pos.up(i));
 		}
 	}
 

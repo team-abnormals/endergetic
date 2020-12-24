@@ -1,44 +1,44 @@
 package com.minecraftabnormals.endergetic.common.world.features.corrock;
 
 import java.util.Random;
-import java.util.function.Supplier;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.ProbabilityConfig;
 
-public class CorrockPatchFeature extends Feature<NoFeatureConfig> {
-	private static final Supplier<BlockState> CORROCK = () -> EEBlocks.CORROCK_END.get().getDefaultState();
+public class CorrockPatchFeature extends AbstractCorrockFeature {
 
-	public CorrockPatchFeature(Codec<NoFeatureConfig> config) {
+	public CorrockPatchFeature(Codec<ProbabilityConfig> config) {
 		super(config);
 	}
 
-	@SuppressWarnings("deprecation")
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		for (BlockState blockstate = world.getBlockState(pos); (blockstate.isAir() || blockstate.isIn(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = world.getBlockState(pos)) {
-			pos = pos.down();
-		}
-		if (world.getBlockState(pos).getBlock() != EEBlocks.CORROCK_END_BLOCK.get()) return false;
-		int i = 0;
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+		BlockPos blockpos = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos);
+		Block downBlock = world.getBlockState(blockpos.down()).getBlock();
+		if (downBlock == CORROCK_BLOCK_BLOCK || downBlock == EEBlocks.EUMUS.get()) {
+			int i = 0;
+			BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-		for (int j = 0; j < 128; ++j) {
-			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(6) - rand.nextInt(6), rand.nextInt(8) - rand.nextInt(8));
-			if (world.isAirBlock(blockpos) && CORROCK.get().isValidPosition(world, blockpos)) {
-				boolean chance = world.getBlockState(blockpos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() ? rand.nextFloat() < 0.85F : rand.nextFloat() < 0.25F;
-				if (chance) {
-					world.setBlockState(blockpos, CORROCK.get(), 2);
-					i++;
+			for (int j = 0; j < 32; ++j) {
+				mutable.setAndOffset(blockpos, rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
+				BlockState state = CORROCK_STATE.getValue();
+				if (world.isAirBlock(mutable) && state.isValidPosition(world, mutable)) {
+					if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK || rand.nextFloat() < config.probability) {
+						world.setBlockState(mutable, state, 2);
+						++i;
+					}
 				}
 			}
+			return i > 0;
 		}
-		return i > 0;
+		return false;
 	}
+
 }

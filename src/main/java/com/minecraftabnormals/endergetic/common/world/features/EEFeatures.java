@@ -10,10 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.NoiseDependant;
-import net.minecraft.world.gen.placement.Placement;
+import net.minecraft.world.gen.placement.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -30,7 +27,7 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_DOME = createFeature("poise_dome", () -> new PoiseDomeFeature(NoFeatureConfig.field_236558_a_));
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TREE = createFeature("poise_tree", () -> new PoiseTreeFeature(NoFeatureConfig.field_236558_a_));
 
-	public static final RegistryObject<Feature<NoFeatureConfig>> CORROCK_PATCH = createFeature("corrock_patch", () -> new CorrockPatchFeature(NoFeatureConfig.field_236558_a_));
+	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_PATCH = createFeature("corrock_patch", () -> new CorrockPatchFeature(ProbabilityConfig.CODEC));
 	public static final RegistryObject<Feature<SphereReplaceConfig>> GROUND_PATCH = createFeature("ground_patch", () -> new GroundPatchFeature(SphereReplaceConfig.field_236516_a_));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig.CODEC));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_TOWER = createFeature("corrock_tower", () -> new CorrockTowerFeature(ProbabilityConfig.CODEC));
@@ -41,7 +38,7 @@ public final class EEFeatures {
 		return FEATURES.register(name, feature);
 	}
 
-	public static final class Configs {
+	public static final class Configured {
 		public static final ConfiguredFeature<?, ?> POISE_DOME = EEFeatures.POISE_DOME.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(3, 0.02F, 1)));
 		public static final ConfiguredFeature<?, ?> POISE_TREE = EEFeatures.POISE_TREE.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(2, 0.05F, 1)));
 		public static final ConfiguredFeature<?, ?> POISE_CLUSTER = EEFeatures.POISE_CLUSTER.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(EEPlacements.NOISE_HEIGHTMAP_32.get().configure(new NoiseDependant(-0.8D, 4, 22)));
@@ -51,6 +48,9 @@ public final class EEFeatures {
 		public static final ConfiguredFeature<?, ?> TALL_POISE_GRASS = EEFeatures.POISE_TALLGRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(EEPlacements.NOISE_HEIGHTMAP_32.get().configure(new NoiseDependant(-0.8D, 0, 7)));
 		public static final ConfiguredFeature<?, ?> END_GATEWAY = EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(ServerWorld.field_241108_a_, true)).withPlacement(Placement.END_GATEWAY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG));
 		public static final ConfiguredFeature<?, ?> END_GATEWAY_DELAYED = EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a());
+		public static final ConfiguredFeature<?, ?> CORROCK_PATCH = EEFeatures.CORROCK_PATCH.get().withConfiguration(new ProbabilityConfig(0.3F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(8);
+		public static final ConfiguredFeature<?, ?> CORROCK_BRANCH = EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.35F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(16);
+		public static final ConfiguredFeature<?, ?> CORROCK_TOWER = EEFeatures.CORROCK_TOWER.get().withConfiguration(new ProbabilityConfig(0.4F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(64);
 
 		private static <FC extends IFeatureConfig> void register(String name, ConfiguredFeature<FC, ?> configuredFeature) {
 			Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(EndergeticExpansion.MOD_ID, name), configuredFeature);
