@@ -1,5 +1,5 @@
 {
-    "parent": "block/cross",
+    "parent": "endergetic:block/transparent_cross",
     "textures": {
         "cross": "endergetic:block/tall_poise_bush_top"
     }
