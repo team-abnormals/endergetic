@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.world.features.corrock.tower;
 
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
+import com.minecraftabnormals.endergetic.common.world.configs.CorrockTowerConfig;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
@@ -12,22 +13,20 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<ProbabilityConfig> {
+public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<CorrockTowerConfig> {
 
-	public LargeCorrockTowerFeature(Codec<ProbabilityConfig> configFactory) {
+	public LargeCorrockTowerFeature(Codec<CorrockTowerConfig> configFactory) {
 		super(configFactory);
 	}
 
-	//TODO: Move to using a custom config
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
 		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
@@ -55,10 +54,11 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 				tryToMakeSide(world, rand, corrockPositions, pos.south(4).east(rand.nextInt(2) + 1), Direction.SOUTH);
 				tryToMakeSide(world, rand, corrockPositions, pos.east(4).south(rand.nextInt(2) + 1), Direction.EAST);
 
-				int height = rand.nextInt(3) + 2;
-				GenerationPiece corrockCrowns = tryToMakeMiddle(world, rand, corrockPositions, pos, height);
+				int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
+				float crownChance = config.getCrownChance();
+				GenerationPiece corrockCrowns = tryToMakeMiddle(world, rand, corrockPositions, pos, height, crownChance);
 				if (corrockCrowns != null) {
-					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.up(3 + height));
+					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.up(3 + height), crownChance, config.getChorusChance());
 					if (top != null) {
 						corrockPositions.forEach(corrockPos -> world.setBlockState(corrockPos, corrockBlockState, 2));
 						corrockCrowns.place(world);
@@ -147,7 +147,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 	}
 
 	@Nullable
-	private static GenerationPiece tryToMakeMiddle(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, int height) {
+	private static GenerationPiece tryToMakeMiddle(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, int height, float crownChance) {
 		int startX = origin.getX() + 1;
 		int startY = origin.getY() + 3;
 		int startZ = origin.getZ() + 1;
@@ -168,7 +168,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 		GenerationPiece corrockCrowns = new GenerationPiece((iWorld, blockPart) -> true);
 		BlockPos.Mutable roundTripMutable = origin.toMutable();
 		Direction currentDirection = Direction.NORTH;
-		float crownChance = 3F / (height * 8.0F);
+		crownChance /= height;
 		for (int i = 0; i < 12; i++) {
 			if (i % 3 != 0) {
 				roundTripMutable.move(currentDirection);
@@ -215,7 +215,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 	 * Returns a pair of corrock crowns and chorus plant parts, or null if there wasn't space for the top.
 	 */
 	@Nullable
-	private static Pair<GenerationPiece, List<ChorusPlantPart>> tryToMakeLargeTop(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin) {
+	private static Pair<GenerationPiece, List<ChorusPlantPart>> tryToMakeLargeTop(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, float crownChance, float chorusChance) {
 		int startX = origin.getX();
 		int startY = origin.getY();
 		int startZ = origin.getZ();
@@ -228,8 +228,8 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 						startY++;
 						GenerationPiece crowns = new GenerationPiece((iWorld, blockPart) -> true);
 						List<BlockPos> corners = new ArrayList<>();
-						if (tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.WEST : Direction.NORTH, crowns, corners) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, crowns, corners) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.EAST : Direction.SOUTH, crowns, corners) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.WEST : Direction.SOUTH, crowns, corners)) {
-							if (tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ - 2, startX + 3, startZ - 2, positions, Direction.NORTH, crowns) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX - 2, startZ, startX - 2, startZ + 3, positions, Direction.WEST, crowns) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX + 5, startZ, startX + 5, startZ + 3, positions, Direction.EAST, crowns) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ + 5, startX + 3, startZ + 5, positions, Direction.SOUTH, crowns)) {
+						if (tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.WEST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.EAST : Direction.SOUTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.WEST : Direction.SOUTH, crowns, corners, crownChance)) {
+							if (tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ - 2, startX + 3, startZ - 2, positions, Direction.NORTH, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX - 2, startZ, startX - 2, startZ + 3, positions, Direction.WEST, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX + 5, startZ, startX + 5, startZ + 3, positions, Direction.EAST, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ + 5, startX + 3, startZ + 5, positions, Direction.SOUTH, crowns, crownChance)) {
 								if (rand.nextBoolean()) {
 									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX - 1, startY, startZ), positions)) {
 										corners.add(mutable.toImmutable());
@@ -273,7 +273,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Proba
 								for (int x = 0; x < 5; x++) {
 									for (int z = 0; z < 5; z++) {
 										mutable.setPos(cornerX + x, y, cornerZ + z);
-										if (rand.nextFloat() < 0.1F) {
+										if (rand.nextFloat() < chorusChance) {
 											BlockPos up = mutable.up();
 											if (world.isAirBlock(up) && !corners.contains(up) && isNotCloseToAnotherGrowth(chorusPlantParts, mutable)) {
 												chorusPlantParts.add(new ChorusPlantPart(mutable.toImmutable()));

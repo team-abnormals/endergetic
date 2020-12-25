@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.world.features;
 
 import java.util.function.Supplier;
 
-import com.minecraftabnormals.endergetic.common.world.configs.WeightedFeatureConfig;
+import com.minecraftabnormals.endergetic.common.world.configs.*;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.*;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.tower.*;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
@@ -34,8 +34,8 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<SphereReplaceConfig>> GROUND_PATCH = createFeature("ground_patch", () -> new GroundPatchFeature(SphereReplaceConfig.field_236516_a_));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_BRANCH = createFeature("corrock_branch", () -> new CorrockBranchFeature(ProbabilityConfig.CODEC));
 	public static final RegistryObject<Feature<ProbabilityConfig>> SMALL_CORROCK_TOWER = createFeature("small_corrock_tower", () -> new SmallCorrockTowerFeature(ProbabilityConfig.CODEC));
-	public static final RegistryObject<Feature<ProbabilityConfig>> MEDIUM_CORROCK_TOWER = createFeature("medium_corrock_tower", () -> new MediumCorrockTowerFeature(ProbabilityConfig.CODEC));
-	public static final RegistryObject<Feature<ProbabilityConfig>> LARGE_CORROCK_TOWER = createFeature("large_corrock_tower", () -> new LargeCorrockTowerFeature(ProbabilityConfig.CODEC));
+	public static final RegistryObject<Feature<CorrockTowerConfig>> MEDIUM_CORROCK_TOWER = createFeature("medium_corrock_tower", () -> new MediumCorrockTowerFeature(CorrockTowerConfig.CODEC));
+	public static final RegistryObject<Feature<CorrockTowerConfig>> LARGE_CORROCK_TOWER = createFeature("large_corrock_tower", () -> new LargeCorrockTowerFeature(CorrockTowerConfig.CODEC));
 
 	public static final RegistryObject<Feature<WeightedFeatureConfig>> WEIGHTED_FEATURES = createFeature("weighted_features", () -> new WeightedMultiFeature(WeightedFeatureConfig.CODEC));
 	public static final RegistryObject<Feature<EndGatewayConfig>> ENDERGETIC_GATEWAY = createFeature("gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_));
@@ -57,8 +57,8 @@ public final class EEFeatures {
 		public static final ConfiguredFeature<?, ?> CORROCK_PATCH = EEFeatures.CORROCK_PATCH.get().withConfiguration(new ProbabilityConfig(0.3F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(8);
 		public static final ConfiguredFeature<?, ?> CORROCK_BRANCH = EEFeatures.CORROCK_BRANCH.get().withConfiguration(new ProbabilityConfig(0.35F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(16);
 		public static final ConfiguredFeature<?, ?> SMALL_CORROCK_TOWER = EEFeatures.SMALL_CORROCK_TOWER.get().withConfiguration(new ProbabilityConfig(0.25F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
-		public static final ConfiguredFeature<?, ?> MEDIUM_CORROCK_TOWER = EEFeatures.MEDIUM_CORROCK_TOWER.get().withConfiguration(new ProbabilityConfig(1.0F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
-		public static final ConfiguredFeature<?, ?> LARGE_CORROCK_TOWER = EEFeatures.LARGE_CORROCK_TOWER.get().withConfiguration(new ProbabilityConfig(1.0F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
+		public static final ConfiguredFeature<?, ?> MEDIUM_CORROCK_TOWER = EEFeatures.MEDIUM_CORROCK_TOWER.get().withConfiguration(new CorrockTowerConfig(3, 4, 0.5F, 0.075F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
+		public static final ConfiguredFeature<?, ?> LARGE_CORROCK_TOWER = EEFeatures.LARGE_CORROCK_TOWER.get().withConfiguration(new CorrockTowerConfig(2, 4, 0.5F, 0.1F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
 		public static final ConfiguredFeature<?, ?> CORROCK_TOWER = EEFeatures.WEIGHTED_FEATURES.get().withConfiguration(WeightedFeatureConfig.createFromPairs(Pair.of(SMALL_CORROCK_TOWER, 6), Pair.of(MEDIUM_CORROCK_TOWER, 12), Pair.of(LARGE_CORROCK_TOWER, 4))).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(256);
 
 		private static <FC extends IFeatureConfig> void register(String name, ConfiguredFeature<FC, ?> configuredFeature) {

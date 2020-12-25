@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.common.world.features.corrock.tower;
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
+import com.minecraftabnormals.endergetic.common.world.configs.CorrockTowerConfig;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
@@ -14,36 +15,36 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
 
 import java.util.List;
 import java.util.Random;
 
-public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<ProbabilityConfig> {
+public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<CorrockTowerConfig> {
 
-	public MediumCorrockTowerFeature(Codec<ProbabilityConfig> configFactory) {
+	public MediumCorrockTowerFeature(Codec<CorrockTowerConfig> configFactory) {
 		super(configFactory);
 	}
 
-	//TODO: Move to using a custom config
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
 		Block belowBlock = world.getBlockState(pos.down()).getBlock();
 		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
 			GenerationPiece base = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
-			fillUpThree(base, corrockBlockState, pos);
+			int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
+			fillUp(base, corrockBlockState, pos, height);
 
 			if (!base.canPlace(world)) return false;
 
 			BlockPos downPos = pos.down(2);
+			BlockPos.Mutable mutable = new BlockPos.Mutable();
 			if (GenerationUtils.isAreaCompletelySolid(world, downPos.getX() - 1, downPos.getY(), downPos.getZ() - 1, downPos.getX() + 1, downPos.getY(), downPos.getZ() + 1)) {
 				for (int x = downPos.getX() - 1; x <= downPos.getX() + 1; x++) {
 					for (int y = downPos.getY(); y <= downPos.getY() + 1; y++) {
 						for (int z = downPos.getZ() - 1; z <= downPos.getZ() + 1; z++) {
-							BlockPos currentPos = new BlockPos(x, y, z);
-							if (world.isAirBlock(currentPos)) {
-								base.addBlockPiece(corrockBlockState, currentPos);
+							mutable.setPos(x, y, z);
+							if (world.isAirBlock(mutable)) {
+								base.addBlockPiece(corrockBlockState, mutable.toImmutable());
 							}
 						}
 					}
@@ -52,41 +53,46 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 				return false;
 			}
 
+			int heightMinusOne = height - 1;
 			for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 				BlockPos offset = pos.offset(horizontal);
 				BlockPos doubleOffset = pos.offset(horizontal, 2);
-				fillUpThree(base, corrockBlockState, offset);
+				fillUp(base, corrockBlockState, offset, height);
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextBoolean()) {
 					base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateY()));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextBoolean()) {
 					base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateYCCW()));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
-					base.addBlockPiece(corrockBlockState, offset.up(2).offset(horizontal.rotateY()));
+				if (rand.nextBoolean()) {
+					base.addBlockPiece(corrockBlockState, offset.up(heightMinusOne).offset(horizontal.rotateY()));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
-					base.addBlockPiece(corrockBlockState, offset.up(2).offset(horizontal.rotateYCCW()));
+				if (rand.nextBoolean()) {
+					base.addBlockPiece(corrockBlockState, offset.up(heightMinusOne).offset(horizontal.rotateYCCW()));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextBoolean()) {
 					base.addBlockPiece(corrockBlockState, doubleOffset);
 				}
 
-				if (rand.nextFloat() < 0.5F) {
-					base.addBlockPiece(corrockBlockState, doubleOffset.up(2));
+				if (rand.nextBoolean()) {
+					base.addBlockPiece(corrockBlockState, doubleOffset.up(heightMinusOne));
 				}
 			}
 
-			boolean xOrz = rand.nextBoolean();
-			int x = xOrz ? rand.nextInt(2) : 0;
-			int z = !xOrz ? rand.nextInt(2) : 0;
-			Pair<GenerationPiece, List<ChorusPlantPart>> topPiece = getTop(world, pos.add(x, 0, z).up(4), rand);
+			int x = 0;
+			int z = 0;
+			if (rand.nextBoolean()) {
+				x = rand.nextInt(2);
+			} else {
+				z = rand.nextInt(2);
+			}
 
+			Pair<GenerationPiece, List<ChorusPlantPart>> topPiece = getTop(world, pos.add(x, height + 1, z), rand, config.getCrownChance(), config.getChorusChance());
 			if (base.canPlace(world) && topPiece.getFirst().canPlace(world)) {
 				base.place(world);
 				topPiece.getFirst().place(world);
@@ -97,13 +103,13 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 		return false;
 	}
 
-	private static void fillUpThree(GenerationPiece piece, BlockState state, BlockPos pos) {
-		for (int i = 0; i < 3; i++) {
+	private static void fillUp(GenerationPiece piece, BlockState state, BlockPos pos, int height) {
+		for (int i = 0; i < height; i++) {
 			piece.addBlockPiece(state, pos.up(i));
 		}
 	}
 
-	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(IWorld world, BlockPos pos, Random rand) {
+	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(IWorld world, BlockPos pos, Random rand, float crownChance, float chorusChance) {
 		GenerationPiece top = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
 		List<ChorusPlantPart> growths = Lists.newArrayList();
 		List<BlockPos> corners = Lists.newArrayList();
@@ -113,7 +119,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startNPos.add(i, 0, 0);
 			top.addBlockPiece(corrockBlockState, placePos);
-			if (rand.nextFloat() < 0.5F) {
+			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), placePos.offset(Direction.NORTH));
 				} else {
@@ -126,7 +132,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startEPos.add(0, 0, -i);
 			top.addBlockPiece(corrockBlockState, placePos);
-			if (rand.nextFloat() < 0.5F) {
+			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), placePos.offset(Direction.EAST));
 				} else {
@@ -139,7 +145,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startSPos.add(-i, 0, 0);
 			top.addBlockPiece(corrockBlockState, placePos);
-			if (rand.nextFloat() < 0.5F) {
+			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), placePos.offset(Direction.SOUTH));
 				} else {
@@ -152,7 +158,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 		for (int i = 0; i < 4; i++) {
 			BlockPos placePos = startWPos.add(0, 0, -i);
 			top.addBlockPiece(corrockBlockState, placePos);
-			if (rand.nextFloat() < 0.5F) {
+			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), placePos.offset(Direction.WEST));
 				} else {
@@ -166,15 +172,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 			corners.add(cornerNW.offset(Direction.SOUTH));
 			corners.add(cornerNW.offset(Direction.EAST));
 		}
-		if (rand.nextFloat() < 0.45F) {
+		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
 				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNW.up());
 			} else {
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNW.offset(Direction.NORTH));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerNW.offset(Direction.WEST));
 				}
 			}
@@ -186,15 +192,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 			corners.add(cornerNE.offset(Direction.SOUTH));
 			corners.add(cornerNE.offset(Direction.WEST));
 		}
-		if (rand.nextFloat() < 0.45F) {
+		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
 				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNE.up());
 			} else {
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNE.offset(Direction.NORTH));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerNE.offset(Direction.EAST));
 				}
 			}
@@ -206,15 +212,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 			corners.add(cornerSE.offset(Direction.NORTH));
 			corners.add(cornerSE.offset(Direction.WEST));
 		}
-		if (rand.nextFloat() < 0.45F) {
+		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
 				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSE.up());
 			} else {
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSE.offset(Direction.SOUTH));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerSE.offset(Direction.EAST));
 				}
 			}
@@ -226,15 +232,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 			corners.add(cornerSW.offset(Direction.NORTH));
 			corners.add(cornerSW.offset(Direction.EAST));
 		}
-		if (rand.nextFloat() < 0.45F) {
+		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
 				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSW.up());
 			} else {
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSW.offset(Direction.SOUTH));
 				}
 
-				if (rand.nextFloat() < 0.5F) {
+				if (rand.nextFloat() < crownChance) {
 					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerSW.offset(Direction.WEST));
 				}
 			}
@@ -245,7 +251,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Prob
 			for (int z = cornerNW.getZ(); z <= cornerSE.getZ(); z++) {
 				BlockPos placingPos = new BlockPos(x, pos.getY(), z);
 				if (!corners.contains(placingPos)) {
-					if (isNotCloseToAnotherGrowth(growths, placingPos.down()) && rand.nextFloat() < 0.1F && world.isAirBlock(placingPos) && world.isAirBlock(placingPos.up())) {
+					if (isNotCloseToAnotherGrowth(growths, placingPos.down()) && rand.nextFloat() < chorusChance && world.isAirBlock(placingPos) && world.isAirBlock(placingPos.up())) {
 						growths.add(new ChorusPlantPart(placingPos.down()));
 						for (Direction direction : Direction.values()) {
 							if (direction != Direction.UP) {

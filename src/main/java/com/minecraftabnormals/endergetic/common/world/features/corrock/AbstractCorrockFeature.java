@@ -79,14 +79,14 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 		return false;
 	}
 
-	protected static boolean tryToPlaceCorrockBlockWithCrown(ISeedReader world, Random rand, BlockPos pos, List<BlockPos> positions, Direction direction, GenerationPiece crowns, @Nullable List<BlockPos> corners) {
+	protected static boolean tryToPlaceCorrockBlockWithCrown(ISeedReader world, Random rand, BlockPos pos, List<BlockPos> positions, Direction direction, GenerationPiece crowns, @Nullable List<BlockPos> corners, float crownChance) {
 		if (world.isAirBlock(pos)) {
 			BlockPos immutable = pos.toImmutable();
 			positions.add(immutable);
 			if (corners != null) {
 				corners.add(immutable);
 			}
-			if (rand.nextBoolean()) {
+			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
 					BlockPos up = pos.up();
 					if (world.isAirBlock(up)) {
@@ -104,11 +104,11 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 		return false;
 	}
 
-	protected static boolean tryToPlaceCrownedCorrockSquare(ISeedReader world, Random rand, int y, int x1, int z1, int x2, int z2, List<BlockPos> positions, Direction direction, GenerationPiece crowns) {
+	protected static boolean tryToPlaceCrownedCorrockSquare(ISeedReader world, Random rand, int y, int x1, int z1, int x2, int z2, List<BlockPos> positions, Direction direction, GenerationPiece crowns, float crownChance) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = x1; x <= x2; x++) {
 			for (int z = z1; z <= z2; z++) {
-				if (!tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(x, y, z), positions, direction, crowns, null)) {
+				if (!tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(x, y, z), positions, direction, crowns, null, crownChance)) {
 					return false;
 				}
 			}
