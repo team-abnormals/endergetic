@@ -9,8 +9,6 @@ import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
@@ -29,7 +27,7 @@ import net.minecraft.world.gen.feature.SphereReplaceConfig;
 /**
  * @author SmellyModder (Luke Tonon)
  */
-public class CorrockBranchFeature extends AbstractCorrockFeature {
+public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConfig> {
 	private static final SphereReplaceConfig SPHERE_CONFIG = new SphereReplaceConfig(CORROCK_BLOCK_STATE.getValue(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState()));
 
 	public CorrockBranchFeature(Codec<ProbabilityConfig> configFactory) {
@@ -225,7 +223,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			BlockPos placingPos = pos.offset(horizontal);
 			if (rand.nextFloat() < 0.35F && world.isAirBlock(placingPos)) {
-				branch.addBlockPiece(CORROCK_CROWN(true).get().with(CorrockCrownWallBlock.FACING, horizontal), placingPos);
+				branch.addBlockPiece(getCorrockCrownWall(horizontal), placingPos);
 			}
 		}
 		if (rand.nextBoolean() && world.isAirBlock(pos.up())) {
@@ -238,6 +236,6 @@ public class CorrockBranchFeature extends AbstractCorrockFeature {
 	}
 
 	private BlockState randomStandingCorrockCrown(Random rand) {
-		return CORROCK_CROWN(false).get().with(CorrockCrownStandingBlock.ROTATION, rand.nextInt(16));
+		return getCorrockCrownStanding(rand.nextInt(16));
 	}
 }
