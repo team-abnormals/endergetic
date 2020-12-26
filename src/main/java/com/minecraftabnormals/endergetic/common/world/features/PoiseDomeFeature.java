@@ -616,10 +616,10 @@ public class PoiseDomeFeature extends Feature<NoFeatureConfig> {
 		}
 
 		boolean[] doHangerSide = {
-				rand.nextFloat() <= 0.25F ? true : false,
-				rand.nextFloat() <= 0.25F ? true : false,
-				rand.nextFloat() <= 0.25F ? true : false,
-				rand.nextFloat() <= 0.25F ? true : false,
+				rand.nextFloat() <= 0.25F,
+				rand.nextFloat() <= 0.25F,
+				rand.nextFloat() <= 0.25F,
+				rand.nextFloat() <= 0.25F,
 		};
 		if (doHangerSide[0]) {
 			if (rand.nextBoolean()) {
