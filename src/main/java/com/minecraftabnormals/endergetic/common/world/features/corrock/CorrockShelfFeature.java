@@ -55,8 +55,17 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 
 	private static boolean isTouchingWall(ISeedReader world, BlockPos origin) {
 		for (Direction direction : DIRECTIONS) {
-			Block block = world.getBlockState(origin.offset(direction)).getBlock();
-			if (block == Blocks.END_STONE || block == EEBlocks.EUMUS.get() || block == EEBlocks.CORROCK_END_BLOCK.get()) {
+			if (searchForWall(world, origin.toMutable(), direction) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing) {
+		for (int i = 0; i < 2; i++) {
+			Block block = world.getBlockState(mutable.move(facing)).getBlock();
+			if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
 				return true;
 			}
 		}

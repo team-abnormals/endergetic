@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.world.placements;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.WorldDecoratingHelper;
 import net.minecraft.world.gen.placement.HeightmapBasedPlacement;
@@ -25,7 +26,7 @@ public class HeightmapSpreadLowerPlacement extends HeightmapBasedPlacement<NoPla
 		int x = pos.getX();
 		int z = pos.getZ();
 		int height = helper.func_242893_a(this.func_241858_a(config), x, z);
-		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, Math.min(60, rand.nextInt((int) (height * 0.85F))), z));
+		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, MathHelper.clamp(rand.nextInt((int) (height * 0.85F)), rand.nextInt(10) + 18, 60), z));
 	}
 
 }
