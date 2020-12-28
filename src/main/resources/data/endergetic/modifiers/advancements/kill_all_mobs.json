@@ -1,0 +1,49 @@
+{
+  "advancement": "minecraft:adventure/kill_all_mobs",
+  "modifiers": [
+    {
+      "type": "criteria",
+      "config": {
+        "mode": "modify",
+        "criteria": {
+          "endergetic:booflo": {
+            "trigger": "minecraft:player_killed_entity",
+            "conditions": {
+              "entity": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "type": "endergetic:booflo"
+                  },
+                  "entity": "this"
+                }
+              ]
+            }
+          },
+          "endergetic:puff_bug": {
+            "trigger": "minecraft:player_killed_entity",
+            "conditions": {
+              "entity": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "type": "endergetic:puff_bug"
+                  },
+                  "entity": "this"
+                }
+              ]
+            }
+          }
+        },
+        "requirements": [
+          [
+            "endergetic:booflo"
+          ],
+          [
+            "endergetic:puff_bug"
+          ]
+        ]
+      }
+    }
+  ]
+}
