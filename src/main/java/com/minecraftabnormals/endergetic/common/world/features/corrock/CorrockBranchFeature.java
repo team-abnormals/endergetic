@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
+import com.minecraftabnormals.endergetic.common.world.configs.CorrockBranchConfig;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
@@ -21,31 +21,27 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.FeatureSpread;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
 
 /**
  * @author SmellyModder (Luke Tonon)
  */
-public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConfig> {
+public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchConfig> {
 	private static final SphereReplaceConfig SPHERE_CONFIG = new SphereReplaceConfig(CORROCK_BLOCK_STATE.getValue(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState()));
 
-	public CorrockBranchFeature(Codec<ProbabilityConfig> configFactory) {
+	public CorrockBranchFeature(Codec<CorrockBranchConfig> configFactory) {
 		super(configFactory);
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
-		if (rand.nextFloat() > config.probability) return false;
-
-		Block belowBlock = world.getBlockState(pos.down()).getBlock();
-
-		if (belowBlock == EEBlocks.CORROCK_END_BLOCK.get() || belowBlock == Blocks.END_STONE) {
+	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
+		BlockState belowState = world.getBlockState(pos.down());
+		if (config.isValidGround(belowState)) {
 			int baseHeight = rand.nextInt(4) + 4;
 			GenerationPiece basePiece = this.createBase(world, pos, rand, baseHeight);
 			if (basePiece.canPlace(world)) {
 				int branchCount = rand.nextBoolean() ? 1 : rand.nextInt(3) + 1;
-				List<Pair<GenerationPiece, ChorusPlantPart>> branches = this.createBranches(world, pos, rand, branchCount, baseHeight);
+				List<Pair<GenerationPiece, ChorusPlantPart>> branches = this.createBranches(world, pos, rand, branchCount, baseHeight, config.getCrownChance(), config.getDecoratedBranchChance());
 				Pair<GenerationPiece, ChorusPlantPart> firstBranch = branches.get(0);
 				GenerationPiece firstBranchPiece = firstBranch.getFirst();
 				if (firstBranchPiece.canPlace(world)) {
@@ -155,12 +151,12 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConf
 	/**
 	 * Tries to create an amount (count) of branches. Each branch has a {@link GenerationPiece} for its formation and a {@link ChorusPlantPart} if it has a chorus growth at the top.
 	 */
-	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(IWorld world, BlockPos pos, Random rand, int count, int height) {
+	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(IWorld world, BlockPos pos, Random rand, int count, int height, float crownChance, float decorationChance) {
 		List<Pair<GenerationPiece, ChorusPlantPart>> pieces = Lists.newArrayList();
 		BlockPos branchStart = pos.up(height - 1);
 		for (int i = 0; i < count; i++) {
 			GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isAirBlock(part.pos));
-			pieces.add(new Pair<>(basePiece, this.createBranch(world, branchStart, rand, basePiece, this.randomHorizontalDirection(rand), rand.nextInt(2) + 1)));
+			pieces.add(new Pair<>(basePiece, this.createBranch(world, branchStart, rand, basePiece, this.randomHorizontalDirection(rand), rand.nextInt(2) + 1, crownChance, decorationChance)));
 		}
 		return pieces;
 	}
@@ -169,7 +165,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConf
 	 * Creates a branch starting from a position and a direction with a max amount of sub-branches.
 	 */
 	@Nullable
-	private ChorusPlantPart createBranch(IWorld world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int subBranches) {
+	private ChorusPlantPart createBranch(IWorld world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int subBranches, float crownChance, float decorationChance) {
 		ChorusPlantPart chorusPlantPart = null;
 		int branched = 0;
 		int prevBranchHeight = 0;
@@ -180,9 +176,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConf
 			basePiece.addBlockPiece(corrockState, offset.up(y));
 			if (y == branchHeight - 1) {
 				boolean lastBranched = branched == subBranches;
-				if (rand.nextBoolean()) {
+				if (rand.nextFloat() < decorationChance) {
 					BlockPos crownOrigin = offset.up(y);
-					this.createCrownOrbit(basePiece, world, crownOrigin, rand);
+					this.createCrownOrbit(basePiece, world, crownOrigin, rand, crownChance);
 					if (lastBranched) {
 						chorusPlantPart = new ChorusPlantPart(crownOrigin);
 						break;
@@ -219,14 +215,14 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<ProbabilityConf
 	/**
 	 * Creates corrock crowns 'orbiting' (i.e. attached to all open sides) a position.
 	 */
-	private void createCrownOrbit(GenerationPiece branch, IWorld world, BlockPos pos, Random rand) {
+	private void createCrownOrbit(GenerationPiece branch, IWorld world, BlockPos pos, Random rand, float crownChance) {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			BlockPos placingPos = pos.offset(horizontal);
-			if (rand.nextFloat() < 0.35F && world.isAirBlock(placingPos)) {
+			if (rand.nextFloat() < crownChance && world.isAirBlock(placingPos)) {
 				branch.addBlockPiece(getCorrockCrownWall(horizontal), placingPos);
 			}
 		}
-		if (rand.nextBoolean() && world.isAirBlock(pos.up())) {
+		if (rand.nextFloat() < crownChance && world.isAirBlock(pos.up())) {
 			branch.addBlockPiece(this.randomStandingCorrockCrown(rand), pos.up());
 		}
 	}
