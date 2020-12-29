@@ -13,9 +13,9 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
 
-public class GroundPatchFeature extends Feature<SphereReplaceConfig> {
+public class CorrockGroundPatchFeature extends Feature<SphereReplaceConfig> {
 
-	public GroundPatchFeature(Codec<SphereReplaceConfig> config) {
+	public CorrockGroundPatchFeature(Codec<SphereReplaceConfig> config) {
 		super(config);
 	}
 

@@ -14,20 +14,16 @@ import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.FeatureSpread;
-import net.minecraft.world.gen.feature.SphereReplaceConfig;
 
 /**
  * @author SmellyModder (Luke Tonon)
  */
 public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchConfig> {
-	private static final SphereReplaceConfig SPHERE_CONFIG = new SphereReplaceConfig(CORROCK_BLOCK_STATE.getValue(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState()));
 
 	public CorrockBranchFeature(Codec<CorrockBranchConfig> configFactory) {
 		super(configFactory);
@@ -68,7 +64,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 					}
 
 					BlockPos groundModifierPos = new BlockPos(pos.getX() - 1 + (rand.nextInt(3) - rand.nextInt(3)), pos.getY() - 1, pos.getZ() - 1 + (rand.nextInt(3) - rand.nextInt(3)));
-					EEFeatures.GROUND_PATCH.get().generate(world, generator, rand, groundModifierPos, SPHERE_CONFIG);
+					EEFeatures.Configured.CORROCK_GROUND_PATCH.generate(world, generator, rand, groundModifierPos);
 
 					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
 					for (int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
