@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -104,6 +105,13 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 								BlockPos down = corrockPos.down();
 								if (!corrockBlockPositions.contains(down) && world.isAirBlock(down)) {
 									world.setBlockState(down, getCorrockCrownStanding(rand.nextInt(16)).with(CorrockCrownStandingBlock.UPSIDE_DOWN, true), 2);
+								} else {
+									for (Direction horizontal : Direction.Plane.HORIZONTAL) {
+										BlockPos offset = corrockPos.offset(horizontal);
+										if (!corrockBlockPositions.contains(offset) && world.isAirBlock(offset)) {
+											world.setBlockState(offset, getCorrockCrownWall(horizontal), 2);
+										}
+									}
 								}
 							}
 						} else if (rand.nextFloat() < plantChance) {
