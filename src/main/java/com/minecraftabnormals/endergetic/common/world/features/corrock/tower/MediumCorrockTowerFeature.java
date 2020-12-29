@@ -97,6 +97,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 				base.place(world);
 				topPiece.getFirst().place(world);
 				topPiece.getSecond().forEach((growth) -> growth.placeGrowth(world, rand));
+				BlockPos topMiddle = pos.up(height + 1);
+				BlockState corrockPlantState = CORROCK_STATE.getValue();
+				for (int i = 0; i < 16; i++) {
+					if (rand.nextFloat() < 0.6F && world.isAirBlock(mutable.setAndOffset(topMiddle, rand.nextInt(6) - rand.nextInt(6), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(6) - rand.nextInt(6)))) {
+						if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK) {
+							world.setBlockState(mutable, corrockPlantState, 2);
+						}
+					}
+				}
 				return true;
 			}
 		}

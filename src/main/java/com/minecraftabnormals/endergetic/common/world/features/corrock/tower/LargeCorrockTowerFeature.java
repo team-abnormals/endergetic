@@ -64,6 +64,15 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 						corrockCrowns.place(world);
 						top.getFirst().place(world);
 						top.getSecond().forEach(chorusPlantPart -> chorusPlantPart.placeGrowth(world, rand));
+						BlockPos topMiddle = pos.up(4 + height);
+						BlockState corrockPlantState = CORROCK_STATE.getValue();
+						for (int i = 0; i < 16; i++) {
+							if (rand.nextFloat() < 0.6F && world.isAirBlock(mutable.setAndOffset(topMiddle, rand.nextInt(7) - rand.nextInt(7), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(7) - rand.nextInt(7)))) {
+								if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK) {
+									world.setBlockState(mutable, corrockPlantState, 2);
+								}
+							}
+						}
 						return true;
 					}
 				}
