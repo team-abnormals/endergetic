@@ -124,7 +124,8 @@ public class EndergeticExpansion {
 //		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 //				() -> EEFeatures.Configured.CORROCK_BRANCH,
 //				() -> EEFeatures.Configured.CORROCK_TOWER,
-//				() -> EEFeatures.Configured.CORROCK_SHELF
+//				() -> EEFeatures.Configured.CORROCK_SHELF,
+//				() -> EEFeatures.Configured.CORROCK_ARCH
 //		)));
 //		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
 	}

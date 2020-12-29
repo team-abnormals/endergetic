@@ -40,6 +40,7 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<CorrockTowerConfig>> MEDIUM_CORROCK_TOWER = createFeature("medium_corrock_tower", () -> new MediumCorrockTowerFeature(CorrockTowerConfig.CODEC));
 	public static final RegistryObject<Feature<CorrockTowerConfig>> LARGE_CORROCK_TOWER = createFeature("large_corrock_tower", () -> new LargeCorrockTowerFeature(CorrockTowerConfig.CODEC));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_SHELF = createFeature("corrock_shelf", () -> new CorrockShelfFeature(ProbabilityConfig.CODEC));
+	public static final RegistryObject<Feature<CorrockArchConfig>> CORROCK_ARCH = createFeature("corrock_arch", () -> new CorrockArchFeature(CorrockArchConfig.CODEC));
 
 	public static final RegistryObject<Feature<WeightedFeatureConfig>> WEIGHTED_FEATURES = createFeature("weighted_features", () -> new WeightedMultiFeature(WeightedFeatureConfig.CODEC));
 	public static final RegistryObject<Feature<EndGatewayConfig>> ENDERGETIC_GATEWAY = createFeature("gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfig.field_236522_a_));
@@ -66,6 +67,7 @@ public final class EEFeatures {
 		public static final ConfiguredFeature<?, ?> LARGE_CORROCK_TOWER = EEFeatures.LARGE_CORROCK_TOWER.get().withConfiguration(new CorrockTowerConfig(2, 4, 0.5F, 0.1F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
 		public static final ConfiguredFeature<?, ?> CORROCK_TOWER = EEFeatures.WEIGHTED_FEATURES.get().withConfiguration(WeightedFeatureConfig.createFromPairs(Pair.of(SMALL_CORROCK_TOWER, 6), Pair.of(MEDIUM_CORROCK_TOWER, 12), Pair.of(LARGE_CORROCK_TOWER, 4))).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(256);
 		public static final ConfiguredFeature<?, ?> CORROCK_SHELF = EEFeatures.CORROCK_SHELF.get().withConfiguration(new ProbabilityConfig(0.75F)).withPlacement(EEPlacements.HEIGHTMAP_SPREAD_LOWER.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG).square()).func_242731_b(6);
+		public static final ConfiguredFeature<?, ?> CORROCK_ARCH = EEFeatures.CORROCK_ARCH.get().withConfiguration(new CorrockArchConfig(0.175F, 0.3F, 13.0F, 20.0F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(24);
 
 		private static <FC extends IFeatureConfig> void register(String name, ConfiguredFeature<FC, ?> configuredFeature) {
 			Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(EndergeticExpansion.MOD_ID, name), configuredFeature);
@@ -89,6 +91,7 @@ public final class EEFeatures {
 			register("large_corrock_tower", LARGE_CORROCK_TOWER);
 			register("corrock_tower", CORROCK_TOWER);
 			register("corrock_shelf", CORROCK_SHELF);
+			register("corrock_arch", CORROCK_ARCH);
 		}
 	}
 }
