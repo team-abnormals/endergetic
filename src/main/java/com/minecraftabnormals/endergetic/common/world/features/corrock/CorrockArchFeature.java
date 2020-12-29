@@ -54,7 +54,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 				}
 				if (end != null) {
 					Set<BlockPos> corrockBlockPositions = new HashSet<>();
-					ArchSpline archSpline = new ArchSpline(pos, end, rand);
+					ArchSpline archSpline = new ArchSpline(pos, end, rand, config.getMaxArchHeight());
 					int steps = (int) (20 + distance * 4);
 					BlockPos prevPos = null;
 					int failedPositions = 0;
@@ -69,12 +69,12 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 						prevPos = interpolatedPos;
 
 						int radius = 2;
-						double offset = (rand.nextDouble() - 0.5D) * 0.25D;
+						double offsetRadius = radius - (rand.nextDouble() - 0.5D) * 0.25D;
 						for (int y = -radius; y <= radius; y++) {
 							for (int x = -radius; x <= radius; x++) {
 								for (int z = -radius; z <= radius; z++) {
 									BlockPos placingPos = interpolatedPos.add(x, y, z);
-									if (MathHelper.sqrt(pos.distanceSq(placingPos)) <= 32.0D && x * x + y * y + z * z <= 2 - offset) {
+									if (MathHelper.sqrt(pos.distanceSq(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
 										if (world.isAirBlock(placingPos)) {
 											corrockBlockPositions.add(placingPos);
 										} else {
@@ -141,7 +141,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	static class ArchSpline {
 		private final Vector3d[] points;
 
-		private ArchSpline(BlockPos start, BlockPos end, Random rand) {
+		private ArchSpline(BlockPos start, BlockPos end, Random rand, float maxArchHeight) {
 			List<Vector3d> points = new ArrayList<>();
 			Vector3d startVec = Vector3d.copy(start);
 			Vector3d endVec = Vector3d.copy(end);
@@ -154,9 +154,10 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			points.add(startVec);
 			//Generate positions in between the start and end to form an arch-like path
 			Vector3d offset = (new Vector3d(0, 1, 0)).crossProduct(normalizedDifference);
+			double offsetX = offset.x;
+			double offsetZ = offset.z;
 			for (int i = 0; i < 5; i++) {
-				Vector3d point = startVec.add(difference.scale(i / 5.0F)).add(offset.x * (rand.nextDouble() - 0.5D) * 3.0D, (rand.nextDouble() - 0.25D) * 8.0D + Math.sin(i / 5.0F * Math.PI) * 6.0F, offset.z * (rand.nextDouble() - 0.5D) * 3.0D);
-				points.add(point);
+				points.add(startVec.add(difference.scale(i / 5.0F)).add(offsetX * (rand.nextDouble() - 0.5D) * 3.0D, (rand.nextDouble() - 0.25D) * 8.0D + MathHelper.sin((float) (i / 5.0F * Math.PI)) * maxArchHeight, offsetZ * (rand.nextDouble() - 0.5D) * 3.0D));
 			}
 			points.add(endVec);
 			points.add(anchorEnd);
