@@ -75,7 +75,8 @@ public class PuffBugHiveBlock extends Block {
 		World world = context.getWorld();
 		for (Direction enumfacing : context.getNearestLookingDirections()) {
 			if (enumfacing == Direction.UP) {
-				if (world.isAirBlock(blockpos.down()) && Block.hasSolidSideOnTop(world, blockpos)) {
+				BlockPos up = blockpos.up();
+				if (world.isAirBlock(blockpos.down()) && world.getBlockState(up).isSolidSide(context.getWorld(), up, Direction.DOWN)) {
 					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
 					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
 					if (entities.size() > 0) {
