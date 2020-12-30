@@ -37,7 +37,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 	}
 
 	public static class SackGrowth {
-		private float cooldown;
+		private int cooldown;
 		private float prevGrowth;
 		private float growth;
 
