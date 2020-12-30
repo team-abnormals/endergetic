@@ -123,7 +123,10 @@ public class EndergeticExpansion {
 		BiPredicate<RegistryKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
 		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOnly, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
-		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(highlandsOnly, GenerationStage.Decoration.VEGETAL_DECORATION, () -> EEFeatures.Configured.CORROCK_PATCH));
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
+				() -> EEFeatures.Configured.CORROCK_PATCH,
+				() -> EEFeatures.Configured.EETLE_EGGS
+		)));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
 				() -> EEFeatures.Configured.CORROCK_TOWER,
