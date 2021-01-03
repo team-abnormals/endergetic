@@ -38,7 +38,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 				int maxDistanceInt = (int) maxDistance;
 				float minDistance = config.getMinDistance();
 				double distance = 0.0F;
-				for (int i = 0; i < 6; i++) {
+				for (int i = 0; i < 10; i++) {
 					int xPos = originX + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					int zPos = originZ + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					mutable.setPos(xPos, originY, zPos);
