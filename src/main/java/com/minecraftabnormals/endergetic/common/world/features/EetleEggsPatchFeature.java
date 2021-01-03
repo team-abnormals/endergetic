@@ -12,7 +12,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Random;
 
@@ -28,7 +27,7 @@ public class EetleEggsPatchFeature extends Feature<ProbabilityConfig> {
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
 		int i = 0;
 		pos = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos);
-		ArrayUtils.shuffle(DIRECTIONS, rand);
+		shuffleDirections(rand);
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		float chance = config.probability;
 		Block corrockBlock = EEBlocks.CORROCK_END_BLOCK.get();
@@ -50,5 +49,22 @@ public class EetleEggsPatchFeature extends Feature<ProbabilityConfig> {
 			}
 		}
 		return i > 0;
+	}
+
+	private static void shuffleDirections(Random random) {
+		int length = DIRECTIONS.length;
+		for (int i = length; i > 1; i--) {
+			int offset1 = Math.max(0, i - 1);
+			int offset2 = Math.max(0, random.nextInt(i));
+			if (offset1 >= length || offset2 >= length) {
+				return;
+			}
+			int swaps = Math.min(Math.min(1, length - offset1), length - offset2);
+			for (int j = 0; j < swaps; j++, offset1++, offset2++) {
+				Direction direction = DIRECTIONS[offset1];
+				DIRECTIONS[offset1] = DIRECTIONS[offset2];
+				DIRECTIONS[offset2] = direction;
+			}
+		}
 	}
 }
