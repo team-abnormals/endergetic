@@ -17,6 +17,7 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
@@ -52,8 +53,20 @@ public final class EEEntities {
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
-		Block standingOn = world.getBlockState(pos.down()).getBlock();
-		return MonsterEntity.canMonsterSpawnInLight(entityType, world, spawnReason, pos, random) && (standingOn == EEBlocks.CORROCK_END_BLOCK.get() || standingOn == EEBlocks.EUMUS.get());
+		if (MonsterEntity.canMonsterSpawnInLight(entityType, world, spawnReason, pos, random)) {
+			BlockPos down = pos.down();
+			Block downBlock = world.getBlockState(down).getBlock();
+			if (downBlock == EEBlocks.CORROCK_END_BLOCK.get() || downBlock == EEBlocks.EUMUS.get()) {
+				return true;
+			}
+			for (Direction direction : Direction.Plane.HORIZONTAL) {
+				Block offsetBlock = world.getBlockState(down.offset(direction)).getBlock();
+				if (offsetBlock == EEBlocks.CORROCK_END_BLOCK.get() || offsetBlock == EEBlocks.EUMUS.get()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static boolean endIslandCondition(EntityType<? extends CreatureEntity> entityType, IWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
+import net.minecraft.block.Block;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -15,10 +16,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -99,9 +102,32 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@Nullable
 	@Override
 	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
-		//TODO: Move to custom child chance condition
-		if (this.rand.nextFloat() < 0.25F) {
+		//Patches of baby eetles will spawn 40% of the time
+		if (reason == SpawnReason.NATURAL && this.rand.nextFloat() < 0.4F) {
 			this.setChild(true);
+			BlockPos.Mutable mutable = new BlockPos.Mutable();
+			int startX = (int) this.getPosX();
+			int startZ = (int) this.getPosZ();
+			for (int x = -2; x <= 2; x++) {
+				for (int z = -2; z <= 2; z++) {
+					if (this.rand.nextFloat() < 0.1F) {
+						int currentX = startX + x;
+						int currentZ = startZ + z;
+						mutable.setPos(currentX, world.getHeight(Heightmap.Type.MOTION_BLOCKING, currentX, currentZ), currentZ);
+						if (world.isAirBlock(mutable) && Block.hasSolidSideOnTop(world, mutable.down())) {
+							EntityType<?> type = this.getType();
+							Entity entity = type.create(this.world);
+							if (entity instanceof AbstractEetleEntity) {
+								AbstractEetleEntity eetle = (AbstractEetleEntity) entity;
+								eetle.setChild(true);
+								if (this.world.addEntity(eetle)) {
+									entity.setPositionAndRotation(currentX + 0.5F, mutable.getY(), currentZ + 0.5F, this.rand.nextFloat() * 360.0F, 0.0F);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 		return super.onInitialSpawn(world, difficultyIn, reason, spawnData, dataTag);
 	}
