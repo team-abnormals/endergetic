@@ -139,6 +139,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	static class ArchSpline {
+		private static final Vector3d UP = new Vector3d(0.0D, 1.0D, 1.0D);
 		private final Vector3d[] points;
 
 		private ArchSpline(BlockPos start, BlockPos end, Random rand, float maxArchHeight) {
@@ -153,7 +154,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			points.add(anchorStart);
 			points.add(startVec);
 			//Generate positions in between the start and end to form an arch-like path
-			Vector3d offset = (new Vector3d(0, 1, 0)).crossProduct(normalizedDifference);
+			Vector3d offset = UP.crossProduct(normalizedDifference);
 			double offsetX = offset.x;
 			double offsetZ = offset.z;
 			for (int i = 0; i < 5; i++) {

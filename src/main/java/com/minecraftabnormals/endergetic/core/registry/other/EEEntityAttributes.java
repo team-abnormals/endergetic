@@ -46,6 +46,16 @@ public final class EEEntityAttributes {
 		GlobalEntityTypeAttributes.put(EEEntities.POISE_CLUSTER.get(),
 				LivingEntity.registerAttributes().create()
 		);
+		GlobalEntityTypeAttributes.put(EEEntities.CHARGER_EETLE.get(),
+				MobEntity.func_233666_p_()
+						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0F)
+						.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 1.0F)
+						.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.225F)
+						.createMutableAttribute(Attributes.ARMOR, 4.0F)
+						.createMutableAttribute(Attributes.MAX_HEALTH, 30.0F)
+						.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
+						.create()
+		);
 	}
 
 }

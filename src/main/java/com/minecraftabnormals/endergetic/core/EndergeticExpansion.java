@@ -4,11 +4,15 @@ import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
+import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.minecraftabnormals.endergetic.client.renderers.entity.eetle.ChargerEetleRenderer;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeSurfaceBuilderModifier;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -64,6 +68,7 @@ public class EndergeticExpansion {
 	public static final String NETWORK_PROTOCOL = "EE1";
 	public static EndergeticExpansion instance;
 	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
+		helper.putSubHelper(ForgeRegistries.ITEMS, new EndergeticItemSubRegistryHelper(helper));
 		helper.putSubHelper(ForgeRegistries.BLOCKS, new EndergeticBlockSubRegistryHelper(helper));
 	});
 
@@ -133,6 +138,8 @@ public class EndergeticExpansion {
 				() -> EEFeatures.Configured.CORROCK_SHELF,
 				() -> EEFeatures.Configured.CORROCK_ARCH
 		)));
+		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnAdder(highlandsOnly, EntityClassification.MONSTER, EEEntities.CHARGER_EETLE::get, 6, 2, 5));
+		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOnly, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
 	}
 
@@ -157,6 +164,7 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_BABY.get(), BoofloBabyRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), BoofloRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.CHARGER_EETLE.get(), ChargerEetleRenderer::new);
 
 		KeybindHandler.registerKeys();
 

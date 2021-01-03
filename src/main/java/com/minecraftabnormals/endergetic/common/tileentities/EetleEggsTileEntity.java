@@ -32,6 +32,11 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		}
 	}
 
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		return 128.0D;
+	}
+
 	public SackGrowth[] getSackGrowths() {
 		return this.sackGrowths;
 	}

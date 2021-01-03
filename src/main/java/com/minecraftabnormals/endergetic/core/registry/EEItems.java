@@ -7,6 +7,7 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.items.*;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Rarity;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEItems {
-	private static final ItemSubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getItemSubHelper();
+	private static final EndergeticItemSubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getItemSubHelper();
 
 	public static final RegistryObject<Item> EUMUS_BRICK = HELPER.createItem("eumus_brick", () -> new Item(ItemSubRegistryHelper.createSimpleItemProperty(64, ItemGroup.MATERIALS)));
 
@@ -46,4 +47,5 @@ public final class EEItems {
 
 	public static final RegistryObject<AbnormalsSpawnEggItem> PUFF_BUG_SPAWN_EGG = HELPER.createSpawnEggItem("puff_bug", EEEntities.PUFF_BUG::get, 15660724, 16610303);
 	public static final RegistryObject<AbnormalsSpawnEggItem> BOOFLO_SPAWN_EGG = HELPER.createSpawnEggItem("booflo", EEEntities.BOOFLO::get, 8143741, 16641190);
+	public static final RegistryObject<EetleSpawnEggItem> EETLE_SPAWN_EGG = HELPER.createEetleSpawnEgg();
 }
