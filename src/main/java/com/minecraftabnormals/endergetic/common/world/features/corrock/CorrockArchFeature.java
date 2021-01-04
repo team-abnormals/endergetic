@@ -232,4 +232,5 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			return MathHelper.sqrt(point2.subtract(point1).length()) + offset;
 		}
 	}
+
 }

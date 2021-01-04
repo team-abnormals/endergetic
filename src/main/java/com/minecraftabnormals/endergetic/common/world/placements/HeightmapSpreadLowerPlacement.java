@@ -26,7 +26,7 @@ public class HeightmapSpreadLowerPlacement extends HeightmapBasedPlacement<NoPla
 		int x = pos.getX();
 		int z = pos.getZ();
 		int height = helper.func_242893_a(this.func_241858_a(config), x, z);
-		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, MathHelper.clamp(rand.nextInt((int) (height * 0.85F)), rand.nextInt(10) + 18, 57), z));
+		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, MathHelper.clamp(rand.nextInt((int) (height * 0.85F)), rand.nextInt(10) + 22, 57), z));
 	}
 
 }
