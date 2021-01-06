@@ -33,6 +33,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	private final AvoidEntityGoal<PlayerEntity> avoidEntityGoal;
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
+	private int growingAge;
 
 	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
 		super(type, world);
@@ -57,18 +58,27 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	public void tick() {
 		super.tick();
 		this.endimateTick();
+
+		if (!this.world.isRemote && this.isAlive()) {
+			int age = this.growingAge;
+			if (age < 0) {
+				this.updateAge(++age);
+			} else if (age > 0) {
+				this.updateAge(--age);
+			}
+		}
 	}
 
 	@Override
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
-		compound.putBoolean("IsChild", this.isChild());
+		compound.putInt("Age", this.growingAge);
 	}
 
 	@Override
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
-		this.setChild(compound.getBoolean("IsChild"));
+		this.updateAge(compound.getInt("Age"));
 	}
 
 	@Override
@@ -78,6 +88,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	public void setChild(boolean child) {
+		boolean wasChild = this.isChild();
 		this.dataManager.set(CHILD, child);
 		if (child) {
 			this.experienceValue = 2;
@@ -91,11 +102,22 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 			}
 		} else {
 			this.experienceValue = 6;
-			this.goalSelector.removeGoal(this.avoidEntityGoal);
-			ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
-			if (maxHealth != null) {
-				maxHealth.removeModifier(LEETLE_HEALTH);
+			if (wasChild) {
+				this.goalSelector.removeGoal(this.avoidEntityGoal);
+				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+				if (maxHealth != null) {
+					maxHealth.removeModifier(LEETLE_HEALTH);
+				}
+				this.setHealth(Math.min(this.getMaxHealth(), this.getHealth() * 4.3F));
 			}
+		}
+	}
+
+	private void updateAge(int growingAge) {
+		int prevAge = this.growingAge;
+		this.growingAge = growingAge;
+		if (prevAge < 0 && growingAge >= 0 || prevAge >= 0 && growingAge < 0) {
+			this.setChild(growingAge < 0);
 		}
 	}
 
@@ -104,7 +126,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
 		//Patches of baby eetles will spawn 40% of the time
 		if (reason == SpawnReason.NATURAL && this.rand.nextFloat() < 0.4F) {
-			this.setChild(true);
+			this.updateAge(-(20000 + this.rand.nextInt(4001)));
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
 			int startX = (int) this.getPosX();
 			int startZ = (int) this.getPosZ();
@@ -119,7 +141,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 							Entity entity = type.create(this.world);
 							if (entity instanceof AbstractEetleEntity) {
 								AbstractEetleEntity eetle = (AbstractEetleEntity) entity;
-								eetle.setChild(true);
+								eetle.updateAge(-(20000 + this.rand.nextInt(4001)));
 								if (this.world.addEntity(eetle)) {
 									entity.setPositionAndRotation(currentX + 0.5F, mutable.getY(), currentZ + 0.5F, this.rand.nextFloat() * 360.0F, 0.0F);
 								}
