@@ -42,14 +42,16 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 	public void tick() {
 		World world = this.getWorld();
 		if (world != null) {
+			BlockPos pos = this.pos;
 			if (world.isRemote) {
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.tick();
 				}
-			} else if (world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
+			} else if (!world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
-					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(this.pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
+					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
+						world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
 					}
 				}
 
@@ -59,9 +61,9 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 				} else if (delay > 0) {
 					this.updateHatchDelay(world, --delay);
 				} else {
-					if (this.hatchProgress < 3 && RANDOM.nextFloat() < 0.05F) {
-						if (++this.hatchProgress == 3) {
-							BlockPos pos = this.pos;
+					if (this.hatchProgress < 20 && RANDOM.nextFloat() < 0.9F) {
+						world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						if (++this.hatchProgress >= 20) {
 							world.destroyBlock(pos, false);
 							int x = pos.getX();
 							int y = pos.getY();
@@ -81,9 +83,12 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 								}
 							}
 						}
-						world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
 					}
 				}
+			} else if (this.hatchDelay > -80 || this.hatchProgress > 0) {
+				this.hatchProgress = 0;
+				this.hatchDelay = -80;
+				world.notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
 			}
 		}
 	}
@@ -100,17 +105,20 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		return this.sackGrowths;
 	}
 
-	public int getHatchProgress() {
-		return this.hatchProgress;
-	}
-
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
 		if (this.world != null) {
 			this.read(this.world.getBlockState(packet.getPos()), packet.getNbtCompound());
-			SackGrowth.Stage growthStage = this.hatchDelay == 0 ? SackGrowth.Stage.HATCHING : SackGrowth.Stage.IDLE;
-			for (SackGrowth growth : this.sackGrowths) {
-				growth.stage = growthStage;
+			if (this.hatchProgress > 0) {
+				for (SackGrowth growth : this.sackGrowths) {
+					growth.stage = SackGrowth.Stage.BURSTING;
+					growth.cooldown = Math.max(0, growth.cooldown - 15);
+				}
+			} else {
+				SackGrowth.Stage growthStage = this.hatchDelay >= -60 ? SackGrowth.Stage.HATCHING : SackGrowth.Stage.IDLE;
+				for (SackGrowth growth : this.sackGrowths) {
+					growth.stage = growthStage;
+				}
 			}
 		}
 	}
@@ -165,8 +173,9 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 				this.cooldown--;
 				this.growth = Math.max(0.0F, this.growth - stage.growthSpeed);
 			} else {
-				this.growth += stage.growthSpeed;
-				if (this.growth >= stage.maxGrowth) {
+				float maxGrowth = stage.maxGrowth;
+				this.growth = Math.min(maxGrowth, this.growth + stage.growthSpeed);
+				if (this.growth == maxGrowth) {
 					this.cooldown += ((float) RANDOM.nextInt(36) + 25) * stage.cooldownMultiplier;
 				}
 			}
@@ -182,7 +191,8 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 
 		enum Stage {
 			IDLE(0.0075F, 0.15F, 1.0F),
-			HATCHING(0.01875F, 0.225F, 0.35F);
+			HATCHING(0.01875F, 0.225F, 0.35F),
+			BURSTING(0.0275F, 0.45F, 0.0F);
 
 			private final float growthSpeed;
 			private final float maxGrowth;
