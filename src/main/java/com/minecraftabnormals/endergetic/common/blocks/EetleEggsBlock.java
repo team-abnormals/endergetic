@@ -26,7 +26,7 @@ public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
 	public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	private static final BooleanProperty PETRIFIED = BooleanProperty.create("petrified");
+	public static final BooleanProperty PETRIFIED = BooleanProperty.create("petrified");
 	private static final VoxelShape[][] SHAPES = new VoxelShape[][] {
 			new VoxelShape[] {
 					makeCuboidShape(1.0F, 11.0F, 1.0F, 15.0F, 16.0F, 15.0F),

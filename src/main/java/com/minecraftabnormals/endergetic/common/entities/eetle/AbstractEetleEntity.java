@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTargetGoal;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.*;
@@ -44,6 +45,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	protected void registerData() {
 		super.registerData();
 		this.dataManager.register(CHILD, false);
+	}
+
+	@Override
+	protected void registerGoals() {
+		this.targetSelector.addGoal(1, new EetleHurtByTargetGoal(this));
 	}
 
 	@Override
@@ -113,7 +119,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		}
 	}
 
-	private void updateAge(int growingAge) {
+	public void updateAge(int growingAge) {
 		int prevAge = this.growingAge;
 		this.growingAge = growingAge;
 		if (prevAge < 0 && growingAge >= 0 || prevAge >= 0 && growingAge < 0) {

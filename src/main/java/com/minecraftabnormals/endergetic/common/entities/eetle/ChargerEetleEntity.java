@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
-import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTargetGoal;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,11 +22,11 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 
 	@Override
 	protected void registerGoals() {
+		super.registerGoals();
 		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.25F, false));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F));
-		this.targetSelector.addGoal(1, new EetleHurtByTargetGoal(this));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 	}
 
