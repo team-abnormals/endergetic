@@ -16,6 +16,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -47,7 +48,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.tick();
 				}
-			} else if (!world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
+			} else if (world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
 					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
