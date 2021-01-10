@@ -10,6 +10,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.GoalSelector;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,14 +33,14 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	private static final DataParameter<Boolean> CHILD = EntityDataManager.createKey(AbstractEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final EntitySize LEETLE_SIZE = EntitySize.fixed(0.6F, 0.4375F);
 	private static final AttributeModifier LEETLE_HEALTH = new AttributeModifier(UUID.fromString("8a1ea466-4b2d-11eb-ae93-0242ac130002"), "Leetle health decrease", -0.8F, AttributeModifier.Operation.MULTIPLY_BASE);
-	private final AvoidEntityGoal<PlayerEntity> avoidEntityGoal;
+	private final AvoidEntityGoal<PlayerEntity> avoidEntityGoal = new AvoidEntityGoal<>(this, PlayerEntity.class, 12.0F, 1.0F, 1.0F);
+	private NearestAttackableTargetGoal<PlayerEntity> attackableTargetGoal;
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	private int growingAge;
 
 	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
 		super(type, world);
-		this.avoidEntityGoal = new AvoidEntityGoal<>(this, PlayerEntity.class, 12.0F, 1.0F, 1.0F);
 	}
 
 	@Override
@@ -49,6 +51,8 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	protected void registerGoals() {
+		this.attackableTargetGoal = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true);
+		this.targetSelector.addGoal(2, this.attackableTargetGoal);
 		this.targetSelector.addGoal(1, new EetleHurtByTargetGoal(this));
 	}
 
@@ -96,9 +100,9 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	public void setChild(boolean child) {
 		boolean wasChild = this.isChild();
 		this.dataManager.set(CHILD, child);
+		this.updateGoals(this.goalSelector, this.targetSelector, child);
 		if (child) {
 			this.experienceValue = 2;
-			this.goalSelector.addGoal(1, this.avoidEntityGoal);
 			if (this.world != null && !this.world.isRemote) {
 				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
@@ -109,7 +113,6 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		} else {
 			this.experienceValue = 6;
 			if (wasChild) {
-				this.goalSelector.removeGoal(this.avoidEntityGoal);
 				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
 					maxHealth.removeModifier(LEETLE_HEALTH);
@@ -160,13 +163,14 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		return super.onInitialSpawn(world, difficultyIn, reason, spawnData, dataTag);
 	}
 
-	public float getClimbingOffset() {
-		return this.isChild() ? 0.053125F : 0.425F;
-	}
-
-	@Override
-	public EntitySize getSize(Pose poseIn) {
-		return this.isChild() ? LEETLE_SIZE : super.getSize(poseIn);
+	protected void updateGoals(GoalSelector goalSelector, GoalSelector targetSelector, boolean child) {
+		if (child) {
+			goalSelector.addGoal(1, this.avoidEntityGoal);
+			targetSelector.removeGoal(this.attackableTargetGoal);
+		} else {
+			goalSelector.removeGoal(this.avoidEntityGoal);
+			targetSelector.addGoal(2, this.attackableTargetGoal);
+		}
 	}
 
 	@Override
@@ -189,6 +193,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@Override
 	public void setAnimationTick(int animationTick) {
 		this.animationTick = animationTick;
+	}
+
+	@Override
+	public EntitySize getSize(Pose poseIn) {
+		return this.isChild() ? LEETLE_SIZE : super.getSize(poseIn);
 	}
 
 	@Override

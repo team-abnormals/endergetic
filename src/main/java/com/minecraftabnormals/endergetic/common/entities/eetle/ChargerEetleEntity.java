@@ -8,12 +8,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.IFlinging;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 public class ChargerEetleEntity extends AbstractEetleEntity {
 	public static final Endimation ATTACK = new Endimation(10);
 	public static final Endimation FLAP = new Endimation(20);
+	private MeleeAttackGoal meleeAttackGoal;
 	private int flapDelay;
 
 	public ChargerEetleEntity(EntityType<? extends AbstractEetleEntity> type, World worldIn) {
@@ -23,11 +23,11 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.25F, false));
+		this.meleeAttackGoal = new MeleeAttackGoal(this, 1.25F, false);
+		this.goalSelector.addGoal(2, this.meleeAttackGoal);
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
 	}
 
 	@Override
@@ -62,6 +62,16 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	protected void constructKnockBackVector(LivingEntity target) {
 		if (!this.isChild()) {
 			IFlinging.func_234404_b_(this, target);
+		}
+	}
+
+	@Override
+	protected void updateGoals(GoalSelector goalSelector, GoalSelector targetSelector, boolean child) {
+		super.updateGoals(goalSelector, targetSelector, child);
+		if (child) {
+			goalSelector.removeGoal(this.meleeAttackGoal);
+		} else {
+			goalSelector.addGoal(2, this.meleeAttackGoal);
 		}
 	}
 
