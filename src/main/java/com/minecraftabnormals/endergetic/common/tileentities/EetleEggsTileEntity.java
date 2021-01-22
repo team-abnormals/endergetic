@@ -94,7 +94,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		}
 	}
 
-	private void updateHatchDelay(World world, int hatchDelay) {
+	public void updateHatchDelay(World world, int hatchDelay) {
 		int prevDelay = this.hatchDelay;
 		this.hatchDelay = hatchDelay;
 		if (prevDelay < 0 && hatchDelay >= 0 || prevDelay >= 0 && hatchDelay < 0) {

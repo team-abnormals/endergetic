@@ -2,9 +2,13 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTargetGoal;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -19,6 +23,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.DifficultyInstance;
@@ -27,12 +34,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.UUID;
 
 public abstract class AbstractEetleEntity extends MonsterEntity implements IEndimatedEntity {
 	private static final DataParameter<Boolean> CHILD = EntityDataManager.createKey(AbstractEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final EntitySize LEETLE_SIZE = EntitySize.fixed(0.6F, 0.4375F);
 	private static final AttributeModifier LEETLE_HEALTH = new AttributeModifier(UUID.fromString("8a1ea466-4b2d-11eb-ae93-0242ac130002"), "Leetle health decrease", -0.8F, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final Direction[] EGG_DIRECTIONS = Direction.values();
 	private final AvoidEntityGoal<PlayerEntity> avoidEntityGoal = new AvoidEntityGoal<>(this, PlayerEntity.class, 12.0F, 1.0F, 1.0F);
 	private NearestAttackableTargetGoal<PlayerEntity> attackableTargetGoal;
 	private Endimation endimation = BLANK_ANIMATION;
@@ -162,6 +171,33 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 			}
 		}
 		return super.onInitialSpawn(world, difficultyIn, reason, spawnData, dataTag);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onDeath(DamageSource cause) {
+		if (!this.isChild() && this.rand.nextFloat() < 0.6F && !this.removed && !this.dead) {
+			World world = this.world;
+			if (!world.isRemote) {
+				BlockPos pos = this.getPosition();
+				if (world.getFluidState(pos).isEmpty() && world.getBlockState(pos).getMaterial().isReplaceable()) {
+					Random random = this.rand;
+					EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
+					BlockState defaultState = EEBlocks.EETLE_EGGS.get().getDefaultState();
+					for (Direction direction : EGG_DIRECTIONS) {
+						BlockState state = defaultState.with(EetleEggsBlock.FACING, direction);
+						if (state.isValidPosition(world, pos)) {
+							world.setBlockState(pos, state.with(EetleEggsBlock.SIZE, random.nextInt(2)));
+							TileEntity tileEntity = world.getTileEntity(pos);
+							if (tileEntity instanceof EetleEggsTileEntity) {
+								((EetleEggsTileEntity) tileEntity).updateHatchDelay(world, random.nextInt(11) + 5);
+							}
+						}
+					}
+				}
+			}
+		}
+		super.onDeath(cause);
 	}
 
 	protected void updateGoals(GoalSelector goalSelector, GoalSelector targetSelector, boolean child) {

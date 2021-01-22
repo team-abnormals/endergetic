@@ -21,6 +21,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
 	public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
@@ -159,5 +160,22 @@ public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
 
 	private static boolean isOnValidState(IWorldReader world, BlockState state, BlockPos pos, Direction direction) {
 		return !state.getCollisionShape(world, pos).project(direction).isEmpty() || state.isSolidSide(world, pos, direction);
+	}
+
+	public static void shuffleDirections(Direction[] directions, Random random) {
+		int length = directions.length;
+		for (int i = length; i > 1; i--) {
+			int offset1 = Math.max(0, i - 1);
+			int offset2 = Math.max(0, random.nextInt(i));
+			if (offset1 >= length || offset2 >= length) {
+				return;
+			}
+			int swaps = Math.min(Math.min(1, length - offset1), length - offset2);
+			for (int j = 0; j < swaps; j++, offset1++, offset2++) {
+				Direction direction = directions[offset1];
+				directions[offset1] = directions[offset2];
+				directions[offset2] = direction;
+			}
+		}
 	}
 }
