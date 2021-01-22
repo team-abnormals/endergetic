@@ -48,7 +48,7 @@ public final class EEEntityAttributes {
 		);
 		GlobalEntityTypeAttributes.put(EEEntities.CHARGER_EETLE.get(),
 				MobEntity.func_233666_p_()
-						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0F)
+						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0F)
 						.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 1.0F)
 						.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
 						.createMutableAttribute(Attributes.ARMOR, 4.0F)
