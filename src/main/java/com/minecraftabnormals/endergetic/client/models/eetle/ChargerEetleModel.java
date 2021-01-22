@@ -127,6 +127,25 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 			this.endKeyframe();
 
 			this.resetKeyframe(5);
+		} else if (this.tryToPlayEndimation(ChargerEetleEntity.CATAPULT)) {
+			this.startKeyframe(3);
+			this.rotate(this.head, 0.32F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(3);
+			this.rotate(this.head, -0.85F, 0.0F, 0.0F);
+			this.rotate(this.mouth, -0.09F, 0.0F, 0.0F);
+			this.rotate(this.claw, -0.05F, 0.0F, 0.0F);
+			this.rotate(this.leftWing, 0.325F, 0.325F, 0.0F);
+			this.rotate(this.rightWing, 0.325F, -0.325F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.rotate(this.leftWing, 0.1625F, 0.1625F, 0.0F);
+			this.rotate(this.rightWing, 0.1625F, -0.1625F, 0.0F);
+			this.endKeyframe();
+
+			this.resetKeyframe(5);
 		} else if (this.tryToPlayEndimation(ChargerEetleEntity.FLAP)) {
 			this.startKeyframe(5);
 			this.rotate(this.leftWing, 0.26F, 0.26F, 0.0F);

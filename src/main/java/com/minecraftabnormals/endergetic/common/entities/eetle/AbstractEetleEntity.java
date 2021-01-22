@@ -41,6 +41,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
 		super(type, world);
+		this.stepHeight = 0.5F;
 	}
 
 	@Override
