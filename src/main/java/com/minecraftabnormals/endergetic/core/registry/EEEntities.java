@@ -43,6 +43,7 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<BoofloAdolescentEntity>> BOOFLO_ADOLESCENT = HELPER.createLivingEntity("booflo_adolescent", BoofloAdolescentEntity::new, EntityClassification.CREATURE, 0.8F, 0.7F);
 	public static final RegistryObject<EntityType<BoofloEntity>> BOOFLO = HELPER.createLivingEntity("booflo", BoofloEntity::new, EntityClassification.CREATURE, 1.3F, 1.3F);
 	public static final RegistryObject<EntityType<ChargerEetleEntity>> CHARGER_EETLE = HELPER.createLivingEntity("charger_eetle", ChargerEetleEntity::new, EntityClassification.MONSTER, 1.0F, 0.85F);
+	public static final RegistryObject<EntityType<GliderEetleEntity>> GLIDER_EETLE = HELPER.createLivingEntity("glider_eetle", GliderEetleEntity::new, EntityClassification.MONSTER, 1.0F, 0.85F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerSpawnPlacements(RegistryEvent.Register<EntityType<?>> event) {
@@ -50,6 +51,7 @@ public final class EEEntities {
 		EntitySpawnPlacementRegistry.register(BOOFLO_ADOLESCENT.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, EEEntities::endIslandCondition);
 		EntitySpawnPlacementRegistry.register(PUFF_BUG.get(), EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::endIslandCondition);
 		EntitySpawnPlacementRegistry.register(CHARGER_EETLE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
+		EntitySpawnPlacementRegistry.register(GLIDER_EETLE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

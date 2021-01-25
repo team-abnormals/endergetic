@@ -47,6 +47,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	private int growingAge;
+	protected int idleDelay;
 
 	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
 		super(type, world);
@@ -85,6 +86,9 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 				this.updateAge(++age);
 			} else if (age > 0) {
 				this.updateAge(--age);
+			}
+			if (!this.isChild()) {
+				if (this.idleDelay > 0) this.idleDelay--;
 			}
 		}
 	}
@@ -208,6 +212,10 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 			goalSelector.removeGoal(this.avoidEntityGoal);
 			targetSelector.addGoal(2, this.attackableTargetGoal);
 		}
+	}
+
+	public void resetIdleFlapDelay() {
+		this.idleDelay = this.rand.nextInt(41) + 30;
 	}
 
 	@Override

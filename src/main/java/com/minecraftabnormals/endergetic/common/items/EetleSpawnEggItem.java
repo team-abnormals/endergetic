@@ -18,7 +18,7 @@ public final class EetleSpawnEggItem extends AbnormalsSpawnEggItem {
 		if (compound != null && compound.contains("EntityTag", 10)) {
 			return super.getType(compound);
 		}
-		return random.nextFloat() < 0.75F ? EEEntities.CHARGER_EETLE.get() : EEEntities.CHARGER_EETLE.get();
+		return random.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get() : EEEntities.GLIDER_EETLE.get();
 	}
 
 }

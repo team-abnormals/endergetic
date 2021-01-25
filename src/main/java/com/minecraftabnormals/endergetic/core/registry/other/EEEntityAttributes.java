@@ -56,6 +56,16 @@ public final class EEEntityAttributes {
 						.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
 						.create()
 		);
+		GlobalEntityTypeAttributes.put(EEEntities.GLIDER_EETLE.get(),
+				MobEntity.func_233666_p_()
+						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0F)
+						.createMutableAttribute(Attributes.FLYING_SPEED, 0.35F)
+						.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
+						.createMutableAttribute(Attributes.ARMOR, 4.0F)
+						.createMutableAttribute(Attributes.MAX_HEALTH, 25.0F)
+						.createMutableAttribute(Attributes.FOLLOW_RANGE, 28.0F)
+						.create()
+		);
 	}
 
 }

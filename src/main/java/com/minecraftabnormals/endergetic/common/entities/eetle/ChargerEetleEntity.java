@@ -28,7 +28,6 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	private EetleCatapultGoal catapultGoal;
 	@Nullable
 	private ChargerEetleEntity catapultingTarget;
-	private int flapDelay;
 	private int catapultTimer;
 
 	public ChargerEetleEntity(EntityType<? extends AbstractEetleEntity> type, World worldIn) {
@@ -53,7 +52,6 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 
 		if (!this.world.isRemote) {
 			if (!this.isChild()) {
-				if (this.flapDelay > 0) this.flapDelay--;
 				if (this.isCatapultProjectile()) {
 					LivingEntity attackTarget = this.getAttackTarget();
 					if (attackTarget != null) {
@@ -65,9 +63,9 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 					} else this.catapultTimer--;
 				}
 
-				if (this.rand.nextFloat() < 0.005F && this.flapDelay <= 0 && this.getAttackTarget() == null && this.isNoEndimationPlaying()) {
+				if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.getAttackTarget() == null && this.isNoEndimationPlaying()) {
 					NetworkUtil.setPlayingAnimationMessage(this, FLAP);
-					this.flapDelay = this.rand.nextInt(41) + 25;
+					this.resetIdleFlapDelay();
 				}
 			}
 		}
