@@ -63,6 +63,7 @@
   "block.endergetic.boof_block": "Пуф блок",
   "block.endergetic.dispensed_boof_block": "Поставленный пуф блок",
   "block.endergetic.eumus_bricks": "Юмусовые кирпичи",
+  "block.endergetic.cracked_eumus_bricks": "Потрескавшиеся юмусовые кирпичи",
   "block.endergetic.chiseled_eumus_bricks": "Резные юмусовые кирпичи",
   "block.endergetic.eumus_brick_slab": "Плита из юмусового кирпича",
   "block.endergetic.eumus_brick_vertical_slab": "Вертикальная плита из юмусового кирпича",
@@ -82,6 +83,9 @@
   "block.endergetic.ender_wall_torch": "Настенный эндер-факел",
   "block.endergetic.ender_lantern": "Эндер-фонарь",
   "block.endergetic.ender_fire": "Эндер-огонь",
+  "block.endergetic.chiseled_end_stone_bricks": "Резные эндерняковые кирпичи",
+  "block.endergetic.cracked_end_stone_bricks": "Потрескавшиеся эндерняковые кирпичи",
+  "block.endergetic.cracked_purpur_block": "Потрескавшийся пурпур",
   "_comment_": "Items",
   "item.endergetic.poise_boat": "Пуазовая лодка",
   "item.endergetic.eumus_brick": "Юмусовый кирпич",
@@ -109,6 +113,8 @@
   "item.endergetic.puff_bug_spawn_egg": "Яйцо призыва пуфмита",
   "item.endergetic.booflo_spawn_egg": "Яйцо призыва пуфлу",
   "item.endergetic.feature_stick": "Функциональная палочка",
+  "item.endergetic.music_disc_kilobyte": "Пластинка",
+  "item.endergetic.music_disc_kilobyte.desc": "Mista Jub - Kilobyte",
   "__comment": "Entities",
   "entity.endergetic.poise_cluster": "Пуазовый сгусток",
   "entity.endergetic.bolloom_fruit": "Фрукт болума",
@@ -164,5 +170,7 @@
   "subtitles.endergetic.booflo_vest.inflate": "Пуфлу-жилет надувается",
   "subtitles.endergetic.poise_bush.ambient": "Пуазовый кустарник булькает",
   "________comment": "Config",
-  "endergetic.config.debug_dragon_fight_manager": "Отладка «Dragon Fight Manager»"
+  "endergetic.config.debug_dragon_fight_manager": "Отладка «Dragon Fight Manager»",
+  "_________comment": "Messages",
+  "overlay.mount.booflo": "Нажмите %1$s чтобы спешится. Нажмите %2$s для удара об землю"
 }

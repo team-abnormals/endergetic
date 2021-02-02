@@ -1,0 +1,22 @@
+{
+  "advancement": "minecraft:husbandry/breed_an_animal",
+  "modifiers": [
+    {
+      "type": "indexed_requirements",
+      "config": {
+        "mode": "modify",
+        "index": 0,
+        "criteria": {
+          "bred_booflo": {
+            "trigger": "endergetic:bred_booflo"
+          }
+        },
+        "requirements": [
+          [
+            "bred_booflo"
+          ]
+        ]
+      }
+    }
+  ]
+}

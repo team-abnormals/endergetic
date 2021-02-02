@@ -13,7 +13,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.ProbabilityConfig;
 
-public class CorrockPatchFeature extends AbstractCorrockFeature {
+public class CorrockPatchFeature extends AbstractCorrockFeature<ProbabilityConfig> {
 
 	public CorrockPatchFeature(Codec<ProbabilityConfig> config) {
 		super(config);

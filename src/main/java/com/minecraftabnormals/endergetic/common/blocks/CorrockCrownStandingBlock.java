@@ -46,7 +46,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 
 	public CorrockCrownStandingBlock(Properties properties, boolean petrified) {
 		super(properties, petrified);
-		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, false).with(UPSIDE_DOWN, false));
+		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, true).with(UPSIDE_DOWN, false));
 	}
 
 	@Override

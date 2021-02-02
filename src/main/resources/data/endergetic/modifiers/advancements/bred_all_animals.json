@@ -1,0 +1,38 @@
+{
+  "advancement": "minecraft:husbandry/bred_all_animals",
+  "modifiers": [
+    {
+      "type": "criteria",
+      "config": {
+        "mode": "modify",
+        "criteria": {
+          "endergetic:booflo": {
+            "trigger": "endergetic:bred_booflo"
+          },
+          "endergetic:puff_bug": {
+            "trigger": "minecraft:bred_animals",
+            "conditions": {
+              "child": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "type": "endergetic:puff_bug"
+                  },
+                  "entity": "this"
+                }
+              ]
+            }
+          }
+        },
+        "requirements": [
+          [
+            "endergetic:booflo"
+          ],
+          [
+            "endergetic:puff_bug"
+          ]
+        ]
+      }
+    }
+  ]
+}

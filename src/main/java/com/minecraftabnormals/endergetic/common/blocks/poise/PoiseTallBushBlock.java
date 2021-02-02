@@ -87,7 +87,7 @@ public class PoiseTallBushBlock extends Block implements IGrowable {
 
 	@Override
 	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
-		return state.get(STAGE) > 0 ? false : true;
+		return state.get(STAGE) <= 0;
 	}
 
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {

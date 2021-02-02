@@ -13,9 +13,9 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public final class NoiseHeightmap32 extends Placement<NoiseDependant> {
+public class NoiseHeightmap32Placement extends Placement<NoiseDependant> {
 
-	public NoiseHeightmap32(Codec<NoiseDependant> codec) {
+	public NoiseHeightmap32Placement(Codec<NoiseDependant> codec) {
 		super(codec);
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
+import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 
@@ -92,6 +93,7 @@ public class BoofloBreedGoal extends Goal {
 
 		if (serverplayerentity != null) {
 			serverplayerentity.addStat(Stats.ANIMALS_BRED);
+			EECriteriaTriggers.BRED_BOOFLO.trigger(serverplayerentity);
 		}
 
 		if (!this.mate.isPregnant()) {

@@ -67,7 +67,14 @@ public final class GenerationUtils {
 	}
 
 	public static void forceFillAreaReversedWithBlockCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, BlockState block) {
-		fillAreaWithBlockCube(world, x2, y2, z2, x1, y1, z2, block);
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		for (int yy = y1; yy <= y2; yy++) {
+			for (int xx = x1; xx >= x2; xx--) {
+				for (int zz = z1; zz >= z2; zz--) {
+					world.setBlockState(mutable.setPos(xx, yy, zz), block, 2);
+				}
+			}
+		}
 	}
 
 	public static void fillWithRandomTwoBlocksCube(IWorld world, int x1, int y1, int z1, int x2, int y2, int z2, Random rand, BlockState block, BlockState block2, float chance) {
