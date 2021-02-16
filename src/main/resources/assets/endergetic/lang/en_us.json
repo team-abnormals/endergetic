@@ -176,5 +176,7 @@
   "________comment": "Config",
   "endergetic.config.debug_dragon_fight_manager": "Debug Dragon Fight Manager",
   "_________comment": "Messages",
-  "overlay.mount.booflo": "Press %1$s to dismount. Press %2$s to slam"
+  "overlay.mount.booflo": "Press %1$s to dismount. Press %2$s to slam",
+  "__________comment": "Deaths",
+  "death.attack.endergetic.munch": "%1$s was munched to death by %2$s"
 }

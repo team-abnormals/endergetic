@@ -138,9 +138,11 @@ public class EndergeticExpansion {
 				() -> EEFeatures.Configured.CORROCK_SHELF,
 				() -> EEFeatures.Configured.CORROCK_ARCH
 		)));
-		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnAdder(highlandsOnly, EntityClassification.MONSTER, EEEntities.CHARGER_EETLE::get, 12, 2, 5));
+		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOnly, EntityClassification.MONSTER, Sets.newHashSet(
+				new BiomeSpawnsModifier.SpawnInfo(EEEntities.CHARGER_EETLE, 12, 2, 5),
+				new BiomeSpawnsModifier.SpawnInfo(EEEntities.GLIDER_EETLE, 8, 2, 4)
+		)));
 		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOnly, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
-		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnAdder(highlandsOnly, EntityClassification.MONSTER, EEEntities.GLIDER_EETLE::get, 8, 2, 5));
 		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOnly, EEEntities.GLIDER_EETLE::get, 0.8D, 1.0D));
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
 	}

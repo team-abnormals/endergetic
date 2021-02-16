@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.math.vector.Vector3d;
@@ -77,9 +78,29 @@ public final class EEDataSerializers {
 		}
 	};
 
+	public static final IDataSerializer<EntitySize> ENTITY_SIZE = new IDataSerializer<EntitySize>() {
+		@Override
+		public void write(PacketBuffer buf, EntitySize value) {
+			buf.writeFloat(value.width);
+			buf.writeFloat(value.height);
+			buf.writeBoolean(value.fixed);
+		}
+
+		@Override
+		public EntitySize read(PacketBuffer buf) {
+			return new EntitySize(buf.readFloat(), buf.readFloat(), buf.readBoolean());
+		}
+
+		@Override
+		public EntitySize copyValue(EntitySize value) {
+			return value;
+		}
+	};
+
 	static {
 		SERIALIZERS.register("optional_vec3d", () -> new DataSerializerEntry(OPTIONAL_VEC3D));
 		SERIALIZERS.register("balloon_color", () -> new DataSerializerEntry(BALLOON_COLOR));
 		SERIALIZERS.register("target_flying_rotations", () -> new DataSerializerEntry(TARGET_FLYING_ROTATIONS));
+		SERIALIZERS.register("entity_size", () -> new DataSerializerEntry(ENTITY_SIZE));
 	}
 }

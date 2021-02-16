@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.tileentities;
 
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
-import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 import net.minecraft.block.BlockState;
@@ -76,11 +76,11 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 							float zOffset = facing.getZOffset();
 							int size = state.get(EetleEggsBlock.SIZE);
 							for (int i = 0; i <= size; i++) {
-								ChargerEetleEntity chargerEetle = EEEntities.CHARGER_EETLE.get().create(world);
-								if (chargerEetle != null) {
-									chargerEetle.updateAge(-(RANDOM.nextInt(121) + 120));
-									chargerEetle.setPositionAndRotation(x + RANDOM.nextFloat() * 0.5F + xOffset * 0.5F * RANDOM.nextFloat(), y + yOffset, z + RANDOM.nextFloat() * 0.5F + zOffset * 0.5F * RANDOM.nextFloat(), RANDOM.nextFloat() * 360.0F, 0.0F);
-									world.addEntity(chargerEetle);
+								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);
+								if (eetle != null) {
+									eetle.updateAge(-(RANDOM.nextInt(121) + 120));
+									eetle.setPositionAndRotation(x + RANDOM.nextFloat() * 0.5F + xOffset * 0.5F * RANDOM.nextFloat(), y + yOffset, z + RANDOM.nextFloat() * 0.5F + zOffset * 0.5F * RANDOM.nextFloat(), RANDOM.nextFloat() * 360.0F, 0.0F);
+									world.addEntity(eetle);
 								}
 							}
 						}

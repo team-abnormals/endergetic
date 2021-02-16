@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.client.events;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -21,26 +23,33 @@ public final class OverlayEvents {
 	@SubscribeEvent
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
 		ClientPlayerEntity player = MC.player;
-		if (!MC.gameSettings.hideGUI && event.getType() == ElementType.EXPERIENCE) {
-			if (player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
-				event.setCanceled(true);
+		if (player != null) {
+			if (!MC.gameSettings.hideGUI) {
+				ElementType type = event.getType();
+				if (type == ElementType.EXPERIENCE) {
+					if (player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
+						event.setCanceled(true);
 
-				int scaledWidth = event.getWindow().getScaledWidth();
-				int scaledHeight = event.getWindow().getScaledHeight();
-				int top = scaledHeight - 32 + 3;
-				int left = scaledWidth / 2 - 91;
-				int progress = ((BoofloEntity) player.getRidingEntity()).getBoostPower();
+						int scaledWidth = event.getWindow().getScaledWidth();
+						int scaledHeight = event.getWindow().getScaledHeight();
+						int top = scaledHeight - 32 + 3;
+						int left = scaledWidth / 2 - 91;
+						int progress = ((BoofloEntity) player.getRidingEntity()).getBoostPower();
 
-				MatrixStack stack = event.getMatrixStack();
-				stack.push();
-				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
+						MatrixStack stack = event.getMatrixStack();
+						stack.push();
+						MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 
-				OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
-				if (progress > 0) {
-					OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
+						OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
+						if (progress > 0) {
+							OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
+						}
+
+						stack.pop();
+					}
+				} else if (type == ElementType.HEALTHMOUNT && player.world.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getRidingEntity() instanceof GliderEetleEntity) {
+					event.setCanceled(true);
 				}
-
-				stack.pop();
 			}
 		}
 	}

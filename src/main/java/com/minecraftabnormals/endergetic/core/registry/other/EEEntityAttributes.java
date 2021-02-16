@@ -4,6 +4,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 
@@ -54,16 +55,18 @@ public final class EEEntityAttributes {
 						.createMutableAttribute(Attributes.ARMOR, 4.0F)
 						.createMutableAttribute(Attributes.MAX_HEALTH, 30.0F)
 						.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
+						.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F)
 						.create()
 		);
 		GlobalEntityTypeAttributes.put(EEEntities.GLIDER_EETLE.get(),
 				MobEntity.func_233666_p_()
-						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0F)
+						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0F)
 						.createMutableAttribute(Attributes.FLYING_SPEED, 0.35F)
 						.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
 						.createMutableAttribute(Attributes.ARMOR, 4.0F)
 						.createMutableAttribute(Attributes.MAX_HEALTH, 25.0F)
 						.createMutableAttribute(Attributes.FOLLOW_RANGE, 28.0F)
+						.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F)
 						.create()
 		);
 	}

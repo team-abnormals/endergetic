@@ -5,6 +5,7 @@ import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SBoostMe
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SInflateMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -46,5 +47,10 @@ public final class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 				}
 			}
 		}
+	}
+
+	@Inject(at = @At(shift = At.Shift.AFTER, value = "HEAD"), method = "updateRidden()V")
+	private void tempFixClientDismount(CallbackInfo info) {
+		if (this.wantsToStopRiding() && this.isPassenger()) Minecraft.getInstance().player.movementInput.sneaking = false;
 	}
 }

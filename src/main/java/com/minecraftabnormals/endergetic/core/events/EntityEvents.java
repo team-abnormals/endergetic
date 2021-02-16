@@ -15,6 +15,7 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
@@ -30,6 +31,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
@@ -44,11 +46,13 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -168,6 +172,19 @@ public final class EntityEvents {
 					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));
 					event.setSwingHand(true);
 				}
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onPlayerMount(EntityMountEvent event) {
+		Entity mountingEntity = event.getEntityMounting();
+		Entity entityBeingMounted = event.getEntityBeingMounted();
+		if (mountingEntity instanceof PlayerEntity && entityBeingMounted instanceof GliderEetleEntity && mountingEntity.world.getDifficulty() != Difficulty.PEACEFUL) {
+			PlayerEntity player = (PlayerEntity) mountingEntity;
+			GliderEetleEntity glider = (GliderEetleEntity) entityBeingMounted;
+			if (event.isDismounting() && player.isAlive() && !player.isCreative() && !player.isSpectator() && !glider.isChild() && glider.isAlive() && !glider.isGrounded() && glider.isFlying()) {
+				event.setCanceled(true);
 			}
 		}
 	}

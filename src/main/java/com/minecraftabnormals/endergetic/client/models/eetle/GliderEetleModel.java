@@ -236,13 +236,18 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 			this.endKeyframe();
 
 			this.startKeyframe(5);
-			this.rotate(this.leftMandible, 0.0F, -0.21F, 0.0F);
-			this.rotate(this.rightMandible, 0.0F, 0.21F, 0.0F);
+			this.rotate(this.leftMandible, 0.0F, 0.17F, 0.0F);
+			this.rotate(this.rightMandible, 0.0F, -0.17F, 0.0F);
 			this.endKeyframe();
 
 			this.startKeyframe(5);
 			this.rotate(this.leftMandible, 0.0F, -0.35F, 0.0F);
 			this.rotate(this.rightMandible, 0.0F, 0.35F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.rotate(this.leftMandible, 0.0F, 0.17F, 0.0F);
+			this.rotate(this.rightMandible, 0.0F, -0.17F, 0.0F);
 			this.endKeyframe();
 
 			this.resetKeyframe(5);
