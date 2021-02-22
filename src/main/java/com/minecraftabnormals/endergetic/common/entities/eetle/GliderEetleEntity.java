@@ -31,6 +31,7 @@ import java.util.UUID;
 public class GliderEetleEntity extends AbstractEetleEntity {
 	private static final DataParameter<Boolean> FLYING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> DIVING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.createKey(GliderEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
 	private static final DataParameter<EntitySize> CAUGHT_SIZE = EntityDataManager.createKey(GliderEetleEntity.class, EEDataSerializers.ENTITY_SIZE);
 	public static final EntitySize DEFAULT_SIZE = EntitySize.fixed(1.0F, 0.85F);
@@ -47,8 +48,10 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 	private GliderEetleHoverNearTargetGoal hoverNearTargetGoal;
 	private GliderEetleMunchGoal munchGoal;
 	private GliderEetleDropOffGoal dropOffGoal;
+	private GliderEetleBiteGoal biteGoal;
+	private GliderEetleDiveGoal diveGoal;
 	@Nullable
-	private LivingEntity groundedAttacker;
+	public LivingEntity groundedAttacker;
 	private boolean takeoffMoving;
 	private int flyCooldown;
 	private int ticksFlown;
@@ -70,6 +73,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 		super.registerData();
 		this.dataManager.register(FLYING, false);
 		this.dataManager.register(MOVING, false);
+		this.dataManager.register(DIVING, false);
 		this.dataManager.register(TARGET_FLYING_ROTATIONS, TargetFlyingRotations.ZERO);
 		this.dataManager.register(CAUGHT_SIZE, DEFAULT_SIZE);
 	}
@@ -101,7 +105,9 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
+		this.goalSelector.addGoal(1, this.diveGoal = new GliderEetleDiveGoal(this));
 		this.goalSelector.addGoal(1, this.dropOffGoal = new GliderEetleDropOffGoal(this));
+		this.goalSelector.addGoal(2, this.biteGoal = new GliderEetleBiteGoal(this));
 		this.goalSelector.addGoal(2, new GliderEetleGrabGoal(this));
 		this.goalSelector.addGoal(2, this.munchGoal = new GliderEetleMunchGoal(this));
 		this.goalSelector.addGoal(2, this.hoverNearTargetGoal = new GliderEetleHoverNearTargetGoal(this));
@@ -165,6 +171,9 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 					this.groundedAttacker = null;
 				}
 			}
+			if (this.isDiving()) {
+				this.setDiving(false);
+			}
 		} else {
 			if (!this.isChild()) {
 				ControlledEndimation takeoff = this.takeoffEndimation;
@@ -198,7 +207,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 		if (this.isServerWorld() && !this.isChild() && this.isFlying()) {
 			this.moveRelative(0.1F, travelVector);
 			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.8F));
+			this.setMotion(this.getMotion().scale(this.isDiving() ? 0.95F : 0.8F));
 			this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
 		} else {
 			super.travel(travelVector);
@@ -238,6 +247,8 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			goalSelector.removeGoal(this.hoverNearTargetGoal);
 			goalSelector.removeGoal(this.munchGoal);
 			goalSelector.removeGoal(this.dropOffGoal);
+			goalSelector.removeGoal(this.biteGoal);
+			goalSelector.removeGoal(this.diveGoal);
 		} else {
 			goalSelector.addGoal(3, this.landGoal);
 			goalSelector.addGoal(4, this.takeoffGoal);
@@ -246,11 +257,14 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			goalSelector.addGoal(2, this.hoverNearTargetGoal);
 			goalSelector.addGoal(2, this.munchGoal);
 			goalSelector.addGoal(1, this.dropOffGoal);
+			goalSelector.addGoal(2, this.biteGoal);
+			goalSelector.addGoal(1, this.diveGoal);
 		}
 	}
 
 	@Override
 	public void updatePassenger(Entity passenger) {
+		this.setRenderYawOffset(this.rotationYaw);
 		if (this.isPassenger(passenger)) {
 			if (passenger instanceof LivingEntity && !isEntityLarge(passenger)) {
 				AxisAlignedBB boundingBox = passenger.getBoundingBox();
@@ -278,7 +292,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			if (!this.getPassengers().isEmpty()) {
 				Entity indexZeroPassenger = this.getPassengers().get(0);
 				if (indexZeroPassenger instanceof LivingEntity && passenger.getRidingEntity() == this) {
-					this.setCaughtSize(EntitySize.fixed(1.0F + (passenger.getSize(passenger.getPose()).width / 2.0F), 0.85F));
+					this.setCaughtSize(EntitySize.fixed(1.0F + passenger.getSize(passenger.getPose()).width, 0.85F));
 				} else {
 					this.setCaughtSize(DEFAULT_SIZE);
 				}
@@ -348,6 +362,14 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 		return this.dataManager.get(MOVING);
 	}
 
+	public void setDiving(boolean diving) {
+		this.dataManager.set(DIVING, diving);
+	}
+
+	public boolean isDiving() {
+		return this.dataManager.get(DIVING);
+	}
+
 	public void setTargetFlyingRotations(TargetFlyingRotations flyingRotations) {
 		this.dataManager.set(TARGET_FLYING_ROTATIONS, flyingRotations);
 	}
@@ -366,11 +388,6 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 
 	public FlyingRotations getFlyingRotations() {
 		return this.flyingRotations;
-	}
-
-	@Nullable
-	public LivingEntity getGroundedAttacker() {
-		return this.groundedAttacker;
 	}
 
 	public void resetFlyCooldown() {
@@ -512,7 +529,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevFlyRoll, this.flyRoll);
 		}
 
-		private static float clampedRotate(float from, float to, float delta) {
+		public static float clampedRotate(float from, float to, float delta) {
 			float wrapSubtractDegrees = MathHelper.wrapSubtractDegrees(from, to);
 			float clampedDelta = MathHelper.clamp(wrapSubtractDegrees, -delta, delta);
 			return from + clampedDelta;

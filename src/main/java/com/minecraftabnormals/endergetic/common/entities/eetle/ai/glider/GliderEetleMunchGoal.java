@@ -52,7 +52,7 @@ public class GliderEetleMunchGoal extends EndimatedGoal<GliderEetleEntity> {
 		this.munchCooldown = this.entity.getRNG().nextInt(41) + 20;
 	}
 
-	private static DamageSource causeMunchDamage(GliderEetleEntity glider) {
+	public static DamageSource causeMunchDamage(GliderEetleEntity glider) {
 		return new EntityDamageSource("endergetic.munch", glider);
 	}
 }

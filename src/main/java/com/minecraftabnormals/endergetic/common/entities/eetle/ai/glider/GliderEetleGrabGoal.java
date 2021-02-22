@@ -1,6 +1,8 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.Path;
@@ -26,7 +28,7 @@ public class GliderEetleGrabGoal extends Goal {
 	public boolean shouldExecute() {
 		if (this.glider.isGrounded()) return false;
 		LivingEntity target = this.glider.getAttackTarget();
-		if (target == null || !target.isAlive() || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
+		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
 			return false;
 		}
 		this.path = this.glider.getNavigator().getPathToEntity(target, 0);
@@ -48,7 +50,7 @@ public class GliderEetleGrabGoal extends Goal {
 	public boolean shouldContinueExecuting() {
 		if (this.glider.isGrounded()) return false;
 		LivingEntity target = this.glider.getAttackTarget();
-		if (target == null || !target.isAlive() || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
+		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
 			return false;
 		}
 		return !this.glider.getNavigator().noPath();
@@ -84,7 +86,7 @@ public class GliderEetleGrabGoal extends Goal {
 			}
 		}
 
-		if (canSeeTarget) {
+		if (canSeeTarget && ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) <= 0) {
 			double reachRange = glider.getWidth() * 2.0F * glider.getWidth() * 2.0F + target.getWidth();
 			if (distanceToTargetSq <= reachRange) {
 				target.startRiding(glider, true);

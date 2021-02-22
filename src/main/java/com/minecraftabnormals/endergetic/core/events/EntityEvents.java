@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock;
@@ -22,6 +23,7 @@ import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -131,6 +133,14 @@ public final class EntityEvents {
 				entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
 				if (entity instanceof ServerPlayerEntity) {
 					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity);
+				}
+			}
+
+			if (entity instanceof IDataManager) {
+				IDataManager dataManager = (IDataManager) entity;
+				int cooldown = dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN);
+				if (cooldown > 0) {
+					dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, cooldown - 1);
 				}
 			}
 		}

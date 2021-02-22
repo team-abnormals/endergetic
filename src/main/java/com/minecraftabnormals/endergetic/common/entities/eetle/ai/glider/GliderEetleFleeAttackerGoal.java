@@ -22,7 +22,7 @@ public class GliderEetleFleeAttackerGoal extends Goal {
 	public boolean shouldExecute() {
 		GliderEetleEntity glider = this.glider;
 		if (glider.isGrounded() && !glider.isFlying()) {
-			LivingEntity attacker = glider.getGroundedAttacker();
+			LivingEntity attacker = glider.groundedAttacker;
 			if (attacker != null) {
 				Vector3d pointAway = RandomPositionGenerator.findRandomTargetBlockAwayFrom(glider, 16, 7, attacker.getPositionVec());
 				if (pointAway == null) {
@@ -41,7 +41,7 @@ public class GliderEetleFleeAttackerGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		GliderEetleEntity glider = this.glider;
-		return glider.isGrounded() && !glider.isFlying() && glider.getGroundedAttacker() != null && glider.getNavigator().hasPath();
+		return glider.isGrounded() && !glider.isFlying() && glider.groundedAttacker != null && glider.getNavigator().hasPath();
 	}
 
 	@Override

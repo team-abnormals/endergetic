@@ -1,7 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -80,12 +82,19 @@ public class GliderEetleDropOffGoal extends Goal {
 	public void tick() {
 		GliderEetleEntity glider = this.glider;
 		double distance = glider.getPositionVec().squareDistanceTo(this.clusterPos);
+		LivingEntity attackTarget = glider.getAttackTarget();
 		if (distance <= 2.25D) {
 			glider.makeGrounded();
+			if (attackTarget instanceof IDataManager) {
+				((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRNG().nextInt(11));
+			}
 		} else if (distance <= 20.25D) {
 			AxisAlignedBB projectedBox = getProjectedBoundingBox(glider);
 			if (projectedBox != null && glider.world.getEntitiesWithinAABB(ChargerEetleEntity.class, projectedBox.grow(1.0F, 0.0F, 1.0F)).size() >= 4) {
 				glider.makeGrounded();
+				if (attackTarget instanceof IDataManager) {
+					((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRNG().nextInt(11));
+				}
 			}
 		}
 	}
