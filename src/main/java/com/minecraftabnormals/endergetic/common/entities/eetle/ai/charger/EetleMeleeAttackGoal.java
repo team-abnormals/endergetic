@@ -15,7 +15,6 @@ public class EetleMeleeAttackGoal extends Goal {
 	private double targetY;
 	private double targetZ;
 	private int delayCounter;
-	private int meleeDelay;
 
 	public EetleMeleeAttackGoal(ChargerEetleEntity charger) {
 		this.attacker = charger;
@@ -44,7 +43,6 @@ public class EetleMeleeAttackGoal extends Goal {
 		this.attacker.getNavigator().setPath(this.path, 1.25F);
 		this.attacker.setAggroed(true);
 		this.delayCounter = 0;
-		this.meleeDelay = 0;
 	}
 
 	@Override
@@ -80,7 +78,6 @@ public class EetleMeleeAttackGoal extends Goal {
 			}
 		}
 
-		this.meleeDelay = Math.max(this.meleeDelay - 1, 0);
 		this.checkAndPerformAttack(livingentity, d0);
 	}
 
@@ -96,9 +93,7 @@ public class EetleMeleeAttackGoal extends Goal {
 	}
 
 	private void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
-		double d0 = this.getAttackReachSqr(enemy);
-		if (distToEnemySqr <= d0 && this.meleeDelay <= 0) {
-			this.meleeDelay = 20;
+		if (this.attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy)) {
 			this.attacker.attackEntityAsMob(enemy);
 		}
 	}
