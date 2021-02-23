@@ -44,7 +44,7 @@ public class GliderEetleDiveGoal extends Goal {
 			World world = glider.world;
 			BlockPos pos = glider.getPosition();
 			int distanceFromGround = distanceFromGround(glider, world, pos.toMutable());
-			if (distanceFromGround > 4 && distanceFromGround < 11) {
+			if (distanceFromGround > 3 && distanceFromGround < 11) {
 				pos = pos.down(distanceFromGround);
 				if (world.getEntitiesWithinAABB(ChargerEetleEntity.class, new AxisAlignedBB(pos).grow(4.0D)).size() < 3) {
 					Random random = glider.getRNG();
@@ -104,7 +104,7 @@ public class GliderEetleDiveGoal extends Goal {
 			if (attackTarget != null && glider.isPassenger(attackTarget)) {
 				glider.makeGrounded();
 				glider.groundedAttacker = attackTarget;
-				attackTarget.attackEntityFrom(DamageSource.FLY_INTO_WALL, glider.getRNG().nextInt(6) + 10);
+				attackTarget.attackEntityFrom(DamageSource.FLY_INTO_WALL, glider.getRNG().nextInt(6) + 8);
 			}
 		}
 	}
