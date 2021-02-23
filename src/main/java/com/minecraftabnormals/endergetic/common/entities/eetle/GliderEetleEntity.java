@@ -44,6 +44,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 	private GliderEetleLandGoal landGoal;
 	private GliderEetleTakeoffGoal takeoffGoal;
 	private GliderEetleFlyGoal flyGoal;
+	private GliderEetleGrabGoal grabGoal;
 	private GliderEetleFleeAttackerGoal fleeAttackerGoal;
 	private GliderEetleHoverNearTargetGoal hoverNearTargetGoal;
 	private GliderEetleMunchGoal munchGoal;
@@ -108,7 +109,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 		this.goalSelector.addGoal(1, this.diveGoal = new GliderEetleDiveGoal(this));
 		this.goalSelector.addGoal(1, this.dropOffGoal = new GliderEetleDropOffGoal(this));
 		this.goalSelector.addGoal(2, this.biteGoal = new GliderEetleBiteGoal(this));
-		this.goalSelector.addGoal(2, new GliderEetleGrabGoal(this));
+		this.goalSelector.addGoal(2, this.grabGoal = new GliderEetleGrabGoal(this));
 		this.goalSelector.addGoal(2, this.munchGoal = new GliderEetleMunchGoal(this));
 		this.goalSelector.addGoal(2, this.hoverNearTargetGoal = new GliderEetleHoverNearTargetGoal(this));
 		this.goalSelector.addGoal(3, this.fleeAttackerGoal = new GliderEetleFleeAttackerGoal(this));
@@ -243,6 +244,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			goalSelector.removeGoal(this.landGoal);
 			goalSelector.removeGoal(this.takeoffGoal);
 			goalSelector.removeGoal(this.flyGoal);
+			goalSelector.removeGoal(this.grabGoal);
 			goalSelector.removeGoal(this.fleeAttackerGoal);
 			goalSelector.removeGoal(this.hoverNearTargetGoal);
 			goalSelector.removeGoal(this.munchGoal);
@@ -253,6 +255,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			goalSelector.addGoal(3, this.landGoal);
 			goalSelector.addGoal(4, this.takeoffGoal);
 			goalSelector.addGoal(5, this.flyGoal);
+			goalSelector.addGoal(2, this.grabGoal);
 			goalSelector.addGoal(3, this.fleeAttackerGoal);
 			goalSelector.addGoal(2, this.hoverNearTargetGoal);
 			goalSelector.addGoal(2, this.munchGoal);
