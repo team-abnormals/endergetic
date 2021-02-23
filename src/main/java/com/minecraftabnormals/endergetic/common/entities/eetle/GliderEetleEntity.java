@@ -272,7 +272,8 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			if (passenger instanceof LivingEntity && !isEntityLarge(passenger)) {
 				AxisAlignedBB boundingBox = passenger.getBoundingBox();
 				float y = (float) (boundingBox.maxY - boundingBox.minY) * -0.25F;
-				Vector3d riderPos = (new Vector3d(0.8D, y, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).rotatePitch(this.flyingRotations.flyPitch * ((float)Math.PI / 180F));
+				float pitch = this.flyingRotations.flyPitch;
+				Vector3d riderPos = (new Vector3d(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).rotatePitch(pitch * ((float)Math.PI / 180F));
 				passenger.setPosition(this.getPosX() + riderPos.x, this.getPosY() + 0.25F + riderPos.y, this.getPosZ() + riderPos.z);
 			} else {
 				super.updatePassenger(passenger);
