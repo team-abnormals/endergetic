@@ -21,6 +21,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -90,6 +91,19 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 				if (!this.isChild()) {
 					for (Entity passenger : this.getPassengers()) {
 						passenger.dismount();
+						World world = this.world;
+						if (passenger instanceof LivingEntity && passenger.getRidingEntity() != this && !world.isRemote) {
+							AxisAlignedBB passengerBoundingBox = passenger.getBoundingBox();
+							double xSize = passengerBoundingBox.getXSize();
+							double zSize = passengerBoundingBox.getZSize();
+							AxisAlignedBB detectionBox = AxisAlignedBB.withSizeAtOrigin(xSize * 0.8F, 0.2F, zSize * 0.8F).offset(passenger.getPosX(), passenger.getPosY(), passenger.getPosZ());
+							if (world.func_241457_a_(passenger, detectionBox, (state, pos) -> !state.getCollisionShape(world, pos).isEmpty()).findAny().isPresent()) {
+								BlockPos pos = passenger.getPosition();
+								if (!hasCollisionsAbove(world, pos.toMutable(), getEntitySizeBlocksCeil(passenger))) {
+									passenger.setPosition(passenger.getPosX(), pos.getY() + 1.0F, passenger.getPosZ());
+								}
+							}
+						}
 					}
 				}
 				this.idleDelay = this.rand.nextInt(41) + 30;
@@ -432,6 +446,21 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 
 	public static boolean isEntityLarge(Entity entity) {
 		return entity.getBoundingBox().getAverageEdgeLength() >= 1.3F;
+	}
+
+	private static int getEntitySizeBlocksCeil(Entity entity) {
+		return (int) Math.ceil(entity.getBoundingBox().getYSize());
+	}
+
+	private static boolean hasCollisionsAbove(World world, BlockPos.Mutable mutable, int blocksAbove) {
+		int y = mutable.getY();
+		for (int i = 1; i <= blocksAbove; i++) {
+			mutable.setY(y + i);
+			if (!world.getBlockState(mutable).getCollisionShape(world, mutable).isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	static class GliderMoveController extends MovementController {
