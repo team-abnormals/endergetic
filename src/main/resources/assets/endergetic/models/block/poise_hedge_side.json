@@ -1,0 +1,6 @@
+{
+  "parent": "abnormals_core:block/hedge_side",
+  "textures": {
+    "leaf": "endergetic:block/poise_cluster"
+  }
+}

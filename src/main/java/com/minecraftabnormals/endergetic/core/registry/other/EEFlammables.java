@@ -8,6 +8,8 @@ public final class EEFlammables {
 	public static void registerFlammables() {
 		DataUtil.registerFlammable(EEBlocks.POISE_STEM.get(), 5, 5);
 		DataUtil.registerFlammable(EEBlocks.POISE_WOOD.get(), 5, 5);
+		DataUtil.registerFlammable(EEBlocks.GLOWING_POISE_STEM.get(), 5, 5);
+		DataUtil.registerFlammable(EEBlocks.GLOWING_POISE_WOOD.get(), 5, 5);
 		DataUtil.registerFlammable(EEBlocks.STRIPPED_POISE_STEM.get(), 5, 5);
 		DataUtil.registerFlammable(EEBlocks.STRIPPED_POISE_WOOD.get(), 5, 5);
 		DataUtil.registerFlammable(EEBlocks.POISE_PLANKS.get(), 5, 20);
@@ -20,6 +22,10 @@ public final class EEFlammables {
 		DataUtil.registerFlammable(EEBlocks.POISE_BOOKSHELF.get(), 30, 20);
 		DataUtil.registerFlammable(EEBlocks.POISE_BEEHIVE.get(), 5, 20);
 		DataUtil.registerFlammable(EEBlocks.BOLLOOM_CRATE.get(), 5, 20);
+		DataUtil.registerFlammable(EEBlocks.POISE_POST.get(), 5, 20);
+		DataUtil.registerFlammable(EEBlocks.STRIPPED_POISE_POST.get(), 5, 20);
+		DataUtil.registerFlammable(EEBlocks.GLOWING_POISE_POST.get(), 5, 20);
+		DataUtil.registerFlammable(EEBlocks.POISE_HEDGE.get(), 5, 20);
 	}
 
 }

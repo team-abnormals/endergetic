@@ -2,13 +2,10 @@ package com.minecraftabnormals.endergetic.core.registry;
 
 import java.util.concurrent.Callable;
 
+import com.minecraftabnormals.abnormals_core.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.mojang.datafixers.util.Pair;
-import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.BookshelfBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.sign.*;
@@ -83,8 +80,8 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_DOOR            = HELPER.createTallBlock("poise_door", () -> new WoodDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.REDSTONE);
 	public static final RegistryObject<Block> POISE_SLAB            = HELPER.createBlock("poise_slab", () -> new WoodSlabBlock(EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_STAIRS          = HELPER.createBlock("poise_stairs", () -> new WoodStairsBlock(POISE_PLANKS.get().getDefaultState(), EEProperties.POISE_WOOD), ItemGroup.BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_FENCE           = HELPER.createBlock("poise_fence", () -> new WoodFenceBlock(EEProperties.POISE_WOOD), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> POISE_FENCE_GATE      = HELPER.createBlock("poise_fence_gate", () -> new WoodFenceGateBlock(EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
+	public static final RegistryObject<Block> POISE_FENCE           = HELPER.createFuelBlock("poise_fence", () -> new WoodFenceBlock(EEProperties.POISE_WOOD), 300, ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> POISE_FENCE_GATE      = HELPER.createFuelBlock("poise_fence_gate", () -> new WoodFenceGateBlock(EEProperties.POISE_WOOD), 300, ItemGroup.REDSTONE);
 	public static final RegistryObject<Block> POISE_PRESSURE_PLATE 	= HELPER.createBlock("poise_pressure_plate", () -> new WoodPressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD), ItemGroup.REDSTONE);
 	public static final RegistryObject<Block> POISE_BUTTON          = HELPER.createBlock("poise_button", () -> new AbnormalsWoodButtonBlock(EEProperties.getPoiseWood(false, true)), ItemGroup.REDSTONE);
 	public static final RegistryObject<Block> POISE_TRAPDOOR        = HELPER.createBlock("poise_trapdoor", () -> new WoodTrapDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.REDSTONE);
@@ -93,11 +90,15 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_BOOKSHELF       = HELPER.createCompatFuelBlock("quark", "poise_bookshelf", () -> new BookshelfBlock(Properties.from(Blocks.BOOKSHELF)), 300, ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_LADDER          = HELPER.createCompatFuelBlock("quark", "poise_ladder", () -> new AbnormalsLadderBlock(Properties.from(Blocks.LADDER)), 300, ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> POISE_BEEHIVE         = HELPER.createCompatBlock("buzzier_bees", "poise_beehive", () -> new AbnormalsBeehiveBlock(Properties.from(Blocks.BEEHIVE)), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> STRIPPED_POISE_POST 	= HELPER.createCompatFuelBlock("quark", "stripped_poise_post", () -> new WoodPostBlock(EEProperties.POISE_WOOD), 300, ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_POST 			= HELPER.createCompatFuelBlock("quark", "poise_post", () -> new WoodPostBlock(STRIPPED_POISE_POST, EEProperties.POISE_WOOD), 300, ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> GLOWING_POISE_POST 	= HELPER.createCompatFuelBlock("quark", "glowing_poise_post", () -> new WoodPostBlock(EEProperties.POISE_LOG_GLOWING), 300, ItemGroup.BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_HEDGE 			= HELPER.createCompatFuelBlock("quark", "poise_hedge", () -> new HedgeBlock(EEProperties.POISE_WOOD), 300, ItemGroup.DECORATIONS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN  = HELPER.createSignBlock("poise", MaterialColor.PURPLE_TERRACOTTA);
 	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> 	 POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.PURPLE_TERRACOTTA);
 
-	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> EEBlocks.bolloomBudISTER(), ItemGroup.DECORATIONS);
-	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), () -> EEBlocks.puffbugHiveISTER(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), EEBlocks::bolloomBudISTER, ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), EEBlocks::puffbugHiveISTER, ItemGroup.DECORATIONS);
 	public static final RegistryObject<Block> HIVE_HANGER 			= HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.getPuffBugHive(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE      = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.getPoiseWood(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK            = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.DECORATIONS);
