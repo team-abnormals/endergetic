@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
-import com.minecraftabnormals.endergetic.common.blocks.poise.GlowingPoiseLogBlock;
+import com.minecraftabnormals.endergetic.common.blocks.poise.GlowingPoiseStemBlock;
 import com.minecraftabnormals.endergetic.common.blocks.poise.PoiseTallBushBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
@@ -1159,7 +1159,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 	}
 
 	private void setPoiseLogWithDirection(IWorld world, BlockPos pos, Random rand, Direction direction) {
-		BlockState logState = rand.nextFloat() <= 0.90F ? POISE_STEM.get().with(GlowingPoiseLogBlock.AXIS, direction.getAxis()) : GLOWING_POISE_STEM.get().with(GlowingPoiseLogBlock.AXIS, direction.getAxis());
+		BlockState logState = rand.nextFloat() <= 0.90F ? POISE_STEM.get().with(GlowingPoiseStemBlock.AXIS, direction.getAxis()) : GLOWING_POISE_STEM.get().with(GlowingPoiseStemBlock.AXIS, direction.getAxis());
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlockState(pos, logState, 2);
 		}

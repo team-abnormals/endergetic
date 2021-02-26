@@ -1,31 +1,23 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import java.util.Random;
-import java.util.function.Supplier;
-
+import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodBlock;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.RotatedPillarBlock;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class GlowingPoiseLogBlock extends RotatedPillarBlock {
-	private final Supplier<Item> fillAfterItem;
+import java.util.Random;
+import java.util.function.Supplier;
 
-	public GlowingPoiseLogBlock(Properties properties, Supplier<Item> fillAfterItem) {
-		super(properties);
-		this.fillAfterItem = fillAfterItem;
+public class GlowingPoiseWoodBlock extends WoodBlock {
+
+	public GlowingPoiseWoodBlock(Supplier<Block> strippedBlock, Properties properties) {
+		super(strippedBlock, properties);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -44,16 +36,5 @@ public class GlowingPoiseLogBlock extends RotatedPillarBlock {
 				worldIn.addParticle(EEParticles.SHORT_POISE_BUBBLE.get(), x, y, z, 0.0D, 0.0D, 0.0D);
 			}
 		}
-	}
-
-	//TODO: Convert to item group filling system in AC in 1.16.4
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this.asItem(), this.fillAfterItem.get(), group, items);
-	}
-
-	@Override
-	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
-		return 60;
 	}
 }
