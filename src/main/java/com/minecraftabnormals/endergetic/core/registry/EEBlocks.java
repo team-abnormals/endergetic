@@ -79,8 +79,8 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> STRIPPED_POISE_WOOD = HELPER.createBlock("stripped_poise_wood", () -> new StrippedWoodBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_STEM = HELPER.createBlock("poise_stem", () -> new AbnormalsLogBlock(EEBlocks.STRIPPED_POISE_STEM, EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_WOOD = HELPER.createBlock("poise_wood", () -> new WoodBlock(EEBlocks.STRIPPED_POISE_WOOD, EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> GLOWING_POISE_STEM = HELPER.createBlock("glowing_poise_stem", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING, () -> POISE_STEM.get().asItem()), ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> GLOWING_POISE_WOOD = HELPER.createBlock("glowing_poise_wood", () -> new GlowingPoiseLogBlock(EEProperties.POISE_LOG_GLOWING, () -> POISE_WOOD.get().asItem()), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> GLOWING_POISE_STEM = HELPER.createBlock("glowing_poise_stem", () -> new GlowingPoiseStemBlock(STRIPPED_POISE_STEM, EEProperties.POISE_LOG_GLOWING), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> GLOWING_POISE_WOOD = HELPER.createBlock("glowing_poise_wood", () -> new GlowingPoiseWoodBlock(STRIPPED_POISE_WOOD, EEProperties.POISE_LOG_GLOWING), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_PLANKS = HELPER.createBlock("poise_planks", () -> new PlanksBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_DOOR = HELPER.createTallBlock("poise_door", () -> new WoodDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_SLAB = HELPER.createBlock("poise_slab", () -> new WoodSlabBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
@@ -121,8 +121,8 @@ public final class EEBlocks {
 	 */
 	public static final RegistryObject<Block> EUMUS = HELPER.createBlock("eumus", () -> new EumusBlock(EEProperties.EUMUS), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> EUMUS_BRICKS = HELPER.createBlock("eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> EUMUS_BRICKS_CRACKED = HELPER.createBlock("cracked_eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> EUMUS_BRICKS_CHISELED = HELPER.createBlock("chiseled_eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CRACKED_EUMUS_BRICKS = HELPER.createBlock("cracked_eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> CHISELED_EUMUS_BRICKS = HELPER.createBlock("chiseled_eumus_bricks", () -> new Block(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> EUMUS_BRICK_SLAB = HELPER.createBlock("eumus_brick_slab", () -> new SlabBlock(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> EUMUS_BRICK_STAIRS = HELPER.createBlock("eumus_brick_stairs", () -> new StairsBlock(() -> EUMUS_BRICKS.get().defaultBlockState(), EEProperties.EUMUS_BRICKS), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> EUMUS_BRICK_WALL = HELPER.createBlock("eumus_brick_wall", () -> new WallBlock(EEProperties.EUMUS_BRICKS), ItemGroup.TAB_DECORATIONS);
@@ -132,12 +132,12 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POTTED_TALL_POISE_BUSH = HELPER.createBlockNoItem("potted_tall_poise_bush", () -> new FlowerPotBlock(TALL_POISE_BUSH.get(), Properties.copy(Blocks.POTTED_PINK_TULIP)));
 
 	public static final RegistryObject<Block> ACIDIAN_LANTERN = HELPER.createBlock("acidian_lantern", () -> new AcidianLanternBlock(EEProperties.ACIDIAN_LANTERN), ItemGroup.TAB_DECORATIONS);
-	public static final RegistryObject<Block> CRYSTAL_HOLDER = HELPER.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN = HELPER.createBlock("mystical_obsidian", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_WALL = HELPER.createBlock("mystical_obsidian_wall", () -> new WallBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_RUNE = HELPER.createBlock("mystical_obsidian_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = HELPER.createBlock("mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), null);
-	public static final RegistryObject<Block> ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = HELPER.createBlock("activated_mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.lightLevel(state -> 5)), null);
+	public static final RegistryObject<Block> CRYSTAL_HOLDER = HELPER.createBlock("crystal_holder", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN = HELPER.createBlock("mystical_obsidian", () -> new Block(EEProperties.MYSTICAL_OBSIDIAN), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_WALL = HELPER.createBlock("mystical_obsidian_wall", () -> new WallBlock(EEProperties.MYSTICAL_OBSIDIAN), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_RUNE = HELPER.createBlock("mystical_obsidian_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = HELPER.createBlock("mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE = HELPER.createBlock("activated_mystical_obsidian_activation_rune", () -> new RotatableBlock(EEProperties.MYSTICAL_OBSIDIAN.lightLevel(state -> 5)), ItemGroup.TAB_DECORATIONS);
 
 	public static final RegistryObject<Block> ENDER_FIRE = HELPER.createBlockNoItem("ender_fire", () -> new EnderFireBlock(Properties.copy(Blocks.FIRE)));
 	public static final RegistryObject<Block> ENDER_CAMPFIRE = HELPER.createBlock("ender_campfire", () -> new EnderCampfireBlock(Block.Properties.copy(Blocks.CAMPFIRE)), ItemGroup.TAB_DECORATIONS);
