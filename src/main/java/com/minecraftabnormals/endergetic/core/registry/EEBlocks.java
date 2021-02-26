@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.BookshelfBlock;
+import com.minecraftabnormals.abnormals_core.common.blocks.HedgeBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
@@ -84,8 +85,8 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_DOOR = HELPER.createTallBlock("poise_door", () -> new WoodDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_SLAB = HELPER.createBlock("poise_slab", () -> new WoodSlabBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_STAIRS = HELPER.createBlock("poise_stairs", () -> new WoodStairsBlock(POISE_PLANKS.get().defaultBlockState(), EEProperties.POISE_WOOD), ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_FENCE = HELPER.createBlock("poise_fence", () -> new WoodFenceBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_DECORATIONS);
-	public static final RegistryObject<Block> POISE_FENCE_GATE = HELPER.createBlock("poise_fence_gate", () -> new WoodFenceGateBlock(EEProperties.POISE_WOOD), ItemGroup.TAB_REDSTONE);
+	public static final RegistryObject<Block> POISE_FENCE = HELPER.createFuelBlock("poise_fence", () -> new WoodFenceBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> POISE_FENCE_GATE = HELPER.createFuelBlock("poise_fence_gate", () -> new WoodFenceGateBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_PRESSURE_PLATE = HELPER.createBlock("poise_pressure_plate", () -> new WoodPressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, EEProperties.POISE_WOOD), ItemGroup.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_BUTTON = HELPER.createBlock("poise_button", () -> new AbnormalsWoodButtonBlock(EEProperties.getPoiseWood(false, true)), ItemGroup.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_TRAPDOOR = HELPER.createBlock("poise_trapdoor", () -> new WoodTrapDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), ItemGroup.TAB_REDSTONE);
@@ -94,11 +95,15 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_BOOKSHELF = HELPER.createCompatFuelBlock("quark", "poise_bookshelf", () -> new BookshelfBlock(Properties.copy(Blocks.BOOKSHELF)), 300, ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_LADDER = HELPER.createCompatFuelBlock("quark", "poise_ladder", () -> new AbnormalsLadderBlock(Properties.copy(Blocks.LADDER)), 300, ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> POISE_BEEHIVE = HELPER.createCompatBlock("buzzier_bees", "poise_beehive", () -> new AbnormalsBeehiveBlock(Properties.copy(Blocks.BEEHIVE)), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> STRIPPED_POISE_POST = HELPER.createCompatFuelBlock("quark", "stripped_poise_post", () -> new WoodPostBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_POST = HELPER.createCompatFuelBlock("quark", "poise_post", () -> new WoodPostBlock(STRIPPED_POISE_POST, EEProperties.POISE_WOOD), 300, ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> GLOWING_POISE_POST = HELPER.createCompatFuelBlock("quark", "glowing_poise_post", () -> new WoodPostBlock(EEProperties.POISE_LOG_GLOWING), 300, ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_HEDGE = HELPER.createCompatFuelBlock("quark", "poise_hedge", () -> new HedgeBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_DECORATIONS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN = HELPER.createSignBlock("poise", MaterialColor.TERRACOTTA_PURPLE);
-	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("quark", "poise", MaterialColor.TERRACOTTA_PURPLE);
+	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.TERRACOTTA_PURPLE);
 
-	public static final RegistryObject<Block> BOLLOOM_BUD = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> EEBlocks.bolloomBudISTER(), ItemGroup.TAB_DECORATIONS);
-	public static final RegistryObject<Block> PUFFBUG_HIVE = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), () -> EEBlocks.puffbugHiveISTER(), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> BOLLOOM_BUD = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), EEBlocks::bolloomBudISTER, ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> PUFFBUG_HIVE = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), EEBlocks::puffbugHiveISTER, ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> HIVE_HANGER = HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.getPuffBugHive(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.getPoiseWood(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.TAB_DECORATIONS);
