@@ -21,4 +21,5 @@ public class EEPlugin implements IModPlugin {
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
 		registration.addRecipeCatalyst(new ItemStack(EEBlocks.ENDER_CAMPFIRE.get()), VanillaRecipeCategoryUid.CAMPFIRE);
 	}
+
 }

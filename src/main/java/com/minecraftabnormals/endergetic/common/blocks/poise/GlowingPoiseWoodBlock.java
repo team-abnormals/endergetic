@@ -1,6 +1,5 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.WoodBlock;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
@@ -37,4 +36,5 @@ public class GlowingPoiseWoodBlock extends WoodBlock {
 			}
 		}
 	}
+
 }
