@@ -29,8 +29,6 @@ public final class EERenderLayers {
 		setRenderLayer(EEBlocks.POISE_LADDER.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.POISE_POST.get(), RenderType.getCutout());
 		setRenderLayer(EEBlocks.STRIPPED_POISE_POST.get(), RenderType.getCutout());
-		setRenderLayer(EEBlocks.GLOWING_POISE_POST.get(), RenderType.getCutout());
-		setRenderLayer(EEBlocks.POISE_HEDGE.get(), RenderType.getTranslucent());
 		setRenderLayer(EEBlocks.EUMUS_POISMOSS.get(), RenderType.getCutoutMipped());
 		setRenderLayer(EEBlocks.POISMOSS.get(), RenderType.getCutoutMipped());
 		setRenderLayer(EEBlocks.POISE_BUSH.get(), RenderType.getCutout());
