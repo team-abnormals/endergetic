@@ -97,8 +97,6 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_BEEHIVE = HELPER.createCompatBlock("buzzier_bees", "poise_beehive", () -> new AbnormalsBeehiveBlock(Properties.copy(Blocks.BEEHIVE)), ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> STRIPPED_POISE_POST = HELPER.createCompatFuelBlock("quark", "stripped_poise_post", () -> new WoodPostBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_POST = HELPER.createCompatFuelBlock("quark", "poise_post", () -> new WoodPostBlock(STRIPPED_POISE_POST, EEProperties.POISE_WOOD), 300, ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> GLOWING_POISE_POST = HELPER.createCompatFuelBlock("quark", "glowing_poise_post", () -> new WoodPostBlock(STRIPPED_POISE_POST, EEProperties.POISE_LOG_GLOWING), 300, ItemGroup.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_HEDGE = HELPER.createCompatFuelBlock("quark", "poise_hedge", () -> new HedgeBlock(EEProperties.POISE_WOOD), 300, ItemGroup.TAB_DECORATIONS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN = HELPER.createSignBlock("poise", MaterialColor.TERRACOTTA_PURPLE);
 	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.TERRACOTTA_PURPLE);
 
