@@ -147,6 +147,8 @@
   "advancements.endergetic.tame_booflo.description": "Tame a Booflo by feeding it Bolloom Fruits and backing away to let it eat",
   "advancements.endergetic.up_up_and_away.title": "Up, Up and Away!",
   "advancements.endergetic.up_up_and_away.description": "Attach yourself with four or more bolloom balloons to float upwards",
+  "advancements.endergetic.find_eetle_nest.title": "An End Bug's Life",
+  "advancements.endergetic.find_eetle_nest.description": "Find an Eetle Nest",
   "_____comment": "Keybinds",
   "key.endergetic.booflo_vest": "Booflo Vest Activate",
   "key.endergetic.booflo_inflate": "Booflo Ride Inflate",

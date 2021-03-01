@@ -6,8 +6,10 @@ import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModi
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
+import com.minecraftabnormals.endergetic.common.world.modification.BiomeStructureModifier;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeSurfaceBuilderModifier;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
+import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
@@ -90,6 +92,7 @@ public class EndergeticExpansion {
 		EEParticles.PARTICLES.register(modEventBus);
 		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
+		EEStructures.STRUCTURES.register(modEventBus);
 		EEPlacements.PLACEMENTS.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
@@ -114,6 +117,8 @@ public class EndergeticExpansion {
 			EELootInjectors.registerLootInjectors();
 			EESurfaceBuilders.Configs.registerConfiguredSurfaceBuilders();
 			EEFeatures.Configured.registerConfiguredFeatures();
+			EEStructures.Configured.registerConfiguredStructures();
+			EEStructures.setupStructureInfo();
 			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
@@ -126,18 +131,20 @@ public class EndergeticExpansion {
 	private static void modifyBiomes() {
 		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
 		BiPredicate<RegistryKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
+		BiPredicate<RegistryKey<Biome>, Biome> highlandsOrMidlands = highlandsOnly.or(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS));
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
 		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOnly, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_PATCH,
 				() -> EEFeatures.Configured.EETLE_EGGS
 		)));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOnly, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
 				() -> EEFeatures.Configured.CORROCK_TOWER,
 				() -> EEFeatures.Configured.CORROCK_SHELF,
 				() -> EEFeatures.Configured.CORROCK_ARCH
 		)));
+		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));
 		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOnly, EntityClassification.MONSTER, Sets.newHashSet(
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.CHARGER_EETLE, 12, 2, 5),
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.GLIDER_EETLE, 8, 2, 4)
