@@ -46,8 +46,8 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 	@Override
 	public List<MobSpawnInfo.Spawners> getDefaultSpawnList() {
 		return Lists.newArrayList(
-				new MobSpawnInfo.Spawners(EEEntities.CHARGER_EETLE.get(), 12, 2, 5),
-				new MobSpawnInfo.Spawners(EEEntities.GLIDER_EETLE.get(), 8, 2, 4)
+				new MobSpawnInfo.Spawners(EEEntities.CHARGER_EETLE.get(), 12, 3, 7),
+				new MobSpawnInfo.Spawners(EEEntities.GLIDER_EETLE.get(), 8, 3, 6)
 		);
 	}
 
@@ -72,7 +72,7 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 			int yPos = getYPosForStructure(chunkX, chunkZ, generator);
 			if (yPos >= 60) {
 				BlockPos corner = new BlockPos(chunkX * 16, yPos, chunkZ * 16);
-				this.components.add(new EetleNestPieces.EetleNestParentPiece(corner));
+				this.components.add(new EetleNestPieces.EetleNestParentPiece(templateManager, corner));
 				this.recalculateStructureSize();
 			}
 		}

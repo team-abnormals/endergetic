@@ -36,6 +36,7 @@ public final class EEStructures {
 
 	public static final class PieceTypes {
 		public static final IStructurePieceType EETLE_NEST_PARENT = IStructurePieceType.register(EetleNestPieces.EetleNestParentPiece::new, "eetle_nest_parent");
+		public static final IStructurePieceType EETLE_NEST_CORE = IStructurePieceType.register(EetleNestPieces.EetleNestCorePiece::new, "eetle_nest_core");
 	}
 
 	public static void setupStructureInfo() {

@@ -32,7 +32,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	@Override
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
 		BlockState belowState = world.getBlockState(pos.down());
-		if (config.isValidGround(belowState)) {
+		if (config.isValidGround(belowState) && world.getBlockState(pos.down(2)).isSolid()) {
 			int baseHeight = rand.nextInt(4) + 4;
 			GenerationPiece basePiece = this.createBase(world, pos, rand, baseHeight);
 			if (basePiece.canPlace(world)) {
@@ -72,7 +72,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 							for (int z = pos.getZ() - 4; z < pos.getZ() + 4; z++) {
 								corrockPlantPos.setPos(x, y, z);
 								boolean isCorrockBelow = world.getBlockState(corrockPlantPos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get();
-								if ((isCorrockBelow && rand.nextFloat() < 0.5F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isAirBlock(corrockPlantPos) && CORROCK_STATE.getValue().isValidPosition(world, corrockPlantPos)) {
+								if ((isCorrockBelow && rand.nextFloat() < 0.25F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isAirBlock(corrockPlantPos) && CORROCK_STATE.getValue().isValidPosition(world, corrockPlantPos)) {
 									world.setBlockState(corrockPlantPos, CORROCK_STATE.getValue(), 2);
 								}
 							}

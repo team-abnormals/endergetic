@@ -8,7 +8,6 @@ import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractC
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -27,8 +26,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 
 	@Override
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
-		Block belowBlock = world.getBlockState(pos.down()).getBlock();
-		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
+		if (world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.down(2)).isSolid()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
 			GenerationPiece base = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
 			int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
