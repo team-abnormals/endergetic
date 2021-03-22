@@ -29,9 +29,11 @@ import java.util.List;
 
 @Mixin(PlayerList.class)
 public final class PlayerListMixin {
-	@Shadow @Final
+	@Shadow
+	@Final
 	private PlayerData playerDataManager;
-	@Shadow @Final
+	@Shadow
+	@Final
 	private MinecraftServer server;
 
 	@SuppressWarnings("deprecation")
