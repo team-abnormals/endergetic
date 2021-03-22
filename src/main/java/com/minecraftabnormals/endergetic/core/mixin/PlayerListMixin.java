@@ -17,7 +17,9 @@ import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.PlayerData;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,14 +29,10 @@ import java.util.List;
 
 @Mixin(PlayerList.class)
 public final class PlayerListMixin {
+	@Shadow @Final
 	private PlayerData playerDataManager;
+	@Shadow @Final
 	private MinecraftServer server;
-
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void initialize(MinecraftServer p_i231425_1_, DynamicRegistries.Impl p_i231425_2_, PlayerData p_i231425_3_, int p_i231425_4_, CallbackInfo info) {
-		playerDataManager = p_i231425_3_;
-		server = p_i231425_1_;
-	}
 
 	@SuppressWarnings("deprecation")
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;writePlayerData(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "playerLoggedOut")
@@ -57,11 +55,11 @@ public final class PlayerListMixin {
 		CompoundNBT compound = this.server.getServerConfiguration().getHostPlayerNBT();
 		if (!(compound != null && player.getName().getString().equals(this.server.getServerOwner()))) {
 			try {
-				File file1 = new File(this.playerDataManager.getPlayerDataFolder(), player.getCachedUniqueIdString() + ".dat");
-				if (file1.exists() && file1.isFile()) {
-					compound = CompressedStreamTools.readCompressed(file1);
+				File playerDataFile = new File(this.playerDataManager.getPlayerDataFolder(), player.getCachedUniqueIdString() + ".dat");
+				if (playerDataFile.exists() && playerDataFile.isFile()) {
+					compound = CompressedStreamTools.readCompressed(playerDataFile);
 				}
-			} catch (Exception var4) {
+			} catch (Exception exception) {
 				EndergeticExpansion.LOGGER.warn("Failed to load player data for {}", player.getName().getString());
 			}
 		}
