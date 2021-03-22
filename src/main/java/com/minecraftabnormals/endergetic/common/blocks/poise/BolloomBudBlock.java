@@ -94,11 +94,7 @@ public class BolloomBudBlock extends Block {
 
 		BlockPos north = pos.offset(Direction.NORTH);
 		BlockPos south = pos.offset(Direction.SOUTH);
-
-		if (world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block) {
-			return true;
-		}
-		return false;
+		return world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block;
 	}
 
 	private boolean canPutDownPedals(IWorld world, BlockPos pos) {
