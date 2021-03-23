@@ -7,6 +7,7 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -39,6 +40,7 @@ import java.util.stream.IntStream;
 public final class EetleNestPieces {
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
+	private static BlockPos DECORATION_CENTER = null;
 
 	private abstract static class EetleNestPiece extends StructurePiece {
 		protected static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
@@ -126,6 +128,15 @@ public final class EetleNestPieces {
 			for (EetleNestPiece piece : this.childPieces) {
 				piece.func_230383_a_(world, structureManager, chunkGenerator, random, mutableBoundingBox, chunkPos, pos);
 			}
+			int x = DECORATION_CENTER.getX() - 24;
+			int y = DECORATION_CENTER.getY();
+			int z = DECORATION_CENTER.getZ() - 24;
+			BlockPos.Mutable mutable = new BlockPos.Mutable();
+			for (int i = 0; i < 32; i++) {
+				mutable.setPos(x + random.nextInt(49), y - 8 - random.nextInt(17), z + random.nextInt(49));
+				EEFeatures.Configured.CORROCK_NEST_PATCH.generate(world, chunkGenerator, random, mutable);
+			}
+			DECORATION_CENTER = null;
 			return true;
 		}
 	}
@@ -778,6 +789,7 @@ public final class EetleNestPieces {
 					}
 				}
 			}
+			DECORATION_CENTER = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, carvingPos);
 			return true;
 		}
 

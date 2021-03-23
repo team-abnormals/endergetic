@@ -34,7 +34,7 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_DOME = createFeature("poise_dome", () -> new PoiseDomeFeature(NoFeatureConfig.field_236558_a_));
 	public static final RegistryObject<Feature<NoFeatureConfig>> POISE_TREE = createFeature("poise_tree", () -> new PoiseTreeFeature(NoFeatureConfig.field_236558_a_));
 
-	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_PATCH = createFeature("corrock_patch", () -> new CorrockPatchFeature(ProbabilityConfig.CODEC));
+	public static final RegistryObject<Feature<CorrockPatchConfig>> CORROCK_PATCH = createFeature("corrock_patch", () -> new CorrockPatchFeature(CorrockPatchConfig.CODEC));
 	public static final RegistryObject<Feature<SphereReplaceConfig>> CORROCK_GROUND_PATCH = createFeature("corrock_ground_patch", () -> new CorrockGroundPatchFeature(SphereReplaceConfig.field_236516_a_));
 	public static final RegistryObject<Feature<CorrockBranchConfig>> CORROCK_BRANCH = createFeature("corrock_branch", () -> new CorrockBranchFeature(CorrockBranchConfig.CODEC));
 	public static final RegistryObject<Feature<ProbabilityConfig>> SMALL_CORROCK_TOWER = createFeature("small_corrock_tower", () -> new SmallCorrockTowerFeature(ProbabilityConfig.CODEC));
@@ -61,7 +61,8 @@ public final class EEFeatures {
 		public static final ConfiguredFeature<?, ?> TALL_POISE_GRASS = EEFeatures.POISE_TALLGRASS.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).withPlacement(EEPlacements.NOISE_HEIGHTMAP_32.get().configure(new NoiseDependant(-0.8D, 0, 7)));
 		public static final ConfiguredFeature<?, ?> END_GATEWAY = EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(ServerWorld.field_241108_a_, true)).withPlacement(Placement.END_GATEWAY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG));
 		public static final ConfiguredFeature<?, ?> END_GATEWAY_DELAYED = EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214698_a());
-		public static final ConfiguredFeature<?, ?> CORROCK_PATCH = EEFeatures.CORROCK_PATCH.get().withConfiguration(new ProbabilityConfig(0.2F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(7);
+		public static final ConfiguredFeature<?, ?> CORROCK_PATCH = EEFeatures.CORROCK_PATCH.get().withConfiguration(new CorrockPatchConfig(0.2F, false)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(7);
+		public static final ConfiguredFeature<?, ?> CORROCK_NEST_PATCH = EEFeatures.CORROCK_PATCH.get().withConfiguration(new CorrockPatchConfig(0.012F, true)).withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG));
 		public static final ConfiguredFeature<?, ?> CORROCK_GROUND_PATCH = EEFeatures.CORROCK_GROUND_PATCH.get().withConfiguration(new SphereReplaceConfig(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState(), FeatureSpread.func_242252_a(3), 3, Lists.newArrayList(Blocks.END_STONE.getDefaultState())));
 		public static final ConfiguredFeature<?, ?> SPARSE_CORROCK_BRANCH = EEFeatures.CORROCK_BRANCH.get().withConfiguration(new CorrockBranchConfig(ImmutableList.of(Blocks.END_STONE.getDefaultState(), EEBlocks.CORROCK_END_BLOCK.get().getDefaultState()), 0.4F, 0.5F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(5);
 		public static final ConfiguredFeature<?, ?> CORROCK_BRANCH = EEFeatures.CORROCK_BRANCH.get().withConfiguration(new CorrockBranchConfig(ImmutableList.of(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState()), 0.5F, 0.4F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(64);
@@ -88,6 +89,7 @@ public final class EEFeatures {
 			register("end_gateway", END_GATEWAY);
 			register("end_gateway_delayed", END_GATEWAY_DELAYED);
 			register("corrock_patch", CORROCK_PATCH);
+			register("corrock_nest_patch", CORROCK_NEST_PATCH);
 			register("corrock_ground_patch", CORROCK_GROUND_PATCH);
 			register("sparse_corrock_branch", SPARSE_CORROCK_BRANCH);
 			register("corrock_branch", CORROCK_BRANCH);
