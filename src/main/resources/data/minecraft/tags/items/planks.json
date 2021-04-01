@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "endergetic:poise_planks"
+    "endergetic:poise_planks",
+    "endergetic:vertical_poise_planks"
   ]
 }
