@@ -34,6 +34,9 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public final class EetleNestPieces {
+	private static MutableBoundingBox GENERATING_BOUNDS = null;
+	private static MutableBoundingBox CENTER_BOUNDS = null;
+	private static List<MutableBoundingBox> GENERATED_SECTIONS = new ArrayList<>();
 	protected static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
 	protected static final Direction[] TUNNEL_SIDES = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 	protected static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
@@ -51,6 +54,24 @@ public final class EetleNestPieces {
 	protected static final BlockState EETLE_EGGS_STATE = EETLE_EGSS.getDefaultState();
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
+
+	public static boolean isNotInsideGeneratingBounds(BlockPos pos) {
+		return GENERATING_BOUNDS == null || !GENERATING_BOUNDS.isVecInside(pos);
+	}
+
+	//Prevents Shelfs generating inside the Arena
+	public static boolean isNotInsideCenterBounds(BlockPos pos) {
+		return CENTER_BOUNDS == null || !CENTER_BOUNDS.isVecInside(pos);
+	}
+
+	public static boolean isPosInsideGeneratedSections(BlockPos pos) {
+		for (MutableBoundingBox boundingBox : GENERATED_SECTIONS) {
+			if (boundingBox.isVecInside(pos)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static class EetleNestPiece extends StructurePiece {
 		private static final ResourceLocation ARENA = new ResourceLocation(EndergeticExpansion.MOD_ID, "eetle_nest/arena");
@@ -120,6 +141,8 @@ public final class EetleNestPieces {
 		@SuppressWarnings("deprecation")
 		@Override
 		public boolean func_230383_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random random, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos pos) {
+			GENERATING_BOUNDS = this.boundingBox;
+			CENTER_BOUNDS = new MutableBoundingBox(GENERATING_BOUNDS.minX + 48, GENERATING_BOUNDS.minZ + 48, GENERATING_BOUNDS.maxX - 48, GENERATING_BOUNDS.maxZ - 48);
 			int originX = pos.getX();
 			int originZ = pos.getZ();
 			pos = new BlockPos(originX, chunkGenerator.getNoiseHeight(originX, originZ, Heightmap.Type.WORLD_SURFACE_WG), originZ);
@@ -205,6 +228,12 @@ public final class EetleNestPieces {
 				tunnel.generateDecorations(world, undergroundNoise, random, bounds);
 			}
 
+			GENERATED_SECTIONS.add(bounds);
+			if (GENERATED_SECTIONS.size() >= 64) {
+				GENERATED_SECTIONS.clear();
+				GENERATING_BOUNDS = null;
+				CENTER_BOUNDS = null;
+			}
 			return true;
 		}
 

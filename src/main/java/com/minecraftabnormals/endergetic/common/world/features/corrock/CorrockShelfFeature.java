@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.world.features.corrock;
 
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
+import com.minecraftabnormals.endergetic.common.world.structures.pieces.EetleNestPieces;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
@@ -28,11 +29,11 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 
 	@Override
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
-		if (world.isAirBlock(pos) && world.getBlockState(pos.up()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
+		//Dirty trick to fix Shelfs attaching to not yet generated chunks in Eetle Nests
+		boolean isNotInsideEetleNestBounds = EetleNestPieces.isNotInsideGeneratingBounds(pos);
+		if (EetleNestPieces.isNotInsideCenterBounds(pos) && (isNotInsideEetleNestBounds || EetleNestPieces.isPosInsideGeneratedSections(pos)) && world.isAirBlock(pos) && world.getBlockState(pos.up()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos, isNotInsideEetleNestBounds)) {
 			int size = rand.nextBoolean() ? 3 : 4;
-			//Constantly 10, but could be changed in the future to allow for more variations
-			int edgeBias = 10;
-			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, edgeBias, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
+			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, 10, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
 			BlockState corrockState = CORROCK_STATE.getValue();
 			for (int i = 0; i < 16; i++) {
@@ -53,20 +54,22 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		return directions;
 	}
 
-	private static boolean isTouchingWall(ISeedReader world, BlockPos origin) {
+	private static boolean isTouchingWall(ISeedReader world, BlockPos origin, boolean shouldNotCheckBounds) {
 		for (Direction direction : DIRECTIONS) {
-			if (searchForWall(world, origin.toMutable(), direction) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction)) {
+			if (searchForWall(world, origin.toMutable(), direction, shouldNotCheckBounds) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction, shouldNotCheckBounds) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction, shouldNotCheckBounds)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing) {
+	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing, boolean shouldNotCheckBounds) {
 		for (int i = 0; i < 2; i++) {
 			Block block = world.getBlockState(mutable.move(facing)).getBlock();
-			if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
-				return true;
+			if (shouldNotCheckBounds || EetleNestPieces.isPosInsideGeneratedSections(mutable)) {
+				if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
+					return true;
+				}
 			}
 		}
 		return false;
