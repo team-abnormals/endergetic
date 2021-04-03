@@ -141,7 +141,8 @@ public class EndergeticExpansion {
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
 				() -> EEFeatures.Configured.CORROCK_TOWER,
-				() -> EEFeatures.Configured.CORROCK_SHELF,
+				//TODO: Add way to predict ungenerated chunks for Eetle Nests
+				//() -> EEFeatures.Configured.CORROCK_SHELF,
 				() -> EEFeatures.Configured.CORROCK_ARCH
 		)));
 		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));

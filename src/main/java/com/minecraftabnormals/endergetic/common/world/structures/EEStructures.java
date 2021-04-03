@@ -35,13 +35,12 @@ public final class EEStructures {
 	}
 
 	public static final class PieceTypes {
-		public static final IStructurePieceType EETLE_NEST_PARENT = IStructurePieceType.register(EetleNestPieces.EetleNestParentPiece::new, "eetle_nest_parent");
-		public static final IStructurePieceType EETLE_NEST_CORE = IStructurePieceType.register(EetleNestPieces.EetleNestCorePiece::new, "eetle_nest_core");
+		public static final IStructurePieceType EETLE_NEST = IStructurePieceType.register(EetleNestPieces.EetleNestPiece::new, "eetle_nest");
 	}
 
 	public static void setupStructureInfo() {
 		Structure<NoFeatureConfig> eetleNest = EETLE_NEST.get();
 		Structure.NAME_STRUCTURE_BIMAP.put("eetle_nest", eetleNest);
-		WorldGenRegistries.NOISE_SETTINGS.forEach(dimensionSettings -> dimensionSettings.getStructures().func_236195_a_().put(eetleNest, new StructureSeparationSettings(18, 10,10387313)));
+		WorldGenRegistries.NOISE_SETTINGS.forEach(dimensionSettings -> dimensionSettings.getStructures().func_236195_a_().put(eetleNest, new StructureSeparationSettings(18, 9, 5193657)));
 	}
 }
