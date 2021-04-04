@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -34,11 +35,10 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public final class EetleNestPieces {
-	private static MutableBoundingBox GENERATING_BOUNDS = null;
-	private static MutableBoundingBox CENTER_BOUNDS = null;
-	private static List<MutableBoundingBox> GENERATED_SECTIONS = new ArrayList<>();
+	private static Set<MutableBoundingBox> GENERATING_BOUNDS = new HashSet<>();
 	protected static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
 	protected static final Direction[] TUNNEL_SIDES = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+	private static final Direction[] EGG_DIRECTIONS = Direction.values();
 	protected static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
 	protected static final Block EUMUS = EEBlocks.EUMUS.get();
 	protected static final Block CROWN_STANDING = EEBlocks.CORROCK_CROWN_END_STANDING.get();
@@ -55,22 +55,14 @@ public final class EetleNestPieces {
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
 
+	//TODO: Add shelf generation to structure's generation
 	public static boolean isNotInsideGeneratingBounds(BlockPos pos) {
-		return GENERATING_BOUNDS == null || !GENERATING_BOUNDS.isVecInside(pos);
-	}
-
-	//Prevents Shelfs generating inside the Arena
-	public static boolean isNotInsideCenterBounds(BlockPos pos) {
-		return CENTER_BOUNDS == null || !CENTER_BOUNDS.isVecInside(pos);
-	}
-
-	public static boolean isPosInsideGeneratedSections(BlockPos pos) {
-		for (MutableBoundingBox boundingBox : GENERATED_SECTIONS) {
+		for (MutableBoundingBox boundingBox : GENERATING_BOUNDS) {
 			if (boundingBox.isVecInside(pos)) {
-				return true;
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public static class EetleNestPiece extends StructurePiece {
@@ -85,7 +77,7 @@ public final class EetleNestPieces {
 
 		public EetleNestPiece(TemplateManager manager, BlockPos corner) {
 			super(EEStructures.PieceTypes.EETLE_NEST, 0);
-			this.boundingBox = new MutableBoundingBox(corner.add(-64, -32, -64), corner.add(64, 6, 64));
+			this.boundingBox = new MutableBoundingBox(corner.add(-64, -48, -64), corner.add(64, 6, 64));
 			this.arena = manager.getTemplate(ARENA);
 		}
 
@@ -141,8 +133,7 @@ public final class EetleNestPieces {
 		@SuppressWarnings("deprecation")
 		@Override
 		public boolean func_230383_a_(ISeedReader world, StructureManager structureManager, ChunkGenerator chunkGenerator, Random random, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos pos) {
-			GENERATING_BOUNDS = this.boundingBox;
-			CENTER_BOUNDS = new MutableBoundingBox(GENERATING_BOUNDS.minX + 48, GENERATING_BOUNDS.minZ + 48, GENERATING_BOUNDS.maxX - 48, GENERATING_BOUNDS.maxZ - 48);
+			GENERATING_BOUNDS.add(this.boundingBox);
 			int originX = pos.getX();
 			int originZ = pos.getZ();
 			pos = new BlockPos(originX, chunkGenerator.getNoiseHeight(originX, originZ, Heightmap.Type.WORLD_SURFACE_WG), originZ);
@@ -218,21 +209,22 @@ public final class EetleNestPieces {
 							break;
 						}
 					}
-					tunnel.setupSpline(mutable, chunkGenerator, random);
+					tunnel.setup(mutable, chunkGenerator, undergroundNoise, random);
 				}
+			}
+
+			//Generate caves first to ensure they don't block other tunnels
+			for (NestTunnel tunnel : nestDesign.tunnels) {
+				tunnel.generateCave(world, undergroundNoise, bounds);
+			}
+
+			for (NestTunnel tunnel : nestDesign.tunnels) {
 				tunnel.generate(world, random, bounds);
 			}
 
 			//Generate decorations last to prevent tunnels cutting them off
 			for (NestTunnel tunnel : nestDesign.tunnels) {
 				tunnel.generateDecorations(world, undergroundNoise, random, bounds);
-			}
-
-			GENERATED_SECTIONS.add(bounds);
-			if (GENERATED_SECTIONS.size() >= 64) {
-				GENERATED_SECTIONS.clear();
-				GENERATING_BOUNDS = null;
-				CENTER_BOUNDS = null;
 			}
 			return true;
 		}
@@ -250,7 +242,7 @@ public final class EetleNestPieces {
 			private NestDesign(Random random) {
 				int eumusPatchCount = random.nextInt(3) + 3;
 				for (int i = 0; i < eumusPatchCount; i++) {
-					this.eumusPatches.add(new EumusPatch(random));
+					this.eumusPatches.add(new EumusPatch(EumusPatch.PatchType.CORE, random));
 				}
 				this.arena = new NestArena(random);
 				int stalactiteCount = random.nextInt(3) + 3;
@@ -269,6 +261,13 @@ public final class EetleNestPieces {
 				}
 				for (int i = 0; i < 2; i++) {
 					tunnels.get(random.nextInt(tunnels.size())).goesToSurface = true;
+				}
+				Set<Direction> sidesWithCaves = new HashSet<>();
+				for (NestTunnel tunnel : this.tunnels) {
+					if (!tunnel.goesToSurface && !sidesWithCaves.contains(tunnel.facing)) {
+						tunnel.nestCave = new NestTunnel.NestCave(random);
+						sidesWithCaves.add(tunnel.facing);
+					}
 				}
 			}
 		}
@@ -351,15 +350,35 @@ public final class EetleNestPieces {
 			private final int yOffset;
 			private final int zOffset;
 
-			private EumusPatch(Random random) {
-				this.radius = random.nextInt(4) + 4;
-				this.xOffset = random.nextInt(19) - random.nextInt(19);
-				this.yOffset = (int) MathUtil.makeNegativeRandomly(random.nextInt(9) + 8, random);
-				this.zOffset = random.nextInt(19) - random.nextInt(19);
+			private EumusPatch(PatchType type, Random random) {
+				this.radius = random.nextInt(type.boundRadius) + type.minRadius;
+				int maxHorizontalOffset = type.maxHorizontalOffset;
+				this.xOffset = random.nextInt(maxHorizontalOffset) - random.nextInt(maxHorizontalOffset);
+				int halfMaxYOffset = type.halfMaxYOffset;
+				this.yOffset = (int) MathUtil.makeNegativeRandomly(random.nextInt(halfMaxYOffset + 1) + halfMaxYOffset, random);
+				this.zOffset = random.nextInt(maxHorizontalOffset) - random.nextInt(maxHorizontalOffset);
 			}
 
 			private void generate(ISeedReader world, BlockPos center, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
 				createEumusPatch(world, center.add(this.xOffset, this.yOffset, this.zOffset), noiseGenerator, this.radius, bounds);
+			}
+
+			enum PatchType {
+				CORE(4, 3, 19, 8),
+				SMALL(2, 2, 10, 3),
+				MEDIUM(3, 2, 13, 5),
+				LARGE(3, 3, 15, 6);
+
+				private final int minRadius, boundRadius;
+				private final int maxHorizontalOffset;
+				private final int halfMaxYOffset;
+
+				PatchType(int minRadius, int boundRadius, int maxHorizontalOffset, int halfMaxYOffset) {
+					this.minRadius = minRadius;
+					this.boundRadius = boundRadius;
+					this.maxHorizontalOffset = maxHorizontalOffset;
+					this.halfMaxYOffset = halfMaxYOffset;
+				}
 			}
 		}
 
@@ -1010,6 +1029,7 @@ public final class EetleNestPieces {
 			private final List<BlockPos> airPositions = new ArrayList<>();
 			private final List<BlockPos> corrockPositions = new ArrayList<>();
 			private final List<TunnelDecoration> decorations = new ArrayList<>();
+			private NestCave nestCave = null;
 			private boolean goesToSurface;
 
 			private NestTunnel(Random random, Direction facing) {
@@ -1021,7 +1041,7 @@ public final class EetleNestPieces {
 				this.zOffset = rotateY.getZOffset() * offset;
 			}
 
-			private void setupSpline(BlockPos startPos, ChunkGenerator chunkGenerator, Random random) {
+			private void setup(BlockPos startPos, ChunkGenerator chunkGenerator, OctavesNoiseGenerator noiseGenerator, Random random) {
 				startPos = startPos.add(this.xOffset, this.yOffset, this.zOffset);
 				List<Vector3d> points = new ArrayList<>();
 				Vector3d startVec = Vector3d.copy(startPos);
@@ -1078,6 +1098,11 @@ public final class EetleNestPieces {
 
 					points.add(endVec);
 					points.add(anchorEnd);
+
+					NestCave nestCave = this.nestCave;
+					if (nestCave != null) {
+						nestCave.setup(end, random, chunkGenerator, noiseGenerator);
+					}
 				}
 				MathUtil.CatmullRomSpline spline = new MathUtil.CatmullRomSpline(points.toArray(new Vector3d[0]), MathUtil.CatmullRomSpline.SplineType.CHORDAL);
 				int steps = (int) (10 + Math.sqrt(startPos.distanceSq(end)) * 3);
@@ -1125,6 +1150,13 @@ public final class EetleNestPieces {
 				List<TunnelDecoration> decorations = this.decorations;
 				decorations.addAll(eumusPatches);
 				decorations.addAll(eggsAndCorrock);
+			}
+
+			private void generateCave(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+				NestCave nestCave = this.nestCave;
+				if (nestCave != null) {
+					nestCave.generate(world, noiseGenerator, bounds);
+				}
 			}
 
 			private void generate(ISeedReader world, Random random, MutableBoundingBox bounds) {
@@ -1200,7 +1232,6 @@ public final class EetleNestPieces {
 			}
 
 			static class EetleEggsPatch implements TunnelDecoration {
-				private static final Direction[] DIRECTIONS = Direction.values();
 				private final StateMap stateMap = new StateMap();
 				private final BlockPos origin;
 
@@ -1213,11 +1244,11 @@ public final class EetleNestPieces {
 					StateMap stateMap = this.stateMap;
 					BlockPos origin = this.origin;
 					BlockPos.Mutable mutable = new BlockPos.Mutable();
-					EetleEggsBlock.shuffleDirections(DIRECTIONS, random);
+					EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
 					for (int j = 0; j < 48; j++) {
 						mutable.setAndOffset(origin, random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9));
 						if (random.nextFloat() < 0.4F) {
-							for (Direction direction : DIRECTIONS) {
+							for (Direction direction : EGG_DIRECTIONS) {
 								BlockState state = EETLE_EGGS_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
 								stateMap.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
 								break;
@@ -1286,6 +1317,192 @@ public final class EetleNestPieces {
 				@Override
 				public boolean isNotSetup() {
 					return !this.stateMap.setup;
+				}
+			}
+
+			static class NestCave {
+				private final StateMap cave = new StateMap();
+				private final NestCaveType type;
+				private final List<EetleNestPiece.EumusPatch> eumusPatches = new ArrayList<>();
+				private final List<EetleEggsPatch> eetleEggsPatches = new ArrayList<>();
+				private final List<CorrockPatch> corrockPatches = new ArrayList<>();
+				private BlockPos center;
+
+				private NestCave(Random random) {
+					this.type = NestCaveType.random(random);
+				}
+
+				private void setup(BlockPos end, Random random, ChunkGenerator chunkGenerator, OctavesNoiseGenerator noiseGenerator) {
+					this.center = end;
+					NestCaveType type = this.type;
+					int horizontalRadius = type.horizontalRadius;
+					int verticalRadius = type.verticalRadius;
+					if (isAreaCarvable(end, horizontalRadius, verticalRadius, chunkGenerator)) {
+						int endX = end.getX();
+						int endY = end.getY();
+						int endZ = end.getZ();
+						BlockPos.Mutable mutable = new BlockPos.Mutable();
+						StateMap cave = this.cave;
+						for (int x = endX - horizontalRadius; x <= endX + horizontalRadius; x++) {
+							for (int z = endZ - horizontalRadius; z <= endZ + horizontalRadius; z++) {
+								for (int y = endY - verticalRadius; y <= endY + verticalRadius; y++) {
+									mutable.setPos(x, y, z);
+
+									double localX = (x - endX) / (float) horizontalRadius;
+									double localY = (y - endY) / (float) verticalRadius;
+									double localZ = (z - endZ) / (float) horizontalRadius;
+									double distanceSq = localX * localX + localY * localY + localZ * localZ;
+									double frequency = 0.65F;
+									double shapeNoise = noiseGenerator.func_205563_a(x * frequency, y * frequency, z * frequency) * 0.5F;
+									if (distanceSq >= 0.7F + shapeNoise && distanceSq <= 1.2F + shapeNoise) {
+										cave.setBlockState(mutable, CORROCK_BLOCK_STATE);
+									} else if (distanceSq <= 0.9F + shapeNoise) {
+										cave.setBlockState(mutable, Blocks.CAVE_AIR.getDefaultState());
+									}
+								}
+							}
+						}
+						List<EetleNestPiece.EumusPatch> eumusPatches = this.eumusPatches;
+						int eumusPatchCount = random.nextInt(2) + 2;
+						EetleNestPiece.EumusPatch.PatchType patchType = type.patchType;
+						for (int i = 0; i < eumusPatchCount; i++) {
+							eumusPatches.add(new EetleNestPiece.EumusPatch(patchType, random));
+						}
+						List<EetleEggsPatch> eetleEggsPatches = this.eetleEggsPatches;
+						for (int i = 0; i < type.eetleEggPatches; i++) {
+							eetleEggsPatches.add(new EetleEggsPatch(end.add(random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius), random.nextInt(verticalRadius) - random.nextInt(verticalRadius), random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius)), random));
+						}
+						List<CorrockPatch> corrockPatches = this.corrockPatches;
+						for (int i = 0; i < type.corrockPatches; i++) {
+							corrockPatches.add(new CorrockPatch(end.add(random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius), -random.nextInt(verticalRadius), random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius)), random));
+						}
+					}
+				}
+
+				private void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+					this.cave.generate(world, bounds);
+					BlockPos center = this.center;
+					for (EetleNestPiece.EumusPatch eumusPatch : this.eumusPatches) {
+						eumusPatch.generate(world, center, noiseGenerator, bounds);
+					}
+					for (EetleEggsPatch eetleEggsPatch : this.eetleEggsPatches) {
+						eetleEggsPatch.generate(world, bounds);
+					}
+					for (CorrockPatch corrockPatch : this.corrockPatches) {
+						corrockPatch.generate(world, bounds);
+					}
+				}
+
+				private static boolean isAreaCarvable(BlockPos center, int horizontalRadius, int verticalRadius, ChunkGenerator chunkGenerator) {
+					BlockPos.Mutable mutable = new BlockPos.Mutable();
+					int foundAirBlocks = 0;
+					int centerX = center.getX();
+					int centerY = center.getY();
+					int centerZ = center.getZ();
+					int maxAirBlocks = (int) (horizontalRadius * 2 * horizontalRadius * 2 * 0.25F);
+					for (int x = centerX - horizontalRadius; x <= centerX + horizontalRadius; x++) {
+						for (int z = centerZ - horizontalRadius; z <= centerZ + horizontalRadius; z++) {
+							IBlockReader reader = chunkGenerator.func_230348_a_(x, z);
+							for (int y = centerY - verticalRadius; y <= centerY + verticalRadius; y++) {
+								Block block = reader.getBlockState(mutable.setPos(x, y, z)).getBlock();
+								if (!EetleNestPieces.CARVABLE_BLOCKS.contains(block)) {
+									if (block == Blocks.AIR) {
+										if (foundAirBlocks++ >= maxAirBlocks) {
+											return false;
+										}
+									} else {
+										return false;
+									}
+								}
+							}
+						}
+					}
+					return true;
+				}
+
+				static class EetleEggsPatch {
+					private final StateMap stateMap = new StateMap();
+
+					EetleEggsPatch(BlockPos origin, Random random) {
+						EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
+						BlockPos.Mutable mutable = new BlockPos.Mutable();
+						StateMap stateMap = this.stateMap;
+						for (int j = 0; j < 48; j++) {
+							mutable.setAndOffset(origin, random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9));
+							if (random.nextFloat() < 0.4F) {
+								for (Direction direction : EGG_DIRECTIONS) {
+									BlockState state = EETLE_EGGS_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
+									stateMap.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
+									break;
+								}
+							}
+						}
+					}
+
+					private void generate(ISeedReader world, MutableBoundingBox bounds) {
+						this.stateMap.stateMap.forEach((pos, state) -> {
+							if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
+								BlockPos offset = pos.offset(state.get(EetleEggsBlock.FACING).getOpposite());
+								if (bounds.isVecInside(offset)) {
+									Block opposite = world.getBlockState(offset).getBlock();
+									if (opposite == CORROCK_BLOCK || opposite == EUMUS) {
+										world.setBlockState(pos, state, 2);
+									}
+								}
+							}
+						});
+					}
+				}
+
+				static class CorrockPatch {
+					private final StateMap stateMap = new StateMap();
+
+					CorrockPatch(BlockPos origin, Random random) {
+						StateMap stateMap = this.stateMap;
+						BlockPos.Mutable mutable = new BlockPos.Mutable();
+						for (int i = 0; i < 32; i++) {
+							mutable.setAndOffset(origin, random.nextInt(8) - random.nextInt(8), random.nextInt(4) - random.nextInt(4), random.nextInt(8) - random.nextInt(8));
+							if (random.nextBoolean()) {
+								stateMap.setBlockState(mutable, CORROCK_STATE);
+							}
+						}
+					}
+
+					private void generate(ISeedReader world, MutableBoundingBox bounds) {
+						this.stateMap.stateMap.forEach((pos, state) -> {
+							if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
+								Block below = world.getBlockState(pos.down()).getBlock();
+								if (below == CORROCK_BLOCK || below == EUMUS) {
+									world.setBlockState(pos, state, 2);
+								}
+							}
+						});
+					}
+				}
+
+				enum NestCaveType {
+					SMALL(9, 6, 27, 20, EetleNestPiece.EumusPatch.PatchType.SMALL),
+					MEDIUM(12, 9, 48, 36, EetleNestPiece.EumusPatch.PatchType.MEDIUM),
+					LARGE(14, 11, 64, 49, EetleNestPiece.EumusPatch.PatchType.LARGE);
+
+					private static final NestCaveType[] VALUES = NestCaveType.values();
+					private final int horizontalRadius;
+					private final int verticalRadius;
+					private final int eetleEggPatches;
+					private final int corrockPatches;
+					private final EetleNestPiece.EumusPatch.PatchType patchType;
+
+					NestCaveType(int horizontalRadius, int verticalRadius, int eetleEggPatches, int corrockPatches, EetleNestPiece.EumusPatch.PatchType patchType) {
+						this.horizontalRadius = horizontalRadius;
+						this.verticalRadius = verticalRadius;
+						this.eetleEggPatches = eetleEggPatches;
+						this.corrockPatches = corrockPatches;
+						this.patchType = patchType;
+					}
+
+					private static NestCaveType random(Random random) {
+						return VALUES[random.nextInt(VALUES.length)];
+					}
 				}
 			}
 		}

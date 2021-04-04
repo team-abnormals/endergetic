@@ -30,8 +30,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 	@Override
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
 		//Dirty trick to fix Shelfs attaching to not yet generated chunks in Eetle Nests
-		boolean isNotInsideEetleNestBounds = EetleNestPieces.isNotInsideGeneratingBounds(pos);
-		if (EetleNestPieces.isNotInsideCenterBounds(pos) && (isNotInsideEetleNestBounds || EetleNestPieces.isPosInsideGeneratedSections(pos)) && world.isAirBlock(pos) && world.getBlockState(pos.up()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos, isNotInsideEetleNestBounds)) {
+		if (EetleNestPieces.isNotInsideGeneratingBounds(pos) && world.isAirBlock(pos) && world.getBlockState(pos.up()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
 			int size = rand.nextBoolean() ? 3 : 4;
 			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, 10, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -54,22 +53,20 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		return directions;
 	}
 
-	private static boolean isTouchingWall(ISeedReader world, BlockPos origin, boolean shouldNotCheckBounds) {
+	private static boolean isTouchingWall(ISeedReader world, BlockPos origin) {
 		for (Direction direction : DIRECTIONS) {
-			if (searchForWall(world, origin.toMutable(), direction, shouldNotCheckBounds) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction, shouldNotCheckBounds) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction, shouldNotCheckBounds)) {
+			if (searchForWall(world, origin.toMutable(), direction) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing, boolean shouldNotCheckBounds) {
+	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing) {
 		for (int i = 0; i < 2; i++) {
 			Block block = world.getBlockState(mutable.move(facing)).getBlock();
-			if (shouldNotCheckBounds || EetleNestPieces.isPosInsideGeneratedSections(mutable)) {
-				if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
-					return true;
-				}
+			if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
+				return true;
 			}
 		}
 		return false;
