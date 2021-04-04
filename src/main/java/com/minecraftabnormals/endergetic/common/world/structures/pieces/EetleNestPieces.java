@@ -45,7 +45,7 @@ public final class EetleNestPieces {
 	protected static final Block CROWN_WALL = EEBlocks.CORROCK_CROWN_END_WALL.get();
 	protected static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
 	protected static final Block CORROCK = EEBlocks.CORROCK_END.get();
-	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS);
+	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
 	protected static final BlockState CORROCK_BLOCK_STATE = CORROCK_BLOCK.getDefaultState();
 	protected static final BlockState CORROCK_STATE = CORROCK.getDefaultState();
 	protected static final BlockState EUMUS_STATE = EUMUS.getDefaultState();
@@ -197,8 +197,7 @@ public final class EetleNestPieces {
 				stalactite.generate(world, mutable, random, undergroundNoise, bounds);
 			}
 
-			nestCore.generateCorrockPatches(world, random, bounds);
-
+			List<CorrockShelf> corrockShelves = nestCore.corrockShelves;
 			for (NestTunnel tunnel : nestDesign.tunnels) {
 				if (tunnel.airPositions.isEmpty()) {
 					Direction facing = tunnel.facing;
@@ -210,8 +209,12 @@ public final class EetleNestPieces {
 						}
 					}
 					tunnel.setup(mutable, chunkGenerator, undergroundNoise, random);
+					BlockPos tunnelStart = tunnel.start;
+					//Helps reduce the chance of shelves generating near tunnel entrances
+					corrockShelves.removeIf(corrockShelf -> tunnelStart.distanceSq(corrockShelf.pos) <= 64);
 				}
 			}
+			nestCore.generateCorrockShelfs(world, bounds);
 
 			//Generate caves first to ensure they don't block other tunnels
 			for (NestTunnel tunnel : nestDesign.tunnels) {
@@ -226,6 +229,9 @@ public final class EetleNestPieces {
 			for (NestTunnel tunnel : nestDesign.tunnels) {
 				tunnel.generateDecorations(world, undergroundNoise, random, bounds);
 			}
+
+			nestCore.generateCorrockShelfDecorations(world, bounds);
+			nestCore.generateCorrockPatches(world, random, bounds);
 			return true;
 		}
 
@@ -275,6 +281,7 @@ public final class EetleNestPieces {
 		private static class NestCore {
 			private final StateMap stateMap = new StateMap();
 			private final List<BlockPos> corrockPatchPositions = new ArrayList<>();
+			private final List<CorrockShelf> corrockShelves = new ArrayList<>();
 			private final Map<Pair<Integer, Integer>, Integer> horizontalToMaxHeight = new HashMap<>(5);
 
 			private void setup(int originX, int originY, int originZ, Random random, OctavesNoiseGenerator undergroundNoise) {
@@ -306,6 +313,31 @@ public final class EetleNestPieces {
 				List<BlockPos> corrockPatchPositions = this.corrockPatchPositions;
 				for (int i = 0; i < 64; i++) {
 					corrockPatchPositions.add(new BlockPos(cornerX + random.nextInt(57), originY - random.nextInt(8), cornerZ + random.nextInt(57)));
+				}
+
+				List<CorrockShelf> corrockShelves = this.corrockShelves;
+				int shelfs = random.nextInt(3) + 2;
+				for (int i = 0; i < shelfs; i++) {
+					Direction horizontal = Direction.Plane.HORIZONTAL.random(random);
+					BlockPos.Mutable mutable1 = new BlockPos.Mutable(originX, originY + MathUtil.makeNegativeRandomly(random.nextInt(8), random), originZ);
+					if (random.nextFloat() < 0.25F) {
+						for (int j = 0; j < horizontalRadius; j++) {
+							mutable1.move(horizontal);
+							if (stateMap.getBlockState(mutable1).getBlock() == CORROCK_BLOCK) {
+								corrockShelves.add(new CorrockShelf(mutable1.offset(horizontal.rotateY(), random.nextInt(4) - random.nextInt(4)), random));
+							}
+						}
+					} else {
+						int offset = random.nextInt(horizontalRadius + 1);
+						mutable1.move(horizontal, offset);
+						Direction leftOrRight = random.nextBoolean() ? horizontal.rotateY() : horizontal.rotateYCCW();
+						for (int j = 0; j < horizontalRadius; j++) {
+							mutable1.move(leftOrRight);
+							if (stateMap.getBlockState(mutable1).getBlock() == CORROCK_BLOCK) {
+								corrockShelves.add(new CorrockShelf(mutable1, random));
+							}
+						}
+					}
 				}
 			}
 
@@ -340,6 +372,18 @@ public final class EetleNestPieces {
 							}
 						}
 					}
+				}
+			}
+
+			private void generateCorrockShelfs(ISeedReader world, MutableBoundingBox bounds) {
+				for (CorrockShelf shelf : this.corrockShelves) {
+					shelf.generate(world, bounds);
+				}
+			}
+
+			private void generateCorrockShelfDecorations(ISeedReader world, MutableBoundingBox bounds) {
+				for (CorrockShelf shelf : this.corrockShelves) {
+					shelf.generateDecorations(world, bounds);
 				}
 			}
 		}
@@ -1029,6 +1073,7 @@ public final class EetleNestPieces {
 			private final List<BlockPos> airPositions = new ArrayList<>();
 			private final List<BlockPos> corrockPositions = new ArrayList<>();
 			private final List<TunnelDecoration> decorations = new ArrayList<>();
+			private BlockPos start;
 			private NestCave nestCave = null;
 			private boolean goesToSurface;
 
@@ -1043,6 +1088,7 @@ public final class EetleNestPieces {
 
 			private void setup(BlockPos startPos, ChunkGenerator chunkGenerator, OctavesNoiseGenerator noiseGenerator, Random random) {
 				startPos = startPos.add(this.xOffset, this.yOffset, this.zOffset);
+				this.start = startPos;
 				List<Vector3d> points = new ArrayList<>();
 				Vector3d startVec = Vector3d.copy(startPos);
 				BlockPos end;
@@ -1504,6 +1550,95 @@ public final class EetleNestPieces {
 						return VALUES[random.nextInt(VALUES.length)];
 					}
 				}
+			}
+		}
+
+		static class CorrockShelf {
+			private static final Direction[] HORIZONTALS = Direction.Plane.HORIZONTAL.getDirectionValues().toArray(Direction[]::new);
+			private final BlockPos pos;
+			private final StateMap corrock = new StateMap();
+			private final StateMap decorations = new StateMap();
+
+			CorrockShelf(BlockPos pos, Random random) {
+				this.pos = pos;
+				int size = random.nextBoolean() ? 3 : 4;
+				int edgeBias = 10;
+				int min = -(size / edgeBias + size);
+				int max = size / edgeBias + size;
+				int originX = pos.getX();
+				int originY = pos.getY();
+				int originZ = pos.getZ();
+				int underXDistance = random.nextInt(2) + 2;
+				int underZDistance = random.nextInt(2) + 2;
+				BlockPos.Mutable mutable = new BlockPos.Mutable();
+				StateMap corrock = this.corrock;
+				StateMap decorations = this.decorations;
+				List<BlockPos> wallCrowns = new ArrayList<>();
+				for (int x = min; x <= max; x++) {
+					for (int z = min; z <= max; z++) {
+						mutable.setPos(originX + x, originY, originZ + z);
+						double radius = (Math.cos(4 * Math.atan2(z, x)) / edgeBias + 1) * size;
+						int distance = x * x + z * z;
+						if (distance < radius * radius) {
+							corrock.setBlockState(mutable, CORROCK_BLOCK_STATE);
+							if (x * x < (radius - underXDistance) * (radius - underXDistance) && z * z < (radius - underZDistance) * (radius - underZDistance)) {
+								BlockPos down = mutable.down();
+								corrock.setBlockState(down, CORROCK_BLOCK_STATE);
+							}
+							if (random.nextFloat() < 0.75F) {
+								double radiusMinusOne = radius - 1.0F;
+								if (distance > radiusMinusOne * radiusMinusOne) {
+									if (random.nextFloat() < 0.25F) {
+										decorations.setBlockState(mutable.up(), CROWN_STANDING_STATE.with(CorrockCrownStandingBlock.ROTATION, random.nextInt(16)));
+									} else {
+										wallCrowns.add(mutable.toImmutable());
+									}
+								}
+							}
+						}
+					}
+				}
+				Map<BlockPos, BlockState> corrockStateMap = corrock.stateMap;
+				for (BlockPos crownPos : wallCrowns) {
+					int crownsPlaced = 0;
+					EetleEggsBlock.shuffleDirections(HORIZONTALS, random);
+					for (Direction direction : HORIZONTALS) {
+						BlockPos offset = crownPos.offset(direction);
+						if (!corrockStateMap.containsKey(offset)) {
+							decorations.setBlockState(offset, CROWN_WALL_STATE.with(CorrockCrownWallBlock.FACING, direction));
+							if (random.nextFloat() > 0.75F || crownsPlaced++ == 1) {
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			private void generate(ISeedReader world, MutableBoundingBox bounds) {
+				this.corrock.stateMap.forEach((pos, state) -> {
+					if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
+						world.setBlockState(pos, state, 2);
+					}
+				});
+			}
+
+			private void generateDecorations(ISeedReader world, MutableBoundingBox bounds) {
+				this.decorations.stateMap.forEach((pos, state) -> {
+					if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
+						if (state.getBlock() instanceof CorrockCrownStandingBlock) {
+							if (world.getBlockState(pos.down()).getBlock() == CORROCK_BLOCK) {
+								world.setBlockState(pos, state, 2);
+							}
+						} else {
+							BlockPos offset = pos.offset(state.get(CorrockCrownWallBlock.FACING).getOpposite());
+							if (bounds.isVecInside(offset)) {
+								if (world.getBlockState(offset).getBlock() == CORROCK_BLOCK) {
+									world.setBlockState(pos, state, 2);
+								}
+							}
+						}
+					}
+				});
 			}
 		}
 	}
