@@ -44,6 +44,7 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<BoofloEntity>> BOOFLO = HELPER.createLivingEntity("booflo", BoofloEntity::new, EntityClassification.CREATURE, 1.3F, 1.3F);
 	public static final RegistryObject<EntityType<ChargerEetleEntity>> CHARGER_EETLE = HELPER.createLivingEntity("charger_eetle", ChargerEetleEntity::new, EntityClassification.MONSTER, 1.0F, 0.85F);
 	public static final RegistryObject<EntityType<GliderEetleEntity>> GLIDER_EETLE = HELPER.createLivingEntity("glider_eetle", GliderEetleEntity::new, EntityClassification.MONSTER, 1.0F, 0.85F);
+	public static final RegistryObject<EntityType<BroodEetleEntity>> BROOD_EETLE = HELPER.createLivingEntity("brood_eetle", BroodEetleEntity::new, EntityClassification.MONSTER, 3.4375F, 2.125F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerSpawnPlacements(RegistryEvent.Register<EntityType<?>> event) {

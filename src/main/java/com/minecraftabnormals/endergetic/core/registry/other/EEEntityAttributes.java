@@ -4,7 +4,6 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 
@@ -67,6 +66,19 @@ public final class EEEntityAttributes {
 						.createMutableAttribute(Attributes.MAX_HEALTH, 25.0F)
 						.createMutableAttribute(Attributes.FOLLOW_RANGE, 28.0F)
 						.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F)
+						.create()
+		);
+		//TODO: Possibly tweak these values
+		GlobalEntityTypeAttributes.put(EEEntities.BROOD_EETLE.get(),
+				MobEntity.func_233666_p_()
+						.createMutableAttribute(Attributes.ATTACK_DAMAGE, 10.0F)
+						.createMutableAttribute(Attributes.FLYING_SPEED, 0.35F)
+						.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
+						.createMutableAttribute(Attributes.ARMOR, 6.0F)
+						.createMutableAttribute(Attributes.MAX_HEALTH, 300.0F)
+						.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
+						.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
+						.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 2.0D)
 						.create()
 		);
 	}

@@ -177,6 +177,7 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOOFLO.get(), BoofloRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.CHARGER_EETLE.get(), ChargerEetleRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.GLIDER_EETLE.get(), GliderEetleRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BROOD_EETLE.get(), BroodEetleRenderer::new);
 
 		KeybindHandler.registerKeys();
 

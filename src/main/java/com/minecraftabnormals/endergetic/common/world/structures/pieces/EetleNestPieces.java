@@ -6,13 +6,16 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
+import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -36,26 +39,25 @@ import java.util.stream.IntStream;
 
 public final class EetleNestPieces {
 	private static Set<MutableBoundingBox> GENERATING_BOUNDS = new HashSet<>();
-	protected static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
-	protected static final Direction[] TUNNEL_SIDES = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+	private static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
+	private static final Direction[] TUNNEL_SIDES = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 	private static final Direction[] EGG_DIRECTIONS = Direction.values();
-	protected static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
-	protected static final Block EUMUS = EEBlocks.EUMUS.get();
-	protected static final Block CROWN_STANDING = EEBlocks.CORROCK_CROWN_END_STANDING.get();
-	protected static final Block CROWN_WALL = EEBlocks.CORROCK_CROWN_END_WALL.get();
-	protected static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
-	protected static final Block CORROCK = EEBlocks.CORROCK_END.get();
+	private static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
+	private static final Block EUMUS = EEBlocks.EUMUS.get();
+	private static final Block CROWN_STANDING = EEBlocks.CORROCK_CROWN_END_STANDING.get();
+	private static final Block CROWN_WALL = EEBlocks.CORROCK_CROWN_END_WALL.get();
+	private static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
+	private static final Block CORROCK = EEBlocks.CORROCK_END.get();
 	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
-	protected static final BlockState CORROCK_BLOCK_STATE = CORROCK_BLOCK.getDefaultState();
-	protected static final BlockState CORROCK_STATE = CORROCK.getDefaultState();
-	protected static final BlockState EUMUS_STATE = EUMUS.getDefaultState();
-	protected static final BlockState CROWN_WALL_STATE = CROWN_WALL.getDefaultState();
-	protected static final BlockState CROWN_STANDING_STATE = CROWN_STANDING.getDefaultState();
-	protected static final BlockState EETLE_EGGS_STATE = EETLE_EGSS.getDefaultState();
+	private static final BlockState CORROCK_BLOCK_STATE = CORROCK_BLOCK.getDefaultState();
+	private static final BlockState CORROCK_STATE = CORROCK.getDefaultState();
+	private static final BlockState EUMUS_STATE = EUMUS.getDefaultState();
+	private static final BlockState CROWN_WALL_STATE = CROWN_WALL.getDefaultState();
+	private static final BlockState CROWN_STANDING_STATE = CROWN_STANDING.getDefaultState();
+	private static final BlockState EETLE_EGGS_STATE = EETLE_EGSS.getDefaultState();
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
 
-	//TODO: Add shelf generation to structure's generation
 	public static boolean isNotInsideGeneratingBounds(BlockPos pos) {
 		for (MutableBoundingBox boundingBox : GENERATING_BOUNDS) {
 			if (boundingBox.isVecInside(pos)) {
@@ -867,7 +869,17 @@ public final class EetleNestPieces {
 					}
 				}
 
-				mutable = origin.down(13).toMutable();
+				mutable = origin.down(3).toMutable();
+				if (bounds.isVecInside(mutable)) {
+					BroodEetleEntity broodEetle = EEEntities.BROOD_EETLE.get().create(world.getWorld());
+					if (broodEetle != null) {
+						broodEetle.setLocationAndAngles(mutable.getX() + 0.5D, mutable.getY(), mutable.getZ() + 0.5D, 0.0F, 0.0F);
+						broodEetle.onInitialSpawn(world, world.getDifficultyForLocation(broodEetle.getPosition()), SpawnReason.STRUCTURE, null, null);
+						world.func_242417_l(broodEetle);
+					}
+				}
+
+				mutable.move(Direction.DOWN, 10);
 
 				//Create bottom doorway
 				Direction horizontal = this.bottomDoorDirection;
