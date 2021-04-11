@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -22,12 +23,16 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public BroodEetleSlamGoal(BroodEetleEntity entity) {
 		super(entity, BroodEetleEntity.SLAM);
+		this.setMutexFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.entity;
-		return broodEetle.canSlam() && broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying() && BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle).size() > 3;
+		if (broodEetle.isFiringCannon()) {
+			return false;
+		}
+		return broodEetle.canSlam() && broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying() && BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, 3.0D).size() > 3;
 	}
 
 	@Override

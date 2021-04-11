@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 public class EetleEggsTileEntityRenderer extends TileEntityRenderer<EetleEggsTileEntity> {
-	private static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
+	public static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/small_eetle_eggs.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_eggs.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/large_eetle_eggs.png")

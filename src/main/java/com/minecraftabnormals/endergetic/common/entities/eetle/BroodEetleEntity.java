@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
+import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
@@ -12,6 +13,9 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -23,15 +27,21 @@ import java.util.Random;
 import java.util.Set;
 
 public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity {
+	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	public static final Endimation FLAP = new Endimation(22);
 	public static final Endimation MUNCH = new Endimation(25);
 	public static final Endimation ATTACK = new Endimation(12);
 	public static final Endimation SLAM = new Endimation(20);
+	public static final Endimation LAUNCH = new Endimation(15);
+	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
+	private final ControlledEndimation eggCannonFireEndimation = new ControlledEndimation(4, 0);
+	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	private int idleDelay;
 	private int slamCooldown;
+	private int eggCannonCooldown;
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
 		super(type, world);
@@ -41,11 +51,18 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity 
 
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(2, new BroodEetleLaunchEggsGoal(this));
 		this.goalSelector.addGoal(4, new BroodEetleSlamGoal(this));
 		this.goalSelector.addGoal(5, new BroodEetleFlingGoal(this));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, AbstractEetleEntity.class, 8.0F));
 		this.goalSelector.addGoal(1, new BroodEetleHurtByTargetGoal(this));
+	}
+
+	@Override
+	protected void registerData() {
+		super.registerData();
+		this.dataManager.register(FIRING_CANNON, false);
 	}
 
 	@Override
@@ -56,12 +73,26 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity 
 		if (!this.world.isRemote) {
 			if (this.idleDelay > 0) this.idleDelay--;
 			if (this.slamCooldown > 0) this.slamCooldown--;
+			if (this.eggCannonCooldown > 0) this.eggCannonCooldown--;
 
-			if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && this.getAttackTarget() == null && this.isNoEndimationPlaying()) {
+			if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && !this.isFiringCannon() && this.isNoEndimationPlaying()) {
 				NetworkUtil.setPlayingAnimationMessage(this, this.rand.nextFloat() < 0.6F ? FLAP : MUNCH);
 				this.resetIdleFlapDelay();
 			}
+		} else {
+			ControlledEndimation eggCannonFireEndimation = this.eggCannonFireEndimation;
+			eggCannonFireEndimation.setDecrementing(!(this.isEndimationPlaying(LAUNCH) && this.getAnimationTick() < 5));
+			eggCannonFireEndimation.update();
+			eggCannonFireEndimation.tick();
 		}
+		ControlledEndimation eggCannonEndimation = this.eggCannonEndimation;
+		eggCannonEndimation.setDecrementing(!this.isFiringCannon());
+		eggCannonEndimation.update();
+		eggCannonEndimation.tick();
+		ControlledEndimation eggMouthEndimation = this.eggMouthEndimation;
+		eggMouthEndimation.setDecrementing(!eggCannonEndimation.isAtMax());
+		eggMouthEndimation.update();
+		eggMouthEndimation.tick();
 	}
 
 	@Override
@@ -164,6 +195,30 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity 
 		}
 	}
 
+	public void setFiringCannon(boolean firingCannon) {
+		this.dataManager.set(FIRING_CANNON, firingCannon);
+	}
+
+	public boolean isFiringCannon() {
+		return this.dataManager.get(FIRING_CANNON);
+	}
+
+	public float getEggCannonProgress() {
+		return this.eggCannonEndimation.getAnimationProgress();
+	}
+
+	public float getEggCannonFireProgress() {
+		return this.eggCannonFireEndimation.getAnimationProgress();
+	}
+
+	public float getEggMouthProgress() {
+		return this.eggMouthEndimation.getAnimationProgress();
+	}
+
+	public boolean isEggMouthOpen() {
+		return this.eggMouthEndimation.isAtMax();
+	}
+
 	public void resetIdleFlapDelay() {
 		this.idleDelay = this.rand.nextInt(41) + 25;
 	}
@@ -172,8 +227,16 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity 
 		this.slamCooldown = this.rand.nextInt(21) + 60;
 	}
 
+	public void resetEggCannonCooldown() {
+		this.eggCannonCooldown = this.rand.nextInt(201) + 1200;
+	}
+
 	public boolean canSlam() {
 		return this.slamCooldown <= 0;
+	}
+
+	public boolean canFireEggCannon() {
+		return this.eggCannonCooldown <= 0;
 	}
 
 	public void addRevengeTarget(LivingEntity target) {
@@ -187,7 +250,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity 
 	@Override
 	public Endimation[] getEndimations() {
 		return new Endimation[] {
-				FLAP, MUNCH, ATTACK, SLAM
+				FLAP, MUNCH, ATTACK, SLAM, LAUNCH
 		};
 	}
 

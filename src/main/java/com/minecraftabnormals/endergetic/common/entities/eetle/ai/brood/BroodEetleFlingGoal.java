@@ -27,7 +27,10 @@ public class BroodEetleFlingGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		List<LivingEntity> targets = searchForNearbyAggressors(broodEetle);
+		if (broodEetle.isFiringCannon()) {
+			return false;
+		}
+		List<LivingEntity> targets = searchForNearbyAggressors(broodEetle, 3.0D);
 		if (!targets.isEmpty() && (targets.size() <= 3 || !broodEetle.canSlam())) {
 			this.target = broodEetle.world.getClosestEntity(targets, PREDICATE, broodEetle, broodEetle.getPosX(), broodEetle.getPosY(), broodEetle.getPosZ());
 			return this.target != null;
@@ -78,7 +81,12 @@ public class BroodEetleFlingGoal extends Goal {
 		return width * 2.0F * width * 2.0F + attackTarget.getWidth();
 	}
 
-	public static List<LivingEntity> searchForNearbyAggressors(BroodEetleEntity broodEetle) {
-		return broodEetle.world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(3.0D), livingEntity -> livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getEntitySenses().canSee(livingEntity) && (livingEntity instanceof PlayerEntity || livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getAttackTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity)));
+	public static List<LivingEntity> searchForNearbyAggressors(BroodEetleEntity broodEetle, double size) {
+		return broodEetle.world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(size), livingEntity -> {
+			if (livingEntity instanceof PlayerEntity) {
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && !((PlayerEntity) livingEntity).isCreative();
+			}
+			return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getEntitySenses().canSee(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getAttackTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+		});
 	}
 }

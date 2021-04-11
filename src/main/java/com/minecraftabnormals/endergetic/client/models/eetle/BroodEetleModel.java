@@ -184,19 +184,22 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	}
 
 	@Override
-	public void setRotationAngles(BroodEetleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setRotationAngles(BroodEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setRotationAngles(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
 		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += headPitch * ((float) Math.PI / 180.0F);
+		this.head.rotateAngleX += (headPitch * ((float) Math.PI / 180.0F));
 
 		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks));
 		this.eggSack.setScale(scale, scale, scale);
 
-		float eggMouthAngle = 0.087F * Math.abs(MathHelper.cos(0.05F * ageInTicks));
+		float eggMouthAngle = 0.087F * Math.abs(MathHelper.cos(0.05F * ageInTicks)) + 0.79F * eetle.getEggMouthProgress();
 		this.eggMouthTop.rotateAngleY -= eggMouthAngle;
 		this.eggMouthBottom.rotateAngleY -= eggMouthAngle;
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
+
+		this.egg.rotateAngleX += 0.91F * eetle.getEggCannonProgress() + 0.3F * eetle.getEggCannonFireProgress();
 	}
 
 	@Override
@@ -304,6 +307,14 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.endKeyframe();
 
 			this.resetKeyframe(5);
+		} else if (this.tryToPlayEndimation(BroodEetleEntity.LAUNCH)) {
+			this.startKeyframe(5);
+			this.scale(this.eggSack, 0.175F, 0.175F, 0.175F);
+			this.rotate(this.head, 0.3F, 0.0F, 0.0F);
+			this.rotate(this.horn, 0.52F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.resetKeyframe(10);
 		}
 	}
 

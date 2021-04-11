@@ -167,7 +167,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 			this.cooldown += RANDOM.nextInt(21) + 5;
 		}
 
-		private void tick() {
+		public void tick() {
 			this.prevGrowth = this.growth;
 			Stage stage = this.stage;
 			if (this.cooldown > 0) {
