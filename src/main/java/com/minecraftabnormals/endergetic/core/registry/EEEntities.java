@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.core.registry;
 
 import java.util.Random;
 
-import com.minecraftabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.entities.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.*;
 import com.minecraftabnormals.endergetic.common.entities.booflo.*;
@@ -10,12 +9,9 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.*;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.*;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import net.minecraft.block.Block;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +19,7 @@ import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,7 +28,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EEEntities {
 	public static final EntityClassification END_CREATURE = EntityClassification.create("endergetic:end_creature", "end_creature", 20, false, true, 128);
-	private static final EntitySubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getEntitySubHelper();
+	private static final EndergeticEntitySubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final RegistryObject<EntityType<PoiseClusterEntity>> POISE_CLUSTER = HELPER.createLivingEntity("poise_cluster", PoiseClusterEntity::new, EntityClassification.MISC, 1F, 1F);
 	public static final RegistryObject<EntityType<BolloomFruitEntity>> BOLLOOM_FRUIT = HELPER.createEntity("bolloom_fruit", BolloomFruitEntity::new, BolloomFruitEntity::new, EntityClassification.MISC, 0.5F, 0.5F);
@@ -46,6 +43,7 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<GliderEetleEntity>> GLIDER_EETLE = HELPER.createLivingEntity("glider_eetle", GliderEetleEntity::new, EntityClassification.MONSTER, 1.0F, 0.85F);
 	public static final RegistryObject<EntityType<BroodEetleEntity>> BROOD_EETLE = HELPER.createLivingEntity("brood_eetle", BroodEetleEntity::new, EntityClassification.MONSTER, 3.4375F, 2.125F);
 	public static final RegistryObject<EntityType<EetleEggsEntity>> EETLE_EGGS = HELPER.createEntity("eetle_eggs", EetleEggsEntity::new, EetleEggsEntity::new, EntityClassification.MISC, 0.98F, 0.98F);
+	public static final RegistryObject<EntityType<BroodEggSackEntity>> BROOD_EGG_SACK = HELPER.createUnsummonableEntity("brood_egg_sack", BroodEggSackEntity::new, BroodEggSackEntity::new, EntityClassification.MISC, 1.25F, 1.25F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerSpawnPlacements(RegistryEvent.Register<EntityType<?>> event) {
@@ -54,6 +52,18 @@ public final class EEEntities {
 		EntitySpawnPlacementRegistry.register(PUFF_BUG.get(), EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::endIslandCondition);
 		EntitySpawnPlacementRegistry.register(CHARGER_EETLE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
 		EntitySpawnPlacementRegistry.register(GLIDER_EETLE.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
+	}
+
+	@SubscribeEvent
+	public static void onEntityAttributesCreated(EntityAttributeCreationEvent event) {
+		event.put(EEEntities.BOOFLO.get(), BoofloEntity.getAttributes().create());
+		event.put(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentEntity.getAttributes().create());
+		event.put(EEEntities.BOOFLO_BABY.get(), BoofloBabyEntity.getAttributes().create());
+		event.put(EEEntities.PUFF_BUG.get(), PuffBugEntity.getAttributes().create());
+		event.put(EEEntities.POISE_CLUSTER.get(), LivingEntity.registerAttributes().create());
+		event.put(EEEntities.CHARGER_EETLE.get(), ChargerEetleEntity.getAttributes().create());
+		event.put(EEEntities.GLIDER_EETLE.get(), GliderEetleEntity.getAttributes().create());
+		event.put(EEEntities.BROOD_EETLE.get(), BroodEetleEntity.getAttributes().create());
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

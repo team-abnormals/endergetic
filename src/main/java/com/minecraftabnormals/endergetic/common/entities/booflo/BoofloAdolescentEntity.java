@@ -19,6 +19,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
@@ -103,6 +104,13 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		this.goalSelector.addGoal(6, new BoofloAdolescentEntity.RandomFlyingGoal(this, 1.1D, 5));
 
 		this.targetSelector.addGoal(4, new BoofloNearestAttackableTargetGoal<>(this, BolloomFruitEntity.class, true));
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.MAX_HEALTH, 10.0F)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 1.7F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 25.0F);
 	}
 
 	@Override

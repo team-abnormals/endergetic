@@ -8,6 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
@@ -44,6 +46,17 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
 		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F));
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0F)
+				.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 1.0F)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
+				.createMutableAttribute(Attributes.ARMOR, 4.0F)
+				.createMutableAttribute(Attributes.MAX_HEALTH, 30.0F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
+				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
 	}
 
 	@Override

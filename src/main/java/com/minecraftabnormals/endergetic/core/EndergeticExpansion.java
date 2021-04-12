@@ -12,6 +12,7 @@ import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
@@ -72,6 +73,7 @@ public class EndergeticExpansion {
 	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
 		helper.putSubHelper(ForgeRegistries.ITEMS, new EndergeticItemSubRegistryHelper(helper));
 		helper.putSubHelper(ForgeRegistries.BLOCKS, new EndergeticBlockSubRegistryHelper(helper));
+		helper.putSubHelper(ForgeRegistries.ENTITIES, new EndergeticEntitySubRegistryHelper(helper));
 	});
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))
@@ -122,7 +124,6 @@ public class EndergeticExpansion {
 			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
-			EEEntityAttributes.putAttributes();
 		});
 		modifyBiomes();
 	}
@@ -179,6 +180,7 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.GLIDER_EETLE.get(), GliderEetleRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BROOD_EETLE.get(), BroodEetleRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.EETLE_EGGS.get(), EetleEggsRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BROOD_EGG_SACK.get(), BroodEggSackRenderer::new);
 
 		KeybindHandler.registerKeys();
 

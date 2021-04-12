@@ -42,7 +42,7 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public void startExecuting() {
 		this.entity.setFiringCannon(true);
-		this.shotsToFire = this.random.nextInt(4) + 4;
+		this.shotsToFire = this.random.nextInt(4) + 5;
 	}
 
 	@Override

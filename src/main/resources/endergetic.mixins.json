@@ -25,7 +25,8 @@
   "client": [
 	"ClientWorldMixin",
 	"ClientPlayNetHandlerMixin",
-	"ClientPlayerEntityMixin"
+	"ClientPlayerEntityMixin",
+	"EntityRendererManagerMixin"
   ],
   "injectors": {
 	"defaultRequire": 1

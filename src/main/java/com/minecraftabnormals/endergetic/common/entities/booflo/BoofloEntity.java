@@ -52,6 +52,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -192,6 +193,16 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 		this.targetSelector.addGoal(1, new BoofloNearestAttackableTargetGoal<>(this, PuffBugEntity.class, 175, true, false));
 		this.targetSelector.addGoal(2, new BoofloNearestAttackableTargetGoal<>(this, BolloomFruitEntity.class, true));
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0F)
+				.createMutableAttribute(Attributes.MAX_HEALTH, 40.0F)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 1.05F)
+				.createMutableAttribute(Attributes.ARMOR, 4.0F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 22.0F)
+				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.6F);
 	}
 
 	@Override

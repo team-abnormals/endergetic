@@ -199,7 +199,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
 
-		this.egg.rotateAngleX += 0.91F * eetle.getEggCannonProgress() + 0.3F * eetle.getEggCannonFireProgress();
+		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F);
 	}
 
 	@Override
@@ -325,5 +325,12 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;
+	}
+
+	/**
+	 * Computes a value from 0 to a maximum value over an adjusted gradient curve.
+	 */
+	private static float computeSmoothCurve(float progress, float fromGradient, float toGradient, float max) {
+		return (fromGradient - toGradient - 2.0F * max) * (progress * progress * progress) + (3.0F * max - 2.0F * fromGradient - toGradient) * (progress * progress) + fromGradient * progress;
 	}
 }

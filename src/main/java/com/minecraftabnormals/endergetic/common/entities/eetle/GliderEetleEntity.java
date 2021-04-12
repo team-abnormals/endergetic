@@ -9,6 +9,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -143,6 +144,17 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 				return this.entity.getPassengers().isEmpty() && super.shouldContinueExecuting();
 			}
 		});
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0F)
+				.createMutableAttribute(Attributes.FLYING_SPEED, 0.35F)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
+				.createMutableAttribute(Attributes.ARMOR, 4.0F)
+				.createMutableAttribute(Attributes.MAX_HEALTH, 25.0F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 28.0F)
+				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
 	}
 
 	@Override

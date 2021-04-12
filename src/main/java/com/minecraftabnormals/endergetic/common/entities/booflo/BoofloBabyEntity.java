@@ -13,6 +13,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -75,6 +76,13 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		this.goalSelector.addGoal(0, new SwimGoal(this)); //Makes Booflo when in water at surface to stay and swim like a cow in water
 		this.goalSelector.addGoal(3, new BabyFollowParentGoal(this, 1.2F));
 		this.goalSelector.addGoal(5, new BoofloBabyEntity.RandomFlyingGoal(this, 1.1D, 20));
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.MAX_HEALTH, 5.0F)
+				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.85F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 18.0F);
 	}
 
 	@Override

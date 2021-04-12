@@ -45,16 +45,8 @@ import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -204,6 +196,15 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		this.goalSelector.addGoal(9, new PuffBugBoostGoal(this));
 
 		this.targetSelector.addGoal(2, new PuffBugTargetAggressorGoal(this));
+	}
+
+	public static AttributeModifierMap.MutableAttribute getAttributes() {
+		return MobEntity.func_233666_p_()
+				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 5.0F)
+				.createMutableAttribute(Attributes.FLYING_SPEED, 0.75F)
+				.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 0.15F)
+				.createMutableAttribute(Attributes.MAX_HEALTH, 8.0F)
+				.createMutableAttribute(Attributes.FOLLOW_RANGE, 16.0F);
 	}
 
 	@SuppressWarnings("deprecation")
