@@ -56,14 +56,14 @@ public final class EEEntities {
 
 	@SubscribeEvent
 	public static void onEntityAttributesCreated(EntityAttributeCreationEvent event) {
-		event.put(EEEntities.BOOFLO.get(), BoofloEntity.getAttributes().create());
-		event.put(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentEntity.getAttributes().create());
-		event.put(EEEntities.BOOFLO_BABY.get(), BoofloBabyEntity.getAttributes().create());
-		event.put(EEEntities.PUFF_BUG.get(), PuffBugEntity.getAttributes().create());
-		event.put(EEEntities.POISE_CLUSTER.get(), LivingEntity.registerAttributes().create());
-		event.put(EEEntities.CHARGER_EETLE.get(), ChargerEetleEntity.getAttributes().create());
-		event.put(EEEntities.GLIDER_EETLE.get(), GliderEetleEntity.getAttributes().create());
-		event.put(EEEntities.BROOD_EETLE.get(), BroodEetleEntity.getAttributes().create());
+		event.put(BOOFLO.get(), BoofloEntity.getAttributes().create());
+		event.put(BOOFLO_ADOLESCENT.get(), BoofloAdolescentEntity.getAttributes().create());
+		event.put(BOOFLO_BABY.get(), BoofloBabyEntity.getAttributes().create());
+		event.put(PUFF_BUG.get(), PuffBugEntity.getAttributes().create());
+		event.put(POISE_CLUSTER.get(), LivingEntity.registerAttributes().create());
+		event.put(CHARGER_EETLE.get(), ChargerEetleEntity.getAttributes().create());
+		event.put(GLIDER_EETLE.get(), GliderEetleEntity.getAttributes().create());
+		event.put(BROOD_EETLE.get(), BroodEetleEntity.getAttributes().create());
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

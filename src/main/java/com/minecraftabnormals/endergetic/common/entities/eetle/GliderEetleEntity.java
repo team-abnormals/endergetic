@@ -513,7 +513,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 					double motionHMag = Entity.horizontalMag(motion);
 					double lookHMag = Entity.horizontalMag(lookVec);
 					if (motionHMag > 0.0D && lookHMag > 0.0D) {
-						double rollRatio = (motion.x * lookVec.x + motion.z * lookVec.z) / Math.sqrt(motionHMag * lookHMag);
+						double rollRatio = MathHelper.clamp((motion.x * lookVec.x + motion.z * lookVec.z) / Math.sqrt(motionHMag * lookHMag), -1.0F, 1.0F);
 						double horizontalDifference = motion.x * lookVec.z - motion.z * lookVec.x;
 						targetRoll = MathHelper.clamp((float) ((Math.signum(horizontalDifference) * Math.acos(rollRatio)) * 57.3D), -16.0F, 16.0F);
 					}
