@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.client.models.eetle;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
@@ -102,7 +103,7 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	public void setRotationAngles(GliderEetleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-		GliderEetleEntity.FlyingRotations flyingRotations = entity.getFlyingRotations();
+		FlyingRotations flyingRotations = entity.getFlyingRotations();
 		float flyingProgress = entity.getFlyingProgress();
 		this.body.rotateAngleX += flyingRotations.getRenderFlyPitch() * ((float) Math.PI / 180.0F);
 		this.head.rotateAngleX += 0.52F * flyingProgress;
@@ -138,6 +139,7 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 
 		if (entity.isFlying()) {
 			float wingX = 0.1F * MathHelper.sin(8.0F * entity.getWingFlap()) + 0.15F;
+
 			this.leftWing.rotateAngleX += wingX;
 			this.rightWing.rotateAngleX += wingX;
 

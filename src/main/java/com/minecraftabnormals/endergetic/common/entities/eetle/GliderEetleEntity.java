@@ -6,6 +6,7 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider.*;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -30,7 +31,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class GliderEetleEntity extends AbstractEetleEntity {
+public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEetle {
 	private static final DataParameter<Boolean> FLYING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> DIVING = EntityDataManager.createKey(GliderEetleEntity.class, DataSerializers.BOOLEAN);
@@ -86,7 +87,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 		super.notifyDataManagerChange(key);
 		if (FLYING.equals(key)) {
 			if (!this.isChild() && this.isFlying()) {
-				this.moveController = new GliderMoveController(this);
+				this.moveController = new FlyingEetleMoveController<>(this, 16.0F, 50.0F);
 				this.navigator = new EndergeticFlyingPathNavigator(this, this.world);
 			} else {
 				if (!this.isChild()) {
@@ -112,7 +113,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 				this.navigator = this.createNavigator(this.world);
 			}
 		} else if (TARGET_FLYING_ROTATIONS.equals(key)) {
-			this.flyingRotations.looking = true;
+			this.flyingRotations.setLooking(true);
 		} else if (CAUGHT_SIZE.equals(key)) {
 			this.recalculateSize();
 		}
@@ -298,7 +299,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			if (passenger instanceof LivingEntity && !isEntityLarge(passenger)) {
 				AxisAlignedBB boundingBox = passenger.getBoundingBox();
 				float y = (float) (boundingBox.maxY - boundingBox.minY) * -0.25F;
-				float pitch = this.flyingRotations.flyPitch;
+				float pitch = this.flyingRotations.getFlyPitch();
 				Vector3d riderPos = (new Vector3d(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).rotatePitch(pitch * ((float)Math.PI / 180F));
 				passenger.setPosition(this.getPosX() + riderPos.x, this.getPosY() + 0.25F + riderPos.y, this.getPosZ() + riderPos.z);
 			} else {
@@ -376,7 +377,7 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 	public void setFlying(boolean flying) {
 		this.dataManager.set(FLYING, flying);
 		if (!flying) {
-			this.dataManager.set(MOVING, false);
+			this.setMoving(false);
 		}
 	}
 
@@ -473,130 +474,5 @@ public class GliderEetleEntity extends AbstractEetleEntity {
 			}
 		}
 		return false;
-	}
-
-	static class GliderMoveController extends MovementController {
-
-		public GliderMoveController(MobEntity mob) {
-			super(mob);
-		}
-
-		public void tick() {
-			MobEntity mob = this.mob;
-			if (this.action == Action.MOVE_TO) {
-				if (mob instanceof GliderEetleEntity) {
-					GliderEetleEntity glider = (GliderEetleEntity) mob;
-					glider.setMoving(true);
-					this.action = Action.WAIT;
-					double distanceX = this.posX - mob.getPosX();
-					double distanceY = this.posY - mob.getPosY();
-					double distanceZ = this.posZ - mob.getPosZ();
-					double magnitude = distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
-					if (magnitude < 0.00000025F) {
-						mob.setMoveVertical(0.0F);
-						mob.setMoveForward(0.0F);
-						return;
-					}
-
-					float yaw = (float) (MathHelper.atan2(distanceZ, distanceX) * 57.3D) - 90.0F;
-					mob.rotationYaw = this.limitAngle(mob.rotationYaw, yaw, 70.0F);
-					float f1 = (float) (this.speed * mob.getAttributeValue(Attributes.FLYING_SPEED));
-					mob.setAIMoveSpeed(f1);
-					double horizontalMag = MathHelper.sqrt(distanceX * distanceX + distanceZ * distanceZ);
-					float pitch = (float) (-(MathHelper.atan2(distanceY, horizontalMag) * 57.3D));
-					float limitedPitch = this.limitAngle(mob.rotationPitch, pitch, 45.0F);
-					mob.rotationPitch = limitedPitch;
-
-					float targetRoll = 0.0F;
-					Vector3d lookVec = mob.getLook(1.0F);
-					Vector3d motion = mob.getMotion();
-					double motionHMag = Entity.horizontalMag(motion);
-					double lookHMag = Entity.horizontalMag(lookVec);
-					if (motionHMag > 0.0D && lookHMag > 0.0D) {
-						double rollRatio = MathHelper.clamp((motion.x * lookVec.x + motion.z * lookVec.z) / Math.sqrt(motionHMag * lookHMag), -1.0F, 1.0F);
-						double horizontalDifference = motion.x * lookVec.z - motion.z * lookVec.x;
-						targetRoll = MathHelper.clamp((float) ((Math.signum(horizontalDifference) * Math.acos(rollRatio)) * 57.3D), -16.0F, 16.0F);
-					}
-					glider.setTargetFlyingRotations(new TargetFlyingRotations(limitedPitch, targetRoll));
-					mob.setMoveVertical(distanceY > 0.0D ? f1 : -f1);
-				}
-			} else {
-				if (mob instanceof GliderEetleEntity) {
-					((GliderEetleEntity) mob).setMoving(false);
-				}
-				mob.setMoveVertical(0.0F);
-				mob.setMoveForward(0.0F);
-			}
-		}
-
-	}
-
-	public static class FlyingRotations {
-		private float prevFlyPitch, flyPitch;
-		private float prevFlyRoll, flyRoll;
-		private boolean looking;
-
-		public void tick(TargetFlyingRotations targetRotations) {
-			this.prevFlyPitch = this.flyPitch;
-			this.prevFlyRoll = this.flyRoll;
-
-			while (this.flyPitch - this.prevFlyPitch < -180.0F) {
-				this.prevFlyPitch -= 360.0F;
-			}
-
-			while (this.flyPitch - this.prevFlyPitch >= 180.0F) {
-				this.prevFlyPitch += 360.0F;
-			}
-
-			while (this.flyRoll - this.prevFlyRoll < -180.0F) {
-				this.prevFlyRoll -= 360.0F;
-			}
-
-			while (this.flyRoll - this.prevFlyRoll >= 180.0F) {
-				this.prevFlyRoll += 360.0F;
-			}
-
-			if (this.looking) {
-				this.flyPitch = clampedRotate(this.flyPitch, targetRotations.targetFlyPitch, 5.0F);
-				this.flyRoll = clampedRotate(this.flyRoll, targetRotations.targetFlyRoll, 5.0F);
-				this.looking = false;
-			} else {
-				this.flyPitch = clampedRotate(this.flyPitch, 0.0F, 2.5F);
-				this.flyRoll = clampedRotate(this.flyRoll, 0.0F, 2.5F);
-			}
-		}
-
-		public float getRenderFlyPitch() {
-			return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevFlyPitch, this.flyPitch);
-		}
-
-		public float getRenderFlyRoll() {
-			return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevFlyRoll, this.flyRoll);
-		}
-
-		public static float clampedRotate(float from, float to, float delta) {
-			float wrapSubtractDegrees = MathHelper.wrapSubtractDegrees(from, to);
-			float clampedDelta = MathHelper.clamp(wrapSubtractDegrees, -delta, delta);
-			return from + clampedDelta;
-		}
-	}
-
-	public static class TargetFlyingRotations {
-		private static final TargetFlyingRotations ZERO = new TargetFlyingRotations(0.0F, 0.0F);
-		private final float targetFlyPitch;
-		private final float targetFlyRoll;
-
-		public TargetFlyingRotations(float targetFlyPitch, float targetFlyRoll) {
-			this.targetFlyPitch = targetFlyPitch;
-			this.targetFlyRoll = targetFlyRoll;
-		}
-
-		public float getTargetFlyPitch() {
-			return this.targetFlyPitch;
-		}
-
-		public float getTargetFlyRoll() {
-			return this.targetFlyRoll;
-		}
 	}
 }

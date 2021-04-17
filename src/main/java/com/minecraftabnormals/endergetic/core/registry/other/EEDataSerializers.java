@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
-import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.network.PacketBuffer;
@@ -60,20 +60,20 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final IDataSerializer<GliderEetleEntity.TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new IDataSerializer<GliderEetleEntity.TargetFlyingRotations>() {
+	public static final IDataSerializer<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new IDataSerializer<TargetFlyingRotations>() {
 		@Override
-		public void write(PacketBuffer buf, GliderEetleEntity.TargetFlyingRotations value) {
+		public void write(PacketBuffer buf, TargetFlyingRotations value) {
 			buf.writeFloat(value.getTargetFlyPitch());
 			buf.writeFloat(value.getTargetFlyRoll());
 		}
 
 		@Override
-		public GliderEetleEntity.TargetFlyingRotations read(PacketBuffer buf) {
-			return new GliderEetleEntity.TargetFlyingRotations(buf.readFloat(), buf.readFloat());
+		public TargetFlyingRotations read(PacketBuffer buf) {
+			return new TargetFlyingRotations(buf.readFloat(), buf.readFloat());
 		}
 
 		@Override
-		public GliderEetleEntity.TargetFlyingRotations copyValue(GliderEetleEntity.TargetFlyingRotations value) {
+		public TargetFlyingRotations copyValue(TargetFlyingRotations value) {
 			return value;
 		}
 	};

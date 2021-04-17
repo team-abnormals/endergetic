@@ -12,6 +12,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -67,7 +68,7 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	public void updatePosition(BroodEetleEntity broodEetle) {
-		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer());
+		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch());
 		this.setPosition(sackPos.getX(), sackPos.getY(), sackPos.getZ());
 	}
 
@@ -139,7 +140,10 @@ public class BroodEggSackEntity extends Entity {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static Vector3d getEggPos(Vector3d pos, float yaw, float eggCannonProgress) {
-		return  pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress, 1.3D + Math.sin(eggCannonProgress * 0.91F), 0.0D).rotateYaw(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
+	public static Vector3d getEggPos(Vector3d pos, float yaw, float eggCannonProgress, float eggCannonFlyingProgress, float flyPitch) {
+		flyPitch = MathHelper.clamp(flyPitch, -30.0F, 20.0F);
+		float flyPitchMultiplier = flyPitch >= 0.0F ? 0.0425F : 0.0567F;
+		float xOffset = flyPitch < 0.0F ? flyPitch * 0.033F : 0.0F;
+		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier, 0.0D).rotateYaw(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
 	}
 }

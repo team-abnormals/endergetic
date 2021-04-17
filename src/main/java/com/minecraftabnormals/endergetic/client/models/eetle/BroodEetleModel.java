@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.client.models.eetle;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
@@ -14,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
  * Created using Tabula 7.0.0
  */
 public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
-	private static final float WING_SHOW_THRESHOLD = (float) Math.toRadians(12.0F);
+	private static final float WING_SHOW_THRESHOLD = (float) Math.toRadians(15.0F);
 	public EndimatorModelRenderer body;
 	public EndimatorModelRenderer leftShell;
 	public EndimatorModelRenderer rightShell;
@@ -187,8 +188,22 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	public void setRotationAngles(BroodEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setRotationAngles(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
+		FlyingRotations flyingRotations = eetle.getFlyingRotations();
+		this.body.rotateAngleX += MathHelper.clamp(flyingRotations.getRenderFlyPitch(), -30.0F, 20.0F) * ((float) Math.PI / 180.0F);
+
+		if (eetle.isFlying()) {
+			this.body.rotateAngleZ = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
+		}
+
+		float flyingProgress = eetle.getFlyingProgress();
 		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += (headPitch * ((float) Math.PI / 180.0F));
+		this.head.rotateAngleX += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F));
+
+		float legFlying = 0.52F * flyingProgress;
+		this.leftFrontLeg.rotateAngleX += legFlying;
+		this.rightFrontLeg.rotateAngleX += legFlying;
+		this.leftBackLeg.rotateAngleX += legFlying;
+		this.rightBackLeg.rotateAngleX += legFlying;
 
 		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks));
 		this.eggSack.setScale(scale, scale, scale);
@@ -199,7 +214,32 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
 
-		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F);
+		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F);
+
+		float takeOffProgress = eetle.getTakeoffProgress();
+		float thirtyDegreeProgress = 0.52F * takeOffProgress;
+		this.leftShell.rotateAngleZ -= thirtyDegreeProgress;
+		this.rightShell.rotateAngleZ += thirtyDegreeProgress;
+		this.wingLeft.rotateAngleY += thirtyDegreeProgress;
+		this.wingRight.rotateAngleY -= thirtyDegreeProgress;
+
+		float shellY = 0.87F * takeOffProgress;
+		this.leftShell.rotateAngleY += shellY;
+		this.rightShell.rotateAngleY -= shellY;
+
+		if (eetle.isFlying()) {
+			float wingX = 0.1F * MathHelper.sin(8.0F * eetle.getWingFlap()) + (0.26F * takeOffProgress);
+			this.wingLeft.rotateAngleX += wingX;
+			this.wingRight.rotateAngleX += wingX;
+
+			float frontLegMoving = Math.abs(MathHelper.cos(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
+			this.leftFrontLeg.rotateAngleX -= frontLegMoving;
+			this.rightFrontLeg.rotateAngleX -= frontLegMoving;
+
+			float backLegMoving = Math.abs(MathHelper.sin(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
+			this.leftBackLeg.rotateAngleX += backLegMoving;
+			this.rightBackLeg.rotateAngleX += backLegMoving;
+		}
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.DamageSource;
@@ -96,8 +98,8 @@ public class GliderEetleDiveGoal extends Goal {
 		}
 		glider.setDiving(true);
 		glider.setMoving(true);
-		glider.setTargetFlyingRotations(new GliderEetleEntity.TargetFlyingRotations(this.targetPitch, glider.getTargetFlyingRotations().getTargetFlyRoll()));
-		glider.rotationYaw = GliderEetleEntity.FlyingRotations.clampedRotate(glider.rotationYaw, this.targetYaw, 15.0F);
+		glider.setTargetFlyingRotations(new TargetFlyingRotations(this.targetPitch, glider.getTargetFlyingRotations().getTargetFlyRoll()));
+		glider.rotationYaw = FlyingRotations.clampedRotate(glider.rotationYaw, this.targetYaw, 15.0F);
 		glider.getLookController().setLookPosition(this.divePos);
 		if (ticksDiving > 5 && (glider.isOnGround() || glider.collidedHorizontally)) {
 			LivingEntity attackTarget = glider.getAttackTarget();

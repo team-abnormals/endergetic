@@ -24,7 +24,7 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.entity;
-		if (broodEetle.canFireEggCannon() && broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying()) {
+		if (broodEetle.canFireEggCannon() && broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying() && !broodEetle.isFlying()) {
 			List<LivingEntity> aggressors = BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE) * 0.5D);
 			return computeAverageAggressorDistanceSq(broodEetle.getPositionVec(), aggressors) >= 42.25F || !aggressors.isEmpty() && this.random.nextFloat() < 0.0005F;
 		}
