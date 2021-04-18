@@ -6,6 +6,7 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
+import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
@@ -46,6 +47,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation ATTACK = new Endimation(12);
 	public static final Endimation SLAM = new Endimation(20);
 	public static final Endimation LAUNCH = new Endimation(15);
+	public static final Endimation AIR_CHARGE = new Endimation(80);
+	public static final Endimation AIR_SLAM = new Endimation(11);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggCannonFireEndimation = new ControlledEndimation(4, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
@@ -78,6 +81,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(0, new BroodEetleAirSlamGoal(this));
 		this.goalSelector.addGoal(1, new BroodEetleLandGoal(this));
 		this.goalSelector.addGoal(2, new BroodEetleFlyNearPosGoal(this));
 		this.goalSelector.addGoal(2, new BroodEetleLaunchEggsGoal(this));
@@ -162,6 +166,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 			if (this.isFlying()) {
 				this.ticksFlying++;
+
+				if (this.isEndimationPlaying(AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.world.hasNoCollisions(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
+					BroodEetleSlamGoal.slam(this, this.rand);
+				}
 			} else {
 				this.ticksFlying = 0;
 			}
@@ -416,11 +424,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetSlamCooldown() {
-		this.slamCooldown = this.rand.nextInt(21) + 60;
+		this.slamCooldown = this.rand.nextInt(21) + 70;
 	}
 
 	public void resetEggCannonCooldown() {
-		this.eggCannonCooldown = this.rand.nextInt(201) + 1200;
+		this.eggCannonCooldown = this.rand.nextInt(201) + 1100;
 	}
 
 	public boolean canSlam() {
@@ -436,7 +444,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetFlyCooldown() {
-		this.flyCooldown = this.rand.nextInt(301) + 600;
+		this.flyCooldown = this.rand.nextInt(301) + 500;
 	}
 
 	public boolean canFly() {
@@ -511,7 +519,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	@Override
 	public Endimation[] getEndimations() {
 		return new Endimation[] {
-				FLAP, MUNCH, ATTACK, SLAM, LAUNCH
+				FLAP, MUNCH, ATTACK, SLAM, LAUNCH, AIR_CHARGE, AIR_SLAM
 		};
 	}
 

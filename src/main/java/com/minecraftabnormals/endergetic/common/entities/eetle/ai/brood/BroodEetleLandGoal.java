@@ -71,7 +71,7 @@ public class BroodEetleLandGoal extends Goal {
 	public void tick() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		BlockPos takeoffPos = broodEetle.takeoffPos;
-		if (broodEetle.isFlying() && broodEetle.getPositionVec().squareDistanceTo(Vector3d.copyCentered(takeoffPos)) <= 2.5F) {
+		if (broodEetle.isFlying() && broodEetle.getPositionVec().squareDistanceTo(Vector3d.copyCentered(takeoffPos)) <= 3.0F) {
 			broodEetle.setMotion(broodEetle.getMotion().scale(0.95F));
 			if (++this.ticksNearTakeoffPos >= 5 && broodEetle.isOnGround()) {
 				broodEetle.resetFlyCooldown();

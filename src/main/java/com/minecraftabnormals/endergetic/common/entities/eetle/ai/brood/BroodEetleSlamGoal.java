@@ -23,7 +23,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public BroodEetleSlamGoal(BroodEetleEntity entity) {
 		super(entity, BroodEetleEntity.SLAM);
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
@@ -49,37 +49,39 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public void tick() {
 		if (this.isEndimationAtTick(14)) {
-			BroodEetleEntity broodEetle = this.entity;
-			ServerWorld world = (ServerWorld) broodEetle.world;
-			Random random = this.random;
-			double posX = broodEetle.getPosX();
-			double posY = broodEetle.getPosY();
-			double posZ = broodEetle.getPosZ();
-			for (BlockState state : sampleGround(world, broodEetle.getPosition().down(), random)) {
-				world.spawnParticle(new BlockParticleData(EEParticles.SLAM.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.2F);
+			slam(this.entity, this.random);
+		}
+	}
+
+	public static void slam(BroodEetleEntity broodEetle, Random random) {
+		ServerWorld world = (ServerWorld) broodEetle.world;
+		double posX = broodEetle.getPosX();
+		double posY = broodEetle.getPosY();
+		double posZ = broodEetle.getPosZ();
+		for (BlockState state : sampleGround(world, broodEetle.getPosition().down(), random)) {
+			world.spawnParticle(new BlockParticleData(EEParticles.SLAM.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.2F);
+		}
+		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE);
+		double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
+		for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.0D))) {
+			float damage;
+			if ((int) attackDamage > 0.0F) {
+				damage = attackDamage / 2.0F + random.nextInt((int) attackDamage);
+			} else {
+				damage = attackDamage;
 			}
-			float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE);
-			double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-			for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.0D))) {
-				float damage;
-				if ((int) attackDamage > 0.0F) {
-					damage = attackDamage / 2.0F + random.nextInt((int) attackDamage);
-				} else {
-					damage = attackDamage;
-				}
 
-				if (livingEntity instanceof AbstractEetleEntity) {
-					damage = 0.0F;
-				}
+			if (livingEntity instanceof AbstractEetleEntity) {
+				damage = 0.0F;
+			}
 
-				if (livingEntity.attackEntityFrom(DamageSource.causeMobDamage(broodEetle), damage)) {
-					broodEetle.applyEnchantments(broodEetle, livingEntity);
-					double knockbackForce = knockback - livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-					float inAirFactor = livingEntity.isOnGround() ? 1.0F : 0.75F;
-					Vector3d horizontalVelocity = new Vector3d(livingEntity.getPosX() - posX, 0.0D, livingEntity.getPosZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor);
-					livingEntity.addVelocity(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
-					livingEntity.velocityChanged = true;
-				}
+			if (livingEntity.attackEntityFrom(DamageSource.causeMobDamage(broodEetle), damage)) {
+				broodEetle.applyEnchantments(broodEetle, livingEntity);
+				double knockbackForce = knockback - livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+				float inAirFactor = livingEntity.isOnGround() ? 1.0F : 0.75F;
+				Vector3d horizontalVelocity = new Vector3d(livingEntity.getPosX() - posX, 0.0D, livingEntity.getPosZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor);
+				livingEntity.addVelocity(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
+				livingEntity.velocityChanged = true;
 			}
 		}
 	}

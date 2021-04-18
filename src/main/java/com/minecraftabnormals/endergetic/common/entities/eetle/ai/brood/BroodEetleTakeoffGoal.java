@@ -27,6 +27,7 @@ public class BroodEetleTakeoffGoal extends Goal {
 	public void startExecuting() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		broodEetle.takeoffPos = broodEetle.getPosition();
+		broodEetle.resetSlamCooldown();
 		broodEetle.setFlying(true);
 		broodEetle.setFiringCannon(false);
 	}

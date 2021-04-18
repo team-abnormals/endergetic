@@ -239,7 +239,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.addVelocity(0.0F, -0.225F, 0.0F);
 			}
 
-			this.setOnGround(!this.world.hasNoCollisions(DetectionHelper.checkOnGround(this.getBoundingBox())));
+			this.setOnGround(!this.world.hasNoCollisions(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.07F)));
 
 			int power = this.getBoostPower();
 			if (power > 0 && !this.isBoostExpanding()) {

@@ -19,9 +19,9 @@ public class DetectionHelper {
 		return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
 	}
 
-	public static AxisAlignedBB checkOnGround(AxisAlignedBB bb) {
+	public static AxisAlignedBB checkOnGround(AxisAlignedBB bb, float offset) {
 		double d0 = bb.minX;
-		double d1 = bb.minY - 0.07F;
+		double d1 = bb.minY - offset;
 		double d2 = bb.minZ;
 		double d3 = bb.maxX;
 		double d4 = bb.maxY - 1.0F;

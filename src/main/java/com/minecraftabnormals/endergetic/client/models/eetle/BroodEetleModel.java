@@ -355,6 +355,33 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.endKeyframe();
 
 			this.resetKeyframe(10);
+		} else if (this.tryToPlayEndimation(BroodEetleEntity.AIR_CHARGE)) {
+			this.startKeyframe(10);
+			this.rotate(this.leftFrontLeg, -1.0875F, 0.0F, -1.571F);
+			this.rotate(this.rightFrontLeg, -1.0875F, 0.0F, 1.571F);
+			this.rotate(this.head, -0.4F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.setStaticKeyframe(60);
+			this.resetKeyframe(10);
+		} else if (this.tryToPlayEndimation(BroodEetleEntity.AIR_SLAM)) {
+			this.startKeyframe(1);
+			this.rotate(this.leftFrontLeg, -1.0875F, 0.0F, -1.571F);
+			this.rotate(this.rightFrontLeg, -1.0875F, 0.0F, 1.571F);
+			this.rotate(this.head, -0.4F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.rotate(this.leftFrontLeg, -1.187F, 1.1F, -0.785F);
+			this.rotate(this.rightFrontLeg, -1.187F, -1.1F, 0.785F);
+			this.rotate(this.leftFrontFoot, -0.31F, 0.14F, 0.52F);
+			this.rotate(this.rightFrontFoot, -0.31F, -0.14F, -0.52F);
+			this.rotate(this.head, 0.4F, 0.0F, 0.0F);
+			this.move(this.leftFrontLeg, 0.0F, 6.5F, 0.0F);
+			this.move(this.rightFrontLeg, 0.0F, 6.5F, 0.0F);
+			this.endKeyframe();
+
+			this.resetKeyframe(5);
 		}
 	}
 
