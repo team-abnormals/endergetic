@@ -17,7 +17,9 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
@@ -156,6 +158,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			}
 			if (++this.deathTime >= 100) {
 				if (!world.isRemote) {
+					ItemEntity elytra = this.entityDropItem(Items.ELYTRA);
+					if (elytra != null) {
+						elytra.setNoDespawn();
+					}
 					this.remove();
 					BroodEggSackEntity broodEggSack = this.getEggSack(world);
 					if (broodEggSack != null) {
