@@ -40,6 +40,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> FLYING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> DROPPING_EGGS = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.createKey(GliderEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
 	private static final DataParameter<Integer> EGG_SACK_ID = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.VARINT);
 	public static final Endimation FLAP = new Endimation(22);
@@ -66,6 +67,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private int eggCannonCooldown;
 	private int ticksFlying;
 	private int flyCooldown;
+	private int eggDropOffCooldown;
 	private boolean takeoffMoving;
 	private float prevWingFlap, wingFlap;
 	private float wingFlapSpeed;
@@ -81,6 +83,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(0, new BroodEetleDropEggsGoal(this));
 		this.goalSelector.addGoal(0, new BroodEetleAirSlamGoal(this));
 		this.goalSelector.addGoal(1, new BroodEetleLandGoal(this));
 		this.goalSelector.addGoal(2, new BroodEetleFlyNearPosGoal(this));
@@ -99,6 +102,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.dataManager.register(FIRING_CANNON, false);
 		this.dataManager.register(FLYING, false);
 		this.dataManager.register(MOVING, false);
+		this.dataManager.register(DROPPING_EGGS, false);
 		this.dataManager.register(TARGET_FLYING_ROTATIONS, TargetFlyingRotations.ZERO);
 		this.dataManager.register(EGG_SACK_ID, -1);
 	}
@@ -144,6 +148,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			if (this.slamCooldown > 0) this.slamCooldown--;
 			if (this.eggCannonCooldown > 0) this.eggCannonCooldown--;
 			if (this.flyCooldown > 0) this.flyCooldown--;
+			if (this.eggDropOffCooldown > 0) this.eggDropOffCooldown--;
 
 			if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && !this.isFiringCannon() && this.isNoEndimationPlaying()) {
 				NetworkUtil.setPlayingAnimationMessage(this, this.rand.nextFloat() < 0.6F && !this.isFlying() ? FLAP : MUNCH);
@@ -182,7 +187,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			}
 		} else {
 			ControlledEndimation eggCannonFireEndimation = this.eggCannonFireEndimation;
-			eggCannonFireEndimation.setDecrementing(!(this.isEndimationPlaying(LAUNCH) && this.getAnimationTick() < 5));
+			eggCannonFireEndimation.setDecrementing(!(this.isEndimationPlaying(LAUNCH) && this.getAnimationTick() < 5 && this.isNotDroppingEggs()));
 			eggCannonFireEndimation.update();
 			eggCannonFireEndimation.tick();
 
@@ -211,7 +216,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		eggCannonEndimation.tick();
 
 		ControlledEndimation eggMouthEndimation = this.eggMouthEndimation;
-		eggMouthEndimation.setDecrementing(!eggCannonEndimation.isAtMax());
+		eggMouthEndimation.setDecrementing(!eggCannonEndimation.isAtMax() && this.isNotDroppingEggs());
 		eggMouthEndimation.update();
 		eggMouthEndimation.tick();
 
@@ -248,6 +253,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 		compound.putInt("EggCannonCooldown", this.eggCannonCooldown);
 		compound.putInt("FlyCooldown", this.flyCooldown);
+		compound.putInt("EggDropOffCooldown", this.eggDropOffCooldown);
 		compound.putBoolean("IsFlying", this.isFlying());
 	}
 
@@ -259,6 +265,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 		this.eggCannonCooldown = compound.getInt("EggCannonCooldown");
 		this.flyCooldown = compound.getInt("FlyCooldown");
+		this.eggDropOffCooldown = compound.getInt("EggDropOffCooldown");
 		this.setFlying(compound.getBoolean("IsFlying"));
 	}
 
@@ -451,6 +458,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		return this.flyCooldown <= 0;
 	}
 
+	public void resetEggDropOffCooldown() {
+		this.eggDropOffCooldown = this.rand.nextInt(201) + 800;
+	}
+
+	public boolean canDropOffEggs() {
+		return this.eggDropOffCooldown <= 0;
+	}
+
 	public void setFlying(boolean flying) {
 		this.dataManager.set(FLYING, flying);
 		if (!flying) {
@@ -460,6 +475,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public boolean isFlying() {
 		return this.dataManager.get(FLYING);
+	}
+
+	public void setDroppingEggs(boolean droppingEggs) {
+		this.dataManager.set(DROPPING_EGGS, droppingEggs);
+	}
+
+	public boolean isNotDroppingEggs() {
+		return !this.dataManager.get(DROPPING_EGGS);
 	}
 
 	@Override

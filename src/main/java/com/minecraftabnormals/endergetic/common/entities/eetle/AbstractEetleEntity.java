@@ -144,6 +144,10 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		}
 	}
 
+	public int getGrowingAge() {
+		return this.growingAge;
+	}
+
 	@Nullable
 	@Override
 	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {

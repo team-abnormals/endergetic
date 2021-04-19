@@ -22,7 +22,7 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.entity;
-		if (broodEetle.canSlam() && broodEetle.isFlying() && !broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying()) {
+		if (!broodEetle.isNotDroppingEggs() && broodEetle.canSlam() && broodEetle.isFlying() && !broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying()) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			if (takeoffPos != null) {
 				return !searchForAggressorsUnder(broodEetle, new AxisAlignedBB(takeoffPos).grow(8.0D, 7.0D, 8.0D)).isEmpty();
