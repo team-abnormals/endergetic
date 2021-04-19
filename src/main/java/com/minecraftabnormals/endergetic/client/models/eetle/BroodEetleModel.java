@@ -382,6 +382,111 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.endKeyframe();
 
 			this.resetKeyframe(5);
+		} else if (this.tryToPlayEndimation(BroodEetleEntity.DEATH)) {
+			float headTiltAngle = endimatedEntity.headTiltDirection.angle;
+
+			this.startKeyframe(15);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.endKeyframe();
+
+			this.setStaticKeyframe(35);
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.175F, 0.175F, 0.175F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.0F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.19F, 0.19F, 0.19F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.0F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.18F, 0.18F, 0.18F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.0F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.225F, 0.225F, 0.225F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.0F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(10);
+			this.move(this.body, 0.0F, 7.0F, 0.0F);
+			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
+			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
+			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
+			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
+			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.eggSack, 0.35F, 0.35F, 0.35F);
+			this.endKeyframe();
+
+			this.setStaticKeyframe(5);
 		}
 	}
 

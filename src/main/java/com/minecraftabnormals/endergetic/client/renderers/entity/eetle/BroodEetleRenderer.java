@@ -4,9 +4,12 @@ import com.minecraftabnormals.endergetic.client.models.eetle.BroodEetleModel;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.EmissiveLayerRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.TextFormatting;
 
 public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetleModel> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood_eetle.png");
@@ -15,6 +18,18 @@ public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetle
 	public BroodEetleRenderer(EntityRendererManager renderManagerIn) {
 		super(renderManagerIn, new BroodEetleModel(), 1.0F);
 		this.addLayer(new EmissiveLayerRenderer<>(this, EMISSIVE_TEXTURE));
+	}
+
+	@Override
+	protected void applyRotations(BroodEetleEntity broodEetle, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+		if (broodEetle.hasCustomName()) {
+			String name = TextFormatting.getTextWithoutFormattingCodes(broodEetle.getName().getString());
+			if (name.equals("Dinnerbone") || name.equals("Grum")) {
+				matrixStackIn.translate(0.0D, broodEetle.getHeight() + 0.1D, 0.0D);
+				matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+			}
+		}
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlying
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
+import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
@@ -22,6 +23,8 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -29,6 +32,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -50,6 +54,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation LAUNCH = new Endimation(15);
 	public static final Endimation AIR_CHARGE = new Endimation(80);
 	public static final Endimation AIR_SLAM = new Endimation(11);
+	public static final Endimation DEATH = new Endimation(105);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggCannonFireEndimation = new ControlledEndimation(4, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
@@ -59,6 +64,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
 	private Endimation endimation = BLANK_ANIMATION;
+	public final HeadTiltDirection headTiltDirection;
 	@Nullable
 	public BlockPos takeoffPos;
 	private int animationTick;
@@ -74,6 +80,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
 		super(type, world);
+		this.headTiltDirection = this.getRNG().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
 		this.experienceValue = 50;
 		this.prevWingFlap = this.wingFlap = this.rand.nextFloat();
 		this.takeoffEndimation.setDecrementing(true);
@@ -143,6 +150,27 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.endimateTick();
 
 		World world = this.world;
+		if (this.getShouldBeDead()) {
+			if (!this.isEndimationPlaying(DEATH) && !world.isRemote) {
+				NetworkUtil.setPlayingAnimationMessage(this, DEATH);
+			}
+			if (++this.deathTime >= 100) {
+				if (!world.isRemote) {
+					this.remove();
+					BroodEggSackEntity broodEggSack = this.getEggSack(world);
+					if (broodEggSack != null) {
+						if (world instanceof ServerWorld) {
+							((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), broodEggSack.getPosX(), broodEggSack.getPosY() + (double) broodEggSack.getHeight() / 1.5D, broodEggSack.getPosZ(), 20, broodEggSack.getWidth() / 4.0F, broodEggSack.getHeight() / 4.0F, broodEggSack.getWidth() / 4.0F, 0.05D);
+						}
+					}
+				} else {
+					for (int i = 0; i < 20; ++i) {
+						world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+					}
+				}
+			}
+		}
+
 		if (!world.isRemote) {
 			if (this.idleDelay > 0) this.idleDelay--;
 			if (this.slamCooldown > 0) this.slamCooldown--;
@@ -211,7 +239,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 
 		ControlledEndimation eggCannonEndimation = this.eggCannonEndimation;
-		eggCannonEndimation.setDecrementing(!this.isFiringCannon());
+		eggCannonEndimation.setDecrementing(!this.isFiringCannon() && !(this.isEndimationPlaying(DEATH) && this.getAnimationTick() >= 15));
 		eggCannonEndimation.update();
 		eggCannonEndimation.tick();
 
@@ -368,6 +396,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void onDeathUpdate() {
 	}
 
 	@Override
@@ -542,7 +574,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	@Override
 	public Endimation[] getEndimations() {
 		return new Endimation[] {
-				FLAP, MUNCH, ATTACK, SLAM, LAUNCH, AIR_CHARGE, AIR_SLAM
+				FLAP, MUNCH, ATTACK, SLAM, LAUNCH, AIR_CHARGE, AIR_SLAM, DEATH
 		};
 	}
 
@@ -566,5 +598,26 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.onEndimationEnd(this.endimation);
 		this.endimation = endimation;
 		this.setAnimationTick(0);
+	}
+
+	@Override
+	public void onEndimationStart(Endimation endimation) {
+		if (endimation == DEATH) {
+			this.deathTime = 0;
+			this.setFlying(false);
+			this.setDroppingEggs(false);
+			this.setFiringCannon(false);
+		}
+	}
+
+	public enum HeadTiltDirection {
+		LEFT(-0.17F),
+		RIGHT(0.17F);
+
+		public final float angle;
+
+		HeadTiltDirection(float angle) {
+			this.angle = angle;
+		}
 	}
 }
