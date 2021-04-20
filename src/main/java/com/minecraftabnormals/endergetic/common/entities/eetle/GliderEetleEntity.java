@@ -1,12 +1,14 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -104,6 +106,10 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 								if (!hasCollisionsAbove(world, pos.toMutable(), getEntitySizeBlocksCeil(passenger))) {
 									passenger.setPosition(passenger.getPosX(), pos.getY() + 1.0F, passenger.getPosZ());
 								}
+							}
+							if (passenger instanceof IDataManager) {
+								IDataManager dataManager = (IDataManager) passenger;
+								dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN) + 20 + this.rand.nextInt(11));
 							}
 						}
 					}

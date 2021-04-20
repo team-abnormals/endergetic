@@ -26,8 +26,9 @@ import java.util.Random;
 public class EetleEggsTileEntity extends TileEntity implements ITickableTileEntity {
 	private static final Random RANDOM = new Random();
 	private final SackGrowth[] sackGrowths;
-	private int hatchDelay = -18000;
+	private int hatchDelay = -24000 - RANDOM.nextInt(1200);
 	private int hatchProgress;
+	private boolean bypassesSpawningGameRule;
 
 	public EetleEggsTileEntity() {
 		super(EETileEntities.EETLE_EGGS.get());
@@ -48,7 +49,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.tick();
 				}
-			} else if (world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
+			} else if ((world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
 					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
@@ -102,6 +103,10 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		}
 	}
 
+	public void bypassSpawningGameRule() {
+		this.bypassesSpawningGameRule = true;
+	}
+
 	public SackGrowth[] getSackGrowths() {
 		return this.sackGrowths;
 	}
@@ -129,6 +134,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		super.write(compound);
 		compound.putInt("HatchDelay", this.hatchDelay);
 		compound.putInt("HatchProgress", this.hatchProgress);
+		compound.putBoolean("BypassSpawningGameRule", this.bypassesSpawningGameRule);
 		return compound;
 	}
 
@@ -139,6 +145,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 			this.hatchDelay = compound.getInt("HatchDelay");
 		}
 		this.hatchProgress = MathHelper.clamp(compound.getInt("HatchProgress"), 0, 2);
+		this.bypassesSpawningGameRule = compound.getBoolean("BypassSpawningGameRule");
 	}
 
 	@Override

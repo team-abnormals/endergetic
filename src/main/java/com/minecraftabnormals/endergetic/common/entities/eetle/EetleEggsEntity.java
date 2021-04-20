@@ -97,7 +97,9 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 						if (!placingState.get(BlockStateProperties.WATERLOGGED)) {
 							TileEntity tileentity = world.getTileEntity(newPos);
 							if (tileentity instanceof EetleEggsTileEntity) {
-								((EetleEggsTileEntity) tileentity).updateHatchDelay(world, random.nextInt(6) + 5);
+								EetleEggsTileEntity eetleEggsTileEntity = (EetleEggsTileEntity) tileentity;
+								eetleEggsTileEntity.updateHatchDelay(world, random.nextInt(6) + 5);
+								eetleEggsTileEntity.bypassSpawningGameRule();
 							}
 						}
 					}

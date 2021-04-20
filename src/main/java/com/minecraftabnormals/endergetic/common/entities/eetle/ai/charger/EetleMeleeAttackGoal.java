@@ -15,6 +15,7 @@ public class EetleMeleeAttackGoal extends Goal {
 	private double targetY;
 	private double targetZ;
 	private int delayCounter;
+	private int meleeCooldown;
 
 	public EetleMeleeAttackGoal(ChargerEetleEntity charger) {
 		this.attacker = charger;
@@ -78,7 +79,11 @@ public class EetleMeleeAttackGoal extends Goal {
 			}
 		}
 
-		this.checkAndPerformAttack(livingentity, d0);
+		if (this.meleeCooldown > 0) {
+			this.meleeCooldown--;
+		} else {
+			this.checkAndPerformAttack(livingentity, d0);
+		}
 	}
 
 	@Override
@@ -93,8 +98,10 @@ public class EetleMeleeAttackGoal extends Goal {
 	}
 
 	private void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
-		if (this.attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy)) {
-			this.attacker.attackEntityAsMob(enemy);
+		ChargerEetleEntity attacker = this.attacker;
+		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy)) {
+			attacker.attackEntityAsMob(enemy);
+			this.meleeCooldown += 10 + attacker.getRNG().nextInt(11);
 		}
 	}
 

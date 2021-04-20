@@ -6,6 +6,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEnti
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEggSackEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
+import net.minecraft.entity.ai.EntitySenses;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -65,8 +66,10 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	private static boolean areFewEetlesNearby(BroodEetleEntity broodEetle) {
-		return broodEetle.world.getEntitiesWithinAABB(AbstractEetleEntity.class, broodEetle.getBoundingBox().grow(broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE)), eetle -> {
-			return eetle.isAlive() && (!eetle.isChild() || eetle.getGrowingAge() >= -240);
+		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
+		EntitySenses senses = broodEetle.getEntitySenses();
+		return broodEetle.world.getEntitiesWithinAABB(AbstractEetleEntity.class, broodEetle.getBoundingBox().grow(followRange, followRange * 0.5D, followRange), eetle -> {
+			return eetle.isAlive() && senses.canSee(eetle) && (!eetle.isChild() || eetle.getGrowingAge() >= -240);
 		}).size() <= 2;
 	}
 

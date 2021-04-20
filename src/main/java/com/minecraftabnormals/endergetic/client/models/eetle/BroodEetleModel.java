@@ -385,7 +385,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		} else if (this.tryToPlayEndimation(BroodEetleEntity.DEATH)) {
 			float headTiltAngle = endimatedEntity.headTiltDirection.angle;
 
-			this.startKeyframe(15);
+			this.startKeyframe(20);
 			this.move(this.body, 0.0F, 7.0F, 0.0F);
 			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
 			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
@@ -476,13 +476,14 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.scale(this.eggSack, 0.0F, 0.0F, 0.0F);
 			this.endKeyframe();
 
-			this.startKeyframe(10);
+			this.startKeyframe(15);
 			this.move(this.body, 0.0F, 7.0F, 0.0F);
 			this.rotate(this.head, 0.44F,0.0F, headTiltAngle);
 			this.rotate(this.leftFrontLeg, -0.7F, 0.0F, -0.57F);
 			this.rotate(this.rightFrontLeg, -0.7F, 0.0F, 0.57F);
 			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
 			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
+			this.scale(this.egg, 0.3F, 0.3F, 0.3F);
 			this.scale(this.eggSack, 0.35F, 0.35F, 0.35F);
 			this.endKeyframe();
 

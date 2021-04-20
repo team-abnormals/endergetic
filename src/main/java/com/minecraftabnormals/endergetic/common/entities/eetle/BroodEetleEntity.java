@@ -56,7 +56,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation LAUNCH = new Endimation(15);
 	public static final Endimation AIR_CHARGE = new Endimation(80);
 	public static final Endimation AIR_SLAM = new Endimation(11);
-	public static final Endimation DEATH = new Endimation(105);
+	public static final Endimation DEATH = new Endimation(115);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggCannonFireEndimation = new ControlledEndimation(4, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
@@ -156,18 +156,16 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			if (!this.isEndimationPlaying(DEATH) && !world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, DEATH);
 			}
-			if (++this.deathTime >= 100) {
+			if (++this.deathTime >= 105) {
 				if (!world.isRemote) {
 					ItemEntity elytra = this.entityDropItem(Items.ELYTRA);
 					if (elytra != null) {
 						elytra.setNoDespawn();
 					}
 					this.remove();
-					BroodEggSackEntity broodEggSack = this.getEggSack(world);
-					if (broodEggSack != null) {
-						if (world instanceof ServerWorld) {
-							((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), broodEggSack.getPosX(), broodEggSack.getPosY() + (double) broodEggSack.getHeight() / 1.5D, broodEggSack.getPosZ(), 20, broodEggSack.getWidth() / 4.0F, broodEggSack.getHeight() / 4.0F, broodEggSack.getWidth() / 4.0F, 0.05D);
-						}
+					if (world instanceof ServerWorld) {
+						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch());
+						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
 					for (int i = 0; i < 20; ++i) {

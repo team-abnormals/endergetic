@@ -198,7 +198,9 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 							world.setBlockState(pos, state.with(EetleEggsBlock.SIZE, random.nextInt(2)));
 							TileEntity tileEntity = world.getTileEntity(pos);
 							if (tileEntity instanceof EetleEggsTileEntity) {
-								((EetleEggsTileEntity) tileEntity).updateHatchDelay(world, random.nextInt(11) + 5);
+								EetleEggsTileEntity eetleEggsTileEntity = (EetleEggsTileEntity) tileEntity;
+								eetleEggsTileEntity.updateHatchDelay(world, random.nextInt(11) + 5);
+								eetleEggsTileEntity.bypassSpawningGameRule();
 							}
 						}
 					}
