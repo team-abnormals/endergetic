@@ -196,14 +196,30 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		}
 
 		float flyingProgress = eetle.getFlyingProgress();
+		float sleepingProgress = eetle.getSleepingProgress();
 		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F));
+		this.head.rotateAngleX += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F)) + 0.35F * sleepingProgress + sleepingProgress * 0.06F * MathHelper.sin(0.08F * ageInTicks);
 
+		this.body.rotationPointY += sleepingProgress * 6.0F;
+
+		float frontLegSleepingX = 0.7F * sleepingProgress;
 		float legFlying = 0.52F * flyingProgress;
-		this.leftFrontLeg.rotateAngleX += legFlying;
-		this.rightFrontLeg.rotateAngleX += legFlying;
-		this.leftBackLeg.rotateAngleX += legFlying;
-		this.rightBackLeg.rotateAngleX += legFlying;
+		this.leftFrontLeg.rotateAngleX += legFlying - frontLegSleepingX;
+		this.rightFrontLeg.rotateAngleX += legFlying - frontLegSleepingX;
+		float backLegSleepingX = 0.09F * sleepingProgress;
+		this.leftBackLeg.rotateAngleX += legFlying + backLegSleepingX;
+		this.rightBackLeg.rotateAngleX += legFlying + backLegSleepingX;
+
+		float frontLegSleepingZ = 0.52F * sleepingProgress;
+		this.leftFrontLeg.rotateAngleZ -= frontLegSleepingZ;
+		this.rightFrontLeg.rotateAngleZ += frontLegSleepingZ;
+		float backLegSleepingZ = 0.33F * sleepingProgress;
+		this.leftBackLeg.rotateAngleZ -= backLegSleepingZ;
+		this.rightBackLeg.rotateAngleZ += backLegSleepingZ;
+
+		float backLegSleepingY = 0.54F * sleepingProgress;
+		this.leftBackLeg.rotateAngleY += backLegSleepingY;
+		this.rightBackLeg.rotateAngleY -= backLegSleepingY;
 
 		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks));
 		this.eggSack.setScale(scale, scale, scale);
@@ -214,7 +230,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
 
-		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F);
+		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
 
 		float takeOffProgress = eetle.getTakeoffProgress();
 		float thirtyDegreeProgress = 0.52F * takeOffProgress;

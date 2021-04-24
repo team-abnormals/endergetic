@@ -873,6 +873,7 @@ public final class EetleNestPieces {
 				if (bounds.isVecInside(mutable)) {
 					BroodEetleEntity broodEetle = EEEntities.BROOD_EETLE.get().create(world.getWorld());
 					if (broodEetle != null) {
+						broodEetle.setSleeping(true);
 						broodEetle.setLocationAndAngles(mutable.getX() + 0.5D, mutable.getY(), mutable.getZ() + 0.5D, 0.0F, 0.0F);
 						broodEetle.onInitialSpawn(world, world.getDifficultyForLocation(broodEetle.getPosition()), SpawnReason.STRUCTURE, null, null);
 						world.func_242417_l(broodEetle);

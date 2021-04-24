@@ -14,14 +14,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public class SlamParticle extends SpriteTexturedParticle {
+public class FastBlockParticle extends SpriteTexturedParticle {
 	private final BlockState sourceState;
 	private BlockPos sourcePos;
 	private final float uCoord;
 	private final float vCoord;
 
 	@SuppressWarnings("deprecation")
-	public SlamParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, BlockState state) {
+	public FastBlockParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, BlockState state) {
 		super(world, x, y, z, motionX, motionY, motionZ);
 		this.motionX = motionX + (Math.random() * 2.0D - 1.0D) * 0.4F;
 		this.motionY = Math.random() * 0.1F;
@@ -42,7 +42,7 @@ public class SlamParticle extends SpriteTexturedParticle {
 		this.particleBlue *= (float)(i & 255) / 255.0F;
 	}
 
-	public SlamParticle init() {
+	public FastBlockParticle init() {
 		this.sourcePos = new BlockPos(this.posX, this.posY, this.posZ);
 		if (!this.sourceState.isIn(Blocks.GRASS_BLOCK)) {
 			this.multiplyColor(this.sourcePos);
@@ -119,7 +119,7 @@ public class SlamParticle extends SpriteTexturedParticle {
 		@Override
 		public Particle makeParticle(BlockParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			BlockState blockstate = data.getBlockState();
-			return !blockstate.isAir() && !blockstate.isIn(Blocks.MOVING_PISTON) ? new SlamParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, blockstate).init().updateSprite(data.getPos()) : null;
+			return !blockstate.isAir() && !blockstate.isIn(Blocks.MOVING_PISTON) ? new FastBlockParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, blockstate).init().updateSprite(data.getPos()) : null;
 		}
 	}
 }

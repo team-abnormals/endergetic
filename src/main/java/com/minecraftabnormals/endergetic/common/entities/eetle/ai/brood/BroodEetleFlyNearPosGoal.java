@@ -23,7 +23,7 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		if (broodEetle.isFlying() && broodEetle.getRNG().nextFloat() < 0.1F) {
+		if (broodEetle.isFlying() && broodEetle.hasWokenUp() && broodEetle.getRNG().nextFloat() < 0.1F) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			if (takeoffPos != null) {
 				Vector3d vector3d = findPos(broodEetle, Vector3d.copyCentered(broodEetle.takeoffPos));

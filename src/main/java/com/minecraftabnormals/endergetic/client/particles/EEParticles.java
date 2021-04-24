@@ -26,7 +26,7 @@ public class EEParticles {
 	public static final RegistryObject<BasicParticleType> POISE_BUBBLE = createBasicParticleType(true, "poise_bubble");
 	public static final RegistryObject<BasicParticleType> SHORT_POISE_BUBBLE = createBasicParticleType(true, "short_poise_bubble");
 	public static final RegistryObject<BasicParticleType> ENDER_FLAME = createBasicParticleType(true, "ender_flame");
-	public static final RegistryObject<ParticleType<BlockParticleData>> SLAM = createParticleType("slam", BlockParticleData.DESERIALIZER, BlockParticleData::func_239800_a_);
+	public static final RegistryObject<ParticleType<BlockParticleData>> FAST_BLOCK = createParticleType("fast_block", BlockParticleData.DESERIALIZER, BlockParticleData::func_239800_a_);
 
 	private static RegistryObject<BasicParticleType> createBasicParticleType(boolean alwaysShow, String name) {
 		return PARTICLES.register(name, () -> new BasicParticleType(alwaysShow));
@@ -52,8 +52,8 @@ public class EEParticles {
 			if (SHORT_POISE_BUBBLE.isPresent()) {
 				particleManager.registerFactory(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
 			}
-			if (SLAM.isPresent()) {
-				particleManager.registerFactory(SLAM.get(), new SlamParticle.Factory());
+			if (FAST_BLOCK.isPresent()) {
+				particleManager.registerFactory(FAST_BLOCK.get(), new FastBlockParticle.Factory());
 			}
 		}
 

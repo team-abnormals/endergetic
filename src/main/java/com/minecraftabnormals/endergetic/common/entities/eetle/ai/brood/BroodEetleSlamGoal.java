@@ -32,13 +32,15 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		if (broodEetle.isFiringCannon()) {
 			return false;
 		}
-		return broodEetle.canSlam() && broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying() && BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, 3.0D).size() > 3;
+		return broodEetle.canSlam() && broodEetle.isOnGround() && (broodEetle.isNoEndimationPlaying() && BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, 3.0D).size() > 3) || broodEetle.shouldSlamWhenWakingUp();
 	}
 
 	@Override
 	public void startExecuting() {
 		this.playEndimation();
-		this.entity.resetSlamCooldown();
+		BroodEetleEntity broodEetle = this.entity;
+		broodEetle.wokenUpByPlayer = false;
+		broodEetle.resetSlamCooldown();
 	}
 
 	@Override
@@ -59,11 +61,11 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		double posY = broodEetle.getPosY();
 		double posZ = broodEetle.getPosZ();
 		for (BlockState state : sampleGround(world, broodEetle.getPosition().down(), random)) {
-			world.spawnParticle(new BlockParticleData(EEParticles.SLAM.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.2F);
+			world.spawnParticle(new BlockParticleData(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
 		}
 		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE);
 		double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-		for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.0D))) {
+		for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.5D), entity1 -> entity1 != broodEetle)) {
 			float damage;
 			if ((int) attackDamage > 0.0F) {
 				damage = attackDamage / 2.0F + random.nextInt((int) attackDamage);

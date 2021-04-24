@@ -27,7 +27,7 @@ public class BroodEetleFlingGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		if (broodEetle.isFiringCannon()) {
+		if (broodEetle.isFiringCannon() || !broodEetle.hasWokenUp()) {
 			return false;
 		}
 		List<LivingEntity> targets = searchForNearbyAggressors(broodEetle, 3.0D);

@@ -97,7 +97,7 @@ public class BroodEggSackEntity extends Entity {
 				Entity trueSource = source.getTrueSource();
 				LivingEntity livingEntity = trueSource instanceof LivingEntity ? (LivingEntity) trueSource : null;
 				if (livingEntity != null) {
-					amount += 0.5F * EnchantmentHelper.getModifierForCreature(livingEntity.getHeldItemMainhand(), CreatureAttribute.ARTHROPOD);
+					amount += 0.25F * EnchantmentHelper.getModifierForCreature(livingEntity.getHeldItemMainhand(), CreatureAttribute.ARTHROPOD);
 				}
 				if (broodEetle.attackEntityFromEggSack(source, amount)) {
 					if (livingEntity != null) {
