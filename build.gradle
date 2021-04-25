@@ -2,11 +2,9 @@ buildscript {
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "4.1.+", changing: true
         classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
     }
 }
@@ -17,7 +15,7 @@ apply plugin: "maven-publish"
 apply plugin: "org.spongepowered.mixin"
 
 mixin {
-    add sourceSets.main, "endergetic.refmap.json"
+    add sourceSets.main, "${project.modId}.refmap.json"
 }
 
 version = "${project.minecraft}-${project.modVersion}"
@@ -35,7 +33,7 @@ minecraft {
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
             property "mixin.env.disableRefMap", "true"
-            arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -47,7 +45,7 @@ minecraft {
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
             property "mixin.env.disableRefMap", "true"
-            arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -58,7 +56,8 @@ minecraft {
             workingDirectory project.file("run")
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            args "--mod", "endergetic", "--all", "--output", file("src/generated/resources/")
+            property "mixin.env.disableRefMap", "true"
+            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
             mods {
                 endergetic {
                     source sourceSets.main
@@ -70,25 +69,18 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
-    implementation fg.deobf("com.minecraftabnormals:abnormals-core:${project.abnormalsCore}")
+    implementation fg.deobf("com.minecraftabnormals:abnormals-core:${project.minecraft}-${project.abnormalsCore}")
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.4:${project.jei}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.4:${project.jei}")
+    compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}:${project.jei}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft}:${project.jei}")
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 
 repositories {
-    maven {
-        name = "Jaackson Maven"
-        url = "https://maven.jaackson.me"
-    }
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
-    }
+    maven { url = "https://maven.jaackson.me" }
+    maven { url = "https://dvs1.progwml6.com/files/maven/" }
+    maven { url = "https://modmaven.k-4u.nl" }
 }
 
 jar {
@@ -101,7 +93,7 @@ jar {
                 "Implementation-Version"  : project.modVersion,
                 "Implementation-Vendor"   : "Team Abnormals",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : "endergetic.mixins.json"
+                "MixinConfigs"            : project.modId + ".mixins.json"
         ])
     }
 }
