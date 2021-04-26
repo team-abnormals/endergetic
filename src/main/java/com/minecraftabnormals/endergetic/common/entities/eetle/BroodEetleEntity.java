@@ -58,12 +58,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation MUNCH = new Endimation(25);
 	public static final Endimation ATTACK = new Endimation(12);
 	public static final Endimation SLAM = new Endimation(20);
-	public static final Endimation LAUNCH = new Endimation(15);
+	public static final Endimation LAUNCH = new Endimation(18);
 	public static final Endimation AIR_CHARGE = new Endimation(80);
 	public static final Endimation AIR_SLAM = new Endimation(11);
 	public static final Endimation DEATH = new Endimation(115);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
-	private final ControlledEndimation eggCannonFireEndimation = new ControlledEndimation(4, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation eggCannonFlyingEndimation = new ControlledEndimation(20, 0);
@@ -235,11 +234,6 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 			this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
 		} else {
-			ControlledEndimation eggCannonFireEndimation = this.eggCannonFireEndimation;
-			eggCannonFireEndimation.setDecrementing(!(this.isEndimationPlaying(LAUNCH) && this.getAnimationTick() < 5 && this.isNotDroppingEggs()));
-			eggCannonFireEndimation.update();
-			eggCannonFireEndimation.tick();
-
 			ControlledEndimation takeoff = this.takeoffEndimation;
 			takeoff.update();
 			takeoff.tick();
@@ -490,10 +484,6 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		return this.eggCannonEndimation.getAnimationProgressServer();
 	}
 
-	public float getEggCannonFireProgress() {
-		return this.eggCannonFireEndimation.getAnimationProgress();
-	}
-
 	public float getEggMouthProgress() {
 		return this.eggMouthEndimation.getAnimationProgress();
 	}
@@ -504,6 +494,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public float getTakeoffProgress() {
 		return this.takeoffEndimation.getAnimationProgress();
+	}
+
+	public boolean isEggCannonFlyingAtMax() {
+		return this.eggCannonFlyingEndimation.isAtMax();
 	}
 
 	public float getEggCannonFlyingProgress() {

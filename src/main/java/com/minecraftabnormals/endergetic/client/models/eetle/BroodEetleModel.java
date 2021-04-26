@@ -230,7 +230,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
 
-		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.0F, 0.91F) + computeSmoothCurve(eetle.getEggCannonFireProgress(), 0.01F, 0.02F, 0.3F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
+		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
 
 		float takeOffProgress = eetle.getTakeoffProgress();
 		float thirtyDegreeProgress = 0.52F * takeOffProgress;
@@ -364,13 +364,34 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 
 			this.resetKeyframe(5);
 		} else if (this.tryToPlayEndimation(BroodEetleEntity.LAUNCH)) {
+			float droppingSign = endimatedEntity.isEggCannonFlyingAtMax() ? -1.2F : 1.0F;
 			this.startKeyframe(5);
 			this.scale(this.eggSack, 0.175F, 0.175F, 0.175F);
 			this.rotate(this.head, 0.3F, 0.0F, 0.0F);
 			this.rotate(this.horn, 0.52F, 0.0F, 0.0F);
+			this.rotateAdditive(this.egg, droppingSign * 0.27F, 0.0F, 0.0F);
+			this.scale(this.egg, 0.1F, 0.1F, 0.1F);
+			this.rotateAdditive(this.eggMouthTop, 0.0F, -0.17F, 0.0F);
+			this.rotateAdditive(this.eggMouthBottom, 0.0F, -0.17F, 0.0F);
+			this.rotateAdditive(this.eggMouthLeft, 0.0F, -0.17F, 0.0F);
+			this.rotateAdditive(this.eggMouthRight, 0.0F, -0.17F, 0.0F);
 			this.endKeyframe();
 
-			this.resetKeyframe(10);
+			this.startKeyframe(4);
+			this.rotate(this.head, 0.075F, 0.0F, 0.0F);
+			this.rotate(this.horn, 0.13F, 0.0F, 0.0F);
+			this.scale(this.eggSack, 0.1375F, 0.1375F, 0.1375F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.rotateAdditive(this.egg, droppingSign * 0.13F, 0.0F, 0.0F);
+			this.rotateAdditive(this.eggMouthTop, 0.0F, -0.07F, 0.0F);
+			this.rotateAdditive(this.eggMouthBottom, 0.0F, -0.07F, 0.0F);
+			this.rotateAdditive(this.eggMouthLeft, 0.0F, -0.07F, 0.0F);
+			this.rotateAdditive(this.eggMouthRight, 0.0F, -0.07F, 0.0F);
+			this.endKeyframe();
+
+			this.resetKeyframe(4);
 		} else if (this.tryToPlayEndimation(BroodEetleEntity.AIR_CHARGE)) {
 			this.startKeyframe(10);
 			this.rotate(this.leftFrontLeg, -1.0875F, 0.0F, -1.571F);
