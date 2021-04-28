@@ -107,10 +107,6 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 									passenger.setPosition(passenger.getPosX(), pos.getY() + 1.0F, passenger.getPosZ());
 								}
 							}
-							if (passenger instanceof IDataManager) {
-								IDataManager dataManager = (IDataManager) passenger;
-								dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN) + 20 + this.rand.nextInt(11));
-							}
 						}
 					}
 				}
@@ -325,6 +321,10 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	@Override
 	protected void removePassenger(Entity passenger) {
 		super.removePassenger(passenger);
+		if (passenger.getRidingEntity() != this && passenger instanceof IDataManager) {
+			IDataManager dataManager = (IDataManager) passenger;
+			dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN) + 20 + this.rand.nextInt(21));
+		}
 		if (!this.world.isRemote) {
 			if (!this.getPassengers().isEmpty()) {
 				Entity indexZeroPassenger = this.getPassengers().get(0);

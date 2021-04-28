@@ -1,9 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
+import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.EntitySenses;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -41,8 +43,9 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	@Override
 	public void startExecuting() {
-		this.entity.setFiringCannon(true);
-		this.shotsToFire = this.random.nextInt(4) + 5;
+		BroodEetleEntity broodEetle = this.entity;
+		broodEetle.setFiringCannon(true);
+		this.shotsToFire = this.random.nextInt(3) + 5 - (int) Math.min(5.0F, (float) getNearbyEetleCount(broodEetle) * 0.625F);
 	}
 
 	@Override
@@ -77,5 +80,17 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 			total += pos.squareDistanceTo(livingEntity.getPositionVec());
 		}
 		return total / aggressors.size();
+	}
+
+	private static int getNearbyEetleCount(BroodEetleEntity broodEetle) {
+		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
+		double posY = broodEetle.getPosY();
+		EntitySenses senses = broodEetle.getEntitySenses();
+		return broodEetle.world.getEntitiesWithinAABB(AbstractEetleEntity.class, broodEetle.getBoundingBox().grow(followRange, followRange * 0.75D, followRange), eetle -> {
+			if (eetle.getPosY() - posY >= 0.5F && !senses.canSee(eetle)) {
+				return false;
+			}
+			return eetle.isAlive() && (!eetle.isChild() || eetle.getGrowingAge() >= -240);
+		}).size();
 	}
 }

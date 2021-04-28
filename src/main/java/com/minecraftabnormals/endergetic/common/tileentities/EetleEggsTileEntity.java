@@ -103,6 +103,10 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		}
 	}
 
+	public int getHatchDelay() {
+		return this.hatchDelay;
+	}
+
 	public void bypassSpawningGameRule() {
 		this.bypassesSpawningGameRule = true;
 	}

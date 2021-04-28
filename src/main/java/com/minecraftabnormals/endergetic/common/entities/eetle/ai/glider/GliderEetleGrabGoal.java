@@ -63,8 +63,7 @@ public class GliderEetleGrabGoal extends Goal {
 		LivingEntity target = glider.getAttackTarget();
 		glider.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
 		double distanceToTargetSq = glider.getDistanceSq(target);
-		boolean canSeeTarget = glider.getEntitySenses().canSee(target);
-		if (canSeeTarget && this.delayCounter <= 0 && glider.getRNG().nextFloat() < 0.05F) {
+		if (glider.getEntitySenses().canSee(target) && this.delayCounter <= 0 && glider.getRNG().nextFloat() < 0.05F) {
 			this.delayCounter = 4 + glider.getRNG().nextInt(9);
 			PathNavigator pathNavigator = glider.getNavigator();
 			if (distanceToTargetSq > 1024.0D) {
@@ -86,9 +85,9 @@ public class GliderEetleGrabGoal extends Goal {
 			}
 		}
 
-		if (canSeeTarget && ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) <= 0) {
+		if (((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) <= 0) {
 			double reachRange = glider.getWidth() * 2.0F * glider.getWidth() * 2.0F + target.getWidth();
-			if (distanceToTargetSq <= reachRange) {
+			if (distanceToTargetSq <= reachRange && glider.canEntityBeSeen(target)) {
 				target.startRiding(glider, true);
 			}
 		}

@@ -32,7 +32,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		BroodEetleEntity broodEetle = this.entity;
 		broodEetle.setDroppingEggs(true);
 		broodEetle.resetEggDropOffCooldown();
-		this.eggsToDrop = this.random.nextInt(3) + 4;
+		this.eggsToDrop = this.random.nextInt(3) + 5;
 	}
 
 	@Override

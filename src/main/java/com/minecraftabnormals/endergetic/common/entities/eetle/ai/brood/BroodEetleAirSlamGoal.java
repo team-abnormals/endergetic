@@ -64,9 +64,9 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 				return false;
 			}
 			if (livingEntity instanceof PlayerEntity) {
-				return livingEntity.isAlive() && !livingEntity.isInvisible() && !((PlayerEntity) livingEntity).isCreative();
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canEntityBeSeen(livingEntity) && !((PlayerEntity) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.getEntitySenses().canSee(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getAttackTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canEntityBeSeen(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getAttackTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 

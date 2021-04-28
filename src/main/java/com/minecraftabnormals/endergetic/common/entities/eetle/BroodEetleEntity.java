@@ -9,6 +9,7 @@ import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlying
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
@@ -28,6 +29,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -68,12 +70,13 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private final ControlledEndimation eggCannonFlyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation sleepingEndimation = new ControlledEndimation(20, 0);
-	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PINK, BossInfo.Overlay.PROGRESS);
+	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PINK, BossInfo.Overlay.NOTCHED_6);
 	private final Set<ServerPlayerEntity> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
 	private Endimation endimation = BLANK_ANIMATION;
 	public final HeadTiltDirection headTiltDirection;
+	private HealthStage stage;
 	@Nullable
 	public BlockPos takeoffPos;
 	private int animationTick;
@@ -86,6 +89,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private boolean takeoffMoving;
 	private float prevWingFlap, wingFlap;
 	private float wingFlapSpeed;
+	private float prevHealthPercentage;
 	public boolean wokenUpByPlayer;
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
@@ -93,6 +97,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.headTiltDirection = this.getRNG().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
 		this.experienceValue = 50;
 		this.prevWingFlap = this.wingFlap = this.rand.nextFloat();
+		this.prevHealthPercentage = 1.0F;
+		this.stage = HealthStage.ZERO;
 		this.takeoffEndimation.setDecrementing(true);
 		this.flyingEndimation.setDecrementing(true);
 		this.resetIdleFlapDelay();
@@ -232,7 +238,16 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				}
 			}
 
-			this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+			float percentage = this.getHealth() / this.getMaxHealth();
+			this.bossInfo.setPercent(percentage);
+			if (percentage != this.prevHealthPercentage && this.isAlive()) {
+				HealthStage newStage = HealthStage.getStage(percentage);
+				if (newStage.eggGrowthChance > 0.0F && newStage.ordinal() > this.stage.ordinal()) {
+					newStage.awakeNearbyEggs(this);
+				}
+				this.stage = newStage;
+			}
+			this.prevHealthPercentage = percentage;
 		} else {
 			ControlledEndimation takeoff = this.takeoffEndimation;
 			takeoff.update();
@@ -320,6 +335,9 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.flyCooldown = compound.getInt("FlyCooldown");
 		this.eggDropOffCooldown = compound.getInt("EggDropOffCooldown");
 		this.setFlying(compound.getBoolean("IsFlying"));
+		float progress = this.getHealth() / this.getMaxHealth();
+		this.prevHealthPercentage = progress;
+		this.stage = HealthStage.getStage(progress);
 	}
 
 	@Override
@@ -533,7 +551,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetEggCannonCooldown() {
-		this.eggCannonCooldown = this.rand.nextInt(201) + 1100;
+		this.eggCannonCooldown = this.rand.nextInt(201) + 1200;
 	}
 
 	public boolean canSlam() {
@@ -549,7 +567,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetFlyCooldown() {
-		this.flyCooldown = this.rand.nextInt(301) + 500;
+		this.flyCooldown = this.rand.nextInt(301) + 600;
 	}
 
 	public boolean canFly() {
@@ -699,6 +717,57 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 		HeadTiltDirection(float angle) {
 			this.angle = angle;
+		}
+	}
+
+	public enum HealthStage {
+		ZERO(1.0F, 0.0F),
+		ONE(5.0F / 6.0F, 0.0F),
+		TWO(2.0F / 3.0F, 0.1F),
+		THREE(0.5F, 0.2F),
+		FOUR(1.0F / 3.0F, 0.2F),
+		FIVE(1.0F / 6.0F, 0.5F);
+
+		private static final HealthStage[] VALUES = {FIVE, FOUR, THREE, TWO, ONE, ZERO};
+		private final float percentage;
+		private final float eggGrowthChance;
+
+		HealthStage(float percentage, float eggGrowthChance) {
+			this.percentage = percentage;
+			this.eggGrowthChance = eggGrowthChance;
+		}
+
+		private void awakeNearbyEggs(BroodEetleEntity broodEetle) {
+			BlockPos.Mutable mutable = broodEetle.getPosition().toMutable();
+			int originX = mutable.getX();
+			int originY = mutable.getY();
+			int originZ = mutable.getZ();
+			World world = broodEetle.world;
+			Random random = broodEetle.rand;
+			for (int x = -10; x <= 10; x++) {
+				for (int y = -6; y <= 14; y++) {
+					for (int z = -10; z <= 10; z++) {
+						mutable.setPos(originX + x, originY + y, originZ + z);
+						TileEntity tileEntity = world.getTileEntity(mutable);
+						if (tileEntity instanceof EetleEggsTileEntity && random.nextFloat() < this.eggGrowthChance) {
+							EetleEggsTileEntity eetleEggs = (EetleEggsTileEntity) tileEntity;
+							if (eetleEggs.getHatchDelay() < -60) {
+								eetleEggs.bypassSpawningGameRule();
+								eetleEggs.updateHatchDelay(world, -60 - random.nextInt(10));
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private static HealthStage getStage(float progress) {
+			for (HealthStage stage : VALUES) {
+				if (progress <= stage.percentage) {
+					return stage;
+				}
+			}
+			return ZERO;
 		}
 	}
 }

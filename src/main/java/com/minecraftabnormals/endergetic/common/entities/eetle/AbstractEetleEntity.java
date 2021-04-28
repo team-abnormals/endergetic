@@ -26,6 +26,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.DifficultyInstance;
@@ -184,8 +185,8 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onDeath(DamageSource cause) {
-		if (!this.isChild() && this.rand.nextFloat() < 0.6F && !this.removed && !this.dead) {
-			World world = this.world;
+		World world = this.world;
+		if (!this.isChild() && this.rand.nextFloat() < calculateEggChance(world, this.getBoundingBox().grow(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.removed && !this.dead) {
 			if (!world.isRemote) {
 				BlockPos pos = this.getPosition();
 				if (world.getFluidState(pos).isEmpty() && world.getBlockState(pos).getMaterial().isReplaceable()) {
@@ -279,5 +280,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@Override
 	public boolean onLivingFall(float distance, float damageMultiplier) {
 		return false;
+	}
+
+	private static float calculateEggChance(World world, AxisAlignedBB boundingBox) {
+		return 0.6F - 0.075F * world.getEntitiesWithinAABB(AbstractEetleEntity.class, boundingBox, eetle -> {
+			return eetle.isAlive() && !eetle.isChild();
+		}).size();
 	}
 }
