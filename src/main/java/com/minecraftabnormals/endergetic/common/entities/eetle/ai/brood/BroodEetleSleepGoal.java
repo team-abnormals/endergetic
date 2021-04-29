@@ -37,10 +37,10 @@ public class BroodEetleSleepGoal extends Goal {
 		} else {
 			this.offGroundTicks = 0;
 		}
-		boolean wokenUpByPlayer = areAnyPlayersClose(broodEetle);
-		if (wokenUpByPlayer || this.prevHealth > broodEetle.getHealth() || this.offGroundTicks >= 10) {
+		boolean wokenUpAggressively = areAnyPlayersClose(broodEetle) || this.prevHealth > broodEetle.getHealth();
+		if (wokenUpAggressively || this.offGroundTicks >= 10) {
 			broodEetle.setSleeping(false);
-			broodEetle.wokenUpByPlayer = wokenUpByPlayer;
+			broodEetle.wokenUpAggressively = wokenUpAggressively;
 		}
 		this.prevHealth = broodEetle.getHealth();
 	}

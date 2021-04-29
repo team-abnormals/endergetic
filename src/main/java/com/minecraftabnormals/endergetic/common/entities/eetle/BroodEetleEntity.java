@@ -90,7 +90,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private float prevWingFlap, wingFlap;
 	private float wingFlapSpeed;
 	private float prevHealthPercentage;
-	public boolean wokenUpByPlayer;
+	public boolean wokenUpAggressively;
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
 		super(type, world);
@@ -435,6 +435,9 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
+		if (source.isProjectile()) {
+			return false;
+		}
 		return super.attackEntityFrom(source, amount * 0.1F);
 	}
 
@@ -531,7 +534,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public boolean shouldSlamWhenWakingUp() {
-		return this.sleepingEndimation.getTick() == 2 && this.wokenUpByPlayer;
+		return this.sleepingEndimation.getTick() == 2 && this.wokenUpAggressively;
 	}
 
 	public float getSleepingProgress() {
@@ -562,12 +565,16 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		return this.eggCannonCooldown <= 0;
 	}
 
+	public int getEggCannonCooldown() {
+		return this.eggCannonCooldown;
+	}
+
 	public int getTicksFlying() {
 		return this.ticksFlying;
 	}
 
 	public void resetFlyCooldown() {
-		this.flyCooldown = this.rand.nextInt(301) + 600;
+		this.flyCooldown = this.rand.nextInt(301) + 500;
 	}
 
 	public boolean canFly() {

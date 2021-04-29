@@ -65,7 +65,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		this.entity.setDroppingEggs(false);
 	}
 
-	private static boolean areFewEetlesNearby(BroodEetleEntity broodEetle) {
+	public static boolean areFewEetlesNearby(BroodEetleEntity broodEetle) {
 		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
 		EntitySenses senses = broodEetle.getEntitySenses();
 		return broodEetle.world.getEntitiesWithinAABB(AbstractEetleEntity.class, broodEetle.getBoundingBox().grow(followRange, followRange * 0.5D, followRange), eetle -> {

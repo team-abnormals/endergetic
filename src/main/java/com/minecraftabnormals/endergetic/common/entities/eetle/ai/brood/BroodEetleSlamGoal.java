@@ -39,7 +39,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	public void startExecuting() {
 		this.playEndimation();
 		BroodEetleEntity broodEetle = this.entity;
-		broodEetle.wokenUpByPlayer = false;
+		broodEetle.wokenUpAggressively = false;
 		broodEetle.resetSlamCooldown();
 	}
 
