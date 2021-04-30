@@ -113,7 +113,6 @@ public class FastBlockParticle extends SpriteTexturedParticle {
 		return brightnessForRender == 0 ? light : brightnessForRender;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static class Factory implements IParticleFactory<BlockParticleData> {
 		@SuppressWarnings("deprecation")
 		@Override
