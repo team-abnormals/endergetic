@@ -21,6 +21,7 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -435,10 +436,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (source.isProjectile()) {
+		if (source.getImmediateSource() instanceof AbstractArrowEntity) {
 			return false;
 		}
-		return super.attackEntityFrom(source, amount * 0.1F);
+		return super.attackEntityFrom(source, amount * (source.isProjectile() ? 0.05F : 0.1F));
 	}
 
 	public boolean attackEntityFromEggSack(DamageSource source, float amount) {

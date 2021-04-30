@@ -35,15 +35,17 @@ public class BroodEetleHurtByTargetGoal extends Goal {
 	public void startExecuting() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		LivingEntity revengeTarget = broodEetle.getRevengeTarget();
-		broodEetle.addRevengeTarget(revengeTarget);
-		this.revengeTimerOld = broodEetle.getRevengeTimer();
+		if (revengeTarget != null && !(revengeTarget instanceof BroodEetleEntity) && !broodEetle.isOnSameTeam(revengeTarget)) {
+			broodEetle.addRevengeTarget(revengeTarget);
+			this.revengeTimerOld = broodEetle.getRevengeTimer();
 
-		double targetDistance = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
-		AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(broodEetle.getPositionVec()).grow(targetDistance, 10.0D, targetDistance);
-		List<AbstractEetleEntity> list = broodEetle.world.getLoadedEntitiesWithinAABB(AbstractEetleEntity.class, axisalignedbb);
-		for (AbstractEetleEntity eetle : list) {
-			if (!eetle.isChild() && (eetle.getAttackTarget() == null || !eetle.getAttackTarget().isAlive()) && !eetle.isOnSameTeam(revengeTarget)) {
-				eetle.setAttackTarget(revengeTarget);
+			double targetDistance = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
+			AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(broodEetle.getPositionVec()).grow(targetDistance, 10.0D, targetDistance);
+			List<AbstractEetleEntity> list = broodEetle.world.getLoadedEntitiesWithinAABB(AbstractEetleEntity.class, axisalignedbb);
+			for (AbstractEetleEntity eetle : list) {
+				if (!eetle.isChild() && (eetle.getAttackTarget() == null || !eetle.getAttackTarget().isAlive()) && !eetle.isOnSameTeam(revengeTarget)) {
+					eetle.setAttackTarget(revengeTarget);
+				}
 			}
 		}
 	}

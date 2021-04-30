@@ -18,7 +18,7 @@ public class BroodEetleTakeoffGoal extends Goal {
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		if (!broodEetle.isFlying() && broodEetle.hasWokenUp()) {
-			return !broodEetle.canFireEggCannon() && broodEetle.isOnGround() && broodEetle.canFly() && !BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE)).isEmpty() && broodEetle.getRNG().nextFloat() < 0.025F || willFallFar(broodEetle);
+			return !broodEetle.canFireEggCannon() && broodEetle.isOnGround() && (broodEetle.canFly() || BroodEetleDropEggsGoal.areFewEetlesNearby(broodEetle) && broodEetle.getRNG().nextFloat() < 0.025F) && !BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE)).isEmpty() && broodEetle.getRNG().nextFloat() < 0.025F || willFallFar(broodEetle);
 		}
 		return false;
 	}
