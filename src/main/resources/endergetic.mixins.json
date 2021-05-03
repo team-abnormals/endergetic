@@ -11,6 +11,7 @@
 	"EndSpikeFeatureMixin",
 	"BoatEntityMixin",
 	"EntityMixin",
+	"MobEntityMixin",
 	"PlayerEntityMixin",
 	"ServerPlayerEntityMixin",
 	"ServerPlayNetHandlerMixin",
