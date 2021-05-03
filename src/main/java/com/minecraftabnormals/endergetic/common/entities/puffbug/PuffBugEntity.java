@@ -1,10 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
@@ -859,12 +855,13 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 	}
 
 	private void keepEffectsAbsorbed() {
-		Iterator<Effect> iterator = this.getActivePotionMap().keySet().iterator();
+		Map<Effect, EffectInstance> activePotionMap = this.getActivePotionMap();
+		Iterator<Effect> iterator = activePotionMap.keySet().iterator();
 		while (iterator.hasNext()) {
 			Effect effect = iterator.next();
 			if (effect != Effects.LEVITATION) {
-				EffectInstance effectInstance = this.getActivePotionMap().get(effect);
-				this.getActivePotionMap().put(effect, new EffectInstance(effect, 1600, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.doesShowParticles()));
+				EffectInstance effectInstance = activePotionMap.get(effect);
+				activePotionMap.put(effect, new EffectInstance(effect, effectInstance.getDuration() + 1, effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.doesShowParticles()));
 			}
 		}
 	}
