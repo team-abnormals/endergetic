@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.common.world.features.corrock;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Supplier;
 
 import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
@@ -25,14 +24,9 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import javax.annotation.Nullable;
 
 public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends Feature<FC> {
-	protected static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END.get();
 	protected static final Block CORROCK_BLOCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
 	protected static final LazyValue<BlockState> CORROCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END.get().getDefaultState());
 	protected static final LazyValue<BlockState> CORROCK_BLOCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END_BLOCK.get().getDefaultState());
-
-	protected static Supplier<BlockState> getCorrockCrown(boolean wall) {
-		return wall ? () -> EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState() : () -> EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState();
-	}
 
 	protected static BlockState getCorrockCrownWall(Direction facing) {
 		return EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, facing);

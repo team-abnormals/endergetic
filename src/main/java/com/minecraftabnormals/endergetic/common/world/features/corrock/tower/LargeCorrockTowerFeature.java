@@ -54,12 +54,10 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 
 				int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
 				float crownChance = config.getCrownChance();
-				GenerationPiece corrockCrowns = tryToMakeMiddle(world, rand, corrockPositions, pos, height, crownChance);
-				if (corrockCrowns != null) {
+				if (tryToMakeMiddle(world, rand, corrockPositions, pos, height)) {
 					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.up(3 + height), crownChance, config.getChorusChance());
 					if (top != null) {
 						corrockPositions.forEach(corrockPos -> world.setBlockState(corrockPos, corrockBlockState, 2));
-						corrockCrowns.place(world);
 						top.getFirst().place(world);
 						top.getSecond().forEach(chorusPlantPart -> chorusPlantPart.placeGrowth(world, rand));
 						BlockPos topMiddle = pos.up(4 + height);
@@ -153,8 +151,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		return foundGround;
 	}
 
-	@Nullable
-	private static GenerationPiece tryToMakeMiddle(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, int height, float crownChance) {
+	private static boolean tryToMakeMiddle(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, int height) {
 		int startX = origin.getX() + 1;
 		int startY = origin.getY() + 3;
 		int startZ = origin.getZ() + 1;
@@ -166,33 +163,23 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 					if (world.isAirBlock(innerMutable)) {
 						positions.add(innerMutable.toImmutable());
 					} else {
-						return null;
+						return false;
 					}
 				}
 			}
 		}
-		//Round trip around square to generate side pillars with corrock crowns and 0-2 height upward corners
-		GenerationPiece corrockCrowns = new GenerationPiece((iWorld, blockPart) -> true);
+		//Round trip around square to generate side pillars and 0-2 height upward corners
 		BlockPos.Mutable roundTripMutable = origin.toMutable();
 		Direction currentDirection = Direction.NORTH;
-		crownChance /= height;
 		for (int i = 0; i < 12; i++) {
 			if (i % 3 != 0) {
 				roundTripMutable.move(currentDirection);
-				Direction ccwDirection = currentDirection.rotateYCCW();
-				BlockState crownState = getCorrockCrownWall(ccwDirection);
 				for (int y = 0; y < height; y++) {
 					roundTripMutable.setY(startY + y);
 					if (world.isAirBlock(roundTripMutable)) {
 						positions.add(roundTripMutable.toImmutable());
-						if (rand.nextFloat() < crownChance) {
-							BlockPos crownOffset = roundTripMutable.offset(ccwDirection);
-							if (world.isAirBlock(crownOffset)) {
-								corrockCrowns.addBlockPiece(crownState, crownOffset);
-							}
-						}
 					} else {
-						return null;
+						return false;
 					}
 				}
 			} else {
@@ -215,7 +202,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				}
 			}
 		}
-		return corrockCrowns;
+		return true;
 	}
 
 	/**
