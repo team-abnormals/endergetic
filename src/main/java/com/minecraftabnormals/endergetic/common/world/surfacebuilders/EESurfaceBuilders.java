@@ -29,6 +29,7 @@ public final class EESurfaceBuilders {
 
 	public static final class Configs {
 		public static final Supplier<SurfaceBuilderConfig> END_STONE_CONFIG = () -> new SurfaceBuilderConfig(Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
+		public static final Supplier<SurfaceBuilderConfig> SPECKLED_END_STONE_CONFIG = () -> new SurfaceBuilderConfig(EEBlocks.SPECKLED_END_CORROCK.get().getDefaultState(), Blocks.END_STONE.getDefaultState(), Blocks.END_STONE.getDefaultState());
 		public static final Supplier<SurfaceBuilderConfig> EUMUS_CONFIG = () -> new SurfaceBuilderConfig(EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
 		public static final Supplier<SurfaceBuilderConfig> POISMOSS_CONFIG = () -> new SurfaceBuilderConfig(EEBlocks.POISMOSS.get().getDefaultState(), Blocks.END_STONE.getDefaultState(), EEBlocks.EUMUS.get().getDefaultState());
 		public static final Supplier<SurfaceBuilderConfig> CORROCK_CONFIG = () -> new SurfaceBuilderConfig(EEBlocks.CORROCK_END_BLOCK.get().getDefaultState(), EEBlocks.EUMUS.get().getDefaultState(), EEBlocks.PETRIFIED_CORROCK_END_BLOCK.get().getDefaultState());

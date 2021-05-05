@@ -48,12 +48,15 @@ public final class EetleNestPieces {
 	private static final Block CROWN_WALL = EEBlocks.CORROCK_CROWN_END_WALL.get();
 	private static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
 	private static final Block CORROCK = EEBlocks.CORROCK_END.get();
-	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
+	private static final Block SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get();
+	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, SPECKLED_CORROCK, EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
 	private static final BlockState CORROCK_BLOCK_STATE = CORROCK_BLOCK.getDefaultState();
 	private static final BlockState CORROCK_STATE = CORROCK.getDefaultState();
 	private static final BlockState EUMUS_STATE = EUMUS.getDefaultState();
 	private static final BlockState CROWN_WALL_STATE = CROWN_WALL.getDefaultState();
 	private static final BlockState CROWN_STANDING_STATE = CROWN_STANDING.getDefaultState();
+	private static final BlockState SPECKLED_CORROCK_STATE = SPECKLED_CORROCK.getDefaultState();
+	private static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
 	private static final BlockState EETLE_EGGS_STATE = EETLE_EGSS.getDefaultState();
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
@@ -83,7 +86,7 @@ public final class EetleNestPieces {
 			this.arena = manager.getTemplate(ARENA);
 		}
 
-		private static void transformSurface(ISeedReader world, int x, int z, int maxDepth, int depthScale, double noise, MutableBoundingBox boundingBox, BlockState topState) {
+		private static void transformSurface(ISeedReader world, int x, int z, int maxDepth, int depthScale, double noise, MutableBoundingBox boundingBox, BlockState topState, BlockState under) {
 			BlockPos.Mutable mutable = new BlockPos.Mutable(x, boundingBox.minY, z);
 			if (boundingBox.isVecInside(mutable)) {
 				int startingY = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
@@ -92,9 +95,10 @@ public final class EetleNestPieces {
 				for (int y = startingY, d = 0; y > maxDepth && d < depth; y--, d++) {
 					mutable.setY(y);
 					if (boundingBox.isVecInside(mutable)) {
-						if (world.getBlockState(mutable).getBlock() == Blocks.END_STONE) {
+						Block block = world.getBlockState(mutable).getBlock();
+						if (block == Blocks.END_STONE || block == SPECKLED_CORROCK) {
 							world.setBlockState(mutable, fillState, 2);
-							fillState = EUMUS_STATE;
+							fillState = under;
 						} else if (world.isAirBlock(mutable)) {
 							fillState = topState;
 						}
@@ -150,11 +154,13 @@ public final class EetleNestPieces {
 					if (distanceSq <= (radius - 3) * (radius - 3)) {
 						int posX = originX + x;
 						int posZ = originZ + z;
-						transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 40, noise, bounds, CORROCK_BLOCK_STATE);
+						transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 40, noise, bounds, CORROCK_BLOCK_STATE, EUMUS_STATE);
 					} else if (distanceSq <= radius * radius) {
 						int posX = originX + x;
 						int posZ = originZ + z;
-						transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 24, noise, bounds, EUMUS_STATE);
+						if (random.nextFloat() <= 0.6F - (distanceSq >= (radius - 1.0F) * (radius - 1.0F) ? 0.3F : 0.0F)) {
+							transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 24, noise, bounds, SPECKLED_CORROCK_STATE, END_STONE);
+						}
 					}
 				}
 			}

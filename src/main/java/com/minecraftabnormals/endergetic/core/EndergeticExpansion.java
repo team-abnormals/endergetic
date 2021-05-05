@@ -134,7 +134,7 @@ public class EndergeticExpansion {
 		BiPredicate<RegistryKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
 		BiPredicate<RegistryKey<Biome>, Biome> highlandsOrMidlands = highlandsOnly.or(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS));
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
-		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOnly, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
+		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOrMidlands, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_PATCH,
 				() -> EEFeatures.Configured.EETLE_EGGS
@@ -143,7 +143,9 @@ public class EndergeticExpansion {
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
 				() -> EEFeatures.Configured.CORROCK_TOWER,
 				() -> EEFeatures.Configured.CORROCK_SHELF,
-				() -> EEFeatures.Configured.CORROCK_ARCH
+				() -> EEFeatures.Configured.CORROCK_ARCH,
+				() -> EEFeatures.Configured.EUMUS_PATCH,
+				() -> EEFeatures.Configured.SPECKLED_CORROCK_PATCH
 		)));
 		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));
 		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOnly, EntityClassification.MONSTER, Sets.newHashSet(

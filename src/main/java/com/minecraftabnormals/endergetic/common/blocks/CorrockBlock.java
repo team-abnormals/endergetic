@@ -12,9 +12,7 @@ import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
@@ -25,24 +23,23 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 
-public class CorrockBlock extends Block {
+public class CorrockBlock extends Block implements IGrowable {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
 		conversions.put(DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD_BLOCK);
 		conversions.put(DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER_BLOCK);
 		conversions.put(DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_END_BLOCK);
 	});
-	public final boolean petrified;
+	private final Supplier<Block> speckledBlock;
+	private final Supplier<Block> plantBlock;
 
-	public CorrockBlock(Properties properties, boolean petrified) {
+	public CorrockBlock(Properties properties, Supplier<Block> speckledBlock, Supplier<Block> plantBlock, boolean petrified) {
 		super(properties);
-		this.petrified = petrified;
+		this.speckledBlock = speckledBlock;
+		this.plantBlock = plantBlock;
 	}
 
 	@Override
@@ -67,8 +64,8 @@ public class CorrockBlock extends Block {
 			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
-		if (this.isSubmerged(worldIn, currentPos)) {
-			return !this.petrified ? EntityEvents.convertCorrockBlock(stateIn) : stateIn;
+		if (isSubmerged(worldIn, currentPos)) {
+			return EntityEvents.convertCorrockBlock(stateIn);
 		}
 
 		return stateIn;
@@ -83,10 +80,10 @@ public class CorrockBlock extends Block {
 	}
 
 	protected boolean shouldConvert(IWorld world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
+		return CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
 	}
 
-	public boolean isSubmerged(IWorld world, BlockPos pos) {
+	public static boolean isSubmerged(IWorld world, BlockPos pos) {
 		for (Direction offsets : Direction.values()) {
 			FluidState fluidState = world.getFluidState(pos.offset(offsets));
 			if (!fluidState.isEmpty() && fluidState.isTagged(FluidTags.WATER)) {
@@ -101,7 +98,66 @@ public class CorrockBlock extends Block {
 		return entityType == EEEntities.CHARGER_EETLE.get() || super.canCreatureSpawn(state, world, pos, type, entityType);
 	}
 
-	public static class DimensionTypeAccessor extends DimensionType {
+	@Override
+	public boolean canGrow(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
+		return true;
+	}
+
+	@Override
+	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
+		return true;
+	}
+
+	@Override
+	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state) {
+		int radius = 2;
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		Block speckledBlock = this.speckledBlock.get();
+		BlockState speckledState = speckledBlock.getDefaultState();
+		BlockState plantState = this.plantBlock.get().getDefaultState();
+		for (int x = -radius; x <= radius; x++) {
+			for (int z = -radius; z <= radius; z++) {
+				mutable.setAndOffset(pos, x, 0, z);
+				Block block = this.findHighestSpreadableBlock(world, mutable, speckledBlock);
+				boolean thisBlock = block == this;
+				boolean isSpeckled = block == speckledBlock;
+				if (block == Blocks.END_STONE || thisBlock || isSpeckled) {
+					int distanceSq = x * x + z * z;
+					if (distanceSq <= 1) {
+						this.placeSpreadBlock(world, mutable, this.getDefaultState(), plantState, rand, false);
+					} else if (distanceSq <= 4) {
+						boolean notSpeckled = isSpeckled || thisBlock;
+						this.placeSpreadBlock(world, mutable, notSpeckled ? this.getDefaultState() : speckledState, plantState, rand, !notSpeckled);
+					}
+				}
+			}
+		}
+	}
+
+	private void placeSpreadBlock(ServerWorld world, BlockPos pos, BlockState state, BlockState plantState, Random random, boolean speckled) {
+		world.setBlockState(pos, state);
+		if (random.nextFloat() < (speckled ? 0.1F : 0.2F)) {
+			BlockPos up = pos.up();
+			if (world.isAirBlock(up)) {
+				world.setBlockState(up, plantState);
+			}
+		}
+	}
+
+	@Nullable
+	private Block findHighestSpreadableBlock(ServerWorld world, BlockPos.Mutable mutable, Block speckledBlock) {
+		int originY = mutable.getY();
+		for (int y = 1; y > -2; y--) {
+			mutable.setY(originY + y);
+			Block block = world.getBlockState(mutable).getBlock();
+			if (block == Blocks.END_STONE || block == this || block == speckledBlock) {
+				return block;
+			}
+		}
+		return null;
+	}
+
+	public static final class DimensionTypeAccessor extends DimensionType {
 		public static final DimensionType OVERWORLD = OVERWORLD_TYPE;
 		public static final DimensionType THE_NETHER = NETHER_TYPE;
 		public static final DimensionType THE_END = END_TYPE;

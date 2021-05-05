@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "endergetic:block/speckled_overworld_corrock"
+    }
+}

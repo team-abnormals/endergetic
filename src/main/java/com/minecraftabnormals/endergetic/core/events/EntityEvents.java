@@ -10,11 +10,7 @@ import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
+import com.minecraftabnormals.endergetic.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
@@ -74,6 +70,9 @@ public final class EntityEvents {
 		petrifications.put(EEBlocks.CORROCK_END_BLOCK, EEBlocks.PETRIFIED_CORROCK_END_BLOCK);
 		petrifications.put(EEBlocks.CORROCK_NETHER_BLOCK, EEBlocks.PETRIFIED_CORROCK_NETHER_BLOCK);
 		petrifications.put(EEBlocks.CORROCK_OVERWORLD_BLOCK, EEBlocks.PETRIFIED_CORROCK_OVERWORLD_BLOCK);
+		petrifications.put(EEBlocks.SPECKLED_OVERWORLD_CORROCK, EEBlocks.PETRIFIED_SPECKLED_OVERWORLD_CORROCK);
+		petrifications.put(EEBlocks.SPECKLED_NETHER_CORROCK, EEBlocks.PETRIFIED_SPECKLED_NETHER_CORROCK);
+		petrifications.put(EEBlocks.SPECKLED_END_CORROCK, EEBlocks.PETRIFIED_SPECKLED_END_CORROCK);
 		petrifications.put(EEBlocks.CORROCK_CROWN_END_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_END_STANDING::get);
 		petrifications.put(EEBlocks.CORROCK_CROWN_NETHER_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_STANDING::get);
 		petrifications.put(EEBlocks.CORROCK_CROWN_OVERWORLD_STANDING::get, EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_STANDING::get);
@@ -202,8 +201,11 @@ public final class EntityEvents {
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || (block instanceof CorrockBlock && !((CorrockBlock) block).petrified) || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
-			world.setBlockState(pos, convertCorrockBlock(state));
+		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
+			BlockState convertedState = convertCorrockBlock(state);
+			if (convertedState != null) {
+				world.setBlockState(pos, convertedState);
+			}
 		}
 	}
 
@@ -214,7 +216,7 @@ public final class EntityEvents {
 			if (entries.getKey().get() == block) {
 				if (block instanceof CorrockPlantBlock) {
 					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
-				} else if (block instanceof CorrockBlock) {
+				} else if (block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock) {
 					return petrifiedBlock.getDefaultState();
 				} else if (block instanceof CorrockCrownStandingBlock) {
 					return petrifiedBlock.getDefaultState()
