@@ -58,6 +58,7 @@ public final class EetleNestPieces {
 	private static final BlockState SPECKLED_CORROCK_STATE = SPECKLED_CORROCK.getDefaultState();
 	private static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
 	private static final BlockState EETLE_EGGS_STATE = EETLE_EGSS.getDefaultState();
+	private static final BlockState INFESTED_STATE = EEBlocks.INFESTED_CORROCK.get().getDefaultState();
 	private static final Map<Long, PerlinNoiseGenerator> SURFACE_NOISE = new HashMap<>();
 	private static final Map<Long, OctavesNoiseGenerator> UNDERGROUND_NOISE = new HashMap<>();
 
@@ -226,7 +227,7 @@ public final class EetleNestPieces {
 
 			//Generate caves first to ensure they don't block other tunnels
 			for (NestTunnel tunnel : nestDesign.tunnels) {
-				tunnel.generateCave(world, undergroundNoise, bounds);
+				tunnel.generateCave(world, undergroundNoise, random, bounds);
 			}
 
 			for (NestTunnel tunnel : nestDesign.tunnels) {
@@ -1217,10 +1218,10 @@ public final class EetleNestPieces {
 				decorations.addAll(eggsAndCorrock);
 			}
 
-			private void generateCave(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+			private void generateCave(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds) {
 				NestCave nestCave = this.nestCave;
 				if (nestCave != null) {
-					nestCave.generate(world, noiseGenerator, bounds);
+					nestCave.generate(world, noiseGenerator, random, bounds);
 				}
 			}
 
@@ -1260,14 +1261,14 @@ public final class EetleNestPieces {
 					if (decoration.isNotSetup()) {
 						decoration.setup(random);
 					}
-					decoration.generate(world, noiseGenerator, bounds);
+					decoration.generate(world, noiseGenerator, random, bounds);
 				}
 			}
 
 			interface TunnelDecoration {
 				void setup(Random random);
 
-				void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds);
+				void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds);
 
 				boolean isNotSetup();
 			}
@@ -1286,7 +1287,7 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds) {
 					createEumusPatch(world, this.origin, noiseGenerator, this.radius, bounds);
 				}
 
@@ -1323,7 +1324,7 @@ public final class EetleNestPieces {
 					stateMap.setup = true;
 				}
 
-				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds) {
 					StateMap stateMap = this.stateMap;
 					stateMap.stateMap.forEach((pos, state) -> {
 						if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
@@ -1332,6 +1333,7 @@ public final class EetleNestPieces {
 								Block opposite = world.getBlockState(offset).getBlock();
 								if (opposite == CORROCK_BLOCK || opposite == EUMUS) {
 									world.setBlockState(pos, state, 2);
+									NestCave.EetleEggsPatch.spreadInfestedCorrockAtPos(world, offset, random, bounds);
 								}
 							}
 						}
@@ -1367,7 +1369,7 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+				public void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds) {
 					StateMap stateMap = this.stateMap;
 					stateMap.stateMap.forEach((pos, state) -> {
 						if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
@@ -1444,14 +1446,14 @@ public final class EetleNestPieces {
 					}
 				}
 
-				private void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, MutableBoundingBox bounds) {
+				private void generate(ISeedReader world, OctavesNoiseGenerator noiseGenerator, Random random, MutableBoundingBox bounds) {
 					this.cave.generate(world, bounds);
 					BlockPos center = this.center;
 					for (EetleNestPiece.EumusPatch eumusPatch : this.eumusPatches) {
 						eumusPatch.generate(world, center, noiseGenerator, bounds);
 					}
 					for (EetleEggsPatch eetleEggsPatch : this.eetleEggsPatches) {
-						eetleEggsPatch.generate(world, bounds);
+						eetleEggsPatch.generate(world, random, bounds);
 					}
 					for (CorrockPatch corrockPatch : this.corrockPatches) {
 						corrockPatch.generate(world, bounds);
@@ -1504,7 +1506,7 @@ public final class EetleNestPieces {
 						}
 					}
 
-					private void generate(ISeedReader world, MutableBoundingBox bounds) {
+					private void generate(ISeedReader world, Random random, MutableBoundingBox bounds) {
 						this.stateMap.stateMap.forEach((pos, state) -> {
 							if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
 								BlockPos offset = pos.offset(state.get(EetleEggsBlock.FACING).getOpposite());
@@ -1512,10 +1514,30 @@ public final class EetleNestPieces {
 									Block opposite = world.getBlockState(offset).getBlock();
 									if (opposite == CORROCK_BLOCK || opposite == EUMUS) {
 										world.setBlockState(pos, state, 2);
+										spreadInfestedCorrockAtPos(world, offset, random, bounds);
 									}
 								}
 							}
 						});
+					}
+
+					private static void spreadInfestedCorrockAtPos(ISeedReader world, BlockPos pos, Random random, MutableBoundingBox bounds) {
+						int radius = 1;
+						if (bounds.isVecInside(pos)) {
+							world.setBlockState(pos, INFESTED_STATE, 2);
+						}
+						BlockPos.Mutable mutable = new BlockPos.Mutable();
+						for (int x = -radius; x <= radius; x++) {
+							for (int y = -radius; y <= radius; y++) {
+								for (int z = -radius; z <= radius; z++) {
+									if (bounds.isVecInside(mutable.setAndOffset(pos, x, y, z))) {
+										if (world.getBlockState(mutable).getBlock() == CORROCK_BLOCK && random.nextFloat() <= 0.25F) {
+											world.setBlockState(mutable, INFESTED_STATE, 2);
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 

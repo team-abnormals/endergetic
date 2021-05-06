@@ -23,6 +23,8 @@ public final class EEProperties {
 	public static final AbstractBlock.Properties ACIDIAN_LANTERN = AbstractBlock.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).setLightLevel(state -> 15).harvestLevel(2).harvestTool(ToolType.PICKAXE);
 	public static final AbstractBlock.Properties BOLLOOM_CRATE = AbstractBlock.Properties.create(Material.WOOD, MaterialColor.YELLOW_TERRACOTTA).hardnessAndResistance(1.5F).sound(SoundType.WOOD);
 	public static final AbstractBlock.Properties EETLE_EGGS = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 7 + state.get(EetleEggsBlock.SIZE)).noDrops().setRequiresTool().hardnessAndResistance(1.0F).sound(SoundType.WET_GRASS);
+	public static final AbstractBlock.Properties INFESTED_CORROCK = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 12).tickRandomly().hardnessAndResistance(1.5F, 6.0F).sound(SoundType.CORAL);
+	public static final AbstractBlock.Properties PETRIFIED_INFESTED_CORROCK = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 12).hardnessAndResistance(1.5F, 6.0F).sound(SoundType.CORAL);
 
 	public static AbstractBlock.Properties getCorrockBase(MaterialColor color, boolean isFullBlock) {
 		return isFullBlock ? AbstractBlock.Properties.create(Material.CORAL, color).hardnessAndResistance(1.5F, 6.0F) : AbstractBlock.Properties.create(Material.OCEAN_PLANT, color).hardnessAndResistance(0F).doesNotBlockMovement();

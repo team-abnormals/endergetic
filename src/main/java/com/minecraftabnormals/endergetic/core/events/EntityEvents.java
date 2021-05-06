@@ -79,6 +79,7 @@ public final class EntityEvents {
 		petrifications.put(EEBlocks.CORROCK_CROWN_END_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_END_WALL::get);
 		petrifications.put(EEBlocks.CORROCK_CROWN_NETHER_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_NETHER_WALL::get);
 		petrifications.put(EEBlocks.CORROCK_CROWN_OVERWORLD_WALL::get, EEBlocks.PETRIFIED_CORROCK_CROWN_OVERWORLD_WALL::get);
+		petrifications.put(EEBlocks.INFESTED_CORROCK, EEBlocks.PETRIFIED_INFESTED_CORROCK);
 	});
 
 	@SubscribeEvent
@@ -201,7 +202,7 @@ public final class EntityEvents {
 	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
+		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || block instanceof InfestedCorrockBlock || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
 			BlockState convertedState = convertCorrockBlock(state);
 			if (convertedState != null) {
 				world.setBlockState(pos, convertedState);
@@ -216,7 +217,7 @@ public final class EntityEvents {
 			if (entries.getKey().get() == block) {
 				if (block instanceof CorrockPlantBlock) {
 					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
-				} else if (block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock) {
+				} else if (block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || block instanceof InfestedCorrockBlock) {
 					return petrifiedBlock.getDefaultState();
 				} else if (block instanceof CorrockCrownStandingBlock) {
 					return petrifiedBlock.getDefaultState()

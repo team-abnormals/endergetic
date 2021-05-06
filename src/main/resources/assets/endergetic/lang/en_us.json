@@ -95,6 +95,8 @@
   "block.endergetic.petrified_speckled_overworld_corrock": "Petrified Speckled Overworld Corrock",
   "block.endergetic.petrified_speckled_nether_corrock": "Petrified Speckled Nether Corrock",
   "block.endergetic.petrified_speckled_end_corrock": "Petrified Speckled End Corrock",
+  "block.endergetic.infested_corrock": "Infested Corrock",
+  "block.endergetic.petrified_infested_corrock": "Petrified Infested Corrock",
   "_comment_": "Items",
   "item.endergetic.poise_boat": "Poise Boat",
   "item.endergetic.eumus_brick": "Eumus Brick",

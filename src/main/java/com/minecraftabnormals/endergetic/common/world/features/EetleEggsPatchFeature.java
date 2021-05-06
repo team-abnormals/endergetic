@@ -17,6 +17,7 @@ import java.util.Random;
 public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
 	private static final Direction[] DIRECTIONS = Direction.values();
 	private static final BlockState BASE_STATE = EEBlocks.EETLE_EGGS.get().getDefaultState();
+	private static final BlockState INFESTED_STATE = EEBlocks.INFESTED_CORROCK.get().getDefaultState();
 
 	public EetleEggsPatchFeature(Codec<EndergeticPatchConfig> codec) {
 		super(codec);
@@ -35,11 +36,13 @@ public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
 			mutable.setAndOffset(pos, rand.nextInt(9) - rand.nextInt(9), rand.nextInt(9) - rand.nextInt(9), rand.nextInt(9) - rand.nextInt(9));
 			if (world.isAirBlock(mutable) && rand.nextFloat() < chance) {
 				for (Direction direction : DIRECTIONS) {
-					Block offsetBlock = world.getBlockState(mutable.offset(direction)).getBlock();
+					BlockPos offsetPos = mutable.offset(direction);
+					Block offsetBlock = world.getBlockState(offsetPos).getBlock();
 					if (offsetBlock == corrockBlock || offsetBlock == eumus) {
 						BlockState state = BASE_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
 						if (state.isValidPosition(world, mutable)) {
 							world.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, rand.nextFloat() < 0.75F ? 0 : rand.nextFloat() < 0.6F ? 1 : 2), 2);
+							spreadInfestedCorrockAtPos(world, offsetPos, rand, corrockBlock);
 							i++;
 							break;
 						}
@@ -48,5 +51,20 @@ public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
 			}
 		}
 		return i > 0;
+	}
+
+	private static void spreadInfestedCorrockAtPos(ISeedReader world, BlockPos pos, Random random, Block corrockBlock) {
+		int radius = 1;
+		world.setBlockState(pos, INFESTED_STATE, 2);
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -radius; y <= radius; y++) {
+				for (int z = -radius; z <= radius; z++) {
+					if (world.getBlockState(mutable.setAndOffset(pos, x, y, z)).getBlock() == corrockBlock && random.nextFloat() <= 0.25F) {
+						world.setBlockState(mutable, INFESTED_STATE, 2);
+					}
+				}
+			}
+		}
 	}
 }
