@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "endergetic",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "endergetic:infested_corrock"
+    },
+    "B": {
+      "tag": "forge:buckets/water"
+    }
+  },
+  "result": {
+    "item": "endergetic:petrified_infested_corrock",
+    "count": 8
+  }
+}
