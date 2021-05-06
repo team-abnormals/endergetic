@@ -122,7 +122,7 @@ public class CorrockBlock extends Block implements IGrowable {
 				boolean thisBlock = block == this;
 				boolean isSpeckled = block == speckledBlock;
 				if (block == Blocks.END_STONE || thisBlock || isSpeckled) {
-					int distanceSq = x * x + z * z;
+					int distanceSq = x * x + z * z - rand.nextInt(2);
 					if (distanceSq <= 1) {
 						this.placeSpreadBlock(world, mutable, this.getDefaultState(), plantState, rand, false);
 					} else if (distanceSq <= 4) {
