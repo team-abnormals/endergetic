@@ -67,16 +67,32 @@ public final class EEEntities {
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
-		if (MonsterEntity.canMonsterSpawnInLight(entityType, world, spawnReason, pos, random)) {
+		if (MonsterEntity.canMonsterSpawnInLight(entityType, world, spawnReason, pos, random) || isInfestedCorrockNearby(world, pos)) {
 			BlockPos down = pos.down();
 			Block downBlock = world.getBlockState(down).getBlock();
-			if (downBlock == EEBlocks.CORROCK_END_BLOCK.get() || downBlock == EEBlocks.EUMUS.get()) {
+			if (downBlock == EEBlocks.CORROCK_END_BLOCK.get() || downBlock == EEBlocks.EUMUS.get() || downBlock == EEBlocks.INFESTED_CORROCK.get()) {
 				return true;
 			}
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
 				Block offsetBlock = world.getBlockState(down.offset(direction)).getBlock();
 				if (offsetBlock == EEBlocks.CORROCK_END_BLOCK.get() || offsetBlock == EEBlocks.EUMUS.get()) {
 					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean isInfestedCorrockNearby(IServerWorld world, BlockPos pos) {
+		int radius = 1;
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		Block infestedCorrock = EEBlocks.INFESTED_CORROCK.get();
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -radius; y <= radius; y++) {
+				for (int z = -radius; z <= radius; z++) {
+					if (world.getBlockState(mutable.setAndOffset(pos, x, y, z)).getBlock() == infestedCorrock) {
+						return true;
+					}
 				}
 			}
 		}
