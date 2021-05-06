@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
@@ -29,10 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 
 public class CorrockCrownStandingBlock extends CorrockCrownBlock {
@@ -44,14 +42,35 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
 	public static final BooleanProperty UPSIDE_DOWN = BooleanProperty.create("upside_down");
 
-	public CorrockCrownStandingBlock(Properties properties, boolean petrified) {
-		super(properties, petrified);
+	public CorrockCrownStandingBlock(Properties properties, DimensionalType dimensionalType, boolean petrified) {
+		super(properties, dimensionalType, petrified);
 		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, false).with(UPSIDE_DOWN, false));
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return state.get(UPSIDE_DOWN) ? Block.makeCuboidShape(2.0D, 2.0D, 2.0D, 14.0D, 16.0D, 14.0D) : Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
+	}
+
+	@Override
+	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
+		if (state.get(UPSIDE_DOWN)) {
+			double xOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.35F, rand);
+			double yOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.35F, rand);
+			double zOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.35F, rand);
+			double posX = (double) pos.getX() + 0.5D + xOffset;
+			double posY = (double) pos.getY() + 0.5D + yOffset;
+			double posZ = (double) pos.getZ() + 0.5D + zOffset;
+			world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F, -0.005F, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F);
+		} else if (rand.nextFloat() < 0.6F) {
+			double xOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+			double yOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+			double zOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+			double posX = (double) pos.getX() + 0.5D + xOffset;
+			double posY = (double) pos.getY() + 0.5D + yOffset;
+			double posZ = (double) pos.getZ() + 0.5D + zOffset;
+			world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F, 0.01F + rand.nextFloat() * 0.02F, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F);
+		}
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public final class EetleNestPieces {
 	private static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
 	private static final Block CORROCK = EEBlocks.CORROCK_END.get();
 	private static final Block SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get();
-	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, SPECKLED_CORROCK, EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
+	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, SPECKLED_CORROCK, EEBlocks.INFESTED_CORROCK.get(), EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
 	private static final BlockState CORROCK_BLOCK_STATE = CORROCK_BLOCK.getDefaultState();
 	private static final BlockState CORROCK_STATE = CORROCK.getDefaultState();
 	private static final BlockState EUMUS_STATE = EUMUS.getDefaultState();

@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.tileentities.CorrockCrownTileEntity;
 
 import net.minecraft.block.BlockRenderType;
@@ -10,6 +11,7 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
@@ -17,12 +19,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
-public abstract class CorrockCrownBlock extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
-	public final boolean petrified;
-	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+import java.util.function.Supplier;
 
-	protected CorrockCrownBlock(Properties builder, boolean petrified) {
+public abstract class CorrockCrownBlock extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	protected final DimensionalType dimensionalType;
+	public final boolean petrified;
+
+	protected CorrockCrownBlock(Properties builder, DimensionalType dimensionalType, boolean petrified) {
 		super(builder);
+		this.dimensionalType = dimensionalType;
 		this.petrified = petrified;
 	}
 
@@ -64,5 +70,17 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	public enum DimensionalType {
+		OVERWORLD(EEParticles.OVERWORLD_CROWN),
+		NETHER(EEParticles.NETHER_CROWN),
+		END(EEParticles.END_CROWN);
+
+		protected final Supplier<BasicParticleType> particle;
+
+		DimensionalType(Supplier<BasicParticleType> particle) {
+			this.particle = particle;
+		}
 	}
 }

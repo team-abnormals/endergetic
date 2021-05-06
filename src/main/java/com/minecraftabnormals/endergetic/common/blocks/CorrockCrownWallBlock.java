@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
@@ -28,10 +29,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 
 public class CorrockCrownWallBlock extends CorrockCrownBlock {
@@ -43,9 +41,23 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.makeCuboidShape(0.0D, 4.5D, 14.0D, 16.0D, 12.5D, 16.0D), Direction.SOUTH, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 16.0D, 12.5D, 2.0D), Direction.EAST, Block.makeCuboidShape(0.0D, 4.5D, 0.0D, 2.0D, 12.5D, 16.0D), Direction.WEST, Block.makeCuboidShape(14.0D, 4.5D, 0.0D, 16.0D, 12.5D, 16.0D)));
 
-	public CorrockCrownWallBlock(Properties builder, boolean petrified) {
-		super(builder, petrified);
+	public CorrockCrownWallBlock(Properties builder, DimensionalType dimensionalType, boolean petrified) {
+		super(builder, dimensionalType, petrified);
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+	}
+
+	@Override
+	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
+		Direction facing = state.get(FACING).getOpposite();
+		int xFacingOffset = facing.getXOffset();
+		int zFacingOffset = facing.getZOffset();
+		double xOffset = xFacingOffset * 0.2F + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double yOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double zOffset = zFacingOffset * 0.2F + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double posX = (double) pos.getX() + 0.5F + xOffset;
+		double posY = (double) pos.getY() + 0.5D + yOffset;
+		double posZ = (double) pos.getZ() + 0.5F + zOffset;
+		world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, xFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F, -0.005F, zFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F);
 	}
 
 	@Override
