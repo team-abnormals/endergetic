@@ -22,6 +22,7 @@ import java.util.Random;
 public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfig> {
 	private static final Direction[] DIRECTIONS = getDirections(false);
 	private static final Direction[] DIRECTIONS_REVERSED = getDirections(true);
+	private static final BlockState SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get().getDefaultState();
 
 	public CorrockShelfFeature(Codec<ProbabilityConfig> configFactory) {
 		super(configFactory);
@@ -78,6 +79,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
 		List<BlockPos> wallCrowns = new ArrayList<>();
+		List<BlockPos> speckledPatchPositions = new ArrayList<>();
 		for (int x = min; x <= max; x++) {
 			for (int z = min; z <= max; z++) {
 				mutable.setPos(originX + x, originY, originZ + z);
@@ -86,6 +88,9 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 					int distance = x * x + z * z;
 					if (distance < radius * radius) {
 						world.setBlockState(mutable, corrockBlockState, 2);
+						if (rand.nextFloat() < 0.25F) {
+							speckledPatchPositions.add(mutable.toImmutable());
+						}
 						if (x * x < (radius - underXDistance) * (radius - underXDistance) && z * z < (radius - underZDistance) * (radius - underZDistance)) {
 							BlockPos down = mutable.down();
 							if (canReplace(world, down)) {
@@ -119,6 +124,29 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 					world.setBlockState(offset, getCorrockCrownWall(direction), 2);
 					if (rand.nextFloat() > crownChance || crownsPlaced++ == 1) {
 						break;
+					}
+				}
+			}
+		}
+		for (BlockPos pos : speckledPatchPositions) {
+			int radius = 1;
+			for (int x = -radius; x <= radius; x++) {
+				for (int y = -radius; y <= radius; y++) {
+					for (int z = -radius; z <= radius; z++) {
+						if (rand.nextFloat() <= 0.6F) {
+							if (rand.nextBoolean()) {
+								if (rand.nextBoolean()) {
+									x += (rand.nextInt(3) - rand.nextInt(3));
+								} else {
+									z += (rand.nextInt(3) - rand.nextInt(3));
+								}
+							} else {
+								y += (rand.nextInt(3) - rand.nextInt(3));
+							}
+						}
+						if (world.getBlockState(mutable.setAndOffset(pos, x, y, z)).getBlock() == Blocks.END_STONE && rand.nextFloat() < 0.6F) {
+							world.setBlockState(mutable, SPECKLED_CORROCK, 2);
+						}
 					}
 				}
 			}
