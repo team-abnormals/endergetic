@@ -67,7 +67,7 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
-		if (!this.petrified && this.shouldConvert(world)) {
+		if (this.shouldConvert(world)) {
 			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD).get().getDefaultState());
 		}
 	}

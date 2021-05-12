@@ -100,8 +100,8 @@ public final class EntityEvents {
 
 				tryToConvertCorrockBlock(world, blockpos);
 				tryToConvertCorrockBlock(world, blockpos.offset(direction.getOpposite()));
-				for (Direction horizontals : Direction.Plane.HORIZONTAL) {
-					tryToConvertCorrockBlock(world, blockpos.offset(horizontals));
+				for (Direction faces : Direction.values()) {
+					tryToConvertCorrockBlock(world, blockpos.offset(faces));
 				}
 			}
 		}
