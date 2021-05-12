@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
+import com.minecraftabnormals.endergetic.client.EERenderTypes;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.IEetleEggsModel;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggsModel;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggsModel;
@@ -67,7 +68,9 @@ public class EetleEggsTileEntityRenderer extends TileEntityRenderer<EetleEggsTil
 		}
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(randomDirection.getHorizontalAngle()));
 		int size = state.get(EetleEggsBlock.SIZE);
-		this.eggModels[size].render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(TEXTURES[size])), combinedLight, combinedOverlay, partialTicks, eggs.getSackGrowths());
+		IEetleEggsModel eggsModel = this.eggModels[size];
+		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(TEXTURES[size])), combinedLight, combinedOverlay, partialTicks, eggs.getSackGrowths());
+		eggsModel.renderSilk(matrixStack, buffer.getBuffer(EERenderTypes.EETLE_EGG_SILK), combinedLight, combinedOverlay);
 		matrixStack.pop();
 	}
 

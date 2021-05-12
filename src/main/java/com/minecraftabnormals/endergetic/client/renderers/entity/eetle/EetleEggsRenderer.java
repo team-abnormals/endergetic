@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.eetle;
 
+import com.minecraftabnormals.endergetic.client.EERenderTypes;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.*;
 import com.minecraftabnormals.endergetic.client.renderers.tile.EetleEggsTileEntityRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
@@ -29,7 +30,9 @@ public class EetleEggsRenderer extends EntityRenderer<EetleEggsEntity> {
 		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -1.5F, 0.0F);
 		int size = eggsEntity.getEggSize().ordinal();
-		this.eggModels[size].render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(EetleEggsTileEntityRenderer.TEXTURES[size])), packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks, eggsEntity.getSackGrowths());
+		IEetleEggsModel eggsModel = this.eggModels[size];
+		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(EetleEggsTileEntityRenderer.TEXTURES[size])), packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks, eggsEntity.getSackGrowths());
+		eggsModel.renderSilk(matrixStack, buffer.getBuffer(EERenderTypes.EETLE_EGG_SILK), packedLightIn, OverlayTexture.NO_OVERLAY);
 		matrixStack.pop();
 		super.render(eggsEntity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
 	}

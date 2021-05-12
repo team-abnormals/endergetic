@@ -51,7 +51,7 @@ public class LargeEetleEggsModel implements IEetleEggsModel {
 		this.cross3.setRotationPoint(-7.8F, 21.0F, -7.8F);
 		this.cross3.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
 		this.setRotateAngle(cross3, 0.0F, -0.7853981633974483F, 0.0F);
-		this.base = new ModelRenderer(textureWidth, textureHeight, -16, 34);
+		this.base = new ModelRenderer(textureWidth, textureHeight, -16, 38);
 		this.base.setRotationPoint(0.0F, 23.99F, 0.0F);
 		this.base.addBox(-8.0F, 0.0F, -8.0F, 16, 0, 16, 0.0F);
 		this.smallEgg2 = new EndimatorModelRenderer(textureWidth, textureHeight, 28, 0);
@@ -77,11 +77,16 @@ public class LargeEetleEggsModel implements IEetleEggsModel {
 		this.GiantEgg.setScale(eggScale4, eggScale4, eggScale4);
 		this.GiantEgg.render(matrixStack, builder, 240, packedOverlay);
 
-		this.cross2.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross1.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross4.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross3.render(matrixStack, builder, packedLight, packedOverlay);
 		this.base.render(matrixStack, builder, packedLight, packedOverlay);
+	}
+
+	@Override
+	public void renderSilk(MatrixStack matrixStack, IVertexBuilder silkBuilder, int packedLight, int packedOverlay) {
+		this.base.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross2.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross1.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross4.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross3.render(matrixStack, silkBuilder, packedLight, packedOverlay);
 	}
 
 	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {

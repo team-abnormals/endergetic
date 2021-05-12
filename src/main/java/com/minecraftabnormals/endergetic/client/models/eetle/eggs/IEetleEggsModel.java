@@ -6,4 +6,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 public interface IEetleEggsModel {
 	void render(MatrixStack matrixStack, IVertexBuilder builder, int packedLight, int packedOverlay, float partialTicks, EetleEggsTileEntity.SackGrowth[] sackGrowths);
+
+	void renderSilk(MatrixStack matrixStack, IVertexBuilder silkBuilder, int packedLight, int packedOverlay);
 }

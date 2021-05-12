@@ -76,12 +76,15 @@ public class SmallEetleEggsModel implements IEetleEggsModel {
 		float eggScale4 = sackGrowths[3].getGrowth(partialTicks);
 		this.bigEgg.setScale(eggScale4, eggScale4, eggScale4);
 		this.bigEgg.render(matrixStack, builder, 240, packedOverlay);
+	}
 
-		this.base.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross2.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross4.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross1.render(matrixStack, builder, packedLight, packedOverlay);
-		this.cross3.render(matrixStack, builder, packedLight, packedOverlay);
+	@Override
+	public void renderSilk(MatrixStack matrixStack, IVertexBuilder silkBuilder, int packedLight, int packedOverlay) {
+		this.base.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross2.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross4.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross1.render(matrixStack, silkBuilder, packedLight, packedOverlay);
+		this.cross3.render(matrixStack, silkBuilder, packedLight, packedOverlay);
 	}
 
 	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
