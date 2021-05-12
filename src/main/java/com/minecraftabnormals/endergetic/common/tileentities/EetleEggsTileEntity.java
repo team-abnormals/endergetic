@@ -26,7 +26,7 @@ import java.util.Random;
 public class EetleEggsTileEntity extends TileEntity implements ITickableTileEntity {
 	private static final Random RANDOM = new Random();
 	private final SackGrowth[] sackGrowths;
-	private int hatchDelay = -24000 - RANDOM.nextInt(1200);
+	private int hatchDelay = -30000 - RANDOM.nextInt(12001);
 	private int hatchProgress;
 	private boolean bypassesSpawningGameRule;
 
@@ -59,6 +59,10 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 
 				int delay = this.hatchDelay;
 				if (delay < 0) {
+					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesWithinAABB(AbstractEetleEntity.class, new AxisAlignedBB(this.getPos()).grow(14.0D)).size() >= 7) {
+						delay = -600 - RANDOM.nextInt(201);
+					}
+
 					this.updateHatchDelay(world, ++delay);
 				} else if (delay > 0) {
 					this.updateHatchDelay(world, --delay);
