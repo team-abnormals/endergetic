@@ -1,23 +1,20 @@
 package com.minecraftabnormals.endergetic.core;
 
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
-import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeSpawnsModifier;
+import com.minecraftabnormals.abnormals_core.common.world.modification.*;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeStructureModifier;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeSurfaceBuilderModifier;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
+import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -148,13 +145,20 @@ public class EndergeticExpansion {
 				() -> EEFeatures.Configured.SPECKLED_CORROCK_PATCH
 		)));
 		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));
-		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOnly, EntityClassification.MONSTER, Sets.newHashSet(
+		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOrMidlands, EntityClassification.MONSTER, Sets.newHashSet(
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.CHARGER_EETLE, 12, 2, 5),
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.GLIDER_EETLE, 8, 2, 4)
 		)));
-		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOnly, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
-		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOnly, EEEntities.GLIDER_EETLE::get, 0.8D, 1.0D));
+		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
+		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.GLIDER_EETLE::get, 0.8D, 1.0D));
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
+
+		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), () -> {
+			return new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(10518688).withSkyColor(0)
+					.setAmbientSound(EESounds.SMALL_END_ISLANDS_LOOP.get())
+					.setAdditionsSound(new SoundAdditionsAmbience(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
+					.build();
+		}));
 	}
 
 	@OnlyIn(Dist.CLIENT)

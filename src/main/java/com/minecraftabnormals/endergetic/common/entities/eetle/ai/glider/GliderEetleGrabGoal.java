@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -13,11 +14,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.EnumSet;
+import java.util.Random;
 
 public class GliderEetleGrabGoal extends Goal {
 	private final GliderEetleEntity glider;
 	private Path path;
 	private int delayCounter;
+	private int swoopTimer;
 
 	public GliderEetleGrabGoal(GliderEetleEntity glider) {
 		this.glider = glider;
@@ -49,6 +52,9 @@ public class GliderEetleGrabGoal extends Goal {
 	@Override
 	public boolean shouldContinueExecuting() {
 		if (this.glider.isGrounded()) return false;
+		if (this.swoopTimer > 0 && !this.glider.getPassengers().isEmpty()) {
+			return true;
+		}
 		LivingEntity target = this.glider.getAttackTarget();
 		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
 			return false;
@@ -58,8 +64,16 @@ public class GliderEetleGrabGoal extends Goal {
 
 	@Override
 	public void tick() {
-		this.delayCounter = Math.max(this.delayCounter - 1, 0);
 		GliderEetleEntity glider = this.glider;
+		if (this.swoopTimer > 0) {
+			this.swoopTimer--;
+			glider.setMotion(glider.getMotion().scale(1.0625F));
+			glider.getNavigator().clearPath();
+			glider.setTargetFlyingRotations(new TargetFlyingRotations(-30.0F, glider.getTargetFlyingRotations().getTargetFlyRoll()));
+			return;
+		}
+
+		this.delayCounter = Math.max(this.delayCounter - 1, 0);
 		LivingEntity target = glider.getAttackTarget();
 		glider.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
 		double distanceToTargetSq = glider.getDistanceSq(target);
@@ -88,7 +102,14 @@ public class GliderEetleGrabGoal extends Goal {
 		if (((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) <= 0) {
 			double reachRange = glider.getWidth() * 2.0F * glider.getWidth() * 2.0F + target.getWidth();
 			if (distanceToTargetSq <= reachRange && glider.canEntityBeSeen(target)) {
-				target.startRiding(glider, true);
+				if (target.startRiding(glider, true)) {
+					Random random = glider.getRNG();
+					float yaw = glider.rotationYaw + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
+					float xMotion = -MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					float zMotion = MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					glider.setMotion(glider.getMotion().add(xMotion * 0.3F, 0.45F, zMotion * 0.3F));
+					this.swoopTimer = 10;
+				}
 			}
 		}
 	}

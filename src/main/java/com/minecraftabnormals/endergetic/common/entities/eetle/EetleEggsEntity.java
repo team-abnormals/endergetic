@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -23,6 +24,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -42,6 +44,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 	};
 	private EggSize eggSize = EggSize.SMALL;
 	private int fallTime;
+	private boolean fromBroodEetle;
 
 	public EetleEggsEntity(EntityType<? extends EetleEggsEntity> type, World world) {
 		super(EEEntities.EETLE_EGGS.get(), world);
@@ -50,6 +53,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 	public EetleEggsEntity(World world, Vector3d pos) {
 		super(EEEntities.EETLE_EGGS.get(), world);
 		this.setPosition(this.prevPosX = pos.getX(), this.prevPosY = pos.getY(), this.prevPosZ = pos.getZ());
+		this.fromBroodEetle = true;
 	}
 
 	public EetleEggsEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
@@ -77,7 +81,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 			BlockPos newPos = this.getPosition();
 			if (!this.onGround && !world.getFluidState(newPos).isTagged(FluidTags.WATER)) {
 				if (this.fallTime > 100 && (newPos.getY() < 1 || newPos.getY() > 256) || this.fallTime > 600) {
-					burstOpenEgg(world, newPos, this.rand, this.eggSize.ordinal());
+					burstOpenEgg(world, newPos, this.rand, this.eggSize.ordinal(), this.fromBroodEetle);
 				}
 			} else {
 				BlockState state = world.getBlockState(newPos);
@@ -98,13 +102,14 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 							TileEntity tileentity = world.getTileEntity(newPos);
 							if (tileentity instanceof EetleEggsTileEntity) {
 								EetleEggsTileEntity eetleEggsTileEntity = (EetleEggsTileEntity) tileentity;
+								eetleEggsTileEntity.fromBroodEetle = this.fromBroodEetle;
 								eetleEggsTileEntity.updateHatchDelay(world, random.nextInt(6) + 5);
 								eetleEggsTileEntity.bypassSpawningGameRule();
 							}
 						}
 					}
 				} else {
-					burstOpenEgg(world, newPos, random, this.eggSize.ordinal());
+					burstOpenEgg(world, newPos, random, this.eggSize.ordinal(), this.fromBroodEetle);
 				}
 			}
 		} else {
@@ -125,12 +130,14 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 	protected void readAdditional(CompoundNBT compound) {
 		this.fallTime = compound.getInt("FallTime");
 		this.eggSize = EggSize.getById(Math.min(2, compound.getInt("EggSize")));
+		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
 	}
 
 	@Override
 	protected void writeAdditional(CompoundNBT compound) {
 		compound.putInt("FallTime", this.fallTime);
 		compound.putInt("EggSize", this.eggSize.ordinal());
+		compound.putBoolean("FromBroodEetle", this.fromBroodEetle);
 	}
 
 	@Override
@@ -187,17 +194,24 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 		return this.eggSize;
 	}
 
-	private static void burstOpenEgg(World world, BlockPos pos, Random random, int size) {
+	private static void burstOpenEgg(World world, BlockPos pos, Random random, int size, boolean fromBroodEetle) {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
 		for (int i = 0; i <= size; i++) {
 			AbstractEetleEntity eetle = random.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);
 			if (eetle != null) {
-				eetle.updateAge(-(random.nextInt(121) + 120));
+				eetle.markFromEgg();
+				eetle.updateAge(-(random.nextInt(41) + 120));
 				eetle.setPositionAndRotation(x + random.nextFloat(), y + 0.1F, z + random.nextFloat(), random.nextFloat() * 360.0F, 0.0F);
+				if (fromBroodEetle) {
+					eetle.applyDespawnTimer();
+				}
 				world.addEntity(eetle);
 			}
+		}
+		if (world instanceof ServerWorld) {
+			((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 		}
 	}
 

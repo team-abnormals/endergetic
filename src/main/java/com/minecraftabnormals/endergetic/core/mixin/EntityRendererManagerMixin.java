@@ -28,7 +28,7 @@ public final class EntityRendererManagerMixin {
 				double y = -MathHelper.lerp(partialTicks, entity.lastTickPosY, entity.getPosY());
 				double z = -MathHelper.lerp(partialTicks, entity.lastTickPosZ, entity.getPosZ());
 				BroodEetleEntity broodEetleEntity = (BroodEetleEntity) entity;
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(new Vector3d(-x, -y, -z), MathHelper.lerp(partialTicks, broodEetleEntity.prevRenderYawOffset, broodEetleEntity.renderYawOffset), broodEetleEntity.getEggCannonProgress(), broodEetleEntity.getEggCannonFlyingProgress(), broodEetleEntity.getFlyingRotations().getRenderFlyPitch());
+				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(new Vector3d(-x, -y, -z), MathHelper.lerp(partialTicks, broodEetleEntity.prevRenderYawOffset, broodEetleEntity.renderYawOffset), broodEetleEntity.getEggCannonProgress(), broodEetleEntity.getEggCannonFlyingProgress(), broodEetleEntity.getFlyingRotations().getRenderFlyPitch(), broodEetleEntity.getHealthStage() == BroodEetleEntity.HealthStage.FIVE);
 				matrixStack.translate(x + eggSackPos.x, y + eggSackPos.y, z + eggSackPos.z);
 				AxisAlignedBB axisalignedbb = eggSackEntity.getBoundingBox().offset(-eggSackEntity.getPosX(), -eggSackEntity.getPosY(), -eggSackEntity.getPosZ());
 				WorldRenderer.drawBoundingBox(matrixStack, bufferIn, axisalignedbb, 0.25F, 1.0F, 0.0F, 1.0F);

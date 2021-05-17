@@ -3,12 +3,12 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
@@ -18,14 +18,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class BroodEggSackEntity extends Entity {
-	private UUID broodUUID;
+	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.5F, 1.5F);
+	private static final EntitySize EXPOSED_SIZE = EntitySize.fixed(1.5F, 1.75F);
+	private static final DataParameter<Integer> BROOD_ID = EntityDataManager.createKey(BroodEggSackEntity.class, DataSerializers.VARINT);
 
 	public BroodEggSackEntity(EntityType<?> entityType, World world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
@@ -41,6 +43,15 @@ public class BroodEggSackEntity extends Entity {
 
 	@Override
 	protected void registerData() {
+		this.dataManager.register(BROOD_ID, -1);
+	}
+
+	@Override
+	public void notifyDataManagerChange(DataParameter<?> key) {
+		super.notifyDataManagerChange(key);
+		if (BROOD_ID.equals(key)) {
+			this.recalculateSize();
+		}
 	}
 
 	@Override
@@ -54,33 +65,38 @@ public class BroodEggSackEntity extends Entity {
 
 	@Override
 	protected void readAdditional(CompoundNBT compound) {
-		if (compound.hasUniqueId("BroodUUID")) {
-			this.setBroodUUID(compound.getUniqueId("BroodUUID"));
+		if (compound.contains("BroodID", Constants.NBT.TAG_INT)) {
+			this.setBroodID(compound.getInt("BroodID"));
 		}
 	}
 
 	@Override
 	protected void writeAdditional(CompoundNBT compound) {
-		UUID broodUUID = this.broodUUID;
-		if (broodUUID != null) {
-			compound.putUniqueId("BroodUUID", broodUUID);
+		int broodID = this.getBroodID();
+		if (broodID >= 0) {
+			compound.putInt("BroodID", broodID);
 		}
 	}
 
+
 	public void updatePosition(BroodEetleEntity broodEetle) {
-		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch());
+		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.getHealthStage() == BroodEetleEntity.HealthStage.FIVE);
 		this.setPosition(sackPos.getX(), sackPos.getY(), sackPos.getZ());
 	}
 
-	public void setBroodUUID(UUID uuid) {
-		this.broodUUID = uuid;
+	public void setBroodID(int id) {
+		this.dataManager.set(BROOD_ID, Math.max(-1, id));
+	}
+
+	private int getBroodID() {
+		return this.dataManager.get(BROOD_ID);
 	}
 
 	@Nullable
 	private BroodEetleEntity getBroodEetle(World world) {
-		UUID broodUUID = this.broodUUID;
-		if (world instanceof ServerWorld && broodUUID != null) {
-			Entity entity = ((ServerWorld) world).getEntityByUuid(broodUUID);
+		int broodID = this.getBroodID();
+		if (broodID >= 0) {
+			Entity entity = world.getEntityByID(broodID);
 			if (entity instanceof BroodEetleEntity) {
 				return (BroodEetleEntity) entity;
 			}
@@ -93,7 +109,7 @@ public class BroodEggSackEntity extends Entity {
 		World world = this.world;
 		if (!world.isRemote) {
 			BroodEetleEntity broodEetle = this.getBroodEetle(world);
-			if (broodEetle != null && broodEetle.isAlive() && broodEetle.isEggMouthOpen()) {
+			if (broodEetle != null && broodEetle.isAlive() && (broodEetle.isEggMouthOpen() || broodEetle.getHealthStage() == BroodEetleEntity.HealthStage.FIVE)) {
 				Entity trueSource = source.getTrueSource();
 				LivingEntity livingEntity = trueSource instanceof LivingEntity ? (LivingEntity) trueSource : null;
 				if (livingEntity != null) {
@@ -130,6 +146,19 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
+	public EntitySize getSize(Pose pose) {
+		BroodEetleEntity broodEetleEntity = this.getBroodEetle(this.world);
+		if (broodEetleEntity != null) {
+			if (broodEetleEntity.isFlying()) {
+				return FLYING_SIZE;
+			} else if (broodEetleEntity.getHealthStage() == BroodEetleEntity.HealthStage.FIVE) {
+				return EXPOSED_SIZE;
+			}
+		}
+		return super.getSize(pose);
+	}
+
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	public boolean canRenderOnFire() {
 		return false;
@@ -140,10 +169,10 @@ public class BroodEggSackEntity extends Entity {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static Vector3d getEggPos(Vector3d pos, float yaw, float eggCannonProgress, float eggCannonFlyingProgress, float flyPitch) {
+	public static Vector3d getEggPos(Vector3d pos, float yaw, float eggCannonProgress, float eggCannonFlyingProgress, float flyPitch, boolean exposed) {
 		flyPitch = MathHelper.clamp(flyPitch, -30.0F, 20.0F);
 		float flyPitchMultiplier = flyPitch >= 0.0F ? 0.0425F : 0.0567F;
 		float xOffset = flyPitch < 0.0F ? flyPitch * 0.033F : 0.0F;
-		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier, 0.0D).rotateYaw(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
+		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier - (exposed ? (eggCannonProgress == 0.0F ? 0.2F : eggCannonProgress * 0.75F) : 0.0F), 0.0D).rotateYaw(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
 	}
 }

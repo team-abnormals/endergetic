@@ -15,7 +15,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
@@ -111,7 +110,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 					}
 				}
 				this.idleDelay = this.rand.nextInt(41) + 30;
-				this.moveController = new MovementController(this);
+				this.moveController = new GroundEetleMoveController(this);
 				this.navigator = this.createNavigator(this.world);
 			}
 		} else if (TARGET_FLYING_ROTATIONS.equals(key)) {
@@ -457,10 +456,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 
 	@Override
 	public Endimation[] getEndimations() {
-		return new Endimation[] {
-				FLAP,
-				MUNCH
-		};
+		return new Endimation[] {FLAP, MUNCH, GROW_UP};
 	}
 
 	public static boolean isEntityLarge(Entity entity) {

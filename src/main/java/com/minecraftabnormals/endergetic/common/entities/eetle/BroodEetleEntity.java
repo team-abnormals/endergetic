@@ -7,6 +7,7 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEnt
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
@@ -33,6 +34,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -43,20 +45,27 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerBossInfo;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity, IFlyingEetle {
+	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213325_aI");
+	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213326_aJ");
 	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> FLYING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> DROPPING_EGGS = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.createKey(GliderEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
+	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.createKey(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
 	private static final DataParameter<Integer> EGG_SACK_ID = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<HealthStage> HEALTH_STAGE = EntityDataManager.createKey(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
 	public static final Endimation FLAP = new Endimation(22);
 	public static final Endimation MUNCH = new Endimation(25);
 	public static final Endimation ATTACK = new Endimation(12);
@@ -65,19 +74,19 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation AIR_CHARGE = new Endimation(80);
 	public static final Endimation AIR_SLAM = new Endimation(11);
 	public static final Endimation DEATH = new Endimation(115);
+	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.875F, 2.125F);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation eggCannonFlyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation sleepingEndimation = new ControlledEndimation(20, 0);
-	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PINK, BossInfo.Overlay.NOTCHED_6);
+	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.NOTCHED_6);
 	private final Set<ServerPlayerEntity> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
 	private Endimation endimation = BLANK_ANIMATION;
 	public final HeadTiltDirection headTiltDirection;
-	private HealthStage stage;
 	@Nullable
 	public BlockPos takeoffPos;
 	private int animationTick;
@@ -99,7 +108,6 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.experienceValue = 50;
 		this.prevWingFlap = this.wingFlap = this.rand.nextFloat();
 		this.prevHealthPercentage = 1.0F;
-		this.stage = HealthStage.ZERO;
 		this.takeoffEndimation.setDecrementing(true);
 		this.flyingEndimation.setDecrementing(true);
 		this.resetIdleFlapDelay();
@@ -131,6 +139,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.dataManager.register(SLEEPING, false);
 		this.dataManager.register(TARGET_FLYING_ROTATIONS, TargetFlyingRotations.ZERO);
 		this.dataManager.register(EGG_SACK_ID, -1);
+		this.dataManager.register(HEALTH_STAGE, HealthStage.ZERO);
 	}
 
 	@Override
@@ -145,11 +154,21 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				this.navigator = this.createNavigator(this.world);
 			}
 			this.resetIdleFlapDelay();
+			this.recalculateSize();
+			BroodEggSackEntity eggSackEntity = this.getEggSack(this.world);
+			if (eggSackEntity != null) {
+				eggSackEntity.recalculateSize();
+			}
 		} else if (TARGET_FLYING_ROTATIONS.equals(key)) {
 			this.flyingRotations.setLooking(true);
 		} else if (SLEEPING.equals(key) && !this.isSleeping()) {
 			for (ServerPlayerEntity playerEntity : this.trackedPlayers) {
 				this.bossInfo.addPlayer(playerEntity);
+			}
+		} else if (HEALTH_STAGE.equals(key)) {
+			BroodEggSackEntity eggSackEntity = this.getEggSack(this.world);
+			if (eggSackEntity != null) {
+				eggSackEntity.recalculateSize();
 			}
 		}
 	}
@@ -185,8 +204,9 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					}
 					this.remove();
 					if (world instanceof ServerWorld) {
-						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch());
+						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.getHealthStage() == HealthStage.FIVE);
 						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
 					for (int i = 0; i < 20; ++i) {
@@ -216,7 +236,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				eggSackEntity.updatePosition(this);
 			} else {
 				eggSackEntity = new BroodEggSackEntity(world);
-				eggSackEntity.setBroodUUID(this.getUniqueID());
+				eggSackEntity.setBroodID(this.getEntityId());
 				eggSackEntity.updatePosition(this);
 				world.addEntity(eggSackEntity);
 				this.setEggSackID(eggSackEntity.getEntityId());
@@ -241,12 +261,12 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 			float percentage = this.getHealth() / this.getMaxHealth();
 			this.bossInfo.setPercent(percentage);
-			if (percentage != this.prevHealthPercentage && this.isAlive()) {
+			if (percentage != this.prevHealthPercentage) {
 				HealthStage newStage = HealthStage.getStage(percentage);
-				if (newStage.eggGrowthChance > 0.0F && newStage.ordinal() > this.stage.ordinal()) {
+				if (newStage.eggGrowthChance > 0.0F && newStage.ordinal() > this.getHealthStage().ordinal()) {
 					newStage.awakeNearbyEggs(this);
 				}
-				this.stage = newStage;
+				this.setHealthStage(newStage);
 			}
 			this.prevHealthPercentage = percentage;
 		} else {
@@ -338,7 +358,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.setFlying(compound.getBoolean("IsFlying"));
 		float progress = this.getHealth() / this.getMaxHealth();
 		this.prevHealthPercentage = progress;
-		this.stage = HealthStage.getStage(progress);
+		this.setHealthStage(HealthStage.getStage(progress));
 	}
 
 	@Override
@@ -490,6 +510,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 	}
 
+	@Override
+	public EntitySize getSize(Pose pose) {
+		return this.isFlying() ? FLYING_SIZE : super.getSize(pose);
+	}
+
 	public void setFiringCannon(boolean firingCannon) {
 		this.dataManager.set(FIRING_CANNON, firingCannon);
 	}
@@ -588,6 +613,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public boolean canDropOffEggs() {
 		return this.eggDropOffCooldown <= 0;
+	}
+
+	private void setHealthStage(HealthStage stage) {
+		this.dataManager.set(HEALTH_STAGE, stage);
+	}
+
+	public HealthStage getHealthStage() {
+		return this.dataManager.get(HEALTH_STAGE);
 	}
 
 	public void setFlying(boolean flying) {
@@ -711,9 +744,32 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		} else if (endimation == LAUNCH) {
 			World world = this.world;
 			if (world instanceof ServerWorld) {
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch());
-				((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.getHealthStage() == HealthStage.FIVE);
+				((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
 			}
+		}
+	}
+
+	//The Brood Eetle's size changes greatly in size, causing too much motion when landing. To fix this, resizing motion is removed.
+	@Override
+	public void recalculateSize() {
+		try {
+			EntitySize currentSize = (EntitySize) SIZE_FIELD.get(this);
+			Pose pose = this.getPose();
+			EntitySize newSize = this.getSize(pose);
+			EntityEvent.Size sizeEvent = ForgeEventFactory.getEntitySizeForge(this, pose, currentSize, newSize, this.getEyeHeight(pose, newSize));
+			newSize = sizeEvent.getNewSize();
+			SIZE_FIELD.set(this, newSize);
+			EYE_HEIGHT_FIELD.set(this, sizeEvent.getNewEyeHeight());
+			if (newSize.width < currentSize.width) {
+				double d0 = newSize.width / 2.0D;
+				this.setBoundingBox(new AxisAlignedBB(this.getPosX() - d0, this.getPosY(), this.getPosZ() - d0, this.getPosX() + d0, this.getPosY() + newSize.height, this.getPosZ() + d0));
+			} else {
+				AxisAlignedBB axisalignedbb = this.getBoundingBox();
+				this.setBoundingBox(new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + newSize.width, axisalignedbb.minY + newSize.height, axisalignedbb.minZ + newSize.width));
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -761,6 +817,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 							EetleEggsTileEntity eetleEggs = (EetleEggsTileEntity) tileEntity;
 							if (eetleEggs.getHatchDelay() < -60) {
 								eetleEggs.bypassSpawningGameRule();
+								eetleEggs.fromBroodEetle = true;
 								eetleEggs.updateHatchDelay(world, -60 - random.nextInt(10));
 							}
 						}

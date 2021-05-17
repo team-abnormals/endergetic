@@ -358,5 +358,33 @@
         "name": "endergetic:ambient/poise_forest/poise_forest_shine"
       }
     ]
+  },
+  "ambient.small_end_islands.loop": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_loop"
+      }
+    ]
+  },
+  "ambient.small_end_islands.additions": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_0"
+      },
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_1"
+      },
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_2"
+      },
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_3"
+      },
+      {
+        "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_4"
+      }
+    ]
   }
 }

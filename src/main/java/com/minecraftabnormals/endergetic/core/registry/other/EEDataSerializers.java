@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
+import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity.HealthStage;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.entity.EntitySize;
@@ -97,10 +98,25 @@ public final class EEDataSerializers {
 		}
 	};
 
+	public static final IDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new IDataSerializer<HealthStage>() {
+		public void write(PacketBuffer buf, HealthStage value) {
+			buf.writeEnumValue(value);
+		}
+
+		public HealthStage read(PacketBuffer buf) {
+			return buf.readEnumValue(HealthStage.class);
+		}
+
+		public HealthStage copyValue(HealthStage value) {
+			return value;
+		}
+	};
+
 	static {
 		SERIALIZERS.register("optional_vec3d", () -> new DataSerializerEntry(OPTIONAL_VEC3D));
 		SERIALIZERS.register("balloon_color", () -> new DataSerializerEntry(BALLOON_COLOR));
 		SERIALIZERS.register("target_flying_rotations", () -> new DataSerializerEntry(TARGET_FLYING_ROTATIONS));
 		SERIALIZERS.register("entity_size", () -> new DataSerializerEntry(ENTITY_SIZE));
+		SERIALIZERS.register("brood_health_stage", () -> new DataSerializerEntry(BROOD_HEALTH_STAGE));
 	}
 }

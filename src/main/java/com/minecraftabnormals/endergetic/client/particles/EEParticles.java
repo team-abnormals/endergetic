@@ -32,6 +32,7 @@ public class EEParticles {
 	public static final RegistryObject<BasicParticleType> OVERWORLD_CROWN = createBasicParticleType(true, "overworld_crown");
 	public static final RegistryObject<BasicParticleType> NETHER_CROWN = createBasicParticleType(true, "nether_crown");
 	public static final RegistryObject<BasicParticleType> END_CROWN = createBasicParticleType(true, "end_crown");
+	public static final RegistryObject<BasicParticleType> EETLE_CROWN = createBasicParticleType(true, "eetle_crown");
 
 	private static RegistryObject<BasicParticleType> createBasicParticleType(boolean alwaysShow, String name) {
 		return PARTICLES.register(name, () -> new BasicParticleType(alwaysShow));
@@ -70,6 +71,9 @@ public class EEParticles {
 			}
 			if (END_CROWN.isPresent()) {
 				particleManager.registerFactory(END_CROWN.get(), CorrockCrownParticle.Factory::new);
+			}
+			if (EETLE_CROWN.isPresent()) {
+				particleManager.registerFactory(EETLE_CROWN.get(), CorrockCrownParticle.EetleFactory::new);
 			}
 		}
 

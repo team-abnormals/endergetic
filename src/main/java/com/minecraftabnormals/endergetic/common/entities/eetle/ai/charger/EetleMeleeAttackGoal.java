@@ -99,13 +99,14 @@ public class EetleMeleeAttackGoal extends Goal {
 
 	private void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
 		ChargerEetleEntity attacker = this.attacker;
-		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy)) {
+		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy) && attacker.canEntityBeSeen(enemy)) {
 			attacker.attackEntityAsMob(enemy);
 			this.meleeCooldown += 10 + attacker.getRNG().nextInt(11);
 		}
 	}
 
 	private double getAttackReachSqr(LivingEntity attackTarget) {
-		return this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth();
+		float widthDoubled = this.attacker.getWidth() * 2.0F;
+		return widthDoubled * widthDoubled + attackTarget.getWidth();
 	}
 }

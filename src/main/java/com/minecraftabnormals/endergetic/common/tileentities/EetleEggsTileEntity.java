@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.tileentities;
 
+import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -29,6 +31,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 	private int hatchDelay = -30000 - RANDOM.nextInt(12001);
 	private int hatchProgress;
 	private boolean bypassesSpawningGameRule;
+	public boolean fromBroodEetle;
 
 	public EetleEggsTileEntity() {
 		super(EETileEntities.EETLE_EGGS.get());
@@ -80,13 +83,21 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 							float yOffset = facing == Direction.DOWN ? 0.25F : 0.1F;
 							float zOffset = facing.getZOffset();
 							int size = state.get(EetleEggsBlock.SIZE);
+							boolean fromBroodEetle = this.fromBroodEetle;
 							for (int i = 0; i <= size; i++) {
 								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);
 								if (eetle != null) {
-									eetle.updateAge(-(RANDOM.nextInt(121) + 120));
+									eetle.markFromEgg();
+									eetle.updateAge(-(RANDOM.nextInt(41) + 120));
 									eetle.setPositionAndRotation(x + RANDOM.nextFloat() * 0.5F + xOffset * 0.5F * RANDOM.nextFloat(), y + yOffset, z + RANDOM.nextFloat() * 0.5F + zOffset * 0.5F * RANDOM.nextFloat(), RANDOM.nextFloat() * 360.0F, 0.0F);
+									if (fromBroodEetle) {
+										eetle.applyDespawnTimer();
+									}
 									world.addEntity(eetle);
 								}
+							}
+							if (world instanceof ServerWorld) {
+								((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 							}
 						}
 					}
@@ -143,6 +154,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		compound.putInt("HatchDelay", this.hatchDelay);
 		compound.putInt("HatchProgress", this.hatchProgress);
 		compound.putBoolean("BypassSpawningGameRule", this.bypassesSpawningGameRule);
+		compound.putBoolean("FromBroodEetle", this.fromBroodEetle);
 		return compound;
 	}
 
@@ -154,6 +166,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 		}
 		this.hatchProgress = MathHelper.clamp(compound.getInt("HatchProgress"), 0, 2);
 		this.bypassesSpawningGameRule = compound.getBoolean("BypassSpawningGameRule");
+		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
 	}
 
 	@Override

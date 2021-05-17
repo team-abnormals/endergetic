@@ -51,6 +51,9 @@ public final class EESounds {
 
 	public static final RegistryObject<SoundEvent> BOOF_BLOCK_INFLATE = HELPER.createSoundEvent("entity.boof_block.inflate");
 
+	public static final RegistryObject<SoundEvent> SMALL_END_ISLANDS_LOOP = HELPER.createSoundEvent("ambient.small_end_islands.loop");
+	public static final RegistryObject<SoundEvent> SMALL_END_ISLANDS_ADDITIONS = HELPER.createSoundEvent("ambient.small_end_islands.additions");
+
 	public static class EESoundTypes {
 		public static final SoundType CLUSTER = new SoundType(1.0F, 1.0F, EESounds.CLUSTER_BREAK.get(), EESounds.CLUSTER_STEP.get(), EESounds.CLUSTER_PLACE.get(), EESounds.CLUSTER_HIT.get(), EESounds.CLUSTER_PLACE.get());
 	}

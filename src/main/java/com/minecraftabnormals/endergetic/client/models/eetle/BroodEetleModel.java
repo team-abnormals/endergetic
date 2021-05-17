@@ -521,7 +521,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.rotate(this.leftBackLeg, 0.18F, 0.54F, -0.33F);
 			this.rotate(this.rightBackLeg, 0.18F, -0.54F, 0.33F);
 			this.scale(this.egg, 0.3F, 0.3F, 0.3F);
-			this.scale(this.eggSack, 0.35F, 0.35F, 0.35F);
+			this.scale(this.eggSack, 0.275F, 0.275F, 0.275F);
 			this.endKeyframe();
 
 			this.setStaticKeyframe(5);

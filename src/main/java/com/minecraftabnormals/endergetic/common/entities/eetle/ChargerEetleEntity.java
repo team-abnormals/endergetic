@@ -14,13 +14,14 @@ import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.monster.IFlinging;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class ChargerEetleEntity extends AbstractEetleEntity {
 	public static final Endimation ATTACK = new Endimation(10);
@@ -104,14 +105,34 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 			if (!this.world.isRemote) {
 				NetworkUtil.setPlayingAnimationMessage(this, ATTACK);
 			}
-			return IFlinging.func_234403_a_(this, (LivingEntity) target);
+			float attackDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+			float damage;
+			if ((int) attackDamage > 0.0F) {
+				damage = attackDamage / 2.0F + this.rand.nextInt((int) attackDamage);
+			} else {
+				damage = attackDamage;
+			}
+
+			boolean attacked = target.attackEntityFrom(DamageSource.causeMobDamage(this), damage);
+			if (attacked) {
+				this.applyEnchantments(this, target);
+				this.constructKnockBackVector((LivingEntity) target);
+			}
+			return attacked;
 		}
 	}
 
 	@Override
 	protected void constructKnockBackVector(LivingEntity target) {
 		if (!this.isChild()) {
-			IFlinging.func_234404_b_(this, target);
+			double knockbackForce = this.getAttributeValue(Attributes.ATTACK_KNOCKBACK) - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+			if (knockbackForce > 0.0D) {
+				Random random = this.world.rand;
+				double scale = knockbackForce * (random.nextFloat() * 1.0F + 0.5F);
+				Vector3d horizontalVelocity = new Vector3d(target.getPosX() - this.getPosX(), 0.0D, target.getPosZ() - this.getPosZ()).normalize().scale(scale);
+				target.addVelocity(horizontalVelocity.x, knockbackForce * (random.nextFloat() * 0.05F), horizontalVelocity.z);
+				target.velocityChanged = true;
+			}
 		}
 	}
 
@@ -129,11 +150,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 
 	@Override
 	public Endimation[] getEndimations() {
-		return new Endimation[]{
-				ATTACK,
-				CATAPULT,
-				FLAP
-		};
+		return new Endimation[]{ATTACK, CATAPULT, FLAP, GROW_UP};
 	}
 
 	@Nullable

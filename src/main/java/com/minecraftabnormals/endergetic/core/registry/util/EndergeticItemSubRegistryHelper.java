@@ -14,7 +14,7 @@ public final class EndergeticItemSubRegistryHelper extends ItemSubRegistryHelper
 	}
 
 	public RegistryObject<EetleSpawnEggItem> createEetleSpawnEgg() {
-		EetleSpawnEggItem spawnEggItem = new EetleSpawnEggItem(4078146, 8356781, new Item.Properties().group(ItemGroup.MISC));
+		EetleSpawnEggItem spawnEggItem = new EetleSpawnEggItem(7964867, 3943508, new Item.Properties().group(ItemGroup.MISC));
 		this.spawnEggs.add(spawnEggItem);
 		return this.deferredRegister.register("eetle_spawn_egg", () -> spawnEggItem);
 	}

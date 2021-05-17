@@ -11,9 +11,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetleModel> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood_eetle.png");
-	private static final ResourceLocation EMISSIVE_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood_eetle_emissive.png");
+	private static final ResourceLocation[] TEXTURES = getStageTextures();
+	private static final ResourceLocation EMISSIVE_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood/brood_eetle_emissive.png");
 
 	public BroodEetleRenderer(EntityRendererManager renderManagerIn) {
 		super(renderManagerIn, new BroodEetleModel(), 1.0F);
@@ -34,6 +37,14 @@ public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetle
 
 	@Override
 	public ResourceLocation getEntityTexture(BroodEetleEntity entity) {
-		return TEXTURE;
+		return TEXTURES[entity.getHealthStage().ordinal()];
+	}
+
+	private static ResourceLocation[] getStageTextures() {
+		List<ResourceLocation> textures = new ArrayList<>();
+		for (BroodEetleEntity.HealthStage stage : BroodEetleEntity.HealthStage.values()) {
+			textures.add(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood/brood_eetle_" + stage.ordinal() + ".png"));
+		}
+		return textures.toArray(new ResourceLocation[0]);
 	}
 }
