@@ -1,14 +1,18 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
@@ -30,6 +34,20 @@ public final class PlayerEntityMixin {
 
 			if (!balloonsTag.isEmpty()) {
 				compound.put("Balloons", balloonsTag);
+			}
+		}
+	}
+
+	@Inject(at = @At("HEAD"), method = "wantsToStopRiding", cancellable = true)
+	private void preventGliderEetleDismount(CallbackInfoReturnable<Boolean> info) {
+		PlayerEntity player = (PlayerEntity) (Object) this;
+		if (player.isSneaking() && player.isAlive() && !player.isSpectator() && player.world.getDifficulty() != Difficulty.PEACEFUL) {
+			Entity entity = player.getRidingEntity();
+			if (entity instanceof GliderEetleEntity) {
+				GliderEetleEntity glider = (GliderEetleEntity) entity;
+				if (!glider.isChild() && glider.isAlive() && glider.isFlying()) {
+					info.setReturnValue(false);
+				}
 			}
 		}
 	}
