@@ -51,11 +51,11 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public void tick() {
 		if (this.isEndimationAtTick(14)) {
-			slam(this.entity, this.random);
+			slam(this.entity, this.random, 1.0F);
 		}
 	}
 
-	public static void slam(BroodEetleEntity broodEetle, Random random) {
+	public static void slam(BroodEetleEntity broodEetle, Random random, float power) {
 		ServerWorld world = (ServerWorld) broodEetle.world;
 		double posX = broodEetle.getPosX();
 		double posY = broodEetle.getPosY();
@@ -63,7 +63,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		for (BlockState state : sampleGround(world, broodEetle.getPosition().down(), random)) {
 			world.spawnParticle(new BlockParticleData(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
 		}
-		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE);
+		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE) * power;
 		double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
 		for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.5D), entity1 -> entity1 != broodEetle)) {
 			float damage;
@@ -81,7 +81,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 				broodEetle.applyEnchantments(broodEetle, livingEntity);
 				double knockbackForce = knockback - livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 				float inAirFactor = livingEntity.isOnGround() ? 1.0F : 0.75F;
-				Vector3d horizontalVelocity = new Vector3d(livingEntity.getPosX() - posX, 0.0D, livingEntity.getPosZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor);
+				Vector3d horizontalVelocity = new Vector3d(livingEntity.getPosX() - posX, 0.0D, livingEntity.getPosZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor * power);
 				livingEntity.addVelocity(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
 				livingEntity.velocityChanged = true;
 			}

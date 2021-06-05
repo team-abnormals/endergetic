@@ -41,7 +41,7 @@ public final class PlayerEntityMixin {
 	@Inject(at = @At("HEAD"), method = "wantsToStopRiding", cancellable = true)
 	private void preventGliderEetleDismount(CallbackInfoReturnable<Boolean> info) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
-		if (player.isSneaking() && player.isAlive() && !player.isSpectator() && player.world.getDifficulty() != Difficulty.PEACEFUL) {
+		if (player.isSneaking() && player.isAlive() && !player.isSpectator() && !player.isCreative() && player.world.getDifficulty() != Difficulty.PEACEFUL) {
 			Entity entity = player.getRidingEntity();
 			if (entity instanceof GliderEetleEntity) {
 				GliderEetleEntity glider = (GliderEetleEntity) entity;

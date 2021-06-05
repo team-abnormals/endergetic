@@ -36,7 +36,7 @@ public class InfestedCorrockBlock extends Block {
 			return;
 		}
 
-		if (world.isAreaLoaded(pos, 1) && rand.nextFloat() <= 0.1F) {
+		if (world.isAreaLoaded(pos, 1) && rand.nextFloat() <= 0.02F) {
 			EetleEggsBlock.shuffleDirections(POSSIBLE_DIRECTIONS, rand);
 			boolean grewNewEgg = false;
 			Block eetleEggs = EEBlocks.EETLE_EGGS.get();

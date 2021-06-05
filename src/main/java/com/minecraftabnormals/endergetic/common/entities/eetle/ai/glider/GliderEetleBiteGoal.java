@@ -1,7 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
+import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
@@ -27,7 +29,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 	public boolean shouldExecute() {
 		if (this.entity.isGrounded()) return false;
 		LivingEntity target = this.entity.getAttackTarget();
-		if (target != null && target.isAlive() && GliderEetleEntity.isEntityLarge(target) && !(target.getRidingEntity() instanceof GliderEetleEntity) && this.entity.getPassengers().isEmpty()) {
+		if (target != null && target.isAlive() && (GliderEetleEntity.isEntityLarge(target) || ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) > 0) && !(target.getRidingEntity() instanceof GliderEetleEntity) && this.entity.getPassengers().isEmpty()) {
 			this.path = this.entity.getNavigator().getPathToEntity(target, 0);
 			return this.path != null;
 		}
@@ -49,7 +51,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 	public boolean shouldContinueExecuting() {
 		if (this.entity.isGrounded()) return false;
 		LivingEntity target = this.entity.getAttackTarget();
-		return target != null && target.isAlive() && GliderEetleEntity.isEntityLarge(target) && !(target.getRidingEntity() instanceof GliderEetleEntity) && this.entity.getPassengers().isEmpty() && !this.entity.getNavigator().noPath();
+		return target != null && target.isAlive() && (GliderEetleEntity.isEntityLarge(target) || ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) > 0) && !(target.getRidingEntity() instanceof GliderEetleEntity) && this.entity.getPassengers().isEmpty() && !this.entity.getNavigator().noPath();
 	}
 
 	@Override
@@ -80,8 +82,8 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 		if (distanceToTargetSq <= reachRange) {
 			if (!this.isEndimationPlaying()) {
 				this.playEndimation();
-			} else if (this.isEndimationAtTick(8) || this.isEndimationAtTick(18)){
-				target.attackEntityFrom(GliderEetleMunchGoal.causeMunchDamage(glider), (float) glider.getAttributeValue(Attributes.ATTACK_DAMAGE) + random.nextInt(2));
+			} else if ((this.isEndimationAtTick(8) || this.isEndimationAtTick(18)) && glider.canEntityBeSeen(target)) {
+				target.attackEntityFrom(GliderEetleMunchGoal.causeMunchDamage(glider), (float) glider.getAttributeValue(Attributes.ATTACK_DAMAGE) + random.nextInt(3));
 			}
 		}
 	}

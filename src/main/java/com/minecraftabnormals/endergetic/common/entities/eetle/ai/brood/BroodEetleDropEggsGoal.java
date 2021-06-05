@@ -47,7 +47,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 			if (eggSack != null) {
 				EetleEggsEntity eetleEgg = new EetleEggsEntity(world, eggSack.getPositionVec());
 				Random random = this.random;
-				eetleEgg.setEggSize(EetleEggsEntity.EggSize.random(random));
+				eetleEgg.setEggSize(EetleEggsEntity.EggSize.random(random, true));
 				eetleEgg.setMotion(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.3F, -0.1F, (random.nextFloat() - random.nextFloat()) * 0.3F).add(broodEetle.getMotion()));
 				world.addEntity(eetleEgg);
 				this.eggsToDrop--;

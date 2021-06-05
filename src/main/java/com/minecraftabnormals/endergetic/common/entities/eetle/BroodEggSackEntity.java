@@ -80,7 +80,7 @@ public class BroodEggSackEntity extends Entity {
 
 
 	public void updatePosition(BroodEetleEntity broodEetle) {
-		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.getHealthStage() == BroodEetleEntity.HealthStage.FIVE);
+		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.isOnLastHealthStage());
 		this.setPosition(sackPos.getX(), sackPos.getY(), sackPos.getZ());
 	}
 
@@ -109,7 +109,7 @@ public class BroodEggSackEntity extends Entity {
 		World world = this.world;
 		if (!world.isRemote) {
 			BroodEetleEntity broodEetle = this.getBroodEetle(world);
-			if (broodEetle != null && broodEetle.isAlive() && (broodEetle.isEggMouthOpen() || broodEetle.getHealthStage() == BroodEetleEntity.HealthStage.FIVE)) {
+			if (broodEetle != null && broodEetle.isAlive() && (broodEetle.isEggMouthOpen() || broodEetle.isOnLastHealthStage())) {
 				Entity trueSource = source.getTrueSource();
 				LivingEntity livingEntity = trueSource instanceof LivingEntity ? (LivingEntity) trueSource : null;
 				if (livingEntity != null) {
@@ -151,7 +151,7 @@ public class BroodEggSackEntity extends Entity {
 		if (broodEetleEntity != null) {
 			if (broodEetleEntity.isFlying()) {
 				return FLYING_SIZE;
-			} else if (broodEetleEntity.getHealthStage() == BroodEetleEntity.HealthStage.FIVE) {
+			} else if (broodEetleEntity.isOnLastHealthStage()) {
 				return EXPOSED_SIZE;
 			}
 		}

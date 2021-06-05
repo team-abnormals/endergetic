@@ -322,7 +322,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		super.removePassenger(passenger);
 		if (passenger.getRidingEntity() != this && passenger instanceof IDataManager) {
 			IDataManager dataManager = (IDataManager) passenger;
-			dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN) + 20 + this.rand.nextInt(21));
+			dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN) + 40 + this.rand.nextInt(11));
 		}
 		if (!this.world.isRemote) {
 			if (!this.getPassengers().isEmpty()) {

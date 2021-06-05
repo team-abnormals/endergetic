@@ -27,7 +27,7 @@ public class BroodEetleLandGoal extends Goal {
 	@Override
 	public boolean shouldExecute() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		if (broodEetle.isFlying() && broodEetle.getTicksFlying() >= 700 && broodEetle.getRNG().nextFloat() < 0.1F) {
+		if (broodEetle.isFlying() && ((broodEetle.getTicksFlying() >= 700 && broodEetle.getRNG().nextFloat() < 0.1F) || broodEetle.isOnLastHealthStage())) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			World world = broodEetle.world;
 			boolean canSitOnTakeoffPos = takeoffPos != null && world.isTopSolid(takeoffPos.down(), broodEetle);

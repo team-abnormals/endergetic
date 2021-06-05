@@ -31,7 +31,7 @@ public class GliderEetleGrabGoal extends Goal {
 	public boolean shouldExecute() {
 		if (this.glider.isGrounded()) return false;
 		LivingEntity target = this.glider.getAttackTarget();
-		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
+		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) > 0 || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
 			return false;
 		}
 		this.path = this.glider.getNavigator().getPathToEntity(target, 0);
@@ -56,7 +56,7 @@ public class GliderEetleGrabGoal extends Goal {
 			return true;
 		}
 		LivingEntity target = this.glider.getAttackTarget();
-		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
+		if (target == null || !target.isAlive() || GliderEetleEntity.isEntityLarge(target) || ((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) > 0 || target.getRidingEntity() instanceof GliderEetleEntity || !this.glider.getPassengers().isEmpty()) {
 			return false;
 		}
 		return !this.glider.getNavigator().noPath();
@@ -99,17 +99,15 @@ public class GliderEetleGrabGoal extends Goal {
 			}
 		}
 
-		if (((IDataManager) target).getValue(EEDataProcessors.CATCHING_COOLDOWN) <= 0) {
-			double reachRange = glider.getWidth() * 2.0F * glider.getWidth() * 2.0F + target.getWidth();
-			if (distanceToTargetSq <= reachRange && glider.canEntityBeSeen(target)) {
-				if (target.startRiding(glider, true)) {
-					Random random = glider.getRNG();
-					float yaw = glider.rotationYaw + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
-					float xMotion = -MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-					glider.setMotion(glider.getMotion().add(xMotion * 0.3F, 0.45F, zMotion * 0.3F));
-					this.swoopTimer = 10;
-				}
+		double reachRange = glider.getWidth() * 2.0F * glider.getWidth() * 2.0F + target.getWidth();
+		if (distanceToTargetSq <= reachRange && glider.canEntityBeSeen(target)) {
+			if (target.startRiding(glider, true)) {
+				Random random = glider.getRNG();
+				float yaw = glider.rotationYaw + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
+				float xMotion = -MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+				float zMotion = MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+				glider.setMotion(glider.getMotion().add(xMotion * 0.3F, 0.45F, zMotion * 0.3F));
+				this.swoopTimer = 10;
 			}
 		}
 	}

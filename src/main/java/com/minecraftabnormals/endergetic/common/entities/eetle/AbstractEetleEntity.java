@@ -327,6 +327,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
+	protected boolean func_230282_cS_() {
+		return !this.isChild();
+	}
+
+	@Override
 	public ItemStack getPickedResult(RayTraceResult target) {
 		return new ItemStack(EEItems.EETLE_SPAWN_EGG.get());
 	}

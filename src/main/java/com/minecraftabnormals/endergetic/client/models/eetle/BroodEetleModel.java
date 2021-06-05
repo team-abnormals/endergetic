@@ -221,8 +221,12 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.leftBackLeg.rotateAngleY += backLegSleepingY;
 		this.rightBackLeg.rotateAngleY -= backLegSleepingY;
 
-		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks));
+		float healPulseProgress = eetle.getHealPulseProgress();
+		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks)) + 0.1F * MathHelper.sin((float) Math.PI * 0.5F * healPulseProgress);
 		this.eggSack.setScale(scale, scale, scale);
+		EndimatorModelRenderer egg = this.egg;
+		float eggScale = 0.15F * healPulseProgress * healPulseProgress * healPulseProgress;
+		egg.setScale(egg.scaleX + eggScale, egg.scaleY + eggScale, egg.scaleZ + eggScale);
 
 		float eggMouthAngle = 0.087F * Math.abs(MathHelper.cos(0.05F * ageInTicks)) + 0.79F * eetle.getEggMouthProgress();
 		this.eggMouthTop.rotateAngleY -= eggMouthAngle;
@@ -230,7 +234,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
 		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
 
-		this.egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
+		egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
 
 		float takeOffProgress = eetle.getTakeoffProgress();
 		float thirtyDegreeProgress = 0.52F * takeOffProgress;
@@ -364,12 +368,12 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 
 			this.resetKeyframe(5);
 		} else if (this.tryToPlayEndimation(BroodEetleEntity.LAUNCH)) {
-			float droppingSign = endimatedEntity.isEggCannonFlyingAtMax() ? -1.2F : 1.0F;
+			float droppingFactor = endimatedEntity.isEggCannonFlyingAtMax() ? -1.2F : 1.0F;
 			this.startKeyframe(5);
-			this.scale(this.eggSack, 0.175F, 0.175F, 0.175F);
+			this.scale(this.eggSack, 0.2F, 0.2F, 0.2F);
 			this.rotate(this.head, 0.3F, 0.0F, 0.0F);
 			this.rotate(this.horn, 0.52F, 0.0F, 0.0F);
-			this.rotateAdditive(this.egg, droppingSign * 0.27F, 0.0F, 0.0F);
+			this.rotateAdditive(this.egg, droppingFactor * 0.27F, 0.0F, 0.0F);
 			this.scale(this.egg, 0.1F, 0.1F, 0.1F);
 			this.rotateAdditive(this.eggMouthTop, 0.0F, -0.17F, 0.0F);
 			this.rotateAdditive(this.eggMouthBottom, 0.0F, -0.17F, 0.0F);
@@ -384,7 +388,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 			this.endKeyframe();
 
 			this.startKeyframe(5);
-			this.rotateAdditive(this.egg, droppingSign * 0.13F, 0.0F, 0.0F);
+			this.rotateAdditive(this.egg, droppingFactor * 0.13F, 0.0F, 0.0F);
 			this.rotateAdditive(this.eggMouthTop, 0.0F, -0.07F, 0.0F);
 			this.rotateAdditive(this.eggMouthBottom, 0.0F, -0.07F, 0.0F);
 			this.rotateAdditive(this.eggMouthLeft, 0.0F, -0.07F, 0.0F);

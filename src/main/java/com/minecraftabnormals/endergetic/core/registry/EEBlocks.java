@@ -3,7 +3,6 @@ package com.minecraftabnormals.endergetic.core.registry;
 import java.util.concurrent.Callable;
 
 import com.minecraftabnormals.abnormals_core.common.blocks.*;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
@@ -150,7 +149,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> CRACKED_END_STONE_BRICKS  = HELPER.createBlock("cracked_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> CRACKED_PURPUR_BLOCK 		= HELPER.createBlock("cracked_purpur_block", () -> new Block(AbstractBlock.Properties.from(Blocks.PURPUR_BLOCK)), ItemGroup.BUILDING_BLOCKS);
 
-	public static final RegistryObject<Block> EETLE_EGGS = HELPER.createBlockWithISTER("eetle_eggs", () -> new EetleEggsBlock(EEProperties.EETLE_EGGS), () -> eetleEggsISTER(), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> EETLE_EGGS = HELPER.createBlock("eetle_eggs", () -> new EetleEggsBlock(EEProperties.EETLE_EGGS), ItemGroup.DECORATIONS);
 
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {
@@ -160,11 +159,5 @@ public final class EEBlocks {
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> puffbugHiveISTER() {
 		return () -> new EETileEntityItemRenderer<TileEntity>(PuffBugHiveTileEntity::new);
-	}
-
-	//Placeholder
-	@OnlyIn(Dist.CLIENT)
-	private static Callable<ItemStackTileEntityRenderer> eetleEggsISTER() {
-		return () -> new EETileEntityItemRenderer<TileEntity>(EetleEggsTileEntity::new);
 	}
 }

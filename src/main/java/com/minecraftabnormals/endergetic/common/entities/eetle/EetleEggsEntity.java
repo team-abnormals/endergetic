@@ -233,8 +233,8 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 
 		private static final EggSize[] VALUES = values();
 
-		public static EggSize random(Random random) {
-			return random.nextFloat() < 0.6F ? SMALL : VALUES[random.nextInt(VALUES.length)];
+		public static EggSize random(Random random, boolean biased) {
+			return biased ? (random.nextFloat() < 0.6F ? SMALL : VALUES[random.nextInt(VALUES.length)]) : VALUES[random.nextInt(VALUES.length)];
 		}
 
 		public static EggSize getById(int id) {

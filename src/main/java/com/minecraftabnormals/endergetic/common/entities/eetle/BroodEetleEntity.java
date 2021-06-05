@@ -75,12 +75,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation AIR_SLAM = new Endimation(11);
 	public static final Endimation DEATH = new Endimation(115);
 	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.875F, 2.125F);
+	private static final EntitySize FINAL_STAGE_SIZE = EntitySize.fixed(2.1875F, 2.125F);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation eggCannonFlyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation sleepingEndimation = new ControlledEndimation(20, 0);
+	private final ControlledEndimation healPulseEndimation = new ControlledEndimation(10, 0);
 	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.NOTCHED_6);
 	private final Set<ServerPlayerEntity> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
@@ -110,11 +112,13 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.prevHealthPercentage = 1.0F;
 		this.takeoffEndimation.setDecrementing(true);
 		this.flyingEndimation.setDecrementing(true);
+		this.healPulseEndimation.setDecrementing(true);
 		this.resetIdleFlapDelay();
 	}
 
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(0, new BroodEetleLastStageGoal(this));
 		this.goalSelector.addGoal(0, new BroodEetleSleepGoal(this));
 		this.goalSelector.addGoal(1, new BroodEetleDropEggsGoal(this));
 		this.goalSelector.addGoal(1, new BroodEetleAirSlamGoal(this));
@@ -166,6 +170,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				this.bossInfo.addPlayer(playerEntity);
 			}
 		} else if (HEALTH_STAGE.equals(key)) {
+			this.recalculateSize();
 			BroodEggSackEntity eggSackEntity = this.getEggSack(this.world);
 			if (eggSackEntity != null) {
 				eggSackEntity.recalculateSize();
@@ -185,7 +190,6 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
 				.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 2.0D);
 	}
-
 	@Override
 	public void tick() {
 		super.tick();
@@ -204,7 +208,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					}
 					this.remove();
 					if (world instanceof ServerWorld) {
-						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.getHealthStage() == HealthStage.FIVE);
+						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
 						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 						((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
@@ -246,7 +250,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				this.ticksFlying++;
 
 				if (this.isEndimationPlaying(AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.world.hasNoCollisions(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
-					BroodEetleSlamGoal.slam(this, this.rand);
+					BroodEetleSlamGoal.slam(this, this.rand, 1.0F);
 				}
 			} else {
 				this.ticksFlying = 0;
@@ -313,6 +317,13 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		sleepingEndimation.setDecrementing(!this.isSleeping());
 		sleepingEndimation.update();
 		sleepingEndimation.tick();
+
+		ControlledEndimation healPulseEndimation = this.healPulseEndimation;
+		if (healPulseEndimation.isAtMax()) {
+			healPulseEndimation.setDecrementing(true);
+		}
+		healPulseEndimation.update();
+		healPulseEndimation.tick();
 
 		this.flyingRotations.tick(this.getTargetFlyingRotations());
 	}
@@ -512,7 +523,16 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public EntitySize getSize(Pose pose) {
-		return this.isFlying() ? FLYING_SIZE : super.getSize(pose);
+		return this.isFlying() ? FLYING_SIZE : this.isOnLastHealthStage() ? FINAL_STAGE_SIZE : super.getSize(pose);
+	}
+
+	@Override
+	public void handleStatusUpdate(byte id) {
+		if (id == 60) {
+			this.healPulseEndimation.setDecrementing(false);
+		} else {
+			super.handleStatusUpdate(id);
+		}
 	}
 
 	public void setFiringCannon(boolean firingCannon) {
@@ -571,6 +591,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		return this.flyingEndimation.getAnimationProgress();
 	}
 
+	public float getHealPulseProgress() {
+		return this.healPulseEndimation.getAnimationProgress();
+	}
+
 	public void resetIdleFlapDelay() {
 		this.idleDelay = this.rand.nextInt(41) + 25;
 	}
@@ -621,6 +645,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public HealthStage getHealthStage() {
 		return this.dataManager.get(HEALTH_STAGE);
+	}
+
+	public boolean isOnLastHealthStage() {
+		return this.getHealthStage() == HealthStage.FIVE;
 	}
 
 	public void setFlying(boolean flying) {
@@ -744,7 +772,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		} else if (endimation == LAUNCH) {
 			World world = this.world;
 			if (world instanceof ServerWorld) {
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.getHealthStage() == HealthStage.FIVE);
+				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
 				((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
 			}
 		}
@@ -786,11 +814,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public enum HealthStage {
 		ZERO(1.0F, 0.0F),
-		ONE(5.0F / 6.0F, 0.0F),
+		ONE(5.0F / 6.0F, 0.1F),
 		TWO(2.0F / 3.0F, 0.1F),
 		THREE(0.5F, 0.2F),
-		FOUR(1.0F / 3.0F, 0.2F),
-		FIVE(1.0F / 6.0F, 0.5F);
+		FOUR(1.0F / 3.0F, 0.3F),
+		FIVE(1.0F / 6.0F, 0.0F);
 
 		private static final HealthStage[] VALUES = {FIVE, FOUR, THREE, TWO, ONE, ZERO};
 		private final float percentage;
