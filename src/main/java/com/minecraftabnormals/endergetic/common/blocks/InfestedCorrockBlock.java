@@ -37,20 +37,20 @@ public class InfestedCorrockBlock extends Block {
 		}
 
 		if (world.isAreaLoaded(pos, 1) && rand.nextFloat() <= 0.02F) {
-			EetleEggsBlock.shuffleDirections(POSSIBLE_DIRECTIONS, rand);
+			EetleEggBlock.shuffleDirections(POSSIBLE_DIRECTIONS, rand);
 			boolean grewNewEgg = false;
-			Block eetleEggs = EEBlocks.EETLE_EGGS.get();
+			Block eetleEggs = EEBlocks.EETLE_EGG.get();
 			for (Direction direction : POSSIBLE_DIRECTIONS) {
 				BlockPos offset = pos.offset(direction);
 				if (!grewNewEgg && world.isAirBlock(offset)) {
 					grewNewEgg = true;
-					world.setBlockState(offset, eetleEggs.getDefaultState().with(EetleEggsBlock.FACING, direction));
+					world.setBlockState(offset, eetleEggs.getDefaultState().with(EetleEggBlock.FACING, direction));
 				} else {
 					BlockState offsetState = world.getBlockState(offset);
 					if (offsetState.getBlock() == eetleEggs && rand.nextFloat() <= 0.25F) {
-						int size = offsetState.get(EetleEggsBlock.SIZE);
+						int size = offsetState.get(EetleEggBlock.SIZE);
 						if (size < 2) {
-							world.setBlockState(offset, offsetState.with(EetleEggsBlock.SIZE, size + 1));
+							world.setBlockState(offset, offsetState.with(EetleEggBlock.SIZE, size + 1));
 						}
 					}
 				}

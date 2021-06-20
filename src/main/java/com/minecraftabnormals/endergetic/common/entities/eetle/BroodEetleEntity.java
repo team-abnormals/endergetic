@@ -10,7 +10,7 @@ import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
@@ -209,7 +209,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					this.remove();
 					if (world instanceof ServerWorld) {
 						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 						((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
@@ -841,8 +841,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					for (int z = -10; z <= 10; z++) {
 						mutable.setPos(originX + x, originY + y, originZ + z);
 						TileEntity tileEntity = world.getTileEntity(mutable);
-						if (tileEntity instanceof EetleEggsTileEntity && random.nextFloat() < this.eggGrowthChance) {
-							EetleEggsTileEntity eetleEggs = (EetleEggsTileEntity) tileEntity;
+						if (tileEntity instanceof EetleEggTileEntity && random.nextFloat() < this.eggGrowthChance) {
+							EetleEggTileEntity eetleEggs = (EetleEggTileEntity) tileEntity;
 							if (eetleEggs.getHatchDelay() < -60) {
 								eetleEggs.bypassSpawningGameRule();
 								eetleEggs.fromBroodEetle = true;

@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -23,7 +23,7 @@ import net.minecraft.world.IWorldReader;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
+public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -55,7 +55,7 @@ public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
 			}
 	};
 
-	public EetleEggsBlock(Properties properties) {
+	public EetleEggBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(this.stateContainer.getBaseState().with(SIZE, 0).with(FACING, Direction.UP).with(WATERLOGGED, false).with(PETRIFIED, false));
 	}
@@ -73,7 +73,7 @@ public class EetleEggsBlock extends ContainerBlock implements IWaterLoggable {
 	@Nullable
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader world) {
-		return new EetleEggsTileEntity();
+		return new EetleEggTileEntity();
 	}
 
 	@Override

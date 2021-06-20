@@ -2,7 +2,7 @@
 	"parent": "endergetic:find_eetle_nest",
 	"display": {
 		"icon": {
-			"item": "endergetic:eetle_eggs"
+			"item": "endergetic:eetle_egg"
 		},
 		"title": {
 			"translate": "advancements.endergetic.kill_brood_eetle.title"

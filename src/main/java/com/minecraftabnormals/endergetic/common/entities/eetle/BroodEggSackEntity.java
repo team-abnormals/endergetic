@@ -120,7 +120,7 @@ public class BroodEggSackEntity extends Entity {
 						this.applyEnchantments(livingEntity, broodEetle);
 					}
 					if (world instanceof ServerWorld) {
-						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGGS.get().getDefaultState()), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 15, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
+						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().getDefaultState()), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 15, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
 					}
 					return true;
 				}

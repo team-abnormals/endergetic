@@ -134,7 +134,7 @@ public class EndergeticExpansion {
 		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOrMidlands, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_PATCH,
-				() -> EEFeatures.Configured.EETLE_EGGS
+				() -> EEFeatures.Configured.EETLE_EGG
 		)));
 		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
@@ -171,7 +171,7 @@ public class EndergeticExpansion {
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), DispensedBoofBlockTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.ENDER_CAMPFIRE.get(), CampfireTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.EETLE_EGGS.get(), EetleEggsTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.EETLE_EGG.get(), EetleEggTileEntityRenderer::new);
 
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), BolloomFruitRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.POISE_CLUSTER.get(), PoiseClusterRender::new);
@@ -185,7 +185,7 @@ public class EndergeticExpansion {
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.CHARGER_EETLE.get(), ChargerEetleRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.GLIDER_EETLE.get(), GliderEetleRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BROOD_EETLE.get(), BroodEetleRenderer::new);
-		RenderingRegistry.registerEntityRenderingHandler(EEEntities.EETLE_EGGS.get(), EetleEggsRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EEEntities.EETLE_EGG.get(), EetleEggRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BROOD_EGG_SACK.get(), BroodEggSackRenderer::new);
 
 		KeybindHandler.registerKeys();

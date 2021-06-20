@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.client.models.eetle.eggs;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
  * <p>
  * Created using Tabula 7.0.0
  */
-public class SmallEetleEggsModel implements IEetleEggsModel {
+public class SmallEetleEggModel implements IEetleEggModel {
 	public EndimatorModelRenderer egg;
 	public EndimatorModelRenderer otherEgg;
 	public EndimatorModelRenderer bigEgg;
@@ -23,7 +23,7 @@ public class SmallEetleEggsModel implements IEetleEggsModel {
 	public ModelRenderer cross3;
 	public ModelRenderer cross4;
 
-	public SmallEetleEggsModel() {
+	public SmallEetleEggModel() {
 		int textureWidth = 64;
 		int textureHeight = 64;
 		this.egg = new EndimatorModelRenderer(textureWidth, textureHeight, 46, 0);
@@ -60,7 +60,7 @@ public class SmallEetleEggsModel implements IEetleEggsModel {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder builder, int packedLight, int packedOverlay, float partialTicks, EetleEggsTileEntity.SackGrowth[] sackGrowths) {
+	public void render(MatrixStack matrixStack, IVertexBuilder builder, int packedLight, int packedOverlay, float partialTicks, EetleEggTileEntity.SackGrowth[] sackGrowths) {
 		float eggScale1 = sackGrowths[0].getGrowth(partialTicks);
 		this.egg.setScale(eggScale1, eggScale1, eggScale1);
 		this.egg.render(matrixStack, builder, 240, packedOverlay);

@@ -5,7 +5,7 @@ import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEggSackEntity;
-import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
 import net.minecraft.entity.ai.EntitySenses;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.math.vector.Vector3d;
@@ -45,9 +45,9 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 			World world = broodEetle.world;
 			BroodEggSackEntity eggSack = broodEetle.getEggSack(world);
 			if (eggSack != null) {
-				EetleEggsEntity eetleEgg = new EetleEggsEntity(world, eggSack.getPositionVec());
+				EetleEggEntity eetleEgg = new EetleEggEntity(world, eggSack.getPositionVec());
 				Random random = this.random;
-				eetleEgg.setEggSize(EetleEggsEntity.EggSize.random(random, true));
+				eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, true));
 				eetleEgg.setMotion(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.3F, -0.1F, (random.nextFloat() - random.nextFloat()) * 0.3F).add(broodEetle.getMotion()));
 				world.addEntity(eetleEgg);
 				this.eggsToDrop--;

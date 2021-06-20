@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.tileentities;
 
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
@@ -25,7 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class EetleEggsTileEntity extends TileEntity implements ITickableTileEntity {
+public class EetleEggTileEntity extends TileEntity implements ITickableTileEntity {
 	private static final Random RANDOM = new Random();
 	private final SackGrowth[] sackGrowths;
 	private int hatchDelay = -30000 - RANDOM.nextInt(12001);
@@ -33,8 +33,8 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 	private boolean bypassesSpawningGameRule;
 	public boolean fromBroodEetle;
 
-	public EetleEggsTileEntity() {
-		super(EETileEntities.EETLE_EGGS.get());
+	public EetleEggTileEntity() {
+		super(EETileEntities.EETLE_EGG.get());
 		this.sackGrowths = new SackGrowth[]{
 				new SackGrowth(),
 				new SackGrowth(),
@@ -52,7 +52,7 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.tick();
 				}
-			} else if ((world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggsBlock.PETRIFIED)) {
+			} else if ((world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
 					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
@@ -78,11 +78,11 @@ public class EetleEggsTileEntity extends TileEntity implements ITickableTileEnti
 							int y = pos.getY();
 							int z = pos.getZ();
 							BlockState state = this.getBlockState();
-							Direction facing = state.get(EetleEggsBlock.FACING);
+							Direction facing = state.get(EetleEggBlock.FACING);
 							float xOffset = facing.getXOffset();
 							float yOffset = facing == Direction.DOWN ? 0.25F : 0.1F;
 							float zOffset = facing.getZOffset();
-							int size = state.get(EetleEggsBlock.SIZE);
+							int size = state.get(EetleEggBlock.SIZE);
 							boolean fromBroodEetle = this.fromBroodEetle;
 							for (int i = 0; i <= size; i++) {
 								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);

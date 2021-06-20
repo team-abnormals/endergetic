@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
@@ -14,12 +14,12 @@ import net.minecraft.world.gen.feature.Feature;
 
 import java.util.Random;
 
-public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
+public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 	private static final Direction[] DIRECTIONS = Direction.values();
-	private static final BlockState BASE_STATE = EEBlocks.EETLE_EGGS.get().getDefaultState();
+	private static final BlockState BASE_STATE = EEBlocks.EETLE_EGG.get().getDefaultState();
 	private static final BlockState INFESTED_STATE = EEBlocks.INFESTED_CORROCK.get().getDefaultState();
 
-	public EetleEggsPatchFeature(Codec<EndergeticPatchConfig> codec) {
+	public EetleEggPatchFeature(Codec<EndergeticPatchConfig> codec) {
 		super(codec);
 	}
 
@@ -27,7 +27,7 @@ public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
 	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, EndergeticPatchConfig config) {
 		int i = 0;
 		pos = EndergeticPatchConfig.getPos(world, pos, config.shouldSearchDown());
-		EetleEggsBlock.shuffleDirections(DIRECTIONS, rand);
+		EetleEggBlock.shuffleDirections(DIRECTIONS, rand);
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		float chance = config.getFrequency();
 		Block corrockBlock = EEBlocks.CORROCK_END_BLOCK.get();
@@ -39,9 +39,9 @@ public class EetleEggsPatchFeature extends Feature<EndergeticPatchConfig> {
 					BlockPos offsetPos = mutable.offset(direction);
 					Block offsetBlock = world.getBlockState(offsetPos).getBlock();
 					if (offsetBlock == corrockBlock || offsetBlock == eumus) {
-						BlockState state = BASE_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
+						BlockState state = BASE_STATE.with(EetleEggBlock.FACING, direction.getOpposite());
 						if (state.isValidPosition(world, mutable)) {
-							world.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, rand.nextFloat() < 0.75F ? 0 : rand.nextFloat() < 0.6F ? 1 : 2), 2);
+							world.setBlockState(mutable, state.with(EetleEggBlock.SIZE, rand.nextFloat() < 0.75F ? 0 : rand.nextFloat() < 0.6F ? 1 : 2), 2);
 							spreadInfestedCorrockAtPos(world, offsetPos, rand, corrockBlock);
 							i++;
 							break;

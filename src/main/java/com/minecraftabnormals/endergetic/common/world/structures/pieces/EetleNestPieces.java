@@ -5,7 +5,7 @@ import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
@@ -46,7 +46,7 @@ public final class EetleNestPieces {
 	private static final Block EUMUS = EEBlocks.EUMUS.get();
 	private static final Block CROWN_STANDING = EEBlocks.CORROCK_CROWN_END_STANDING.get();
 	private static final Block CROWN_WALL = EEBlocks.CORROCK_CROWN_END_WALL.get();
-	private static final Block EETLE_EGSS = EEBlocks.EETLE_EGGS.get();
+	private static final Block EETLE_EGSS = EEBlocks.EETLE_EGG.get();
 	private static final Block CORROCK = EEBlocks.CORROCK_END.get();
 	private static final Block SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get();
 	public static final Set<Block> CARVABLE_BLOCKS = Sets.newHashSet(Blocks.STONE, Blocks.END_STONE, CORROCK_BLOCK, CORROCK, CROWN_STANDING, CROWN_WALL, EETLE_EGSS, EUMUS, SPECKLED_CORROCK, EEBlocks.INFESTED_CORROCK.get(), EEBlocks.POISMOSS.get(), EEBlocks.EUMUS_POISMOSS.get());
@@ -264,7 +264,7 @@ public final class EetleNestPieces {
 				for (int i = 0; i < stalactiteCount; i++) {
 					this.stalactites.add(new NestStalactite(random));
 				}
-				EetleEggsBlock.shuffleDirections(TUNNEL_SIDES, random);
+				EetleEggBlock.shuffleDirections(TUNNEL_SIDES, random);
 				List<NestTunnel> tunnels = this.tunnels;
 				for (Direction side : TUNNEL_SIDES) {
 					if (tunnels.size() < 3 || random.nextBoolean()) {
@@ -554,7 +554,7 @@ public final class EetleNestPieces {
 			}
 
 			private static void tryToPlaceCrownAroundPos(ISeedReader world, BlockPos pos, Random random, MutableBoundingBox bounds) {
-				EetleEggsBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
+				EetleEggBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
 				for (Direction direction : ATTACHMENT_DIRECTIONS) {
 					if (direction.getAxis() == Direction.Axis.Y) {
 						boolean upsideDown = direction == Direction.DOWN;
@@ -915,7 +915,7 @@ public final class EetleNestPieces {
 						mutable.setPos(x, arenaTopY, z);
 						if (bounds.isVecInside(mutable)) {
 							if (world.getBlockState(mutable).getBlock() == CORROCK_BLOCK && random.nextBoolean()) {
-								EetleEggsBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
+								EetleEggBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
 								for (Direction direction : ATTACHMENT_DIRECTIONS) {
 									if (direction.getAxis() == Direction.Axis.Y) {
 										direction = Direction.UP;
@@ -1061,12 +1061,12 @@ public final class EetleNestPieces {
 				}
 				for (BlockPos pos : possibleDecorationPositions) {
 					if (random.nextFloat() < 0.1F) {
-						EetleEggsBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
+						EetleEggBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
 						for (Direction direction : ATTACHMENT_DIRECTIONS) {
 							BlockPos offset = pos.offset(direction);
 							if (boundingBox.isVecInside(offset) && world.isAirBlock(offset)) {
 								if (random.nextBoolean()) {
-									world.setBlockState(offset, EETLE_EGGS_STATE.with(EetleEggsBlock.FACING, direction), 2);
+									world.setBlockState(offset, EETLE_EGGS_STATE.with(EetleEggBlock.FACING, direction), 2);
 								} else {
 									if (direction.getAxis() == Direction.Axis.Y) {
 										world.setBlockState(offset, CROWN_STANDING_STATE.with(CorrockCrownStandingBlock.UPSIDE_DOWN, direction == Direction.DOWN).with(CorrockCrownStandingBlock.ROTATION, random.nextInt(16)), 2);
@@ -1203,7 +1203,7 @@ public final class EetleNestPieces {
 									}
 									if (random.nextFloat() < 0.01F && eggsAndCorrock.size() < 48) {
 										if (random.nextFloat() < 0.25F) {
-											eggsAndCorrock.add(new EetleEggsPatch(spherePos));
+											eggsAndCorrock.add(new EetleEggPatch(spherePos));
 										} else {
 											eggsAndCorrock.add(new CorrockPatch(spherePos));
 										}
@@ -1297,11 +1297,11 @@ public final class EetleNestPieces {
 				}
 			}
 
-			static class EetleEggsPatch implements TunnelDecoration {
+			static class EetleEggPatch implements TunnelDecoration {
 				private final StateMap stateMap = new StateMap();
 				private final BlockPos origin;
 
-				EetleEggsPatch(BlockPos origin) {
+				EetleEggPatch(BlockPos origin) {
 					this.origin = origin;
 				}
 
@@ -1310,13 +1310,13 @@ public final class EetleNestPieces {
 					StateMap stateMap = this.stateMap;
 					BlockPos origin = this.origin;
 					BlockPos.Mutable mutable = new BlockPos.Mutable();
-					EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
+					EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
 					for (int j = 0; j < 48; j++) {
 						mutable.setAndOffset(origin, random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9));
 						if (random.nextFloat() < 0.4F) {
 							for (Direction direction : EGG_DIRECTIONS) {
-								BlockState state = EETLE_EGGS_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
-								stateMap.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
+								BlockState state = EETLE_EGGS_STATE.with(EetleEggBlock.FACING, direction.getOpposite());
+								stateMap.setBlockState(mutable, state.with(EetleEggBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
 								break;
 							}
 						}
@@ -1328,12 +1328,12 @@ public final class EetleNestPieces {
 					StateMap stateMap = this.stateMap;
 					stateMap.stateMap.forEach((pos, state) -> {
 						if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
-							BlockPos offset = pos.offset(state.get(EetleEggsBlock.FACING).getOpposite());
+							BlockPos offset = pos.offset(state.get(EetleEggBlock.FACING).getOpposite());
 							if (bounds.isVecInside(offset)) {
 								Block opposite = world.getBlockState(offset).getBlock();
 								if (opposite == CORROCK_BLOCK || opposite == EUMUS) {
 									world.setBlockState(pos, state, 2);
-									NestCave.EetleEggsPatch.spreadInfestedCorrockAtPos(world, offset, random, bounds);
+									NestCave.EetleEggPatch.spreadInfestedCorrockAtPos(world, offset, random, bounds);
 								}
 							}
 						}
@@ -1391,7 +1391,7 @@ public final class EetleNestPieces {
 				private final StateMap cave = new StateMap();
 				private final NestCaveType type;
 				private final List<EetleNestPiece.EumusPatch> eumusPatches = new ArrayList<>();
-				private final List<EetleEggsPatch> eetleEggsPatches = new ArrayList<>();
+				private final List<EetleEggPatch> eetleEggPatches = new ArrayList<>();
 				private final List<CorrockPatch> corrockPatches = new ArrayList<>();
 				private BlockPos center;
 
@@ -1435,9 +1435,9 @@ public final class EetleNestPieces {
 						for (int i = 0; i < eumusPatchCount; i++) {
 							eumusPatches.add(new EetleNestPiece.EumusPatch(patchType, random));
 						}
-						List<EetleEggsPatch> eetleEggsPatches = this.eetleEggsPatches;
+						List<EetleEggPatch> eetleEggPatches = this.eetleEggPatches;
 						for (int i = 0; i < type.eetleEggPatches; i++) {
-							eetleEggsPatches.add(new EetleEggsPatch(end.add(random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius), random.nextInt(verticalRadius) - random.nextInt(verticalRadius), random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius)), random));
+							eetleEggPatches.add(new EetleEggPatch(end.add(random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius), random.nextInt(verticalRadius) - random.nextInt(verticalRadius), random.nextInt(horizontalRadius) - random.nextInt(horizontalRadius)), random));
 						}
 						List<CorrockPatch> corrockPatches = this.corrockPatches;
 						for (int i = 0; i < type.corrockPatches; i++) {
@@ -1452,8 +1452,8 @@ public final class EetleNestPieces {
 					for (EetleNestPiece.EumusPatch eumusPatch : this.eumusPatches) {
 						eumusPatch.generate(world, center, noiseGenerator, bounds);
 					}
-					for (EetleEggsPatch eetleEggsPatch : this.eetleEggsPatches) {
-						eetleEggsPatch.generate(world, random, bounds);
+					for (EetleEggPatch eetleEggPatch : this.eetleEggPatches) {
+						eetleEggPatch.generate(world, random, bounds);
 					}
 					for (CorrockPatch corrockPatch : this.corrockPatches) {
 						corrockPatch.generate(world, bounds);
@@ -1487,19 +1487,19 @@ public final class EetleNestPieces {
 					return true;
 				}
 
-				static class EetleEggsPatch {
+				static class EetleEggPatch {
 					private final StateMap stateMap = new StateMap();
 
-					EetleEggsPatch(BlockPos origin, Random random) {
-						EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
+					EetleEggPatch(BlockPos origin, Random random) {
+						EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
 						BlockPos.Mutable mutable = new BlockPos.Mutable();
 						StateMap stateMap = this.stateMap;
 						for (int j = 0; j < 48; j++) {
 							mutable.setAndOffset(origin, random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9), random.nextInt(9) - random.nextInt(9));
 							if (random.nextFloat() < 0.4F) {
 								for (Direction direction : EGG_DIRECTIONS) {
-									BlockState state = EETLE_EGGS_STATE.with(EetleEggsBlock.FACING, direction.getOpposite());
-									stateMap.setBlockState(mutable, state.with(EetleEggsBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
+									BlockState state = EETLE_EGGS_STATE.with(EetleEggBlock.FACING, direction.getOpposite());
+									stateMap.setBlockState(mutable, state.with(EetleEggBlock.SIZE, random.nextFloat() < 0.75F ? 0 : random.nextFloat() < 0.6F ? 1 : 2));
 									break;
 								}
 							}
@@ -1509,7 +1509,7 @@ public final class EetleNestPieces {
 					private void generate(ISeedReader world, Random random, MutableBoundingBox bounds) {
 						this.stateMap.stateMap.forEach((pos, state) -> {
 							if (bounds.isVecInside(pos) && world.isAirBlock(pos)) {
-								BlockPos offset = pos.offset(state.get(EetleEggsBlock.FACING).getOpposite());
+								BlockPos offset = pos.offset(state.get(EetleEggBlock.FACING).getOpposite());
 								if (bounds.isVecInside(offset)) {
 									Block opposite = world.getBlockState(offset).getBlock();
 									if (opposite == CORROCK_BLOCK || opposite == EUMUS) {
@@ -1642,7 +1642,7 @@ public final class EetleNestPieces {
 				Map<BlockPos, BlockState> corrockStateMap = corrock.stateMap;
 				for (BlockPos crownPos : wallCrowns) {
 					int crownsPlaced = 0;
-					EetleEggsBlock.shuffleDirections(HORIZONTALS, random);
+					EetleEggBlock.shuffleDirections(HORIZONTALS, random);
 					for (Direction direction : HORIZONTALS) {
 						BlockPos offset = crownPos.offset(direction);
 						if (!corrockStateMap.containsKey(offset)) {

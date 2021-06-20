@@ -42,7 +42,7 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<ChargerEetleEntity>> CHARGER_EETLE = HELPER.createLivingEntity("charger_eetle", ChargerEetleEntity::new, EntityClassification.MONSTER, 1.05F, 0.85F);
 	public static final RegistryObject<EntityType<GliderEetleEntity>> GLIDER_EETLE = HELPER.createLivingEntity("glider_eetle", GliderEetleEntity::new, EntityClassification.MONSTER, 1.05F, 0.85F);
 	public static final RegistryObject<EntityType<BroodEetleEntity>> BROOD_EETLE = HELPER.createLivingEntity("brood_eetle", BroodEetleEntity::new, EntityClassification.MONSTER, 3.4375F, 2.125F);
-	public static final RegistryObject<EntityType<EetleEggsEntity>> EETLE_EGGS = HELPER.createEntity("eetle_eggs", EetleEggsEntity::new, EetleEggsEntity::new, EntityClassification.MISC, 0.98F, 0.98F);
+	public static final RegistryObject<EntityType<EetleEggEntity>> EETLE_EGG = HELPER.createEntity("eetle_egg", EetleEggEntity::new, EetleEggEntity::new, EntityClassification.MISC, 0.98F, 0.98F);
 	public static final RegistryObject<EntityType<BroodEggSackEntity>> BROOD_EGG_SACK = HELPER.createUnsummonableEntity("brood_egg_sack", BroodEggSackEntity::new, BroodEggSackEntity::new, EntityClassification.MISC, 1.25F, 1.25F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)

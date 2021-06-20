@@ -1,12 +1,11 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
 import com.minecraftabnormals.endergetic.client.EERenderTypes;
-import com.minecraftabnormals.endergetic.client.models.eetle.eggs.IEetleEggsModel;
-import com.minecraftabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggsModel;
-import com.minecraftabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggsModel;
-import com.minecraftabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggsModel;
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.*;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.IEetleEggModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -23,26 +22,26 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class EetleEggsTileEntityRenderer extends TileEntityRenderer<EetleEggsTileEntity> {
+public class EetleEggTileEntityRenderer extends TileEntityRenderer<EetleEggTileEntity> {
 	public static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
-			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/small_eetle_eggs.png"),
-			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_eggs.png"),
-			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/large_eetle_eggs.png")
+			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/small_eetle_egg.png"),
+			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_egg.png"),
+			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/large_eetle_egg.png")
 	};
-	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGGS.get().getDefaultState();
+	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGG.get().getDefaultState();
 	private static final Random ROTATION_RANDOM = new Random();
-	private final IEetleEggsModel[] eggModels = new IEetleEggsModel[] {
-			new SmallEetleEggsModel(),
-			new MediumEetleEggsModel(),
-			new LargeEetleEggsModel()
+	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
+			new SmallEetleEggModel(),
+			new MediumEetleEggModel(),
+			new LargeEetleEggModel()
 	};
 
-	public EetleEggsTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+	public EetleEggTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(EetleEggsTileEntity eggs, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void render(EetleEggTileEntity eggs, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		World world = eggs.getWorld();
 		BlockState state = DEFAULT_STATE;
 		Direction randomDirection = Direction.NORTH;
@@ -52,7 +51,7 @@ public class EetleEggsTileEntityRenderer extends TileEntityRenderer<EetleEggsTil
 			randomDirection = Direction.Plane.HORIZONTAL.random(ROTATION_RANDOM);
 		}
 		matrixStack.push();
-		Direction facing = state.get(EetleEggsBlock.FACING);
+		Direction facing = state.get(EetleEggBlock.FACING);
 		switch (facing) {
 			case UP:
 				matrixStack.translate(0.5F, 1.5F, 0.5F);
@@ -67,8 +66,8 @@ public class EetleEggsTileEntityRenderer extends TileEntityRenderer<EetleEggsTil
 				break;
 		}
 		matrixStack.rotate(Vector3f.YP.rotationDegrees(randomDirection.getHorizontalAngle()));
-		int size = state.get(EetleEggsBlock.SIZE);
-		IEetleEggsModel eggsModel = this.eggModels[size];
+		int size = state.get(EetleEggBlock.SIZE);
+		IEetleEggModel eggsModel = this.eggModels[size];
 		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(TEXTURES[size])), combinedLight, combinedOverlay, partialTicks, eggs.getSackGrowths());
 		eggsModel.renderSilk(matrixStack, buffer.getBuffer(EERenderTypes.EETLE_EGG_SILK), combinedLight, combinedOverlay);
 		matrixStack.pop();

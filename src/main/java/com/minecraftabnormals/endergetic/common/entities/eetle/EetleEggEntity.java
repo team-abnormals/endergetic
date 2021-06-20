@@ -1,8 +1,8 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import net.minecraft.block.Block;
@@ -33,31 +33,31 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.Random;
 
-public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnData {
-	private static final Block EETLE_EGGS_BLOCK = EEBlocks.EETLE_EGGS.get();
+public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData {
+	private static final Block EETLE_EGGS_BLOCK = EEBlocks.EETLE_EGG.get();
 	private static final Direction[] DIRECTIONS = Direction.values();
-	private final EetleEggsTileEntity.SackGrowth[] sackGrowths = new EetleEggsTileEntity.SackGrowth[]{
-			new EetleEggsTileEntity.SackGrowth(),
-			new EetleEggsTileEntity.SackGrowth(),
-			new EetleEggsTileEntity.SackGrowth(),
-			new EetleEggsTileEntity.SackGrowth()
+	private final EetleEggTileEntity.SackGrowth[] sackGrowths = new EetleEggTileEntity.SackGrowth[]{
+			new EetleEggTileEntity.SackGrowth(),
+			new EetleEggTileEntity.SackGrowth(),
+			new EetleEggTileEntity.SackGrowth(),
+			new EetleEggTileEntity.SackGrowth()
 	};
 	private EggSize eggSize = EggSize.SMALL;
 	private int fallTime;
 	private boolean fromBroodEetle;
 
-	public EetleEggsEntity(EntityType<? extends EetleEggsEntity> type, World world) {
-		super(EEEntities.EETLE_EGGS.get(), world);
+	public EetleEggEntity(EntityType<? extends EetleEggEntity> type, World world) {
+		super(EEEntities.EETLE_EGG.get(), world);
 	}
 
-	public EetleEggsEntity(World world, Vector3d pos) {
-		super(EEEntities.EETLE_EGGS.get(), world);
+	public EetleEggEntity(World world, Vector3d pos) {
+		super(EEEntities.EETLE_EGG.get(), world);
 		this.setPosition(this.prevPosX = pos.getX(), this.prevPosY = pos.getY(), this.prevPosZ = pos.getZ());
 		this.fromBroodEetle = true;
 	}
 
-	public EetleEggsEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
-		super(EEEntities.EETLE_EGGS.get(), world);
+	public EetleEggEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+		super(EEEntities.EETLE_EGG.get(), world);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 				this.setMotion(this.getMotion().mul(0.7D, -0.5D, 0.7D));
 				this.remove();
 				boolean flag3 = FallingBlock.canFallThrough(world.getBlockState(newPos.down()));
-				BlockState placingState = EETLE_EGGS_BLOCK.getDefaultState().with(EetleEggsBlock.SIZE, this.eggSize.ordinal());
+				BlockState placingState = EETLE_EGGS_BLOCK.getDefaultState().with(EetleEggBlock.SIZE, this.eggSize.ordinal());
 				boolean flag4 = placingState.isValidPosition(world, newPos) && !flag3;
 				Random random = this.rand;
 				if (state.isReplaceable(new DirectionalPlaceContext(world, newPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP)) && flag4) {
@@ -100,8 +100,8 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 					if (world.setBlockState(newPos, placingState, 3)) {
 						if (!placingState.get(BlockStateProperties.WATERLOGGED)) {
 							TileEntity tileentity = world.getTileEntity(newPos);
-							if (tileentity instanceof EetleEggsTileEntity) {
-								EetleEggsTileEntity eetleEggsTileEntity = (EetleEggsTileEntity) tileentity;
+							if (tileentity instanceof EetleEggTileEntity) {
+								EetleEggTileEntity eetleEggsTileEntity = (EetleEggTileEntity) tileentity;
 								eetleEggsTileEntity.fromBroodEetle = this.fromBroodEetle;
 								eetleEggsTileEntity.updateHatchDelay(world, random.nextInt(6) + 5);
 								eetleEggsTileEntity.bypassSpawningGameRule();
@@ -113,7 +113,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 				}
 			}
 		} else {
-			for (EetleEggsTileEntity.SackGrowth growth : this.sackGrowths) {
+			for (EetleEggTileEntity.SackGrowth growth : this.sackGrowths) {
 				growth.tick();
 			}
 		}
@@ -182,7 +182,7 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public EetleEggsTileEntity.SackGrowth[] getSackGrowths() {
+	public EetleEggTileEntity.SackGrowth[] getSackGrowths() {
 		return this.sackGrowths;
 	}
 
@@ -216,9 +216,9 @@ public class EetleEggsEntity extends Entity implements IEntityAdditionalSpawnDat
 	}
 
 	private static BlockState assignRandomDirection(World world, BlockState state, Random random, BlockPos pos) {
-		EetleEggsBlock.shuffleDirections(DIRECTIONS, random);
+		EetleEggBlock.shuffleDirections(DIRECTIONS, random);
 		for (Direction direction : DIRECTIONS) {
-			BlockState directionState = state.with(EetleEggsBlock.FACING, direction);
+			BlockState directionState = state.with(EetleEggBlock.FACING, direction);
 			if (directionState.isValidPosition(world, pos)) {
 				return directionState;
 			}

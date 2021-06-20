@@ -42,7 +42,7 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<CorrockTowerConfig>> LARGE_CORROCK_TOWER = createFeature("large_corrock_tower", () -> new LargeCorrockTowerFeature(CorrockTowerConfig.CODEC));
 	public static final RegistryObject<Feature<ProbabilityConfig>> CORROCK_SHELF = createFeature("corrock_shelf", () -> new CorrockShelfFeature(ProbabilityConfig.CODEC));
 	public static final RegistryObject<Feature<CorrockArchConfig>> CORROCK_ARCH = createFeature("corrock_arch", () -> new CorrockArchFeature(CorrockArchConfig.CODEC));
-	public static final RegistryObject<Feature<EndergeticPatchConfig>> EETLE_EGGS = createFeature("eetle_eggs", () -> new EetleEggsPatchFeature(EndergeticPatchConfig.CODEC));
+	public static final RegistryObject<Feature<EndergeticPatchConfig>> EETLE_EGG = createFeature("eetle_egg", () -> new EetleEggPatchFeature(EndergeticPatchConfig.CODEC));
 	public static final RegistryObject<Feature<MultiPatchConfig>> EUMUS_PATCH = createFeature("eumus_patch", () -> new EumusPatchFeature(MultiPatchConfig.CODEC));
 	public static final RegistryObject<Feature<MultiPatchConfig>> SPECKLED_CORROCK_PATCH = createFeature("speckled_corrock_patch", () -> new SpeckledCorrockPatchFeature(MultiPatchConfig.CODEC));
 
@@ -73,7 +73,7 @@ public final class EEFeatures {
 		public static final ConfiguredFeature<?, ?> CORROCK_TOWER = EEFeatures.WEIGHTED_FEATURES.get().withConfiguration(WeightedFeatureConfig.createFromPairs(Pair.of(SMALL_CORROCK_TOWER, 6), Pair.of(MEDIUM_CORROCK_TOWER, 12), Pair.of(LARGE_CORROCK_TOWER, 4))).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242730_a(FeatureSpread.func_242253_a(128, 128));
 		public static final ConfiguredFeature<?, ?> CORROCK_SHELF = EEFeatures.CORROCK_SHELF.get().withConfiguration(new ProbabilityConfig(0.75F)).withPlacement(EEPlacements.HEIGHTMAP_SPREAD_LOWER.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG).square()).func_242731_b(8);
 		public static final ConfiguredFeature<?, ?> CORROCK_ARCH = EEFeatures.CORROCK_ARCH.get().withConfiguration(new CorrockArchConfig(0.1F, 0.25F, 13.0F, 22.0F, 7.0F)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(26);
-		public static final ConfiguredFeature<?, ?> EETLE_EGGS = EEFeatures.EETLE_EGGS.get().withConfiguration(new EndergeticPatchConfig(0.75F, false)).withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)).func_242731_b(1);
+		public static final ConfiguredFeature<?, ?> EETLE_EGG = EEFeatures.EETLE_EGG.get().withConfiguration(new EndergeticPatchConfig(0.75F, false)).withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)).func_242731_b(1);
 		public static final ConfiguredFeature<?, ?> EUMUS_PATCH = EEFeatures.EUMUS_PATCH.get().withConfiguration(new MultiPatchConfig(2, 3)).withPlacement(Features.Placements.PATCH_PLACEMENT).func_242731_b(2);
 		public static final ConfiguredFeature<?, ?> SPECKLED_CORROCK_PATCH = EEFeatures.SPECKLED_CORROCK_PATCH.get().withConfiguration(new MultiPatchConfig(2, 3)).withPlacement(Features.Placements.PATCH_PLACEMENT).withPlacement(Placement.CHANCE.configure(new ChanceConfig(2)));
 
@@ -101,7 +101,7 @@ public final class EEFeatures {
 			register("corrock_tower", CORROCK_TOWER);
 			register("corrock_shelf", CORROCK_SHELF);
 			register("corrock_arch", CORROCK_ARCH);
-			register("eetle_eggs", EETLE_EGGS);
+			register("eetle_egg", EETLE_EGG);
 			register("eumus_patch", EUMUS_PATCH);
 			register("speckled_corrock_patch", SPECKLED_CORROCK_PATCH);
 		}

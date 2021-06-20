@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -47,8 +47,8 @@ public class BroodEetleLastStageGoal extends Goal {
 				if (BroodEetleLaunchEggsGoal.getNearbyEetleCount(broodEetle) <= 9 || this.cannonTicks <= 75 || random.nextFloat() <= 0.05F) {
 					NetworkUtil.setPlayingAnimationMessage(broodEetle, BroodEetleEntity.LAUNCH);
 					Vector3d firingPos = new Vector3d(-1.0D, 3.0D, 0.0D).rotateYaw(-broodEetle.renderYawOffset * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
-					EetleEggsEntity eetleEgg = new EetleEggsEntity(broodEetle.world, broodEetle.getPositionVec().add(firingPos));
-					eetleEgg.setEggSize(EetleEggsEntity.EggSize.random(random, false));
+					EetleEggEntity eetleEgg = new EetleEggEntity(broodEetle.world, broodEetle.getPositionVec().add(firingPos));
+					eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, false));
 					eetleEgg.setMotion(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
 					broodEetle.world.addEntity(eetleEgg);
 				} else {

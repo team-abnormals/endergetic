@@ -22,7 +22,7 @@ public final class EETileEntities {
 	});
 	public static final RegistryObject<TileEntityType<FrisbloomStemTileEntity>> FRISBLOOM_STEM = HELPER.createTileEntity("frisbloom_stem", FrisbloomStemTileEntity::new, () -> new Block[]{EEBlocks.FRISBLOOM_STEM});
 	public static final RegistryObject<TileEntityType<EnderCampfireTileEntity>> ENDER_CAMPFIRE = HELPER.createTileEntity("ender_campfire", EnderCampfireTileEntity::new, () -> new Block[]{EEBlocks.ENDER_CAMPFIRE.get()});
-	public static final RegistryObject<TileEntityType<EetleEggsTileEntity>> EETLE_EGGS = HELPER.createTileEntity("eetle_eggs", EetleEggsTileEntity::new, () -> new Block[]{EEBlocks.EETLE_EGGS.get()});
+	public static final RegistryObject<TileEntityType<EetleEggTileEntity>> EETLE_EGG = HELPER.createTileEntity("eetle_egg", EetleEggTileEntity::new, () -> new Block[]{EEBlocks.EETLE_EGG.get()});
 
 	/*
 	 * Poise Forest

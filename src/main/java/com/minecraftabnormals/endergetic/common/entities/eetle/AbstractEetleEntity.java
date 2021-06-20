@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-import com.minecraftabnormals.endergetic.common.blocks.EetleEggsBlock;
+import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTargetGoal;
-import com.minecraftabnormals.endergetic.common.tileentities.EetleEggsTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.Block;
@@ -229,17 +229,17 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 				BlockPos pos = this.getPosition();
 				if (world.getFluidState(pos).isEmpty() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 					Random random = this.rand;
-					EetleEggsBlock.shuffleDirections(EGG_DIRECTIONS, random);
-					BlockState defaultState = EEBlocks.EETLE_EGGS.get().getDefaultState();
+					EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
+					BlockState defaultState = EEBlocks.EETLE_EGG.get().getDefaultState();
 					for (Direction direction : EGG_DIRECTIONS) {
-						BlockState state = defaultState.with(EetleEggsBlock.FACING, direction);
+						BlockState state = defaultState.with(EetleEggBlock.FACING, direction);
 						if (state.isValidPosition(world, pos)) {
-							world.setBlockState(pos, state.with(EetleEggsBlock.SIZE, random.nextInt(2)));
+							world.setBlockState(pos, state.with(EetleEggBlock.SIZE, random.nextInt(2)));
 							TileEntity tileEntity = world.getTileEntity(pos);
-							if (tileEntity instanceof EetleEggsTileEntity) {
-								EetleEggsTileEntity eetleEggsTileEntity = (EetleEggsTileEntity) tileEntity;
-								eetleEggsTileEntity.updateHatchDelay(world, random.nextInt(11) + 5);
-								eetleEggsTileEntity.bypassSpawningGameRule();
+							if (tileEntity instanceof EetleEggTileEntity) {
+								EetleEggTileEntity eetleEggTileEntity = (EetleEggTileEntity) tileEntity;
+								eetleEggTileEntity.updateHatchDelay(world, random.nextInt(11) + 5);
+								eetleEggTileEntity.bypassSpawningGameRule();
 							}
 							if (world instanceof ServerWorld) {
 								((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);

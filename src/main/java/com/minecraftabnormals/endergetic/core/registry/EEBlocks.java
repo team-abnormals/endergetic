@@ -149,7 +149,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> CRACKED_END_STONE_BRICKS  = HELPER.createBlock("cracked_end_stone_bricks", () -> new Block(AbstractBlock.Properties.from(Blocks.END_STONE_BRICKS)), ItemGroup.BUILDING_BLOCKS);
 	public static final RegistryObject<Block> CRACKED_PURPUR_BLOCK 		= HELPER.createBlock("cracked_purpur_block", () -> new Block(AbstractBlock.Properties.from(Blocks.PURPUR_BLOCK)), ItemGroup.BUILDING_BLOCKS);
 
-	public static final RegistryObject<Block> EETLE_EGGS = HELPER.createBlock("eetle_eggs", () -> new EetleEggsBlock(EEProperties.EETLE_EGGS), ItemGroup.DECORATIONS);
+	public static final RegistryObject<Block> EETLE_EGG = HELPER.createBlock("eetle_egg", () -> new EetleEggBlock(EEProperties.EETLE_EGG), ItemGroup.DECORATIONS);
 
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> bolloomBudISTER() {

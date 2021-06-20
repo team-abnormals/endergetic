@@ -3,7 +3,7 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggsEntity;
+import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.EntitySenses;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -56,9 +56,9 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		if (broodEetle.isEggMouthOpen() && this.ticksPassed % 20 == 0) {
 			this.playEndimation();
 			Vector3d firingPos = new Vector3d(-1.0D, 3.0D, 0.0D).rotateYaw(-broodEetle.renderYawOffset * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
-			EetleEggsEntity eetleEgg = new EetleEggsEntity(broodEetle.world, broodEetle.getPositionVec().add(firingPos));
+			EetleEggEntity eetleEgg = new EetleEggEntity(broodEetle.world, broodEetle.getPositionVec().add(firingPos));
 			Random random = this.random;
-			eetleEgg.setEggSize(EetleEggsEntity.EggSize.random(random, true));
+			eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, true));
 			eetleEgg.setMotion(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
 			broodEetle.world.addEntity(eetleEgg);
 			this.shotsToFire--;
