@@ -17,7 +17,6 @@ import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -26,6 +25,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags;
 
 public class PoiseClusterBlock extends Block {
 
@@ -53,7 +53,7 @@ public class PoiseClusterBlock extends Block {
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		ItemStack stack = player.getHeldItemMainhand();
 		Item item = stack.getItem();
-		if (!(item instanceof ShearsItem)) {
+		if (!item.isIn(Tags.Items.SHEARS)) {
 			if (world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
 				if (!world.isRemote) {
 					PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
@@ -116,11 +116,13 @@ public class PoiseClusterBlock extends Block {
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
 	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
-		return adjacentBlockState.getBlock() == this ? true : super.isSideInvisible(state, adjacentBlockState, side);
+		return adjacentBlockState.getBlock() == this || super.isSideInvisible(state, adjacentBlockState, side);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public SoundType getSoundType(BlockState p_220072_1_) {
 		return EESounds.EESoundTypes.CLUSTER;
 	}
+
 }

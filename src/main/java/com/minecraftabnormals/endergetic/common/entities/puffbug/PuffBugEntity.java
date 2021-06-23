@@ -1158,7 +1158,7 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 
 	@Override
 	public boolean preventDespawn() {
-		return this.isFromBottle();
+		return super.preventDespawn() || this.isFromBottle();
 	}
 
 	@Override

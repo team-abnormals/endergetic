@@ -47,7 +47,7 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	public CorrockPlantBlock(Properties properties, boolean petrified) {
 		super(properties);
 		this.petrified = petrified;
-		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
+		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, true));
 	}
 
 	@Override

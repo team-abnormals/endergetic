@@ -43,7 +43,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 
 	public CorrockCrownWallBlock(Properties builder, DimensionalType dimensionalType, boolean petrified) {
 		super(builder, dimensionalType, petrified);
-		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, true));
 	}
 
 	@Override
