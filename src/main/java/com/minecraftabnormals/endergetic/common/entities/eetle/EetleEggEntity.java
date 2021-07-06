@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -211,7 +212,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 			}
 		}
 		if (world instanceof ServerWorld) {
-			((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 		}
 	}
 

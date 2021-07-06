@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
@@ -43,7 +44,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 
 	public CorrockCrownWallBlock(Properties builder, DimensionalType dimensionalType, boolean petrified) {
 		super(builder, dimensionalType, petrified);
-		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, true));
+		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		double posX = (double) pos.getX() + 0.5F + xOffset;
 		double posY = (double) pos.getY() + 0.5D + yOffset;
 		double posZ = (double) pos.getZ() + 0.5F + zOffset;
-		world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, xFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F, -0.005F, zFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F);
+		world.addParticle(new CorrockCrownParticleData(this.dimensionalType.particle.get(), false), posX, posY, posZ, xFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F, -0.005F, zFacingOffset * -0.01F + rand.nextFloat() * 0.04F - rand.nextFloat() * 0.04F);
 	}
 
 	@Override

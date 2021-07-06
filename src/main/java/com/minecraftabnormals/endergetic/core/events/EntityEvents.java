@@ -12,6 +12,7 @@ import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
@@ -47,6 +48,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -179,6 +181,14 @@ public final class EntityEvents {
 					event.setSwingHand(true);
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+		Entity entity = event.getEntity();
+		if (entity.world.isRemote && entity instanceof PurpoidEntity) {
+			((PurpoidEntity) entity).updatePull(entity.getPositionVec());
 		}
 	}
 

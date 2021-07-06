@@ -4,6 +4,7 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTargetGoal;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
@@ -242,7 +243,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 								eetleEggTileEntity.bypassSpawningGameRule();
 							}
 							if (world instanceof ServerWorld) {
-								((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
+								((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
 							}
 						}
 					}
@@ -297,7 +298,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		World world = this.world;
 		if (endimation == GROW_UP && world instanceof ServerWorld) {
 			this.setChild(false);
-			((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
+			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
 		}
 	}
 

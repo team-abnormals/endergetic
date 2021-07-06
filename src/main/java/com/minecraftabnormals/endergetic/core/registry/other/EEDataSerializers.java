@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity.HealthStage;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
+import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.network.PacketBuffer;
@@ -112,11 +113,26 @@ public final class EEDataSerializers {
 		}
 	};
 
+	public static final IDataSerializer<PurpoidSize> PURPOID_SIZE = new IDataSerializer<PurpoidSize>() {
+		public void write(PacketBuffer buf, PurpoidSize value) {
+			buf.writeEnumValue(value);
+		}
+
+		public PurpoidSize read(PacketBuffer buf) {
+			return buf.readEnumValue(PurpoidSize.class);
+		}
+
+		public PurpoidSize copyValue(PurpoidSize value) {
+			return value;
+		}
+	};
+
 	static {
 		SERIALIZERS.register("optional_vec3d", () -> new DataSerializerEntry(OPTIONAL_VEC3D));
 		SERIALIZERS.register("balloon_color", () -> new DataSerializerEntry(BALLOON_COLOR));
 		SERIALIZERS.register("target_flying_rotations", () -> new DataSerializerEntry(TARGET_FLYING_ROTATIONS));
 		SERIALIZERS.register("entity_size", () -> new DataSerializerEntry(ENTITY_SIZE));
 		SERIALIZERS.register("brood_health_stage", () -> new DataSerializerEntry(BROOD_HEALTH_STAGE));
+		SERIALIZERS.register("purpoid_size", () -> new DataSerializerEntry(PURPOID_SIZE));
 	}
 }

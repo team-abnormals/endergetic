@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.tileentities.CorrockCrownTileEntity;
 
 import net.minecraft.block.BlockRenderType;
@@ -11,7 +12,7 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
@@ -77,9 +78,9 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 		NETHER(EEParticles.NETHER_CROWN),
 		END(EEParticles.END_CROWN);
 
-		protected final Supplier<BasicParticleType> particle;
+		protected final Supplier<ParticleType<CorrockCrownParticleData>> particle;
 
-		DimensionalType(Supplier<BasicParticleType> particle) {
+		DimensionalType(Supplier<ParticleType<CorrockCrownParticleData>> particle) {
 			this.particle = particle;
 		}
 	}

@@ -7,6 +7,7 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.*;
 import com.minecraftabnormals.endergetic.common.entities.booflo.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.*;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.*;
+import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
@@ -44,6 +45,7 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<BroodEetleEntity>> BROOD_EETLE = HELPER.createLivingEntity("brood_eetle", BroodEetleEntity::new, EntityClassification.MONSTER, 3.4375F, 2.125F);
 	public static final RegistryObject<EntityType<EetleEggEntity>> EETLE_EGG = HELPER.createEntity("eetle_egg", EetleEggEntity::new, EetleEggEntity::new, EntityClassification.MISC, 0.98F, 0.98F);
 	public static final RegistryObject<EntityType<BroodEggSackEntity>> BROOD_EGG_SACK = HELPER.createUnsummonableEntity("brood_egg_sack", BroodEggSackEntity::new, BroodEggSackEntity::new, EntityClassification.MISC, 1.25F, 1.25F);
+	public static final RegistryObject<EntityType<PurpoidEntity>> PURPOID = HELPER.createLivingEntity("purpoid", PurpoidEntity::new, EntityClassification.CREATURE, 1.0F, 1.0F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void registerSpawnPlacements(RegistryEvent.Register<EntityType<?>> event) {
@@ -64,6 +66,7 @@ public final class EEEntities {
 		event.put(CHARGER_EETLE.get(), ChargerEetleEntity.getAttributes().create());
 		event.put(GLIDER_EETLE.get(), GliderEetleEntity.getAttributes().create());
 		event.put(BROOD_EETLE.get(), BroodEetleEntity.getAttributes().create());
+		event.put(PURPOID.get(), PurpoidEntity.getAttributes().create());
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {

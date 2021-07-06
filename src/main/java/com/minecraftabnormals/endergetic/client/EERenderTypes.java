@@ -15,7 +15,7 @@ public final class EERenderTypes extends RenderState {
 		super(nameIn, setupTaskIn, clearTaskIn);
 	}
 
-	private static RenderType createUnshadedEntity(ResourceLocation texture) {
+	public static RenderType createUnshadedEntity(ResourceLocation texture) {
 		RenderType.State state = RenderType.State.getBuilder().texture(new RenderState.TextureState(texture, false, false)).transparency(NO_TRANSPARENCY).diffuseLighting(DIFFUSE_LIGHTING_DISABLED).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false);
 		return RenderType.makeType("endergetic:unshaded_entity", DefaultVertexFormats.ENTITY, 7, 256, true, false, state);
 	}

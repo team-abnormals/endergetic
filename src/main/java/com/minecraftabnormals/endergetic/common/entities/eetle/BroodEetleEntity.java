@@ -8,6 +8,7 @@ import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
@@ -210,7 +211,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					if (world instanceof ServerWorld) {
 						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
 						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
-						((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
 					for (int i = 0; i < 20; ++i) {
@@ -773,7 +774,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			World world = this.world;
 			if (world instanceof ServerWorld) {
 				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-				((ServerWorld) world).spawnParticle(EEParticles.EETLE_CROWN.get(), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
+				((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
 			}
 		}
 	}

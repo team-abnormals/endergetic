@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.particles;
 
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.mojang.serialization.Codec;
@@ -29,10 +30,9 @@ public class EEParticles {
 	public static final RegistryObject<BasicParticleType> SHORT_POISE_BUBBLE = createBasicParticleType(true, "short_poise_bubble");
 	public static final RegistryObject<BasicParticleType> ENDER_FLAME = createBasicParticleType(true, "ender_flame");
 	public static final RegistryObject<ParticleType<BlockParticleData>> FAST_BLOCK = createParticleType("fast_block", BlockParticleData.DESERIALIZER, BlockParticleData::func_239800_a_);
-	public static final RegistryObject<BasicParticleType> OVERWORLD_CROWN = createBasicParticleType(true, "overworld_crown");
-	public static final RegistryObject<BasicParticleType> NETHER_CROWN = createBasicParticleType(true, "nether_crown");
-	public static final RegistryObject<BasicParticleType> END_CROWN = createBasicParticleType(true, "end_crown");
-	public static final RegistryObject<BasicParticleType> EETLE_CROWN = createBasicParticleType(true, "eetle_crown");
+	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> OVERWORLD_CROWN = createParticleType("overworld_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
+	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> NETHER_CROWN = createParticleType("nether_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
+	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> END_CROWN = createParticleType("end_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
 
 	private static RegistryObject<BasicParticleType> createBasicParticleType(boolean alwaysShow, String name) {
 		return PARTICLES.register(name, () -> new BasicParticleType(alwaysShow));
@@ -71,9 +71,6 @@ public class EEParticles {
 			}
 			if (END_CROWN.isPresent()) {
 				particleManager.registerFactory(END_CROWN.get(), CorrockCrownParticle.Factory::new);
-			}
-			if (EETLE_CROWN.isPresent()) {
-				particleManager.registerFactory(EETLE_CROWN.get(), CorrockCrownParticle.EetleFactory::new);
 			}
 		}
 

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
@@ -44,7 +45,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 
 	public CorrockCrownStandingBlock(Properties properties, DimensionalType dimensionalType, boolean petrified) {
 		super(properties, dimensionalType, petrified);
-		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, true).with(UPSIDE_DOWN, false));
+		this.setDefaultState(this.stateContainer.getBaseState().with(ROTATION, 0).with(WATERLOGGED, false).with(UPSIDE_DOWN, false));
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 			double posX = (double) pos.getX() + 0.5D + xOffset;
 			double posY = (double) pos.getY() + 0.5D + yOffset;
 			double posZ = (double) pos.getZ() + 0.5D + zOffset;
-			world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F, -0.005F, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F);
+			world.addParticle(new CorrockCrownParticleData(this.dimensionalType.particle.get(), false), posX, posY, posZ, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F, -0.005F, rand.nextFloat() * 0.05F - rand.nextFloat() * 0.05F);
 		} else if (rand.nextFloat() < 0.6F) {
 			double xOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 			double yOffset = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -69,7 +70,7 @@ public class CorrockCrownStandingBlock extends CorrockCrownBlock {
 			double posX = (double) pos.getX() + 0.5D + xOffset;
 			double posY = (double) pos.getY() + 0.5D + yOffset;
 			double posZ = (double) pos.getZ() + 0.5D + zOffset;
-			world.addParticle(this.dimensionalType.particle.get(), posX, posY, posZ, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F, 0.01F + rand.nextFloat() * 0.02F, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F);
+			world.addParticle(new CorrockCrownParticleData(this.dimensionalType.particle.get(), false), posX, posY, posZ, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F, 0.01F + rand.nextFloat() * 0.02F, rand.nextFloat() * 0.03F - rand.nextFloat() * 0.03F);
 		}
 	}
 
