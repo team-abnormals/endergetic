@@ -20,6 +20,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IndirectEntityDamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -249,6 +252,20 @@ public class PurpoidEntity extends EndimatedEntity {
 	}
 
 	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		if (!this.world.isRemote && this.isNoEndimationPlaying()) {
+			if (source instanceof IndirectEntityDamageSource) {
+				if (this.tryToTeleportRandomly(12)) {
+					return true;
+				}
+			} else if (!(source.getTrueSource() instanceof LivingEntity) && this.rand.nextInt(10) != 0) {
+				this.tryToTeleportRandomly(1);
+			}
+		}
+		return super.attackEntityFrom(source, amount);
+	}
+
+	@Override
 	public PathNavigator createNavigator(World world) {
 		return new EndergeticFlyingPathNavigator(this, world);
 	}
@@ -288,6 +305,22 @@ public class PurpoidEntity extends EndimatedEntity {
 				TELEPORT_TO_ANIMATION,
 				TELEPORT_FROM_ANIMATION
 		};
+	}
+
+	private boolean tryToTeleportRandomly(int attempts) {
+		BlockPos pos = this.getPosition();
+		Random random = this.getRNG();
+		EntitySize size = this.getSize(this.getPose());
+		World world = this.world;
+		for (int i = 0; i < attempts; i++) {
+			BlockPos randomPos = pos.add(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
+			AxisAlignedBB collisionBox = size.func_242285_a(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+			if (world.hasNoCollisions(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
+				this.teleportController.beginTeleportation(this, randomPos);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	static class PurpoidMoveController extends MovementController {
