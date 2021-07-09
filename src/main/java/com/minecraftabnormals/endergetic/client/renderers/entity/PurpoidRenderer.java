@@ -11,10 +11,13 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 
@@ -42,19 +45,36 @@ public class PurpoidRenderer extends MobRenderer<PurpoidEntity, PurpoidModel> {
 
 	@Override
 	protected void applyRotations(PurpoidEntity purpoid, MatrixStack matrixStack, float ageInTicks, float rotationYaw, float partialTicks) {
-		Vector3d pull = purpoid.getPull(partialTicks);
+		Entity ridingEntity = purpoid.getRidingEntity();
+		if (ridingEntity != null) {
+			if (ridingEntity instanceof LivingEntity) {
+				LivingEntity livingEntity = (LivingEntity) ridingEntity;
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - MathHelper.interpolateAngle(partialTicks, livingEntity.prevRotationYawHead, livingEntity.rotationYawHead)));
+			} else {
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+			}
+		} else {
+			Vector3d pull = purpoid.getPull(partialTicks);
 
-		double pulledX = MathHelper.lerp(partialTicks, purpoid.prevPosX, purpoid.getPosX()) - pull.getX();
-		double pulledY = MathHelper.lerp(partialTicks, purpoid.prevPosY, purpoid.getPosY()) - pull.getY();
-		double pulledZ = MathHelper.lerp(partialTicks, purpoid.prevPosZ, purpoid.getPosZ()) - pull.getZ();
+			double pulledX = MathHelper.lerp(partialTicks, purpoid.prevPosX, purpoid.getPosX()) - pull.getX();
+			double pulledY = MathHelper.lerp(partialTicks, purpoid.prevPosY, purpoid.getPosY()) - pull.getY();
+			double pulledZ = MathHelper.lerp(partialTicks, purpoid.prevPosZ, purpoid.getPosZ()) - pull.getZ();
 
-		float rotationOffset = 0.5F * purpoid.getSize().getScale();
-		float yRot = (float) MathHelper.atan2(pulledZ, pulledX);
-		matrixStack.translate(0.0F, rotationOffset, 0.0F);
-		matrixStack.rotate(Vector3f.YP.rotation(-yRot));
-		matrixStack.rotate(Vector3f.ZP.rotation((float) ((MathHelper.atan2(MathHelper.sqrt(pulledX * pulledX + pulledZ * pulledZ), -pulledY)) - Math.PI)));
-		matrixStack.rotate(Vector3f.YP.rotation(yRot));
-		matrixStack.translate(0.0F, -rotationOffset, 0.0F);
+			float rotationOffset = 0.5F * purpoid.getSize().getScale();
+			float yRot = (float) MathHelper.atan2(pulledZ, pulledX);
+			matrixStack.translate(0.0F, rotationOffset, 0.0F);
+			matrixStack.rotate(Vector3f.YP.rotation(-yRot));
+			matrixStack.rotate(Vector3f.ZP.rotation((float) ((MathHelper.atan2(MathHelper.sqrt(pulledX * pulledX + pulledZ * pulledZ), -pulledY)) - Math.PI)));
+			matrixStack.rotate(Vector3f.YP.rotation(yRot));
+			matrixStack.translate(0.0F, -rotationOffset, 0.0F);
+		}
+		if (purpoid.hasCustomName()) {
+			String name = TextFormatting.getTextWithoutFormattingCodes(purpoid.getName().getString());
+			if (name.equals("Dinnerbone") || name.equals("Grumm")) {
+				matrixStack.translate(0.0D, purpoid.getHeight() + 0.1D, 0.0D);
+				matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+			}
+		}
 	}
 
 	@Nullable

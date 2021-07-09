@@ -29,7 +29,7 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 		} else {
 			this.notMovingTicks = 0;
 		}
-		if (this.notMovingTicks >= 20 && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown() && purpoid.isNoEndimationPlaying()) {
+		if (this.notMovingTicks >= 20 && !purpoid.isPassenger() && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown() && purpoid.isNoEndimationPlaying()) {
 			BlockPos randomPos = this.generateTeleportPos(purpoid, purpoid.getRNG());
 			World world = purpoid.world;
 			if (randomPos != null && world.isBlockLoaded(randomPos)) {
@@ -50,7 +50,7 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 
 	protected void beginTeleportation(PurpoidEntity purpoid, BlockPos pos) {
 		purpoid.resetTeleportCooldown();
-		purpoid.getTeleportController().beginTeleportation(purpoid, pos);
+		purpoid.getTeleportController().beginTeleportation(purpoid, pos, false);
 	}
 
 	@Nullable

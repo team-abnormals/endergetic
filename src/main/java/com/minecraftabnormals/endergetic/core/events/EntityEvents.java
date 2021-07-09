@@ -60,6 +60,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public final class EntityEvents {
 	private static final AttributeModifier SLOW_BALLOON = new AttributeModifier(UUID.fromString("eb2242e0-d3be-11ea-87d0-0242ac130003"), "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION);
 	private static final AttributeModifier SUPER_SLOW_BALLOON = new AttributeModifier(UUID.fromString("b5c9b111-62b3-40da-b396-f90a138583ad"), "Super slow falling acceleration reduction", -0.075, AttributeModifier.Operation.ADDITION);
+	private static final AttributeModifier PURPOID_SLOWFALL = new AttributeModifier(UUID.fromString("6bec3438-1392-426b-9173-618fa9499de5"), "Slow falling acceleration reduction from a Purpoid", -0.07, AttributeModifier.Operation.ADDITION);
 
 	public static final Map<Supplier<Block>, Supplier<Block>> PETRIFICATION_MAP = Util.make(Maps.newHashMap(), (petrifications) -> {
 		petrifications.put(EEBlocks.CORROCK_END, EEBlocks.PETRIFIED_CORROCK_END);
@@ -125,6 +126,13 @@ public final class EntityEvents {
 				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
 			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
 				gravity.removeModifier(SUPER_SLOW_BALLOON);
+			}
+
+			if (isFalling && entity.isPassenger(PurpoidEntity.class)) {
+				entity.fallDistance = 0.0F;
+				if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.applyNonPersistentModifier(PURPOID_SLOWFALL);
+			} else if (gravity.hasModifier(PURPOID_SLOWFALL)) {
+				gravity.removeModifier(PURPOID_SLOWFALL);
 			}
 
 			if (balloonCount > 3) {

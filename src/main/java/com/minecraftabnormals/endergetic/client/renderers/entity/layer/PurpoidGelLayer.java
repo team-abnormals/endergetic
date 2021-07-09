@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 
+import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.minecraftabnormals.endergetic.client.renderers.entity.PurpoidRenderer;
@@ -27,6 +28,6 @@ public class PurpoidGelLayer extends LayerRenderer<PurpoidEntity, PurpoidModel> 
 		int overlay = LivingRenderer.getPackedOverlay(purpoidEntity, 0.0F);
 		gelModel.animateModel(purpoidEntity);
 		gelModel.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(this.getEntityTexture(purpoidEntity))), packedLightIn, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
-		gelModel.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(PurpoidRenderer.EMISSIVE_TEXTURE)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		gelModel.render(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(PurpoidRenderer.EMISSIVE_TEXTURE)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

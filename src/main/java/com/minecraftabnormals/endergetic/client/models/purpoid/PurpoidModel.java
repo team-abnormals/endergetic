@@ -127,7 +127,7 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	@Override
 	public void animateModel(PurpoidEntity purpoid) {
 		super.animateModel(purpoid);
-		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION)) {
+		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION) || this.tryToPlayEndimation(PurpoidEntity.FAST_TELEPORT_TO_ANIMATION)) {
 			this.startKeyframe(5);
 			this.scale(this.head, 1.3F, 1.3F, 1.3F);
 			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
@@ -156,6 +156,46 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_FROM_ANIMATION)) {
 			this.startKeyframe(5);
 			this.scale(this.head, 1.3F, 1.3F, 1.3F);
+			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.resetKeyframe(5);
+		} else if (this.tryToPlayEndimation(PurpoidEntity.DEATH_ANIMATION)) {
+			this.startKeyframe(5);
+			this.scale(this.head, -0.4F, -0.4F, -0.4F);
+			this.rotate(this.tentacleLarge1, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge2, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge3, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge4, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall1, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall2, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall3, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall4, 0.26F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.scale(this.head, 0.9F, 0.9F, 0.9F);
+			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
+			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
+			this.endKeyframe();
+
+			this.setStaticKeyframe(10);
+		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEFRAG_ANIMATION)) {
+			this.startKeyframe(5);
+			this.scale(this.head, 1.0F, 1.0F, 1.0F);
 			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
 			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
 			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);

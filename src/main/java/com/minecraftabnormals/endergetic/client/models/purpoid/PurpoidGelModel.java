@@ -44,7 +44,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 	public void animateModel(PurpoidEntity endimatedEntity) {
 		super.animateModel(endimatedEntity);
 
-		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION)) {
+		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION) || this.tryToPlayEndimation(PurpoidEntity.FAST_TELEPORT_TO_ANIMATION)) {
 			this.startKeyframe(5);
 			this.scale(this.gelLayer, 1.3F, 1.3F, 1.3F);
 			this.endKeyframe();
@@ -57,6 +57,22 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_FROM_ANIMATION)) {
 			this.startKeyframe(5);
 			this.scale(this.gelLayer, 1.3F, 1.3F, 1.3F);
+			this.endKeyframe();
+
+			this.resetKeyframe(5);
+		} else if (this.tryToPlayEndimation(PurpoidEntity.DEATH_ANIMATION)) {
+			this.startKeyframe(5);
+			this.scale(this.gelLayer, -0.4F, -0.4F, -0.4F);
+			this.endKeyframe();
+
+			this.startKeyframe(5);
+			this.scale(this.gelLayer, 1.15F, 1.0F, 1.15F);
+			this.endKeyframe();
+
+			this.setStaticKeyframe(10);
+		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEFRAG_ANIMATION)) {
+			this.startKeyframe(5);
+			this.scale(this.gelLayer, 1.0F, 1.0F, 1.0F);
 			this.endKeyframe();
 
 			this.resetKeyframe(5);
