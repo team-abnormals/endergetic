@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common;
 
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
+import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -22,7 +23,7 @@ public final class EEProperties {
 	public static final AbstractBlock.Properties MYSTICAL_OBSIDIAN = AbstractBlock.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(-1.0F, 3600000.0F).noDrops();
 	public static final AbstractBlock.Properties ACIDIAN_LANTERN = AbstractBlock.Properties.create(Material.ROCK, MaterialColor.OBSIDIAN).hardnessAndResistance(50F, 6000.0F).setLightLevel(state -> 15).harvestLevel(2).harvestTool(ToolType.PICKAXE);
 	public static final AbstractBlock.Properties BOLLOOM_CRATE = AbstractBlock.Properties.create(Material.WOOD, MaterialColor.YELLOW_TERRACOTTA).hardnessAndResistance(1.5F).sound(SoundType.WOOD);
-	public static final AbstractBlock.Properties EETLE_EGG = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 7 + state.get(EetleEggBlock.SIZE)).noDrops().setRequiresTool().hardnessAndResistance(1.0F).sound(SoundType.WET_GRASS);
+	public static final AbstractBlock.Properties EETLE_EGG = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 7 + state.get(EetleEggBlock.SIZE)).noDrops().setRequiresTool().hardnessAndResistance(1.0F).sound(EESounds.EESoundTypes.EETLE_EGG);
 	public static final AbstractBlock.Properties INFESTED_CORROCK = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 12).tickRandomly().hardnessAndResistance(1.5F, 6.0F).sound(SoundType.CORAL);
 	public static final AbstractBlock.Properties PETRIFIED_INFESTED_CORROCK = AbstractBlock.Properties.create(Material.CORAL, MaterialColor.PURPLE).setLightLevel(state -> 12).hardnessAndResistance(1.5F, 6.0F).sound(SoundType.CORAL);
 

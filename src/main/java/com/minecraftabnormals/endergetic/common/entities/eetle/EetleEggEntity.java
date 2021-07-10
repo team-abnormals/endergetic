@@ -6,6 +6,7 @@ import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
+import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -22,6 +23,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -99,6 +101,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 
 					placingState = assignRandomDirection(world, placingState, random, newPos);
 					if (world.setBlockState(newPos, placingState, 3)) {
+						world.playSound(null, newPos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
 						if (!placingState.get(BlockStateProperties.WATERLOGGED)) {
 							TileEntity tileentity = world.getTileEntity(newPos);
 							if (tileentity instanceof EetleEggTileEntity) {
@@ -212,6 +215,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 			}
 		}
 		if (world instanceof ServerWorld) {
+			world.playSound(null, pos, EESounds.EETLE_EGG_BREAK.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
 			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 		}
 	}

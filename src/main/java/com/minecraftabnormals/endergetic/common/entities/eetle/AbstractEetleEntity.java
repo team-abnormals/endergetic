@@ -10,6 +10,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ai.EetleHurtByTar
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
+import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -29,8 +30,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -236,6 +236,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 						BlockState state = defaultState.with(EetleEggBlock.FACING, direction);
 						if (state.isValidPosition(world, pos)) {
 							world.setBlockState(pos, state.with(EetleEggBlock.SIZE, random.nextInt(2)));
+							world.playSound(null, pos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
 							TileEntity tileEntity = world.getTileEntity(pos);
 							if (tileEntity instanceof EetleEggTileEntity) {
 								EetleEggTileEntity eetleEggTileEntity = (EetleEggTileEntity) tileEntity;
@@ -298,6 +299,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		World world = this.world;
 		if (endimation == GROW_UP && world instanceof ServerWorld) {
 			this.setChild(false);
+			this.playSound(EESounds.LEETLE_TRANSFORM.get(), this.getSoundVolume(), this.getSoundPitch());
 			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
 		}
 	}
@@ -305,6 +307,27 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@Override
 	public EntitySize getSize(Pose poseIn) {
 		return this.isChild() ? LEETLE_SIZE : super.getSize(poseIn);
+	}
+
+	@Nullable
+	@Override
+	protected SoundEvent getAmbientSound() {
+		return this.isChild() ? EESounds.LEETLE_AMBIENT.get() : super.getAmbientSound();
+	}
+
+	@Override
+	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+		return this.isChild() ? EESounds.LEETLE_HURT.get() : super.getHurtSound(damageSourceIn);
+	}
+
+	@Override
+	protected SoundEvent getDeathSound() {
+		return this.isChild() ? EESounds.LEETLE_DEATH.get() : super.getDeathSound();
+	}
+
+	@Override
+	protected void playStepSound(BlockPos pos, BlockState blockIn) {
+		this.playSound(EESounds.LEETLE_STEP.get(), 0.15F, 1.0F);
 	}
 
 	@Override

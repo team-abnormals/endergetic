@@ -198,6 +198,51 @@
       }
     ]
   },
+  "entity.eetle.leetle_ambient": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.eetle.leetle_ambient",
+    "sounds": [
+      {
+        "name": "endergetic:entity/eetle/leetle_ambient"
+      }
+    ]
+  },
+  "entity.eetle.leetle_hurt": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.eetle.leetle_hurt",
+    "sounds": [
+      {
+        "name": "endergetic:entity/eetle/leetle_hurt"
+      }
+    ]
+  },
+  "entity.eetle.leetle_death": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.eetle.leetle_death",
+    "sounds": [
+      {
+        "name": "endergetic:entity/eetle/leetle_death"
+      }
+    ]
+  },
+  "entity.eetle.leetle_step": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.eetle.leetle_step",
+    "sounds": [
+      {
+        "name": "endergetic:entity/eetle/leetle_step"
+      }
+    ]
+  },
+  "entity.eetle.leetle_transform": {
+    "category": "neutral",
+    "subtitle": "subtitles.endergetic.eetle.leetle_transform",
+    "sounds": [
+      {
+        "name": "endergetic:entity/eetle/leetle_transform"
+      }
+    ]
+  },
   "block.cluster.place": {
     "category": "block",
     "subtitle": "subtitles.block.generic.place",
@@ -275,6 +320,59 @@
     "sounds": [
       {
         "name": "endergetic:block/ambient/poise_cluster_ambient"
+      }
+    ]
+  },
+  "block.eetle_egg.break": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_break"
+      }
+    ]
+  },
+  "block.eetle_egg.step": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_step"
+      }
+    ]
+  },
+  "block.eetle_egg.place": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_place"
+      }
+    ]
+  },
+  "block.eetle_egg.hit": {
+    "category": "block",
+    "subtitle": "subtitles.block.generic.hit",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_hit"
+      }
+    ]
+  },
+  "block.eetle_egg.fall": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_fall"
+      }
+    ]
+  },
+  "block.eetle_egg.ambient": {
+    "category": "block",
+    "subtitle": "subtitles.endergetic.block.eetle_egg.ambient",
+    "sounds": [
+      {
+        "name": "endergetic:block/eetle_egg_ambient"
       }
     ]
   },

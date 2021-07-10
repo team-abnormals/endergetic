@@ -5,6 +5,7 @@ import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParti
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
+import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +15,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -107,6 +109,9 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 				this.hatchProgress = 0;
 				this.hatchDelay = -80;
 				world.notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
+			}
+			if (!world.isRemote && RANDOM.nextFloat() <= 0.005F) {
+				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundCategory.BLOCKS, 0.75F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.util.ForgeSoundType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
@@ -26,6 +27,13 @@ public final class EESounds {
 	public static final RegistryObject<SoundEvent> POISE_BUSH_AMBIENT = HELPER.createSoundEvent("block.poise_bush.ambient");
 	public static final RegistryObject<SoundEvent> POISE_BUSH_AMBIENT_LONG = HELPER.createSoundEvent("block.poise_bush.ambient_long");
 	public static final RegistryObject<SoundEvent> POISE_CLUSTER_AMBIENT = HELPER.createSoundEvent("block.poise_cluster.ambient");
+
+	public static final RegistryObject<SoundEvent> EETLE_EGG_BREAK = HELPER.createSoundEvent("block.eetle_egg.break");
+	public static final RegistryObject<SoundEvent> EETLE_EGG_STEP = HELPER.createSoundEvent("block.eetle_egg.step");
+	public static final RegistryObject<SoundEvent> EETLE_EGG_PLACE = HELPER.createSoundEvent("block.eetle_egg.place");
+	public static final RegistryObject<SoundEvent> EETLE_EGG_HIT = HELPER.createSoundEvent("block.eetle_egg.hit");
+	public static final RegistryObject<SoundEvent> EETLE_EGG_FALL = HELPER.createSoundEvent("block.eetle_egg.fall");
+	public static final RegistryObject<SoundEvent> EETLE_EGG_AMBIENT = HELPER.createSoundEvent("block.eetle_egg.ambient");
 
 	public static final RegistryObject<SoundEvent> BOOFLO_VEST_INFLATE = HELPER.createSoundEvent("item.booflo_vest.inflate");
 
@@ -49,12 +57,19 @@ public final class EESounds {
 	public static final RegistryObject<SoundEvent> PUFFBUG_HURT = HELPER.createSoundEvent("entity.puffbug.hurt");
 	public static final RegistryObject<SoundEvent> PUFFBUG_DEATH = HELPER.createSoundEvent("entity.puffbug.death");
 
+	public static final RegistryObject<SoundEvent> LEETLE_AMBIENT = HELPER.createSoundEvent("entity.eetle.leetle_ambient");
+	public static final RegistryObject<SoundEvent> LEETLE_HURT = HELPER.createSoundEvent("entity.eetle.leetle_hurt");
+	public static final RegistryObject<SoundEvent> LEETLE_DEATH = HELPER.createSoundEvent("entity.eetle.leetle_death");
+	public static final RegistryObject<SoundEvent> LEETLE_STEP = HELPER.createSoundEvent("entity.eetle.leetle_step");
+	public static final RegistryObject<SoundEvent> LEETLE_TRANSFORM = HELPER.createSoundEvent("entity.eetle.leetle_transform");
+
 	public static final RegistryObject<SoundEvent> BOOF_BLOCK_INFLATE = HELPER.createSoundEvent("entity.boof_block.inflate");
 
 	public static final RegistryObject<SoundEvent> SMALL_END_ISLANDS_LOOP = HELPER.createSoundEvent("ambient.small_end_islands.loop");
 	public static final RegistryObject<SoundEvent> SMALL_END_ISLANDS_ADDITIONS = HELPER.createSoundEvent("ambient.small_end_islands.additions");
 
 	public static class EESoundTypes {
-		public static final SoundType CLUSTER = new SoundType(1.0F, 1.0F, EESounds.CLUSTER_BREAK.get(), EESounds.CLUSTER_STEP.get(), EESounds.CLUSTER_PLACE.get(), EESounds.CLUSTER_HIT.get(), EESounds.CLUSTER_PLACE.get());
+		public static final SoundType CLUSTER = new ForgeSoundType(1.0F, 1.0F, CLUSTER_BREAK, CLUSTER_STEP, CLUSTER_PLACE, CLUSTER_HIT, CLUSTER_PLACE);
+		public static final SoundType EETLE_EGG = new ForgeSoundType(1.0F, 1.0F, EETLE_EGG_BREAK, EETLE_EGG_STEP, EETLE_EGG_PLACE, EETLE_EGG_HIT, EETLE_EGG_FALL);
 	}
 }
