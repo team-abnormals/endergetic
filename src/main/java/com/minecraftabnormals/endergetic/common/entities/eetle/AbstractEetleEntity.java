@@ -327,7 +327,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		this.playSound(EESounds.LEETLE_STEP.get(), 0.15F, 1.0F);
+		if (this.isChild()) {
+			this.playSound(EESounds.LEETLE_STEP.get(), 0.15F, 1.0F);
+		} else {
+			super.playStepSound(pos, blockIn);
+		}
 	}
 
 	@Override
