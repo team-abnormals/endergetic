@@ -202,18 +202,18 @@
     "category": "neutral",
     "subtitle": "subtitles.endergetic.eetle.leetle_ambient",
     "sounds": [
-      {
-        "name": "endergetic:entity/eetle/leetle_ambient"
-      }
+        "endergetic:entity/eetle/leetle_ambient_1",
+        "endergetic:entity/eetle/leetle_ambient_2",
+        "endergetic:entity/eetle/leetle_ambient_3"
     ]
   },
   "entity.eetle.leetle_hurt": {
     "category": "neutral",
     "subtitle": "subtitles.endergetic.eetle.leetle_hurt",
     "sounds": [
-      {
-        "name": "endergetic:entity/eetle/leetle_hurt"
-      }
+        "endergetic:entity/eetle/leetle_hurt_1",
+        "endergetic:entity/eetle/leetle_hurt_2",
+        "endergetic:entity/eetle/leetle_hurt_3"
     ]
   },
   "entity.eetle.leetle_death": {
@@ -229,9 +229,10 @@
     "category": "neutral",
     "subtitle": "subtitles.endergetic.eetle.leetle_step",
     "sounds": [
-      {
-        "name": "endergetic:entity/eetle/leetle_step"
-      }
+        "endergetic:entity/eetle/leetle_step_1",
+        "endergetic:entity/eetle/leetle_step_2",
+        "endergetic:entity/eetle/leetle_step_3",
+        "endergetic:entity/eetle/leetle_step_4"
     ]
   },
   "entity.eetle.leetle_transform": {
@@ -327,9 +328,9 @@
     "category": "block",
     "subtitle": "subtitles.block.generic.break",
     "sounds": [
-      {
-        "name": "endergetic:block/eetle_egg_break"
-      }
+        "endergetic:block/eetle_egg_break_1",
+        "endergetic:block/eetle_egg_break_2",
+        "endergetic:block/eetle_egg_break_3"
     ]
   },
   "block.eetle_egg.step": {
@@ -345,9 +346,9 @@
     "category": "block",
     "subtitle": "subtitles.block.generic.place",
     "sounds": [
-      {
-        "name": "endergetic:block/eetle_egg_place"
-      }
+        "endergetic:block/eetle_egg_place_1",
+        "endergetic:block/eetle_egg_place_2",
+        "endergetic:block/eetle_egg_place_3"
     ]
   },
   "block.eetle_egg.hit": {
@@ -371,9 +372,8 @@
     "category": "block",
     "subtitle": "subtitles.endergetic.block.eetle_egg.ambient",
     "sounds": [
-      {
-        "name": "endergetic:block/eetle_egg_ambient"
-      }
+        "endergetic:block/eetle_egg_ambient_1",
+        "endergetic:block/eetle_egg_ambient_2"
     ]
   },
   "item.booflo_vest.inflate": {
