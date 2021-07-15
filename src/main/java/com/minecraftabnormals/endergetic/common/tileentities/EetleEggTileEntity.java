@@ -110,8 +110,8 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 				this.hatchDelay = -80;
 				world.notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
 			}
-			if (!world.isRemote && RANDOM.nextFloat() <= 0.005F) {
-				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundCategory.BLOCKS, 0.75F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
+			if (!world.isRemote && RANDOM.nextFloat() <= 0.0025F) {
+				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundCategory.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
 			}
 		}
 	}

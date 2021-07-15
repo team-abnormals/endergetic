@@ -309,6 +309,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		return this.isChild() ? LEETLE_SIZE : super.getSize(poseIn);
 	}
 
+	@Override
+	public int getTalkInterval() {
+		return 160;
+	}
+
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
