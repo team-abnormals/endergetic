@@ -18,6 +18,7 @@ public final class EESounds {
 	public static final RegistryObject<SoundEvent> POISE_FOREST_LOOP = HELPER.createSoundEvent("ambient.poise_forest.loop");
 	public static final RegistryObject<SoundEvent> POISE_FOREST_ADDITIONS = HELPER.createSoundEvent("ambient.poise_forest.additions");
 	public static final RegistryObject<SoundEvent> POISE_FOREST_MOOD = HELPER.createSoundEvent("ambient.poise_forest.mood");
+	public static final RegistryObject<SoundEvent> POISE_FOREST_MUSIC = HELPER.createSoundEvent("music.end.poise_forest");
 
 	public static final RegistryObject<SoundEvent> CLUSTER_PLACE = HELPER.createSoundEvent("block.cluster.place");
 	public static final RegistryObject<SoundEvent> CLUSTER_BREAK = HELPER.createSoundEvent("block.cluster.break");

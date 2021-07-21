@@ -484,5 +484,20 @@
         "name": "endergetic:ambient/small_end_islands/small_end_islands_addition_4"
       }
     ]
+  },
+  "music.end.poise_forest": {
+    "sounds": [
+      {
+        "name": "endergetic:music/game/end/poise_forest",
+        "stream": true,
+        "volume": 0.5,
+        "weight": 7
+      },
+      {
+        "name": "music/game/end/end",
+        "stream": true,
+        "weight": 1
+      }
+    ]
   }
 }

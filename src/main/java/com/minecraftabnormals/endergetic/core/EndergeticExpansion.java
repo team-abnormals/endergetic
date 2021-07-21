@@ -2,6 +2,7 @@ package com.minecraftabnormals.endergetic.core;
 
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.common.world.modification.*;
+import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeStructureModifier;
 import com.minecraftabnormals.endergetic.common.world.modification.BiomeSurfaceBuilderModifier;
@@ -192,6 +193,7 @@ public class EndergeticExpansion {
 		KeybindHandler.registerKeys();
 
 		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
+		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("endergetic:poise_forest"));
 	}
 
 	private void setupMessages() {

@@ -10,6 +10,7 @@ import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
+import net.minecraft.client.audio.BackgroundMusicTracks;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStage;
@@ -57,6 +58,7 @@ public final class EEBiomes {
 				.setWaterColor(4159204)
 				.setWaterFogColor(329011)
 				.setFogColor(10518688)
+				.setMusic(BackgroundMusicTracks.getDefaultBackgroundMusicSelector(EESounds.POISE_FOREST_MUSIC.get()))
 				.setAmbientSound(EESounds.POISE_FOREST_LOOP.get())
 				.setAdditionsSound(new SoundAdditionsAmbience(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
 				.setMoodSound(new MoodSoundAmbience(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
