@@ -3,16 +3,20 @@ package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -91,6 +95,9 @@ public class PurpoidAttackGoal extends Goal {
 						double randomZ = targetZ + (random.nextDouble() - 0.5D) * 32.0D;
 						if (target.attemptTeleport(randomX, randomY, randomZ, false)) {
 							target.attackEntityFrom(DamageSource.causeMobDamage(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
+							if (target instanceof ServerPlayerEntity) {
+								EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) target), new S2CEnablePurpoidFlash());
+							}
 							break;
 						}
 					}

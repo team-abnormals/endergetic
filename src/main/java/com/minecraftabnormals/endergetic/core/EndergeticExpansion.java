@@ -204,5 +204,6 @@ public class EndergeticExpansion {
 		CHANNEL.registerMessage(id++, RotateMessage.class, RotateMessage::serialize, RotateMessage::deserialize, RotateMessage::handle);
 		CHANNEL.registerMessage(id++, S2CUpdateBalloonsMessage.class, S2CUpdateBalloonsMessage::serialize, S2CUpdateBalloonsMessage::deserialize, S2CUpdateBalloonsMessage::handle);
 		CHANNEL.registerMessage(id++, C2SInflateBoofloVestMessage.class, C2SInflateBoofloVestMessage::serialize, C2SInflateBoofloVestMessage::deserialize, C2SInflateBoofloVestMessage::handle);
+		CHANNEL.registerMessage(id++, S2CEnablePurpoidFlash.class, S2CEnablePurpoidFlash::serialize, S2CEnablePurpoidFlash::deserialize, S2CEnablePurpoidFlash::handle);
 	}
 }
