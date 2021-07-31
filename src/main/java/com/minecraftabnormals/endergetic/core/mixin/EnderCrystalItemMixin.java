@@ -46,9 +46,9 @@ public final class EnderCrystalItemMixin {
 							dragonfightmanager.tryRespawnDragon();
 						}
 					}
+					context.getItem().shrink(1);
+					info.setReturnValue(ActionResultType.func_233537_a_(world.isRemote));
 				}
-				context.getItem().shrink(1);
-				info.setReturnValue(ActionResultType.SUCCESS);
 			}
 		}
 	}
