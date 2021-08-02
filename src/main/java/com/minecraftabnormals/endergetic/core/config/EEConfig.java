@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.core.config;
 
+import com.minecraftabnormals.abnormals_core.core.annotations.ConfigKey;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -12,6 +13,8 @@ import net.minecraftforge.fml.config.ModConfig;
 public final class EEConfig {
 
 	public static class Common {
+
+		@ConfigKey("debug_dragon_fight_manager")
 		public final ConfigValue<Boolean> debugDragonFightManager;
 
 		Common(ForgeConfigSpec.Builder builder) {

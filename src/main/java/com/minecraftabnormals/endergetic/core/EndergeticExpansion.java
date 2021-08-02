@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeatureModifier;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
+import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
@@ -99,6 +100,7 @@ public class EndergeticExpansion {
 
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
+		DataUtil.registerConfigCondition(EndergeticExpansion.MOD_ID, EEConfig.COMMON);
 	}
 
 	void setupCommon(final FMLCommonSetupEvent event) {
