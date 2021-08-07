@@ -37,7 +37,7 @@ public final class EnderCrystalItemMixin {
 				if (!world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D)).isEmpty()) {
 					info.setReturnValue(ActionResultType.FAIL);
 				} else {
-					if (!world.isRemote) {
+					if (world instanceof ServerWorld) {
 						EnderCrystalEntity endercrystalentity = new EnderCrystalEntity(world, d0 + 0.5D, d1, d2 + 0.5D);
 						endercrystalentity.setShowBottom(false);
 						world.addEntity(endercrystalentity);
@@ -46,9 +46,9 @@ public final class EnderCrystalItemMixin {
 							dragonfightmanager.tryRespawnDragon();
 						}
 					}
+					context.getItem().shrink(1);
+					info.setReturnValue(ActionResultType.func_233537_a_(world.isRemote));
 				}
-				context.getItem().shrink(1);
-				info.setReturnValue(ActionResultType.SUCCESS);
 			}
 		}
 	}
