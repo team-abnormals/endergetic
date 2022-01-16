@@ -10,6 +10,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -59,6 +60,13 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		this.lookControl = new BoofloBabyLookController(this, 10);
 		this.tailAnimation = this.random.nextFloat();
 		this.prevTailAnimation = this.tailAnimation;
+	}
+
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 5.0F)
+				.add(Attributes.MOVEMENT_SPEED, 0.85F)
+				.add(Attributes.FOLLOW_RANGE, 18.0F);
 	}
 
 	@Override

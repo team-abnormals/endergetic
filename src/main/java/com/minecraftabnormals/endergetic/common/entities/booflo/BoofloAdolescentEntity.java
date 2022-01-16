@@ -16,6 +16,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
@@ -82,6 +83,13 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		this.moveControl = new BoofloAdolescentEntity.BoofloAdolescentMoveController(this);
 		this.tailAnimation = this.random.nextFloat();
 		this.prevTailAnimation = this.tailAnimation;
+	}
+
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 10.0F)
+				.add(Attributes.MOVEMENT_SPEED, 1.7F)
+				.add(Attributes.FOLLOW_RANGE, 25.0F);
 	}
 
 	@Override
