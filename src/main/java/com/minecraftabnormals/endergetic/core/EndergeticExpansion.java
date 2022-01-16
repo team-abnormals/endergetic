@@ -112,7 +112,6 @@ public class EndergeticExpansion {
 			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
-			EEEntityAttributes.putAttributes();
 		});
 		modifyBiomes();
 	}

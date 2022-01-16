@@ -21,6 +21,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
@@ -118,6 +119,16 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		this.moveControl = new GroundMoveHelperController(this);
 		this.hopDelay = this.getDefaultGroundHopDelay();
 		this.maxUpStep = 1.0F;
+	}
+
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.ATTACK_DAMAGE, 7.0F)
+				.add(Attributes.MAX_HEALTH, 40.0F)
+				.add(Attributes.MOVEMENT_SPEED, 1.05F)
+				.add(Attributes.ARMOR, 4.0F)
+				.add(Attributes.FOLLOW_RANGE, 22.0F)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6F);
 	}
 
 	@Override

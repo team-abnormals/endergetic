@@ -25,6 +25,7 @@ import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -126,6 +127,15 @@ public class PuffBugEntity extends AnimalEntity implements IEndimatedEntity {
 		this.teleportController = new TeleportController(this);
 		this.rotationController = new RotationController(this);
 		this.xpReward = 2;
+	}
+
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.ATTACK_DAMAGE, 5.0F)
+				.add(Attributes.FLYING_SPEED, 0.75F)
+				.add(Attributes.ATTACK_KNOCKBACK, 0.15F)
+				.add(Attributes.MAX_HEALTH, 8.0F)
+				.add(Attributes.FOLLOW_RANGE, 16.0F);
 	}
 
 	@Override
