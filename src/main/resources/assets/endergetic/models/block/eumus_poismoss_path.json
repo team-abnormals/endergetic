@@ -1,0 +1,9 @@
+{
+    "parent": "block/grass_path",
+    "textures": {
+        "particle": "endergetic:block/eumus",
+        "top": "endergetic:block/poismoss_path_top",
+        "side": "endergetic:block/eumus_poismoss_path_side",
+        "bottom": "endergetic:block/eumus"
+    }
+}

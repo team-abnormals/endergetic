@@ -3,7 +3,6 @@ package com.minecraftabnormals.endergetic.core.registry;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsBeehiveBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.AbnormalsLadderBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.BookshelfBlock;
-import com.minecraftabnormals.abnormals_core.common.blocks.HedgeBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.VerticalSlabBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsChestBlock;
 import com.minecraftabnormals.abnormals_core.common.blocks.chest.AbnormalsTrappedChestBlock;
@@ -69,7 +68,7 @@ public final class EEBlocks {
 	/*
 	 * Poise Forest
 	 */
-	public static final RegistryObject<Block> EUMUS_POISMOSS = HELPER.createBlock("eumus_poismoss", () -> new PoismossEumusBlock(EEProperties.POISMOSS_EUMUS), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> EUMUS_POISMOSS = HELPER.createBlock("eumus_poismoss", () -> new PoismossEumusBlock(EEProperties.EUMUS_POISMOSS), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISMOSS = HELPER.createBlock("poismoss", () -> new PoismossBlock(EEProperties.getPoiseGrass(false)), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_BUSH = HELPER.createBlock("poise_bush", () -> new PoiseBushBlock(EEProperties.getPoiseGrass(true)), ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> TALL_POISE_BUSH = HELPER.createBlock("tall_poise_bush", () -> new PoiseTallBushBlock(EEProperties.getPoiseGrass(true)), ItemGroup.TAB_DECORATIONS);
@@ -100,8 +99,8 @@ public final class EEBlocks {
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN = HELPER.createSignBlock("poise", MaterialColor.TERRACOTTA_PURPLE);
 	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.TERRACOTTA_PURPLE);
 
-	public static final RegistryObject<Block> BOLLOOM_BUD = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), EEBlocks::bolloomBudISTER, ItemGroup.TAB_DECORATIONS);
-	public static final RegistryObject<Block> PUFFBUG_HIVE = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), EEBlocks::puffbugHiveISTER, ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> BOLLOOM_BUD = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> bolloomBudISTER(), ItemGroup.TAB_DECORATIONS);
+	public static final RegistryObject<Block> PUFFBUG_HIVE = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), () -> puffbugHiveISTER(), ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> HIVE_HANGER = HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.getPuffBugHive(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.getPoiseWood(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), ItemGroup.TAB_DECORATIONS);
@@ -146,6 +145,9 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> CHISELED_END_STONE_BRICKS = HELPER.createBlock("chiseled_end_stone_bricks", () -> new Block(AbstractBlock.Properties.copy(Blocks.END_STONE_BRICKS)), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> CRACKED_END_STONE_BRICKS = HELPER.createBlock("cracked_end_stone_bricks", () -> new Block(AbstractBlock.Properties.copy(Blocks.END_STONE_BRICKS)), ItemGroup.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> CRACKED_PURPUR_BLOCK = HELPER.createBlock("cracked_purpur_block", () -> new Block(AbstractBlock.Properties.copy(Blocks.PURPUR_BLOCK)), ItemGroup.TAB_BUILDING_BLOCKS);
+
+	public static final RegistryObject<Block> EUMUS_POISMOSS_PATH = HELPER.createBlock("eumus_poismoss_path", () -> new PoismossPathBlock(EUMUS, EEProperties.EUMUS_POISMOSS_PATH), ItemGroup.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISMOSS_PATH = HELPER.createBlock("poismoss_path", () -> new PoismossPathBlock(() -> Blocks.END_STONE, EEProperties.POISMOSS_PATH), ItemGroup.TAB_BUILDING_BLOCKS);
 
 
 	@OnlyIn(Dist.CLIENT)

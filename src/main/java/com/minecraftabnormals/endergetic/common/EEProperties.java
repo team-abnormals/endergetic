@@ -2,9 +2,12 @@ package com.minecraftabnormals.endergetic.common;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 
 public final class EEProperties {
@@ -16,7 +19,9 @@ public final class EEProperties {
 	public static final AbstractBlock.Properties POISE_LOG_GLOWING = AbstractBlock.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.WOOD).harvestTool(ToolType.AXE).strength(2, 10).lightLevel((state) -> 15);
 	public static final AbstractBlock.Properties BOOF_BLOCK = AbstractBlock.Properties.of(Material.WOOL, MaterialColor.TERRACOTTA_YELLOW).sound(SoundType.WOOL).strength(0.85F);
 	public static final AbstractBlock.Properties EUMUS = AbstractBlock.Properties.of(Material.DIRT, MaterialColor.TERRACOTTA_PURPLE).strength(0.5F).sound(SoundType.GRAVEL);
-	public static final AbstractBlock.Properties POISMOSS_EUMUS = AbstractBlock.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.GRASS);
+	public static final AbstractBlock.Properties EUMUS_POISMOSS = AbstractBlock.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.GRASS);
+	public static final AbstractBlock.Properties EUMUS_POISMOSS_PATH = AbstractBlock.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).harvestTool(ToolType.SHOVEL).strength(0.6F).sound(SoundType.GRASS).isViewBlocking(EEProperties::blocksVision);
+	public static final AbstractBlock.Properties POISMOSS_PATH = AbstractBlock.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 9.0F).isViewBlocking(EEProperties::blocksVision);
 	public static final AbstractBlock.Properties EUMUS_BRICKS = AbstractBlock.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_PURPLE).harvestTool(ToolType.PICKAXE).sound(SoundType.STONE).strength(2, 30);
 	public static final AbstractBlock.Properties MYSTICAL_OBSIDIAN = AbstractBlock.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(-1.0F, 3600000.0F).noDrops();
 	public static final AbstractBlock.Properties ACIDIAN_LANTERN = AbstractBlock.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(50F, 6000.0F).lightLevel(state -> 15).harvestLevel(2).harvestTool(ToolType.PICKAXE);
@@ -31,7 +36,7 @@ public final class EEProperties {
 	}
 
 	public static AbstractBlock.Properties getPoiseGrass(boolean isPlant) {
-		return !isPlant ? AbstractBlock.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).strength(3.0F, 9.0F).randomTicks() : AbstractBlock.Properties.of(Material.REPLACEABLE_PLANT, MaterialColor.COLOR_PURPLE).sound(SoundType.GRASS).strength(0F).noCollission();
+		return !isPlant ? AbstractBlock.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 9.0F).randomTicks() : AbstractBlock.Properties.of(Material.REPLACEABLE_PLANT, MaterialColor.COLOR_PURPLE).sound(SoundType.GRASS).strength(0F).noCollission();
 	}
 
 	public static AbstractBlock.Properties getPoiseWood(boolean ticksRandomly, boolean doesNotBlockMovement) {
@@ -47,5 +52,9 @@ public final class EEProperties {
 
 	public static AbstractBlock.Properties getPuffBugHive(boolean hanger) {
 		return !hanger ? AbstractBlock.Properties.of(Material.GRASS, MaterialColor.WOOL).noOcclusion().noCollission() : AbstractBlock.Properties.of(Material.WOOD, MaterialColor.WOOL).strength(2.5F);
+	}
+
+	private static boolean blocksVision(BlockState state, IBlockReader access, BlockPos pos) {
+		return true;
 	}
 }
