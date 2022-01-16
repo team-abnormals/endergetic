@@ -2,8 +2,6 @@ buildscript {
     repositories {
         maven { url = "https://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
-        jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "4.1.+", changing: true
@@ -27,7 +25,7 @@ archivesBaseName = project.modId
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8"
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: "official", version: "1.16.5"
     accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
     runs {
         client {
@@ -36,7 +34,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -49,7 +47,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            arg "-mixin.config=endergetic.mixins.json"
+            arg "-mixin.config=" + project.modId + ".mixins.json"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -62,7 +60,7 @@ minecraft {
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            args "--mod", "endergetic", "--all", "--output", file("src/generated/resources/")
+            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
             mods {
                 endergetic {
                     source sourceSets.main
@@ -75,6 +73,11 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
     implementation fg.deobf("com.minecraftabnormals:abnormals-core:${project.minecraft}-${project.abnormalsCore}")
+
+    compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}:${project.jei}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft}:${project.jei}")
+
+    annotationProcessor "org.spongepowered:mixin:0.8.2:processor"
 }
 
 repositories {

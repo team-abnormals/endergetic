@@ -7,8 +7,11 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
     modId = "endergetic"
     version = "3.1.0"
     logoFile = "logo.png"
+    itemIcon = "endergetic:poismoss"
+    configBackground = "endergetic:textures/block/end_corrock_block.png"
     authors = "Team Abnormals"
-    credits = "SmellyModder, Endergized, Timinations, and bageldotjpg"
+    credits = "SmellyModder, Endergized, Timinations, bageldotjpg"
+    displayURL = "https://www.teamabnormals.com/mods/endergetic"
     displayName = "The Endergetic Expansion"
     description = '''
     Ever since the end was first introduced to the game it's always been a dull place; and it has great potential to be something greater. This mod expands the end greatly by adding tons of new biomes, mobs, bosses, items, blocks, etc to the end! Venture to new places like the Poise Forest or explore old places like the chorus biome which have been revamped!

@@ -95,7 +95,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_LADDER = HELPER.createCompatFuelBlock("quark", "poise_ladder", () -> new AbnormalsLadderBlock(Properties.copy(Blocks.LADDER)), 300, ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> POISE_BEEHIVE = HELPER.createCompatBlock("buzzier_bees", "poise_beehive", () -> new AbnormalsBeehiveBlock(Properties.copy(Blocks.BEEHIVE)), ItemGroup.TAB_DECORATIONS);
 	public static final Pair<RegistryObject<AbnormalsStandingSignBlock>, RegistryObject<AbnormalsWallSignBlock>> POISE_SIGN = HELPER.createSignBlock("poise", MaterialColor.TERRACOTTA_PURPLE);
-	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("poise", MaterialColor.TERRACOTTA_PURPLE);
+	public static final Pair<RegistryObject<AbnormalsChestBlock>, RegistryObject<AbnormalsTrappedChestBlock>> POISE_CHEST = HELPER.createCompatChestBlocks("quark", "poise", MaterialColor.TERRACOTTA_PURPLE);
 
 	public static final RegistryObject<Block> BOLLOOM_BUD = HELPER.createBlockWithISTER("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> EEBlocks.bolloomBudISTER(), ItemGroup.TAB_DECORATIONS);
 	public static final RegistryObject<Block> PUFFBUG_HIVE = HELPER.createBlockWithISTER("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), () -> EEBlocks.puffbugHiveISTER(), ItemGroup.TAB_DECORATIONS);
