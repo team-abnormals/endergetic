@@ -5,7 +5,6 @@ import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomBalloonMod
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -28,30 +27,30 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 
 	@Override
 	public void render(BolloomBalloonEntity balloon, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(balloon)));
-		this.model.setRotationAngles(balloon, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-		this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(balloon)));
+		this.model.setupAnim(balloon, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+		this.model.renderToBuffer(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		this.model.renderString(matrixStack, bufferIn.getBuffer(EERenderTypes.BOLLOOM_STRING), packedLightIn);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 		super.render(balloon, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 
 	@Override
 	public boolean shouldRender(BolloomBalloonEntity balloon, ClippingHelper camera, double camX, double camY, double camZ) {
-		if (!balloon.isInRangeToRender3d(camX, camY, camZ)) {
+		if (!balloon.shouldRender(camX, camY, camZ)) {
 			return false;
 		}
 		ClientPlayerEntity player = MC.player;
-		return balloon.getAttachedEntity() != player || MC.gameSettings.getPointOfView() != PointOfView.FIRST_PERSON || player.rotationPitch < -45.0F;
+		return balloon.getAttachedEntity() != player || MC.options.getCameraType() != PointOfView.FIRST_PERSON || player.xRot < -45.0F;
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BolloomBalloonEntity balloon) {
+	public ResourceLocation getTextureLocation(BolloomBalloonEntity balloon) {
 		return balloon.getColor().texture;
 	}
 }

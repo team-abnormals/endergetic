@@ -1,11 +1,10 @@
 package com.minecraftabnormals.endergetic.api.entity.util;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class DetectionHelper {
 
@@ -35,7 +34,7 @@ public class DetectionHelper {
 		E entity = null;
 
 		for (E entities : list) {
-			double d1 = entities.getDistanceSq(posX, posY, posZ);
+			double d1 = entities.distanceToSqr(posX, posY, posZ);
 			if (d0 == -1.0D || d1 < d0) {
 				d0 = d1;
 				entity = entities;

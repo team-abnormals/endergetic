@@ -1,19 +1,17 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
-import java.util.Random;
-
 import com.minecraftabnormals.abnormals_core.core.util.registry.EntitySubRegistryHelper;
-import com.minecraftabnormals.endergetic.common.entities.*;
-import com.minecraftabnormals.endergetic.common.entities.bolloom.*;
-import com.minecraftabnormals.endergetic.common.entities.booflo.*;
-import com.minecraftabnormals.endergetic.common.entities.puffbug.*;
+import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
+import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
+import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
+import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
+import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
+import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.Heightmap;
@@ -22,6 +20,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+
+import java.util.Random;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EEEntities {

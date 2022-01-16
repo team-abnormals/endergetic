@@ -1,5 +1,8 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise.hive;
 
+import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
+import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -22,15 +25,10 @@ import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
-import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
-import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
 import java.util.List;
 
 public class PuffBugHiveBlock extends Block {
-	private static final VoxelShape HIVE_SHAPE = VoxelShapes.or(Block.makeCuboidShape(0.0D, 3.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D));
+	private static final VoxelShape HIVE_SHAPE = VoxelShapes.or(Block.box(0.0D, 3.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.box(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D));
 
 	public PuffBugHiveBlock(Properties properties) {
 		super(properties);
@@ -42,62 +40,62 @@ public class PuffBugHiveBlock extends Block {
 	}
 
 	@Override
-	public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+	public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
 		alertPuffBugs(world, pos, player);
-		super.onBlockHarvested(world, pos, state, player);
+		super.playerWillDestroy(world, pos, state, player);
 	}
 
 	@Override
-	public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
-		alertPuffBugs(world, pos, explosion.getExplosivePlacedBy());
-		super.onExplosionDestroy(world, pos, explosion);
+	public void wasExploded(World world, BlockPos pos, Explosion explosion) {
+		alertPuffBugs(world, pos, explosion.getSourceMob());
+		super.wasExploded(world, pos, explosion);
 	}
 
 	@Override
-	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
-		alertPuffBugs(world, hit.getPos(), null);
+	public void onProjectileHit(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
+		alertPuffBugs(world, hit.getBlockPos(), null);
 	}
 
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+	public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		alertPuffBugs(world, pos, player);
 	}
 
 	@Override
 	@Nonnull
-	public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		return !isValidPosition(state, world, currentPos) ? alertPuffBugs(world, currentPos, null) : state;
+	public BlockState updateShape(@Nonnull BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+		return !canSurvive(state, world, currentPos) ? alertPuffBugs(world, currentPos, null) : state;
 	}
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		BlockPos blockpos = context.getPos();
-		World world = context.getWorld();
+		BlockPos blockpos = context.getClickedPos();
+		World world = context.getLevel();
 		for (Direction enumfacing : context.getNearestLookingDirections()) {
 			if (enumfacing == Direction.UP) {
-				BlockPos up = blockpos.up();
-				if (world.isAirBlock(blockpos.down()) && world.getBlockState(up).isSolidSide(context.getWorld(), up, Direction.DOWN)) {
-					AxisAlignedBB bb = new AxisAlignedBB(context.getPos().down());
-					List<Entity> entities = context.getWorld().getEntitiesWithinAABB(Entity.class, bb);
+				BlockPos up = blockpos.above();
+				if (world.isEmptyBlock(blockpos.below()) && world.getBlockState(up).isFaceSturdy(context.getLevel(), up, Direction.DOWN)) {
+					AxisAlignedBB bb = new AxisAlignedBB(context.getClickedPos().below());
+					List<Entity> entities = context.getLevel().getEntitiesOfClass(Entity.class, bb);
 					if (entities.size() > 0) {
 						return null;
 					}
-					world.setBlockState(blockpos.down(), this.getDefaultState());
-					return EEBlocks.HIVE_HANGER.get().getDefaultState();
+					world.setBlockAndUpdate(blockpos.below(), this.defaultBlockState());
+					return EEBlocks.HIVE_HANGER.get().defaultBlockState();
 				} else {
-					return this.getDefaultState();
+					return this.defaultBlockState();
 				}
 			} else {
-				return this.getDefaultState();
+				return this.defaultBlockState();
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
-		BlockState down = world.getBlockState(pos.down());
-		return (world.getBlockState(pos.up()).getBlock() instanceof PuffbugHiveHangerBlock) || down.isSolid() || down.getBlock() instanceof PuffBugHiveBlock;
+	public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
+		BlockState down = world.getBlockState(pos.below());
+		return (world.getBlockState(pos.above()).getBlock() instanceof PuffbugHiveHangerBlock) || down.canOcclude() || down.getBlock() instanceof PuffBugHiveBlock;
 	}
 
 	@Override
@@ -117,13 +115,13 @@ public class PuffBugHiveBlock extends Block {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	public static BlockState alertPuffBugs(IWorld world, BlockPos pos, @Nullable LivingEntity breaker) {
-		if (!world.isRemote()) {
-			TileEntity tile = world.getTileEntity(pos);
+		if (!world.isClientSide()) {
+			TileEntity tile = world.getBlockEntity(pos);
 			if (tile instanceof PuffBugHiveTileEntity) {
 				PuffBugHiveTileEntity hive = (PuffBugHiveTileEntity) tile;
 				if (breaker == null) {
@@ -135,6 +133,6 @@ public class PuffBugHiveBlock extends Block {
 				}
 			}
 		}
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
 	}
 }

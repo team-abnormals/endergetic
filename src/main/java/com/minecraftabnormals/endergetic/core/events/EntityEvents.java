@@ -1,26 +1,16 @@
 package com.minecraftabnormals.endergetic.core.events;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
+import com.minecraftabnormals.endergetic.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.items.BolloomBalloonItem;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -34,11 +24,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
+import net.minecraft.potion.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +41,11 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public final class EntityEvents {
@@ -83,19 +74,19 @@ public final class EntityEvents {
 		if (projectileEntity instanceof PotionEntity) {
 			PotionEntity potionEntity = ((PotionEntity) projectileEntity);
 			ItemStack itemstack = potionEntity.getItem();
-			Potion potion = PotionUtils.getPotionFromItem(itemstack);
-			List<EffectInstance> list = PotionUtils.getEffectsFromStack(itemstack);
+			Potion potion = PotionUtils.getPotion(itemstack);
+			List<EffectInstance> list = PotionUtils.getMobEffects(itemstack);
 
 			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
-				World world = potionEntity.world;
+				World world = potionEntity.level;
 				BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) event.getRayTraceResult();
-				Direction direction = blockraytraceresult.getFace();
-				BlockPos blockpos = blockraytraceresult.getPos().offset(Direction.DOWN).offset(direction);
+				Direction direction = blockraytraceresult.getDirection();
+				BlockPos blockpos = blockraytraceresult.getBlockPos().relative(Direction.DOWN).relative(direction);
 
 				tryToConvertCorrockBlock(world, blockpos);
-				tryToConvertCorrockBlock(world, blockpos.offset(direction.getOpposite()));
+				tryToConvertCorrockBlock(world, blockpos.relative(direction.getOpposite()));
 				for (Direction horizontals : Direction.Plane.HORIZONTAL) {
-					tryToConvertCorrockBlock(world, blockpos.offset(horizontals));
+					tryToConvertCorrockBlock(world, blockpos.relative(horizontals));
 				}
 			}
 		}
@@ -104,27 +95,27 @@ public final class EntityEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
-		if (!entity.world.isRemote) {
+		if (!entity.level.isClientSide) {
 			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
 			ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
 			boolean hasABalloon = balloonCount > 0;
 			if (hasABalloon) entity.fallDistance = 0.0F;
-			boolean isFalling = entity.getMotion().y <= 0.0D;
+			boolean isFalling = entity.getDeltaMovement().y <= 0.0D;
 
 			if (isFalling && balloonCount < 3 && hasABalloon) {
-				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.applyNonPersistentModifier(SLOW_BALLOON);
+				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.addTransientModifier(SLOW_BALLOON);
 			} else if (gravity.hasModifier(SLOW_BALLOON)) {
 				gravity.removeModifier(SLOW_BALLOON);
 			}
 
 			if (isFalling && balloonCount == 3) {
-				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
+				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.addTransientModifier(SUPER_SLOW_BALLOON);
 			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
 				gravity.removeModifier(SUPER_SLOW_BALLOON);
 			}
 
 			if (balloonCount > 3) {
-				entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
+				entity.addEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
 				if (entity instanceof ServerPlayerEntity) {
 					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity);
 				}
@@ -160,12 +151,12 @@ public final class EntityEvents {
 	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
 		if (event.isAttack()) {
 			ClientPlayerEntity player = ClientInfo.getClientPlayer();
-			if (player.rotationPitch > -25.0F) return;
-			Entity ridingEntity = player.getRidingEntity();
+			if (player.xRot > -25.0F) return;
+			Entity ridingEntity = player.getVehicle();
 			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
-					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));
+					Minecraft.getInstance().gameMode.attack(player, balloons.get(player.getRandom().nextInt(balloons.size())));
 					event.setSwingHand(true);
 				}
 			}
@@ -176,7 +167,7 @@ public final class EntityEvents {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || (block instanceof CorrockBlock && !((CorrockBlock) block).petrified) || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
-			world.setBlockState(pos, convertCorrockBlock(state));
+			world.setBlockAndUpdate(pos, convertCorrockBlock(state));
 		}
 	}
 
@@ -186,16 +177,16 @@ public final class EntityEvents {
 			Block petrifiedBlock = entries.getValue().get();
 			if (entries.getKey().get() == block) {
 				if (block instanceof CorrockPlantBlock) {
-					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
+					return petrifiedBlock.defaultBlockState().setValue(CorrockPlantBlock.WATERLOGGED, state.getValue(CorrockPlantBlock.WATERLOGGED));
 				} else if (block instanceof CorrockBlock) {
-					return petrifiedBlock.getDefaultState();
+					return petrifiedBlock.defaultBlockState();
 				} else if (block instanceof CorrockCrownStandingBlock) {
-					return petrifiedBlock.getDefaultState()
-							.with(CorrockCrownStandingBlock.ROTATION, state.get(CorrockCrownStandingBlock.ROTATION))
-							.with(CorrockCrownStandingBlock.UPSIDE_DOWN, state.get(CorrockCrownStandingBlock.UPSIDE_DOWN))
-							.with(CorrockCrownStandingBlock.WATERLOGGED, state.get(CorrockCrownStandingBlock.WATERLOGGED));
+					return petrifiedBlock.defaultBlockState()
+							.setValue(CorrockCrownStandingBlock.ROTATION, state.getValue(CorrockCrownStandingBlock.ROTATION))
+							.setValue(CorrockCrownStandingBlock.UPSIDE_DOWN, state.getValue(CorrockCrownStandingBlock.UPSIDE_DOWN))
+							.setValue(CorrockCrownStandingBlock.WATERLOGGED, state.getValue(CorrockCrownStandingBlock.WATERLOGGED));
 				}
-				return petrifiedBlock.getDefaultState().with(CorrockCrownWallBlock.WATERLOGGED, state.get(CorrockCrownWallBlock.WATERLOGGED)).with(CorrockCrownWallBlock.FACING, state.get(CorrockCrownWallBlock.FACING));
+				return petrifiedBlock.defaultBlockState().setValue(CorrockCrownWallBlock.WATERLOGGED, state.getValue(CorrockCrownWallBlock.WATERLOGGED)).setValue(CorrockCrownWallBlock.FACING, state.getValue(CorrockCrownWallBlock.FACING));
 			}
 		}
 		return null;

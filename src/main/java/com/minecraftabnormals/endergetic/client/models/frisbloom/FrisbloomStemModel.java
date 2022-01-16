@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.client.models.frisbloom;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 /**
@@ -23,29 +22,29 @@ public class FrisbloomStemModel {
 		int[] textureSize = {64, 32};
 
 		this.frisbloom_medium_bottom = new ModelRenderer(textureSize[0], textureSize[1], 16, 16);
-		this.frisbloom_medium_bottom.setRotationPoint(-12.0F, 16.11F, -12.0F);
+		this.frisbloom_medium_bottom.setPos(-12.0F, 16.11F, -12.0F);
 		this.frisbloom_medium_bottom.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 		this.frisbloom_stem_x = new ModelRenderer(textureSize[0], textureSize[1], 13, -6);
-		this.frisbloom_stem_x.setRotationPoint(0.0F, 8.0F, -3.0F);
+		this.frisbloom_stem_x.setPos(0.0F, 8.0F, -3.0F);
 		this.frisbloom_stem_x.addBox(0.0F, 0.0F, 0.0F, 0, 16, 6, 0.0F);
 		this.frisbloom_small_top = new ModelRenderer(textureSize[0], textureSize[1], -16, 16);
-		this.frisbloom_small_top.setRotationPoint(-8.0F, 16.0F, -8.0F);
+		this.frisbloom_small_top.setPos(-8.0F, 16.0F, -8.0F);
 		this.frisbloom_small_top.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 		this.frisbloom_large_bottom = new ModelRenderer(textureSize[0], textureSize[1], 16, 16);
-		this.frisbloom_large_bottom.setRotationPoint(-16.0F, 16.11F, -16.0F);
+		this.frisbloom_large_bottom.setPos(-16.0F, 16.11F, -16.0F);
 		this.frisbloom_large_bottom.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 		this.frisbloom_large_top = new ModelRenderer(textureSize[0], textureSize[1], -16, 16);
-		this.frisbloom_large_top.setRotationPoint(-16.0F, 16.0F, -16.0F);
+		this.frisbloom_large_top.setPos(-16.0F, 16.0F, -16.0F);
 		this.frisbloom_large_top.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 		this.frisbloom_small_bottom = new ModelRenderer(textureSize[0], textureSize[1], 16, 16);
-		this.frisbloom_small_bottom.setRotationPoint(-8.0F, 16.11F, -8.0F);
+		this.frisbloom_small_bottom.setPos(-8.0F, 16.11F, -8.0F);
 		this.frisbloom_small_bottom.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 		this.frisbloom_stem_y = new ModelRenderer(textureSize[0], textureSize[1], 0, -6);
-		this.frisbloom_stem_y.setRotationPoint(3.0F, 8.0F, 0.0F);
+		this.frisbloom_stem_y.setPos(3.0F, 8.0F, 0.0F);
 		this.frisbloom_stem_y.addBox(0.0F, 0.0F, 0.0F, 0, 16, 6, 0.0F);
 		this.setRotateAngle(frisbloom_stem_y, 0.0F, -1.5707963267948966F, 0.0F);
 		this.frisbloom_medium_top = new ModelRenderer(textureSize[0], textureSize[1], -16, 16);
-		this.frisbloom_medium_top.setRotationPoint(-12.0F, 16.0F, -12.0F);
+		this.frisbloom_medium_top.setPos(-12.0F, 16.0F, -12.0F);
 		this.frisbloom_medium_top.addBox(0.0F, 0.0F, 0.0F, 16, 0, 16, 0.0F);
 	}
 
@@ -103,8 +102,8 @@ public class FrisbloomStemModel {
 	}
 
 	public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
-		ModelRenderer.rotateAngleX = x;
-		ModelRenderer.rotateAngleY = y;
-		ModelRenderer.rotateAngleZ = z;
+		ModelRenderer.xRot = x;
+		ModelRenderer.yRot = y;
+		ModelRenderer.zRot = z;
 	}
 }

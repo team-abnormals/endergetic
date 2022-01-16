@@ -1,20 +1,19 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
-import java.util.Random;
-
 import com.minecraftabnormals.endergetic.client.models.frisbloom.FrisbloomFlowerModel;
 import com.minecraftabnormals.endergetic.client.models.frisbloom.FrisbloomStemModel;
 import com.minecraftabnormals.endergetic.common.tileentities.FrisbloomStemTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.Random;
 
 @SuppressWarnings("unused")
 public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<FrisbloomStemTileEntity> {
@@ -32,9 +31,9 @@ public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<Frisbloo
 
 	@Override
 	public void render(FrisbloomStemTileEntity te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-		Random rnd = new Random(((this.getLongForPos(te.getPos()) / 12)) ^ 5);
+		Random rnd = new Random(((this.getLongForPos(te.getBlockPos()) / 12)) ^ 5);
 		int rndRot = rnd.nextInt(12) - 6;
-		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.getDefaultState();
+		BlockState state = te.hasLevel() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.defaultBlockState();
 
 //		GlStateManager.pushMatrix();
 //		
@@ -93,6 +92,6 @@ public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<Frisbloo
 	}
 
 	public long getLongForPos(BlockPos pos) {
-		return (pos.getX() + pos.getY() + pos.getZ() * pos.toLong());
+		return (pos.getX() + pos.getY() + pos.getZ() * pos.asLong());
 	}
 }

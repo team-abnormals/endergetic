@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
@@ -14,15 +13,15 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.entity.isPlayerNear()) {
 			return false;
 		}
-		return this.entity.getRNG().nextInt(40) == 0 && this.entity.hasFruit() && this.isSafePos();
+		return this.entity.getRandom().nextInt(40) == 0 && this.entity.hasFruit() && this.isSafePos();
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		if (this.entity.isPlayerNear()) {
 			return false;
 		}
@@ -37,14 +36,14 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.entity.setDescenting(true);
-		this.entity.setAIMoveSpeed(0.0F);
-		this.entity.getNavigator().clearPath();
+		this.entity.setSpeed(0.0F);
+		this.entity.getNavigation().stop();
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		if (this.entity.isDescenting()) {
 			this.entity.setDescenting(false);
 		}
@@ -60,8 +59,8 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 
 	@Override
 	public void tick() {
-		this.entity.setAIMoveSpeed(0.0F);
-		this.entity.getNavigator().clearPath();
+		this.entity.setSpeed(0.0F);
+		this.entity.getNavigation().stop();
 
 		if (this.entity.isDescenting()) {
 			if (this.entity.isOnGround()) {
@@ -89,11 +88,11 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	}
 
 	private boolean isSafePos() {
-		BlockPos pos = this.entity.getPosition();
+		BlockPos pos = this.entity.blockPosition();
 		for (int i = 0; i < 10; i++) {
-			pos = pos.down(i);
-			if (Block.hasSolidSideOnTop(this.entity.world, pos) && i >= 4) {
-				if (this.entity.world.getBlockState(pos).getFluidState().isEmpty() && !this.entity.world.getBlockState(pos).isBurning(this.entity.world, pos)) {
+			pos = pos.below(i);
+			if (Block.canSupportRigidBlock(this.entity.level, pos) && i >= 4) {
+				if (this.entity.level.getBlockState(pos).getFluidState().isEmpty() && !this.entity.level.getBlockState(pos).isBurning(this.entity.level, pos)) {
 					return true;
 				}
 			}

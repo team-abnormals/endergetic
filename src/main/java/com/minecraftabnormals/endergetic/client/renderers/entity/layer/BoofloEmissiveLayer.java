@@ -28,12 +28,12 @@ public final class BoofloEmissiveLayer<B extends BoofloEntity, M extends EntityM
 	@Override
 	public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, B entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		ResourceLocation emissive = this.getEmissiveTexture(entity);
-		ClientInfo.MINECRAFT.getTextureManager().bindTexture(emissive);
+		ClientInfo.MINECRAFT.getTextureManager().bind(emissive);
 		IVertexBuilder ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(emissive));
 
-		M model = this.getEntityModel();
-		model.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		model.render(matrixStack, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		M model = this.getParentModel();
+		model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		model.renderToBuffer(matrixStack, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	private ResourceLocation getEmissiveTexture(B booflo) {

@@ -27,18 +27,18 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
-		if (world.isAirBlock(pos) && world.getBlockState(pos.up()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+		if (world.isEmptyBlock(pos) && world.getBlockState(pos.above()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
 			int size = rand.nextBoolean() ? 3 : 4;
 			//Constantly 10, but could be changed in the future to allow for more variations
 			int edgeBias = 10;
 			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, edgeBias, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
-			BlockState corrockState = CORROCK_STATE.getValue();
+			BlockState corrockState = CORROCK_STATE.get();
 			for (int i = 0; i < 16; i++) {
-				if (rand.nextFloat() < 0.4F && world.isAirBlock(mutable.setAndOffset(pos, rand.nextInt(size) - rand.nextInt(size), 1, rand.nextInt(size) - rand.nextInt(size)))) {
-					if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK) {
-						world.setBlockState(mutable, corrockState, 2);
+				if (rand.nextFloat() < 0.4F && world.isEmptyBlock(mutable.setWithOffset(pos, rand.nextInt(size) - rand.nextInt(size), 1, rand.nextInt(size) - rand.nextInt(size)))) {
+					if (world.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
+						world.setBlock(mutable, corrockState, 2);
 					}
 				}
 			}
@@ -48,14 +48,14 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 	}
 
 	private static Direction[] getDirections(boolean reversed) {
-		Direction[] directions = Direction.Plane.HORIZONTAL.getDirectionValues().toArray(Direction[]::new);
+		Direction[] directions = Direction.Plane.HORIZONTAL.stream().toArray(Direction[]::new);
 		if (reversed) ArrayUtils.reverse(directions);
 		return directions;
 	}
 
 	private static boolean isTouchingWall(ISeedReader world, BlockPos origin) {
 		for (Direction direction : DIRECTIONS) {
-			if (searchForWall(world, origin.toMutable(), direction) && searchForWall(world, origin.toMutable().move(direction.rotateY()), direction) && searchForWall(world, origin.toMutable().move(direction.rotateYCCW()), direction)) {
+			if (searchForWall(world, origin.mutable(), direction) && searchForWall(world, origin.mutable().move(direction.getClockWise()), direction) && searchForWall(world, origin.mutable().move(direction.getCounterClockWise()), direction)) {
 				return true;
 			}
 		}
@@ -76,32 +76,32 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		int min = -(size / edgeBias + size);
 		int max = size / edgeBias + size;
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
+		BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 		List<BlockPos> wallCrowns = new ArrayList<>();
 		for (int x = min; x <= max; x++) {
 			for (int z = min; z <= max; z++) {
-				mutable.setPos(originX + x, originY, originZ + z);
+				mutable.set(originX + x, originY, originZ + z);
 				if (canReplace(world, mutable)) {
 					double radius = (Math.cos(4 * Math.atan2(z, x)) / edgeBias + 1) * size;
 					int distance = x * x + z * z;
 					if (distance < radius * radius) {
-						world.setBlockState(mutable, corrockBlockState, 2);
+						world.setBlock(mutable, corrockBlockState, 2);
 						if (x * x < (radius - underXDistance) * (radius - underXDistance) && z * z < (radius - underZDistance) * (radius - underZDistance)) {
-							BlockPos down = mutable.down();
+							BlockPos down = mutable.below();
 							if (canReplace(world, down)) {
-								world.setBlockState(down, corrockBlockState, 2);
+								world.setBlock(down, corrockBlockState, 2);
 							}
 						}
 						if (rand.nextFloat() < crownChance) {
 							double radiusMinusOne = radius - 1.0F;
 							if (distance > radiusMinusOne * radiusMinusOne) {
 								if (rand.nextBoolean()) {
-									BlockPos up = mutable.up();
+									BlockPos up = mutable.above();
 									if (canReplace(world, up)) {
-										world.setBlockState(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
+										world.setBlock(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
 									}
 								} else {
-									wallCrowns.add(mutable.toImmutable());
+									wallCrowns.add(mutable.immutable());
 								}
 							}
 						}
@@ -114,9 +114,9 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 			//Reduces bias of directions
 			Direction[] directions = rand.nextBoolean() ? DIRECTIONS : DIRECTIONS_REVERSED;
 			for (Direction direction : directions) {
-				BlockPos offset = pos.offset(direction);
+				BlockPos offset = pos.relative(direction);
 				if (canReplace(world, offset)) {
-					world.setBlockState(offset, getCorrockCrownWall(direction), 2);
+					world.setBlock(offset, getCorrockCrownWall(direction), 2);
 					if (rand.nextFloat() > crownChance || crownsPlaced++ == 1) {
 						break;
 					}

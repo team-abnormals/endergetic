@@ -1,7 +1,5 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
-import java.util.function.BiPredicate;
-
 import com.google.common.collect.Sets;
 import com.minecraftabnormals.abnormals_core.common.world.modification.*;
 import com.minecraftabnormals.abnormals_core.core.util.BiomeUtil;
@@ -9,12 +7,13 @@ import com.minecraftabnormals.abnormals_core.core.util.registry.BiomeSubRegistry
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.function.BiPredicate;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEBiomes {
@@ -53,40 +52,40 @@ public final class EEBiomes {
 				)
 		));
 		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(poiseOnly, () -> new BiomeAmbience.Builder()
-				.withSkyColor(0)
-				.setWaterColor(4159204)
-				.setWaterFogColor(329011)
-				.setFogColor(10518688)
-				.setAmbientSound(EESounds.POISE_FOREST_LOOP.get())
-				.setAdditionsSound(new SoundAdditionsAmbience(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
-				.setMoodSound(new MoodSoundAmbience(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
+				.skyColor(0)
+				.waterColor(4159204)
+				.waterFogColor(329011)
+				.fogColor(10518688)
+				.ambientLoopSound(EESounds.POISE_FOREST_LOOP.get())
+				.ambientAdditionsSound(new SoundAdditionsAmbience(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
+				.ambientMoodSound(new MoodSoundAmbience(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
 				.build()));
 	}
 
 	public static BiomeSubRegistryHelper.KeyedBiome createPoiseForest() {
 		Biome.Builder builder = new Biome.Builder();
 		builder
-				.withGenerationSettings(
+				.generationSettings(
 						new BiomeGenerationSettings.Builder()
-								.withSurfaceBuilder(() -> EESurfaceBuilders.Configs.POISE_FOREST)
+								.surfaceBuilder(() -> EESurfaceBuilders.Configs.POISE_FOREST)
 								.build()
 				)
-				.withMobSpawnSettings(
+				.mobSpawnSettings(
 						new MobSpawnInfo.Builder()
-								.withCreatureSpawnProbability(0.9F)
-								.copy()
+								.creatureGenerationProbability(0.9F)
+								.build()
 				)
-				.setEffects(
+				.specialEffects(
 						new BiomeAmbience.Builder()
-								.withSkyColor(0)
-								.setWaterColor(4159204)
-								.setWaterFogColor(329011)
-								.setFogColor(10518688)
-								.setMoodSound(MoodSoundAmbience.DEFAULT_CAVE)
+								.skyColor(0)
+								.waterColor(4159204)
+								.waterFogColor(329011)
+								.fogColor(10518688)
+								.ambientMoodSound(MoodSoundAmbience.LEGACY_CAVE_SETTINGS)
 								.build()
 				)
 				.precipitation(Biome.RainType.NONE)
-				.category(Biome.Category.THEEND)
+				.biomeCategory(Biome.Category.THEEND)
 				.depth(0.1F)
 				.scale(0.2F)
 				.temperature(0.5F)

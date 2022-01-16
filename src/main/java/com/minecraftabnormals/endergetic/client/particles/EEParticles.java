@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.client.particles;
 
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.particles.BasicParticleType;
@@ -32,13 +31,13 @@ public class EEParticles {
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
 			if (ENDER_FLAME.isPresent()) {
-				Minecraft.getInstance().particles.registerFactory(ENDER_FLAME.get(), FlameParticle.Factory::new);
+				Minecraft.getInstance().particleEngine.register(ENDER_FLAME.get(), FlameParticle.Factory::new);
 			}
 			if (POISE_BUBBLE.isPresent()) {
-				Minecraft.getInstance().particles.registerFactory(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
+				Minecraft.getInstance().particleEngine.register(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
 			}
 			if (SHORT_POISE_BUBBLE.isPresent()) {
-				Minecraft.getInstance().particles.registerFactory(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
+				Minecraft.getInstance().particleEngine.register(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
 			}
 		}
 

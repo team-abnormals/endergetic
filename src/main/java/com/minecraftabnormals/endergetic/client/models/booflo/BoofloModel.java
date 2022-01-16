@@ -2,10 +2,9 @@ package com.minecraftabnormals.endergetic.client.models.booflo;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,41 +34,41 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 	public EndimatorModelRenderer LegBackRightInflated;
 
 	public BoofloModel() {
-		this.textureWidth = 150;
-		this.textureHeight = 150;
+		this.texWidth = 150;
+		this.texHeight = 150;
 		this.Jaw = new EndimatorModelRenderer(this, 0, 0);
-		this.Jaw.setRotationPoint(0.0F, 4.0F, 8.0F);
+		this.Jaw.setPos(0.0F, 4.0F, 8.0F);
 		this.Jaw.addBox(-8.0F, 0.0F, -16.0F, 16, 6, 16, 0.0F);
 		this.LegLeft = new EndimatorModelRenderer(this, 28, 59);
-		this.LegLeft.setRotationPoint(8.5F, 2.0F, -3.0F);
+		this.LegLeft.setPos(8.5F, 2.0F, -3.0F);
 		this.LegLeft.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
 		this.setRotateAngle(LegLeft, 0.0F, 0.5235987755982988F, 1.0471975511965976F);
 		this.LegRight = new EndimatorModelRenderer(this, 28, 59);
-		this.LegRight.setRotationPoint(-8.5F, 2.0F, -3.0F);
+		this.LegRight.setPos(-8.5F, 2.0F, -3.0F);
 		this.LegRight.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
 		this.setRotateAngle(LegRight, 0.0F, 0.5235987755982988F, 2.0943951023931953F);
 		this.KneeRight = new EndimatorModelRenderer(this, 0, 58);
-		this.KneeRight.setRotationPoint(-5.5F, -2.0F, 5.5F);
+		this.KneeRight.setPos(-5.5F, -2.0F, 5.5F);
 		this.KneeRight.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
 		this.setRotateAngle(KneeRight, 0.0F, 0.17453292519943295F, -0.7853981633974483F);
 		this.KneeLeft = new EndimatorModelRenderer(this, 0, 58);
-		this.KneeLeft.setRotationPoint(5.5F, -2.0F, 5.5F);
+		this.KneeLeft.setPos(5.5F, -2.0F, 5.5F);
 		this.KneeLeft.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
 		this.setRotateAngle(KneeLeft, 0.0F, -0.17453292519943295F, 0.7853981633974483F);
 		this.LegBackRight = new EndimatorModelRenderer(this, 0, 89);
-		this.LegBackRight.setRotationPoint(-1.5F, -7.5F, 0.0F);
+		this.LegBackRight.setPos(-1.5F, -7.5F, 0.0F);
 		this.LegBackRight.addBox(-25.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
 		this.setRotateAngle(LegBackRight, 0.0F, 0.3490658503988659F, -0.3490658503988659F);
 		this.LegBackLeft = new EndimatorModelRenderer(this, 0, 81);
-		this.LegBackLeft.setRotationPoint(1.5F, -7.5F, -0.5F);
+		this.LegBackLeft.setPos(1.5F, -7.5F, -0.5F);
 		this.LegBackLeft.addBox(0.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
 		this.setRotateAngle(LegBackLeft, 0.0F, -0.3490658503988659F, 0.3490658503988659F);
 		this.Head = new EndimatorModelRenderer(this, 0, 29);
-		this.Head.setRotationPoint(0.0F, 9.0F, 0.0F);
+		this.Head.setPos(0.0F, 9.0F, 0.0F);
 		this.Head.addBox(-9.0F, -4.0F, -9.0F, 18, 8, 18, 0.0F);
 		this.setRotateAngle(Head, -0.091106186954104F, 0.0F, 0.0F);
 		this.FruitPos = new EndimatorModelRenderer(this, 0, 0);
-		this.FruitPos.setRotationPoint(20.0F, -4.15F, -0.5F);
+		this.FruitPos.setPos(20.0F, -4.15F, -0.5F);
 		this.FruitPos.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1, 0.0F);
 		this.setRotateAngle(FruitPos, -0.7853981633974483F, -0.2617993877991494F, -1.3089969389957472F);
 		this.Head.addChild(this.Jaw);
@@ -82,34 +81,34 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 		this.LegRight.addChild(this.FruitPos);
 
 		this.LegRightInflated = new EndimatorModelRenderer(this, 28, 66);
-		this.LegRightInflated.setRotationPoint(-8.5F, 2.0F, -3.0F);
+		this.LegRightInflated.setPos(-8.5F, 2.0F, -3.0F);
 		this.LegRightInflated.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
 		this.setRotateAngle(LegRightInflated, 0.0F, 0.5235987755982988F, 3.141592653589794F);
 		this.LegBackLeftInflated = new EndimatorModelRenderer(this, 0, 81);
-		this.LegBackLeftInflated.setRotationPoint(1.5F, -7.5F, -0.5F);
+		this.LegBackLeftInflated.setPos(1.5F, -7.5F, -0.5F);
 		this.LegBackLeftInflated.addBox(0.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
 		this.setRotateAngle(LegBackLeftInflated, 0.0F, -0.3490658503988659F, 0.3490658503988658F);
 		this.JawInflated = new EndimatorModelRenderer(this, 0, 97);
-		this.JawInflated.setRotationPoint(0.0F, 4.0F, 8.0F);
+		this.JawInflated.setPos(0.0F, 4.0F, 8.0F);
 		this.JawInflated.addBox(-16.0F, 0.0F, -24.0F, 32, 16, 32, 0.0F);
 		this.KneeRightInflated = new EndimatorModelRenderer(this, 0, 58);
-		this.KneeRightInflated.setRotationPoint(-5.5F, -2.0F, 5.5F);
+		this.KneeRightInflated.setPos(-5.5F, -2.0F, 5.5F);
 		this.KneeRightInflated.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
 		this.setRotateAngle(KneeRightInflated, 0.0F, 0.17453292519943295F, -0.5585053606381855F);
 		this.LegLeftInflated = new EndimatorModelRenderer(this, 28, 59);
-		this.LegLeftInflated.setRotationPoint(8.5F, 2.0F, -3.0F);
+		this.LegLeftInflated.setPos(8.5F, 2.0F, -3.0F);
 		this.LegLeftInflated.addBox(0.0F, -1.5F, -1.5F, 20, 3, 3, 0.0F);
 		this.setRotateAngle(LegLeftInflated, 0.0F, 0.5235987755982988F, -2.4802620430283604E-16F);
 		this.HeadInflated = new EndimatorModelRenderer(this, 0, 29);
-		this.HeadInflated.setRotationPoint(0.0F, 3.9999999999999947F, 0.0F);
+		this.HeadInflated.setPos(0.0F, 3.9999999999999947F, 0.0F);
 		this.HeadInflated.addBox(-9.0F, -4.0F, -9.0F, 18, 8, 18, 0.0F);
 		this.setRotateAngle(HeadInflated, 3.1003275537854505E-17F, 0.0F, 0.0F);
 		this.KneeLeftInflated = new EndimatorModelRenderer(this, 0, 58);
-		this.KneeLeftInflated.setRotationPoint(5.5F, -2.0F, 5.5F);
+		this.KneeLeftInflated.setPos(5.5F, -2.0F, 5.5F);
 		this.KneeLeftInflated.addBox(-2.5F, -10.0F, -2.5F, 5, 10, 5, 0.0F);
 		this.setRotateAngle(KneeLeftInflated, 0.0F, -0.17453292519943295F, 0.558505360638178F);
 		this.LegBackRightInflated = new EndimatorModelRenderer(this, 0, 89);
-		this.LegBackRightInflated.setRotationPoint(-1.5F, -7.5F, 0.0F);
+		this.LegBackRightInflated.setPos(-1.5F, -7.5F, 0.0F);
 		this.LegBackRightInflated.addBox(-25.0F, -1.5F, -1.5F, 25, 3, 3, 0.0F);
 		this.setRotateAngle(LegBackRightInflated, 0.0F, 0.3490658503988659F, -0.3490658503988659F);
 		this.HeadInflated.addChild(this.LegRightInflated);
@@ -124,7 +123,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		this.animateModel(this.entity);
 
 		if (this.entity.isBoofed()) {
@@ -135,16 +134,16 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 	}
 
 	@Override
-	public void setRotationAngles(E booflo, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(booflo, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(E booflo, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(booflo, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
 		this.revertBoxesToDefaultValues();
 
 		if (booflo.isBoofed()) {
-			this.HeadInflated.rotateAngleY = netHeadYaw * (float) (Math.PI / 180F);
-			this.HeadInflated.rotateAngleX = headPitch * (float) (Math.PI / 180F);
+			this.HeadInflated.yRot = netHeadYaw * (float) (Math.PI / 180F);
+			this.HeadInflated.xRot = headPitch * (float) (Math.PI / 180F);
 
-			this.JawInflated.rotateAngleX += 0.4F * booflo.OPEN_JAW.getAnimationProgress();
+			this.JawInflated.xRot += 0.4F * booflo.OPEN_JAW.getAnimationProgress();
 		}
 	}
 
@@ -487,8 +486,8 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 	 * This is a helper function from Tabula to set the rotation of model parts
 	 */
 	public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
-		EndimatorModelRenderer.rotateAngleX = x;
-		EndimatorModelRenderer.rotateAngleY = y;
-		EndimatorModelRenderer.rotateAngleZ = z;
+		EndimatorModelRenderer.xRot = x;
+		EndimatorModelRenderer.yRot = y;
+		EndimatorModelRenderer.zRot = z;
 	}
 }

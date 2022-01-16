@@ -24,9 +24,9 @@ public final class EEDataSerializers {
 
 			if (value.isPresent()) {
 				Vector3d vec3d = value.get();
-				buf.writeDouble(vec3d.getX());
-				buf.writeDouble(vec3d.getY());
-				buf.writeDouble(vec3d.getZ());
+				buf.writeDouble(vec3d.x());
+				buf.writeDouble(vec3d.y());
+				buf.writeDouble(vec3d.z());
 			}
 		}
 
@@ -36,7 +36,7 @@ public final class EEDataSerializers {
 		}
 
 		@Override
-		public Optional<Vector3d> copyValue(Optional<Vector3d> value) {
+		public Optional<Vector3d> copy(Optional<Vector3d> value) {
 			return value;
 		}
 	};
@@ -44,16 +44,16 @@ public final class EEDataSerializers {
 	public static final IDataSerializer<BalloonColor> BALLOON_COLOR = new IDataSerializer<BalloonColor>() {
 		@Override
 		public void write(PacketBuffer buf, BalloonColor value) {
-			buf.writeEnumValue(value);
+			buf.writeEnum(value);
 		}
 
 		@Override
 		public BalloonColor read(PacketBuffer buf) {
-			return buf.readEnumValue(BalloonColor.class);
+			return buf.readEnum(BalloonColor.class);
 		}
 
 		@Override
-		public BalloonColor copyValue(BalloonColor value) {
+		public BalloonColor copy(BalloonColor value) {
 			return value;
 		}
 	};

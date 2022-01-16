@@ -1,14 +1,13 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import java.util.EnumSet;
-
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.EnumSet;
 
 public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 	protected float originalYaw;
@@ -16,11 +15,11 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 
 	public BoofloEatFruitGoal(BoofloEntity booflo) {
 		super(booflo, BoofloEntity.EAT);
-		this.setMutexFlags(EnumSet.of(Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.entity.isPlayerNear(1.0F)) {
 			if (!this.entity.isTamed()) {
 				return false;
@@ -30,7 +29,7 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		boolean flag = true;
 		if (!this.entity.hasCaughtFruit()) {
 			if (this.entity.getAnimationTick() < 140) {
@@ -43,7 +42,7 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 				this.entity.hopDelay = 0;
 				for (PlayerEntity players : this.entity.getNearbyPlayers(0.6F)) {
 					if (!this.entity.hasAggressiveAttackTarget()) {
-						this.entity.setBoofloAttackTargetId(players.getEntityId());
+						this.entity.setBoofloAttackTargetId(players.getId());
 					}
 				}
 				return false;
@@ -53,17 +52,17 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
-		this.originalYaw = this.entity.rotationYaw;
+		this.originalYaw = this.entity.yRot;
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.originalYaw = 0;
 		if (this.entity.hasCaughtFruit()) {
 			this.entity.setCaughtFruit(false);
-			this.entity.entityDropItem(EEItems.BOLLOOM_FRUIT.get());
+			this.entity.spawnAtLocation(EEItems.BOLLOOM_FRUIT.get());
 		}
 		NetworkUtil.setPlayingAnimationMessage(this.entity, BoofloEntity.BLANK_ANIMATION);
 	}
@@ -72,12 +71,12 @@ public class BoofloEatFruitGoal extends EndimatedGoal<BoofloEntity> {
 	public void tick() {
 		if (this.soundDelay > 0) this.soundDelay--;
 
-		this.entity.rotationYaw = this.originalYaw;
-		this.entity.prevRotationYaw = this.originalYaw;
+		this.entity.yRot = this.originalYaw;
+		this.entity.yRotO = this.originalYaw;
 
 		if (this.entity.isPlayerNear(1.0F) && this.soundDelay == 0) {
 			if (!this.entity.isTamed()) {
-				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.entity.getRNG().nextFloat() * 1.0, 0.95F, 1.0F));
+				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.entity.getRandom().nextFloat() * 1.0, 0.95F, 1.0F));
 				this.soundDelay = 50;
 			}
 		}

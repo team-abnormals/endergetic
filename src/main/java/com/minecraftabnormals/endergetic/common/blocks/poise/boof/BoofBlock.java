@@ -4,18 +4,13 @@ import com.minecraftabnormals.endergetic.common.entities.BoofBlockEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofBlockTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.*;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNodeType;
@@ -34,7 +29,7 @@ public class BoofBlock extends ContainerBlock {
 
 	public BoofBlock(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(BOOFED, false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(BOOFED, false));
 	}
 
 	@Override
@@ -47,66 +42,66 @@ public class BoofBlock extends ContainerBlock {
 		return false;
 	}
 
-	public boolean canProvidePower(BlockState state) {
-		return state.get(BOOFED);
+	public boolean isSignalSource(BlockState state) {
+		return state.getValue(BOOFED);
 	}
 
-	public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+	public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
 		return 15;
 	}
 
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(BOOFED);
 	}
 
 	@Override
-	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-		if (entityIn.isSneaking()) {
-			super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
+	public void fallOn(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
+		if (entityIn.isShiftKeyDown()) {
+			super.fallOn(worldIn, pos, entityIn, fallDistance);
 		} else {
-			entityIn.onLivingFall(fallDistance, 0.0F);
+			entityIn.causeFallDamage(fallDistance, 0.0F);
 		}
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entity) {
 		if (entity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) entity;
-			player.entityCollisionReduction = Float.MAX_VALUE;
+			player.pushthrough = Float.MAX_VALUE;
 			player.fallDistance = 0;
 		}
 	}
 
 	public static void doBoof(World world, BlockPos pos) {
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			BoofBlockEntity boofBlock = new BoofBlockEntity(world, pos);
-			world.addEntity(boofBlock);
+			world.addFreshEntity(boofBlock);
 			world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
 		}
-		world.setBlockState(pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BOOFED, true));
+		world.setBlockAndUpdate(pos, EEBlocks.BOOF_BLOCK.get().defaultBlockState().setValue(BOOFED, true));
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
+	public TileEntity newBlockEntity(IBlockReader worldIn) {
 		return new BoofBlockTileEntity();
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.MODEL;
 	}
 
 	public static class BoofDispenseBehavior extends OptionalDispenseBehavior {
 
 		@Override
-		protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-			World world = source.getWorld();
-			Direction facing = source.getBlockState().get(DispenserBlock.FACING);
-			BlockPos pos = source.getBlockPos().offset(facing);
+		protected ItemStack execute(IBlockSource source, ItemStack stack) {
+			World world = source.getLevel();
+			Direction facing = source.getBlockState().getValue(DispenserBlock.FACING);
+			BlockPos pos = source.getPos().relative(facing);
 			if (world.getBlockState(pos).getMaterial().isReplaceable()) {
-				world.setBlockState(pos, EEBlocks.BOOF_BLOCK_DISPENSED.get().getDefaultState().with(DispensedBoofBlock.FACING, facing).with(DispensedBoofBlock.WATERLOGGED, world.getFluidState(pos).isTagged(FluidTags.WATER)));
-				world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.rand.nextFloat() * 0.15F);
-				this.setSuccessful(true);
+				world.setBlockAndUpdate(pos, EEBlocks.BOOF_BLOCK_DISPENSED.get().defaultBlockState().setValue(DispensedBoofBlock.FACING, facing).setValue(DispensedBoofBlock.WATERLOGGED, world.getFluidState(pos).is(FluidTags.WATER)));
+				world.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 0.85F, 0.9F + world.random.nextFloat() * 0.15F);
+				this.setSuccess(true);
 			}
 			return stack;
 		}

@@ -22,7 +22,7 @@ public final class EEDataProcessors {
 			ListNBT entries = new ListNBT();
 			map.forEach((uuid, balloonOrder) -> {
 				CompoundNBT entry = new CompoundNBT();
-				entry.putUniqueId("UUID", uuid);
+				entry.putUUID("UUID", uuid);
 				entry.putInt("Order", balloonOrder.ordinal());
 				entries.add(entry);
 			});
@@ -37,7 +37,7 @@ public final class EEDataProcessors {
 			compound.getList("Entries", Constants.NBT.TAG_COMPOUND).forEach(nbt -> {
 				CompoundNBT entry = (CompoundNBT) nbt;
 				if (entry.contains("UUID", Constants.NBT.TAG_INT_ARRAY) && entry.contains("Order", Constants.NBT.TAG_INT)) {
-					map.put(entry.getUniqueId("UUID"), BalloonOrder.byOrdinal(entry.getInt("Order")));
+					map.put(entry.getUUID("UUID"), BalloonOrder.byOrdinal(entry.getInt("Order")));
 				}
 			});
 			return map;

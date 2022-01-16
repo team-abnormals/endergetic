@@ -5,7 +5,6 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEnti
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -23,16 +22,16 @@ public class BolloomKnotRenderer extends EntityRenderer<BolloomKnotEntity> {
 
 	@Override
 	public void render(BolloomKnotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(0.0F, -1.31F, 0.0F);
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
-		this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		matrixStack.pop();
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
+		this.model.renderToBuffer(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		matrixStack.popPose();
 		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BolloomKnotEntity arg0) {
+	public ResourceLocation getTextureLocation(BolloomKnotEntity arg0) {
 		return TEXTURE;
 	}
 }

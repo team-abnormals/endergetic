@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.core.registry;
 
 import com.minecraftabnormals.abnormals_core.core.util.registry.TileEntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.tileentities.*;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.*;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofBlockTileEntity;
+import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;

@@ -26,10 +26,10 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
-		Block belowBlock = world.getBlockState(pos.down()).getBlock();
-		if (world.isAirBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
-			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
+		Block belowBlock = world.getBlockState(pos.below()).getBlock();
+		if (world.isEmptyBlock(pos) && belowBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
+			BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 			List<BlockPos> corrockPositions = new ArrayList<>();
 			if (tryToMakeGroundSuitable(world, corrockPositions, pos)) {
 				BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -39,9 +39,9 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				for (int y = 0; y < 3; y++) {
 					for (int x = 0; x < 4; x++) {
 						for (int z = 0; z < 4; z++) {
-							mutable.setPos(startX + x, startY + y, startZ + z);
-							if (world.isAirBlock(mutable)) {
-								corrockPositions.add(mutable.toImmutable());
+							mutable.set(startX + x, startY + y, startZ + z);
+							if (world.isEmptyBlock(mutable)) {
+								corrockPositions.add(mutable.immutable());
 							} else {
 								return false;
 							}
@@ -58,18 +58,18 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				float crownChance = config.getCrownChance();
 				GenerationPiece corrockCrowns = tryToMakeMiddle(world, rand, corrockPositions, pos, height, crownChance);
 				if (corrockCrowns != null) {
-					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.up(3 + height), crownChance, config.getChorusChance());
+					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.above(3 + height), crownChance, config.getChorusChance());
 					if (top != null) {
-						corrockPositions.forEach(corrockPos -> world.setBlockState(corrockPos, corrockBlockState, 2));
+						corrockPositions.forEach(corrockPos -> world.setBlock(corrockPos, corrockBlockState, 2));
 						corrockCrowns.place(world);
 						top.getFirst().place(world);
 						top.getSecond().forEach(chorusPlantPart -> chorusPlantPart.placeGrowth(world, rand));
-						BlockPos topMiddle = pos.up(4 + height);
-						BlockState corrockPlantState = CORROCK_STATE.getValue();
+						BlockPos topMiddle = pos.above(4 + height);
+						BlockState corrockPlantState = CORROCK_STATE.get();
 						for (int i = 0; i < 16; i++) {
-							if (rand.nextFloat() < 0.6F && world.isAirBlock(mutable.setAndOffset(topMiddle, rand.nextInt(7) - rand.nextInt(7), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(7) - rand.nextInt(7)))) {
-								if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK) {
-									world.setBlockState(mutable, corrockPlantState, 2);
+							if (rand.nextFloat() < 0.6F && world.isEmptyBlock(mutable.setWithOffset(topMiddle, rand.nextInt(7) - rand.nextInt(7), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(7) - rand.nextInt(7)))) {
+								if (world.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
+									world.setBlock(mutable, corrockPlantState, 2);
 								}
 							}
 						}
@@ -83,7 +83,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 	}
 
 	private static boolean tryToMakeGroundSuitable(ISeedReader world, List<BlockPos> positions, BlockPos origin) {
-		BlockPos down = origin.down(2);
+		BlockPos down = origin.below(2);
 		int startX = down.getX();
 		int startY = down.getY();
 		int startZ = down.getZ();
@@ -93,8 +93,8 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 			for (int y = 0; y < 2; y++) {
 				for (int x = 0; x < 4; x++) {
 					for (int z = 0; z < 4; z++) {
-						mutable.setPos(startX + x, startY + y, startZ + z);
-						BlockPos immutable = mutable.toImmutable();
+						mutable.set(startX + x, startY + y, startZ + z);
+						BlockPos immutable = mutable.immutable();
 						if (world.getBlockState(immutable).getMaterial().isReplaceable()) {
 							positions.add(immutable);
 						}
@@ -108,21 +108,21 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 
 	private static void tryToMakeSide(ISeedReader world, Random rand, List<BlockPos> positions, BlockPos origin, Direction facing) {
 		List<BlockPos> toAdd = new ArrayList<>();
-		if (world.isAirBlock(origin)) {
+		if (world.isEmptyBlock(origin)) {
 			tryToMakeSidePillar(world, rand, 0, rand.nextInt(2) + 2, origin, toAdd, facing);
 		}
 		positions.addAll(toAdd);
 	}
 
 	private static void tryToMakeSidePillar(ISeedReader world, Random rand, int index, int height, BlockPos origin, List<BlockPos> positions, Direction facing) {
-		BlockPos.Mutable mutable = origin.toMutable();
+		BlockPos.Mutable mutable = origin.mutable();
 		int startX = origin.getX();
 		int startY = origin.getY();
 		int startZ = origin.getZ();
 		for (int y = 0; y < height; y++) {
-			mutable.setPos(startX, startY + y, startZ);
-			if (world.isAirBlock(mutable)) {
-				positions.add(mutable.toImmutable());
+			mutable.set(startX, startY + y, startZ);
+			if (world.isEmptyBlock(mutable)) {
+				positions.add(mutable.immutable());
 			} else {
 				positions.clear();
 				return;
@@ -132,8 +132,8 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				return;
 			}
 			if (index < 1) {
-				BlockPos offset = origin.offset(rand.nextBoolean() ? facing.rotateY() : facing.rotateYCCW());
-				if (world.isAirBlock(offset)) {
+				BlockPos offset = origin.relative(rand.nextBoolean() ? facing.getClockWise() : facing.getCounterClockWise());
+				if (world.isEmptyBlock(offset)) {
 					//If to the right or left of the pillar there is space, attempt to create another pillar
 					tryToMakeSidePillar(world, rand, index + 1, height - 1, offset, positions, facing);
 				}
@@ -143,13 +143,13 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 
 	private static boolean tryToBuildPillarDownwards(ISeedReader world, List<BlockPos> positions, BlockPos origin) {
 		boolean foundGround = false;
-		BlockPos.Mutable mutable = origin.toMutable();
+		BlockPos.Mutable mutable = origin.mutable();
 		for (int y = 0; y < 4; y++) {
 			mutable.move(0, -1, 0);
 			if (!world.getBlockState(mutable).getMaterial().isReplaceable()) {
 				foundGround = true;
 			} else {
-				positions.add(mutable.toImmutable());
+				positions.add(mutable.immutable());
 			}
 		}
 		return foundGround;
@@ -160,13 +160,13 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		int startX = origin.getX() + 1;
 		int startY = origin.getY() + 3;
 		int startZ = origin.getZ() + 1;
-		BlockPos.Mutable innerMutable = origin.toMutable();
+		BlockPos.Mutable innerMutable = origin.mutable();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < 2; x++) {
 				for (int z = 0; z < 2; z++) {
-					innerMutable.setPos(startX + x, startY + y, startZ + z);
-					if (world.isAirBlock(innerMutable)) {
-						positions.add(innerMutable.toImmutable());
+					innerMutable.set(startX + x, startY + y, startZ + z);
+					if (world.isEmptyBlock(innerMutable)) {
+						positions.add(innerMutable.immutable());
 					} else {
 						return null;
 					}
@@ -175,21 +175,21 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		}
 		//Round trip around square to generate side pillars with corrock crowns and 0-2 height upward corners
 		GenerationPiece corrockCrowns = new GenerationPiece((iWorld, blockPart) -> true);
-		BlockPos.Mutable roundTripMutable = origin.toMutable();
+		BlockPos.Mutable roundTripMutable = origin.mutable();
 		Direction currentDirection = Direction.NORTH;
 		crownChance /= height;
 		for (int i = 0; i < 12; i++) {
 			if (i % 3 != 0) {
 				roundTripMutable.move(currentDirection);
-				Direction ccwDirection = currentDirection.rotateYCCW();
+				Direction ccwDirection = currentDirection.getCounterClockWise();
 				BlockState crownState = getCorrockCrownWall(ccwDirection);
 				for (int y = 0; y < height; y++) {
 					roundTripMutable.setY(startY + y);
-					if (world.isAirBlock(roundTripMutable)) {
-						positions.add(roundTripMutable.toImmutable());
+					if (world.isEmptyBlock(roundTripMutable)) {
+						positions.add(roundTripMutable.immutable());
 						if (rand.nextFloat() < crownChance) {
-							BlockPos crownOffset = roundTripMutable.offset(ccwDirection);
-							if (world.isAirBlock(crownOffset)) {
+							BlockPos crownOffset = roundTripMutable.relative(ccwDirection);
+							if (world.isEmptyBlock(crownOffset)) {
 								corrockCrowns.addBlockPiece(crownState, crownOffset);
 							}
 						}
@@ -201,16 +201,16 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				if (i != 0) {
 					roundTripMutable.move(currentDirection);
 				}
-				currentDirection = currentDirection.rotateY();
+				currentDirection = currentDirection.getClockWise();
 				if (rand.nextFloat() < 0.8F) {
 					int cornerTop = startY + height;
 					roundTripMutable.setY(cornerTop - 1);
-					if (world.isAirBlock(roundTripMutable)) {
-						positions.add(roundTripMutable.toImmutable());
+					if (world.isEmptyBlock(roundTripMutable)) {
+						positions.add(roundTripMutable.immutable());
 						if (height > 2 && rand.nextFloat() < 0.25F) {
 							roundTripMutable.setY(cornerTop - 2);
-							if (world.isAirBlock(roundTripMutable)) {
-								positions.add(roundTripMutable.toImmutable());
+							if (world.isEmptyBlock(roundTripMutable)) {
+								positions.add(roundTripMutable.immutable());
 							}
 						}
 					}
@@ -233,45 +233,45 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 				startY++;
 				if (tryToFillWithCorrockBlock(world, startX - 1, startY, startZ, startX + 4, startY, startZ + 3, positions) && tryToFillWithCorrockBlock(world, startX, startY, startZ - 1, startX + 3, startY, startZ - 1, positions) && tryToFillWithCorrockBlock(world, startX, startY, startZ + 4, startX + 3, startY, startZ + 4, positions)) {
 					BlockPos.Mutable mutable = new BlockPos.Mutable();
-					if (tryToPlaceCorrockBlock(world, mutable.setPos(startX + rand.nextInt(2) + 1, startY, startZ - 2), positions) && tryToPlaceCorrockBlock(world, mutable.setPos(startX - 2, startY, startZ + rand.nextInt(2) + 1), positions) && tryToPlaceCorrockBlock(world, mutable.setPos(startX + rand.nextInt(2) + 1, startY, startZ + 5), positions) && tryToPlaceCorrockBlock(world, mutable.setPos(startX + 5, startY, startZ + rand.nextInt(2) + 1), positions)) {
+					if (tryToPlaceCorrockBlock(world, mutable.set(startX + rand.nextInt(2) + 1, startY, startZ - 2), positions) && tryToPlaceCorrockBlock(world, mutable.set(startX - 2, startY, startZ + rand.nextInt(2) + 1), positions) && tryToPlaceCorrockBlock(world, mutable.set(startX + rand.nextInt(2) + 1, startY, startZ + 5), positions) && tryToPlaceCorrockBlock(world, mutable.set(startX + 5, startY, startZ + rand.nextInt(2) + 1), positions)) {
 						startY++;
 						GenerationPiece crowns = new GenerationPiece((iWorld, blockPart) -> true);
 						List<BlockPos> corners = new ArrayList<>();
-						if (tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.WEST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX + 4, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.EAST : Direction.SOUTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(startX - 1, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.WEST : Direction.SOUTH, crowns, corners, crownChance)) {
+						if (tryToPlaceCorrockBlockWithCrown(world, rand, mutable.set(startX - 1, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.WEST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.set(startX + 4, startY, startZ - 1), positions, rand.nextBoolean() ? Direction.EAST : Direction.NORTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.set(startX + 4, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.EAST : Direction.SOUTH, crowns, corners, crownChance) && tryToPlaceCorrockBlockWithCrown(world, rand, mutable.set(startX - 1, startY, startZ + 4), positions, rand.nextBoolean() ? Direction.WEST : Direction.SOUTH, crowns, corners, crownChance)) {
 							if (tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ - 2, startX + 3, startZ - 2, positions, Direction.NORTH, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX - 2, startZ, startX - 2, startZ + 3, positions, Direction.WEST, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX + 5, startZ, startX + 5, startZ + 3, positions, Direction.EAST, crowns, crownChance) && tryToPlaceCrownedCorrockSquare(world, rand, startY, startX, startZ + 5, startX + 3, startZ + 5, positions, Direction.SOUTH, crowns, crownChance)) {
 								if (rand.nextBoolean()) {
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX - 1, startY, startZ), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX - 1, startY, startZ), positions)) {
+										corners.add(mutable.immutable());
 									}
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX, startY, startZ - 1), positions)) {
-										corners.add(mutable.toImmutable());
-									}
-								}
-
-								if (rand.nextBoolean()) {
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX + 4, startY, startZ), positions)) {
-										corners.add(mutable.toImmutable());
-									}
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX + 3, startY, startZ - 1), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX, startY, startZ - 1), positions)) {
+										corners.add(mutable.immutable());
 									}
 								}
 
 								if (rand.nextBoolean()) {
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX + 4, startY, startZ + 3), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX + 4, startY, startZ), positions)) {
+										corners.add(mutable.immutable());
 									}
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX + 3, startY, startZ + 4), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX + 3, startY, startZ - 1), positions)) {
+										corners.add(mutable.immutable());
 									}
 								}
 
 								if (rand.nextBoolean()) {
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX, startY, startZ + 4), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX + 4, startY, startZ + 3), positions)) {
+										corners.add(mutable.immutable());
 									}
-									if (tryToPlaceCorrockBlock(world, mutable.setPos(startX - 1, startY, startZ + 3), positions)) {
-										corners.add(mutable.toImmutable());
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX + 3, startY, startZ + 4), positions)) {
+										corners.add(mutable.immutable());
+									}
+								}
+
+								if (rand.nextBoolean()) {
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX, startY, startZ + 4), positions)) {
+										corners.add(mutable.immutable());
+									}
+									if (tryToPlaceCorrockBlock(world, mutable.set(startX - 1, startY, startZ + 3), positions)) {
+										corners.add(mutable.immutable());
 									}
 								}
 
@@ -281,11 +281,11 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 								int cornerZ = startZ - 1;
 								for (int x = 0; x < 5; x++) {
 									for (int z = 0; z < 5; z++) {
-										mutable.setPos(cornerX + x, y, cornerZ + z);
+										mutable.set(cornerX + x, y, cornerZ + z);
 										if (rand.nextFloat() < chorusChance) {
-											BlockPos up = mutable.up();
-											if (world.isAirBlock(up) && !corners.contains(up) && isNotCloseToAnotherGrowth(chorusPlantParts, mutable)) {
-												chorusPlantParts.add(new ChorusPlantPart(mutable.toImmutable()));
+											BlockPos up = mutable.above();
+											if (world.isEmptyBlock(up) && !corners.contains(up) && isNotCloseToAnotherGrowth(chorusPlantParts, mutable)) {
+												chorusPlantParts.add(new ChorusPlantPart(mutable.immutable()));
 											}
 										}
 									}

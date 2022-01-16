@@ -1,26 +1,15 @@
 package com.minecraftabnormals.endergetic.common.entities;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -28,11 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceContext;
@@ -42,12 +27,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class PoiseClusterEntity extends LivingEntity {
 	private static final int MAX_BLOCKS_TO_MOVE_UP = 30;
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(PoiseClusterEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> BLOCKS_TO_MOVE_UP = EntityDataManager.createKey(PoiseClusterEntity.class, DataSerializers.VARINT);
-	private static final DataParameter<Integer> TIMES_HIT = EntityDataManager.createKey(PoiseClusterEntity.class, DataSerializers.VARINT);
-	private static final DataParameter<Boolean> ASCEND = EntityDataManager.createKey(PoiseClusterEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.BLOCK_POS);
+	private static final DataParameter<Integer> BLOCKS_TO_MOVE_UP = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.INT);
+	private static final DataParameter<Integer> TIMES_HIT = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.INT);
+	private static final DataParameter<Boolean> ASCEND = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.BOOLEAN);
 	private boolean playedSound;
 
 	public PoiseClusterEntity(EntityType<? extends PoiseClusterEntity> cluster, World worldIn) {
@@ -58,35 +46,35 @@ public class PoiseClusterEntity extends LivingEntity {
 		this(EEEntities.POISE_CLUSTER.get(), worldIn);
 		this.setHealth(100);
 		this.setOrigin(new BlockPos(origin));
-		this.setPosition(x + 0.5D, y, z + 0.5D);
+		this.setPos(x + 0.5D, y, z + 0.5D);
 		this.setNoGravity(true);
-		this.prevRenderYawOffset = 180.0F;
-		this.renderYawOffset = 180.0F;
-		this.rotationYaw = 180.0F;
+		this.yBodyRotO = 180.0F;
+		this.yBodyRot = 180.0F;
+		this.yRot = 180.0F;
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(ORIGIN, BlockPos.ZERO);
-		this.dataManager.register(BLOCKS_TO_MOVE_UP, 0);
-		this.dataManager.register(TIMES_HIT, 0);
-		this.dataManager.register(ASCEND, true);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(ORIGIN, BlockPos.ZERO);
+		this.entityData.define(BLOCKS_TO_MOVE_UP, 0);
+		this.entityData.define(TIMES_HIT, 0);
+		this.entityData.define(ASCEND, true);
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT nbt) {
-		super.writeAdditional(nbt);
-		nbt.putLong("OriginPos", this.getOrigin().toLong());
+	public void addAdditionalSaveData(CompoundNBT nbt) {
+		super.addAdditionalSaveData(nbt);
+		nbt.putLong("OriginPos", this.getOrigin().asLong());
 		nbt.putInt("BlocksToMoveUp", this.getBlocksToMoveUp());
 		nbt.putInt("TimesHit", this.getTimesHit());
 		nbt.putBoolean("IsAscending", this.isAscending());
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT nbt) {
-		super.readAdditional(nbt);
-		this.setOrigin(BlockPos.fromLong(nbt.getLong("OriginPos")));
+	public void readAdditionalSaveData(CompoundNBT nbt) {
+		super.readAdditionalSaveData(nbt);
+		this.setOrigin(BlockPos.of(nbt.getLong("OriginPos")));
 		this.setBlocksToMoveUp(nbt.getInt("BlocksToMoveUp"));
 		this.setTimesHit(nbt.getInt("TimesHit"));
 		this.setAscending(nbt.getBoolean("IsAscending"));
@@ -99,57 +87,57 @@ public class PoiseClusterEntity extends LivingEntity {
 			this.moveEntitiesUp();
 		}
 
-		this.renderYawOffset = this.prevRenderYawOffset = 180.0F;
-		this.rotationYaw = this.prevRotationYaw = 180.0F;
+		this.yBodyRot = this.yBodyRotO = 180.0F;
+		this.yRot = this.yRotO = 180.0F;
 
-		if (this.getPosY() + 1.0F < (this.getOrigin().getY() + this.getBlocksToMoveUp()) && this.isAscending()) {
-			this.setMotion(0.0F, 0.05F, 0.0F);
+		if (this.getY() + 1.0F < (this.getOrigin().getY() + this.getBlocksToMoveUp()) && this.isAscending()) {
+			this.setDeltaMovement(0.0F, 0.05F, 0.0F);
 		}
 
-		if (this.getPosY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
-			if (!this.world.isRemote) {
+		if (this.getY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
+			if (!this.level.isClientSide) {
 				this.setAscending(false);
 			}
 			this.setBlocksToMoveUp(0);
 		}
 
 		if (!this.isAscending()) {
-			if (this.getPosY() > this.getOrigin().getY()) {
-				this.setMotion(0, -0.05F, 0);
-			} else if (Math.ceil(this.getPosY()) == this.getOrigin().getY() && this.ticksExisted > 10) {
+			if (this.getY() > this.getOrigin().getY()) {
+				this.setDeltaMovement(0, -0.05F, 0);
+			} else if (Math.ceil(this.getY()) == this.getOrigin().getY() && this.tickCount > 10) {
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
-					double offsetZ = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetX = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
+					double offsetZ = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
 
 					double x = this.getOrigin().getX() + 0.5D + offsetX;
-					double y = this.getOrigin().getY() + 0.5D + (this.rand.nextFloat() * 0.05F);
+					double y = this.getOrigin().getY() + 0.5D + (this.random.nextFloat() * 0.05F);
 					double z = this.getOrigin().getZ() + 0.5D + offsetZ;
 
-					if (this.isServerWorld()) {
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+					if (this.isEffectiveAi()) {
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((random.nextFloat() * 0.1F), random) + 0.025F, (random.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((random.nextFloat() * 0.1F), random) + 0.025F);
 					}
 				}
-				this.world.setBlockState(this.getOrigin(), EEBlocks.POISE_CLUSTER.get().getDefaultState());
+				this.level.setBlockAndUpdate(this.getOrigin(), EEBlocks.POISE_CLUSTER.get().defaultBlockState());
 				this.remove();
 			}
 
-			if (this.isBlockBlockingPath(true) && this.ticksExisted > 10) {
-				BlockPos pos = this.getPosition();
+			if (this.isBlockBlockingPath(true) && this.tickCount > 10) {
+				BlockPos pos = this.blockPosition();
 
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
-					double offsetZ = MathUtil.makeNegativeRandomly(this.rand.nextFloat() * 0.25F, this.rand);
+					double offsetX = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
+					double offsetZ = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
 
 					double x = pos.getX() + 0.5D + offsetX;
-					double y = pos.getY() + 0.5D + (this.rand.nextFloat() * 0.05F);
+					double y = pos.getY() + 0.5D + (this.random.nextFloat() * 0.05F);
 					double z = pos.getZ() + 0.5D + offsetZ;
 
-					if (this.isServerWorld()) {
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F, (this.rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((this.rand.nextFloat() * 0.1F), this.rand) + 0.025F);
+					if (this.isEffectiveAi()) {
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.1F), this.random) + 0.025F, (this.random.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.1F), this.random) + 0.025F);
 					}
 				}
 
-				this.world.setBlockState(pos, EEBlocks.POISE_CLUSTER.get().getDefaultState());
+				this.level.setBlockAndUpdate(pos, EEBlocks.POISE_CLUSTER.get().defaultBlockState());
 				this.remove();
 			}
 		}
@@ -157,14 +145,14 @@ public class PoiseClusterEntity extends LivingEntity {
 		/*
 		 * Used to make it try to move down if  there is another entity of itself above it
 		 */
-		AxisAlignedBB bb = this.getBoundingBox().offset(0, 1, 0);
-		List<Entity> entities = this.getEntityWorld().getEntitiesWithinAABB(Entity.class, bb);
+		AxisAlignedBB bb = this.getBoundingBox().move(0, 1, 0);
+		List<Entity> entities = this.getCommandSenderWorld().getEntitiesOfClass(Entity.class, bb);
 		int entityCount = entities.size();
 		boolean hasEntity = entityCount > 0;
 		if (hasEntity && this.isAscending()) {
 			for (Entity entity : entities) {
 				if (entity instanceof PoiseClusterEntity) {
-					if (!this.world.isRemote) {
+					if (!this.level.isClientSide) {
 						this.setAscending(false);
 					}
 					this.setBlocksToMoveUp(0);
@@ -177,11 +165,11 @@ public class PoiseClusterEntity extends LivingEntity {
 		 * Tell it to being moving down if  a block is blocking its way up at its position above
 		 */
 		if (this.isAscending()) {
-			if (this.prevPosY == this.getPosY() && this.isBlockBlockingPath(false)) {
+			if (this.yo == this.getY() && this.isBlockBlockingPath(false)) {
 				this.beingDescending();
 			}
 
-			if (this.prevPosY == this.getPosY() && this.ticksExisted % 25 == 0 && this.getPosY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
+			if (this.yo == this.getY() && this.tickCount % 25 == 0 && this.getY() + 1.0F >= this.getOrigin().getY() + this.getBlocksToMoveUp()) {
 				this.beingDescending();
 			}
 		}
@@ -190,64 +178,64 @@ public class PoiseClusterEntity extends LivingEntity {
 			this.setBlocksToMoveUp(MAX_BLOCKS_TO_MOVE_UP);
 		}
 
-		this.clearActivePotions();
-		this.extinguish();
+		this.removeAllEffects();
+		this.clearFire();
 
 		if (this.getHealth() != 0) this.setHealth(100);
 
-		if (!this.world.isRemote) {
+		if (!this.level.isClientSide) {
 			if (!this.playedSound) {
-				this.world.setEntityState(this, (byte) 1);
+				this.level.broadcastEntityEvent(this, (byte) 1);
 				this.playedSound = true;
 			}
 		}
 	}
 
 	@Override
-	public boolean hitByEntity(Entity entityIn) {
+	public boolean skipAttackInteraction(Entity entityIn) {
 		this.setTimesHit(this.getTimesHit() + 1);
 		if (this.getTimesHit() >= 3) {
-			if (!this.world.isRemote) {
-				Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+			if (!this.level.isClientSide) {
+				Block.popResource(this.level, this.blockPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 			}
 			this.remove();
 			return true;
 		}
 		this.setAscending(true);
-		this.setBlocksToMoveUp((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10);
+		this.setBlocksToMoveUp((int) (Math.ceil(this.getY()) - this.getOrigin().getY()) + 10);
 		return false;
 	}
 
 	@Override
-	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
+	protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
 		if (damageSrc.isProjectile()) {
 			this.setTimesHit(this.getTimesHit() + 1);
 
 			if (this.getTimesHit() >= 3) {
-				if (!this.getEntityWorld().isRemote) {
-					Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
+				if (!this.getCommandSenderWorld().isClientSide) {
+					Block.popResource(this.level, this.blockPosition(), new ItemStack(EEBlocks.POISE_CLUSTER.get()));
 				}
 				this.remove();
 			}
 
-			if ((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10 < 30) {
+			if ((int) (Math.ceil(this.getY()) - this.getOrigin().getY()) + 10 < 30) {
 				this.setAscending(true);
-				this.setBlocksToMoveUp((int) (Math.ceil(this.getPosY()) - this.getOrigin().getY()) + 10);
+				this.setBlocksToMoveUp((int) (Math.ceil(this.getY()) - this.getOrigin().getY()) + 10);
 			} else {
 				this.remove();
 			}
 		}
 
-		super.damageEntity(damageSrc, damageAmount);
+		super.actuallyHurt(damageSrc, damageAmount);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 1) {
-			Minecraft.getInstance().getSoundHandler().play(new PoiseClusterSound(this));
+			Minecraft.getInstance().getSoundManager().play(new PoiseClusterSound(this));
 		} else {
-			super.handleStatusUpdate(id);
+			super.handleEntityEvent(id);
 		}
 	}
 
@@ -257,7 +245,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
@@ -272,10 +260,10 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	private boolean isBlockBlockingPath(boolean down) {
-		Vector3d eyePos = down ? this.getPositionVec() : this.getEyePosition(1.0F);
-		return this.world.rayTraceBlocks(new RayTraceContext(
+		Vector3d eyePos = down ? this.position() : this.getEyePosition(1.0F);
+		return this.level.clip(new RayTraceContext(
 				eyePos,
-				eyePos.add(this.getMotion()),
+				eyePos.add(this.getDeltaMovement()),
 				RayTraceContext.BlockMode.OUTLINE,
 				RayTraceContext.FluidMode.ANY,
 				this
@@ -283,12 +271,12 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	private void moveEntitiesUp() {
-		if (this.getMotion().length() > 0 && this.isAscending()) {
-			AxisAlignedBB clusterBB = this.getBoundingBox().offset(0.0F, 0.01F, 0.0F);
-			List<Entity> entitiesAbove = this.world.getEntitiesWithinAABBExcludingEntity(this, clusterBB);
+		if (this.getDeltaMovement().length() > 0 && this.isAscending()) {
+			AxisAlignedBB clusterBB = this.getBoundingBox().move(0.0F, 0.01F, 0.0F);
+			List<Entity> entitiesAbove = this.level.getEntities(this, clusterBB);
 			if (!entitiesAbove.isEmpty()) {
 				for (Entity entity : entitiesAbove) {
-					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity) && entity.getPushReaction() != PushReaction.IGNORE) {
+					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity) && entity.getPistonPushReaction() != PushReaction.IGNORE) {
 						AxisAlignedBB entityBB = entity.getBoundingBox();
 						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
 
@@ -305,71 +293,71 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	private void beingDescending() {
-		if (!this.world.isRemote) {
+		if (!this.level.isClientSide) {
 			this.setAscending(false);
 		}
 		this.setBlocksToMoveUp(0);
 	}
 
 	public void setOrigin(BlockPos pos) {
-		this.dataManager.set(ORIGIN, pos);
+		this.entityData.set(ORIGIN, pos);
 	}
 
 	public BlockPos getOrigin() {
-		return this.dataManager.get(ORIGIN);
+		return this.entityData.get(ORIGIN);
 	}
 
 	public void setBlocksToMoveUp(int value) {
-		this.dataManager.set(BLOCKS_TO_MOVE_UP, value);
+		this.entityData.set(BLOCKS_TO_MOVE_UP, value);
 	}
 
 	public int getBlocksToMoveUp() {
-		return this.dataManager.get(BLOCKS_TO_MOVE_UP);
+		return this.entityData.get(BLOCKS_TO_MOVE_UP);
 	}
 
 	protected void setTimesHit(int hits) {
-		this.dataManager.set(TIMES_HIT, hits);
+		this.entityData.set(TIMES_HIT, hits);
 	}
 
 	protected int getTimesHit() {
-		return this.dataManager.get(TIMES_HIT);
+		return this.entityData.get(TIMES_HIT);
 	}
 
 	protected void setAscending(boolean acscending) {
-		this.dataManager.set(ASCEND, acscending);
+		this.entityData.set(ASCEND, acscending);
 	}
 
 	public boolean isAscending() {
-		return this.dataManager.get(ASCEND);
+		return this.entityData.get(ASCEND);
 	}
 
 	@Override
-	public void applyKnockback(float strengthIn, double ratioXIn, double ratioZIn) {
+	public void knockback(float strengthIn, double ratioXIn, double ratioZIn) {
 	}
 
 	@Override
-	protected void collideWithEntity(Entity entityIn) {
+	protected void doPush(Entity entityIn) {
 	}
 
 	@Override
-	public CreatureAttribute getCreatureAttribute() {
+	public CreatureAttribute getMobType() {
 		return CreatureAttribute.ILLAGER;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
 	@Override
-	public boolean func_241845_aY() {
+	public boolean canBeCollidedWith() {
 		return true;
 	}
 
 	@Nullable
 	public AxisAlignedBB getCollisionBox(Entity entityIn) {
-		return entityIn.canBePushed() ? entityIn.getBoundingBox() : null;
+		return entityIn.isPushable() ? entityIn.getBoundingBox() : null;
 	}
 
 	@Nullable
@@ -383,17 +371,17 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public boolean isPushedByWater() {
+	public boolean isPushedByFluid() {
 		return false;
 	}
 
 	@Override
-	public boolean canBePushed() {
+	public boolean isPushable() {
 		return true;
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
@@ -408,25 +396,25 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public void setFire(int seconds) {
+	public void setSecondsOnFire(int seconds) {
 	}
 
 	@Override
-	public Iterable<ItemStack> getArmorInventoryList() {
+	public Iterable<ItemStack> getArmorSlots() {
 		return NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
-	public ItemStack getItemStackFromSlot(EquipmentSlotType slotIn) {
+	public ItemStack getItemBySlot(EquipmentSlotType slotIn) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setItemStackToSlot(EquipmentSlotType slotIn, ItemStack stack) {
+	public void setItemSlot(EquipmentSlotType slotIn, ItemStack stack) {
 	}
 
 	@Override
-	public HandSide getPrimaryHand() {
+	public HandSide getMainArm() {
 		return HandSide.RIGHT;
 	}
 
@@ -438,30 +426,30 @@ public class PoiseClusterEntity extends LivingEntity {
 		private PoiseClusterSound(PoiseClusterEntity cluster) {
 			super(EESounds.POISE_CLUSTER_AMBIENT.get(), SoundCategory.NEUTRAL);
 			this.cluster = cluster;
-			this.repeat = true;
-			this.repeatDelay = 0;
+			this.looping = true;
+			this.delay = 0;
 			this.volume = 1.0F;
-			this.x = (float) cluster.getPosX();
-			this.y = (float) cluster.getPosY();
-			this.z = (float) cluster.getPosZ();
+			this.x = (float) cluster.getX();
+			this.y = (float) cluster.getY();
+			this.z = (float) cluster.getZ();
 
-			this.pitch = cluster.getRNG().nextFloat() * 0.3F + 0.8F;
+			this.pitch = cluster.getRandom().nextFloat() * 0.3F + 0.8F;
 		}
 
 		@Override
-		public boolean canBeSilent() {
+		public boolean canStartSilent() {
 			return true;
 		}
 
 		public void tick() {
 			if (this.cluster.isAlive()) {
-				this.x = (float) this.cluster.getPosX();
-				this.y = (float) this.cluster.getPosY();
-				this.z = (float) this.cluster.getPosZ();
+				this.x = (float) this.cluster.getX();
+				this.y = (float) this.cluster.getY();
+				this.z = (float) this.cluster.getZ();
 			} else {
 				this.ticksRemoved++;
 				if (this.ticksRemoved > 10) {
-					this.finishPlaying();
+					this.stop();
 				}
 			}
 

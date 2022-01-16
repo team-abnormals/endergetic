@@ -14,22 +14,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public final class LivingEntityMixin {
 	@Shadow
-	protected int recentlyHit;
+	protected int lastHurtByPlayerTime;
 	@Shadow
-	protected PlayerEntity attackingPlayer;
+	protected PlayerEntity lastHurtByPlayer;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setRevengeTarget(Lnet/minecraft/entity/LivingEntity;)V", ordinal = 0), method = "attackEntityFrom")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setLastHurtByMob(Lnet/minecraft/entity/LivingEntity;)V", ordinal = 0), method = "hurt")
 	private void tryToAttackAsBoofloOwner(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-		Entity entity = source.getTrueSource();
+		Entity entity = source.getEntity();
 		if (entity instanceof BoofloEntity) {
 			BoofloEntity booflo = (BoofloEntity) entity;
 			if (booflo.isTamed()) {
-				this.recentlyHit = 100;
+				this.lastHurtByPlayerTime = 100;
 				LivingEntity owner = booflo.getOwner();
 				if (owner instanceof PlayerEntity) {
-					this.attackingPlayer = (PlayerEntity) owner;
+					this.lastHurtByPlayer = (PlayerEntity) owner;
 				} else {
-					this.attackingPlayer = null;
+					this.lastHurtByPlayer = null;
 				}
 			}
 		}

@@ -1,15 +1,14 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class PuffBugDescentGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -21,42 +20,42 @@ public class PuffBugDescentGoal extends Goal {
 
 	public PuffBugDescentGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
-		this.world = puffbug.world;
+		this.world = puffbug.level;
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		if (this.puffbug.getAttackTarget() == null && !this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
-			this.budPos = new BlockPos(this.puffbug.getPosX() - 0.5F, this.puffbug.getPosY() - 0.5F, this.puffbug.getPosZ() - 0.5F).down(2);
+	public boolean canUse() {
+		if (this.puffbug.getTarget() == null && !this.puffbug.hasLevitation() && this.isBolloomBudUnder() && this.puffbug.getBudPos() != null) {
+			this.budPos = new BlockPos(this.puffbug.getX() - 0.5F, this.puffbug.getY() - 0.5F, this.puffbug.getZ() - 0.5F).below(2);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		TileEntity te = this.world.getTileEntity(this.budPos);
+	public boolean canContinueToUse() {
+		TileEntity te = this.world.getBlockEntity(this.budPos);
 		if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 			return false;
 		}
-		return this.puffbug.getAttackTarget() == null && this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.isOnGround() && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ;
+		return this.puffbug.getTarget() == null && this.ticksPassed < 160 && !this.puffbug.hasLevitation() && !this.puffbug.isOnGround() && this.puffbug.getX() == this.originalPosX && this.puffbug.getZ() == this.originalPosZ;
 	}
 
 	@Override
-	public void startExecuting() {
-		TileEntity te = this.world.getTileEntity(this.puffbug.getBudPos());
+	public void start() {
+		TileEntity te = this.world.getBlockEntity(this.puffbug.getBudPos());
 		if (te instanceof BolloomBudTileEntity) {
 			((BolloomBudTileEntity) te).setTeleportingBug(null);
 		}
 
 		this.puffbug.setBudPos(null);
 		this.puffbug.setBoosting(false);
-		this.puffbug.setAIMoveSpeed(0.0F);
-		this.puffbug.getNavigator().clearPath();
+		this.puffbug.setSpeed(0.0F);
+		this.puffbug.getNavigation().stop();
 
 		this.ticksPassed = 0;
-		this.originalPosX = (float) this.puffbug.getPosX();
-		this.originalPosZ = (float) this.puffbug.getPosZ();
+		this.originalPosX = (float) this.puffbug.getX();
+		this.originalPosZ = (float) this.puffbug.getZ();
 	}
 
 	@Override
@@ -69,14 +68,14 @@ public class PuffBugDescentGoal extends Goal {
 		}
 
 		this.puffbug.setBoosting(false);
-		this.puffbug.setAIMoveSpeed(0.0F);
-		this.puffbug.getNavigator().clearPath();
+		this.puffbug.setSpeed(0.0F);
+		this.puffbug.getNavigation().stop();
 	}
 
 	@Override
-	public void resetTask() {
-		TileEntity te = this.world.getTileEntity(this.budPos);
-		if ((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getPosX() == this.originalPosX && this.puffbug.getPosZ() == this.originalPosZ && this.puffbug.isOnGround()) {
+	public void stop() {
+		TileEntity te = this.world.getBlockEntity(this.budPos);
+		if ((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getX() == this.originalPosX && this.puffbug.getZ() == this.originalPosZ && this.puffbug.isOnGround()) {
 			this.puffbug.setPollinationPos(this.budPos);
 		}
 
@@ -87,10 +86,10 @@ public class PuffBugDescentGoal extends Goal {
 	}
 
 	private boolean isBolloomBudUnder() {
-		BlockPos pos = new BlockPos(this.puffbug.getPosX() - 0.5F, this.puffbug.getPosY() - 0.5F, this.puffbug.getPosZ() - 0.5F);
+		BlockPos pos = new BlockPos(this.puffbug.getX() - 0.5F, this.puffbug.getY() - 0.5F, this.puffbug.getZ() - 0.5F);
 
-		if (this.world.getBlockState(pos.down()).getCollisionShape(this.world, pos.down()).isEmpty() && this.world.getBlockState(pos.down(2)).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
-			this.budPos = pos.down(2);
+		if (this.world.getBlockState(pos.below()).getCollisionShape(this.world, pos.below()).isEmpty() && this.world.getBlockState(pos.below(2)).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
+			this.budPos = pos.below(2);
 			return true;
 		}
 

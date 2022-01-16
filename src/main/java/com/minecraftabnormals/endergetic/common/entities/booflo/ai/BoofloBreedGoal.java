@@ -1,15 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
-
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
@@ -20,20 +14,24 @@ import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.List;
+
 public class BoofloBreedGoal extends Goal {
-	private static final EntityPredicate MATE_CHECKER = (new EntityPredicate()).setDistance(16.0D).allowInvulnerable().allowFriendlyFire().setLineOfSiteRequired();
+	private static final EntityPredicate MATE_CHECKER = (new EntityPredicate()).range(16.0D).allowInvulnerable().allowSameTeam().allowUnseeable();
 	protected final BoofloEntity booflo;
 	protected BoofloEntity mate;
 	private int impregnateDelay;
 
 	public BoofloBreedGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		if (this.booflo.isBoofed() || (!this.booflo.isOnGround() && this.booflo.getRidingEntity() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
+	public boolean canUse() {
+		if (this.booflo.isBoofed() || (!this.booflo.isOnGround() && this.booflo.getVehicle() == null) || !this.booflo.isInLove() || this.booflo.isPregnant()) {
 			return false;
 		} else {
 			this.mate = this.getNearbyMate();
@@ -42,11 +40,11 @@ public class BoofloBreedGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return !this.booflo.isBoofed() && this.mate.isAlive() && this.mate.isInLove() && this.impregnateDelay < 100;
 	}
 
-	public void resetTask() {
+	public void stop() {
 		this.mate = null;
 		this.impregnateDelay = 0;
 	}
@@ -56,23 +54,23 @@ public class BoofloBreedGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 
-		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(0.1D);
+		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
+			((GroundMoveHelperController) this.booflo.getMoveControl()).setSpeed(0.1D);
 		}
 
-		double dx = this.mate.getPosX() - this.booflo.getPosX();
-		double dz = this.mate.getPosZ() - this.booflo.getPosZ();
+		double dx = this.mate.getX() - this.booflo.getX();
+		double dz = this.mate.getZ() - this.booflo.getZ();
 
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 
-		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
+			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(angle, false);
 		}
 
-		this.booflo.getNavigator().tryMoveToEntityLiving(this.mate, 1.0D);
+		this.booflo.getNavigation().moveTo(this.mate, 1.0D);
 
 		this.impregnateDelay++;
-		if (this.impregnateDelay >= 60 && this.booflo.getDistanceSq(this.mate) < 10.0D) {
+		if (this.impregnateDelay >= 60 && this.booflo.distanceToSqr(this.mate) < 10.0D) {
 			this.impregnateBooflo();
 		}
 	}
@@ -92,7 +90,7 @@ public class BoofloBreedGoal extends Goal {
 		}
 
 		if (serverplayerentity != null) {
-			serverplayerentity.addStat(Stats.ANIMALS_BRED);
+			serverplayerentity.awardStat(Stats.ANIMALS_BRED);
 			EECriteriaTriggers.BRED_BOOFLO.trigger(serverplayerentity);
 		}
 
@@ -105,22 +103,22 @@ public class BoofloBreedGoal extends Goal {
 		this.booflo.breedDelay = 1400;
 		this.mate.breedDelay = 1400;
 
-		this.booflo.world.setEntityState(this.booflo, (byte) 18);
-		if (this.booflo.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-			this.booflo.world.addEntity(new ExperienceOrbEntity(this.booflo.world, this.booflo.getPosX(), this.booflo.getPosY(), this.booflo.getPosZ(), this.booflo.getRNG().nextInt(7) + 1));
+		this.booflo.level.broadcastEntityEvent(this.booflo, (byte) 18);
+		if (this.booflo.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+			this.booflo.level.addFreshEntity(new ExperienceOrbEntity(this.booflo.level, this.booflo.getX(), this.booflo.getY(), this.booflo.getZ(), this.booflo.getRandom().nextInt(7) + 1));
 		}
 	}
 
 	@Nullable
 	private BoofloEntity getNearbyMate() {
-		List<BoofloEntity> list = this.booflo.world.getTargettableEntitiesWithinAABB(BoofloEntity.class, MATE_CHECKER, this.booflo, this.booflo.getBoundingBox().grow(16.0D));
+		List<BoofloEntity> list = this.booflo.level.getNearbyEntities(BoofloEntity.class, MATE_CHECKER, this.booflo, this.booflo.getBoundingBox().inflate(16.0D));
 		double d0 = Double.MAX_VALUE;
 		BoofloEntity booflo = null;
 
 		for (BoofloEntity booflos : list) {
-			if (this.booflo.canMateWith(booflos) && this.booflo.getDistanceSq(booflos) < d0) {
+			if (this.booflo.canMateWith(booflos) && this.booflo.distanceToSqr(booflos) < d0) {
 				booflo = booflos;
-				d0 = this.booflo.getDistanceSq(booflos);
+				d0 = this.booflo.distanceToSqr(booflos);
 			}
 		}
 
@@ -128,6 +126,6 @@ public class BoofloBreedGoal extends Goal {
 	}
 
 	private boolean isBeingRidenOrRiding() {
-		return this.booflo.isPassenger() || this.booflo.isBeingRidden();
+		return this.booflo.isPassenger() || this.booflo.isVehicle();
 	}
 }

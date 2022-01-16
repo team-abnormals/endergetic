@@ -1,12 +1,5 @@
 package com.minecraftabnormals.endergetic.common.tileentities;
 
-import java.util.EnumMap;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.api.util.StringUtils;
@@ -15,7 +8,6 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEnt
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -30,6 +22,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
+import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
 
 public class BolloomBudTileEntity extends TileEntity implements ITickableTileEntity {
 	public final ControlledEndimation pedalAnimation = new ControlledEndimation(20, 20);
@@ -48,12 +46,12 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().grow(1.0F);
+		return super.getRenderBoundingBox().inflate(1.0F);
 	}
 
 	@Override
-	public double getMaxRenderDistanceSquared() {
-		return super.getMaxRenderDistanceSquared() * 2;
+	public double getViewDistance() {
+		return super.getViewDistance() * 2;
 	}
 
 	@Override
@@ -64,20 +62,20 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 			if (sideData.growTimer > 0 && sideData.growing) sideData.growTimer--;
 
 			if (sideData.growing && sideData.growTimer <= 0) {
-				if (!this.world.isRemote() && this.getBlockState().get(BolloomBudBlock.OPENED)) {
+				if (!this.level.isClientSide() && this.getBlockState().getValue(BolloomBudBlock.OPENED)) {
 					int height = rand.nextInt(this.maxFruitHeight) + 1;
-					BolloomFruitEntity fruit = new BolloomFruitEntity(this.world, this.pos, side.offsetPosition(this.pos).up(height - 1), height, side.direction);
-					this.world.addEntity(fruit);
-					sideData.fruitUUID = fruit.getUniqueID();
+					BolloomFruitEntity fruit = new BolloomFruitEntity(this.level, this.worldPosition, side.offsetPosition(this.worldPosition).above(height - 1), height, side.direction);
+					this.level.addFreshEntity(fruit);
+					sideData.fruitUUID = fruit.getUUID();
 				}
 				sideData.growing = false;
 				sideData.growTimer = 0;
 			}
 		});
 
-		if (this.getBlockState().get(BolloomBudBlock.OPENED)) {
-			if (!this.world.isRemote() && this.shouldShutBud() && rand.nextInt(200) == 0) {
-				this.world.setBlockState(this.pos, this.getBlockState().with(BolloomBudBlock.OPENED, false), 2);
+		if (this.getBlockState().getValue(BolloomBudBlock.OPENED)) {
+			if (!this.level.isClientSide() && this.shouldShutBud() && rand.nextInt(200) == 0) {
+				this.level.setBlock(this.worldPosition, this.getBlockState().setValue(BolloomBudBlock.OPENED, false), 2);
 				this.resetGrowing();
 			}
 		}
@@ -86,16 +84,16 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 
 		this.pedalAnimation.tick();
 
-		if (this.world.isAreaLoaded(this.pos, 1)) {
-			boolean opened = this.getBlockState().get(BolloomBudBlock.OPENED);
+		if (this.level.isAreaLoaded(this.worldPosition, 1)) {
+			boolean opened = this.getBlockState().getValue(BolloomBudBlock.OPENED);
 			if (this.pedalAnimation.isDecrementing() != opened) {
 				this.pedalAnimation.setDecrementing(opened);
 			}
 		}
 
-		if (!this.world.isRemote) {
+		if (!this.level.isClientSide) {
 			if (this.teleportingBug != null) {
-				Entity entity = ((ServerWorld) this.world).getEntityByUuid(this.teleportingBug);
+				Entity entity = ((ServerWorld) this.level).getEntity(this.teleportingBug);
 				if (entity != null && !entity.isAlive()) {
 					this.teleportingBug = null;
 				} else if (entity == null) {
@@ -138,7 +136,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	public void setTeleportingBug(@Nullable PuffBugEntity puffbug) {
-		this.teleportingBug = puffbug != null ? puffbug.getUniqueID() : null;
+		this.teleportingBug = puffbug != null ? puffbug.getUUID() : null;
 	}
 
 	public boolean hasTeleportingBug() {
@@ -149,31 +147,31 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 		Block block = EEBlocks.BOLLOOM_BUD.get();
 
 		for (Direction directions : Direction.values()) {
-			if (this.world.getBlockState(this.pos.offset(directions, 2)).getBlock() == block) {
+			if (this.level.getBlockState(this.worldPosition.relative(directions, 2)).getBlock() == block) {
 				return false;
 			}
 		}
 
-		BlockPos north = this.pos.offset(Direction.NORTH);
-		BlockPos south = this.pos.offset(Direction.SOUTH);
+		BlockPos north = this.worldPosition.relative(Direction.NORTH);
+		BlockPos south = this.worldPosition.relative(Direction.SOUTH);
 
-		if (this.world.getBlockState(north.east()).getBlock() == block || this.world.getBlockState(south.east()).getBlock() == block || this.world.getBlockState(north.west()).getBlock() == block || this.world.getBlockState(south.west()).getBlock() == block) {
+		if (this.level.getBlockState(north.east()).getBlock() == block || this.level.getBlockState(south.east()).getBlock() == block || this.level.getBlockState(north.west()).getBlock() == block || this.level.getBlockState(south.west()).getBlock() == block) {
 			return false;
 		}
 
 		for (BudSide sides : BudSide.values()) {
-			BlockPos sidePos = sides.offsetPosition(this.pos);
-			if (!this.world.getFluidState(sidePos).isEmpty() || !this.world.getBlockState(sidePos).getCollisionShape(this.world, sidePos).isEmpty()) {
+			BlockPos sidePos = sides.offsetPosition(this.worldPosition);
+			if (!this.level.getFluidState(sidePos).isEmpty() || !this.level.getBlockState(sidePos).getCollisionShape(this.level, sidePos).isEmpty()) {
 				return false;
 			}
 		}
 
-		return !this.getBlockState().get(BolloomBudBlock.OPENED) && this.calculateFruitMaxHeight() >= 3;
+		return !this.getBlockState().getValue(BolloomBudBlock.OPENED) && this.calculateFruitMaxHeight() >= 3;
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT compound) {
-		super.read(state, compound);
+	public void load(BlockState state, CompoundNBT compound) {
+		super.load(state, compound);
 
 		this.maxFruitHeight = compound.contains("MaxFruitHeight") ? MathHelper.clamp(compound.getInt("MaxFruitHeight"), 1, 7) : 7;
 
@@ -191,8 +189,8 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 
 		if (compound.contains("MaxFruitHeight")) {
 			compound.putInt("MaxFruitHeight", this.maxFruitHeight);
@@ -218,22 +216,22 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 
 	@Nullable
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.pos, 100, this.getUpdateTag());
+		return new SUpdateTileEntityPacket(this.worldPosition, 100, this.getUpdateTag());
 	}
 
 	public CompoundNBT getUpdateTag() {
-		return this.write(new CompoundNBT());
+		return this.save(new CompoundNBT());
 	}
 
 	@Override
-	public boolean onlyOpsCanSetNbt() {
+	public boolean onlyOpCanSetNbt() {
 		return true;
 	}
 
 	private boolean shouldShutBud() {
 		boolean hasAFruit = false;
 		for (Entry<BudSide, SideData> data : this.sideData.entrySet()) {
-			if (data.getValue().hasFruit(this.world)) {
+			if (data.getValue().hasFruit(this.level)) {
 				hasAFruit = true;
 			}
 		}
@@ -245,7 +243,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 
 		for (BudSide sides : BudSide.values()) {
 			for (int y = 1; y < 7; y++) {
-				if (this.world.isAirBlock(sides.offsetPosition(this.pos.up(y)))) {
+				if (this.level.isEmptyBlock(sides.offsetPosition(this.worldPosition.above(y)))) {
 					maxHeights[sides.id] = y;
 				} else {
 					break;
@@ -271,7 +269,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 		}
 
 		public BlockPos offsetPosition(BlockPos pos) {
-			return pos.offset(this.direction);
+			return pos.relative(this.direction);
 		}
 
 		public static BudSide random(Random rand) {
@@ -286,8 +284,8 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 		private boolean growing;
 
 		public BolloomFruitEntity getFruit(World world) {
-			if (!world.isRemote() && this.fruitUUID != null) {
-				Entity entity = ((ServerWorld) world).getEntityByUuid(this.fruitUUID);
+			if (!world.isClientSide() && this.fruitUUID != null) {
+				Entity entity = ((ServerWorld) world).getEntity(this.fruitUUID);
 				if (entity instanceof BolloomFruitEntity) {
 					return (BolloomFruitEntity) entity;
 				}

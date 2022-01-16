@@ -5,7 +5,6 @@ import com.minecraftabnormals.endergetic.client.renderers.entity.layer.EmissiveL
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.LayerRendererBoofloAdolescentFruit;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -19,7 +18,7 @@ public class BoofloAdolescentRenderer extends MobRenderer<BoofloAdolescentEntity
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BoofloAdolescentEntity entity) {
+	public ResourceLocation getTextureLocation(BoofloAdolescentEntity entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/booflo/booflo_adolescent.png");
 	}
 

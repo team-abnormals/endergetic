@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,16 +16,16 @@ public class EnderFireBlock extends AbstractFireBlock {
 		super(builder, 3.0F);
 	}
 
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		return this.isValidPosition(stateIn, worldIn, currentPos) ? this.getDefaultState() : Blocks.AIR.getDefaultState();
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+		return this.canSurvive(stateIn, worldIn, currentPos) ? this.defaultBlockState() : Blocks.AIR.defaultBlockState();
 	}
 
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return isEnderFireBase(worldIn.getBlockState(pos.down()).getBlock());
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+		return isEnderFireBase(worldIn.getBlockState(pos.below()).getBlock());
 	}
 
 	public static boolean isEnderFireBase(Block block) {
-		return block.isIn(EETags.Blocks.ENDER_FIRE_BASE_BLOCKS);
+		return block.is(EETags.Blocks.ENDER_FIRE_BASE_BLOCKS);
 	}
 
 	protected boolean canBurn(BlockState stateIn) {

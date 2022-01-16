@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayerEntity.class)
 public final class ServerPlayerEntityMixin {
 
-	@Inject(at = @At(value = "JUMP", ordinal = 0, shift = At.Shift.AFTER), method = "setGameType")
+	@Inject(at = @At(value = "JUMP", ordinal = 0, shift = At.Shift.AFTER), method = "setGameMode")
 	private void detachBalloons(GameType gameType, CallbackInfo info) {
 		BalloonHolder holder = (BalloonHolder) (Object) this;
 		if (!holder.getBalloons().isEmpty()) {

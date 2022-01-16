@@ -18,14 +18,14 @@ public class HeightmapSpreadLowerPlacement extends HeightmapBasedPlacement<NoPla
 	}
 
 	@Override
-	protected Heightmap.Type func_241858_a(NoPlacementConfig config) {
+	protected Heightmap.Type type(NoPlacementConfig config) {
 		return Heightmap.Type.MOTION_BLOCKING;
 	}
 
 	public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, NoPlacementConfig config, BlockPos pos) {
 		int x = pos.getX();
 		int z = pos.getZ();
-		int height = helper.func_242893_a(this.func_241858_a(config), x, z);
+		int height = helper.getHeight(this.type(config), x, z);
 		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, MathHelper.clamp(rand.nextInt((int) (height * 0.85F)), rand.nextInt(10) + 18, 57), z));
 	}
 

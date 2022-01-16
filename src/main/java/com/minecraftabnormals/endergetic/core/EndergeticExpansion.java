@@ -4,38 +4,37 @@ import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeFeat
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationManager;
 import com.minecraftabnormals.abnormals_core.common.world.modification.BiomeModificationPredicates;
 import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
-import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
-import com.minecraftabnormals.endergetic.core.registry.other.*;
-import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.renderers.entity.*;
-import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.*;
+import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.BoofloAdolescentRenderer;
+import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.BoofloBabyRenderer;
+import com.minecraftabnormals.endergetic.client.renderers.entity.booflo.BoofloRenderer;
 import com.minecraftabnormals.endergetic.client.renderers.tile.*;
-import com.minecraftabnormals.endergetic.common.network.*;
-import com.minecraftabnormals.endergetic.common.network.entity.*;
-import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
-import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
+import com.minecraftabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SBoostMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SInflateMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SSlamMessage;
+import com.minecraftabnormals.endergetic.common.network.entity.puffbug.RotateMessage;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
+import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
 import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-
+import com.minecraftabnormals.endergetic.core.registry.other.*;
+import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
 import net.minecraft.client.renderer.tileentity.CampfireTileEntityRenderer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -51,6 +50,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.EnumSet;
 import java.util.function.BiPredicate;
@@ -153,7 +155,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
+		EnderCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 	}
 
 	private void setupMessages() {

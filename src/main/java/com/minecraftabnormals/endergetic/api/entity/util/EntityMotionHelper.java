@@ -7,17 +7,17 @@ public class EntityMotionHelper {
 
 	public static void knockbackEntity(Entity entity, float xzForce, float yForce, boolean reverse, boolean setVelocity) {
 		if (reverse) {
-			setOrAddVelocity(entity, -MathHelper.sin((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, yForce, MathHelper.cos((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, -MathHelper.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, MathHelper.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
 		} else {
-			setOrAddVelocity(entity, MathHelper.sin((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, yForce, -MathHelper.cos((float) Math.toRadians(entity.rotationYaw)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, MathHelper.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, -MathHelper.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
 		}
 	}
 
 	private static void setOrAddVelocity(Entity entity, float x, float y, float z, boolean set) {
 		if (set) {
-			entity.setVelocity(x, y, z);
+			entity.lerpMotion(x, y, z);
 		} else {
-			entity.addVelocity(x, y, z);
+			entity.push(x, y, z);
 		}
 	}
 

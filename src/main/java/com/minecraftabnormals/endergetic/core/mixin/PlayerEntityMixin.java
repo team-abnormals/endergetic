@@ -15,15 +15,15 @@ import java.util.List;
 @Mixin(PlayerEntity.class)
 public final class PlayerEntityMixin {
 
-	@Inject(at = @At("RETURN"), method = "writeAdditional")
-	private void writeBalloons(CompoundNBT compound, CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "addAdditionalSaveData")
+	private void addBalloonsSaveData(CompoundNBT compound, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) (Object) this).getBalloons();
 		if (!balloons.isEmpty()) {
 			ListNBT balloonsTag = new ListNBT();
 
 			for (BolloomBalloonEntity balloon : balloons) {
 				CompoundNBT compoundnbt = new CompoundNBT();
-				if (balloon.writeUnlessRemoved(compoundnbt)) {
+				if (balloon.saveAsPassenger(compoundnbt)) {
 					balloonsTag.add(compoundnbt);
 				}
 			}

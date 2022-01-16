@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
-
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3d;
@@ -15,7 +14,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		Direction side = this.puffbug.getDesiredHiveSide();
 		if (side != null && this.puffbug.getHive() != null) {
 			if (this.puffbug.isAtCorrectRestLocation(side)) {
@@ -26,21 +25,21 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
-		this.puffbug.getNavigator().clearPath();
-		this.puffbug.setAIMoveSpeed(0.0F);
+	public void start() {
+		this.puffbug.getNavigation().stop();
+		this.puffbug.setSpeed(0.0F);
 
-		this.puffbug.setMotion(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vector3d.ZERO);
 	}
 
 	@Override
 	public void tick() {
 		this.ticksPassed++;
 
-		this.puffbug.getNavigator().clearPath();
-		this.puffbug.setAIMoveSpeed(0.0F);
+		this.puffbug.getNavigation().stop();
+		this.puffbug.setSpeed(0.0F);
 
-		this.puffbug.setMotion(this.puffbug.getMotion().mul(1.0F, 0.0F, 1.0F));
+		this.puffbug.setDeltaMovement(this.puffbug.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F));
 
 		if (this.ticksPassed > 25) {
 			this.puffbug.setAttachedHiveSide(this.puffbug.getDesiredHiveSide());
@@ -49,7 +48,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksPassed = 0;
 	}
 }

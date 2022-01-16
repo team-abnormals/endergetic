@@ -1,11 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import java.util.List;
-
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
-
 import net.minecraft.entity.ai.goal.Goal;
+
+import java.util.List;
 
 public class BabyFollowParentGoal extends Goal {
 	private final BoofloBabyEntity baby;
@@ -18,13 +17,13 @@ public class BabyFollowParentGoal extends Goal {
 		this.moveSpeed = speed;
 	}
 
-	public boolean shouldExecute() {
-		List<BoofloEntity> list = this.baby.world.getEntitiesWithinAABB(BoofloEntity.class, this.baby.getBoundingBox().grow(10.0D, 8.0D, 10.0D));
+	public boolean canUse() {
+		List<BoofloEntity> list = this.baby.level.getEntitiesOfClass(BoofloEntity.class, this.baby.getBoundingBox().inflate(10.0D, 8.0D, 10.0D));
 		BoofloEntity booflo = null;
 		double d0 = Double.MAX_VALUE;
 
 		for (BoofloEntity booflos : list) {
-			double d1 = this.baby.getDistanceSq(booflos);
+			double d1 = this.baby.distanceToSqr(booflos);
 			if (!(d1 > d0)) {
 				d0 = d1;
 				booflo = booflos;
@@ -36,7 +35,7 @@ public class BabyFollowParentGoal extends Goal {
 		} else if (d0 < 9.0D) {
 			return false;
 		} else {
-			if (this.baby.getRNG().nextFloat() < 0.25F) {
+			if (this.baby.getRandom().nextFloat() < 0.25F) {
 				this.parent = booflo;
 				return true;
 			}
@@ -44,27 +43,27 @@ public class BabyFollowParentGoal extends Goal {
 		}
 	}
 
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		if (!this.parent.isAlive()) {
 			return false;
 		} else {
-			double d0 = this.baby.getDistanceSq(this.parent);
+			double d0 = this.baby.distanceToSqr(this.parent);
 			return !(d0 < 9.0D) && !(d0 > 256.0D);
 		}
 	}
 
-	public void startExecuting() {
+	public void start() {
 		this.delayCounter = 0;
 	}
 
-	public void resetTask() {
+	public void stop() {
 		this.parent = null;
 	}
 
 	public void tick() {
 		if (--this.delayCounter <= 0) {
 			this.delayCounter = 10;
-			this.baby.getNavigator().tryMoveToEntityLiving(this.parent, this.moveSpeed);
+			this.baby.getNavigation().moveTo(this.parent, this.moveSpeed);
 		}
 	}
 }

@@ -2,7 +2,6 @@ package com.minecraftabnormals.endergetic.common.blocks.poise.hive;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,33 +21,33 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class PuffbugHiveHangerBlock extends Block {
-	private static final VoxelShape SHAPE = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+	private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 
 	public PuffbugHiveHangerBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entity) {
 		if (!(entity instanceof PuffBugEntity)) {
-			entity.setMotionMultiplier(state, new Vector3d(0.25D, 0.05D, 0.25D));
+			entity.makeStuckInBlock(state, new Vector3d(0.25D, 0.05D, 0.25D));
 		}
 	}
 
 	@Override
-	public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		if (!world.isRemote) {
-			BlockPos down = pos.down();
-			BlockPos doubleDown = down.down();
+	public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+		if (!world.isClientSide) {
+			BlockPos down = pos.below();
+			BlockPos doubleDown = down.below();
 			BlockState downState = world.getBlockState(down);
 			Block block = downState.getBlock();
-			if (block == EEBlocks.PUFFBUG_HIVE.get() && !world.getBlockState(doubleDown).isSolid() && world.getBlockState(doubleDown).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
-				ItemStack stack = player.getHeldItemMainhand();
-				PuffBugHiveBlock.alertPuffBugs(world, down, EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 ? player : null);
-				block.harvestBlock(world, player, down, downState, world.getTileEntity(down), stack);
+			if (block == EEBlocks.PUFFBUG_HIVE.get() && !world.getBlockState(doubleDown).canOcclude() && world.getBlockState(doubleDown).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
+				ItemStack stack = player.getMainHandItem();
+				PuffBugHiveBlock.alertPuffBugs(world, down, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0 ? player : null);
+				block.playerDestroy(world, player, down, downState, world.getBlockEntity(down), stack);
 			}
 		}
-		super.onBlockHarvested(world, pos, state, player);
+		super.playerWillDestroy(world, pos, state, player);
 	}
 
 	@Override
@@ -62,10 +61,10 @@ public class PuffbugHiveHangerBlock extends Block {
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if (worldIn.getBlockState(currentPos.up()).isAir() || worldIn.getBlockState(currentPos.down()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
-			return Blocks.AIR.getDefaultState();
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+		if (worldIn.getBlockState(currentPos.above()).isAir() || worldIn.getBlockState(currentPos.below()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
+			return Blocks.AIR.defaultBlockState();
 		}
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 }

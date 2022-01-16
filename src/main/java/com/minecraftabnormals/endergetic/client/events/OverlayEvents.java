@@ -3,7 +3,6 @@ package com.minecraftabnormals.endergetic.client.events;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -21,26 +20,26 @@ public final class OverlayEvents {
 	@SubscribeEvent
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
 		ClientPlayerEntity player = MC.player;
-		if (!MC.gameSettings.hideGUI && event.getType() == ElementType.EXPERIENCE) {
-			if (player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
+		if (!MC.options.hideGui && event.getType() == ElementType.EXPERIENCE) {
+			if (player.isPassenger() && player.getVehicle() instanceof BoofloEntity) {
 				event.setCanceled(true);
 
-				int scaledWidth = event.getWindow().getScaledWidth();
-				int scaledHeight = event.getWindow().getScaledHeight();
+				int scaledWidth = event.getWindow().getGuiScaledWidth();
+				int scaledHeight = event.getWindow().getGuiScaledHeight();
 				int top = scaledHeight - 32 + 3;
 				int left = scaledWidth / 2 - 91;
-				int progress = ((BoofloEntity) player.getRidingEntity()).getBoostPower();
+				int progress = ((BoofloEntity) player.getVehicle()).getBoostPower();
 
 				MatrixStack stack = event.getMatrixStack();
-				stack.push();
-				MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
+				stack.pushPose();
+				MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 
 				OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
 				if (progress > 0) {
 					OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
 				}
 
-				stack.pop();
+				stack.popPose();
 			}
 		}
 	}

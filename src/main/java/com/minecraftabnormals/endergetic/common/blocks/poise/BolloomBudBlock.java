@@ -1,12 +1,9 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity.BudSide;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -28,47 +25,49 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
+
 public class BolloomBudBlock extends Block {
 	public static final BooleanProperty OPENED = BooleanProperty.create("opened");
-	private static final VoxelShape INSIDE = makeCuboidShape(3.5D, 0.0D, 3.5D, 12.5D, 15.0D, 12.5D);
-	protected static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D), VoxelShapes.or(INSIDE), IBooleanFunction.ONLY_FIRST);
-	protected static final VoxelShape SHAPE_OPENED = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D);
+	private static final VoxelShape INSIDE = box(3.5D, 0.0D, 3.5D, 12.5D, 15.0D, 12.5D);
+	protected static final VoxelShape SHAPE = VoxelShapes.join(box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D), VoxelShapes.or(INSIDE), IBooleanFunction.ONLY_FIRST);
+	protected static final VoxelShape SHAPE_OPENED = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D);
 
 	public BolloomBudBlock(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(OPENED, false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(OPENED, false));
 	}
 
 	@Override
-	public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		return Block.makeCuboidShape(-16.0D, -16.0D, -16.0D, 32.0D, 32.0D, 32.0D);
+	public VoxelShape getOcclusionShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return Block.box(-16.0D, -16.0D, -16.0D, 32.0D, 32.0D, 32.0D);
 	}
 
 	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		super.onBlockHarvested(worldIn, pos, state, player);
+	public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+		super.playerWillDestroy(worldIn, pos, state, player);
 	}
 
 	protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		Block block = state.getBlock();
-		return block == Blocks.END_STONE.getBlock() || block.isIn(EETags.Blocks.END_PLANTABLE) || block.isIn(EETags.Blocks.POISE_PLANTABLE);
+		return block == Blocks.END_STONE.getBlock() || block.is(EETags.Blocks.END_PLANTABLE) || block.is(EETags.Blocks.POISE_PLANTABLE);
 	}
 
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		if (stateIn.isValidPosition(world, currentPos)) {
-			boolean opened = stateIn.get(OPENED);
-			return this.placePedals(world, currentPos, opened) && opened ? stateIn.with(OPENED, true) : this.resetBud(world, currentPos);
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+		if (stateIn.canSurvive(world, currentPos)) {
+			boolean opened = stateIn.getValue(OPENED);
+			return this.placePedals(world, currentPos, opened) && opened ? stateIn.setValue(OPENED, true) : this.resetBud(world, currentPos);
 		}
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
 	}
 
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		BlockPos blockpos = pos.down();
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+		BlockPos blockpos = pos.below();
 		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !isAcrossOrAdjacentToBud(worldIn, pos);
 	}
 
 	public boolean placePedals(IWorld world, BlockPos pos, boolean opened) {
-		if (!world.getBlockState(pos).get(OPENED) && this.canPutDownPedals(world, pos)) {
+		if (!world.getBlockState(pos).getValue(OPENED) && this.canPutDownPedals(world, pos)) {
 			if (opened) {
 				for (BudSide side : BudSide.values()) {
 					BlockPos sidePos = side.offsetPosition(pos);
@@ -87,13 +86,13 @@ public class BolloomBudBlock extends Block {
 	public static boolean isAcrossOrAdjacentToBud(IWorldReader world, BlockPos pos) {
 		Block block = EEBlocks.BOLLOOM_BUD.get();
 		for (Direction directions : Direction.values()) {
-			if (world.getBlockState(pos.offset(directions, 2)).getBlock() == block) {
+			if (world.getBlockState(pos.relative(directions, 2)).getBlock() == block) {
 				return true;
 			}
 		}
 
-		BlockPos north = pos.offset(Direction.NORTH);
-		BlockPos south = pos.offset(Direction.SOUTH);
+		BlockPos north = pos.relative(Direction.NORTH);
+		BlockPos south = pos.relative(Direction.SOUTH);
 
 		if (world.getBlockState(north.east()).getBlock() == block || world.getBlockState(south.east()).getBlock() == block || world.getBlockState(north.west()).getBlock() == block || world.getBlockState(south.west()).getBlock() == block) {
 			return true;
@@ -112,15 +111,15 @@ public class BolloomBudBlock extends Block {
 	}
 
 	private BlockState resetBud(IWorld world, BlockPos pos) {
-		if (world.getTileEntity(pos) instanceof BolloomBudTileEntity) {
-			((BolloomBudTileEntity) world.getTileEntity(pos)).resetGrowing();
+		if (world.getBlockEntity(pos) instanceof BolloomBudTileEntity) {
+			((BolloomBudTileEntity) world.getBlockEntity(pos)).resetGrowing();
 		}
-		return this.getDefaultState();
+		return this.defaultBlockState();
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
-		return p_220053_1_.get(OPENED) ? SHAPE_OPENED : SHAPE;
+		return p_220053_1_.getValue(OPENED) ? SHAPE_OPENED : SHAPE;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -128,7 +127,7 @@ public class BolloomBudBlock extends Block {
 		return true;
 	}
 
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(OPENED);
 	}
 
@@ -144,7 +143,7 @@ public class BolloomBudBlock extends Block {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 }

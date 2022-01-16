@@ -1,10 +1,9 @@
 package com.minecraftabnormals.endergetic.core.config;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * @author SmellyModder(Luke Tonon)

@@ -30,7 +30,7 @@ public final class C2SSlamMessage {
 			context.enqueueWork(() -> {
 				PlayerEntity player = context.getSender();
 				if (player != null) {
-					Entity ridingEntity = player.getRidingEntity();
+					Entity ridingEntity = player.getVehicle();
 					if (ridingEntity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) ridingEntity;
 						if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {

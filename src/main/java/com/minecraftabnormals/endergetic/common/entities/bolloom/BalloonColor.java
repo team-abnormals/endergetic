@@ -36,7 +36,7 @@ public enum BalloonColor {
 	BalloonColor(@Nullable DyeColor color, Supplier<Item> balloonItem) {
 		this.color = color;
 		this.balloonItem = balloonItem;
-		this.texture = color != null ? new ResourceLocation(EndergeticExpansion.MOD_ID, String.format("textures/entity/balloon/%s_bolloom_balloon.png", color.getTranslationKey())) : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
+		this.texture = color != null ? new ResourceLocation(EndergeticExpansion.MOD_ID, String.format("textures/entity/balloon/%s_bolloom_balloon.png", color.getName())) : new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/balloon/bolloom_balloon.png");
 	}
 
 	public static BalloonColor byOrdinal(int ordinal) {

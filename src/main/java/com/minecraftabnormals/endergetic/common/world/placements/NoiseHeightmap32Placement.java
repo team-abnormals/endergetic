@@ -21,12 +21,12 @@ public class NoiseHeightmap32Placement extends Placement<NoiseDependant> {
 
 	@Override
 	public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random random, NoiseDependant config, BlockPos pos) {
-		double d0 = Biome.INFO_NOISE.noiseAt((double)pos.getX() / 200.0D, (double)pos.getZ() / 200.0D, false);
+		double d0 = Biome.BIOME_INFO_NOISE.getValue((double) pos.getX() / 200.0D, (double) pos.getZ() / 200.0D, false);
 		int i = d0 < config.noiseLevel ? config.belowNoise : config.aboveNoise;
 		return IntStream.range(0, i).mapToObj((p_227449_3_) -> {
 			int x = random.nextInt(16) + pos.getX();
 			int z = random.nextInt(16) + pos.getZ();
-			int y = helper.func_242893_a(Heightmap.Type.MOTION_BLOCKING, x, z) + 32;
+			int y = helper.getHeight(Heightmap.Type.MOTION_BLOCKING, x, z) + 32;
 			return y <= 0 ? null : new BlockPos(x, random.nextInt(y), z);
 		}).filter(Objects::nonNull);
 	}

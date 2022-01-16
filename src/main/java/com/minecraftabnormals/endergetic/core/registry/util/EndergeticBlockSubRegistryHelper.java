@@ -19,7 +19,7 @@ public final class EndergeticBlockSubRegistryHelper extends BlockSubRegistryHelp
 
 	public <B extends Block> RegistryObject<B> createCorrockStandingBlock(String name, Supplier<? extends B> standingSupplier, Supplier<? extends B> wallSupplier, @Nullable ItemGroup group) {
 		RegistryObject<B> standingBlock = this.deferredRegister.register(name, standingSupplier);
-		this.itemRegister.register(name, () -> new CorrockCrownSBlockItem(standingBlock.get(), wallSupplier::get, new Item.Properties().group(group)));
+		this.itemRegister.register(name, () -> new CorrockCrownSBlockItem(standingBlock.get(), wallSupplier::get, new Item.Properties().tab(group)));
 		return standingBlock;
 	}
 

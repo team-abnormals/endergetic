@@ -24,18 +24,18 @@ public final class TrackedEntityMixin {
 
 	@Shadow
 	@Final
-	private Entity trackedEntity;
+	private Entity entity;
 
-	@Inject(at = @At("HEAD"), method = "tick")
+	@Inject(at = @At("HEAD"), method = "sendChanges")
 	private void updateBalloons(CallbackInfo info) {
-		List<BolloomBalloonEntity> currentBalloons = ((BalloonHolder) this.trackedEntity).getBalloons();
+		List<BolloomBalloonEntity> currentBalloons = ((BalloonHolder) this.entity).getBalloons();
 		if (!currentBalloons.equals(this.prevBalloons)) {
 			this.prevBalloons = currentBalloons;
-			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.trackedEntity), new S2CUpdateBalloonsMessage(this.trackedEntity));
+			EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this.entity), new S2CUpdateBalloonsMessage(this.entity));
 		}
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isPassenger()Z"), method = "tick")
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isPassenger()Z"), method = "sendChanges")
 	private boolean redirectPositionUpdate(Entity trackedEntity) {
 		return trackedEntity.isPassenger() || trackedEntity instanceof BolloomBalloonEntity && ((BolloomBalloonEntity) trackedEntity).isAttachedToEntity();
 	}

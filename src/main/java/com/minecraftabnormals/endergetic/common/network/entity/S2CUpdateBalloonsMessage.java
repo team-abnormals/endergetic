@@ -23,11 +23,11 @@ public final class S2CUpdateBalloonsMessage {
 	}
 
 	public S2CUpdateBalloonsMessage(Entity entity) {
-		this.entityId = entity.getEntityId();
+		this.entityId = entity.getId();
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) entity).getBalloons();
 		this.balloonIds = new int[balloons.size()];
 		for (int i = 0; i < balloons.size(); i++) {
-			this.balloonIds[i] = balloons.get(i).getEntityId();
+			this.balloonIds[i] = balloons.get(i).getId();
 		}
 	}
 
@@ -45,13 +45,13 @@ public final class S2CUpdateBalloonsMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				World world = ClientInfo.getClientPlayerWorld();
-				Entity entity = world.getEntityByID(message.entityId);
+				Entity entity = world.getEntity(message.entityId);
 				if (entity == null) {
 					EndergeticExpansion.LOGGER.warn("Received balloons for unknown entity!");
 				} else {
 					((BalloonHolder) entity).detachBalloons();
 					for (int id : message.balloonIds) {
-						Entity balloon = world.getEntityByID(id);
+						Entity balloon = world.getEntity(id);
 						if (balloon instanceof BolloomBalloonEntity) {
 							((BolloomBalloonEntity) balloon).attachToEntity(entity);
 						}

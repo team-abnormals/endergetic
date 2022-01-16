@@ -1,16 +1,8 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
-import java.util.Map;
-import java.util.OptionalLong;
-import java.util.Random;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -27,6 +19,12 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
+
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.OptionalLong;
+import java.util.Random;
+import java.util.function.Supplier;
 
 public class CorrockBlock extends Block {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
@@ -49,18 +47,18 @@ public class CorrockBlock extends Block {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if (this.shouldConvert(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().getDefaultState());
+			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().defaultBlockState());
 		}
 	}
 
 	@Override
 	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
-		return SoundType.CORAL;
+		return SoundType.CORAL_BLOCK;
 	}
 
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
-			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
+			worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
 		if (this.isSubmerged(worldIn, currentPos)) {
@@ -72,20 +70,20 @@ public class CorrockBlock extends Block {
 
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		if (this.shouldConvert(context.getWorld())) {
-			context.getWorld().getPendingBlockTicks().scheduleTick(context.getPos(), this, 60 + context.getWorld().getRandom().nextInt(40));
+		if (this.shouldConvert(context.getLevel())) {
+			context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
 		}
-		return this.getDefaultState();
+		return this.defaultBlockState();
 	}
 
 	protected boolean shouldConvert(IWorld world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
+		return !this.petrified && CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
 	}
 
 	public boolean isSubmerged(IWorld world, BlockPos pos) {
 		for (Direction offsets : Direction.values()) {
-			FluidState fluidState = world.getFluidState(pos.offset(offsets));
-			if (!fluidState.isEmpty() && fluidState.isTagged(FluidTags.WATER)) {
+			FluidState fluidState = world.getFluidState(pos.relative(offsets));
+			if (!fluidState.isEmpty() && fluidState.is(FluidTags.WATER)) {
 				return true;
 			}
 		}
@@ -93,9 +91,9 @@ public class CorrockBlock extends Block {
 	}
 
 	public static class DimensionTypeAccessor extends DimensionType {
-		public static final DimensionType OVERWORLD = OVERWORLD_TYPE;
-		public static final DimensionType THE_NETHER = NETHER_TYPE;
-		public static final DimensionType THE_END = END_TYPE;
+		public static final DimensionType OVERWORLD = DEFAULT_OVERWORLD;
+		public static final DimensionType THE_NETHER = DEFAULT_NETHER;
+		public static final DimensionType THE_END = DEFAULT_END;
 
 		protected DimensionTypeAccessor(OptionalLong fixedTime, boolean hasSkyLight, boolean hasCeiling, boolean ultrawarm, boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks, boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation effects, float ambientLight) {
 			super(fixedTime, hasSkyLight, hasCeiling, ultrawarm, natural, coordinateScale, piglinSafe, bedWorks, respawnAnchorWorks, hasRaids, logicalHeight, infiniburn, effects, ambientLight);

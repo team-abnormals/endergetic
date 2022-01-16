@@ -1,15 +1,14 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
 import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownWallModel;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.CorrockCrownTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StandingSignBlock;
@@ -40,22 +39,22 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCr
 		BlockState state = te.getBlockState();
 		boolean isStanding = state.getBlock() instanceof CorrockCrownStandingBlock;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		if (isStanding) {
 			matrixStack.translate(0.5F, 1.5F, 0.5F);
-			float angle = -((float) (state.get(StandingSignBlock.ROTATION) * 360) / 16.0F);
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(angle));
+			float angle = -((float) (state.getValue(StandingSignBlock.ROTATION) * 360) / 16.0F);
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(angle));
 		} else {
 			matrixStack.translate(0.5F, 1.5F, 0.5F);
-			float angle = -state.get(WallSignBlock.FACING).getOpposite().getHorizontalAngle();
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(angle));
+			float angle = -state.getValue(WallSignBlock.FACING).getOpposite().toYRot();
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(angle));
 
 			matrixStack.translate(0.0F, -0.4F, 0.05F);
 		}
 
-		if (isStanding && state.get(CorrockCrownStandingBlock.UPSIDE_DOWN)) {
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		if (isStanding && state.getValue(CorrockCrownStandingBlock.UPSIDE_DOWN)) {
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, 2.0F, 0.0F);
 		}
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
@@ -68,7 +67,7 @@ public class CorrockCrownTileEntityRenderer extends TileEntityRenderer<CorrockCr
 			this.wallModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		}
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	public int getTexture(CorrockCrownTileEntity te) {
