@@ -82,6 +82,8 @@ dependencies {
 
 repositories {
     maven { url = "https://maven.jaackson.me" }
+    maven { url = "https://dvs1.progwml6.com/files/maven/" }
+    maven { url = "https://modmaven.k-4u.nl" }
 }
 
 jar {
