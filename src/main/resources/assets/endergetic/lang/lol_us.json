@@ -1,5 +1,5 @@
 {
-  "_comment": "Bloks",
+  "_comment": "Blocks",
   "block.endergetic.overworld_corrock_block": "Overwurld coroc bloc",
   "block.endergetic.nether_corrock_block": "Nether coroc bloc",
   "block.endergetic.end_corrock_block": "End coroc bloc",
@@ -90,7 +90,7 @@
   "block.endergetic.chiseled_end_stone_bricks": "Carved weird white rock Brickz",
   "block.endergetic.cracked_end_stone_bricks": "Cracked weird white rock Brickz",
   "block.endergetic.cracked_purpur_block": "OOO PURPUR Bloc w/ crackz",
-  "_comment_": "Itemz",
+  "_comment_": "Items",
   "item.endergetic.poise_boat": "Poys watr car",
   "item.endergetic.eumus_brick": "Eumus brickz",
   "item.endergetic.bolloom_fruit": "Bolloom Frut",
