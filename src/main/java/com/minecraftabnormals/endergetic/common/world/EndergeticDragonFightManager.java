@@ -278,7 +278,6 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 		EndergeticEndPodiumFeature endpodium = new EndergeticEndPodiumFeature(active);
 		if (this.portalLocation == null) {
 			for (this.portalLocation = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).below(); this.level.getBlockState(this.portalLocation).getBlock() == Blocks.BEDROCK && this.portalLocation.getY() > this.level.getSeaLevel(); this.portalLocation = this.portalLocation.below()) {
-				;
 			}
 		}
 		endpodium.configured(IFeatureConfig.NONE).place(this.level, this.level.getChunkSource().getGenerator(), new Random(), this.portalLocation);
@@ -286,7 +285,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 
 	@Override
 	protected void spawnNewGateway() {
-		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(DragonFightManager.class, this, "gateways");
+		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(DragonFightManager.class, this, "field_186111_e");
 		if (!gateways.isEmpty()) {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
