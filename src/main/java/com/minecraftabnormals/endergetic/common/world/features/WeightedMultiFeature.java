@@ -16,8 +16,8 @@ public final class WeightedMultiFeature extends Feature<WeightedFeatureConfig> {
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, WeightedFeatureConfig config) {
-		return config.getRandomFeature(rand).generate(world, generator, rand, pos);
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, WeightedFeatureConfig config) {
+		return config.getRandomFeature(rand).place(world, generator, rand, pos);
 	}
 
 }

@@ -18,26 +18,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityRendererManager.class)
 public final class EntityRendererManagerMixin {
 
-	@Inject(at = @At(value = "JUMP", shift = At.Shift.BEFORE, ordinal = 0), method = "renderDebugBoundingBox")
+	@Inject(at = @At(value = "JUMP", shift = At.Shift.BEFORE, ordinal = 0), method = "renderHitbox")
 	private void renderEggSackBoundingBox(MatrixStack matrixStack, IVertexBuilder bufferIn, Entity entity, float partialTicks, CallbackInfo info) {
 		if (entity instanceof BroodEetleEntity) {
-			BroodEggSackEntity eggSackEntity = ((BroodEetleEntity) entity).getEggSack(entity.world);
+			BroodEggSackEntity eggSackEntity = ((BroodEetleEntity) entity).getEggSack(entity.level);
 			if (eggSackEntity != null) {
-				matrixStack.push();
-				double x = -MathHelper.lerp(partialTicks, entity.lastTickPosX, entity.getPosX());
-				double y = -MathHelper.lerp(partialTicks, entity.lastTickPosY, entity.getPosY());
-				double z = -MathHelper.lerp(partialTicks, entity.lastTickPosZ, entity.getPosZ());
+				matrixStack.pushPose();
+				double x = -MathHelper.lerp(partialTicks, entity.xOld, entity.getX());
+				double y = -MathHelper.lerp(partialTicks, entity.yOld, entity.getY());
+				double z = -MathHelper.lerp(partialTicks, entity.zOld, entity.getZ());
 				BroodEetleEntity broodEetleEntity = (BroodEetleEntity) entity;
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(new Vector3d(-x, -y, -z), MathHelper.lerp(partialTicks, broodEetleEntity.prevRenderYawOffset, broodEetleEntity.renderYawOffset), broodEetleEntity.getEggCannonProgress(), broodEetleEntity.getEggCannonFlyingProgress(), broodEetleEntity.getFlyingRotations().getRenderFlyPitch(), broodEetleEntity.isOnLastHealthStage());
+				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(new Vector3d(-x, -y, -z), MathHelper.lerp(partialTicks, broodEetleEntity.yBodyRotO, broodEetleEntity.yBodyRot), broodEetleEntity.getEggCannonProgress(), broodEetleEntity.getEggCannonFlyingProgress(), broodEetleEntity.getFlyingRotations().getRenderFlyPitch(), broodEetleEntity.isOnLastHealthStage());
 				matrixStack.translate(x + eggSackPos.x, y + eggSackPos.y, z + eggSackPos.z);
-				AxisAlignedBB axisalignedbb = eggSackEntity.getBoundingBox().offset(-eggSackEntity.getPosX(), -eggSackEntity.getPosY(), -eggSackEntity.getPosZ());
-				WorldRenderer.drawBoundingBox(matrixStack, bufferIn, axisalignedbb, 0.25F, 1.0F, 0.0F, 1.0F);
-				matrixStack.pop();
+				AxisAlignedBB axisalignedbb = eggSackEntity.getBoundingBox().move(-eggSackEntity.getX(), -eggSackEntity.getY(), -eggSackEntity.getZ());
+				WorldRenderer.renderLineBox(matrixStack, bufferIn, axisalignedbb, 0.25F, 1.0F, 0.0F, 1.0F);
+				matrixStack.popPose();
 			}
 		}
 	}
 
-	@Inject(at = @At(value = "HEAD"), method = "renderDebugBoundingBox", cancellable = true)
+	@Inject(at = @At(value = "HEAD"), method = "renderHitbox", cancellable = true)
 	private void cancelDefaultEggSackBoundingBox(MatrixStack matrixStack, IVertexBuilder bufferIn, Entity entity, float partialTicks, CallbackInfo info) {
 		if (entity instanceof BroodEggSackEntity) {
 			info.cancel();

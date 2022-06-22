@@ -43,9 +43,11 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import net.minecraft.entity.ai.controller.MovementController.Action;
+
 public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
-	private static final DataParameter<PurpoidSize> SIZE = EntityDataManager.createKey(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
-	private static final DataParameter<Integer> BOOSTING_TICKS = EntityDataManager.createKey(PurpoidEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<PurpoidSize> SIZE = EntityDataManager.defineId(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
+	private static final DataParameter<Integer> BOOSTING_TICKS = EntityDataManager.defineId(PurpoidEntity.class, DataSerializers.INT);
 	public static final Endimation TELEPORT_TO_ANIMATION = new Endimation(18);
 	public static final Endimation FAST_TELEPORT_TO_ANIMATION = new Endimation(15);
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
@@ -70,14 +72,14 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		super(type, world);
 		this.resetTeleportCooldown();
 		this.resetRestCooldown();
-		this.moveController = new PurpoidMoveController(this);
+		this.moveControl = new PurpoidMoveController(this);
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(SIZE, PurpoidSize.NORMAL);
-		this.dataManager.register(BOOSTING_TICKS, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(SIZE, PurpoidSize.NORMAL);
+		this.entityData.define(BOOSTING_TICKS, 0);
 	}
 
 	@Override
@@ -93,42 +95,42 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
+	public void onSyncedDataUpdated(DataParameter<?> key) {
 		if (SIZE.equals(key)) {
-			this.recalculateSize();
+			this.refreshDimensions();
 		}
-		super.notifyDataManagerChange(key);
+		super.onSyncedDataUpdated(key);
 	}
 
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MobEntity.func_233666_p_()
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0F)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
-				.createMutableAttribute(Attributes.MAX_HEALTH, 25.0F)
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
-				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.ATTACK_DAMAGE, 4.0F)
+				.add(Attributes.MOVEMENT_SPEED, 0.2F)
+				.add(Attributes.MAX_HEALTH, 25.0F)
+				.add(Attributes.FOLLOW_RANGE, 32.0F)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 		this.endimateTick();
-		World world = this.world;
-		if (world.isRemote) {
+		World world = this.level;
+		if (world.isClientSide) {
 			this.prevPull = this.pull;
-			Vector3d pos = this.getPositionVec();
+			Vector3d pos = this.position();
 			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
 
 			if (this.isBoosting() && world.getGameTime() % 4 == 0) {
-				double dy = this.pull.getY() - pos.getY();
+				double dy = this.pull.y() - pos.y();
 				CorrockCrownParticleData particleData = this.createParticleData();
-				Random random = this.getRNG();
+				Random random = this.getRandom();
 				for (int i = 0; i < 2; i++) {
-					world.addParticle(particleData, this.getPosXRandom(0.5D), this.getPosY() + this.getEyeHeight(), this.getPosZRandom(0.5D), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
+					world.addParticle(particleData, this.getRandomX(0.5D), this.getY() + this.getEyeHeight(), this.getRandomZ(0.5D), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
 				}
 			}
 
-			if (!this.getShouldBeDead() && (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) || this.isPassenger())) {
+			if (!this.isDeadOrDying() && (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) || this.isPassenger())) {
 				pos = pos.subtract(0.0F, 1.0F, 0.0F);
 				this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
 			}
@@ -136,9 +138,9 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			int animationTick = this.getAnimationTick();
 			if ((this.isEndimationPlaying(TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION)) && animationTick == 7 || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && animationTick == 4 || this.isEndimationPlaying(TELEFRAG_ANIMATION) && animationTick == 2) {
 				CorrockCrownParticleData particleData = this.createParticleData();
-				Random random = this.getRNG();
+				Random random = this.getRandom();
 				for (int i = 0; i < 12; i++) {
-					world.addParticle(particleData, this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+					world.addParticle(particleData, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 				}
 			}
 		} else {
@@ -159,27 +161,27 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			}
 			if (this.isBoosting()) {
 				this.setBoostingTicks(this.getBoostingTicks() - 1);
-			} else if (!this.isPassenger() && this.hasTeleportCooldown() && !this.isResting() && this.rand.nextFloat() <= 0.001F) {
-				this.setBoostingTicks(this.rand.nextInt(81) + 80);
+			} else if (!this.isPassenger() && this.hasTeleportCooldown() && !this.isResting() && this.random.nextFloat() <= 0.001F) {
+				this.setBoostingTicks(this.random.nextInt(81) + 80);
 			}
 			this.teleportController.tick(this);
 		}
 
-		if (this.getShouldBeDead()) {
-			if (!this.isEndimationPlaying(DEATH_ANIMATION) && !world.isRemote) {
+		if (this.isDeadOrDying()) {
+			if (!this.isEndimationPlaying(DEATH_ANIMATION) && !world.isClientSide) {
 				NetworkUtil.setPlayingAnimationMessage(this, DEATH_ANIMATION);
 			}
 			if (++this.deathTime >= 10) {
-				if (!world.isRemote) {
+				if (!world.isClientSide) {
 					this.remove();
 				} else {
 					CorrockCrownParticleData particleData = this.createParticleData();
-					Random random = this.getRNG();
+					Random random = this.getRandom();
 					for (int i = 0; i < 12; ++i) {
-						world.addParticle(particleData, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+						world.addParticle(particleData, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 					}
 					for (int i = 0; i < 20; ++i) {
-						world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+						world.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
 					}
 				}
 			}
@@ -187,8 +189,8 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putInt("Size", this.getSize().ordinal());
 		compound.putInt("Age", this.growingAge);
 		compound.putInt("BoostingTicks", this.getBoostingTicks());
@@ -200,8 +202,8 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		this.setSize(PurpoidSize.values()[MathHelper.clamp(compound.getInt("Size"), 0, 2)], false);
 		this.updateAge(compound.getInt("Age"));
 		this.setBoostingTicks(Math.max(0, compound.getInt("BoostingTicks")));
@@ -217,7 +219,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	public void setSize(PurpoidSize size, boolean updateHealth) {
-		this.dataManager.set(SIZE, size);
+		this.entityData.set(SIZE, size);
 		float scale = size.getScale();
 		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(scale * 25.0F);
 		this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(scale * 4.0F);
@@ -242,19 +244,19 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			goalSelector.addGoal(3, this.restOnFlowerGoal);
 			goalSelector.addGoal(4, this.teleportToFlowerGoal);
 		}
-		this.experienceValue = (int) (2 * scale);
+		this.xpReward = (int) (2 * scale);
 	}
 
 	public PurpoidSize getSize() {
-		return this.dataManager.get(SIZE);
+		return this.entityData.get(SIZE);
 	}
 
 	public void setBoostingTicks(int boostingTicks) {
-		this.dataManager.set(BOOSTING_TICKS, boostingTicks);
+		this.entityData.set(BOOSTING_TICKS, boostingTicks);
 	}
 
 	public int getBoostingTicks() {
-		return this.dataManager.get(BOOSTING_TICKS);
+		return this.entityData.get(BOOSTING_TICKS);
 	}
 
 	public void updateAge(int growingAge) {
@@ -270,7 +272,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	public void resetTeleportCooldown() {
-		this.teleportCooldown = this.getRNG().nextInt(2801) + 200;
+		this.teleportCooldown = this.getRandom().nextInt(2801) + 200;
 	}
 
 	public boolean hasTeleportCooldown() {
@@ -278,7 +280,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	public void resetRestCooldown() {
-		this.restCooldown = this.getRNG().nextInt(2001) + 600;
+		this.restCooldown = this.getRandom().nextInt(2001) + 600;
 	}
 
 	public boolean hasRestCooldown() {
@@ -311,7 +313,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public boolean isChild() {
+	public boolean isBaby() {
 		return this.getSize() == PurpoidSize.PURP;
 	}
 
@@ -321,10 +323,10 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Override
 	public void travel(Vector3d travelVector) {
-		if (this.isServerWorld()) {
+		if (this.isEffectiveAi()) {
 			this.moveRelative(0.1F, travelVector);
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.8D));
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.8D));
 		} else {
 			super.travel(travelVector);
 		}
@@ -332,113 +334,113 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
+	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
 		if (spawnData == null) {
 			spawnData = new AgeableEntity.AgeableData(true);
 		}
 
-		Random random = this.rand;
+		Random random = this.random;
 		if (spawnData instanceof AgeableEntity.AgeableData) {
 			AgeableEntity.AgeableData ageableData = (AgeableEntity.AgeableData) spawnData;
-			if (ageableData.canBabySpawn() && ageableData.getIndexInGroup() > 0 && random.nextFloat() <= ageableData.getBabySpawnProbability()) {
+			if (ageableData.isShouldSpawnBaby() && ageableData.getGroupSize() > 0 && random.nextFloat() <= ageableData.getBabySpawnChance()) {
 				this.updateAge(-24000);
 			} else if (random.nextFloat() <= 0.005F) {
 				this.setSize(PurpoidSize.PURPAZOID, true);
 			}
-			ageableData.incrementIndexInGroup();
+			ageableData.increaseGroupSizeByOne();
 		}
-		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnData, dataTag);
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnData, dataTag);
 	}
 
 	@Override
-	public void func_233629_a_(LivingEntity entity, boolean p_233629_2_) {
-		super.func_233629_a_(entity, true);
+	public void calculateEntityAnimation(LivingEntity entity, boolean p_233629_2_) {
+		super.calculateEntityAnimation(entity, true);
 	}
 
 	@Override
-	public double getYOffset() {
-		Entity ridingEntity = this.getRidingEntity();
+	public double getMyRidingOffset() {
+		Entity ridingEntity = this.getVehicle();
 		if (ridingEntity != null) {
-			return ridingEntity.getBoundingBox().maxY - (ridingEntity.getPosY() + ridingEntity.getMountedYOffset());
+			return ridingEntity.getBoundingBox().maxY - (ridingEntity.getY() + ridingEntity.getPassengersRidingOffset());
 		}
-		return super.getYOffset();
+		return super.getMyRidingOffset();
 	}
 
 	@Override
 	public boolean startRiding(Entity entity, boolean force) {
 		boolean riding = super.startRiding(entity, force);
 		if (entity instanceof ServerPlayerEntity) {
-			((ServerPlayerEntity) entity).connection.sendPacket(new SSetPassengersPacket(entity));
+			((ServerPlayerEntity) entity).connection.send(new SSetPassengersPacket(entity));
 		}
 		return riding;
 	}
 
 	@Override
 	public void stopRiding() {
-		Entity entity = this.getRidingEntity();
+		Entity entity = this.getVehicle();
 		super.stopRiding();
 		if (entity instanceof ServerPlayerEntity) {
-			((ServerPlayerEntity) entity).connection.sendPacket(new SSetPassengersPacket(entity));
+			((ServerPlayerEntity) entity).connection.send(new SSetPassengersPacket(entity));
 		}
 	}
 
 	@Override
-	protected ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
-		if (player.getHeldItemMainhand().isEmpty() && !this.isPassenger() && this.getSize() == PurpoidSize.NORMAL && this.isAlive()) {
+	protected ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+		if (player.getMainHandItem().isEmpty() && !this.isPassenger() && this.getSize() == PurpoidSize.NORMAL && this.isAlive()) {
 			this.startRiding(player);
-			this.setAttackTarget(player);
+			this.setTarget(player);
 			return ActionResultType.SUCCESS;
 		}
-		return super.func_230254_b_(player, hand);
+		return super.mobInteract(player, hand);
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (!this.world.isRemote) {
-			Entity ridingEntity = this.getRidingEntity();
-			if (ridingEntity != null && source.getTrueSource() == ridingEntity) {
+	public boolean hurt(DamageSource source, float amount) {
+		if (!this.level.isClientSide) {
+			Entity ridingEntity = this.getVehicle();
+			if (ridingEntity != null && source.getEntity() == ridingEntity) {
 				this.stopRiding();
-				return super.attackEntityFrom(source, amount);
+				return super.hurt(source, amount);
 			}
 			if (this.isNoEndimationPlaying() && !this.getTeleportController().isTeleporting()) {
 				if (source instanceof IndirectEntityDamageSource) {
 					if (this.tryToTeleportRandomly(12)) {
 						return true;
 					}
-				} else if (!(source.getTrueSource() instanceof LivingEntity) && this.rand.nextInt(10) != 0) {
+				} else if (!(source.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
 					this.tryToTeleportRandomly(1);
 				}
 			}
 		}
-		return super.attackEntityFrom(source, amount);
+		return super.hurt(source, amount);
 	}
 
 	@Override
-	public PathNavigator createNavigator(World world) {
+	public PathNavigator createNavigation(World world) {
 		return new EndergeticFlyingPathNavigator(this, world);
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	protected void onDeathUpdate() {
+	protected void tickDeath() {
 	}
 
 	@Override
-	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override
-	public boolean isOnLadder() {
+	public boolean onClimbable() {
 		return false;
 	}
 
 	@Override
-	public EntitySize getSize(Pose poseIn) {
-		return super.getSize(poseIn).scale(this.getSize().getScale());
+	public EntitySize getDimensions(Pose poseIn) {
+		return super.getDimensions(poseIn).scale(this.getSize().getScale());
 	}
 
 	@Override
@@ -447,7 +449,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public boolean isWaterSensitive() {
+	public boolean isSensitiveToWater() {
 		return true;
 	}
 
@@ -465,7 +467,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Override
 	public void onEndimationEnd(Endimation endimation) {
-		if (!this.world.isRemote && (endimation == TELEPORT_TO_ANIMATION || endimation == FAST_TELEPORT_TO_ANIMATION)) {
+		if (!this.level.isClientSide && (endimation == TELEPORT_TO_ANIMATION || endimation == FAST_TELEPORT_TO_ANIMATION)) {
 			NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
 		}
 	}
@@ -503,15 +505,15 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	private boolean tryToTeleportRandomly(int attempts) {
-		BlockPos pos = this.getPosition();
-		Random random = this.getRNG();
-		EntitySize size = this.getSize(this.getPose());
-		World world = this.world;
+		BlockPos pos = this.blockPosition();
+		Random random = this.getRandom();
+		EntitySize size = this.getDimensions(this.getPose());
+		World world = this.level;
 		for (int i = 0; i < attempts; i++) {
-			BlockPos randomPos = pos.add(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
-			AxisAlignedBB collisionBox = size.func_242285_a(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
-			if (world.hasNoCollisions(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
-				this.teleportController.beginTeleportation(this, randomPos, this.getRidingEntity() != null);
+			BlockPos randomPos = pos.offset(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
+			AxisAlignedBB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+			if (world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
+				this.teleportController.beginTeleportation(this, randomPos, this.getVehicle() != null);
 				return true;
 			}
 		}
@@ -524,12 +526,12 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 		public PurpoidMoveController(PurpoidEntity mob) {
 			super(mob);
-			this.prevPos = mob.getPositionVec();
+			this.prevPos = mob.position();
 		}
 
 		@Override
-		public void setMoveTo(double x, double y, double z, double speedIn) {
-			super.setMoveTo(x, y, z, speedIn);
+		public void setWantedPosition(double x, double y, double z, double speedIn) {
+			super.setWantedPosition(x, y, z, speedIn);
 			this.stuckTicks = 0;
 		}
 
@@ -537,52 +539,52 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		public void tick() {
 			PurpoidEntity purpoid = (PurpoidEntity) this.mob;
 			boolean boosting = purpoid.isBoosting();
-			if (this.action == Action.MOVE_TO) {
-				Vector3d pos = purpoid.getPositionVec();
-				double x = pos.getX();
-				double z = pos.getZ();
-				Vector3d vector3d = new Vector3d(this.posX - x, this.posY - pos.getY(), this.posZ - z);
+			if (this.operation == Action.MOVE_TO) {
+				Vector3d pos = purpoid.position();
+				double x = pos.x();
+				double z = pos.z();
+				Vector3d vector3d = new Vector3d(this.wantedX - x, this.wantedY - pos.y(), this.wantedZ - z);
 				double distance = vector3d.length();
 				if (distance <= 0.2F * purpoid.getSize().getScale()) {
-					this.action = Action.WAIT;
+					this.operation = Action.WAIT;
 				} else {
 					double dx = vector3d.x;
 					double dz = vector3d.z;
-					purpoid.rotationYaw = purpoid.renderYawOffset = this.limitAngle(purpoid.rotationYaw, (float)(MathHelper.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F);
-					float newMoveSpeed = MathHelper.lerp(0.125F, purpoid.getAIMoveSpeed(), (boosting ? 1.25F : 1.0F) * (float)(this.speed * purpoid.getAttributeValue(Attributes.MOVEMENT_SPEED)));
-					purpoid.setAIMoveSpeed(newMoveSpeed);
+					purpoid.yRot = purpoid.yBodyRot = this.rotlerp(purpoid.yRot, (float)(MathHelper.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F);
+					float newMoveSpeed = MathHelper.lerp(0.125F, purpoid.getSpeed(), (boosting ? 1.25F : 1.0F) * (float)(this.speedModifier * purpoid.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+					purpoid.setSpeed(newMoveSpeed);
 					double normalizedY = vector3d.y / distance;
-					purpoid.setMotion(purpoid.getMotion().add(0.0F, newMoveSpeed * normalizedY * 0.1D, 0.0F));
-					LookController lookcontroller = purpoid.getLookController();
-					double d11 = lookcontroller.getLookPosX();
-					double d12 = lookcontroller.getLookPosY();
-					double d13 = lookcontroller.getLookPosZ();
+					purpoid.setDeltaMovement(purpoid.getDeltaMovement().add(0.0F, newMoveSpeed * normalizedY * 0.1D, 0.0F));
+					LookController lookcontroller = purpoid.getLookControl();
+					double d11 = lookcontroller.getWantedX();
+					double d12 = lookcontroller.getWantedY();
+					double d13 = lookcontroller.getWantedZ();
 					double d8 = x + (dx / distance) * 2.0D;
-					double d9 = purpoid.getPosYEye() + normalizedY / distance;
+					double d9 = purpoid.getEyeY() + normalizedY / distance;
 					double d10 = z + (dz / distance) * 2.0D;
-					if (!lookcontroller.getIsLooking()) {
+					if (!lookcontroller.isHasWanted()) {
 						d11 = d8;
 						d12 = d9;
 						d13 = d10;
 					}
 
-					purpoid.getLookController().setLookPosition(MathHelper.lerp(0.125D, d11, d8), MathHelper.lerp(0.125D, d12, d9), MathHelper.lerp(0.125D, d13, d10), 10.0F, 40.0F);
+					purpoid.getLookControl().setLookAt(MathHelper.lerp(0.125D, d11, d8), MathHelper.lerp(0.125D, d12, d9), MathHelper.lerp(0.125D, d13, d10), 10.0F, 40.0F);
 
-					if (this.prevPos.squareDistanceTo(pos) <= 0.005F) {
+					if (this.prevPos.distanceToSqr(pos) <= 0.005F) {
 						if (++this.stuckTicks >= 60) {
-							this.action = Action.WAIT;
+							this.operation = Action.WAIT;
 						}
 					} else {
 						this.stuckTicks = 0;
 					}
 				}
 			} else {
-				purpoid.setAIMoveSpeed(0.0F);
+				purpoid.setSpeed(0.0F);
 				if (purpoid.isNoEndimationPlaying() && !purpoid.isResting()) {
-					purpoid.setMotion(purpoid.getMotion().add(0.0F, boosting ? 0.025F : 0.01F, 0.0F));
+					purpoid.setDeltaMovement(purpoid.getDeltaMovement().add(0.0F, boosting ? 0.025F : 0.01F, 0.0F));
 				}
 			}
-			this.prevPos = purpoid.getPositionVec();
+			this.prevPos = purpoid.position();
 		}
 
 	}
@@ -595,16 +597,16 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			if ((purpoid.isEndimationPlaying(TELEPORT_TO_ANIMATION) || purpoid.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION)) && purpoid.getAnimationTick() == 10) {
 				this.teleportToDestination(purpoid);
 			} else if (purpoid.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
-				purpoid.setMotion(Vector3d.ZERO);
+				purpoid.setDeltaMovement(Vector3d.ZERO);
 			}
 		}
 
 		private void teleportToDestination(PurpoidEntity purpoid) {
 			if (this.isTeleporting()) {
 				BlockPos destination = this.destination;
-				Entity ridingEntity = purpoid.getRidingEntity();
+				Entity ridingEntity = purpoid.getVehicle();
 				if (ridingEntity != null) {
-					ridingEntity.teleportKeepLoaded(destination.getX() + 0.5F, destination.getY(), destination.getZ() + 0.5F);
+					ridingEntity.teleportToWithTicket(destination.getX() + 0.5F, destination.getY(), destination.getZ() + 0.5F);
 				} else {
 					NetworkUtil.teleportEntity(purpoid, destination.getX() + 0.5F, destination.getY(), destination.getZ() + 0.5F);
 				}

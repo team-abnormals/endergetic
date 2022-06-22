@@ -25,15 +25,15 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends Feature<FC> {
 	protected static final Block CORROCK_BLOCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
-	protected static final LazyValue<BlockState> CORROCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END.get().getDefaultState());
-	protected static final LazyValue<BlockState> CORROCK_BLOCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END_BLOCK.get().getDefaultState());
+	protected static final LazyValue<BlockState> CORROCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END.get().defaultBlockState());
+	protected static final LazyValue<BlockState> CORROCK_BLOCK_STATE = new LazyValue<>(() -> EEBlocks.CORROCK_END_BLOCK.get().defaultBlockState());
 
 	protected static BlockState getCorrockCrownWall(Direction facing) {
-		return EEBlocks.CORROCK_CROWN_END_WALL.get().getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, facing);
+		return EEBlocks.CORROCK_CROWN_END_WALL.get().defaultBlockState().setValue(HorizontalBlock.FACING, facing);
 	}
 
 	protected static BlockState getCorrockCrownStanding(int rotation) {
-		return EEBlocks.CORROCK_CROWN_END_STANDING.get().getDefaultState().with(CorrockCrownStandingBlock.ROTATION, rotation);
+		return EEBlocks.CORROCK_CROWN_END_STANDING.get().defaultBlockState().setValue(CorrockCrownStandingBlock.ROTATION, rotation);
 	}
 
 	public AbstractCorrockFeature(Codec<FC> configFactory) {
@@ -42,7 +42,7 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 
 	protected static boolean isNotCloseToAnotherGrowth(List<ChorusPlantPart> growths, BlockPos pos) {
 		for (ChorusPlantPart part : growths) {
-			if (MathHelper.sqrt(part.pos.distanceSq(pos)) < 2.0F) {
+			if (MathHelper.sqrt(part.pos.distSqr(pos)) < 2.0F) {
 				return false;
 			}
 		}
@@ -54,8 +54,8 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.isAirBlock(mutable.setPos(xx, yy, zz))) {
-						positions.add(mutable.toImmutable());
+					if (world.isEmptyBlock(mutable.set(xx, yy, zz))) {
+						positions.add(mutable.immutable());
 					} else {
 						return false;
 					}
@@ -66,29 +66,29 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 	}
 
 	protected static boolean tryToPlaceCorrockBlock(ISeedReader world, BlockPos pos, List<BlockPos> positions) {
-		if (world.isAirBlock(pos)) {
-			positions.add(pos.toImmutable());
+		if (world.isEmptyBlock(pos)) {
+			positions.add(pos.immutable());
 			return true;
 		}
 		return false;
 	}
 
 	protected static boolean tryToPlaceCorrockBlockWithCrown(ISeedReader world, Random rand, BlockPos pos, List<BlockPos> positions, Direction direction, GenerationPiece crowns, @Nullable List<BlockPos> corners, float crownChance) {
-		if (world.isAirBlock(pos)) {
-			BlockPos immutable = pos.toImmutable();
+		if (world.isEmptyBlock(pos)) {
+			BlockPos immutable = pos.immutable();
 			positions.add(immutable);
 			if (corners != null) {
 				corners.add(immutable);
 			}
 			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
-					BlockPos up = pos.up();
-					if (world.isAirBlock(up)) {
+					BlockPos up = pos.above();
+					if (world.isEmptyBlock(up)) {
 						crowns.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), up);
 					}
 				} else {
-					BlockPos offset = pos.offset(direction);
-					if (world.isAirBlock(offset)) {
+					BlockPos offset = pos.relative(direction);
+					if (world.isEmptyBlock(offset)) {
 						crowns.addBlockPiece(getCorrockCrownWall(direction), offset);
 					}
 				}
@@ -102,7 +102,7 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int x = x1; x <= x2; x++) {
 			for (int z = z1; z <= z2; z++) {
-				if (!tryToPlaceCorrockBlockWithCrown(world, rand, mutable.setPos(x, y, z), positions, direction, crowns, null, crownChance)) {
+				if (!tryToPlaceCorrockBlockWithCrown(world, rand, mutable.set(x, y, z), positions, direction, crowns, null, crownChance)) {
 					return false;
 				}
 			}
@@ -118,8 +118,8 @@ public abstract class AbstractCorrockFeature<FC extends IFeatureConfig> extends 
 		}
 
 		public void placeGrowth(IWorld world, Random rand) {
-			world.setBlockState(this.pos, CORROCK_BLOCK_STATE.getValue(), 2);
-			ChorusFlowerBlock.generatePlant(world, this.pos.up(), rand, 8);
+			world.setBlock(this.pos, CORROCK_BLOCK_STATE.get(), 2);
+			ChorusFlowerBlock.generatePlant(world, this.pos.above(), rand, 8);
 		}
 	}
 }

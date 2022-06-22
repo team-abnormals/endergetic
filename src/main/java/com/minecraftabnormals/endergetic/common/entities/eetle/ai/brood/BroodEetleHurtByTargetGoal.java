@@ -12,50 +12,50 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class BroodEetleHurtByTargetGoal extends Goal {
-	private static final EntityPredicate PREDICATE = (new EntityPredicate()).setLineOfSiteRequired().setUseInvisibilityCheck();
+	private static final EntityPredicate PREDICATE = (new EntityPredicate()).allowUnseeable().ignoreInvisibilityTesting();
 	private final BroodEetleEntity broodEetle;
 	private int revengeTimerOld;
 
 	public BroodEetleHurtByTargetGoal(BroodEetleEntity broodEetle) {
 		this.broodEetle = broodEetle;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.TARGET));
+		this.setFlags(EnumSet.of(Goal.Flag.TARGET));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		int revengeTimer = broodEetle.getRevengeTimer();
-		LivingEntity revengeTarget = broodEetle.getRevengeTarget();
+		int revengeTimer = broodEetle.getLastHurtByMobTimestamp();
+		LivingEntity revengeTarget = broodEetle.getLastHurtByMob();
 		if (revengeTimer != this.revengeTimerOld && revengeTarget != null) {
 			return isSuitableTarget(broodEetle, revengeTarget);
 		}
 		return false;
 	}
 
-	public void startExecuting() {
+	public void start() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		LivingEntity revengeTarget = broodEetle.getRevengeTarget();
-		if (revengeTarget != null && !(revengeTarget instanceof BroodEetleEntity) && !broodEetle.isOnSameTeam(revengeTarget)) {
+		LivingEntity revengeTarget = broodEetle.getLastHurtByMob();
+		if (revengeTarget != null && !(revengeTarget instanceof BroodEetleEntity) && !broodEetle.isAlliedTo(revengeTarget)) {
 			broodEetle.addRevengeTarget(revengeTarget);
-			this.revengeTimerOld = broodEetle.getRevengeTimer();
+			this.revengeTimerOld = broodEetle.getLastHurtByMobTimestamp();
 
 			double targetDistance = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
-			AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(broodEetle.getPositionVec()).grow(targetDistance, 10.0D, targetDistance);
-			List<AbstractEetleEntity> list = broodEetle.world.getLoadedEntitiesWithinAABB(AbstractEetleEntity.class, axisalignedbb);
+			AxisAlignedBB axisalignedbb = AxisAlignedBB.unitCubeFromLowerCorner(broodEetle.position()).inflate(targetDistance, 10.0D, targetDistance);
+			List<AbstractEetleEntity> list = broodEetle.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 			for (AbstractEetleEntity eetle : list) {
-				if (!eetle.isChild() && (eetle.getAttackTarget() == null || !eetle.getAttackTarget().isAlive()) && !eetle.isOnSameTeam(revengeTarget)) {
-					eetle.setAttackTarget(revengeTarget);
+				if (!eetle.isBaby() && (eetle.getTarget() == null || !eetle.getTarget().isAlive()) && !eetle.isAlliedTo(revengeTarget)) {
+					eetle.setTarget(revengeTarget);
 				}
 			}
 		}
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return false;
 	}
 
 	private static boolean isSuitableTarget(BroodEetleEntity broodEetle, LivingEntity target) {
-		return PREDICATE.canTarget(broodEetle, target) && broodEetle.isWithinHomeDistanceFromPosition(target.getPosition());
+		return PREDICATE.test(broodEetle, target) && broodEetle.isWithinRestriction(target.blockPosition());
 	}
 }

@@ -16,6 +16,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class PuffBugTeleportToBudGoal extends Goal {
 	private static final int AREA_CHECK_SIZE = 26;
 	private PuffBugEntity puffbug;
@@ -23,19 +25,19 @@ public class PuffBugTeleportToBudGoal extends Goal {
 
 	public PuffBugTeleportToBudGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
-		this.world = puffbug.world;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.world = puffbug.level;
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		if (!this.puffbug.isPassenger() && this.puffbug.getAttackTarget() == null && this.puffbug.isNoEndimationPlaying() && this.puffbug.getRNG().nextInt(100) == 0 && !this.puffbug.hasLevitation() && !this.puffbug.isInLove() && !this.puffbug.wantsToRest() && this.puffbug.getTeleportController().canTeleport()) {
+	public boolean canUse() {
+		if (!this.puffbug.isPassenger() && this.puffbug.getTarget() == null && this.puffbug.isNoEndimationPlaying() && this.puffbug.getRandom().nextInt(100) == 0 && !this.puffbug.hasLevitation() && !this.puffbug.isInLove() && !this.puffbug.wantsToRest() && this.puffbug.getTeleportController().canTeleport()) {
 			BolloomBudTileEntity bud = this.findNearbyBud();
 			if (bud != null) {
-				BlockPos pos = this.createUpperPosition(bud.getPos());
+				BlockPos pos = this.createUpperPosition(bud.getBlockPos());
 				if (pos != null && this.puffbug.getTeleportController().tryToCreateDesinationTo(pos, null)) {
 					bud.setTeleportingBug(this.puffbug);
-					this.puffbug.setBudPos(bud.getPos());
+					this.puffbug.setBudPos(bud.getBlockPos());
 					return true;
 				}
 			}
@@ -44,29 +46,29 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.puffbug.getTeleportController().processTeleportation();
-		this.puffbug.setMotion(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vector3d.ZERO);
 	}
 
 	@Override
 	public void tick() {
-		this.puffbug.setMotion(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vector3d.ZERO);
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);
 	}
 
 	@Nullable
 	private BolloomBudTileEntity findNearbyBud() {
-		BlockPos pos = this.puffbug.getPosition();
-		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(pos.add(-AREA_CHECK_SIZE, -AREA_CHECK_SIZE / 2, -AREA_CHECK_SIZE), pos.add(AREA_CHECK_SIZE, AREA_CHECK_SIZE / 2, AREA_CHECK_SIZE))) {
-			if (blockpos.withinDistance(this.puffbug.getPositionVec(), AREA_CHECK_SIZE)) {
-				if (this.world.getBlockState(blockpos).getBlock() == EEBlocks.BOLLOOM_BUD.get() && this.world.getTileEntity(blockpos) instanceof BolloomBudTileEntity) {
-					BolloomBudTileEntity bud = (BolloomBudTileEntity) this.world.getTileEntity(blockpos);
-					if (!bud.getBlockState().get(BolloomBudBlock.OPENED) && this.isPathNotBlockedByEntity(bud) && !bud.hasTeleportingBug() && bud.canBeOpened()) {
+		BlockPos pos = this.puffbug.blockPosition();
+		for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-AREA_CHECK_SIZE, -AREA_CHECK_SIZE / 2, -AREA_CHECK_SIZE), pos.offset(AREA_CHECK_SIZE, AREA_CHECK_SIZE / 2, AREA_CHECK_SIZE))) {
+			if (blockpos.closerThan(this.puffbug.position(), AREA_CHECK_SIZE)) {
+				if (this.world.getBlockState(blockpos).getBlock() == EEBlocks.BOLLOOM_BUD.get() && this.world.getBlockEntity(blockpos) instanceof BolloomBudTileEntity) {
+					BolloomBudTileEntity bud = (BolloomBudTileEntity) this.world.getBlockEntity(blockpos);
+					if (!bud.getBlockState().getValue(BolloomBudBlock.OPENED) && this.isPathNotBlockedByEntity(bud) && !bud.hasTeleportingBug() && bud.canBeOpened()) {
 						return bud;
 					}
 				}
@@ -79,8 +81,8 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	private BlockPos createUpperPosition(BlockPos pos) {
 		BlockPos foundPos = null;
 		for (int y = 1; y < 3; y++) {
-			if (this.world.getBlockState(pos.up(y)).getCollisionShape(this.world, pos).isEmpty() && this.world.getFluidState(pos.up(y)).isEmpty()) {
-				foundPos = pos.up(y);
+			if (this.world.getBlockState(pos.above(y)).getCollisionShape(this.world, pos).isEmpty() && this.world.getFluidState(pos.above(y)).isEmpty()) {
+				foundPos = pos.above(y);
 			} else {
 				foundPos = null;
 				break;
@@ -90,6 +92,6 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	}
 
 	private boolean isPathNotBlockedByEntity(BolloomBudTileEntity bud) {
-		return this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(bud.getPos()).expand(0.0F, 3.0F, 0.0F)).isEmpty();
+		return this.world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(bud.getBlockPos()).expandTowards(0.0F, 3.0F, 0.0F)).isEmpty();
 	}
 }

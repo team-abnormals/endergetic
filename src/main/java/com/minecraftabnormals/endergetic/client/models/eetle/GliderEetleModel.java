@@ -29,60 +29,60 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	public EndimatorModelRenderer rightMandible;
 
 	public GliderEetleModel() {
-		this.textureWidth = 64;
-		this.textureHeight = 32;
+		this.texWidth = 64;
+		this.texHeight = 32;
 		this.leftElytron = new EndimatorModelRenderer(this, 0, 0);
 		this.leftElytron.mirror = true;
-		this.leftElytron.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.leftElytron.setPos(0.0F, -3.0F, 0.0F);
 		this.leftElytron.addBox(0.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
 		this.setRotateAngle(leftElytron, 0.0F, 0.03490658503988659F, 0.0F);
 		this.rightFrontLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.rightFrontLeg.mirror = true;
-		this.rightFrontLeg.setRotationPoint(-2.0F, 2.5F, 2.0F);
+		this.rightFrontLeg.setPos(-2.0F, 2.5F, 2.0F);
 		this.rightFrontLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(rightFrontLeg, -0.2617993877991494F, 0.0F, 0.7853981633974483F);
 		this.leftWing = new EndimatorModelRenderer(this, 22, 0);
-		this.leftWing.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.leftWing.setPos(0.0F, -3.0F, 0.0F);
 		this.leftWing.addBox(0.0F, 0.0F, 0.0F, 7, 0, 16, 0.0F);
 		this.setRotateAngle(this.leftWing, 0.05F, 0.0F, 0.0F);
 		this.leftFrontLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.leftFrontLeg.mirror = true;
-		this.leftFrontLeg.setRotationPoint(2.0F, 2.5F, 2.0F);
+		this.leftFrontLeg.setPos(2.0F, 2.5F, 2.0F);
 		this.leftFrontLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(leftFrontLeg, -0.2617993877991494F, 0.0F, -0.7853981633974483F);
 		this.head = new EndimatorModelRenderer(this, 0, 23);
-		this.head.setRotationPoint(0.0F, 1.0F, 0.0F);
+		this.head.setPos(0.0F, 1.0F, 0.0F);
 		this.head.addBox(-3.0F, -2.0F, -5.0F, 6, 4, 5, 0.0F);
 		this.setRotateAngle(head, 0.3490658503988659F, 0.0F, 0.0F);
 		this.body = new EndimatorModelRenderer(this, 28, 16);
-		this.body.setRotationPoint(0.0F, 13.3F, -4.0F);
+		this.body.setPos(0.0F, 13.3F, -4.0F);
 		this.body.addBox(-4.0F, -3.0F, 0.0F, 8, 6, 10, 0.0F);
 		this.setRotateAngle(body, -0.17453292519943295F, 0.0F, 0.0F);
 		this.rightWing = new EndimatorModelRenderer(this, 22, 0);
 		this.rightWing.mirror = true;
-		this.rightWing.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.rightWing.setPos(0.0F, -3.0F, 0.0F);
 		this.rightWing.addBox(-7.0F, 0.0F, 0.0F, 7, 0, 16, 0.0F);
 		this.setRotateAngle(this.rightWing, 0.05F, 0.0F, 0.0F);
 		this.rightBackLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.rightBackLeg.mirror = true;
-		this.rightBackLeg.setRotationPoint(-1.9F, 1.0F, 8.0F);
+		this.rightBackLeg.setPos(-1.9F, 1.0F, 8.0F);
 		this.rightBackLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(rightBackLeg, 0.6108652381980153F, 0.0F, 0.7853981633974483F);
 		this.leftBackLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.leftBackLeg.mirror = true;
-		this.leftBackLeg.setRotationPoint(1.9F, 1.0F, 8.0F);
+		this.leftBackLeg.setPos(1.9F, 1.0F, 8.0F);
 		this.leftBackLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(leftBackLeg, 0.6108652381980153F, 0.0F, -0.7853981633974483F);
 		this.leftMandible = new EndimatorModelRenderer(this, 16, 0);
-		this.leftMandible.setRotationPoint(0.0F, 0.0F, -5.0F);
+		this.leftMandible.setPos(0.0F, 0.0F, -5.0F);
 		this.leftMandible.addBox(0.0F, 0.0F, -6.0F, 5, 0, 6, 0.0F);
 		this.rightElytron = new EndimatorModelRenderer(this, 0, 0);
-		this.rightElytron.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.rightElytron.setPos(0.0F, -3.0F, 0.0F);
 		this.rightElytron.addBox(-5.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
 		this.setRotateAngle(rightElytron, 0.0F, -0.03490658503988659F, 0.0F);
 		this.rightMandible = new EndimatorModelRenderer(this, 16, 0);
 		this.rightMandible.mirror = true;
-		this.rightMandible.setRotationPoint(0.0F, 0.0F, -5.0F);
+		this.rightMandible.setPos(0.0F, 0.0F, -5.0F);
 		this.rightMandible.addBox(-5.0F, 0.0F, -6.0F, 5, 0, 6, 0.0F);
 		this.body.addChild(this.leftElytron);
 		this.body.addChild(this.rightFrontLeg);
@@ -100,78 +100,78 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	}
 
 	@Override
-	public void setRotationAngles(GliderEetleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(GliderEetleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
 		FlyingRotations flyingRotations = entity.getFlyingRotations();
 		float flyingProgress = entity.getFlyingProgress();
-		this.body.rotateAngleX += flyingRotations.getRenderFlyPitch() * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += 0.52F * flyingProgress;
+		this.body.xRot += flyingRotations.getRenderFlyPitch() * ((float) Math.PI / 180.0F);
+		this.head.xRot += 0.52F * flyingProgress;
 
 		if (entity.isFlying()) {
-			this.body.rotateAngleZ = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
+			this.body.zRot = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
 		}
 
 		float frontLegFlying = 0.87F * flyingProgress;
-		this.leftFrontLeg.rotateAngleX += frontLegFlying;
-		this.rightFrontLeg.rotateAngleX += frontLegFlying;
+		this.leftFrontLeg.xRot += frontLegFlying;
+		this.rightFrontLeg.xRot += frontLegFlying;
 
 		float backLegFlying = 0.7F * flyingProgress;
-		this.leftBackLeg.rotateAngleX += backLegFlying;
-		this.rightBackLeg.rotateAngleX += backLegFlying;
+		this.leftBackLeg.xRot += backLegFlying;
+		this.rightBackLeg.xRot += backLegFlying;
 
-		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += (headPitch * ((float) Math.PI / 180.0F));
+		this.head.yRot = netHeadYaw * ((float) Math.PI / 180.0F);
+		this.head.xRot += (headPitch * ((float) Math.PI / 180.0F));
 
 		float takeOffProgress = entity.getTakeoffProgress();
 
 		float elytronZ = 0.35F * takeOffProgress;
-		this.leftElytron.rotateAngleZ += -elytronZ;
-		this.rightElytron.rotateAngleZ += elytronZ;
+		this.leftElytron.zRot += -elytronZ;
+		this.rightElytron.zRot += elytronZ;
 
 		float elytronY = 1.22F * takeOffProgress;
-		this.leftElytron.rotateAngleY += elytronY;
-		this.rightElytron.rotateAngleY += -elytronY;
+		this.leftElytron.yRot += elytronY;
+		this.rightElytron.yRot += -elytronY;
 
 		float wingY = 0.52F * takeOffProgress;
-		this.leftWing.rotateAngleY += wingY;
-		this.rightWing.rotateAngleY += -wingY;
+		this.leftWing.yRot += wingY;
+		this.rightWing.yRot += -wingY;
 
 		if (entity.isFlying()) {
 			float wingX = 0.1F * MathHelper.sin(8.0F * entity.getWingFlap()) + 0.15F;
 
-			this.leftWing.rotateAngleX += wingX;
-			this.rightWing.rotateAngleX += wingX;
+			this.leftWing.xRot += wingX;
+			this.rightWing.xRot += wingX;
 
 			float frontLegMoving = Math.abs(MathHelper.cos(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
-			this.leftFrontLeg.rotateAngleX -= frontLegMoving;
-			this.rightFrontLeg.rotateAngleX -= frontLegMoving;
+			this.leftFrontLeg.xRot -= frontLegMoving;
+			this.rightFrontLeg.xRot -= frontLegMoving;
 
 			float backLegMoving = Math.abs(MathHelper.sin(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
-			this.leftBackLeg.rotateAngleX += backLegMoving;
-			this.rightBackLeg.rotateAngleX += backLegMoving;
+			this.leftBackLeg.xRot += backLegMoving;
+			this.rightBackLeg.xRot += backLegMoving;
 		} else {
 			float angleX = MathHelper.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
 			float backAngleX = MathHelper.cos(limbSwing * 1.34F) * limbSwingAmount;
-			this.leftFrontLeg.rotateAngleX -= angleX;
-			this.rightFrontLeg.rotateAngleX += angleX;
-			this.leftBackLeg.rotateAngleX += backAngleX;
-			this.rightBackLeg.rotateAngleX -= backAngleX;
+			this.leftFrontLeg.xRot -= angleX;
+			this.rightFrontLeg.xRot += angleX;
+			this.leftBackLeg.xRot += backAngleX;
+			this.rightBackLeg.xRot -= backAngleX;
 
 			float angleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
 			float backAngleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
-			this.leftFrontLeg.rotateAngleZ -= angleZ;
-			this.rightFrontLeg.rotateAngleZ += angleZ;
-			this.leftBackLeg.rotateAngleZ -= backAngleZ;
-			this.rightBackLeg.rotateAngleZ += backAngleZ;
+			this.leftFrontLeg.zRot -= angleZ;
+			this.rightFrontLeg.zRot += angleZ;
+			this.leftBackLeg.zRot -= backAngleZ;
+			this.rightBackLeg.zRot += backAngleZ;
 		}
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-		this.leftWing.showModel = this.leftWing.rotateAngleY >= WING_SHOW_THRESHOLD;
-		this.rightWing.showModel = this.rightWing.rotateAngleY <= -WING_SHOW_THRESHOLD;
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.leftWing.visible = this.leftWing.yRot >= WING_SHOW_THRESHOLD;
+		this.rightWing.visible = this.rightWing.yRot <= -WING_SHOW_THRESHOLD;
 		this.body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -257,8 +257,8 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	}
 
 	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

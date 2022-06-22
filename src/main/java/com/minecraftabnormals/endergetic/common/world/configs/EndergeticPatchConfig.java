@@ -35,12 +35,12 @@ public final class EndergeticPatchConfig implements IFeatureConfig {
 	@SuppressWarnings("deprecation")
 	public static BlockPos getPos(ISeedReader world, BlockPos pos, boolean searchDown) {
 		if (searchDown) {
-			BlockPos.Mutable mutable = pos.toMutable();
+			BlockPos.Mutable mutable = pos.mutable();
 			for (BlockState blockstate = world.getBlockState(mutable); (blockstate.isAir()) && mutable.getY() > 0; blockstate = world.getBlockState(mutable)) {
 				mutable.move(Direction.DOWN);
 			}
 			return mutable;
 		}
-		return world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos);
+		return world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE_WG, pos);
 	}
 }

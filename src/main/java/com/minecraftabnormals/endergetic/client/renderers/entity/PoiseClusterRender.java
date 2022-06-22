@@ -16,16 +16,16 @@ public class PoiseClusterRender extends LivingRenderer<PoiseClusterEntity, Poise
 	}
 
 	@Override
-	protected RenderType func_230496_a_(PoiseClusterEntity cluster, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
-		return RenderType.getEntityTranslucent(this.getEntityTexture(cluster));
+	protected RenderType getRenderType(PoiseClusterEntity cluster, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
+		return RenderType.entityTranslucent(this.getTextureLocation(cluster));
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(PoiseClusterEntity entity) {
+	public ResourceLocation getTextureLocation(PoiseClusterEntity entity) {
 		return new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/poise_cluster.png");
 	}
 
-	protected boolean canRenderName(PoiseClusterEntity entity) {
+	protected boolean shouldShowName(PoiseClusterEntity entity) {
 		return false;
 	}
 

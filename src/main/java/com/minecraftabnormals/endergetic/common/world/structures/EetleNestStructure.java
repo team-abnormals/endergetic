@@ -25,6 +25,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import java.util.List;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class EetleNestStructure extends Structure<NoFeatureConfig> {
 
 	public EetleNestStructure(Codec<NoFeatureConfig> codec) {
@@ -34,10 +36,10 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 	private static int getYPosForStructure(int chunkX, int chunkZ, ChunkGenerator generator) {
 		int x = (chunkX << 4) + 7;
 		int z = (chunkZ << 4) + 7;
-		int center = generator.getNoiseHeightMinusOne(x, z, Heightmap.Type.WORLD_SURFACE_WG);
-		int centerZOffset = generator.getNoiseHeightMinusOne(x, z + 5, Heightmap.Type.WORLD_SURFACE_WG);
-		int centerXOffset = generator.getNoiseHeightMinusOne(x + 5, z, Heightmap.Type.WORLD_SURFACE_WG);
-		int centerXZOffset = generator.getNoiseHeightMinusOne(x + 5, z + 5, Heightmap.Type.WORLD_SURFACE_WG);
+		int center = generator.getFirstOccupiedHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+		int centerZOffset = generator.getFirstOccupiedHeight(x, z + 5, Heightmap.Type.WORLD_SURFACE_WG);
+		int centerXOffset = generator.getFirstOccupiedHeight(x + 5, z, Heightmap.Type.WORLD_SURFACE_WG);
+		int centerXZOffset = generator.getFirstOccupiedHeight(x + 5, z + 5, Heightmap.Type.WORLD_SURFACE_WG);
 		return Math.min(Math.min(center, centerZOffset), Math.min(centerXOffset, centerXZOffset));
 	}
 
@@ -48,9 +50,9 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for (int posX = x - 24; posX < x + 24; posX++) {
 			for (int posZ = z - 24; posZ < z + 24; posZ++) {
-				IBlockReader reader = generator.func_230348_a_(posX, posZ);
+				IBlockReader reader = generator.getBaseColumn(posX, posZ);
 				for (int posY = y - 40; posY < y - 8; posY++) {
-					Block block = reader.getBlockState(mutable.setPos(posX, posY, posZ)).getBlock();
+					Block block = reader.getBlockState(mutable.set(posX, posY, posZ)).getBlock();
 					if (!EetleNestPieces.CARVABLE_BLOCKS.contains(block)) {
 						if (block == Blocks.AIR) {
 							if (foundAirBlocks++ >= 576) {
@@ -67,7 +69,7 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 	}
 
 	@Override
-	protected boolean func_230363_a_(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom sharedSeedRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos, NoFeatureConfig config) {
+	protected boolean isFeatureChunk(ChunkGenerator generator, BiomeProvider provider, long seed, SharedSeedRandom sharedSeedRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos, NoFeatureConfig config) {
 		int yPos = getYPosForStructure(chunkX, chunkZ, generator);
 		return yPos >= 60 && isAreaCarvable(chunkX, chunkZ, yPos, generator);
 	}
@@ -78,7 +80,7 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 	}
 
 	@Override
-	public GenerationStage.Decoration getDecorationStage() {
+	public GenerationStage.Decoration step() {
 		return GenerationStage.Decoration.RAW_GENERATION;
 	}
 
@@ -97,12 +99,12 @@ public class EetleNestStructure extends Structure<NoFeatureConfig> {
 		}
 
 		@Override
-		public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
+		public void generatePieces(DynamicRegistries dynamicRegistries, ChunkGenerator generator, TemplateManager templateManager, int chunkX, int chunkZ, Biome biome, NoFeatureConfig config) {
 			int yPos = getYPosForStructure(chunkX, chunkZ, generator);
 			if (yPos >= 60) {
 				BlockPos corner = new BlockPos(chunkX * 16, yPos, chunkZ * 16);
-				this.components.add(new EetleNestPieces.EetleNestPiece(templateManager, corner));
-				this.recalculateStructureSize();
+				this.pieces.add(new EetleNestPieces.EetleNestPiece(templateManager, corner));
+				this.calculateBoundingBox();
 			}
 		}
 

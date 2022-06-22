@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class SpeckledCorrockBlock extends Block {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
 		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.SPECKLED_OVERWORLD_CORROCK);
@@ -30,14 +32,14 @@ public class SpeckledCorrockBlock extends Block {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if (this.shouldConvert(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get().getDefaultState());
+			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get().defaultBlockState());
 		}
 	}
 
 	@SuppressWarnings("deprecation")
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
-			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
+			worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
 		if (CorrockBlock.isSubmerged(worldIn, currentPos)) {
@@ -48,6 +50,6 @@ public class SpeckledCorrockBlock extends Block {
 	}
 
 	private boolean shouldConvert(IWorld world) {
-		return CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get() != this;
+		return CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get() != this;
 	}
 }

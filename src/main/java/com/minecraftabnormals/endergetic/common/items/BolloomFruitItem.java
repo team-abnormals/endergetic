@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class BolloomFruitItem extends Item {
 
 	public BolloomFruitItem(Properties properties) {
@@ -13,11 +15,11 @@ public class BolloomFruitItem extends Item {
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity eater) {
-		ItemStack itemstack = super.onItemUseFinish(stack, worldIn, eater);
+	public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity eater) {
+		ItemStack itemstack = super.finishUsingItem(stack, worldIn, eater);
 
-		if (!worldIn.isRemote && eater instanceof PlayerEntity) {
-			((PlayerEntity) eater).getCooldownTracker().setCooldown(this, 25);
+		if (!worldIn.isClientSide && eater instanceof PlayerEntity) {
+			((PlayerEntity) eater).getCooldowns().addCooldown(this, 25);
 		}
 
 		return itemstack;

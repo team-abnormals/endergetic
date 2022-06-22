@@ -58,26 +58,26 @@ public final class EEEntities {
 
 	@SubscribeEvent
 	public static void onEntityAttributesCreated(EntityAttributeCreationEvent event) {
-		event.put(BOOFLO.get(), BoofloEntity.getAttributes().create());
-		event.put(BOOFLO_ADOLESCENT.get(), BoofloAdolescentEntity.getAttributes().create());
-		event.put(BOOFLO_BABY.get(), BoofloBabyEntity.getAttributes().create());
-		event.put(PUFF_BUG.get(), PuffBugEntity.getAttributes().create());
-		event.put(POISE_CLUSTER.get(), LivingEntity.registerAttributes().create());
-		event.put(CHARGER_EETLE.get(), ChargerEetleEntity.getAttributes().create());
-		event.put(GLIDER_EETLE.get(), GliderEetleEntity.getAttributes().create());
-		event.put(BROOD_EETLE.get(), BroodEetleEntity.getAttributes().create());
-		event.put(PURPOID.get(), PurpoidEntity.getAttributes().create());
+		event.put(BOOFLO.get(), BoofloEntity.registerAttributes().build());
+		event.put(BOOFLO_ADOLESCENT.get(), BoofloAdolescentEntity.registerAttributes().build());
+		event.put(BOOFLO_BABY.get(), BoofloBabyEntity.registerAttributes().build());
+		event.put(PUFF_BUG.get(), PuffBugEntity.registerAttributes().build());
+		event.put(POISE_CLUSTER.get(), LivingEntity.createLivingAttributes().build());
+		event.put(CHARGER_EETLE.get(), ChargerEetleEntity.registerAttributes().build());
+		event.put(GLIDER_EETLE.get(), GliderEetleEntity.registerAttributes().build());
+		event.put(BROOD_EETLE.get(), BroodEetleEntity.registerAttributes().build());
+		event.put(PURPOID.get(), PurpoidEntity.registerAttributes().build());
 	}
 
 	private static boolean eetleCondition(EntityType<? extends MonsterEntity> entityType, IServerWorld world, SpawnReason spawnReason, BlockPos pos, Random random) {
-		if (MonsterEntity.canMonsterSpawnInLight(entityType, world, spawnReason, pos, random) || isInfestedCorrockNearby(world, pos)) {
-			BlockPos down = pos.down();
+		if (MonsterEntity.checkMonsterSpawnRules(entityType, world, spawnReason, pos, random) || isInfestedCorrockNearby(world, pos)) {
+			BlockPos down = pos.below();
 			Block downBlock = world.getBlockState(down).getBlock();
 			if (downBlock == EEBlocks.CORROCK_END_BLOCK.get() || downBlock == EEBlocks.EUMUS.get() || downBlock == EEBlocks.INFESTED_CORROCK.get()) {
 				return true;
 			}
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
-				Block offsetBlock = world.getBlockState(down.offset(direction)).getBlock();
+				Block offsetBlock = world.getBlockState(down.relative(direction)).getBlock();
 				if (offsetBlock == EEBlocks.CORROCK_END_BLOCK.get() || offsetBlock == EEBlocks.EUMUS.get()) {
 					return true;
 				}
@@ -93,7 +93,7 @@ public final class EEEntities {
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int z = -radius; z <= radius; z++) {
-					if (world.getBlockState(mutable.setAndOffset(pos, x, y, z)).getBlock() == infestedCorrock) {
+					if (world.getBlockState(mutable.setWithOffset(pos, x, y, z)).getBlock() == infestedCorrock) {
 						return true;
 					}
 				}

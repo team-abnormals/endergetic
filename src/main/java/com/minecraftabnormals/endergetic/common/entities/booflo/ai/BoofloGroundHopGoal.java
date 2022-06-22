@@ -9,34 +9,36 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.Gro
 
 import net.minecraft.util.math.RayTraceResult.Type;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 	private int ticksPassed;
 
 	public BoofloGroundHopGoal(BoofloEntity booflo) {
 		super(booflo, BoofloEntity.HOP);
-		this.setMutexFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (RayTraceHelper.rayTrace(this.entity, 1.5D, 1.0F).getType() == Type.BLOCK) {
 			return false;
 		}
-		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.entity.isOnGround() && !this.entity.isBoofed() && this.entity.hopDelay == 0 && this.entity.isNoEndimationPlaying() && !this.entity.isPassenger() && this.entity.getPassengers().isEmpty();
+		return this.entity.getMoveControl() instanceof GroundMoveHelperController && this.entity.isOnGround() && !this.entity.isBoofed() && this.entity.hopDelay == 0 && this.entity.isNoEndimationPlaying() && !this.entity.isPassenger() && this.entity.getPassengers().isEmpty();
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		return this.entity.getMoveHelper() instanceof GroundMoveHelperController && this.ticksPassed <= 10;
+	public boolean canContinueToUse() {
+		return this.entity.getMoveControl() instanceof GroundMoveHelperController && this.ticksPassed <= 10;
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksPassed = 0;
 	}
 
@@ -44,8 +46,8 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 	public void tick() {
 		this.ticksPassed++;
 
-		if (this.entity.getMoveHelper() instanceof GroundMoveHelperController) {
-			((GroundMoveHelperController) this.entity.getMoveHelper()).setSpeed(1.25D);
+		if (this.entity.getMoveControl() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.entity.getMoveControl()).setSpeed(1.25D);
 		}
 	}
 }

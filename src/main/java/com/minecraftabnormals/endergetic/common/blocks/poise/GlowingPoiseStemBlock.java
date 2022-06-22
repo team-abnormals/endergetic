@@ -13,6 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class GlowingPoiseStemBlock extends AbnormalsLogBlock {
 
 	public GlowingPoiseStemBlock(Supplier<Block> strippedBlock, Properties properties) {
@@ -23,7 +25,7 @@ public class GlowingPoiseStemBlock extends AbnormalsLogBlock {
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
 		if (rand.nextFloat() > 0.05F) {
-			BlockPos up = pos.up();
+			BlockPos up = pos.above();
 			if (worldIn.getBlockState(up).getCollisionShape(worldIn, up).isEmpty()) {
 				double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 				double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);

@@ -30,7 +30,7 @@ public final class C2SBoostMessage {
 			context.enqueueWork(() -> {
 				PlayerEntity player = context.getSender();
 				if (player != null) {
-					Entity entity = player.getRidingEntity();
+					Entity entity = player.getVehicle();
 					if (entity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) entity;
 						if (booflo.isBoostExpanding() && !booflo.isBoostLocked() && !booflo.isOnGround() && booflo.isBoofed() && booflo.getBoostPower() > 0) {

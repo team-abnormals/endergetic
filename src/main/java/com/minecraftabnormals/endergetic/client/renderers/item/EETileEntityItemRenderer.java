@@ -22,7 +22,7 @@ public class EETileEntityItemRenderer<T extends TileEntity> extends ItemStackTil
 	}
 
 	@Override
-	public void func_239207_a_(ItemStack itemStack, TransformType type, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void renderByItem(ItemStack itemStack, TransformType type, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		TileEntityRendererDispatcher.instance.renderItem(this.te.get(), matrixStack, buffer, combinedLight, combinedOverlay);
 	}
 }

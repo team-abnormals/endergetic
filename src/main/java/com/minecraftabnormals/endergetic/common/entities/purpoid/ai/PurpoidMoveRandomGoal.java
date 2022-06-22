@@ -8,6 +8,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import java.util.EnumSet;
 import java.util.Random;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class PurpoidMoveRandomGoal extends Goal {
 	private final PurpoidEntity purpoid;
 	private int cooldown;
@@ -15,21 +17,21 @@ public class PurpoidMoveRandomGoal extends Goal {
 
 	public PurpoidMoveRandomGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.cooldown > 0) {
 			this.cooldown--;
 		} else {
 			PurpoidEntity purpoid = this.purpoid;
-			Random random = purpoid.getRNG();
-			Vector3d randomPos = purpoid.getPosY() >= purpoid.world.getSeaLevel() + 30 ? purpoid.getPositionVec().add(new Vector3d(random.nextInt(17) - random.nextInt(17), -random.nextInt(16), random.nextInt(17) - random.nextInt(17))) : RandomPositionGenerator.findRandomTarget(purpoid, 32, 16);
+			Random random = purpoid.getRandom();
+			Vector3d randomPos = purpoid.getY() >= purpoid.level.getSeaLevel() + 30 ? purpoid.position().add(new Vector3d(random.nextInt(17) - random.nextInt(17), -random.nextInt(16), random.nextInt(17) - random.nextInt(17))) : RandomPositionGenerator.getPos(purpoid, 32, 16);
 			if (randomPos != null) {
-				this.x = randomPos.getX();
-				this.y = randomPos.getY();
-				this.z = randomPos.getZ();
+				this.x = randomPos.x();
+				this.y = randomPos.y();
+				this.z = randomPos.z();
 				return true;
 			}
 		}
@@ -37,19 +39,19 @@ public class PurpoidMoveRandomGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		PurpoidEntity purpoid = this.purpoid;
-		purpoid.getMoveHelper().setMoveTo(this.x, this.y, this.z, 1.0F);
-		this.cooldown = purpoid.getRNG().nextInt(81) + (int) (40 * purpoid.getSize().getScale());
+		purpoid.getMoveControl().setWantedPosition(this.x, this.y, this.z, 1.0F);
+		this.cooldown = purpoid.getRandom().nextInt(81) + (int) (40 * purpoid.getSize().getScale());
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		return this.purpoid.getMoveHelper().isUpdating();
+	public boolean canContinueToUse() {
+		return this.purpoid.getMoveControl().hasWanted();
 	}
 
 	@Override
-	public void resetTask() {
-		this.purpoid.getNavigator().clearPath();
+	public void stop() {
+		this.purpoid.getNavigation().stop();
 	}
 }

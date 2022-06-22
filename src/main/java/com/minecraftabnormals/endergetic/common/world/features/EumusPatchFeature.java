@@ -19,22 +19,22 @@ import java.util.Set;
 
 public class EumusPatchFeature extends Feature<MultiPatchConfig> {
 	private static final Set<Block> TRANSFORMABLE_BLOCKS = Sets.newHashSet(Blocks.END_STONE, EEBlocks.CORROCK_END_BLOCK.get(), EEBlocks.SPECKLED_END_CORROCK.get());
-	private static final BlockState EUMUS = EEBlocks.EUMUS.get().getDefaultState();
+	private static final BlockState EUMUS = EEBlocks.EUMUS.get().defaultBlockState();
 
 	public EumusPatchFeature(Codec<MultiPatchConfig> codec) {
 		super(codec);
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
-		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).down();
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
+		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).below();
 		Block downBlock = world.getBlockState(down).getBlock();
 		if (downBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			int extraPatches = 1 + rand.nextInt(config.getMaxExtraPatches() + 1);
 			int maxExtraRadius = config.getMaxExtraRadius();
 			generatePatch(world, down, rand, maxExtraRadius);
 			for (int i = 0; i < extraPatches; i++) {
-				generatePatch(world, down.add(rand.nextInt(2) - rand.nextInt(2) , 0, rand.nextInt(2) - rand.nextInt(2)), rand, maxExtraRadius);
+				generatePatch(world, down.offset(rand.nextInt(2) - rand.nextInt(2) , 0, rand.nextInt(2) - rand.nextInt(2)), rand, maxExtraRadius);
 			}
 			return true;
 		}
@@ -52,11 +52,11 @@ public class EumusPatchFeature extends Feature<MultiPatchConfig> {
 			for (int z = -radius; z <= radius; z++) {
 				int distanceSq = x * x + z * z - rand.nextInt(2);
 				if (distanceSq <= radiusSquared) {
-					BlockPos pos = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, mutable.setPos(originX + x, originY, originZ + z)).down();
+					BlockPos pos = world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
 					int distanceY = Math.abs(originY - pos.getY());
 					if (distanceY <= 1) {
 						if (TRANSFORMABLE_BLOCKS.contains(world.getBlockState(pos).getBlock())) {
-							world.setBlockState(pos, EUMUS, 2);
+							world.setBlock(pos, EUMUS, 2);
 						}
 					}
 				}

@@ -24,7 +24,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BolloomKnotEntity extends Entity {
 	private BlockPos hangingPosition;
-	private static final DataParameter<Integer> BALLOONS_TIED = EntityDataManager.createKey(BolloomKnotEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> BALLOONS_TIED = EntityDataManager.defineId(BolloomKnotEntity.class, DataSerializers.INT);
 
 	public BolloomKnotEntity(EntityType<? extends BolloomKnotEntity> entityType, World world) {
 		super(entityType, world);
@@ -32,10 +32,10 @@ public class BolloomKnotEntity extends Entity {
 
 	public BolloomKnotEntity(World world, BlockPos pos) {
 		this(EEEntities.BOLLOOM_KNOT.get(), world);
-		this.setPosition(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
+		this.setPos(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
 		this.hangingPosition = pos;
-		this.setMotion(Vector3d.ZERO);
-		this.forceSpawn = true;
+		this.setDeltaMovement(Vector3d.ZERO);
+		this.forcedLoading = true;
 	}
 
 	public BolloomKnotEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
@@ -44,10 +44,10 @@ public class BolloomKnotEntity extends Entity {
 
 	@Override
 	public void tick() {
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
-		if (!this.world.isRemote && this.isAlive() && this.world.isAreaLoaded(this.getHangingPos(), 1) && !this.onValidBlock()) {
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
+		if (!this.level.isClientSide && this.isAlive() && this.level.isAreaLoaded(this.getHangingPos(), 1) && !this.onValidBlock()) {
 			this.remove();
 		} else if (this.getBalloonsTied() <= 0) {
 			this.remove();
@@ -56,7 +56,7 @@ public class BolloomKnotEntity extends Entity {
 
 	@Nullable
 	public static BolloomKnotEntity getKnotForPosition(World worldIn, BlockPos pos) {
-		for (BolloomKnotEntity entity : worldIn.getEntitiesWithinAABB(BolloomKnotEntity.class, new AxisAlignedBB(pos))) {
+		for (BolloomKnotEntity entity : worldIn.getEntitiesOfClass(BolloomKnotEntity.class, new AxisAlignedBB(pos))) {
 			if (entity.getHangingPos().equals(pos)) {
 				return entity;
 			}
@@ -66,57 +66,57 @@ public class BolloomKnotEntity extends Entity {
 
 	public static void createStartingKnot(World world, BlockPos pos, BalloonColor balloonColor) {
 		BolloomKnotEntity knot = new BolloomKnotEntity(world, pos);
-		BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, knot.getUniqueID(), pos, 0);
+		BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, knot.getUUID(), pos, 0);
 		knot.setBalloonsTied(1);
 		balloon.setColor(balloonColor);
-		world.addEntity(knot);
-		world.addEntity(balloon);
+		world.addFreshEntity(knot);
+		world.addFreshEntity(balloon);
 	}
 
 	public void addBalloon(BalloonColor balloonColor) {
-		BolloomBalloonEntity balloon = new BolloomBalloonEntity(this.world, this.getUniqueID(), this.getHangingPos(), 0.1F);
+		BolloomBalloonEntity balloon = new BolloomBalloonEntity(this.level, this.getUUID(), this.getHangingPos(), 0.1F);
 		balloon.setColor(balloonColor);
-		this.world.addEntity(balloon);
+		this.level.addFreshEntity(balloon);
 		this.setBalloonsTied(this.getBalloonsTied() + 1);
 	}
 
 	private boolean onValidBlock() {
-		return this.world.getBlockState(this.hangingPosition).getBlock().isIn(BlockTags.FENCES);
+		return this.level.getBlockState(this.hangingPosition).getBlock().is(BlockTags.FENCES);
 	}
 
-	public boolean canBeCollidedWith() {
+	public boolean isPickable() {
 		return true;
 	}
 
 	@Override
-	protected boolean shouldSetPosAfterLoading() {
+	protected boolean repositionEntityAfterLoad() {
 		return false;
 	}
 
 	@Override
-	public void setPosition(double x, double y, double z) {
+	public void setPos(double x, double y, double z) {
 		this.hangingPosition = new BlockPos(x, y, z);
-		super.setPosition(x, y, z);
+		super.setPos(x, y, z);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean isInRangeToRenderDist(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		return distance < 1024.0D;
 	}
 
 	@Override
-	protected void registerData() {
-		this.dataManager.register(BALLOONS_TIED, 0);
+	protected void defineSynchedData() {
+		this.entityData.define(BALLOONS_TIED, 0);
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT nbt) {
+	protected void readAdditionalSaveData(CompoundNBT nbt) {
 		this.hangingPosition = new BlockPos(nbt.getInt("TileX"), nbt.getInt("TileY"), nbt.getInt("TileZ"));
 		this.setBalloonsTied(nbt.getInt("Ballons_Tied"));
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT nbt) {
+	protected void addAdditionalSaveData(CompoundNBT nbt) {
 		BlockPos blockpos = this.getHangingPos();
 		nbt.putInt("TileX", blockpos.getX());
 		nbt.putInt("TileY", blockpos.getY());
@@ -130,20 +130,20 @@ public class BolloomKnotEntity extends Entity {
 	}
 
 	public void setBalloonsTied(int amount) {
-		this.getDataManager().set(BALLOONS_TIED, amount);
+		this.getEntityData().set(BALLOONS_TIED, amount);
 	}
 
 	public int getBalloonsTied() {
-		return this.getDataManager().get(BALLOONS_TIED);
+		return this.getEntityData().get(BALLOONS_TIED);
 	}
 
 	public boolean hasMaxBalloons() {
-		return this.dataManager.get(BALLOONS_TIED) > 3;
+		return this.entityData.get(BALLOONS_TIED) > 3;
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

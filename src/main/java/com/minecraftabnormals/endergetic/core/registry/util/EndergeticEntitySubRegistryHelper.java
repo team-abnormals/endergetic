@@ -18,7 +18,7 @@ public class EndergeticEntitySubRegistryHelper extends EntitySubRegistryHelper {
 	}
 
 	public <E extends Entity> RegistryObject<EntityType<E>> createUnsummonableEntity(String name, EntityType.IFactory<E> factory, BiFunction<FMLPlayMessages.SpawnEntity, World, E> clientFactory, EntityClassification entityClassification, float width, float height) {
-		return this.deferredRegister.register(name, () -> EntityType.Builder.create(factory, entityClassification).size(width, height).disableSummoning().setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).setCustomClientFactory(clientFactory).build(this.parent.prefix(name).toString()));
+		return this.deferredRegister.register(name, () -> EntityType.Builder.of(factory, entityClassification).sized(width, height).noSummon().setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).setCustomClientFactory(clientFactory).build(this.parent.prefix(name).toString()));
 	}
 
 }

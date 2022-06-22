@@ -14,12 +14,12 @@ public class PuffBugRestOnHiveGoal extends Goal {
 
 	public PuffBugRestOnHiveGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
-		this.random = puffbug.getRNG();
+		this.random = puffbug.getRandom();
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		return this.puffbug.getAttackTarget() == null && !this.puffbug.isInflated() && this.puffbug.getAttachedHiveSide() != Direction.UP;
+	public boolean canUse() {
+		return this.puffbug.getTarget() == null && !this.puffbug.isInflated() && this.puffbug.getAttachedHiveSide() != Direction.UP;
 	}
 
 	@Override
@@ -32,11 +32,11 @@ public class PuffBugRestOnHiveGoal extends Goal {
 		}
 
 		if (this.puffbug.getAttachedHiveSide() != Direction.UP && this.puffbug.getAttachedHiveSide() != Direction.DOWN) {
-			int ticks = this.puffbug.ticksExisted > 10 ? 20 : 5;
+			int ticks = this.puffbug.tickCount > 10 ? 20 : 5;
 			this.puffbug.getRotationController().rotate(0.0F, -115.0F, 0.0F, ticks);
 		}
 
-		if (this.puffbug.world.getGameTime() % 60 == 0) {
+		if (this.puffbug.level.getGameTime() % 60 == 0) {
 			this.puffbug.heal(2.0F);
 		}
 
@@ -44,13 +44,13 @@ public class PuffBugRestOnHiveGoal extends Goal {
 		 * snore...
 		 */
 		if (this.random.nextInt(200) == 0) {
-			float pitch = this.puffbug.isChild() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F;
+			float pitch = this.puffbug.isBaby() ? (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F : (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F;
 			this.puffbug.playSound(this.puffbug.getSleepSound(), 0.1F, pitch);
 		}
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksRested = 0;
 	}
 }

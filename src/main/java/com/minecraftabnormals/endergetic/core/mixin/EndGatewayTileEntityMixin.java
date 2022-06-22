@@ -21,8 +21,8 @@ public abstract class EndGatewayTileEntityMixin extends EndPortalTileEntity impl
 	 * Overrite since not overwriting it would have basically the same effect as a redirect.
 	 */
 	@Overwrite
-	private void func_227016_a_(ServerWorld world, BlockPos pos) {
-		EEFeatures.ENDERGETIC_GATEWAY.get().withConfiguration(EndGatewayConfig.func_214702_a(this.getPos(), false)).generate(world, world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+	private void createExitPortal(ServerWorld world, BlockPos pos) {
+		EEFeatures.ENDERGETIC_GATEWAY.get().configured(EndGatewayConfig.knownExit(this.getBlockPos(), false)).place(world, world.getChunkSource().getGenerator(), new Random(), pos);
 	}
 
 }

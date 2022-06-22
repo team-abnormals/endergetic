@@ -28,14 +28,14 @@ import javax.annotation.Nullable;
  * @author - SmellyModder (Luke Tonon)
  */
 public abstract class AbstractBolloomEntity extends Entity {
-	private static final DataParameter<Float> ORIGIN_X = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGIN_Y = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGIN_Z = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ANGLE = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> SWAY = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.VARINT); //Vanilla's ticksExisted isn't synced between server and client
-	private static final DataParameter<Boolean> UNTIED = EntityDataManager.createKey(AbstractBolloomEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Float> ORIGIN_X = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGIN_Y = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ORIGIN_Z = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> ANGLE = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> SWAY = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
+	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.INT); //Vanilla's ticksExisted isn't synced between server and client
+	private static final DataParameter<Boolean> UNTIED = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.BOOLEAN);
 
 	private float prevVineAngle;
 	private float prevAngle;
@@ -45,34 +45,34 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected void registerData() {
-		this.dataManager.register(ORIGIN_X, 0.0F);
-		this.dataManager.register(ORIGIN_Y, 0.0F);
-		this.dataManager.register(ORIGIN_Z, 0.0F);
-		this.dataManager.register(ANGLE, 0.0F);
-		this.dataManager.register(DESIRED_ANGLE, 0.0F);
-		this.dataManager.register(SWAY, 0.0F);
-		this.dataManager.register(UNTIED, false);
-		this.dataManager.register(TICKS_EXISTED, 0);
+	protected void defineSynchedData() {
+		this.entityData.define(ORIGIN_X, 0.0F);
+		this.entityData.define(ORIGIN_Y, 0.0F);
+		this.entityData.define(ORIGIN_Z, 0.0F);
+		this.entityData.define(ANGLE, 0.0F);
+		this.entityData.define(DESIRED_ANGLE, 0.0F);
+		this.entityData.define(SWAY, 0.0F);
+		this.entityData.define(UNTIED, false);
+		this.entityData.define(TICKS_EXISTED, 0);
 	}
 
 	@Override
 	public void tick() {
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 
 		this.setSway(MathHelper.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
 		this.updatePositionAndMotion(MathHelper.sin(-this.getAngle()), MathHelper.cos(-this.getAngle()));
 
-		if (!this.world.isRemote) {
+		if (!this.level.isClientSide) {
 			if (this.getTicksExisted() % 45 == 0) {
-				this.setDesiredAngle((float) (this.rand.nextDouble() * 2 * Math.PI));
+				this.setDesiredAngle((float) (this.random.nextDouble() * 2 * Math.PI));
 			}
 
-			if (this.getPosY() >= 254 && this.isUntied()) {
+			if (this.getY() >= 254 && this.isUntied()) {
 				this.onBroken(true);
 				this.remove();
 			}
@@ -97,14 +97,14 @@ public abstract class AbstractBolloomEntity extends Entity {
 		}
 
 		this.updateUntied();
-		this.extinguish();
+		this.clearFire();
 		if (this.shouldIncrementTicksExisted()) {
 			this.incrementTicksExisted();
 		}
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundNBT compound) {
 		compound.putBoolean("UNTIED", this.isUntied());
 		compound.putFloat("ORIGIN_X", this.getOriginX());
 		compound.putFloat("ORIGIN_Y", this.getOriginY());
@@ -112,7 +112,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundNBT compound) {
 		this.setUntied(compound.getBoolean("UNTIED"));
 		if (compound.contains("ORIGIN_X", 5) && compound.contains("ORIGIN_Y", 5) && compound.contains("ORIGIN_Z", 5)) {
 			this.setOrigin(compound.getFloat("ORIGIN_X"), compound.getFloat("ORIGIN_Y"), compound.getFloat("ORIGIN_Z"));
@@ -122,37 +122,37 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	public void setOrigin(float x, float y, float z) {
-		this.dataManager.set(ORIGIN_X, x);
-		this.dataManager.set(ORIGIN_Y, y);
-		this.dataManager.set(ORIGIN_Z, z);
+		this.entityData.set(ORIGIN_X, x);
+		this.entityData.set(ORIGIN_Y, y);
+		this.entityData.set(ORIGIN_Z, z);
 	}
 
 	public float getOriginX() {
-		return this.dataManager.get(ORIGIN_X);
+		return this.entityData.get(ORIGIN_X);
 	}
 
 	public float getOriginY() {
-		return this.dataManager.get(ORIGIN_Y);
+		return this.entityData.get(ORIGIN_Y);
 	}
 
 	public float getOriginZ() {
-		return this.dataManager.get(ORIGIN_Z);
+		return this.entityData.get(ORIGIN_Z);
 	}
 
 	public void setAngle(float degree) {
-		this.dataManager.set(ANGLE, degree);
+		this.entityData.set(ANGLE, degree);
 	}
 
 	public float getAngle() {
-		return this.dataManager.get(ANGLE);
+		return this.entityData.get(ANGLE);
 	}
 
 	public void setDesiredAngle(float angle) {
-		this.dataManager.set(DESIRED_ANGLE, angle);
+		this.entityData.set(DESIRED_ANGLE, angle);
 	}
 
 	public float getDesiredAngle() {
-		return this.dataManager.get(DESIRED_ANGLE);
+		return this.entityData.get(DESIRED_ANGLE);
 	}
 
 	public float getVineAngle() {
@@ -160,27 +160,27 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	public void setSway(float sway) {
-		this.dataManager.set(SWAY, sway);
+		this.entityData.set(SWAY, sway);
 	}
 
 	public float getSway() {
-		return this.dataManager.get(SWAY);
+		return this.entityData.get(SWAY);
 	}
 
 	public void setUntied(boolean untied) {
-		this.dataManager.set(UNTIED, untied);
+		this.entityData.set(UNTIED, untied);
 	}
 
 	public boolean isUntied() {
-		return this.dataManager.get(UNTIED);
+		return this.entityData.get(UNTIED);
 	}
 
 	public void incrementTicksExisted() {
-		this.dataManager.set(TICKS_EXISTED, this.getTicksExisted() + 1);
+		this.entityData.set(TICKS_EXISTED, this.getTicksExisted() + 1);
 	}
 
 	public int getTicksExisted() {
-		return this.dataManager.get(TICKS_EXISTED);
+		return this.entityData.get(TICKS_EXISTED);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -200,19 +200,14 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	public void onBroken(boolean dropFruit) {
-		this.playSound(SoundEvents.BLOCK_WET_GRASS_BREAK, 1.0F, 1.0F);
+		this.playSound(SoundEvents.WET_GRASS_BREAK, 1.0F, 1.0F);
 		this.doParticles();
 	}
 
 	protected void doParticles() {
-		if (this.world instanceof ServerWorld) {
-			((ServerWorld) this.world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().getDefaultState()), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 10, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
+		if (this.level instanceof ServerWorld) {
+			((ServerWorld) this.level).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
 		}
-	}
-
-	@Override
-	public boolean func_241845_aY() {
-		return true;
 	}
 
 	@Override
@@ -221,17 +216,22 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	public boolean canBePushed() {
+	public boolean isPickable() {
+		return true;
+	}
+
+	@Override
+	public boolean isPushable() {
 		return this.isAlive();
 	}
 
 	@Override
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
@@ -241,23 +241,23 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected Vector3d handlePistonMovement(Vector3d pos) {
+	protected Vector3d limitPistonMovement(Vector3d pos) {
 		return Vector3d.ZERO;
 	}
 
 	@Override
-	public boolean hitByEntity(Entity entityIn) {
-		return entityIn instanceof PlayerEntity && this.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) entityIn), 0.0F);
+	public boolean skipAttackInteraction(Entity entityIn) {
+		return entityIn instanceof PlayerEntity && this.hurt(DamageSource.playerAttack((PlayerEntity) entityIn), 0.0F);
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (this.isInvulnerableTo(source)) {
 			return false;
 		} else {
-			if (this.isAlive() && !this.world.isRemote) {
+			if (this.isAlive() && !this.level.isClientSide) {
 				this.remove();
-				this.markVelocityChanged();
+				this.markHurt();
 				this.onBroken(true);
 			}
 			return true;
@@ -265,14 +265,14 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	public void addVelocity(double x, double y, double z) {
+	public void push(double x, double y, double z) {
 		if (!this.isUntied()) return;
-		super.addVelocity(x, y, z);
+		super.push(x, y, z);
 	}
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().grow(5);
+	public AxisAlignedBB getBoundingBoxForCulling() {
+		return super.getBoundingBoxForCulling().inflate(5);
 	}
 
 	@Nullable
@@ -282,11 +282,11 @@ public abstract class AbstractBolloomEntity extends Entity {
 
 	@Nullable
 	public AxisAlignedBB getCollisionBox(Entity entityIn) {
-		return entityIn.canBePushed() ? entityIn.getBoundingBox() : null;
+		return entityIn.isPushable() ? entityIn.getBoundingBox() : null;
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class GliderEetleDiveGoal extends Goal {
 	private final GliderEetleEntity glider;
 	@Nullable
@@ -29,33 +31,33 @@ public class GliderEetleDiveGoal extends Goal {
 	public GliderEetleDiveGoal(GliderEetleEntity glider) {
 		this.glider = glider;
 		this.prevHealth = glider.getHealth();
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		GliderEetleEntity glider = this.glider;
-		LivingEntity attackTarget = glider.getAttackTarget();
-		if (attackTarget == null || !attackTarget.isAlive() || GliderEetleEntity.isEntityLarge(attackTarget) || glider.isInWater() || !glider.isFlying() || !glider.isBeingRidden() || glider.getPassengers().get(0) != attackTarget || glider.getHealth() - this.prevHealth <= -3.0F) {
+		LivingEntity attackTarget = glider.getTarget();
+		if (attackTarget == null || !attackTarget.isAlive() || GliderEetleEntity.isEntityLarge(attackTarget) || glider.isInWater() || !glider.isFlying() || !glider.isVehicle() || glider.getPassengers().get(0) != attackTarget || glider.getHealth() - this.prevHealth <= -3.0F) {
 			this.ticksGrabbed = 0;
 		} else {
 			this.ticksGrabbed++;
 		}
 		this.prevHealth = glider.getHealth();
 		if (this.ticksGrabbed >= 30) {
-			World world = glider.world;
-			BlockPos pos = glider.getPosition();
-			int distanceFromGround = distanceFromGround(glider, world, pos.toMutable());
+			World world = glider.level;
+			BlockPos pos = glider.blockPosition();
+			int distanceFromGround = distanceFromGround(glider, world, pos.mutable());
 			if (distanceFromGround > 3 && distanceFromGround < 11) {
-				pos = pos.down(distanceFromGround);
-				if (world.getEntitiesWithinAABB(ChargerEetleEntity.class, new AxisAlignedBB(pos).grow(4.0D)).size() < 3) {
-					Random random = glider.getRNG();
+				pos = pos.below(distanceFromGround);
+				if (world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(pos).inflate(4.0D)).size() < 3) {
+					Random random = glider.getRandom();
 					for (int i = 0; i < 5; i++) {
-						BlockPos offsetPos = pos.add(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
-						if (world.isTopSolid(offsetPos.down(), glider) && world.hasNoCollisions(new AxisAlignedBB(offsetPos))) {
-							Vector3d gliderPos = new Vector3d(glider.getPosX(), glider.getPosYEye(), glider.getPosZ());
-							if (world.rayTraceBlocks(new RayTraceContext(gliderPos, Vector3d.copy(offsetPos), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, glider)).getType() == RayTraceResult.Type.MISS) {
-								this.divePos = Vector3d.copy(offsetPos);
+						BlockPos offsetPos = pos.offset(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
+						if (world.loadedAndEntityCanStandOn(offsetPos.below(), glider) && world.noCollision(new AxisAlignedBB(offsetPos))) {
+							Vector3d gliderPos = new Vector3d(glider.getX(), glider.getEyeY(), glider.getZ());
+							if (world.clip(new RayTraceContext(gliderPos, Vector3d.atLowerCornerOf(offsetPos), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, glider)).getType() == RayTraceResult.Type.MISS) {
+								this.divePos = Vector3d.atLowerCornerOf(offsetPos);
 								return true;
 							}
 						}
@@ -67,24 +69,24 @@ public class GliderEetleDiveGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		GliderEetleEntity glider = this.glider;
-		glider.getNavigator().clearPath();
+		glider.getNavigation().stop();
 		Vector3d target = this.divePos;
-		double xDif = (target.getX() + 0.5F) - glider.getPosX();
-		double yDif = target.getY() - glider.getPosYEye();
-		double zDif = (target.getZ() + 0.5F) - glider.getPosZ();
+		double xDif = (target.x() + 0.5F) - glider.getX();
+		double yDif = target.y() - glider.getEyeY();
+		double zDif = (target.z() + 0.5F) - glider.getZ();
 		float magnitude = MathHelper.sqrt(xDif * xDif + yDif * yDif + zDif * zDif);
 		double toDeg = 180.0F / Math.PI;
 		this.targetYaw = (float) (MathHelper.atan2(zDif, xDif) * toDeg) - 90.0F;
 		this.targetPitch = (float) -(MathHelper.atan2(yDif, magnitude) * toDeg);
-		this.divingMotion = new Vector3d(xDif, yDif, zDif).normalize().mul(1.0F, 1.3F, 1.0F);
+		this.divingMotion = new Vector3d(xDif, yDif, zDif).normalize().multiply(1.0F, 1.3F, 1.0F);
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		GliderEetleEntity glider = this.glider;
-		LivingEntity attackTarget = glider.getAttackTarget();
+		LivingEntity attackTarget = glider.getTarget();
 		return attackTarget != null && attackTarget.isAlive() && !GliderEetleEntity.isEntityLarge(attackTarget) && glider.isFlying() && this.ticksDiving < 30;
 	}
 
@@ -94,25 +96,25 @@ public class GliderEetleDiveGoal extends Goal {
 		GliderEetleEntity glider = this.glider;
 		int ticksDiving = this.ticksDiving;
 		if (ticksDiving == 5) {
-			glider.setMotion(glider.getMotion().add(this.divingMotion));
+			glider.setDeltaMovement(glider.getDeltaMovement().add(this.divingMotion));
 		}
 		glider.setDiving(true);
 		glider.setMoving(true);
 		glider.setTargetFlyingRotations(new TargetFlyingRotations(this.targetPitch, glider.getTargetFlyingRotations().getTargetFlyRoll()));
-		glider.rotationYaw = FlyingRotations.clampedRotate(glider.rotationYaw, this.targetYaw, 15.0F);
-		glider.getLookController().setLookPosition(this.divePos);
-		if (ticksDiving > 5 && (glider.isOnGround() || glider.collidedHorizontally)) {
-			LivingEntity attackTarget = glider.getAttackTarget();
-			if (attackTarget != null && glider.isPassenger(attackTarget)) {
+		glider.yRot = FlyingRotations.clampedRotate(glider.yRot, this.targetYaw, 15.0F);
+		glider.getLookControl().setLookAt(this.divePos);
+		if (ticksDiving > 5 && (glider.isOnGround() || glider.horizontalCollision)) {
+			LivingEntity attackTarget = glider.getTarget();
+			if (attackTarget != null && glider.hasPassenger(attackTarget)) {
 				glider.makeGrounded();
 				glider.groundedAttacker = attackTarget;
-				attackTarget.attackEntityFrom(DamageSource.FLY_INTO_WALL, glider.getRNG().nextInt(6) + 8);
+				attackTarget.hurt(DamageSource.FLY_INTO_WALL, glider.getRandom().nextInt(6) + 8);
 			}
 		}
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.divePos = null;
 		this.divingMotion = null;
 		this.prevHealth = this.glider.getHealth();
@@ -124,7 +126,7 @@ public class GliderEetleDiveGoal extends Goal {
 		int y = pos.getY();
 		for (int i = 0; i <= 11; i++) {
 			pos.setY(y - i);
-			if (world.isTopSolid(pos, glider)) {
+			if (world.loadedAndEntityCanStandOn(pos, glider)) {
 				return i;
 			}
 		}

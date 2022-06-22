@@ -15,7 +15,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.entity.isPlayerNear(1.0F)) {
 			if (!this.entity.isTamed()) {
 				return false;
@@ -25,7 +25,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		boolean flag = true;
 		if (!this.entity.hasCaughtPuffBug()) {
 			if (this.entity.getAnimationTick() < 140) {
@@ -38,7 +38,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 				this.entity.hopDelay = 0;
 				for (PlayerEntity players : this.entity.getNearbyPlayers(0.6F)) {
 					if (!this.entity.hasAggressiveAttackTarget()) {
-						this.entity.setBoofloAttackTargetId(players.getEntityId());
+						this.entity.setBoofloAttackTargetId(players.getId());
 					}
 				}
 				return false;
@@ -48,14 +48,14 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
-		this.originalYaw = this.entity.rotationYaw;
+		this.originalYaw = this.entity.yRot;
 		this.entity.setLockedYaw(this.originalYaw);
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.originalYaw = 0;
 		this.playEndimation(BoofloEntity.BLANK_ANIMATION);
 	}
@@ -64,12 +64,12 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	public void tick() {
 		if (this.soundDelay > 0) this.soundDelay--;
 
-		this.entity.rotationYaw = this.originalYaw;
-		this.entity.prevRotationYaw = this.originalYaw;
+		this.entity.yRot = this.originalYaw;
+		this.entity.yRotO = this.originalYaw;
 
 		if (this.entity.isPlayerNear(1.0F) && this.soundDelay == 0) {
 			if (!this.entity.isTamed()) {
-				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.entity.getRNG().nextFloat() * 1.0, 0.95F, 1.0F));
+				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.entity.getRandom().nextFloat() * 1.0, 0.95F, 1.0F));
 				this.soundDelay = 50;
 			}
 		}

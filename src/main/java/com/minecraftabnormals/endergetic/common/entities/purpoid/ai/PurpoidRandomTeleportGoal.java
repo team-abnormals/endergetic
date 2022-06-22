@@ -13,7 +13,7 @@ public class PurpoidRandomTeleportGoal extends AbstractPurpoidTeleportGoal {
 
 	@Override
 	BlockPos generateTeleportPos(PurpoidEntity purpoid, Random random) {
-		return purpoid.getPosition().add(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
+		return purpoid.blockPosition().offset(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
 	}
 
 }

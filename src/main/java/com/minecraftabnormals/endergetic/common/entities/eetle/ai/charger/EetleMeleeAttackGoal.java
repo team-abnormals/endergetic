@@ -19,62 +19,62 @@ public class EetleMeleeAttackGoal extends Goal {
 
 	public EetleMeleeAttackGoal(ChargerEetleEntity charger) {
 		this.attacker = charger;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		LivingEntity livingentity = this.attacker.getAttackTarget();
+	public boolean canUse() {
+		LivingEntity livingentity = this.attacker.getTarget();
 		if (livingentity == null) {
 			return false;
 		} else if (!livingentity.isAlive()) {
 			return false;
 		} else {
-			this.path = this.attacker.getNavigator().getPathToEntity(livingentity, 0);
+			this.path = this.attacker.getNavigation().createPath(livingentity, 0);
 			if (this.path != null) {
 				return true;
 			} else {
-				return this.getAttackReachSqr(livingentity) >= this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+				return this.getAttackReachSqr(livingentity) >= this.attacker.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 			}
 		}
 	}
 
 	@Override
-	public void startExecuting() {
-		this.attacker.getNavigator().setPath(this.path, 1.25F);
-		this.attacker.setAggroed(true);
+	public void start() {
+		this.attacker.getNavigation().moveTo(this.path, 1.25F);
+		this.attacker.setAggressive(true);
 		this.delayCounter = 0;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		LivingEntity livingentity = this.attacker.getAttackTarget();
+	public boolean canContinueToUse() {
+		LivingEntity livingentity = this.attacker.getTarget();
 		if (livingentity == null) {
 			return false;
 		} else if (!livingentity.isAlive()) {
 			return false;
 		}
-		return !this.attacker.getNavigator().noPath();
+		return !this.attacker.getNavigation().isDone();
 	}
 
 	@Override
 	public void tick() {
-		LivingEntity livingentity = this.attacker.getAttackTarget();
-		this.attacker.getLookController().setLookPositionWithEntity(livingentity, 30.0F, 30.0F);
-		double d0 = this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
+		LivingEntity livingentity = this.attacker.getTarget();
+		this.attacker.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
+		double d0 = this.attacker.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 		this.delayCounter = Math.max(this.delayCounter - 1, 0);
-		if (this.attacker.getEntitySenses().canSee(livingentity) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
-			this.targetX = livingentity.getPosX();
-			this.targetY = livingentity.getPosY();
-			this.targetZ = livingentity.getPosZ();
-			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+		if (this.attacker.getSensing().canSee(livingentity) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
+			this.targetX = livingentity.getX();
+			this.targetY = livingentity.getY();
+			this.targetZ = livingentity.getZ();
+			this.delayCounter = 4 + this.attacker.getRandom().nextInt(7);
 			if (d0 > 1024.0D) {
 				this.delayCounter += 10;
 			} else if (d0 > 256.0D) {
 				this.delayCounter += 5;
 			}
 
-			if (!this.attacker.getNavigator().tryMoveToEntityLiving(livingentity, 1.25F)) {
+			if (!this.attacker.getNavigation().moveTo(livingentity, 1.25F)) {
 				this.delayCounter += 15;
 			}
 		}
@@ -87,26 +87,26 @@ public class EetleMeleeAttackGoal extends Goal {
 	}
 
 	@Override
-	public void resetTask() {
-		LivingEntity livingentity = this.attacker.getAttackTarget();
-		if (!EntityPredicates.CAN_AI_TARGET.test(livingentity)) {
-			this.attacker.setAttackTarget(null);
+	public void stop() {
+		LivingEntity livingentity = this.attacker.getTarget();
+		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+			this.attacker.setTarget(null);
 		}
 
-		this.attacker.setAggroed(false);
-		this.attacker.getNavigator().clearPath();
+		this.attacker.setAggressive(false);
+		this.attacker.getNavigation().stop();
 	}
 
 	private void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
 		ChargerEetleEntity attacker = this.attacker;
-		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy) && attacker.canEntityBeSeen(enemy)) {
-			attacker.attackEntityAsMob(enemy);
-			this.meleeCooldown += 10 + attacker.getRNG().nextInt(11);
+		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy) && attacker.canSee(enemy)) {
+			attacker.doHurtTarget(enemy);
+			this.meleeCooldown += 10 + attacker.getRandom().nextInt(11);
 		}
 	}
 
 	private double getAttackReachSqr(LivingEntity attackTarget) {
-		float widthDoubled = this.attacker.getWidth() * 2.0F;
-		return widthDoubled * widthDoubled + attackTarget.getWidth();
+		float widthDoubled = this.attacker.getBbWidth() * 2.0F;
+		return widthDoubled * widthDoubled + attackTarget.getBbWidth();
 	}
 }

@@ -24,19 +24,19 @@ public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetle
 	}
 
 	@Override
-	protected void applyRotations(BroodEetleEntity broodEetle, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+	protected void setupRotations(BroodEetleEntity broodEetle, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
 		if (broodEetle.hasCustomName()) {
-			String name = TextFormatting.getTextWithoutFormattingCodes(broodEetle.getName().getString());
+			String name = TextFormatting.stripFormatting(broodEetle.getName().getString());
 			if (name.equals("Dinnerbone") || name.equals("Grum")) {
-				matrixStackIn.translate(0.0D, broodEetle.getHeight() + 0.1D, 0.0D);
-				matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+				matrixStackIn.translate(0.0D, broodEetle.getBbHeight() + 0.1D, 0.0D);
+				matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
 			}
 		}
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BroodEetleEntity entity) {
+	public ResourceLocation getTextureLocation(BroodEetleEntity entity) {
 		return TEXTURES[entity.getHealthStage().ordinal()];
 	}
 

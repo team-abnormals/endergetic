@@ -17,9 +17,9 @@ import java.util.Random;
 @Mixin(ChorusPlantFeature.class)
 public final class ChorusPlantFeatureMixin {
 
-	@Inject(at = @At("HEAD"), method = "generate", cancellable = true)
-	private void allowGenerationOnTag(ISeedReader seedReader, ChunkGenerator p_230362_3_, Random p_230362_4_, BlockPos pos, NoFeatureConfig p_230362_6_, CallbackInfoReturnable<Boolean> info) {
-		if (seedReader.isAirBlock(pos) && seedReader.getBlockState(pos.down()).isIn(EETags.Blocks.CHORUS_PLANTABLE)) {
+	@Inject(at = @At("HEAD"), method = "place", cancellable = true)
+	private void allowPlacementOnTag(ISeedReader seedReader, ChunkGenerator p_230362_3_, Random p_230362_4_, BlockPos pos, NoFeatureConfig p_230362_6_, CallbackInfoReturnable<Boolean> info) {
+		if (seedReader.isEmptyBlock(pos) && seedReader.getBlockState(pos.below()).is(EETags.Blocks.CHORUS_PLANTABLE)) {
 			ChorusFlowerBlock.generatePlant(seedReader, pos, p_230362_4_, 8);
 			info.setReturnValue(true);
 		}

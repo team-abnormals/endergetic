@@ -19,7 +19,7 @@ public final class EndSpikeFeatureMixin {
 
 	@Inject(at = @At("TAIL"), method = "placeSpike")
 	private void placeCrystalHolder(IServerWorld world, Random rand, EndSpikeFeatureConfig config, EndSpikeFeature.EndSpike spike, CallbackInfo info) {
-		world.setBlockState(new BlockPos(spike.getCenterX(), spike.getHeight(), spike.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().getDefaultState(), 3);
+		world.setBlock(new BlockPos(spike.getCenterX(), spike.getHeight(), spike.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().defaultBlockState(), 3);
 	}
 
 }

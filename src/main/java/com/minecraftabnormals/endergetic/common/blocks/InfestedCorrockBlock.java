@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class InfestedCorrockBlock extends Block {
 	private static final Direction[] POSSIBLE_DIRECTIONS = Direction.values();
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
@@ -32,7 +34,7 @@ public class InfestedCorrockBlock extends Block {
 	@Override
 	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
 		if (this.shouldConvert(world)) {
-			world.setBlockState(pos, CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().getDefaultState());
+			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().defaultBlockState());
 			return;
 		}
 
@@ -41,16 +43,16 @@ public class InfestedCorrockBlock extends Block {
 			boolean grewNewEgg = false;
 			Block eetleEggs = EEBlocks.EETLE_EGG.get();
 			for (Direction direction : POSSIBLE_DIRECTIONS) {
-				BlockPos offset = pos.offset(direction);
-				if (!grewNewEgg && world.isAirBlock(offset)) {
+				BlockPos offset = pos.relative(direction);
+				if (!grewNewEgg && world.isEmptyBlock(offset)) {
 					grewNewEgg = true;
-					world.setBlockState(offset, eetleEggs.getDefaultState().with(EetleEggBlock.FACING, direction));
+					world.setBlockAndUpdate(offset, eetleEggs.defaultBlockState().setValue(EetleEggBlock.FACING, direction));
 				} else {
 					BlockState offsetState = world.getBlockState(offset);
 					if (offsetState.getBlock() == eetleEggs && rand.nextFloat() <= 0.25F) {
-						int size = offsetState.get(EetleEggBlock.SIZE);
+						int size = offsetState.getValue(EetleEggBlock.SIZE);
 						if (size < 2) {
-							world.setBlockState(offset, offsetState.with(EetleEggBlock.SIZE, size + 1));
+							world.setBlockAndUpdate(offset, offsetState.setValue(EetleEggBlock.SIZE, size + 1));
 						}
 					}
 				}
@@ -60,9 +62,9 @@ public class InfestedCorrockBlock extends Block {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
-			worldIn.getPendingBlockTicks().scheduleTick(currentPos, this, 40 + worldIn.getRandom().nextInt(40));
+			worldIn.getBlockTicks().scheduleTick(currentPos, this, 40 + worldIn.getRandom().nextInt(40));
 		}
 
 		if (CorrockBlock.isSubmerged(worldIn, currentPos)) {
@@ -73,6 +75,6 @@ public class InfestedCorrockBlock extends Block {
 	}
 
 	protected boolean shouldConvert(IWorld world) {
-		return CONVERSIONS.getOrDefault(world.getDimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
+		return CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
 	}
 }

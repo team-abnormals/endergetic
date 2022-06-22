@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class GliderEetleDropOffGoal extends Goal {
 	private final GliderEetleEntity glider;
 	@Nullable
@@ -29,21 +31,21 @@ public class GliderEetleDropOffGoal extends Goal {
 
 	public GliderEetleDropOffGoal(GliderEetleEntity glider) {
 		this.glider = glider;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		GliderEetleEntity glider = this.glider;
-		if (glider.getRNG().nextFloat() < 0.05F) {
-			LivingEntity target = glider.getAttackTarget();
+		if (glider.getRandom().nextFloat() < 0.05F) {
+			LivingEntity target = glider.getTarget();
 			if (target != null && target.isAlive() && glider.getPassengers().contains(target) && glider.isFlying() && glider.isNoEndimationPlaying()) {
-				Pair<BlockPos, BlockPos> clusterPosPair = findLargestClusterAirAndGroundPositions(glider.world, glider.getPosition());
+				Pair<BlockPos, BlockPos> clusterPosPair = findLargestClusterAirAndGroundPositions(glider.level, glider.blockPosition());
 				if (clusterPosPair != null) {
 					BlockPos pos = clusterPosPair.getFirst();
-					this.path = glider.getNavigator().getPathToPos(pos, 0);
-					this.searchBox = new AxisAlignedBB(clusterPosPair.getSecond()).grow(4.0D, 1.0D, 4.0D);
-					this.clusterPos = Vector3d.copyCentered(pos);
+					this.path = glider.getNavigation().createPath(pos, 0);
+					this.searchBox = new AxisAlignedBB(clusterPosPair.getSecond()).inflate(4.0D, 1.0D, 4.0D);
+					this.clusterPos = Vector3d.atCenterOf(pos);
 					return this.path != null;
 				}
 			}
@@ -52,16 +54,16 @@ public class GliderEetleDropOffGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
-		this.glider.getNavigator().setPath(this.path, 1.5F);
+	public void start() {
+		this.glider.getNavigation().moveTo(this.path, 1.5F);
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		GliderEetleEntity glider = this.glider;
-		LivingEntity target = glider.getAttackTarget();
-		if (target != null && target.isAlive() && glider.getPassengers().contains(target) && glider.isFlying() && glider.getNavigator().hasPath()) {
-			if (glider.world.getEntitiesWithinAABB(ChargerEetleEntity.class, this.searchBox).size() < 3) {
+		LivingEntity target = glider.getTarget();
+		if (target != null && target.isAlive() && glider.getPassengers().contains(target) && glider.isFlying() && glider.getNavigation().isInProgress()) {
+			if (glider.level.getEntitiesOfClass(ChargerEetleEntity.class, this.searchBox).size() < 3) {
 				this.missingClusterTicks++;
 			}
 			return this.missingClusterTicks < 10;
@@ -70,8 +72,8 @@ public class GliderEetleDropOffGoal extends Goal {
 	}
 
 	@Override
-	public void resetTask() {
-		this.glider.getNavigator().clearPath();
+	public void stop() {
+		this.glider.getNavigation().stop();
 		this.path = null;
 		this.clusterPos = null;
 		this.searchBox = null;
@@ -81,19 +83,19 @@ public class GliderEetleDropOffGoal extends Goal {
 	@Override
 	public void tick() {
 		GliderEetleEntity glider = this.glider;
-		double distance = glider.getPositionVec().squareDistanceTo(this.clusterPos);
-		LivingEntity attackTarget = glider.getAttackTarget();
+		double distance = glider.position().distanceToSqr(this.clusterPos);
+		LivingEntity attackTarget = glider.getTarget();
 		if (distance <= 2.25D) {
 			glider.makeGrounded();
 			if (attackTarget instanceof IDataManager) {
-				((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRNG().nextInt(11));
+				((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRandom().nextInt(11));
 			}
 		} else if (distance <= 20.25D) {
 			AxisAlignedBB projectedBox = getProjectedBoundingBox(glider);
-			if (projectedBox != null && glider.world.getEntitiesWithinAABB(ChargerEetleEntity.class, projectedBox.grow(1.0F, 0.0F, 1.0F)).size() >= 4) {
+			if (projectedBox != null && glider.level.getEntitiesOfClass(ChargerEetleEntity.class, projectedBox.inflate(1.0F, 0.0F, 1.0F)).size() >= 4) {
 				glider.makeGrounded();
 				if (attackTarget instanceof IDataManager) {
-					((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRNG().nextInt(11));
+					((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRandom().nextInt(11));
 				}
 			}
 		}
@@ -101,14 +103,14 @@ public class GliderEetleDropOffGoal extends Goal {
 
 	@Nullable
 	private static AxisAlignedBB getProjectedBoundingBox(GliderEetleEntity glider) {
-		BlockPos.Mutable mutable = glider.getPosition().toMutable();
+		BlockPos.Mutable mutable = glider.blockPosition().mutable();
 		int startY = mutable.getY();
-		World world = glider.world;
+		World world = glider.level;
 		for (int y = 0; y <= 7; y++) {
 			mutable.setY(startY - y);
-			if (world.isTopSolid(mutable, glider)) {
+			if (world.loadedAndEntityCanStandOn(mutable, glider)) {
 				AxisAlignedBB bb = glider.getBoundingBox();
-				return bb.offset(0.0F, -(bb.minY - mutable.getY()), 0.0F);
+				return bb.move(0.0F, -(bb.minY - mutable.getY()), 0.0F);
 			}
 		}
 		return null;
@@ -119,30 +121,30 @@ public class GliderEetleDropOffGoal extends Goal {
 		BlockPos clusterPos = null;
 		int largestCluster = 2;
 		Set<ChargerEetleEntity> foundInCluster = new HashSet<>();
-		List<ChargerEetleEntity> chargerEetleEntityList = world.getEntitiesWithinAABB(ChargerEetleEntity.class, new AxisAlignedBB(origin).grow(24.0D, 6.0D, 24.0D), Entity::isOnGround);
+		List<ChargerEetleEntity> chargerEetleEntityList = world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(origin).inflate(24.0D, 6.0D, 24.0D), Entity::isOnGround);
 		List<Pair<Double, Double>> points = new ArrayList<>();
 		for (ChargerEetleEntity charger : chargerEetleEntityList) {
 			if (!foundInCluster.contains(charger)) {
 				int others = 0;
-				for (ChargerEetleEntity otherCharger : world.getEntitiesWithinAABB(ChargerEetleEntity.class, new AxisAlignedBB(charger.getPosition()).grow(4.0D, 6.0D, 4.0D))) {
+				for (ChargerEetleEntity otherCharger : world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(charger.blockPosition()).inflate(4.0D, 6.0D, 4.0D))) {
 					foundInCluster.add(otherCharger);
-					Vector3d pos = otherCharger.getPositionVec();
+					Vector3d pos = otherCharger.position();
 					points.add(Pair.of(pos.x, pos.z));
 					others++;
 				}
 				if (others > largestCluster) {
 					Pair<Double, Double> centroidXZ = computeCentroid(points);
 					points.clear();
-					clusterPos = new BlockPos(centroidXZ.getFirst(), charger.getPosY(), centroidXZ.getSecond());
+					clusterPos = new BlockPos(centroidXZ.getFirst(), charger.getY(), centroidXZ.getSecond());
 				}
 			}
 		}
 		if (clusterPos != null) {
-			BlockPos.Mutable airPos = clusterPos.toMutable();
+			BlockPos.Mutable airPos = clusterPos.mutable();
 			int startY = airPos.getY();
 			for (int y = 0; y <= 7; y++) {
 				airPos.setY(startY + y);
-				if (!world.isAirBlock(airPos)) {
+				if (!world.isEmptyBlock(airPos)) {
 					airPos.setY(airPos.getY() - 1);
 					break;
 				}

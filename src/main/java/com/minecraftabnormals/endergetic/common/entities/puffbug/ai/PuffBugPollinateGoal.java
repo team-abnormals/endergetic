@@ -13,13 +13,13 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 
 	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
 		super(puffbug, PuffBugEntity.POLLINATE_ANIMATION);
-		this.world = puffbug.world;
+		this.world = puffbug.level;
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.entity.getPollinationPos() != null) {
-			TileEntity te = this.world.getTileEntity(this.entity.getPollinationPos());
+			TileEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
 			if (te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
 				return true;
 			}
@@ -28,9 +28,9 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		if (this.entity.getPollinationPos() != null) {
-			TileEntity te = this.world.getTileEntity(this.entity.getPollinationPos());
+			TileEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
 			if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 				return false;
 			}
@@ -40,9 +40,9 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 		return
 				!this.entity.hasLevitation() &&
 						this.entity.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION) &&
-						this.entity.getPosX() == this.originalPosX &&
-						this.entity.getPosZ() == this.originalPosZ &&
-						Math.abs(this.originalPosY - this.entity.getPosY()) < 0.5F
+						this.entity.getX() == this.originalPosX &&
+						this.entity.getZ() == this.originalPosZ &&
+						Math.abs(this.originalPosY - this.entity.getY()) < 0.5F
 				;
 	}
 
@@ -52,25 +52,25 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 		this.entity.puffCooldown = 10;
 
 		this.entity.setBoosting(false);
-		this.entity.setAIMoveSpeed(0.0F);
-		this.entity.getNavigator().clearPath();
+		this.entity.setSpeed(0.0F);
+		this.entity.getNavigation().stop();
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.entity.setBoosting(false);
-		this.entity.setAIMoveSpeed(0.0F);
-		this.entity.getNavigator().clearPath();
+		this.entity.setSpeed(0.0F);
+		this.entity.getNavigation().stop();
 
-		this.originalPosX = (float) this.entity.getPosX();
-		this.originalPosY = (float) this.entity.getPosY();
-		this.originalPosZ = (float) this.entity.getPosZ();
+		this.originalPosX = (float) this.entity.getX();
+		this.originalPosY = (float) this.entity.getY();
+		this.originalPosZ = (float) this.entity.getZ();
 
 		this.playEndimation();
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.entity.setPollinationPos(null);
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
 		this.playEndimation(PuffBugEntity.BLANK_ANIMATION);

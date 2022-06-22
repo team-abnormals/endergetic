@@ -24,21 +24,21 @@ public abstract class ClientWorldMixin {
 	}
 
 	@SuppressWarnings("deprecation")
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;addedToChunk:Z", ordinal = 1, shift = At.Shift.AFTER), method = "updateEntity")
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;inChunk:Z", ordinal = 1, shift = At.Shift.AFTER), method = "tickNonPassenger")
 	private void updateBalloons(Entity entity, CallbackInfo info) {
 		BalloonHolder balloonHolder = (BalloonHolder) entity;
-		ClientChunkProvider chunkProvider = ((ClientWorld) (Object) this).getChunkProvider();
+		ClientChunkProvider chunkProvider = ((ClientWorld) (Object) this).getChunkSource();
 		for (BolloomBalloonEntity balloon : balloonHolder.getBalloons()) {
 			if (!balloon.removed && balloon.getAttachedEntity() == entity) {
-				if (chunkProvider.isChunkLoaded(balloon)) {
-					balloon.forceSetPosition(balloon.getPosX(), balloon.getPosY(), balloon.getPosZ());
-					balloon.prevRotationYaw = balloon.rotationYaw;
-					balloon.prevRotationPitch = balloon.rotationPitch;
-					if (balloon.addedToChunk) {
-						balloon.ticksExisted++;
+				if (chunkProvider.isEntityTickingChunk(balloon)) {
+					balloon.setPosAndOldPos(balloon.getX(), balloon.getY(), balloon.getZ());
+					balloon.yRotO = balloon.yRot;
+					balloon.xRotO = balloon.xRot;
+					if (balloon.inChunk) {
+						balloon.tickCount++;
 						balloon.updateAttachedPosition();
 					}
-					this.callCheckChunk(balloon);
+					this.callUpdateChunkPos(balloon);
 				}
 			} else {
 				balloon.detachFromEntity();
@@ -47,21 +47,20 @@ public abstract class ClientWorldMixin {
 	}
 
 	@SuppressWarnings("deprecation")
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateRidden()V", shift = At.Shift.AFTER), method = "updateEntityRidden")
-	private void updateEntityRiddenBalloons(Entity ridingEntity, Entity passenger, CallbackInfo info) {
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;rideTick()V", shift = At.Shift.AFTER), method = "tickPassenger")	private void updateEntityRiddenBalloons(Entity ridingEntity, Entity passenger, CallbackInfo info) {
 		BalloonHolder balloonHolder = (BalloonHolder) passenger;
-		ClientChunkProvider chunkProvider = ((ClientWorld) (Object) this).getChunkProvider();
+		ClientChunkProvider chunkProvider = ((ClientWorld) (Object) this).getChunkSource();
 		for (BolloomBalloonEntity balloon : balloonHolder.getBalloons()) {
 			if (!balloon.removed && balloon.getAttachedEntity() == passenger) {
-				if (chunkProvider.isChunkLoaded(balloon)) {
-					balloon.forceSetPosition(balloon.getPosX(), balloon.getPosY(), balloon.getPosZ());
-					balloon.prevRotationYaw = balloon.rotationYaw;
-					balloon.prevRotationPitch = balloon.rotationPitch;
-					if (balloon.addedToChunk) {
-						balloon.ticksExisted++;
+				if (chunkProvider.isEntityTickingChunk(balloon)) {
+					balloon.setPosAndOldPos(balloon.getX(), balloon.getY(), balloon.getZ());
+					balloon.yRotO = balloon.yRot;
+					balloon.xRotO = balloon.xRot;
+					if (balloon.inChunk) {
+						balloon.tickCount++;
 						balloon.updateAttachedPosition();
 					}
-					this.callCheckChunk(balloon);
+					this.callUpdateChunkPos(balloon);
 				}
 			} else {
 				balloon.detachFromEntity();
@@ -70,6 +69,6 @@ public abstract class ClientWorldMixin {
 	}
 
 	@Invoker
-	public abstract void callCheckChunk(Entity entity);
+	public abstract void callUpdateChunkPos(Entity entity);
 
 }

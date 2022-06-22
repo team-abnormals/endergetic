@@ -8,6 +8,8 @@ import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class PurpoidRestOnFlowerGoal extends Goal {
 	private final PurpoidEntity purpoid;
 	private float startingHealth;
@@ -15,11 +17,11 @@ public class PurpoidRestOnFlowerGoal extends Goal {
 
 	public PurpoidRestOnFlowerGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
 		if (!purpoid.getTeleportController().isTeleporting()) {
 			return isNearFlower(purpoid);
@@ -28,26 +30,26 @@ public class PurpoidRestOnFlowerGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		PurpoidEntity purpoid = this.purpoid;
 		this.startingHealth = purpoid.getHealth();
-		this.duration = purpoid.getRNG().nextInt(1501) + 300;
+		this.duration = purpoid.getRandom().nextInt(1501) + 300;
 	}
 
 	@Override
 	public void tick() {
 		PurpoidEntity purpoid = this.purpoid;
-		purpoid.setMotion(purpoid.getMotion().subtract(0.0F, 0.02F, 0.0F));
+		purpoid.setDeltaMovement(purpoid.getDeltaMovement().subtract(0.0F, 0.02F, 0.0F));
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		PurpoidEntity purpoid = this.purpoid;
 		return isNearFlower(purpoid) && purpoid.getHealth() >= this.startingHealth && --this.duration >= 0;
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		PurpoidEntity purpoid = this.purpoid;
 		purpoid.setFlowerPos(null);
 		purpoid.resetRestCooldown();
@@ -55,6 +57,6 @@ public class PurpoidRestOnFlowerGoal extends Goal {
 
 	private static boolean isNearFlower(PurpoidEntity purpoid) {
 		BlockPos flowerPos = purpoid.getFlowerPos();
-		return flowerPos != null && purpoid.world.getBlockState(flowerPos).getBlock() == Blocks.CHORUS_FLOWER && Vector3d.copyCenteredWithVerticalOffset(flowerPos, 1.0F).squareDistanceTo(purpoid.getPositionVec()) <= 0.02F;
+		return flowerPos != null && purpoid.level.getBlockState(flowerPos).getBlock() == Blocks.CHORUS_FLOWER && Vector3d.upFromBottomCenterOf(flowerPos, 1.0F).distanceToSqr(purpoid.position()) <= 0.02F;
 	}
 }

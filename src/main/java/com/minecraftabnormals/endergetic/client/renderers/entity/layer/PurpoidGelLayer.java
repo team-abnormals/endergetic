@@ -22,12 +22,12 @@ public class PurpoidGelLayer extends LayerRenderer<PurpoidEntity, PurpoidModel> 
 	@Override
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, PurpoidEntity purpoidEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		PurpoidGelModel gelModel = this.gelModel;
-		gelModel.setLivingAnimations(purpoidEntity, limbSwing, limbSwingAmount, partialTicks);
-		gelModel.setRotationAngles(purpoidEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		gelModel.parentToHead(this.getEntityModel().head);
-		int overlay = LivingRenderer.getPackedOverlay(purpoidEntity, 0.0F);
+		gelModel.prepareMobModel(purpoidEntity, limbSwing, limbSwingAmount, partialTicks);
+		gelModel.setupAnim(purpoidEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		gelModel.parentToHead(this.getParentModel().head);
+		int overlay = LivingRenderer.getOverlayCoords(purpoidEntity, 0.0F);
 		gelModel.animateModel(purpoidEntity);
-		gelModel.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(this.getEntityTexture(purpoidEntity))), packedLightIn, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
-		gelModel.render(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(PurpoidRenderer.EMISSIVE_TEXTURE)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(purpoidEntity))), packedLightIn, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(PurpoidRenderer.EMISSIVE_TEXTURE)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

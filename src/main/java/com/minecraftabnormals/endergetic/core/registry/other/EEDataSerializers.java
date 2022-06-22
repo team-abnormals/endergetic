@@ -28,9 +28,9 @@ public final class EEDataSerializers {
 
 			if (value.isPresent()) {
 				Vector3d vec3d = value.get();
-				buf.writeDouble(vec3d.getX());
-				buf.writeDouble(vec3d.getY());
-				buf.writeDouble(vec3d.getZ());
+				buf.writeDouble(vec3d.x());
+				buf.writeDouble(vec3d.y());
+				buf.writeDouble(vec3d.z());
 			}
 		}
 
@@ -40,7 +40,7 @@ public final class EEDataSerializers {
 		}
 
 		@Override
-		public Optional<Vector3d> copyValue(Optional<Vector3d> value) {
+		public Optional<Vector3d> copy(Optional<Vector3d> value) {
 			return value;
 		}
 	};
@@ -48,16 +48,16 @@ public final class EEDataSerializers {
 	public static final IDataSerializer<BalloonColor> BALLOON_COLOR = new IDataSerializer<BalloonColor>() {
 		@Override
 		public void write(PacketBuffer buf, BalloonColor value) {
-			buf.writeEnumValue(value);
+			buf.writeEnum(value);
 		}
 
 		@Override
 		public BalloonColor read(PacketBuffer buf) {
-			return buf.readEnumValue(BalloonColor.class);
+			return buf.readEnum(BalloonColor.class);
 		}
 
 		@Override
-		public BalloonColor copyValue(BalloonColor value) {
+		public BalloonColor copy(BalloonColor value) {
 			return value;
 		}
 	};
@@ -75,7 +75,7 @@ public final class EEDataSerializers {
 		}
 
 		@Override
-		public TargetFlyingRotations copyValue(TargetFlyingRotations value) {
+		public TargetFlyingRotations copy(TargetFlyingRotations value) {
 			return value;
 		}
 	};
@@ -94,35 +94,35 @@ public final class EEDataSerializers {
 		}
 
 		@Override
-		public EntitySize copyValue(EntitySize value) {
+		public EntitySize copy(EntitySize value) {
 			return value;
 		}
 	};
 
 	public static final IDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new IDataSerializer<HealthStage>() {
 		public void write(PacketBuffer buf, HealthStage value) {
-			buf.writeEnumValue(value);
+			buf.writeEnum(value);
 		}
 
 		public HealthStage read(PacketBuffer buf) {
-			return buf.readEnumValue(HealthStage.class);
+			return buf.readEnum(HealthStage.class);
 		}
 
-		public HealthStage copyValue(HealthStage value) {
+		public HealthStage copy(HealthStage value) {
 			return value;
 		}
 	};
 
 	public static final IDataSerializer<PurpoidSize> PURPOID_SIZE = new IDataSerializer<PurpoidSize>() {
 		public void write(PacketBuffer buf, PurpoidSize value) {
-			buf.writeEnumValue(value);
+			buf.writeEnum(value);
 		}
 
 		public PurpoidSize read(PacketBuffer buf) {
-			return buf.readEnumValue(PurpoidSize.class);
+			return buf.readEnum(PurpoidSize.class);
 		}
 
-		public PurpoidSize copyValue(PurpoidSize value) {
+		public PurpoidSize copy(PurpoidSize value) {
 			return value;
 		}
 	};

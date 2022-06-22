@@ -43,9 +43,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity {
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
-	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
-	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.createKey(BoofloBabyEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Boolean> MOVING = EntityDataManager.defineId(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
+	public static final DataParameter<Boolean> BEING_BORN = EntityDataManager.defineId(BoofloBabyEntity.class, DataSerializers.BOOLEAN);
+	public static final DataParameter<Integer> MOTHER_IMMUNITY_TICKS = EntityDataManager.defineId(BoofloBabyEntity.class, DataSerializers.INT);
 	public static final Endimation BIRTH = new Endimation(60);
 	public boolean wasBred;
 	public int growingAge;
@@ -57,18 +57,18 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 	public BoofloBabyEntity(EntityType<? extends BoofloBabyEntity> type, World worldIn) {
 		super(type, worldIn);
-		this.moveController = new BoofloBabyEntity.BoofloBabyMoveContoller(this);
-		this.lookController = new BoofloBabyLookController(this, 10);
-		this.tailAnimation = this.rand.nextFloat();
+		this.moveControl = new BoofloBabyEntity.BoofloBabyMoveContoller(this);
+		this.lookControl = new BoofloBabyLookController(this, 10);
+		this.tailAnimation = this.random.nextFloat();
 		this.prevTailAnimation = this.tailAnimation;
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(MOVING, false);
-		this.dataManager.register(BEING_BORN, false);
-		this.dataManager.register(MOTHER_IMMUNITY_TICKS, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(MOVING, false);
+		this.entityData.define(BEING_BORN, false);
+		this.entityData.define(MOTHER_IMMUNITY_TICKS, 0);
 	}
 
 	@Override
@@ -78,21 +78,21 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		this.goalSelector.addGoal(5, new BoofloBabyEntity.RandomFlyingGoal(this, 1.1D, 20));
 	}
 
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MobEntity.func_233666_p_()
-				.createMutableAttribute(Attributes.MAX_HEALTH, 5.0F)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.85F)
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 18.0F);
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 5.0F)
+				.add(Attributes.MOVEMENT_SPEED, 0.85F)
+				.add(Attributes.FOLLOW_RANGE, 18.0F);
 	}
 
 	@Override
-	protected PathNavigator createNavigator(World worldIn) {
+	protected PathNavigator createNavigation(World worldIn) {
 		return new FlyingPathNavigator(this, worldIn) {
 
 			@SuppressWarnings("deprecation")
 			@Override
-			public boolean canEntityStandOnPos(BlockPos pos) {
-				return this.world.getBlockState(pos).isAir();
+			public boolean isStableDestination(BlockPos pos) {
+				return this.level.getBlockState(pos).isAir();
 			}
 
 		};
@@ -100,12 +100,12 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 	@Override
 	public void travel(Vector3d vec3d) {
-		if (this.isServerWorld() && !this.isInWater()) {
+		if (this.isEffectiveAi() && !this.isInWater()) {
 			this.moveRelative(0.012F, vec3d);
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.9D));
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
 			if (!this.isMoving()) {
-				this.setMotion(this.getMotion().subtract(0, 0.0025D, 0));
+				this.setDeltaMovement(this.getDeltaMovement().subtract(0, 0.0025D, 0));
 			}
 		} else {
 			super.travel(vec3d);
@@ -113,8 +113,8 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putBoolean("Moving", this.isMoving());
 		compound.putBoolean("IsBeingBorn", this.isBeingBorn());
 		compound.putInt("Age", this.getGrowingAge());
@@ -124,8 +124,8 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		this.setMoving(compound.getBoolean("Moving"));
 		this.setBeingBorn(compound.getBoolean("IsBeingBorn"));
 		this.setGrowingAge(compound.getInt("Age"));
@@ -135,31 +135,31 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	public boolean isMoving() {
-		return this.dataManager.get(MOVING);
+		return this.entityData.get(MOVING);
 	}
 
 	public void setMoving(boolean moving) {
-		this.dataManager.set(MOVING, moving);
+		this.entityData.set(MOVING, moving);
 	}
 
 	public boolean isBeingBorn() {
-		return this.dataManager.get(BEING_BORN);
+		return this.entityData.get(BEING_BORN);
 	}
 
 	public void setBeingBorn(boolean beingBorn) {
-		this.dataManager.set(BEING_BORN, beingBorn);
+		this.entityData.set(BEING_BORN, beingBorn);
 	}
 
 	public int getMotherNoClipTicks() {
-		return this.dataManager.get(MOTHER_IMMUNITY_TICKS);
+		return this.entityData.get(MOTHER_IMMUNITY_TICKS);
 	}
 
 	public void setMotherNoClipTicks(int ticks) {
-		this.dataManager.set(MOTHER_IMMUNITY_TICKS, ticks);
+		this.entityData.set(MOTHER_IMMUNITY_TICKS, ticks);
 	}
 
 	public int getGrowingAge() {
-		if (this.world.isRemote) {
+		if (this.level.isClientSide) {
 			return -1;
 		} else {
 			return this.growingAge;
@@ -184,33 +184,33 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	@Override
-	public boolean isAIDisabled() {
-		return this.isBeingBorn() || super.isAIDisabled();
+	public boolean isNoAi() {
+		return this.isBeingBorn() || super.isNoAi();
 	}
 
 	@Override
-	public boolean canDespawn(double distanceToClosestPlayer) {
+	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
 		return !this.wasBred;
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
-	public int getVerticalFaceSpeed() {
+	public int getMaxHeadXRot() {
 		return 1;
 	}
 
-	public int getHorizontalFaceSpeed() {
+	public int getMaxHeadYRot() {
 		return 1;
 	}
 
 	@Override
-	public void livingTick() {
-		super.livingTick();
+	public void aiStep() {
+		super.aiStep();
 
-		if (this.world.isRemote) {
+		if (this.level.isClientSide) {
 			this.prevTailAnimation = this.tailAnimation;
 			if (this.isInWater()) {
 				this.tailSpeed = 1.0F;
@@ -226,10 +226,10 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 			this.tailAnimation += this.tailSpeed;
 		}
 
-		if (this.world.isRemote) {
+		if (this.level.isClientSide) {
 			if (this.forcedAgeTimer > 0) {
 				if (this.forcedAgeTimer % 4 == 0) {
-					this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosX() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), this.getPosY() + 0.5D + (double) (this.rand.nextFloat() * this.getHeight()), this.getPosZ() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), 0.0D, 0.0D, 0.0D);
+					this.level.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getY() + 0.5D + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), 0.0D, 0.0D, 0.0D);
 				}
 
 				this.forcedAgeTimer--;
@@ -255,15 +255,15 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 		if (this.isEndimationPlaying(BIRTH)) {
 			if (this.getAnimationTick() == 59) {
-				double[] oldPosition = {this.getPosX(), this.getPosY(), this.getPosZ()};
+				double[] oldPosition = {this.getX(), this.getY(), this.getZ()};
 				this.stopRiding();
 				this.setBeingBorn(false);
-				this.setPosition(oldPosition[0], oldPosition[1], oldPosition[2]);
-				this.rotationPitch = 180;
+				this.setPos(oldPosition[0], oldPosition[1], oldPosition[2]);
+				this.xRot = 180;
 				this.setMotherNoClipTicks(50);
 			}
-		} else if (this.isNoEndimationPlaying() && this.getRidingEntity() instanceof BoofloEntity) {
-			if (this.ticksExisted > 260) {
+		} else if (this.isNoEndimationPlaying() && this.getVehicle() instanceof BoofloEntity) {
+			if (this.tickCount > 260) {
 				this.stopRiding();
 				this.setBeingBorn(false);
 			}
@@ -272,29 +272,29 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 	public LivingEntity growUp() {
 		if (this.isAlive()) {
-			this.entityDropItem(EEItems.BOOFLO_HIDE.get(), 1);
+			this.spawnAtLocation(EEItems.BOOFLO_HIDE.get(), 1);
 
-			BoofloAdolescentEntity booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.world);
-			booflo.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
+			BoofloAdolescentEntity booflo = EEEntities.BOOFLO_ADOLESCENT.get().create(this.level);
+			booflo.moveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
 
 			if (this.hasCustomName()) {
 				booflo.setCustomName(this.getCustomName());
 				booflo.setCustomNameVisible(this.isCustomNameVisible());
 			}
 
-			if (this.getLeashed()) {
-				booflo.setLeashHolder(this.getLeashHolder(), true);
-				this.clearLeashed(true, false);
+			if (this.isLeashed()) {
+				booflo.setLeashedTo(this.getLeashHolder(), true);
+				this.dropLeash(true, false);
 			}
 
-			if (this.getRidingEntity() != null) {
-				booflo.startRiding(this.getRidingEntity());
+			if (this.getVehicle() != null) {
+				booflo.startRiding(this.getVehicle());
 			}
 
 			booflo.setHealth(booflo.getMaxHealth());
 			booflo.setGrowingAge(-24000);
 			booflo.wasBred = this.wasBred;
-			this.world.addEntity(booflo);
+			this.level.addFreshEntity(booflo);
 			this.remove();
 
 			return booflo;
@@ -325,21 +325,21 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		}
 	}
 
-	public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
-		ItemStack itemstack = player.getHeldItem(hand);
+	public ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+		ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
-			return ActionResultType.func_233537_a_(this.world.isRemote);
+			return ActionResultType.sidedSuccess(this.level.isClientSide);
 		}
-		return super.func_230254_b_(player, hand);
+		return super.mobInteract(player, hand);
 	}
 
 	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
 		this.setGrowingAge(-24000);
-		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
 
 	@Override
@@ -348,9 +348,9 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	@Override
-	protected void collideWithEntity(Entity entityIn) {
+	protected void doPush(Entity entityIn) {
 		if (!(entityIn instanceof BoofloEntity)) {
-			super.collideWithEntity(entityIn);
+			super.doPush(entityIn);
 		}
 	}
 
@@ -367,12 +367,12 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
 	}
 
 	@Override
@@ -402,9 +402,9 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 
 		@Nullable
 		protected Vector3d getPosition() {
-			Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4);
+			Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 7, 4);
 
-			for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.WATER) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 7, 4)) {
+			for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.WATER) && i++ < 10; vec3d = RandomPositionGenerator.getPos(this.mob, 7, 4)) {
 				;
 			}
 
@@ -412,13 +412,13 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		}
 
 		@Override
-		public boolean shouldExecute() {
-			return super.shouldExecute() && !this.creature.isInWater();
+		public boolean canUse() {
+			return super.canUse() && !this.mob.isInWater();
 		}
 
 		@Override
-		public boolean shouldContinueExecuting() {
-			return super.shouldContinueExecuting() && !this.creature.isInWater();
+		public boolean canContinueToUse() {
+			return super.canContinueToUse() && !this.mob.isInWater();
 		}
 	}
 
@@ -431,36 +431,36 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		}
 
 		public void tick() {
-			if (this.action == MovementController.Action.MOVE_TO && !this.booflo.getNavigator().noPath()) {
-				Vector3d vec3d = new Vector3d(this.posX - this.booflo.getPosX(), this.posY - this.booflo.getPosY(), this.posZ - this.booflo.getPosZ());
+			if (this.operation == MovementController.Action.MOVE_TO && !this.booflo.getNavigation().isDone()) {
+				Vector3d vec3d = new Vector3d(this.wantedX - this.booflo.getX(), this.wantedY - this.booflo.getY(), this.wantedZ - this.booflo.getZ());
 				double d0 = vec3d.length();
 				double d1 = vec3d.y / d0;
 				float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 
-				this.booflo.rotationYaw = this.limitAngle(this.booflo.rotationYaw, f, 10.0F);
-				this.booflo.renderYawOffset = this.booflo.rotationYaw;
-				this.booflo.rotationYawHead = this.booflo.rotationYaw;
+				this.booflo.yRot = this.rotlerp(this.booflo.yRot, f, 10.0F);
+				this.booflo.yBodyRot = this.booflo.yRot;
+				this.booflo.yHeadRot = this.booflo.yRot;
 
-				float f1 = (float) (this.speed * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
-				float f2 = MathHelper.lerp(0.125F, this.booflo.getAIMoveSpeed(), f1);
+				float f1 = (float) (this.speedModifier * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
+				float f2 = MathHelper.lerp(0.125F, this.booflo.getSpeed(), f1);
 
-				this.booflo.setAIMoveSpeed(f2);
+				this.booflo.setSpeed(f2);
 
-				double d3 = Math.cos(this.booflo.rotationYaw * ((float) Math.PI / 180F));
-				double d4 = Math.sin(this.booflo.rotationYaw * ((float) Math.PI / 180F));
-				double d5 = Math.sin((double) (this.booflo.ticksExisted + this.booflo.getEntityId()) * 0.75D) * 0.05D;
+				double d3 = Math.cos(this.booflo.yRot * ((float) Math.PI / 180F));
+				double d4 = Math.sin(this.booflo.yRot * ((float) Math.PI / 180F));
+				double d5 = Math.sin((double) (this.booflo.tickCount + this.booflo.getId()) * 0.75D) * 0.05D;
 
 				if (!this.booflo.isInWater()) {
 					float f3 = -((float) (MathHelper.atan2(vec3d.y, (double) MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double) (180F / (float) Math.PI)));
 					f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
-					this.booflo.rotationPitch = this.limitAngle(this.booflo.rotationPitch, f3, 5.0F);
+					this.booflo.xRot = this.rotlerp(this.booflo.xRot, f3, 5.0F);
 				}
 
-				this.booflo.setMotion(this.booflo.getMotion().add(0, d5 * (d4 + d3) * 0.25D + (double) f2 * d1 * 0.02D, 0));
+				this.booflo.setDeltaMovement(this.booflo.getDeltaMovement().add(0, d5 * (d4 + d3) * 0.25D + (double) f2 * d1 * 0.02D, 0));
 
 				this.booflo.setMoving(true);
 			} else {
-				this.booflo.setAIMoveSpeed(0F);
+				this.booflo.setSpeed(0F);
 				this.booflo.setMoving(false);
 			}
 		}
@@ -475,22 +475,22 @@ public class BoofloBabyEntity extends EndimatedEntity implements IAgeableEntity 
 		}
 
 		public void tick() {
-			if (this.isLooking) {
-				this.isLooking = false;
-				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.getTargetYaw() + 20.0F, this.deltaLookYaw);
-				this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, this.getTargetPitch() + 10.0F, this.deltaLookPitch);
+			if (this.hasWanted) {
+				this.hasWanted = false;
+				this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, this.getYRotD() + 20.0F, this.yMaxRotSpeed);
+				this.mob.xRot = this.rotateTowards(this.mob.xRot, this.getXRotD() + 10.0F, this.xMaxRotAngle);
 			} else {
-				if (this.mob.getNavigator().noPath()) {
-					this.mob.rotationPitch = this.clampedRotate(this.mob.rotationPitch, 0.0F, 5.0F);
+				if (this.mob.getNavigation().isDone()) {
+					this.mob.xRot = this.rotateTowards(this.mob.xRot, 0.0F, 5.0F);
 				}
-				this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.mob.renderYawOffset, this.deltaLookYaw);
+				this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, this.mob.yBodyRot, this.yMaxRotSpeed);
 			}
 
-			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.rotationYawHead - this.mob.renderYawOffset);
+			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.yHeadRot - this.mob.yBodyRot);
 			if (wrappedDegrees < (float) (-this.angleLimit)) {
-				this.mob.renderYawOffset -= 4.0F;
+				this.mob.yBodyRot -= 4.0F;
 			} else if (wrappedDegrees > (float) this.angleLimit) {
-				this.mob.renderYawOffset += 4.0F;
+				this.mob.yBodyRot += 4.0F;
 			}
 		}
 	}

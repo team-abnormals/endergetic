@@ -48,24 +48,24 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 
 	@Override
 	public void tick() {
-		World world = this.getWorld();
+		World world = this.getLevel();
 		if (world != null) {
-			BlockPos pos = this.pos;
-			if (world.isRemote) {
+			BlockPos pos = this.worldPosition;
+			if (world.isClientSide) {
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.tick();
 				}
-			} else if ((world.getGameRules().get(GameRules.DO_MOB_SPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().get(EetleEggBlock.PETRIFIED)) {
+			} else if ((world.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().getValue(EetleEggBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
-					if (!world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(pos).grow(1.0D), player -> player.isAlive() && !player.isSneaking() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
+					if (!world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos).inflate(1.0D), player -> player.isAlive() && !player.isShiftKeyDown() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
-						world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 					}
 				}
 
 				int delay = this.hatchDelay;
 				if (delay < 0) {
-					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesWithinAABB(AbstractEetleEntity.class, new AxisAlignedBB(this.getPos()).grow(14.0D)).size() >= 7) {
+					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesOfClass(AbstractEetleEntity.class, new AxisAlignedBB(this.getBlockPos()).inflate(14.0D)).size() >= 7) {
 						delay = -600 - RANDOM.nextInt(201);
 					}
 
@@ -74,33 +74,33 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 					this.updateHatchDelay(world, --delay);
 				} else {
 					if (this.hatchProgress < 20 && RANDOM.nextFloat() < 0.9F) {
-						world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+						world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 						if (++this.hatchProgress >= 20) {
 							world.destroyBlock(pos, false);
 							int x = pos.getX();
 							int y = pos.getY();
 							int z = pos.getZ();
 							BlockState state = this.getBlockState();
-							Direction facing = state.get(EetleEggBlock.FACING);
-							float xOffset = facing.getXOffset();
+							Direction facing = state.getValue(EetleEggBlock.FACING);
+							float xOffset = facing.getStepX();
 							float yOffset = facing == Direction.DOWN ? 0.25F : 0.1F;
-							float zOffset = facing.getZOffset();
-							int size = state.get(EetleEggBlock.SIZE);
+							float zOffset = facing.getStepZ();
+							int size = state.getValue(EetleEggBlock.SIZE);
 							boolean fromBroodEetle = this.fromBroodEetle;
 							for (int i = 0; i <= size; i++) {
 								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);
 								if (eetle != null) {
 									eetle.markFromEgg();
 									eetle.updateAge(-(RANDOM.nextInt(41) + 120));
-									eetle.setPositionAndRotation(x + RANDOM.nextFloat() * 0.5F + xOffset * 0.5F * RANDOM.nextFloat(), y + yOffset, z + RANDOM.nextFloat() * 0.5F + zOffset * 0.5F * RANDOM.nextFloat(), RANDOM.nextFloat() * 360.0F, 0.0F);
+									eetle.absMoveTo(x + RANDOM.nextFloat() * 0.5F + xOffset * 0.5F * RANDOM.nextFloat(), y + yOffset, z + RANDOM.nextFloat() * 0.5F + zOffset * 0.5F * RANDOM.nextFloat(), RANDOM.nextFloat() * 360.0F, 0.0F);
 									if (fromBroodEetle) {
 										eetle.applyDespawnTimer();
 									}
-									world.addEntity(eetle);
+									world.addFreshEntity(eetle);
 								}
 							}
 							if (world instanceof ServerWorld) {
-								((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+								((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 							}
 						}
 					}
@@ -108,9 +108,9 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 			} else if (this.hatchDelay > -80 || this.hatchProgress > 0) {
 				this.hatchProgress = 0;
 				this.hatchDelay = -80;
-				world.notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
+				world.sendBlockUpdated(pos, this.getBlockState(), this.getBlockState(), 3);
 			}
-			if (!world.isRemote && RANDOM.nextFloat() <= 0.0025F) {
+			if (!world.isClientSide && RANDOM.nextFloat() <= 0.0025F) {
 				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundCategory.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
 			}
 		}
@@ -120,7 +120,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 		int prevDelay = this.hatchDelay;
 		this.hatchDelay = hatchDelay;
 		if (prevDelay < 0 && hatchDelay >= 0 || prevDelay >= 0 && hatchDelay < 0) {
-			world.notifyBlockUpdate(this.getPos(), this.getBlockState(), this.getBlockState(), 3);
+			world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 		}
 	}
 
@@ -138,8 +138,8 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-		if (this.world != null) {
-			this.read(this.world.getBlockState(packet.getPos()), packet.getNbtCompound());
+		if (this.level != null) {
+			this.load(this.level.getBlockState(packet.getPos()), packet.getTag());
 			if (this.hatchProgress > 0) {
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.stage = SackGrowth.Stage.BURSTING;
@@ -155,8 +155,8 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT compound) {
-		super.write(compound);
+	public CompoundNBT save(CompoundNBT compound) {
+		super.save(compound);
 		compound.putInt("HatchDelay", this.hatchDelay);
 		compound.putInt("HatchProgress", this.hatchProgress);
 		compound.putBoolean("BypassSpawningGameRule", this.bypassesSpawningGameRule);
@@ -165,8 +165,8 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT compound) {
-		super.read(state, compound);
+	public void load(BlockState state, CompoundNBT compound) {
+		super.load(state, compound);
 		if (compound.contains("HatchDelay", Constants.NBT.TAG_INT)) {
 			this.hatchDelay = compound.getInt("HatchDelay");
 		}
@@ -177,17 +177,17 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 
 	@Override
 	public CompoundNBT getUpdateTag() {
-		return this.write(new CompoundNBT());
+		return this.save(new CompoundNBT());
 	}
 
 	@Nullable
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.pos, 100, this.getUpdateTag());
+		return new SUpdateTileEntityPacket(this.worldPosition, 100, this.getUpdateTag());
 	}
 
 	@Override
-	public double getMaxRenderDistanceSquared() {
+	public double getViewDistance() {
 		return 128.0D;
 	}
 

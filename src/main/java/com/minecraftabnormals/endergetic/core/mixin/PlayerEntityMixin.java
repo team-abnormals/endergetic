@@ -19,7 +19,7 @@ import java.util.List;
 @Mixin(PlayerEntity.class)
 public final class PlayerEntityMixin {
 
-	@Inject(at = @At("RETURN"), method = "writeAdditional")
+	@Inject(at = @At("RETURN"), method = "addAdditionalSaveData")
 	private void writeBalloons(CompoundNBT compound, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) (Object) this).getBalloons();
 		if (!balloons.isEmpty()) {
@@ -27,7 +27,7 @@ public final class PlayerEntityMixin {
 
 			for (BolloomBalloonEntity balloon : balloons) {
 				CompoundNBT compoundnbt = new CompoundNBT();
-				if (balloon.writeUnlessRemoved(compoundnbt)) {
+				if (balloon.saveAsPassenger(compoundnbt)) {
 					balloonsTag.add(compoundnbt);
 				}
 			}
@@ -41,11 +41,11 @@ public final class PlayerEntityMixin {
 	@Inject(at = @At("HEAD"), method = "wantsToStopRiding", cancellable = true)
 	private void preventGliderEetleDismount(CallbackInfoReturnable<Boolean> info) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
-		if (player.isSneaking() && player.isAlive() && !player.isSpectator() && !player.isCreative() && player.world.getDifficulty() != Difficulty.PEACEFUL) {
-			Entity entity = player.getRidingEntity();
+		if (player.isShiftKeyDown() && player.isAlive() && !player.isSpectator() && !player.isCreative() && player.level.getDifficulty() != Difficulty.PEACEFUL) {
+			Entity entity = player.getVehicle();
 			if (entity instanceof GliderEetleEntity) {
 				GliderEetleEntity glider = (GliderEetleEntity) entity;
-				if (!glider.isChild() && glider.isAlive() && glider.isFlying()) {
+				if (!glider.isBaby() && glider.isAlive() && glider.isFlying()) {
 					info.setReturnValue(false);
 				}
 			}

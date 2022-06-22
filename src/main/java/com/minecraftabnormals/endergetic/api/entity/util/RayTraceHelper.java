@@ -17,9 +17,9 @@ import net.minecraft.world.World;
 public class RayTraceHelper {
 
 	public static RayTraceResult rayTrace(Entity entity, double distance, float delta) {
-		return entity.world.rayTraceBlocks(new RayTraceContext(
+		return entity.level.clip(new RayTraceContext(
 				entity.getEyePosition(delta),
-				entity.getEyePosition(delta).add(entity.getLook(delta).scale(distance)),
+				entity.getEyePosition(delta).add(entity.getViewVector(delta).scale(distance)),
 				RayTraceContext.BlockMode.COLLIDER,
 				RayTraceContext.FluidMode.NONE,
 				entity
@@ -27,7 +27,7 @@ public class RayTraceHelper {
 	}
 
 	public static RayTraceResult rayTraceWithCustomDirection(Entity entity, float pitch, float yaw, double distance, float delta) {
-		return entity.world.rayTraceBlocks(new RayTraceContext(
+		return entity.level.clip(new RayTraceContext(
 				entity.getEyePosition(delta),
 				entity.getEyePosition(delta).add(getVectorForRotation(pitch, yaw).scale(distance)),
 				RayTraceContext.BlockMode.COLLIDER,
@@ -39,9 +39,9 @@ public class RayTraceHelper {
 	public static EntityRayTraceResult rayTraceEntityResult(Entity entity, float pitch, float yaw, double distance, double sqDistance, float delta) {
 		Vector3d look = getVectorForRotation(pitch, yaw);
 		Vector3d endVec = entity.getEyePosition(delta).add(look.scale(distance));
-		AxisAlignedBB axisalignedbb = entity.getBoundingBox().expand(look.scale(distance)).grow(1.0D, 1.0D, 1.0D);
-		EntityRayTraceResult entityRaytraceResult = func_221273_a(entity, entity.getEyePosition(delta), endVec, axisalignedbb, (result) -> {
-			return !result.isSpectator() && result.canBeCollidedWith();
+		AxisAlignedBB axisalignedbb = entity.getBoundingBox().expandTowards(look.scale(distance)).inflate(1.0D, 1.0D, 1.0D);
+		EntityRayTraceResult entityRaytraceResult = getEntityHitResult(entity, entity.getEyePosition(delta), endVec, axisalignedbb, (result) -> {
+			return !result.isSpectator() && result.isPickable();
 		}, sqDistance);
 		return entityRaytraceResult;
 	}
@@ -61,15 +61,15 @@ public class RayTraceHelper {
 	 * It's a raytracing method, but Vanilla's is client only
 	 */
 	@Nullable
-	public static EntityRayTraceResult func_221273_a(Entity p_221273_0_, Vector3d p_221273_1_, Vector3d p_221273_2_, AxisAlignedBB p_221273_3_, Predicate<Entity> p_221273_4_, double p_221273_5_) {
-		World world = p_221273_0_.world;
+	public static EntityRayTraceResult getEntityHitResult(Entity p_221273_0_, Vector3d p_221273_1_, Vector3d p_221273_2_, AxisAlignedBB p_221273_3_, Predicate<Entity> p_221273_4_, double p_221273_5_) {
+		World world = p_221273_0_.level;
 		double d0 = p_221273_5_;
 		Entity entity = null;
 		Vector3d Vector3d = null;
 
-		for (Entity entity1 : world.getEntitiesInAABBexcluding(p_221273_0_, p_221273_3_, p_221273_4_)) {
-			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double) entity1.getCollisionBorderSize());
-			Optional<Vector3d> optional = axisalignedbb.rayTrace(p_221273_1_, p_221273_2_);
+		for (Entity entity1 : world.getEntities(p_221273_0_, p_221273_3_, p_221273_4_)) {
+			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().inflate((double) entity1.getPickRadius());
+			Optional<Vector3d> optional = axisalignedbb.clip(p_221273_1_, p_221273_2_);
 			if (axisalignedbb.contains(p_221273_1_)) {
 				if (d0 >= 0.0D) {
 					entity = entity1;
@@ -78,9 +78,9 @@ public class RayTraceHelper {
 				}
 			} else if (optional.isPresent()) {
 				Vector3d Vector3d1 = optional.get();
-				double d1 = p_221273_1_.squareDistanceTo(Vector3d1);
+				double d1 = p_221273_1_.distanceToSqr(Vector3d1);
 				if (d1 < d0 || d0 == 0.0D) {
-					if (entity1.getLowestRidingEntity() == p_221273_0_.getLowestRidingEntity()) {
+					if (entity1.getRootVehicle() == p_221273_0_.getRootVehicle()) {
 						if (d0 == 0.0D) {
 							entity = entity1;
 							Vector3d = Vector3d1;

@@ -30,7 +30,7 @@ public final class C2SInflateMessage {
 			context.enqueueWork(() -> {
 				PlayerEntity player = context.getSender();
 				if (player != null) {
-					Entity entity = player.getRidingEntity();
+					Entity entity = player.getVehicle();
 					if (entity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) entity;
 						if (!booflo.isOnGround() && !booflo.isBoostLocked() && booflo.getBoostPower() <= 0) {

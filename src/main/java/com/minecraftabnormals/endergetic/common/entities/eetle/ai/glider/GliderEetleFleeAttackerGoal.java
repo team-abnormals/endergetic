@@ -15,22 +15,22 @@ public class GliderEetleFleeAttackerGoal extends Goal {
 
 	public GliderEetleFleeAttackerGoal(GliderEetleEntity glider) {
 		this.glider = glider;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		GliderEetleEntity glider = this.glider;
 		if (glider.isGrounded() && !glider.isFlying()) {
 			LivingEntity attacker = glider.groundedAttacker;
 			if (attacker != null) {
-				Vector3d pointAway = RandomPositionGenerator.findRandomTargetBlockAwayFrom(glider, 16, 7, attacker.getPositionVec());
+				Vector3d pointAway = RandomPositionGenerator.getPosAvoid(glider, 16, 7, attacker.position());
 				if (pointAway == null) {
 					return false;
-				} else if (attacker.getDistanceSq(pointAway.x, pointAway.y, pointAway.z) < attacker.getDistanceSq(glider)) {
+				} else if (attacker.distanceToSqr(pointAway.x, pointAway.y, pointAway.z) < attacker.distanceToSqr(glider)) {
 					return false;
 				} else {
-					this.path = glider.getNavigator().getPathToPos(pointAway.x, pointAway.y, pointAway.z, 0);
+					this.path = glider.getNavigation().createPath(pointAway.x, pointAway.y, pointAway.z, 0);
 					return this.path != null;
 				}
 			}
@@ -39,18 +39,18 @@ public class GliderEetleFleeAttackerGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		GliderEetleEntity glider = this.glider;
-		return glider.isGrounded() && !glider.isFlying() && glider.groundedAttacker != null && glider.getNavigator().hasPath();
+		return glider.isGrounded() && !glider.isFlying() && glider.groundedAttacker != null && glider.getNavigation().isInProgress();
 	}
 
 	@Override
-	public void startExecuting() {
-		this.glider.getNavigator().setPath(this.path, 1.25F);
+	public void start() {
+		this.glider.getNavigation().moveTo(this.path, 1.25F);
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.path = null;
 	}
 }

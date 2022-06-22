@@ -16,13 +16,13 @@ public final class GenerationUtils {
 	@SuppressWarnings("deprecation")
 	public static boolean isAir(IWorldGenerationBaseReader worldIn, BlockPos pos) {
 		if (!(worldIn instanceof net.minecraft.world.IBlockReader))
-			return worldIn.hasBlockState(pos, BlockState::isAir);
-		else return worldIn.hasBlockState(pos, state -> state.isAir((net.minecraft.world.IBlockReader) worldIn, pos));
+			return worldIn.isStateAtPosition(pos, BlockState::isAir);
+		else return worldIn.isStateAtPosition(pos, state -> state.isAir((net.minecraft.world.IBlockReader) worldIn, pos));
 	}
 
 	public static <B extends BlockState> boolean isProperBlock(B blockState, Block[] validBlocks, boolean orSolid) {
 		if (!Arrays.asList(validBlocks).contains(blockState.getBlock()) && orSolid) {
-			return blockState.isSolid();
+			return blockState.canOcclude();
 		}
 		return Arrays.asList(validBlocks).contains(blockState.getBlock());
 	}
@@ -32,9 +32,9 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					mutable.setPos(xx, yy, zz);
+					mutable.set(xx, yy, zz);
 					if (world.getBlockState(mutable).getMaterial().isReplaceable()) {
-						world.setBlockState(mutable, block, 2);
+						world.setBlock(mutable, block, 2);
 					}
 				}
 			}
@@ -46,9 +46,9 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					mutable.setPos(xx, yy, zz);
+					mutable.set(xx, yy, zz);
 					if (world.getBlockState(mutable).getMaterial().isReplaceable() && (xx == x2 || zz == z2)) {
-						world.setBlockState(mutable, block, 2);
+						world.setBlock(mutable, block, 2);
 					}
 				}
 			}
@@ -60,7 +60,7 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					world.setBlockState(mutable.setPos(xx, yy, zz), block, 2);
+					world.setBlock(mutable.set(xx, yy, zz), block, 2);
 				}
 			}
 		}
@@ -71,7 +71,7 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx >= x2; xx--) {
 				for (int zz = z1; zz >= z2; zz--) {
-					world.setBlockState(mutable.setPos(xx, yy, zz), block, 2);
+					world.setBlock(mutable.set(xx, yy, zz), block, 2);
 				}
 			}
 		}
@@ -82,12 +82,12 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					mutable.setPos(xx, yy, zz);
+					mutable.set(xx, yy, zz);
 					if (world.getBlockState(mutable).getMaterial().isReplaceable()) {
 						if (rand.nextFloat() <= chance) {
-							world.setBlockState(mutable, block2, 2);
+							world.setBlock(mutable, block2, 2);
 						} else {
-							world.setBlockState(mutable, block, 2);
+							world.setBlock(mutable, block, 2);
 						}
 					}
 				}
@@ -100,7 +100,7 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (!world.getBlockState(mutable.setPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+					if (!world.getBlockState(mutable.set(xx, yy, zz)).getMaterial().isReplaceable()) {
 						return false;
 					}
 				}
@@ -114,7 +114,7 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (!world.isAirBlock(mutable.setPos(xx, yy, zz))) {
+					if (!world.isEmptyBlock(mutable.set(xx, yy, zz))) {
 						return false;
 					}
 				}
@@ -128,7 +128,7 @@ public final class GenerationUtils {
 		for (int yy = y1; yy <= y2; yy++) {
 			for (int xx = x1; xx <= x2; xx++) {
 				for (int zz = z1; zz <= z2; zz++) {
-					if (world.getBlockState(mutable.setPos(xx, yy, zz)).getMaterial().isReplaceable()) {
+					if (world.getBlockState(mutable.set(xx, yy, zz)).getMaterial().isReplaceable()) {
 						return false;
 					}
 				}
@@ -142,7 +142,7 @@ public final class GenerationUtils {
 		BlockPos currentPos = null;
 
 		for (BlockPos listOfPositions : positions) {
-			double newDistance = Vector3d.copy(pos).squareDistanceTo(Vector3d.copy((listOfPositions)));
+			double newDistance = Vector3d.atLowerCornerOf(pos).distanceToSqr(Vector3d.atLowerCornerOf((listOfPositions)));
 			if (distance == -1.0D || newDistance < distance) {
 				distance = newDistance;
 				currentPos = listOfPositions;

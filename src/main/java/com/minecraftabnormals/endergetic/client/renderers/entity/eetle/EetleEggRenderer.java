@@ -26,19 +26,19 @@ public class EetleEggRenderer extends EntityRenderer<EetleEggEntity> {
 
 	@Override
 	public void render(EetleEggEntity eggsEntity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn) {
-		matrixStack.push();
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		matrixStack.pushPose();
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -1.5F, 0.0F);
 		int size = eggsEntity.getEggSize().ordinal();
 		IEetleEggModel eggsModel = this.eggModels[size];
-		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(EetleEggTileEntityRenderer.TEXTURES[size])), packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks, eggsEntity.getSackGrowths());
+		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.entityCutout(EetleEggTileEntityRenderer.TEXTURES[size])), packedLightIn, OverlayTexture.NO_OVERLAY, partialTicks, eggsEntity.getSackGrowths());
 		eggsModel.renderSilk(matrixStack, buffer.getBuffer(EERenderTypes.EETLE_EGG_SILK), packedLightIn, OverlayTexture.NO_OVERLAY);
-		matrixStack.pop();
+		matrixStack.popPose();
 		super.render(eggsEntity, entityYaw, partialTicks, matrixStack, buffer, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(EetleEggEntity entity) {
+	public ResourceLocation getTextureLocation(EetleEggEntity entity) {
 		return EetleEggTileEntityRenderer.TEXTURES[0];
 	}
 }

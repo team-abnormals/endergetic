@@ -48,6 +48,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import net.minecraft.item.Item.Properties;
+
 public class PuffBugBottleItem extends Item {
 
 	public PuffBugBottleItem(Properties properties) {
@@ -55,21 +57,21 @@ public class PuffBugBottleItem extends Item {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		World world = context.getWorld();
-		if (world.isRemote) {
+	public ActionResultType useOn(ItemUseContext context) {
+		World world = context.getLevel();
+		if (world.isClientSide) {
 			return ActionResultType.SUCCESS;
 		} else {
-			ItemStack itemstack = context.getItem();
-			BlockPos blockpos = context.getPos();
-			Direction direction = context.getFace();
+			ItemStack itemstack = context.getItemInHand();
+			BlockPos blockpos = context.getClickedPos();
+			Direction direction = context.getClickedFace();
 			BlockState blockstate = world.getBlockState(blockpos);
 
 			BlockPos blockpos1;
 			if (blockstate.getCollisionShape(world, blockpos).isEmpty()) {
 				blockpos1 = blockpos;
 			} else {
-				blockpos1 = blockpos.offset(direction);
+				blockpos1 = blockpos.relative(direction);
 			}
 
 			EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
@@ -81,52 +83,52 @@ public class PuffBugBottleItem extends Item {
 	}
 
 	@Override
-	public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
+	public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
 		if (target instanceof BoofloEntity) {
 			BoofloEntity booflo = (BoofloEntity) target;
 			if (!booflo.hasCaughtFruit() && !booflo.hasCaughtPuffBug() && booflo.isTamed()) {
-				World world = player.world;
+				World world = player.level;
 				PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world);
 				if (puffbug != null) {
-					puffbug.setPosition(target.getPosX(), target.getPosY(), target.getPosZ());
-					EntityType.applyItemNBT(world, player, puffbug, stack.getOrCreateTag());
-					puffbug.onInitialSpawn((ServerWorld) world, world.getDifficultyForLocation(puffbug.getPosition()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
-					world.addEntity(puffbug);
+					puffbug.setPos(target.getX(), target.getY(), target.getZ());
+					EntityType.updateCustomEntityTag(world, player, puffbug, stack.getOrCreateTag());
+					puffbug.finalizeSpawn((ServerWorld) world, world.getCurrentDifficultyAt(puffbug.blockPosition()), SpawnReason.BUCKET, null, stack.getOrCreateTag());
+					world.addFreshEntity(puffbug);
 					booflo.catchPuffBug(puffbug);
-					if (!player.abilities.isCreativeMode) {
+					if (!player.abilities.instabuild) {
 						this.emptyBottle(player, hand);
 					}
 				}
 				return ActionResultType.CONSUME;
 			}
 		}
-		return super.itemInteractionForEntity(stack, player, target, hand);
+		return super.interactLivingEntity(stack, player, target, hand);
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		if (worldIn.isRemote) {
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+		ItemStack itemstack = playerIn.getItemInHand(handIn);
+		if (worldIn.isClientSide) {
 			return new ActionResult<>(ActionResultType.PASS, itemstack);
 		} else {
-			RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
+			RayTraceResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
 			if (raytraceresult.getType() != RayTraceResult.Type.BLOCK) {
 				return new ActionResult<>(ActionResultType.PASS, itemstack);
 			} else {
 				BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) raytraceresult;
-				BlockPos blockpos = blockraytraceresult.getPos();
+				BlockPos blockpos = blockraytraceresult.getBlockPos();
 				if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
 					return new ActionResult<>(ActionResultType.PASS, itemstack);
-				} else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, blockraytraceresult.getFace(), itemstack)) {
+				} else if (worldIn.mayInteract(playerIn, blockpos) && playerIn.mayUseItemAt(blockpos, blockraytraceresult.getDirection(), itemstack)) {
 					EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
 					if (entitytype.spawn((ServerWorld) worldIn, itemstack, playerIn, blockpos, SpawnReason.SPAWN_EGG, false, false) == null) {
 						return new ActionResult<>(ActionResultType.PASS, itemstack);
 					} else {
-						if (!playerIn.abilities.isCreativeMode) {
+						if (!playerIn.abilities.instabuild) {
 							this.emptyBottle(playerIn, handIn);
 						}
 
-						playerIn.addStat(Stats.ITEM_USED.get(this));
+						playerIn.awardStat(Stats.ITEM_USED.get(this));
 						return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
 					}
 				} else {
@@ -137,49 +139,49 @@ public class PuffBugBottleItem extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		CompoundNBT nbt = stack.getTag();
 		if (nbt != null && nbt.contains("CustomPotionEffects")) {
-			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").mergeStyle(TextFormatting.DARK_PURPLE));
-			for (EffectInstance effects : PotionUtils.getFullEffectsFromTag(nbt)) {
+			tooltip.add(new TranslationTextComponent("tooltip.endergetic.activePotions").withStyle(TextFormatting.DARK_PURPLE));
+			for (EffectInstance effects : PotionUtils.getCustomEffects(nbt)) {
 				TextFormatting[] potionTextFormat = new TextFormatting[]{TextFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new StringTextComponent(" " + I18n.format(effects.getEffectName()) + " " + ItemStackUtil.intToRomanNumerals(effects.getAmplifier() + 1)).mergeStyle(potionTextFormat));
+				tooltip.add(new StringTextComponent(" " + I18n.get(effects.getDescriptionId()) + " " + ItemStackUtil.intToRomanNumerals(effects.getAmplifier() + 1)).withStyle(potionTextFormat));
 			}
 		}
 	}
 
 	private TextFormatting getEffectTextColor(EffectInstance effect) {
-		Map<Attribute, AttributeModifier> map = effect.getPotion().getAttributeModifierMap();
+		Map<Attribute, AttributeModifier> map = effect.getEffect().getAttributeModifiers();
 		if (!map.isEmpty()) {
 			for (Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
 				AttributeModifier entryValue = entry.getValue();
-				AttributeModifier modifier = new AttributeModifier(entryValue.getName(), effect.getPotion().getAttributeModifierAmount(effect.getAmplifier(), entryValue), entryValue.getOperation());
+				AttributeModifier modifier = new AttributeModifier(entryValue.getName(), effect.getEffect().getAttributeModifierValue(effect.getAmplifier(), entryValue), entryValue.getOperation());
 
 				if (modifier.getAmount() <= 0.0F) {
 					return TextFormatting.RED;
 				}
 			}
 		}
-		return effect.getPotion().isBeneficial() ? TextFormatting.BLUE : TextFormatting.RED;
+		return effect.getEffect().isBeneficial() ? TextFormatting.BLUE : TextFormatting.RED;
 	}
 
 	private void emptyBottle(PlayerEntity player, Hand hand) {
 		if (!player.isCreative()) {
 			EquipmentSlotType slot = hand == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND;
-			player.setItemStackToSlot(slot, new ItemStack(Items.GLASS_BOTTLE));
+			player.setItemSlot(slot, new ItemStack(Items.GLASS_BOTTLE));
 		}
 	}
 
 	public static class PuffBugBottleDispenseBehavior extends DefaultDispenseItemBehavior {
 
-		public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-			if (source.getWorld().getBlockState(source.getBlockPos().offset(direction)).getCollisionShape(source.getWorld(), source.getBlockPos().offset(direction)).isEmpty()) {
+		public ItemStack execute(IBlockSource source, ItemStack stack) {
+			Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+			if (source.getLevel().getBlockState(source.getPos().relative(direction)).getCollisionShape(source.getLevel(), source.getPos().relative(direction)).isEmpty()) {
 				EntityType<?> entitytype = EEEntities.PUFF_BUG.get();
-				entitytype.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+				entitytype.spawn(source.getLevel(), stack, null, source.getPos().relative(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
 				stack = new ItemStack(Items.GLASS_BOTTLE);
 			} else {
-				return super.dispenseStack(source, stack);
+				return super.execute(source, stack);
 			}
 			return stack;
 		}

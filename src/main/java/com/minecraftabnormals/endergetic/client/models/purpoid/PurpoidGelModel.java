@@ -11,28 +11,28 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 	public EndimatorModelRenderer gelLayer;
 
 	public PurpoidGelModel() {
-		this.textureWidth = 64;
-		this.textureHeight = 96;
+		this.texWidth = 64;
+		this.texHeight = 96;
 		this.gelLayer = new EndimatorModelRenderer(this, 0, 0);
-		this.gelLayer.setRotationPoint(0.0F, 1.0F, 0.0F);
+		this.gelLayer.setPos(0.0F, 1.0F, 0.0F);
 		this.gelLayer.addBox(-8.0F, -16.0F, -8.0F, 16, 16, 16, 0.0F);
 		this.setDefaultBoxValues();
 	}
 
 	public void parentToHead(EndimatorModelRenderer head) {
 		EndimatorModelRenderer gelLayer = this.gelLayer;
-		gelLayer.copyModelAngles(head);
-		gelLayer.rotationPointY += 1.0F;
+		gelLayer.copyFrom(head);
+		gelLayer.y += 1.0F;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		this.gelLayer.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setRotationAngles(PurpoidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(PurpoidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		if (entity.isNoEndimationPlaying()) {
 			float scaleOffset = MathHelper.sin(limbSwing * 0.6F) * Math.min(0.2F, limbSwingAmount);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);

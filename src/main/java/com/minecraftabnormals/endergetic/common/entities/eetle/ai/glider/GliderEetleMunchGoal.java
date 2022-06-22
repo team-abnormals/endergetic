@@ -15,11 +15,11 @@ public class GliderEetleMunchGoal extends EndimatedGoal<GliderEetleEntity> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.munchCooldown > 0) {
 			this.munchCooldown--;
-		} else if (this.entity.getRNG().nextFloat() < 0.05F) {
-			LivingEntity attackTarget = this.entity.getAttackTarget();
+		} else if (this.entity.getRandom().nextFloat() < 0.05F) {
+			LivingEntity attackTarget = this.entity.getTarget();
 			if (attackTarget != null) {
 				return this.entity.getPassengers().contains(attackTarget) && this.entity.isFlying() && this.isNoEndimationPlaying();
 			}
@@ -28,28 +28,28 @@ public class GliderEetleMunchGoal extends EndimatedGoal<GliderEetleEntity> {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.isEndimationPlaying() && this.entity.isFlying();
 	}
 
 	@Override
 	public void tick() {
-		LivingEntity attackTarget = this.entity.getAttackTarget();
+		LivingEntity attackTarget = this.entity.getTarget();
 		if (attackTarget != null && this.entity.getPassengers().contains(attackTarget)) {
 			if (this.isEndimationAtTick(8) || this.isEndimationAtTick(18)) {
-				attackTarget.attackEntityFrom(causeMunchDamage(this.entity), (float) this.entity.getAttributeValue(Attributes.ATTACK_DAMAGE) + attackTarget.getRNG().nextInt(2));
+				attackTarget.hurt(causeMunchDamage(this.entity), (float) this.entity.getAttributeValue(Attributes.ATTACK_DAMAGE) + attackTarget.getRandom().nextInt(2));
 			}
 		}
 	}
 
 	@Override
-	public void resetTask() {
-		this.munchCooldown = this.entity.getRNG().nextInt(41) + 20;
+	public void stop() {
+		this.munchCooldown = this.entity.getRandom().nextInt(41) + 20;
 	}
 
 	public static DamageSource causeMunchDamage(GliderEetleEntity glider) {

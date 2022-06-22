@@ -10,28 +10,30 @@ import net.minecraft.world.World;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
-	private static final EntityPredicate PREDICATE = new EntityPredicate().allowFriendlyFire();
+	private static final EntityPredicate PREDICATE = new EntityPredicate().allowSameTeam();
 	private static final float MIN_DISTANCE = 2.0F;
 	public int cooldown;
 
 	public EetleCatapultGoal(ChargerEetleEntity entity) {
 		super(entity, ChargerEetleEntity.CATAPULT);
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.cooldown > 0) {
 			this.cooldown--;
-		} else if (this.entity.getRNG().nextFloat() < 0.1F) {
+		} else if (this.entity.getRandom().nextFloat() < 0.1F) {
 			ChargerEetleEntity chargerEetle = this.entity;
-			LivingEntity attackTarget = chargerEetle.getAttackTarget();
+			LivingEntity attackTarget = chargerEetle.getTarget();
 			if (attackTarget != null && attackTarget.isAlive() && !chargerEetle.isCatapultProjectile() && chargerEetle.isOnGround()) {
-				World world = chargerEetle.world;
-				ChargerEetleEntity closestCharger = world.getClosestEntity(world.getEntitiesWithinAABB(ChargerEetleEntity.class, chargerEetle.getBoundingBox().grow(2.5F), eetle -> {
-					return eetle != chargerEetle && eetle.isOnGround() && !eetle.isChild() && eetle.getAttackTarget() == attackTarget && !eetle.isCatapulting() && attackTarget.getDistance(eetle) >= MIN_DISTANCE;
-				}), PREDICATE, null, chargerEetle.getPosX(), chargerEetle.getPosY(), chargerEetle.getPosZ());
+				World world = chargerEetle.level;
+				ChargerEetleEntity closestCharger = world.getNearestEntity(world.getEntitiesOfClass(ChargerEetleEntity.class, chargerEetle.getBoundingBox().inflate(2.5F), eetle -> {
+					return eetle != chargerEetle && eetle.isOnGround() && !eetle.isBaby() && eetle.getTarget() == attackTarget && !eetle.isCatapulting() && attackTarget.distanceTo(eetle) >= MIN_DISTANCE;
+				}), PREDICATE, null, chargerEetle.getX(), chargerEetle.getY(), chargerEetle.getZ());
 				if (closestCharger != null) {
 					chargerEetle.setCatapultingTarget(closestCharger);
 					return true;
@@ -42,12 +44,12 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		ChargerEetleEntity target = this.entity.getCatapultingTarget();
 		if (target != null && target.isAlive()) {
 			ChargerEetleEntity charger = this.entity;
-			LivingEntity attackTarget = charger.getAttackTarget();
-			return attackTarget != null && attackTarget.isAlive() && target.getAttackTarget() == attackTarget && target.getDistance(charger) <= charger.getAttributeValue(Attributes.FOLLOW_RANGE) && attackTarget.getDistance(target) >= MIN_DISTANCE && charger.canEntityBeSeen(target) && charger.isOnGround() && PREDICATE.canTarget(charger, target) && PREDICATE.canTarget(charger, attackTarget);
+			LivingEntity attackTarget = charger.getTarget();
+			return attackTarget != null && attackTarget.isAlive() && target.getTarget() == attackTarget && target.distanceTo(charger) <= charger.getAttributeValue(Attributes.FOLLOW_RANGE) && attackTarget.distanceTo(target) >= MIN_DISTANCE && charger.canSee(target) && charger.isOnGround() && PREDICATE.test(charger, target) && PREDICATE.test(charger, attackTarget);
 		}
 		return false;
 	}
@@ -57,25 +59,25 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 		ChargerEetleEntity target = this.entity.getCatapultingTarget();
 		if (target != null) {
 			ChargerEetleEntity charger = this.entity;
-			charger.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
-			charger.getNavigator().tryMoveToEntityLiving(target, 1.5F);
-			double distanceSq = target.getDistanceSq(charger.getPosX(), charger.getPosY(), charger.getPosZ());
-			if (distanceSq <= charger.getWidth() * 2.0F * charger.getWidth() * 2.0F + target.getWidth()) {
+			charger.getLookControl().setLookAt(target, 30.0F, 30.0F);
+			charger.getNavigation().moveTo(target, 1.5F);
+			double distanceSq = target.distanceToSqr(charger.getX(), charger.getY(), charger.getZ());
+			if (distanceSq <= charger.getBbWidth() * 2.0F * charger.getBbWidth() * 2.0F + target.getBbWidth()) {
 				this.launchTarget();
-				this.resetTask();
+				this.stop();
 			}
 		}
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.resetCooldown();
 		this.entity.setCatapultingTarget(null);
-		this.entity.getNavigator().clearPath();
-		this.entity.setAggroed(false);
-		LivingEntity attackTarget = this.entity.getAttackTarget();
-		if (!EntityPredicates.CAN_AI_TARGET.test(attackTarget)) {
-			this.entity.setAttackTarget(null);
+		this.entity.getNavigation().stop();
+		this.entity.setAggressive(false);
+		LivingEntity attackTarget = this.entity.getTarget();
+		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(attackTarget)) {
+			this.entity.setTarget(null);
 		}
 	}
 
@@ -86,7 +88,7 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 	private void launchTarget() {
 		ChargerEetleEntity target = this.entity.getCatapultingTarget();
 		if (target != null) {
-			LivingEntity launchTo = target.getAttackTarget();
+			LivingEntity launchTo = target.getTarget();
 			if (launchTo != null) {
 				this.playEndimation();
 				target.launchFromCatapult(launchTo);

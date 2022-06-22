@@ -23,6 +23,8 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class PurpoidTelefragGoal extends Goal {
 	private final PurpoidEntity purpoid;
 	@Nullable
@@ -30,22 +32,22 @@ public class PurpoidTelefragGoal extends Goal {
 
 	public PurpoidTelefragGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.TARGET));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.TARGET));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		Entity ridingEntity = purpoid.getRidingEntity();
+		Entity ridingEntity = purpoid.getVehicle();
 		return purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		PurpoidEntity purpoid = this.purpoid;
-		this.teleportPattern = new TeleportPattern(purpoid.getRNG());
-		purpoid.setAttackTarget((LivingEntity) purpoid.getRidingEntity());
-		purpoid.setAggroed(true);
+		this.teleportPattern = new TeleportPattern(purpoid.getRandom());
+		purpoid.setTarget((LivingEntity) purpoid.getVehicle());
+		purpoid.setAggressive(true);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -57,33 +59,33 @@ public class PurpoidTelefragGoal extends Goal {
 			if (!teleportController.isTeleporting()) {
 				boolean sky = this.teleportPattern.next();
 				BlockPos teleportPos = null;
-				BlockPos pos = purpoid.getPosition();
-				Random random = purpoid.getRNG();
-				World world = purpoid.world;
-				Entity ridingEntity = purpoid.getRidingEntity();
+				BlockPos pos = purpoid.blockPosition();
+				Random random = purpoid.getRandom();
+				World world = purpoid.level;
+				Entity ridingEntity = purpoid.getVehicle();
 				if (sky) {
-					EntitySize size = purpoid.getSize(purpoid.getPose());
+					EntitySize size = purpoid.getDimensions(purpoid.getPose());
 					for (int i = 0; i < 16; i++) {
-						BlockPos randomPos = pos.add(random.nextInt(32) - random.nextInt(32), random.nextInt(32) + 8, random.nextInt(32) - random.nextInt(32));
-						AxisAlignedBB collisionBox = size.func_242285_a(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
-						if (world.isBlockLoaded(randomPos) && world.hasNoCollisions(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
+						BlockPos randomPos = pos.offset(random.nextInt(32) - random.nextInt(32), random.nextInt(32) + 8, random.nextInt(32) - random.nextInt(32));
+						AxisAlignedBB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+						if (world.hasChunkAt(randomPos) && world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
 							teleportPos = randomPos;
 							break;
 						}
 					}
 				} else {
-					EntitySize size = ridingEntity.getSize(ridingEntity.getPose());
+					EntitySize size = ridingEntity.getDimensions(ridingEntity.getPose());
 					int x = pos.getX();
 					int z = pos.getZ();
 					for (int i = 0; i < 32; i++) {
 						int randomX = x + (random.nextInt(32) - random.nextInt(32));
 						int randomZ = z + (random.nextInt(32) - random.nextInt(32));
-						BlockPos.Mutable mutable = new BlockPos.Mutable(randomX, (int) ridingEntity.getPosY(), randomZ);
-						if (world.isBlockLoaded(mutable)) {
+						BlockPos.Mutable mutable = new BlockPos.Mutable(randomX, (int) ridingEntity.getY(), randomZ);
+						if (world.hasChunkAt(mutable)) {
 							boolean successful = true;
 							while (true) {
 								int y = mutable.getY();
-								if (y > 0 && !world.getBlockState(mutable).getMaterial().blocksMovement()) {
+								if (y > 0 && !world.getBlockState(mutable).getMaterial().blocksMotion()) {
 									mutable.setY(y - 1);
 								} else if (y <= 0) {
 									successful = false;
@@ -94,8 +96,8 @@ public class PurpoidTelefragGoal extends Goal {
 							}
 							if (successful) {
 								mutable.move(Direction.UP);
-								AxisAlignedBB collisionBox = size.func_242285_a(mutable.getX() + 0.5F, mutable.getY(), mutable.getZ() + 0.5F);
-								if (world.hasNoCollisions(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
+								AxisAlignedBB collisionBox = size.makeBoundingBox(mutable.getX() + 0.5F, mutable.getY(), mutable.getZ() + 0.5F);
+								if (world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
 									teleportPos = mutable;
 									break;
 								}
@@ -105,7 +107,7 @@ public class PurpoidTelefragGoal extends Goal {
 				}
 				if (teleportPos != null) {
 					teleportController.beginTeleportation(purpoid, teleportPos, true);
-					ridingEntity.attackEntityFrom(DamageSource.causeMobDamage(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
+					ridingEntity.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
 					if (ridingEntity instanceof ServerPlayerEntity) {
 						EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) ridingEntity), new S2CEnablePurpoidFlash());
 					}
@@ -115,21 +117,21 @@ public class PurpoidTelefragGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		Entity ridingEntity = purpoid.getRidingEntity();
+		Entity ridingEntity = purpoid.getVehicle();
 		return ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.teleportPattern = null;
 		PurpoidEntity purpoid = this.purpoid;
-		LivingEntity livingentity = purpoid.getAttackTarget();
-		if (!EntityPredicates.CAN_AI_TARGET.test(livingentity)) {
-			purpoid.setAttackTarget(null);
+		LivingEntity livingentity = purpoid.getTarget();
+		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+			purpoid.setTarget(null);
 		}
-		purpoid.setAggroed(false);
+		purpoid.setAggressive(false);
 	}
 
 	static class TeleportPattern {

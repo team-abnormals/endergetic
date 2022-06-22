@@ -30,33 +30,33 @@ import java.util.List;
 public final class PlayerListMixin {
 	@Shadow
 	@Final
-	private PlayerData playerDataManager;
+	private PlayerData playerIo;
 	@Shadow
 	@Final
 	private MinecraftServer server;
 
 	@SuppressWarnings("deprecation")
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;writePlayerData(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "playerLoggedOut")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;save(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "remove")
 	private void removeBalloons(ServerPlayerEntity player, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) player).getBalloons();
 		if (!balloons.isEmpty()) {
-			ServerWorld serverWorld = (ServerWorld) player.world;
+			ServerWorld serverWorld = (ServerWorld) player.level;
 			for (BolloomBalloonEntity balloon : balloons) {
-				serverWorld.removeEntity(balloon);
+				serverWorld.despawn(balloon);
 				balloon.removed = true;
 			}
-			serverWorld.getChunk(player.chunkCoordX, player.chunkCoordZ).markDirty();
+			serverWorld.getChunk(player.xChunk, player.zChunk).markUnsaved();
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "initializeConnectionToPlayer")
+	@Inject(at = @At("RETURN"), method = "placeNewPlayer")
 	private void spawnBalloons(NetworkManager netManager, ServerPlayerEntity player, CallbackInfo info) {
-		ServerWorld serverWorld = (ServerWorld) player.world;
+		ServerWorld serverWorld = (ServerWorld) player.level;
 
-		CompoundNBT compound = this.server.getServerConfiguration().getHostPlayerNBT();
-		if (!(compound != null && player.getName().getString().equals(this.server.getServerOwner()))) {
+		CompoundNBT compound = this.server.getWorldData().getLoadedPlayerTag();
+		if (!(compound != null && player.getName().getString().equals(this.server.getSingleplayerName()))) {
 			try {
-				File playerDataFile = new File(this.playerDataManager.getPlayerDataFolder(), player.getCachedUniqueIdString() + ".dat");
+				File playerDataFile = new File(this.playerIo.getPlayerDataFolder(), player.getStringUUID() + ".dat");
 				if (playerDataFile.exists() && playerDataFile.isFile()) {
 					compound = CompressedStreamTools.readCompressed(playerDataFile);
 				}
@@ -69,7 +69,7 @@ public final class PlayerListMixin {
 			ListNBT balloonsTag = compound.getList("Balloons", 10);
 			if (!balloonsTag.isEmpty()) {
 				for (int i = 0; i < balloonsTag.size(); i++) {
-					Entity entity = EntityType.loadEntityAndExecute(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.summonEntity(balloon) ? null : balloon));
+					Entity entity = EntityType.loadEntityRecursive(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.addWithUUID(balloon) ? null : balloon));
 					if (entity instanceof BolloomBalloonEntity) {
 						((BolloomBalloonEntity) entity).attachToEntity(player);
 						EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CUpdateBalloonsMessage(player));

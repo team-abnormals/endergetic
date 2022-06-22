@@ -34,12 +34,12 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 
 	@Override
 	public void render(BoofloEntity booflo, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		this.shadowSize = booflo.isBoofed() ? 2.0F : 1.25F;
+		this.shadowRadius = booflo.isBoofed() ? 2.0F : 1.25F;
 		super.render(booflo, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BoofloEntity booflo) {
+	public ResourceLocation getTextureLocation(BoofloEntity booflo) {
 		return SKIN_HELPER.getSkinForEntityOrElse(booflo, DEFAULT);
 	}
 }

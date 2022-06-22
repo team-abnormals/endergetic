@@ -27,6 +27,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class PoiseClusterBlock extends Block {
 
 	public PoiseClusterBlock(Properties properties) {
@@ -36,7 +38,7 @@ public class PoiseClusterBlock extends Block {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.up()).getCollisionShape(worldIn, pos.up()).isEmpty())
+		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.above()).getCollisionShape(worldIn, pos.above()).isEmpty())
 			return;
 
 		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -50,17 +52,17 @@ public class PoiseClusterBlock extends Block {
 	}
 
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		ItemStack stack = player.getHeldItemMainhand();
+	public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+		ItemStack stack = player.getMainHandItem();
 		Item item = stack.getItem();
-		if (!item.isIn(Tags.Items.SHEARS)) {
-			if (world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos).offset(0, 1, 0)).isEmpty()) {
-				if (!world.isRemote) {
+		if (!item.is(Tags.Items.SHEARS)) {
+			if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AxisAlignedBB(pos).move(0, 1, 0)).isEmpty()) {
+				if (!world.isClientSide) {
 					PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
-					world.addEntity(cluster);
+					world.addFreshEntity(cluster);
 
-					Random rand = player.getRNG();
+					Random rand = player.getRandom();
 
 					for (int i = 0; i < 8; i++) {
 						double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
@@ -77,25 +79,25 @@ public class PoiseClusterBlock extends Block {
 			}
 		} else {
 			world.destroyBlock(pos, false);
-			stack.damageItem(1, player, (broken) -> broken.sendBreakAnimation(player.getActiveHand()));
-			spawnAsEntity(world, pos, new ItemStack(this.asItem()));
+			stack.hurtAndBreak(1, player, (broken) -> broken.broadcastBreakEvent(player.getUsedItemHand()));
+			popResource(world, pos, new ItemStack(this.asItem()));
 		}
 	}
 
 	@Override
-	public void onProjectileCollision(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
-		BlockPos pos = hit.getPos();
-		if (world.isAirBlock(pos.up()) && world.getEntitiesWithinAABB(PoiseClusterEntity.class, new AxisAlignedBB(pos.up())).isEmpty()) {
-			if (!world.isRemote) {
+	public void onProjectileHit(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
+		BlockPos pos = hit.getBlockPos();
+		if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AxisAlignedBB(pos.above())).isEmpty()) {
+			if (!world.isClientSide) {
 				PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 				cluster.setBlocksToMoveUp(10);
-				world.addEntity(cluster);
+				world.addFreshEntity(cluster);
 
 				if (projectile instanceof ArrowEntity) {
 					projectile.remove();
 				}
 
-				world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+				world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
 
 				Random rand = new Random();
@@ -115,8 +117,8 @@ public class PoiseClusterBlock extends Block {
 
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
-	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
-		return adjacentBlockState.getBlock() == this || super.isSideInvisible(state, adjacentBlockState, side);
+	public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
+		return adjacentBlockState.getBlock() == this || super.skipRendering(state, adjacentBlockState, side);
 	}
 
 	@SuppressWarnings("deprecation")

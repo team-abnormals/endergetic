@@ -23,21 +23,21 @@ public class PuffBugRenderer extends MobRenderer<PuffBugEntity, EntityModel<Puff
 
 	@Override
 	public void render(PuffBugEntity puffbug, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		if (puffbug.isChild()) {
-			this.shadowSize *= 0.5F;
+		if (puffbug.isBaby()) {
+			this.shadowRadius *= 0.5F;
 		}
 		super.render(puffbug, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(PuffBugEntity puffbug) {
+	public ResourceLocation getTextureLocation(PuffBugEntity puffbug) {
 		return puffbug.isInflated() ? INFLATED : DEFLATED;
 	}
 
 	@Override
-	protected void preRenderCallback(PuffBugEntity puffbug, MatrixStack matrixStack, float partialTickTime) {
+	protected void scale(PuffBugEntity puffbug, MatrixStack matrixStack, float partialTickTime) {
 		matrixStack.scale(1.0F, 1.0F, 1.0F);
-		if (puffbug.isChild()) {
+		if (puffbug.isBaby()) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
 		}
 	}

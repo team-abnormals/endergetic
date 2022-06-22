@@ -13,26 +13,26 @@ public class GliderEetleLookRandomlyGoal extends Goal {
 
 	public GliderEetleLookRandomlyGoal(GliderEetleEntity glider) {
 		this.glider = glider;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
-	public boolean shouldExecute() {
-		return this.glider.getPassengers().isEmpty() && this.glider.getRNG().nextFloat() < 0.02F;
+	public boolean canUse() {
+		return this.glider.getPassengers().isEmpty() && this.glider.getRandom().nextFloat() < 0.02F;
 	}
 
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.glider.getPassengers().isEmpty() && this.idleTime >= 0;
 	}
 
-	public void startExecuting() {
-		double randomRot = (Math.PI * 2.0D) * this.glider.getRNG().nextDouble();
+	public void start() {
+		double randomRot = (Math.PI * 2.0D) * this.glider.getRandom().nextDouble();
 		this.lookX = Math.cos(randomRot);
 		this.lookZ = Math.sin(randomRot);
-		this.idleTime = 20 + this.glider.getRNG().nextInt(20);
+		this.idleTime = 20 + this.glider.getRandom().nextInt(20);
 	}
 
 	public void tick() {
 		--this.idleTime;
-		this.glider.getLookController().setLookPosition(this.glider.getPosX() + this.lookX, this.glider.getPosYEye(), this.glider.getPosZ() + this.lookZ);
+		this.glider.getLookControl().setLookAt(this.glider.getX() + this.lookX, this.glider.getEyeY(), this.glider.getZ() + this.lookZ);
 	}
 }

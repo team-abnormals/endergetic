@@ -30,9 +30,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
-		BlockState belowState = world.getBlockState(pos.down());
-		if (config.isValidGround(belowState) && world.getBlockState(pos.down(2)).isSolid()) {
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
+		BlockState belowState = world.getBlockState(pos.below());
+		if (config.isValidGround(belowState) && world.getBlockState(pos.below(2)).canOcclude()) {
 			int baseHeight = rand.nextInt(4) + 4;
 			GenerationPiece basePiece = this.createBase(world, pos, rand, baseHeight);
 			if (basePiece.canPlace(world)) {
@@ -64,16 +64,16 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 					}
 
 					BlockPos groundModifierPos = new BlockPos(pos.getX() - 1 + (rand.nextInt(3) - rand.nextInt(3)), pos.getY() - 1, pos.getZ() - 1 + (rand.nextInt(3) - rand.nextInt(3)));
-					EEFeatures.Configured.CORROCK_GROUND_PATCH.generate(world, generator, rand, groundModifierPos);
+					EEFeatures.Configured.CORROCK_GROUND_PATCH.place(world, generator, rand, groundModifierPos);
 
 					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
 					for (int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
 						for (int y = pos.getY(); y < pos.getY() + baseHeight + 10; y++) {
 							for (int z = pos.getZ() - 4; z < pos.getZ() + 4; z++) {
-								corrockPlantPos.setPos(x, y, z);
-								boolean isCorrockBelow = world.getBlockState(corrockPlantPos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get();
-								if ((isCorrockBelow && rand.nextFloat() < 0.25F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isAirBlock(corrockPlantPos) && CORROCK_STATE.getValue().isValidPosition(world, corrockPlantPos)) {
-									world.setBlockState(corrockPlantPos, CORROCK_STATE.getValue(), 2);
+								corrockPlantPos.set(x, y, z);
+								boolean isCorrockBelow = world.getBlockState(corrockPlantPos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get();
+								if ((isCorrockBelow && rand.nextFloat() < 0.25F || !isCorrockBelow && rand.nextFloat() < 0.025F) && world.isEmptyBlock(corrockPlantPos) && CORROCK_STATE.get().canSurvive(world, corrockPlantPos)) {
+									world.setBlock(corrockPlantPos, CORROCK_STATE.get(), 2);
 								}
 							}
 						}
@@ -89,12 +89,12 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	 * Creates the base of the branch feature, this includes the middle pillar where the branches will start from and the cluster around the origin.
 	 */
 	private GenerationPiece createBase(IWorld world, BlockPos pos, Random rand, int height) {
-		GenerationPiece piece = new GenerationPiece((iworld, part) -> iworld.isAirBlock(part.pos));
-		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
+		GenerationPiece piece = new GenerationPiece((iworld, part) -> iworld.isEmptyBlock(part.pos));
+		BlockState corrockState = CORROCK_BLOCK_STATE.get();
 		int heightMinusOne = height - 1;
-		BlockPos topPos = pos.up(height);
+		BlockPos topPos = pos.above(height);
 		for (int y = 0; y < height; y++) {
-			piece.addBlockPiece(corrockState, pos.up(y));
+			piece.addBlockPiece(corrockState, pos.above(y));
 
 			if (y == heightMinusOne && rand.nextFloat() < 0.85F) {
 				piece.addBlockPiece(this.randomStandingCorrockCrown(rand), topPos);
@@ -114,11 +114,11 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 		for (int x = startX; x <= endX; x++) {
 			for (int z = startZ; z <= endZ; z++) {
 				if (rand.nextFloat() < 0.4F) {
-					mutable.setPos(x, posY, z);
+					mutable.set(x, posY, z);
 					if (this.tryToMakeAreaBelowPlacableOn(piece, world, mutable)) {
 						int randSideHeight = rand.nextInt(heightMinusOne) + 1;
 						for (int y = 0; y < randSideHeight; y++) {
-							piece.addBlockPiece(corrockState, mutable.up(y));
+							piece.addBlockPiece(corrockState, mutable.above(y));
 						}
 					}
 				}
@@ -131,12 +131,12 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	 * Tries to make the area below the cluster around the origin have no air spaces.
 	 */
 	private boolean tryToMakeAreaBelowPlacableOn(GenerationPiece piece, IWorld world, BlockPos pos) {
-		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
-		BlockPos down = pos.down();
-		if (world.isAirBlock(down) && !world.isAirBlock(pos.down(3))) {
+		BlockState corrockState = CORROCK_BLOCK_STATE.get();
+		BlockPos down = pos.below();
+		if (world.isEmptyBlock(down) && !world.isEmptyBlock(pos.below(3))) {
 			piece.addBlockPiece(corrockState, down);
-			BlockPos doubleDown = pos.down(2);
-			if (world.isAirBlock(doubleDown)) {
+			BlockPos doubleDown = pos.below(2);
+			if (world.isEmptyBlock(doubleDown)) {
 				piece.addBlockPiece(corrockState, doubleDown);
 			}
 			return true;
@@ -149,9 +149,9 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	 */
 	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(IWorld world, BlockPos pos, Random rand, int count, int height, float crownChance, float decorationChance) {
 		List<Pair<GenerationPiece, ChorusPlantPart>> pieces = Lists.newArrayList();
-		BlockPos branchStart = pos.up(height - 1);
+		BlockPos branchStart = pos.above(height - 1);
 		for (int i = 0; i < count; i++) {
-			GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isAirBlock(part.pos));
+			GenerationPiece basePiece = new GenerationPiece((iworld, part) -> world.isEmptyBlock(part.pos));
 			pieces.add(new Pair<>(basePiece, this.createBranch(world, branchStart, rand, basePiece, this.randomHorizontalDirection(rand), rand.nextInt(2) + 1, crownChance, decorationChance)));
 		}
 		return pieces;
@@ -166,14 +166,14 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 		int branched = 0;
 		int prevBranchHeight = 0;
 		int branchHeight = rand.nextInt(3) + 4;
-		BlockPos offset = pos.offset(horizontalStep);
-		BlockState corrockState = CORROCK_BLOCK_STATE.getValue();
+		BlockPos offset = pos.relative(horizontalStep);
+		BlockState corrockState = CORROCK_BLOCK_STATE.get();
 		for (int y = 0; y < branchHeight; y++) {
-			basePiece.addBlockPiece(corrockState, offset.up(y));
+			basePiece.addBlockPiece(corrockState, offset.above(y));
 			if (y == branchHeight - 1) {
 				boolean lastBranched = branched == subBranches;
 				if (rand.nextFloat() < decorationChance) {
-					BlockPos crownOrigin = offset.up(y);
+					BlockPos crownOrigin = offset.above(y);
 					this.createCrownOrbit(basePiece, world, crownOrigin, rand, crownChance);
 					if (lastBranched) {
 						chorusPlantPart = new ChorusPlantPart(crownOrigin);
@@ -184,7 +184,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 				}
 
 				if (rand.nextFloat() > 0.6F) {
-					horizontalStep = rand.nextBoolean() ? horizontalStep.rotateY() : horizontalStep.rotateYCCW();
+					horizontalStep = rand.nextBoolean() ? horizontalStep.getClockWise() : horizontalStep.getCounterClockWise();
 				}
 
 				boolean beforeLastBranched = branched == subBranches - 1;
@@ -192,10 +192,10 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 					int middle = prevBranchHeight + (branchHeight - prevBranchHeight) / 2;
 					y -= branchHeight - middle;
 					branchHeight = middle;
-					basePiece.addBlockPiece(corrockState, offset.up(branchHeight).offset(horizontalStep));
-					offset = offset.offset(horizontalStep, 2);
+					basePiece.addBlockPiece(corrockState, offset.above(branchHeight).relative(horizontalStep));
+					offset = offset.relative(horizontalStep, 2);
 				} else {
-					offset = offset.offset(horizontalStep);
+					offset = offset.relative(horizontalStep);
 					y--;
 					branchHeight--;
 				}
@@ -213,18 +213,18 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	 */
 	private void createCrownOrbit(GenerationPiece branch, IWorld world, BlockPos pos, Random rand, float crownChance) {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
-			BlockPos placingPos = pos.offset(horizontal);
-			if (rand.nextFloat() < crownChance && world.isAirBlock(placingPos)) {
+			BlockPos placingPos = pos.relative(horizontal);
+			if (rand.nextFloat() < crownChance && world.isEmptyBlock(placingPos)) {
 				branch.addBlockPiece(getCorrockCrownWall(horizontal), placingPos);
 			}
 		}
-		if (rand.nextFloat() < crownChance && world.isAirBlock(pos.up())) {
-			branch.addBlockPiece(this.randomStandingCorrockCrown(rand), pos.up());
+		if (rand.nextFloat() < crownChance && world.isEmptyBlock(pos.above())) {
+			branch.addBlockPiece(this.randomStandingCorrockCrown(rand), pos.above());
 		}
 	}
 
 	private Direction randomHorizontalDirection(Random rand) {
-		return Direction.byHorizontalIndex(rand.nextInt(6));
+		return Direction.from2DDataValue(rand.nextInt(6));
 	}
 
 	private BlockState randomStandingCorrockCrown(Random rand) {

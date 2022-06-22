@@ -20,26 +20,26 @@ import java.util.Random;
 public final class ChorusFlowerBlockMixin {
 	@Shadow
 	@Final
-	private ChorusPlantBlock plantBlock;
+	private ChorusPlantBlock plant;
 
-	@Redirect(at = @At(value = "INVOKE", ordinal = 3), method = "isValidPosition")
+	@Redirect(at = @At(value = "INVOKE", ordinal = 3), method = "canSurvive")
 	private boolean isValidPosition(BlockState state, Block block) {
-		return state.isIn(EETags.Blocks.CHORUS_PLANTABLE);
+		return state.is(EETags.Blocks.CHORUS_PLANTABLE);
 	}
 
 	@Redirect(at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, shift = At.Shift.BEFORE, ordinal = 0), method = "randomTick")
 	private Block isEndStone(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		Block block = world.getBlockState(pos.down()).getBlock();
-		return block.isIn(EETags.Blocks.CHORUS_PLANTABLE) ? Blocks.END_STONE : null;
+		Block block = world.getBlockState(pos.below()).getBlock();
+		return block.is(EETags.Blocks.CHORUS_PLANTABLE) ? Blocks.END_STONE : null;
 	}
 
 	@Redirect(at = @At(value = "INVOKE", ordinal = 8), method = "randomTick")
 	private Block isEndstone(BlockState state) {
 		Block block = state.getBlock();
-		if (block.isIn(EETags.Blocks.CHORUS_PLANTABLE)) {
+		if (block.is(EETags.Blocks.CHORUS_PLANTABLE)) {
 			return Blocks.END_STONE;
 		} else if (block == Blocks.END_STONE) {
-			return this.plantBlock;
+			return this.plant;
 		}
 		return block;
 	}

@@ -19,15 +19,17 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public BroodEetleSlamGoal(BroodEetleEntity entity) {
 		super(entity, BroodEetleEntity.SLAM);
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		BroodEetleEntity broodEetle = this.entity;
 		if (broodEetle.isFiringCannon()) {
 			return false;
@@ -36,7 +38,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.playEndimation();
 		BroodEetleEntity broodEetle = this.entity;
 		broodEetle.wokenUpAggressively = false;
@@ -44,7 +46,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.isEndimationPlaying();
 	}
 
@@ -56,16 +58,16 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	public static void slam(BroodEetleEntity broodEetle, Random random, float power) {
-		ServerWorld world = (ServerWorld) broodEetle.world;
-		double posX = broodEetle.getPosX();
-		double posY = broodEetle.getPosY();
-		double posZ = broodEetle.getPosZ();
-		for (BlockState state : sampleGround(world, broodEetle.getPosition().down(), random)) {
-			world.spawnParticle(new BlockParticleData(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
+		ServerWorld world = (ServerWorld) broodEetle.level;
+		double posX = broodEetle.getX();
+		double posY = broodEetle.getY();
+		double posZ = broodEetle.getZ();
+		for (BlockState state : sampleGround(world, broodEetle.blockPosition().below(), random)) {
+			world.sendParticles(new BlockParticleData(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
 		}
 		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE) * power;
 		double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-		for (LivingEntity livingEntity : world.getEntitiesWithinAABB(LivingEntity.class, broodEetle.getBoundingBox().grow(4.5D), entity1 -> entity1 != broodEetle)) {
+		for (LivingEntity livingEntity : world.getEntitiesOfClass(LivingEntity.class, broodEetle.getBoundingBox().inflate(4.5D), entity1 -> entity1 != broodEetle)) {
 			float damage;
 			if ((int) attackDamage > 0.0F) {
 				damage = attackDamage / 2.0F + random.nextInt((int) attackDamage);
@@ -77,13 +79,13 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 				damage = 0.0F;
 			}
 
-			if (livingEntity.attackEntityFrom(DamageSource.causeMobDamage(broodEetle), damage)) {
-				broodEetle.applyEnchantments(broodEetle, livingEntity);
+			if (livingEntity.hurt(DamageSource.mobAttack(broodEetle), damage)) {
+				broodEetle.doEnchantDamageEffects(broodEetle, livingEntity);
 				double knockbackForce = knockback - livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 				float inAirFactor = livingEntity.isOnGround() ? 1.0F : 0.75F;
-				Vector3d horizontalVelocity = new Vector3d(livingEntity.getPosX() - posX, 0.0D, livingEntity.getPosZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor * power);
-				livingEntity.addVelocity(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
-				livingEntity.velocityChanged = true;
+				Vector3d horizontalVelocity = new Vector3d(livingEntity.getX() - posX, 0.0D, livingEntity.getZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor * power);
+				livingEntity.push(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
+				livingEntity.hurtMarked = true;
 			}
 		}
 	}
@@ -94,10 +96,10 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		int originX = groundPos.getX();
 		int originY = groundPos.getY();
 		int originZ = groundPos.getZ();
-		BlockPos.Mutable mutable = groundPos.toMutable();
+		BlockPos.Mutable mutable = groundPos.mutable();
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-				BlockState state = world.getBlockState(mutable.setPos(originX + x, originY, originZ + z));
+				BlockState state = world.getBlockState(mutable.set(originX + x, originY, originZ + z));
 				if (!state.isAir()) {
 					list.add(state);
 				}

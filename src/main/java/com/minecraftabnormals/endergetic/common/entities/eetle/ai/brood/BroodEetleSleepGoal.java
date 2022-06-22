@@ -6,6 +6,8 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.EnumSet;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class BroodEetleSleepGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
 	private float prevHealth;
@@ -13,17 +15,17 @@ public class BroodEetleSleepGoal extends Goal {
 
 	public BroodEetleSleepGoal(BroodEetleEntity broodEetle) {
 		this.broodEetle = broodEetle;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.TARGET));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.TARGET));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		return broodEetle.isAlive() && broodEetle.isSleeping();
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.prevHealth = this.broodEetle.getHealth();
 		this.offGroundTicks = 0;
 	}
@@ -32,7 +34,7 @@ public class BroodEetleSleepGoal extends Goal {
 	@SuppressWarnings("deprecation")
 	public void tick() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		if (!broodEetle.isOnGround() && broodEetle.world.isBlockLoaded(broodEetle.getPosition())) {
+		if (!broodEetle.isOnGround() && broodEetle.level.hasChunkAt(broodEetle.blockPosition())) {
 			this.offGroundTicks++;
 		} else {
 			this.offGroundTicks = 0;
@@ -46,13 +48,13 @@ public class BroodEetleSleepGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		return broodEetle.isAlive() && broodEetle.isSleeping();
 	}
 
 	private static boolean areAnyPlayersClose(BroodEetleEntity broodEetle) {
-		return !broodEetle.world.getEntitiesWithinAABB(PlayerEntity.class, broodEetle.getBoundingBox().grow(2.0F, 0.1F, 2.0F), player -> {
+		return !broodEetle.level.getEntitiesOfClass(PlayerEntity.class, broodEetle.getBoundingBox().inflate(2.0F, 0.1F, 2.0F), player -> {
 			return player.isAlive() && !player.isInvisible() && !player.isCreative();
 		}).isEmpty();
 	}

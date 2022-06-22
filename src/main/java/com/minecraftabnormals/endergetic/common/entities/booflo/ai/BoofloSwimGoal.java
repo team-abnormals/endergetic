@@ -17,9 +17,9 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 
 	@Nullable
 	protected Vector3d getPosition() {
-		Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 2);
+		Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 8, 2);
 
-		for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 10, 2)) {
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.getPos(this.mob, 10, 2)) {
 			;
 		}
 
@@ -27,11 +27,11 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		if (this.creature.isBeingRidden()) {
+	public boolean canUse() {
+		if (this.mob.isVehicle()) {
 			return false;
 		} else {
-			if (this.creature.getRNG().nextInt(this.executionChance) != 0) {
+			if (this.mob.getRandom().nextInt(this.interval) != 0) {
 				return false;
 			}
 		}
@@ -40,17 +40,17 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 		if (vec3d == null) {
 			return false;
 		} else {
-			this.x = vec3d.x;
-			this.y = vec3d.y;
-			this.z = vec3d.z;
-			this.mustUpdate = false;
-			return !this.creature.isInWater();
+			this.wantedX = vec3d.x;
+			this.wantedY = vec3d.y;
+			this.wantedZ = vec3d.z;
+			this.forceTrigger = false;
+			return !this.mob.isInWater();
 		}
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		return super.shouldContinueExecuting() && !this.creature.isInWater();
+	public boolean canContinueToUse() {
+		return super.canContinueToUse() && !this.mob.isInWater();
 	}
 
 }

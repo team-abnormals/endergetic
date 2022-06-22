@@ -49,35 +49,35 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F));
 	}
 
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MobEntity.func_233666_p_()
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 6.0F)
-				.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 1.0F)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
-				.createMutableAttribute(Attributes.ARMOR, 4.0F)
-				.createMutableAttribute(Attributes.MAX_HEALTH, 30.0F)
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
-				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.ATTACK_DAMAGE, 6.0F)
+				.add(Attributes.ATTACK_KNOCKBACK, 1.0F)
+				.add(Attributes.MOVEMENT_SPEED, 0.2F)
+				.add(Attributes.ARMOR, 4.0F)
+				.add(Attributes.MAX_HEALTH, 30.0F)
+				.add(Attributes.FOLLOW_RANGE, 32.0F)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.2F);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 
-		if (!this.world.isRemote) {
-			if (!this.isChild()) {
+		if (!this.level.isClientSide) {
+			if (!this.isBaby()) {
 				if (this.isCatapultProjectile()) {
-					LivingEntity attackTarget = this.getAttackTarget();
+					LivingEntity attackTarget = this.getTarget();
 					if (attackTarget != null) {
-						this.getNavigator().clearPath();
-						this.getLookController().setLookPositionWithEntity(attackTarget, 30.0F, 30.0F);
+						this.getNavigation().stop();
+						this.getLookControl().setLookAt(attackTarget, 30.0F, 30.0F);
 					}
 					if (this.isOnGround()) {
 						this.catapultTimer = 0;
 					} else this.catapultTimer--;
 				}
 
-				if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.getAttackTarget() == null && this.isNoEndimationPlaying()) {
+				if (this.random.nextFloat() < 0.005F && this.idleDelay <= 0 && this.getTarget() == null && this.isNoEndimationPlaying()) {
 					NetworkUtil.setPlayingAnimationMessage(this, FLAP);
 					this.resetIdleFlapDelay();
 				}
@@ -86,52 +86,52 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putInt("CatapultCooldown", this.catapultGoal.cooldown);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		this.catapultGoal.cooldown = compound.getInt("CatapultCooldown");
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		if (!(target instanceof LivingEntity)) {
 			return false;
 		} else {
-			if (!this.world.isRemote) {
+			if (!this.level.isClientSide) {
 				NetworkUtil.setPlayingAnimationMessage(this, ATTACK);
 			}
 			float attackDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 			float damage;
 			if ((int) attackDamage > 0.0F) {
-				damage = attackDamage / 2.0F + this.rand.nextInt((int) attackDamage);
+				damage = attackDamage / 2.0F + this.random.nextInt((int) attackDamage);
 			} else {
 				damage = attackDamage;
 			}
 
-			boolean attacked = target.attackEntityFrom(DamageSource.causeMobDamage(this), damage);
+			boolean attacked = target.hurt(DamageSource.mobAttack(this), damage);
 			if (attacked) {
-				this.applyEnchantments(this, target);
-				this.constructKnockBackVector((LivingEntity) target);
+				this.doEnchantDamageEffects(this, target);
+				this.blockedByShield((LivingEntity) target);
 			}
 			return attacked;
 		}
 	}
 
 	@Override
-	protected void constructKnockBackVector(LivingEntity target) {
-		if (!this.isChild()) {
+	protected void blockedByShield(LivingEntity target) {
+		if (!this.isBaby()) {
 			double knockbackForce = this.getAttributeValue(Attributes.ATTACK_KNOCKBACK) - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 			if (knockbackForce > 0.0D) {
-				Random random = this.world.rand;
+				Random random = this.level.random;
 				double scale = knockbackForce * (random.nextFloat() * 1.0F + 0.5F);
-				Vector3d horizontalVelocity = new Vector3d(target.getPosX() - this.getPosX(), 0.0D, target.getPosZ() - this.getPosZ()).normalize().scale(scale);
-				target.addVelocity(horizontalVelocity.x, knockbackForce * (random.nextFloat() * 0.05F), horizontalVelocity.z);
-				target.velocityChanged = true;
+				Vector3d horizontalVelocity = new Vector3d(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
+				target.push(horizontalVelocity.x, knockbackForce * (random.nextFloat() * 0.05F), horizontalVelocity.z);
+				target.hurtMarked = true;
 			}
 		}
 	}
@@ -173,13 +173,13 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	public void launchFromCatapult(LivingEntity target) {
 		this.catapultGoal.resetCooldown();
 		this.catapultTimer = 25;
-		double xDifference = target.getPosX() - this.getPosX();
-		double zDifference = target.getPosZ() - this.getPosZ();
+		double xDifference = target.getX() - this.getX();
+		double zDifference = target.getZ() - this.getZ();
 		double verticalOffset = MathHelper.sqrt(xDifference * xDifference + zDifference * zDifference) * 0.475F;
-		Vector3d launchMotion = new Vector3d(xDifference, Math.max(0.0F, target.getPosYHeight(0.25F) - this.getPosY() + verticalOffset), zDifference).normalize().scale(1.325F);
+		Vector3d launchMotion = new Vector3d(xDifference, Math.max(0.0F, target.getY(0.25F) - this.getY() + verticalOffset), zDifference).normalize().scale(1.325F);
 		if (launchMotion.y > 0.9F) {
-			launchMotion = new Vector3d(launchMotion.getX(), 0.9F, launchMotion.getZ());
+			launchMotion = new Vector3d(launchMotion.x(), 0.9F, launchMotion.z());
 		}
-		this.setMotion(launchMotion);
+		this.setDeltaMovement(launchMotion);
 	}
 }

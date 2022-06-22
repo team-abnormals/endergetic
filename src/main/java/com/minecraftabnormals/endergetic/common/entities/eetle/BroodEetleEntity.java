@@ -59,14 +59,14 @@ import java.util.Set;
 public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity, IFlyingEetle {
 	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213325_aI");
 	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213326_aJ");
-	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> FLYING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> DROPPING_EGGS = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.createKey(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
-	private static final DataParameter<Integer> EGG_SACK_ID = EntityDataManager.createKey(BroodEetleEntity.class, DataSerializers.VARINT);
-	private static final DataParameter<HealthStage> HEALTH_STAGE = EntityDataManager.createKey(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
+	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> FLYING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> MOVING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> DROPPING_EGGS = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> SLEEPING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.defineId(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
+	private static final DataParameter<Integer> EGG_SACK_ID = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.INT);
+	private static final DataParameter<HealthStage> HEALTH_STAGE = EntityDataManager.defineId(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
 	public static final Endimation FLAP = new Endimation(22);
 	public static final Endimation MUNCH = new Endimation(25);
 	public static final Endimation ATTACK = new Endimation(12);
@@ -107,9 +107,9 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
 		super(type, world);
-		this.headTiltDirection = this.getRNG().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
-		this.experienceValue = 50;
-		this.prevWingFlap = this.wingFlap = this.rand.nextFloat();
+		this.headTiltDirection = this.getRandom().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
+		this.xpReward = 50;
+		this.prevWingFlap = this.wingFlap = this.random.nextFloat();
 		this.prevHealthPercentage = 1.0F;
 		this.takeoffEndimation.setDecrementing(true);
 		this.flyingEndimation.setDecrementing(true);
@@ -135,34 +135,34 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(FIRING_CANNON, false);
-		this.dataManager.register(FLYING, false);
-		this.dataManager.register(MOVING, false);
-		this.dataManager.register(DROPPING_EGGS, false);
-		this.dataManager.register(SLEEPING, false);
-		this.dataManager.register(TARGET_FLYING_ROTATIONS, TargetFlyingRotations.ZERO);
-		this.dataManager.register(EGG_SACK_ID, -1);
-		this.dataManager.register(HEALTH_STAGE, HealthStage.ZERO);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(FIRING_CANNON, false);
+		this.entityData.define(FLYING, false);
+		this.entityData.define(MOVING, false);
+		this.entityData.define(DROPPING_EGGS, false);
+		this.entityData.define(SLEEPING, false);
+		this.entityData.define(TARGET_FLYING_ROTATIONS, TargetFlyingRotations.ZERO);
+		this.entityData.define(EGG_SACK_ID, -1);
+		this.entityData.define(HEALTH_STAGE, HealthStage.ZERO);
 	}
 
 	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
-		super.notifyDataManagerChange(key);
+	public void onSyncedDataUpdated(DataParameter<?> key) {
+		super.onSyncedDataUpdated(key);
 		if (FLYING.equals(key)) {
 			if (this.isFlying()) {
-				this.moveController = new FlyingEetleMoveController<>(this, 10.0F, 30.0F);
-				this.navigator = new EndergeticFlyingPathNavigator(this, this.world);
+				this.moveControl = new FlyingEetleMoveController<>(this, 10.0F, 30.0F);
+				this.navigation = new EndergeticFlyingPathNavigator(this, this.level);
 			} else {
-				this.moveController = new MovementController(this);
-				this.navigator = this.createNavigator(this.world);
+				this.moveControl = new MovementController(this);
+				this.navigation = this.createNavigation(this.level);
 			}
 			this.resetIdleFlapDelay();
-			this.recalculateSize();
-			BroodEggSackEntity eggSackEntity = this.getEggSack(this.world);
+			this.refreshDimensions();
+			BroodEggSackEntity eggSackEntity = this.getEggSack(this.level);
 			if (eggSackEntity != null) {
-				eggSackEntity.recalculateSize();
+				eggSackEntity.refreshDimensions();
 			}
 		} else if (TARGET_FLYING_ROTATIONS.equals(key)) {
 			this.flyingRotations.setLooking(true);
@@ -171,95 +171,96 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 				this.bossInfo.addPlayer(playerEntity);
 			}
 		} else if (HEALTH_STAGE.equals(key)) {
-			this.recalculateSize();
-			BroodEggSackEntity eggSackEntity = this.getEggSack(this.world);
+			this.refreshDimensions();
+			BroodEggSackEntity eggSackEntity = this.getEggSack(this.level);
 			if (eggSackEntity != null) {
-				eggSackEntity.recalculateSize();
+				eggSackEntity.refreshDimensions();
 			}
 		}
 	}
 
 	//TODO: Possibly tweak these values
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MobEntity.func_233666_p_()
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 11.0F)
-				.createMutableAttribute(Attributes.FLYING_SPEED, 0.35F)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2F)
-				.createMutableAttribute(Attributes.ARMOR, 6.0F)
-				.createMutableAttribute(Attributes.MAX_HEALTH, 300.0F)
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 32.0F)
-				.createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
-				.createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 2.0D);
+	public static AttributeModifierMap.MutableAttribute registerAttributes() {
+		return MobEntity.createMobAttributes()
+				.add(Attributes.ATTACK_DAMAGE, 11.0F)
+				.add(Attributes.FLYING_SPEED, 0.35F)
+				.add(Attributes.MOVEMENT_SPEED, 0.2F)
+				.add(Attributes.ARMOR, 6.0F)
+				.add(Attributes.MAX_HEALTH, 300.0F)
+				.add(Attributes.FOLLOW_RANGE, 32.0F)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
+				.add(Attributes.ATTACK_KNOCKBACK, 2.0D);
 	}
+
 	@Override
 	public void tick() {
 		super.tick();
 		this.endimateTick();
 
-		World world = this.world;
-		if (this.getShouldBeDead()) {
-			if (!this.isEndimationPlaying(DEATH) && !world.isRemote) {
+		World world = this.level;
+		if (this.isDeadOrDying()) {
+			if (!this.isEndimationPlaying(DEATH) && !world.isClientSide) {
 				NetworkUtil.setPlayingAnimationMessage(this, DEATH);
 			}
 			if (++this.deathTime >= 105) {
-				if (!world.isRemote) {
-					ItemEntity elytra = this.entityDropItem(Items.ELYTRA);
+				if (!world.isClientSide) {
+					ItemEntity elytra = this.spawnAtLocation(Items.ELYTRA);
 					if (elytra != null) {
-						elytra.setNoDespawn();
+						elytra.setExtendedLifetime();
 					}
 					this.remove();
 					if (world instanceof ServerWorld) {
-						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().getDefaultState()), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
-						((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.getX(), eggSackPos.getY() + 0.83F, eggSackPos.getZ(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
+						((ServerWorld) world).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
 					for (int i = 0; i < 20; ++i) {
-						world.addParticle(ParticleTypes.POOF, this.getPosXRandom(1.0D), this.getPosYRandom(), this.getPosZRandom(1.0D), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
+						world.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
 					}
 				}
 			}
 		}
 
-		if (!world.isRemote) {
+		if (!world.isClientSide) {
 			if (this.idleDelay > 0) this.idleDelay--;
 			if (this.slamCooldown > 0) this.slamCooldown--;
 			if (this.eggCannonCooldown > 0) this.eggCannonCooldown--;
 			if (this.flyCooldown > 0) this.flyCooldown--;
 			if (this.eggDropOffCooldown > 0) this.eggDropOffCooldown--;
 
-			if (this.rand.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && !this.isFiringCannon() && this.isNoEndimationPlaying()) {
-				NetworkUtil.setPlayingAnimationMessage(this, this.rand.nextFloat() < 0.6F && !this.isFlying() ? FLAP : MUNCH);
+			if (this.random.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && !this.isFiringCannon() && this.isNoEndimationPlaying()) {
+				NetworkUtil.setPlayingAnimationMessage(this, this.random.nextFloat() < 0.6F && !this.isFlying() ? FLAP : MUNCH);
 				this.resetIdleFlapDelay();
 			}
 
 			BroodEggSackEntity eggSackEntity = this.getEggSack(world);
 			if (eggSackEntity != null && eggSackEntity.isAlive()) {
-				eggSackEntity.prevPosX = eggSackEntity.lastTickPosX = eggSackEntity.getPosX();
-				eggSackEntity.prevPosY = eggSackEntity.lastTickPosY = eggSackEntity.getPosY();
-				eggSackEntity.prevPosZ = eggSackEntity.lastTickPosZ = eggSackEntity.getPosZ();
+				eggSackEntity.xo = eggSackEntity.xOld = eggSackEntity.getX();
+				eggSackEntity.yo = eggSackEntity.yOld = eggSackEntity.getY();
+				eggSackEntity.zo = eggSackEntity.zOld = eggSackEntity.getZ();
 				eggSackEntity.updatePosition(this);
 			} else {
 				eggSackEntity = new BroodEggSackEntity(world);
-				eggSackEntity.setBroodID(this.getEntityId());
+				eggSackEntity.setBroodID(this.getId());
 				eggSackEntity.updatePosition(this);
-				world.addEntity(eggSackEntity);
-				this.setEggSackID(eggSackEntity.getEntityId());
+				world.addFreshEntity(eggSackEntity);
+				this.setEggSackID(eggSackEntity.getId());
 			}
 
 			if (this.isFlying()) {
 				this.ticksFlying++;
 
-				if (this.isEndimationPlaying(AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.world.hasNoCollisions(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
-					BroodEetleSlamGoal.slam(this, this.rand, 1.0F);
+				if (this.isEndimationPlaying(AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.level.noCollision(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
+					BroodEetleSlamGoal.slam(this, this.random, 1.0F);
 				}
 			} else {
 				this.ticksFlying = 0;
 			}
 
-			if (this.world.getGameTime() % 5 == 0) {
+			if (this.level.getGameTime() % 5 == 0) {
 				BlockPos takeoffPos = this.takeoffPos;
-				if (takeoffPos != null && this.getPositionVec().squareDistanceTo(Vector3d.copy(takeoffPos)) > 256.0F) {
+				if (takeoffPos != null && this.position().distanceToSqr(Vector3d.atLowerCornerOf(takeoffPos)) > 256.0F) {
 					this.takeoffPos = null;
 				}
 			}
@@ -331,19 +332,19 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public void travel(Vector3d travelVector) {
-		if (this.isServerWorld() && !this.isChild() && this.isFlying()) {
+		if (this.isEffectiveAi() && !this.isBaby() && this.isFlying()) {
 			this.moveRelative(0.1F, travelVector);
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(this.getMotion().scale(0.8F));
-			this.setMotion(this.getMotion().subtract(0, 0.01D, 0));
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.8F));
+			this.setDeltaMovement(this.getDeltaMovement().subtract(0, 0.01D, 0));
 		} else {
 			super.travel(travelVector);
 		}
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putBoolean("IsSleeping", this.isSleeping());
 		if (this.takeoffPos != null) {
 			compound.put("TakeoffPos", NBTUtil.writeBlockPos(this.takeoffPos));
@@ -355,8 +356,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
 		}
@@ -374,11 +375,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	protected void collideWithEntity(Entity collider) {
-		if (!this.isRidingSameEntity(collider)) {
-			if (!collider.noClip && !this.noClip) {
-				double d0 = collider.getPosX() - this.getPosX();
-				double d1 = collider.getPosZ() - this.getPosZ();
+	protected void doPush(Entity collider) {
+		if (!this.isPassengerOfSameVehicle(collider)) {
+			if (!collider.noPhysics && !this.noPhysics) {
+				double d0 = collider.getX() - this.getX();
+				double d1 = collider.getZ() - this.getZ();
 				double d2 = MathHelper.absMax(d0, d1);
 				if (d2 >= 0.01D) {
 					d2 = MathHelper.sqrt(d2);
@@ -393,14 +394,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 					d1 = d1 * d3;
 					d0 = d0 * 0.05D;
 					d1 = d1 * 0.05D;
-					d0 = d0 * (1.0D - this.entityCollisionReduction);
-					d1 = d1 * (1.0D - this.entityCollisionReduction);
-					if (!this.isBeingRidden()) {
-						this.addVelocity(-d0 * 0.2F, 0.0D, -d1 * 0.2F);
+					d0 = d0 * (1.0D - this.pushthrough);
+					d1 = d1 * (1.0D - this.pushthrough);
+					if (!this.isVehicle()) {
+						this.push(-d0 * 0.2F, 0.0D, -d1 * 0.2F);
 					}
 
-					if (!collider.isBeingRidden()) {
-						collider.addVelocity(d0 * 2.0F, 0.0D, d1 * 2.0F);
+					if (!collider.isVehicle()) {
+						collider.push(d0 * 2.0F, 0.0D, d1 * 2.0F);
 					}
 				}
 			}
@@ -409,92 +410,92 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public void checkDespawn() {
-		if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.isDespawnPeaceful()) {
+		if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
 			this.remove();
 		} else {
-			this.idleTime = 0;
+			this.noActionTime = 0;
 		}
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	public boolean canBePushed() {
+	public boolean isPushable() {
 		return false;
 	}
 
 	@Override
-	public boolean isWaterSensitive() {
+	public boolean isSensitiveToWater() {
 		return true;
 	}
 
 	@Override
-	public boolean isNonBoss() {
+	public boolean canChangeDimensions() {
 		return false;
 	}
 
 	@Override
-	public CreatureAttribute getCreatureAttribute() {
+	public CreatureAttribute getMobType() {
 		return CreatureAttribute.ARTHROPOD;
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity target) {
+	public boolean doHurtTarget(Entity target) {
 		if (!(target instanceof LivingEntity)) {
 			return false;
 		} else {
-			if (!this.world.isRemote) {
+			if (!this.level.isClientSide) {
 				NetworkUtil.setPlayingAnimationMessage(this, ATTACK);
 			}
 			float attackDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 			float damage;
 			if ((int) attackDamage > 0.0F) {
-				damage = attackDamage / 2.0F + this.rand.nextInt((int) attackDamage);
+				damage = attackDamage / 2.0F + this.random.nextInt((int) attackDamage);
 			} else {
 				damage = attackDamage;
 			}
 
-			boolean attacked = target.attackEntityFrom(DamageSource.causeMobDamage(this), damage);
+			boolean attacked = target.hurt(DamageSource.mobAttack(this), damage);
 			if (attacked) {
-				this.applyEnchantments(this, target);
-				this.constructKnockBackVector((LivingEntity) target);
+				this.doEnchantDamageEffects(this, target);
+				this.blockedByShield((LivingEntity) target);
 			}
 			return attacked;
 		}
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if (source.getImmediateSource() instanceof AbstractArrowEntity) {
+	public boolean hurt(DamageSource source, float amount) {
+		if (source.getDirectEntity() instanceof AbstractArrowEntity) {
 			return false;
 		}
-		return super.attackEntityFrom(source, amount * (source.isProjectile() ? 0.05F : 0.1F));
+		return super.hurt(source, amount * (source.isProjectile() ? 0.05F : 0.1F));
 	}
 
 	public boolean attackEntityFromEggSack(DamageSource source, float amount) {
-		if (super.attackEntityFrom(source, amount)) {
-			this.playSound(SoundEvents.BLOCK_WET_GRASS_PLACE, 1.0F, 0.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+		if (super.hurt(source, amount)) {
+			this.playSound(SoundEvents.WET_GRASS_PLACE, 1.0F, 0.6F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	protected void onDeathUpdate() {
+	protected void tickDeath() {
 	}
 
 	@Override
-	protected void constructKnockBackVector(LivingEntity target) {
+	protected void blockedByShield(LivingEntity target) {
 		double knockbackForce = this.getAttributeValue(Attributes.ATTACK_KNOCKBACK) - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 		if (knockbackForce > 0.0D) {
-			Random random = this.world.rand;
+			Random random = this.level.random;
 			double scale = knockbackForce * (random.nextFloat() * 0.5F + 0.5F);
-			Vector3d horizontalVelocity = new Vector3d(target.getPosX() - this.getPosX(), 0.0D, target.getPosZ() - this.getPosZ()).normalize().scale(scale);
-			target.addVelocity(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F, horizontalVelocity.z);
-			target.velocityChanged = true;
+			Vector3d horizontalVelocity = new Vector3d(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
+			target.push(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F, horizontalVelocity.z);
+			target.hurtMarked = true;
 		}
 	}
 
@@ -505,7 +506,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void addTrackingPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayerEntity player) {
 		if (this.isSleeping()) {
 			this.trackedPlayers.add(player);
 		} else {
@@ -514,7 +515,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void removeTrackingPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayerEntity player) {
 		if (this.isSleeping()) {
 			this.trackedPlayers.remove(player);
 		} else {
@@ -523,25 +524,25 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public EntitySize getSize(Pose pose) {
-		return this.isFlying() ? FLYING_SIZE : this.isOnLastHealthStage() ? FINAL_STAGE_SIZE : super.getSize(pose);
+	public EntitySize getDimensions(Pose pose) {
+		return this.isFlying() ? FLYING_SIZE : this.isOnLastHealthStage() ? FINAL_STAGE_SIZE : super.getDimensions(pose);
 	}
 
 	@Override
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 60) {
 			this.healPulseEndimation.setDecrementing(false);
 		} else {
-			super.handleStatusUpdate(id);
+			super.handleEntityEvent(id);
 		}
 	}
 
 	public void setFiringCannon(boolean firingCannon) {
-		this.dataManager.set(FIRING_CANNON, firingCannon);
+		this.entityData.set(FIRING_CANNON, firingCannon);
 	}
 
 	public boolean isFiringCannon() {
-		return this.dataManager.get(FIRING_CANNON);
+		return this.entityData.get(FIRING_CANNON);
 	}
 
 	public float getEggCannonProgress() {
@@ -597,15 +598,15 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetIdleFlapDelay() {
-		this.idleDelay = this.rand.nextInt(41) + 25;
+		this.idleDelay = this.random.nextInt(41) + 25;
 	}
 
 	public void resetSlamCooldown() {
-		this.slamCooldown = this.rand.nextInt(21) + 70;
+		this.slamCooldown = this.random.nextInt(21) + 70;
 	}
 
 	public void resetEggCannonCooldown() {
-		this.eggCannonCooldown = this.rand.nextInt(201) + 1200;
+		this.eggCannonCooldown = this.random.nextInt(201) + 1200;
 	}
 
 	public boolean canSlam() {
@@ -625,7 +626,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetFlyCooldown() {
-		this.flyCooldown = this.rand.nextInt(301) + 500;
+		this.flyCooldown = this.random.nextInt(301) + 500;
 	}
 
 	public boolean canFly() {
@@ -633,7 +634,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void resetEggDropOffCooldown() {
-		this.eggDropOffCooldown = this.rand.nextInt(201) + 800;
+		this.eggDropOffCooldown = this.random.nextInt(201) + 800;
 	}
 
 	public boolean canDropOffEggs() {
@@ -641,11 +642,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	private void setHealthStage(HealthStage stage) {
-		this.dataManager.set(HEALTH_STAGE, stage);
+		this.entityData.set(HEALTH_STAGE, stage);
 	}
 
 	public HealthStage getHealthStage() {
-		return this.dataManager.get(HEALTH_STAGE);
+		return this.entityData.get(HEALTH_STAGE);
 	}
 
 	public boolean isOnLastHealthStage() {
@@ -653,64 +654,64 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public void setFlying(boolean flying) {
-		this.dataManager.set(FLYING, flying);
+		this.entityData.set(FLYING, flying);
 		if (!flying) {
 			this.setMoving(false);
 		}
 	}
 
 	public boolean isFlying() {
-		return this.dataManager.get(FLYING);
+		return this.entityData.get(FLYING);
 	}
 
 	public void setDroppingEggs(boolean droppingEggs) {
-		this.dataManager.set(DROPPING_EGGS, droppingEggs);
+		this.entityData.set(DROPPING_EGGS, droppingEggs);
 	}
 
 	public boolean isNotDroppingEggs() {
-		return !this.dataManager.get(DROPPING_EGGS);
+		return !this.entityData.get(DROPPING_EGGS);
 	}
 
 	@Override
 	public void setMoving(boolean moving) {
-		this.dataManager.set(MOVING, moving);
+		this.entityData.set(MOVING, moving);
 	}
 
 	public boolean isMoving() {
-		return this.dataManager.get(MOVING);
+		return this.entityData.get(MOVING);
 	}
 
 	public void setSleeping(boolean sleeping) {
-		this.dataManager.set(SLEEPING, sleeping);
+		this.entityData.set(SLEEPING, sleeping);
 	}
 
 	@Override
 	public boolean isSleeping() {
-		return this.dataManager.get(SLEEPING);
+		return this.entityData.get(SLEEPING);
 	}
 
 	@Override
 	public void setTargetFlyingRotations(TargetFlyingRotations flyingRotations) {
-		this.dataManager.set(TARGET_FLYING_ROTATIONS, flyingRotations);
+		this.entityData.set(TARGET_FLYING_ROTATIONS, flyingRotations);
 	}
 
 	private TargetFlyingRotations getTargetFlyingRotations() {
-		return this.dataManager.get(TARGET_FLYING_ROTATIONS);
+		return this.entityData.get(TARGET_FLYING_ROTATIONS);
 	}
 
 	public void setEggSackID(int id) {
-		this.dataManager.set(EGG_SACK_ID, Math.max(-1, id));
+		this.entityData.set(EGG_SACK_ID, Math.max(-1, id));
 	}
 
 	private int getEggSackID() {
-		return this.dataManager.get(EGG_SACK_ID);
+		return this.entityData.get(EGG_SACK_ID);
 	}
 
 	@Nullable
 	public BroodEggSackEntity getEggSack(World world) {
 		int eggSackID = this.getEggSackID();
 		if (eggSackID >= 0) {
-			Entity entity = world.getEntityByID(eggSackID);
+			Entity entity = world.getEntity(eggSackID);
 			if (entity instanceof BroodEggSackEntity) {
 				return (BroodEggSackEntity) entity;
 			}
@@ -771,28 +772,28 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			this.setDroppingEggs(false);
 			this.setFiringCannon(false);
 		} else if (endimation == LAUNCH) {
-			World world = this.world;
+			World world = this.level;
 			if (world instanceof ServerWorld) {
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.getPositionVec(), this.renderYawOffset, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-				((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.getX(), eggSackPos.getY() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.getZ(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
+				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
+				((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
 			}
 		}
 	}
 
 	//The Brood Eetle's size changes greatly in size, causing too much motion when landing. To fix this, resizing motion is removed.
 	@Override
-	public void recalculateSize() {
+	public void refreshDimensions() {
 		try {
 			EntitySize currentSize = (EntitySize) SIZE_FIELD.get(this);
 			Pose pose = this.getPose();
-			EntitySize newSize = this.getSize(pose);
+			EntitySize newSize = this.getDimensions(pose);
 			EntityEvent.Size sizeEvent = ForgeEventFactory.getEntitySizeForge(this, pose, currentSize, newSize, this.getEyeHeight(pose, newSize));
 			newSize = sizeEvent.getNewSize();
 			SIZE_FIELD.set(this, newSize);
 			EYE_HEIGHT_FIELD.set(this, sizeEvent.getNewEyeHeight());
 			if (newSize.width < currentSize.width) {
 				double d0 = newSize.width / 2.0D;
-				this.setBoundingBox(new AxisAlignedBB(this.getPosX() - d0, this.getPosY(), this.getPosZ() - d0, this.getPosX() + d0, this.getPosY() + newSize.height, this.getPosZ() + d0));
+				this.setBoundingBox(new AxisAlignedBB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + newSize.height, this.getZ() + d0));
 			} else {
 				AxisAlignedBB axisalignedbb = this.getBoundingBox();
 				this.setBoundingBox(new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + newSize.width, axisalignedbb.minY + newSize.height, axisalignedbb.minZ + newSize.width));
@@ -831,17 +832,17 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 
 		private void awakeNearbyEggs(BroodEetleEntity broodEetle) {
-			BlockPos.Mutable mutable = broodEetle.getPosition().toMutable();
+			BlockPos.Mutable mutable = broodEetle.blockPosition().mutable();
 			int originX = mutable.getX();
 			int originY = mutable.getY();
 			int originZ = mutable.getZ();
-			World world = broodEetle.world;
-			Random random = broodEetle.rand;
+			World world = broodEetle.level;
+			Random random = broodEetle.random;
 			for (int x = -10; x <= 10; x++) {
 				for (int y = -6; y <= 14; y++) {
 					for (int z = -10; z <= 10; z++) {
-						mutable.setPos(originX + x, originY + y, originZ + z);
-						TileEntity tileEntity = world.getTileEntity(mutable);
+						mutable.set(originX + x, originY + y, originZ + z);
+						TileEntity tileEntity = world.getBlockEntity(mutable);
 						if (tileEntity instanceof EetleEggTileEntity && random.nextFloat() < this.eggGrowthChance) {
 							EetleEggTileEntity eetleEggs = (EetleEggTileEntity) tileEntity;
 							if (eetleEggs.getHatchDelay() < -60) {

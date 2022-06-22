@@ -20,18 +20,18 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
  * @author - SmellyModder(Luke Tonon)
  */
 public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
-	private static final Supplier<BlockState> TALL_POISE_BUSH = () -> EEBlocks.TALL_POISE_BUSH.get().getDefaultState();
+	private static final Supplier<BlockState> TALL_POISE_BUSH = () -> EEBlocks.TALL_POISE_BUSH.get().defaultBlockState();
 
 	public TallPoiseBushFeature(Codec<NoFeatureConfig> config) {
 		super(config);
 	}
 
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		boolean flag = false;
 
 		for (int i = 0; i < 64; ++i) {
-			BlockPos blockpos = pos.add(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-			if (!isTouchingBolloomBud(world, blockpos) && world.isAirBlock(blockpos) && blockpos.getY() < world.getHeight() - 2 && TALL_POISE_BUSH.get().isValidPosition(world, blockpos)) {
+			BlockPos blockpos = pos.offset(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
+			if (!isTouchingBolloomBud(world, blockpos) && world.isEmptyBlock(blockpos) && blockpos.getY() < world.getMaxBuildHeight() - 2 && TALL_POISE_BUSH.get().canSurvive(world, blockpos)) {
 				((PoiseTallBushBlock) TALL_POISE_BUSH.get().getBlock()).placeAt(world, blockpos, 2);
 				flag = true;
 			}
@@ -41,10 +41,10 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 	}
 
 	private boolean isTouchingBolloomBud(IWorld world, BlockPos pos) {
-		BlockPos.Mutable mutable = pos.toMutable();
+		BlockPos.Mutable mutable = pos.mutable();
 		for (Direction direction : Direction.Plane.HORIZONTAL) {
-			BlockPos offset = mutable.offset(direction);
-			if (world.getBlockState(offset).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(offset.up()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
+			BlockPos offset = mutable.relative(direction);
+			if (world.getBlockState(offset).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(offset.above()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {
 				return true;
 			}
 		}

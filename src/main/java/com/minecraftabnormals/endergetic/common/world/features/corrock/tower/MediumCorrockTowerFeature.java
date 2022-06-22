@@ -25,24 +25,24 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
-		if (world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.down(2)).isSolid()) {
-			BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
-			GenerationPiece base = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
+		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
+			BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
+			GenerationPiece base = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
 			int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
 			fillUp(base, corrockBlockState, pos, height);
 
 			if (!base.canPlace(world)) return false;
 
-			BlockPos downPos = pos.down(2);
+			BlockPos downPos = pos.below(2);
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
 			if (GenerationUtils.isAreaCompletelySolid(world, downPos.getX() - 1, downPos.getY(), downPos.getZ() - 1, downPos.getX() + 1, downPos.getY(), downPos.getZ() + 1)) {
 				for (int x = downPos.getX() - 1; x <= downPos.getX() + 1; x++) {
 					for (int y = downPos.getY(); y <= downPos.getY() + 1; y++) {
 						for (int z = downPos.getZ() - 1; z <= downPos.getZ() + 1; z++) {
-							mutable.setPos(x, y, z);
-							if (world.isAirBlock(mutable)) {
-								base.addBlockPiece(corrockBlockState, mutable.toImmutable());
+							mutable.set(x, y, z);
+							if (world.isEmptyBlock(mutable)) {
+								base.addBlockPiece(corrockBlockState, mutable.immutable());
 							}
 						}
 					}
@@ -53,24 +53,24 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 
 			int heightMinusOne = height - 1;
 			for (Direction horizontal : Direction.Plane.HORIZONTAL) {
-				BlockPos offset = pos.offset(horizontal);
-				BlockPos doubleOffset = pos.offset(horizontal, 2);
+				BlockPos offset = pos.relative(horizontal);
+				BlockPos doubleOffset = pos.relative(horizontal, 2);
 				fillUp(base, corrockBlockState, offset, height);
 
 				if (rand.nextBoolean()) {
-					base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateY()));
+					base.addBlockPiece(corrockBlockState, offset.relative(horizontal.getClockWise()));
 				}
 
 				if (rand.nextBoolean()) {
-					base.addBlockPiece(corrockBlockState, offset.offset(horizontal.rotateYCCW()));
+					base.addBlockPiece(corrockBlockState, offset.relative(horizontal.getCounterClockWise()));
 				}
 
 				if (rand.nextBoolean()) {
-					base.addBlockPiece(corrockBlockState, offset.up(heightMinusOne).offset(horizontal.rotateY()));
+					base.addBlockPiece(corrockBlockState, offset.above(heightMinusOne).relative(horizontal.getClockWise()));
 				}
 
 				if (rand.nextBoolean()) {
-					base.addBlockPiece(corrockBlockState, offset.up(heightMinusOne).offset(horizontal.rotateYCCW()));
+					base.addBlockPiece(corrockBlockState, offset.above(heightMinusOne).relative(horizontal.getCounterClockWise()));
 				}
 
 				if (rand.nextBoolean()) {
@@ -78,7 +78,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 				}
 
 				if (rand.nextBoolean()) {
-					base.addBlockPiece(corrockBlockState, doubleOffset.up(heightMinusOne));
+					base.addBlockPiece(corrockBlockState, doubleOffset.above(heightMinusOne));
 				}
 			}
 
@@ -90,17 +90,17 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 				z = rand.nextInt(2);
 			}
 
-			Pair<GenerationPiece, List<ChorusPlantPart>> topPiece = getTop(world, pos.add(x, height + 1, z), rand, config.getCrownChance(), config.getChorusChance());
+			Pair<GenerationPiece, List<ChorusPlantPart>> topPiece = getTop(world, pos.offset(x, height + 1, z), rand, config.getCrownChance(), config.getChorusChance());
 			if (base.canPlace(world) && topPiece.getFirst().canPlace(world)) {
 				base.place(world);
 				topPiece.getFirst().place(world);
 				topPiece.getSecond().forEach((growth) -> growth.placeGrowth(world, rand));
-				BlockPos topMiddle = pos.up(height + 1);
-				BlockState corrockPlantState = CORROCK_STATE.getValue();
+				BlockPos topMiddle = pos.above(height + 1);
+				BlockState corrockPlantState = CORROCK_STATE.get();
 				for (int i = 0; i < 16; i++) {
-					if (rand.nextFloat() < 0.6F && world.isAirBlock(mutable.setAndOffset(topMiddle, rand.nextInt(6) - rand.nextInt(6), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(6) - rand.nextInt(6)))) {
-						if (world.getBlockState(mutable.down()).getBlock() == CORROCK_BLOCK_BLOCK) {
-							world.setBlockState(mutable, corrockPlantState, 2);
+					if (rand.nextFloat() < 0.6F && world.isEmptyBlock(mutable.setWithOffset(topMiddle, rand.nextInt(6) - rand.nextInt(6), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(6) - rand.nextInt(6)))) {
+						if (world.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
+							world.setBlock(mutable, corrockPlantState, 2);
 						}
 					}
 				}
@@ -112,143 +112,143 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 
 	private static void fillUp(GenerationPiece piece, BlockState state, BlockPos pos, int height) {
 		for (int i = 0; i < height; i++) {
-			piece.addBlockPiece(state, pos.up(i));
+			piece.addBlockPiece(state, pos.above(i));
 		}
 	}
 
 	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(IWorld world, BlockPos pos, Random rand, float crownChance, float chorusChance) {
-		GenerationPiece top = new GenerationPiece((w, p) -> w.isAirBlock(p.pos));
+		GenerationPiece top = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
 		List<ChorusPlantPart> growths = Lists.newArrayList();
 		List<BlockPos> corners = Lists.newArrayList();
 		int variant = rand.nextInt(4);
-		BlockPos startNPos = pos.offset(Direction.NORTH, 4).add(-2, 0, 0);
-		BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
+		BlockPos startNPos = pos.relative(Direction.NORTH, 4).offset(-2, 0, 0);
+		BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 		for (int i = 0; i < 4; i++) {
-			BlockPos placePos = startNPos.add(i, 0, 0);
+			BlockPos placePos = startNPos.offset(i, 0, 0);
 			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), placePos.offset(Direction.NORTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), placePos.relative(Direction.NORTH));
 				} else {
-					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.up());
+					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.above());
 				}
 			}
 		}
 
-		BlockPos startEPos = pos.offset(Direction.EAST, 3).add(0, 0, 1);
+		BlockPos startEPos = pos.relative(Direction.EAST, 3).offset(0, 0, 1);
 		for (int i = 0; i < 4; i++) {
-			BlockPos placePos = startEPos.add(0, 0, -i);
+			BlockPos placePos = startEPos.offset(0, 0, -i);
 			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), placePos.offset(Direction.EAST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), placePos.relative(Direction.EAST));
 				} else {
-					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.up());
+					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.above());
 				}
 			}
 		}
 
-		BlockPos startSPos = pos.offset(Direction.SOUTH, 3).add(1, 0, 0);
+		BlockPos startSPos = pos.relative(Direction.SOUTH, 3).offset(1, 0, 0);
 		for (int i = 0; i < 4; i++) {
-			BlockPos placePos = startSPos.add(-i, 0, 0);
+			BlockPos placePos = startSPos.offset(-i, 0, 0);
 			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), placePos.offset(Direction.SOUTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), placePos.relative(Direction.SOUTH));
 				} else {
-					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.up());
+					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.above());
 				}
 			}
 		}
 
-		BlockPos startWPos = pos.offset(Direction.WEST, 4).add(0, 0, 1);
+		BlockPos startWPos = pos.relative(Direction.WEST, 4).offset(0, 0, 1);
 		for (int i = 0; i < 4; i++) {
-			BlockPos placePos = startWPos.add(0, 0, -i);
+			BlockPos placePos = startWPos.offset(0, 0, -i);
 			top.addBlockPiece(corrockBlockState, placePos);
 			if (rand.nextFloat() < crownChance) {
 				if (rand.nextBoolean()) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), placePos.offset(Direction.WEST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), placePos.relative(Direction.WEST));
 				} else {
-					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.up());
+					top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), placePos.above());
 				}
 			}
 		}
 
-		BlockPos cornerNW = pos.add(-3, 0, -3);
+		BlockPos cornerNW = pos.offset(-3, 0, -3);
 		if (variant != 0) {
-			corners.add(cornerNW.offset(Direction.SOUTH));
-			corners.add(cornerNW.offset(Direction.EAST));
+			corners.add(cornerNW.relative(Direction.SOUTH));
+			corners.add(cornerNW.relative(Direction.EAST));
 		}
 		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
-				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNW.up());
+				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNW.above());
 			} else {
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNW.offset(Direction.NORTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNW.relative(Direction.NORTH));
 				}
 
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerNW.offset(Direction.WEST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerNW.relative(Direction.WEST));
 				}
 			}
 		}
 		corners.add(cornerNW);
 
-		BlockPos cornerNE = pos.add(2, 0, -3);
+		BlockPos cornerNE = pos.offset(2, 0, -3);
 		if (variant != 1) {
-			corners.add(cornerNE.offset(Direction.SOUTH));
-			corners.add(cornerNE.offset(Direction.WEST));
+			corners.add(cornerNE.relative(Direction.SOUTH));
+			corners.add(cornerNE.relative(Direction.WEST));
 		}
 		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
-				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNE.up());
+				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerNE.above());
 			} else {
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNE.offset(Direction.NORTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.NORTH), cornerNE.relative(Direction.NORTH));
 				}
 
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerNE.offset(Direction.EAST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerNE.relative(Direction.EAST));
 				}
 			}
 		}
 		corners.add(cornerNE);
 
-		BlockPos cornerSE = pos.add(2, 0, 2);
+		BlockPos cornerSE = pos.offset(2, 0, 2);
 		if (variant != 2) {
-			corners.add(cornerSE.offset(Direction.NORTH));
-			corners.add(cornerSE.offset(Direction.WEST));
+			corners.add(cornerSE.relative(Direction.NORTH));
+			corners.add(cornerSE.relative(Direction.WEST));
 		}
 		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
-				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSE.up());
+				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSE.above());
 			} else {
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSE.offset(Direction.SOUTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSE.relative(Direction.SOUTH));
 				}
 
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerSE.offset(Direction.EAST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.EAST), cornerSE.relative(Direction.EAST));
 				}
 			}
 		}
 		corners.add(cornerSE);
 
-		BlockPos cornerSW = pos.add(-3, 0, 2);
+		BlockPos cornerSW = pos.offset(-3, 0, 2);
 		if (variant != 3) {
-			corners.add(cornerSW.offset(Direction.NORTH));
-			corners.add(cornerSW.offset(Direction.EAST));
+			corners.add(cornerSW.relative(Direction.NORTH));
+			corners.add(cornerSW.relative(Direction.EAST));
 		}
 		if (rand.nextFloat() < crownChance) {
 			if (rand.nextBoolean()) {
-				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSW.up());
+				top.addBlockPiece(getCorrockCrownStanding(rand.nextInt(16)), cornerSW.above());
 			} else {
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSW.offset(Direction.SOUTH));
+					top.addBlockPiece(getCorrockCrownWall(Direction.SOUTH), cornerSW.relative(Direction.SOUTH));
 				}
 
 				if (rand.nextFloat() < crownChance) {
-					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerSW.offset(Direction.WEST));
+					top.addBlockPiece(getCorrockCrownWall(Direction.WEST), cornerSW.relative(Direction.WEST));
 				}
 			}
 		}
@@ -258,15 +258,15 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 			for (int z = cornerNW.getZ(); z <= cornerSE.getZ(); z++) {
 				BlockPos placingPos = new BlockPos(x, pos.getY(), z);
 				if (!corners.contains(placingPos)) {
-					if (isNotCloseToAnotherGrowth(growths, placingPos.down()) && rand.nextFloat() < chorusChance && world.isAirBlock(placingPos) && world.isAirBlock(placingPos.up())) {
-						growths.add(new ChorusPlantPart(placingPos.down()));
+					if (isNotCloseToAnotherGrowth(growths, placingPos.below()) && rand.nextFloat() < chorusChance && world.isEmptyBlock(placingPos) && world.isEmptyBlock(placingPos.above())) {
+						growths.add(new ChorusPlantPart(placingPos.below()));
 						for (Direction direction : Direction.values()) {
 							if (direction != Direction.UP) {
-								top.addBlockPiece(corrockBlockState, placingPos.down().offset(direction));
+								top.addBlockPiece(corrockBlockState, placingPos.below().relative(direction));
 							}
 						}
 					} else {
-						top.addBlockPiece(corrockBlockState, placingPos.down());
+						top.addBlockPiece(corrockBlockState, placingPos.below());
 					}
 				}
 			}

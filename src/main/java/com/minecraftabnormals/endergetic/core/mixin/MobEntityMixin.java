@@ -12,16 +12,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MobEntity.class)
 public final class MobEntityMixin {
 	@Shadow
-	protected MovementController moveController;
+	protected MovementController moveControl;
 
 	/**
 	 * Vanilla doesn't check for instanceof on certain mobs when casting to their custom {@link MovementController}.
 	 */
-	@Inject(at = @At("HEAD"), method = "getMoveHelper", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "getMoveControl", cancellable = true)
 	private void getMoveHelper(CallbackInfoReturnable<MovementController> info) {
 		MobEntity thisMob = (MobEntity) (Object) this;
-		if (thisMob.isPassenger() && thisMob.getRidingEntity() instanceof GliderEetleEntity) {
-			info.setReturnValue(this.moveController);
+		if (thisMob.isPassenger() && thisMob.getVehicle() instanceof GliderEetleEntity) {
+			info.setReturnValue(this.moveControl);
 		}
 	}
 }

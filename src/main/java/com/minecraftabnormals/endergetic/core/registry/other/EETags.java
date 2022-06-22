@@ -13,7 +13,7 @@ public final class EETags {
 	public static class Items {
 		@SuppressWarnings("unused")
 		private static ITag.INamedTag<Item> createTag(String name) {
-			return ItemTags.makeWrapperTag("endergetic:" + name);
+			return ItemTags.bind("endergetic:" + name);
 		}
 	}
 
@@ -25,7 +25,7 @@ public final class EETags {
 		public static final ITag.INamedTag<Block> CHORUS_PLANTABLE = createTag("chorus_plantable");
 
 		private static ITag.INamedTag<Block> createTag(String name) {
-			return BlockTags.makeWrapperTag("endergetic:" + name);
+			return BlockTags.bind("endergetic:" + name);
 		}
 	}
 
@@ -34,7 +34,7 @@ public final class EETags {
 		public static final ITag.INamedTag<EntityType<?>> NOT_BALLOON_ATTACHABLE = createTag("not_balloon_attachable");
 
 		private static ITag.INamedTag<EntityType<?>> createTag(String name) {
-			return EntityTypeTags.getTagById("endergetic:" + name);
+			return EntityTypeTags.bind("endergetic:" + name);
 		}
 	}
 

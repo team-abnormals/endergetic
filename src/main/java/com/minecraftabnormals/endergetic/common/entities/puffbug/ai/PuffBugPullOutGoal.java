@@ -9,27 +9,29 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	private int pulls;
 
 	public PuffBugPullOutGoal(PuffBugEntity puffbug) {
 		super(puffbug, PuffBugEntity.PULL_ANIMATION);
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		return !this.entity.isInflated() && this.entity.isNoEndimationPlaying() && this.entity.stuckInBlock;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return !this.entity.isInflated() && this.entity.stuckInBlock;
 	}
 
 	@Override
-	public void startExecuting() {
-		this.pulls = this.entity.getRNG().nextInt(4) + 2;
+	public void start() {
+		this.pulls = this.entity.getRandom().nextInt(4) + 2;
 	}
 
 	@Override
@@ -50,12 +52,12 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 			float motionZ = -MathHelper.cos(rotations[1] * ((float) Math.PI / 180F)) * MathHelper.cos(rotations[0] * ((float) Math.PI / 180F));
 
 			Vector3d popOutMotion = new Vector3d(motionX, motionY, motionZ).normalize().scale(0.25F);
-			this.entity.setMotion(popOutMotion);
+			this.entity.setDeltaMovement(popOutMotion);
 		}
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		NetworkUtil.setPlayingAnimationMessage(this.entity, PuffBugEntity.BLANK_ANIMATION);
 	}
 }

@@ -12,12 +12,12 @@ public class GliderEetleLandGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		return this.glider.shouldLand() && !this.glider.isMoving() && this.glider.isOnGround() && !this.glider.isAggressive() && this.glider.getRNG().nextFloat() < 0.05F;
+	public boolean canUse() {
+		return this.glider.shouldLand() && !this.glider.isMoving() && this.glider.isOnGround() && !this.glider.isAggressive() && this.glider.getRandom().nextFloat() < 0.05F;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		if (this.ticksPassed < 15 && this.glider.isOnGround() && !this.glider.isAggressive()) {
 			return true;
 		}
@@ -26,8 +26,8 @@ public class GliderEetleLandGoal extends Goal {
 	}
 
 	@Override
-	public void startExecuting() {
-		this.glider.getNavigator().clearPath();
+	public void start() {
+		this.glider.getNavigation().stop();
 		this.glider.resetFlyCooldown();
 		this.glider.setFlying(false);
 		this.glider.resetIdleFlapDelay();
@@ -36,11 +36,11 @@ public class GliderEetleLandGoal extends Goal {
 	@Override
 	public void tick() {
 		this.ticksPassed++;
-		this.glider.getNavigator().clearPath();
+		this.glider.getNavigation().stop();
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksPassed = 0;
 	}
 }

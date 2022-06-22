@@ -155,9 +155,9 @@ public class EndergeticExpansion {
 		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
 
 		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), () -> {
-			return new BiomeAmbience.Builder().setWaterColor(4159204).setWaterFogColor(329011).setFogColor(10518688).withSkyColor(0)
-					.setAmbientSound(EESounds.SMALL_END_ISLANDS_LOOP.get())
-					.setAdditionsSound(new SoundAdditionsAmbience(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
+			return new BiomeAmbience.Builder().waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0)
+					.ambientLoopSound(EESounds.SMALL_END_ISLANDS_LOOP.get())
+					.ambientAdditionsSound(new SoundAdditionsAmbience(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
 					.build();
 		}));
 	}
@@ -192,7 +192,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		EnderCrystalRenderer.field_229046_e_ = RenderType.getEntityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
+		EnderCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("endergetic:poise_forest"));
 	}
 

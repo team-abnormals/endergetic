@@ -15,25 +15,25 @@ public class EetleHurtByTargetGoal extends HurtByTargetGoal {
 
 	public EetleHurtByTargetGoal(AbstractEetleEntity eetle) {
 		super(eetle);
-		this.setCallsForHelp(AbstractEetleEntity.class);
+		this.setAlertOthers(AbstractEetleEntity.class);
 	}
 
 	@Override
-	protected boolean isSuitableTarget(@Nullable LivingEntity potentialTarget, EntityPredicate targetPredicate) {
-		return !(potentialTarget instanceof BroodEetleEntity || potentialTarget instanceof AbstractEetleEntity) && super.isSuitableTarget(potentialTarget, targetPredicate);
+	protected boolean canAttack(@Nullable LivingEntity potentialTarget, EntityPredicate targetPredicate) {
+		return !(potentialTarget instanceof BroodEetleEntity || potentialTarget instanceof AbstractEetleEntity) && super.canAttack(potentialTarget, targetPredicate);
 	}
 
 	@Override
 	protected void alertOthers() {
-		double targetDistance = this.getTargetDistance();
-		AxisAlignedBB axisalignedbb = AxisAlignedBB.fromVector(this.goalOwner.getPositionVec()).grow(targetDistance, 10.0D, targetDistance);
-		List<AbstractEetleEntity> list = this.goalOwner.world.getLoadedEntitiesWithinAABB(AbstractEetleEntity.class, axisalignedbb);
+		double targetDistance = this.getFollowDistance();
+		AxisAlignedBB axisalignedbb = AxisAlignedBB.unitCubeFromLowerCorner(this.mob.position()).inflate(targetDistance, 10.0D, targetDistance);
+		List<AbstractEetleEntity> list = this.mob.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 		Iterator<AbstractEetleEntity> iterator = list.iterator();
-		LivingEntity revengeTarget = this.goalOwner.getRevengeTarget();
+		LivingEntity revengeTarget = this.mob.getLastHurtByMob();
 		while (iterator.hasNext()) {
 			AbstractEetleEntity eetle = iterator.next();
-			if (eetle != this.goalOwner && !eetle.isChild() && (eetle.getAttackTarget() == null || !eetle.getAttackTarget().isAlive()) && !eetle.isOnSameTeam(revengeTarget)) {
-				this.setAttackTarget(eetle, revengeTarget);
+			if (eetle != this.mob && !eetle.isBaby() && (eetle.getTarget() == null || !eetle.getTarget().isAlive()) && !eetle.isAlliedTo(revengeTarget)) {
+				this.alertOther(eetle, revengeTarget);
 			}
 		}
 	}

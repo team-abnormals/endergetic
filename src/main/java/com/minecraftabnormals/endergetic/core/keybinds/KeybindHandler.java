@@ -44,12 +44,12 @@ public final class KeybindHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onKeyPressed(KeyInputEvent event) {
-		if (Minecraft.getInstance().currentScreen != null) return;
+		if (Minecraft.getInstance().screen != null) return;
 		PlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		if (BOOF_VEST.isPressed() && !player.abilities.isFlying) {
-			ItemStack stack = player.inventory.armorItemInSlot(2);
+		if (BOOF_VEST.consumeClick() && !player.abilities.flying) {
+			ItemStack stack = player.inventory.getArmor(2);
 			if (stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
 				if (BoofloVestItem.canBoof(stack, player)) {
 					EntityMotionHelper.knockbackEntity(player, C2SInflateBoofloVestMessage.HORIZONTAL_BOOST_FORCE, C2SInflateBoofloVestMessage.VERTICAL_BOOST_FORCE, true, true);
@@ -57,10 +57,10 @@ public final class KeybindHandler {
 				}
 			}
 		}
-		if (player.getRidingEntity() instanceof BoofloEntity) {
-			BoofloEntity booflo = (BoofloEntity) player.getRidingEntity();
+		if (player.getVehicle() instanceof BoofloEntity) {
+			BoofloEntity booflo = (BoofloEntity) player.getVehicle();
 			if (!booflo.isOnGround()) {
-				if (BOOFLO_SLAM.isPressed()) {
+				if (BOOFLO_SLAM.consumeClick()) {
 					if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {
 						EndergeticExpansion.CHANNEL.sendToServer(new C2SSlamMessage());
 					}

@@ -25,24 +25,24 @@ public class AdolescentAttackGoal extends Goal {
 	private double targetY;
 	private double targetZ;
 	protected final int attackInterval = 20;
-	private long field_220720_k;
+	private long lastCanUseCheck;
 	private boolean canPenalize = false;
 
 	public AdolescentAttackGoal(BoofloAdolescentEntity attacker, double speedIn, boolean useLongMemory) {
 		this.attacker = attacker;
 		this.speedTowardsTarget = speedIn;
 		this.longMemory = useLongMemory;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
-	public boolean shouldExecute() {
-		long i = this.attacker.world.getGameTime();
-		if (i - this.field_220720_k < 20L) {
+	public boolean canUse() {
+		long i = this.attacker.level.getGameTime();
+		if (i - this.lastCanUseCheck < 20L) {
 			return false;
 		} else if (!this.attacker.isHungry()) {
 			return false;
 		} else {
-			this.field_220720_k = i;
+			this.lastCanUseCheck = i;
 			Entity target = this.attacker.getBoofloAttackTarget();
 			if (target == null) {
 				return false;
@@ -53,24 +53,24 @@ public class AdolescentAttackGoal extends Goal {
 			} else {
 				if (this.canPenalize) {
 					if (--this.delayCounter <= 0) {
-						this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
-						this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+						this.path = this.attacker.getNavigation().createPath(target, 0);
+						this.delayCounter = 4 + this.attacker.getRandom().nextInt(7);
 						return this.path != null;
 					} else {
 						return true;
 					}
 				}
-				this.path = this.attacker.getNavigator().getPathToEntity(target, 0);
+				this.path = this.attacker.getNavigation().createPath(target, 0);
 				if (this.path != null) {
 					return true;
 				} else {
-					return this.getAttackReachSqr(target) >= this.attacker.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
+					return this.getAttackReachSqr(target) >= this.attacker.distanceToSqr(target.getX(), target.getBoundingBox().minY, target.getZ());
 				}
 			}
 		}
 	}
 
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		Entity target = this.attacker.getBoofloAttackTarget();
 		if (target == null) {
 			return false;
@@ -81,43 +81,43 @@ public class AdolescentAttackGoal extends Goal {
 		} else if (!this.attacker.isHungry()) {
 			return false;
 		} else if (!this.longMemory) {
-			return !this.attacker.getNavigator().noPath();
-		} else if (!this.attacker.isWithinHomeDistanceFromPosition(target.getPosition())) {
+			return !this.attacker.getNavigation().isDone();
+		} else if (!this.attacker.isWithinRestriction(target.blockPosition())) {
 			return false;
 		} else {
 			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
 		}
 	}
 
-	public void startExecuting() {
-		this.attacker.getNavigator().setPath(this.path, this.speedTowardsTarget);
-		this.attacker.setAggroed(true);
+	public void start() {
+		this.attacker.getNavigation().moveTo(this.path, this.speedTowardsTarget);
+		this.attacker.setAggressive(true);
 		this.delayCounter = 0;
 	}
 
-	public void resetTask() {
+	public void stop() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		if (!EntityPredicates.CAN_AI_TARGET.test(target)) {
+		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 			this.attacker.setBoofloAttackTarget(null);
 		}
-		this.attacker.setAggroed(false);
-		this.attacker.getNavigator().clearPath();
+		this.attacker.setAggressive(false);
+		this.attacker.getNavigation().stop();
 	}
 
 	public void tick() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		this.attacker.getLookController().setLookPositionWithEntity(target, 10.0F, 10.0F);
+		this.attacker.getLookControl().setLookAt(target, 10.0F, 10.0F);
 
-		double distToEnemySqr = this.attacker.getDistanceSq(target.getPosX(), target.getBoundingBox().minY, target.getPosZ());
+		double distToEnemySqr = this.attacker.distanceToSqr(target.getX(), target.getBoundingBox().minY, target.getZ());
 
 		this.delayCounter--;
 
-		if ((this.longMemory || this.attacker.getEntitySenses().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
-			this.targetX = target.getPosX();
+		if ((this.longMemory || this.attacker.getSensing().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
+			this.targetX = target.getX();
 			this.targetY = target.getBoundingBox().minY;
-			this.targetZ = target.getPosZ();
+			this.targetZ = target.getZ();
 
-			this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
+			this.delayCounter = 4 + this.attacker.getRandom().nextInt(7);
 
 			if (distToEnemySqr > 1024.0D) {
 				this.delayCounter += 10;
@@ -125,7 +125,7 @@ public class AdolescentAttackGoal extends Goal {
 				this.delayCounter += 5;
 			}
 
-			if (!this.attacker.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget)) {
+			if (!this.attacker.getNavigation().moveTo(target, this.speedTowardsTarget)) {
 				this.delayCounter += 15;
 			}
 		}
@@ -147,20 +147,20 @@ public class AdolescentAttackGoal extends Goal {
 	}
 
 	protected double getAttackReachSqr(Entity attackTarget) {
-		return (this.attacker.getWidth() * 2.0F * this.attacker.getWidth() * 2.0F + attackTarget.getWidth());
+		return (this.attacker.getBbWidth() * 2.0F * this.attacker.getBbWidth() * 2.0F + attackTarget.getBbWidth());
 	}
 
 	@Nullable
 	public Path getPathToEntity(Entity entity) {
-		BlockPos pos = entity.getPosition();
+		BlockPos pos = entity.blockPosition();
 		for (int y = 0; y < 8; y++) {
-			pos = pos.down(y);
-			if (!entity.getEntityWorld().isRemote) {
-				if (entity.getEntityWorld().getBlockState(pos).isSolid() || !entity.getEntityWorld().getBlockState(pos).getFluidState().isEmpty()) {
-					return this.attacker.getNavigator().getPathToPos(pos, 0);
+			pos = pos.below(y);
+			if (!entity.getCommandSenderWorld().isClientSide) {
+				if (entity.getCommandSenderWorld().getBlockState(pos).canOcclude() || !entity.getCommandSenderWorld().getBlockState(pos).getFluidState().isEmpty()) {
+					return this.attacker.getNavigation().createPath(pos, 0);
 				}
 			}
 		}
-		return this.attacker.getNavigator().getPathToPos(entity.getPosition(), 0);
+		return this.attacker.getNavigation().createPath(entity.blockPosition(), 0);
 	}
 }

@@ -30,31 +30,31 @@ public class PurpoidAttackGoal extends Goal {
 
 	public PurpoidAttackGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
 		if (shouldFollowTarget(purpoid, false)) {
-			this.path = purpoid.getNavigator().getPathToEntity(purpoid.getAttackTarget(), 0);
+			this.path = purpoid.getNavigation().createPath(purpoid.getTarget(), 0);
 			return this.path != null;
 		}
 		return false;
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		PurpoidEntity purpoid = this.purpoid;
-		purpoid.getNavigator().setPath(this.path, 2.25F);
-		purpoid.setAggroed(true);
+		purpoid.getNavigation().moveTo(this.path, 2.25F);
+		purpoid.setAggressive(true);
 		this.delayCounter = 0;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		return shouldFollowTarget(purpoid, false) && purpoid.getNavigator().hasPath();
+		return shouldFollowTarget(purpoid, false) && purpoid.getNavigation().isInProgress();
 	}
 
 	@Override
@@ -64,37 +64,37 @@ public class PurpoidAttackGoal extends Goal {
 			purpoid.setBoostingTicks(5);
 		}
 		this.delayCounter = Math.max(this.delayCounter - 1, 0);
-		LivingEntity target = purpoid.getAttackTarget();
-		double distanceToTargetSq = purpoid.getDistanceSq(target);
-		Random random = purpoid.getRNG();
+		LivingEntity target = purpoid.getTarget();
+		double distanceToTargetSq = purpoid.distanceToSqr(target);
+		Random random = purpoid.getRandom();
 		if (this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
-			PathNavigator pathNavigator = purpoid.getNavigator();
+			PathNavigator pathNavigator = purpoid.getNavigation();
 			if (distanceToTargetSq >= 9.0F) {
-				Path path = pathNavigator.getPathToPos(findAirPosAboveTarget(purpoid.world, target), 0);
-				if (path == null || !pathNavigator.setPath(path, 2.25F)) {
+				Path path = pathNavigator.createPath(findAirPosAboveTarget(purpoid.level, target), 0);
+				if (path == null || !pathNavigator.moveTo(path, 2.25F)) {
 					this.delayCounter += 15;
 				}
 			} else {
-				purpoid.getMoveHelper().setMoveTo(target.getPosX(), target.getPosY(), target.getPosZ(), 2.25F);
+				purpoid.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), 2.25F);
 			}
 		}
 
 		boolean small = purpoid.getSize() == PurpoidSize.PURP;
-		float width = purpoid.getWidth() * (small ? 2.85F : 2.0F);
-		double reachRange = width * width + target.getWidth();
+		float width = purpoid.getBbWidth() * (small ? 2.85F : 2.0F);
+		double reachRange = width * width + target.getBbWidth();
 		if (distanceToTargetSq <= reachRange) {
 			if (small) {
 				if (purpoid.isEndimationPlaying(PurpoidEntity.TELEFRAG_ANIMATION) && purpoid.getAnimationTick() == 5) {
-					double targetX = target.getPosX();
-					double targetY = target.getPosY();
-					double targetZ = target.getPosZ();
+					double targetX = target.getX();
+					double targetY = target.getY();
+					double targetZ = target.getZ();
 					for (int i = 0; i < 16; i++) {
 						double randomX = targetX + (random.nextDouble() - 0.5D) * 32.0D;
 						double randomY = targetY + (random.nextInt(33) - 16);
 						double randomZ = targetZ + (random.nextDouble() - 0.5D) * 32.0D;
-						if (target.attemptTeleport(randomX, randomY, randomZ, false)) {
-							target.attackEntityFrom(DamageSource.causeMobDamage(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
+						if (target.randomTeleport(randomX, randomY, randomZ, false)) {
+							target.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
 							if (target instanceof ServerPlayerEntity) {
 								EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) target), new S2CEnablePurpoidFlash());
 							}
@@ -111,28 +111,28 @@ public class PurpoidAttackGoal extends Goal {
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		PurpoidEntity purpoid = this.purpoid;
-		LivingEntity livingentity = purpoid.getAttackTarget();
-		if (!EntityPredicates.CAN_AI_TARGET.test(livingentity)) {
-			purpoid.setAttackTarget(null);
+		LivingEntity livingentity = purpoid.getTarget();
+		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+			purpoid.setTarget(null);
 		}
 
-		purpoid.setAggroed(false);
-		purpoid.getNavigator().clearPath();
+		purpoid.setAggressive(false);
+		purpoid.getNavigation().stop();
 	}
 
 	public static boolean shouldFollowTarget(PurpoidEntity purpoid, boolean near) {
-		LivingEntity attackTarget = purpoid.getAttackTarget();
-		return attackTarget != null && attackTarget.isAlive() && attackTarget.isPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof PlayerEntity) || !attackTarget.isSpectator() && !((PlayerEntity) attackTarget).isCreative());
+		LivingEntity attackTarget = purpoid.getTarget();
+		return attackTarget != null && attackTarget.isAlive() && attackTarget.hasPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof PlayerEntity) || !attackTarget.isSpectator() && !((PlayerEntity) attackTarget).isCreative());
 	}
 
 	public static BlockPos findAirPosAboveTarget(World world, LivingEntity target) {
-		BlockPos.Mutable mutable = target.getPosition().toMutable();
-		int maxHeight = target.getRNG().nextInt(3) + 4;
+		BlockPos.Mutable mutable = target.blockPosition().mutable();
+		int maxHeight = target.getRandom().nextInt(3) + 4;
 		for (int y = 0; y < maxHeight; y++) {
 			mutable.move(0, 1, 0);
-			if (!world.isAirBlock(mutable)) {
+			if (!world.isEmptyBlock(mutable)) {
 				mutable.move(0, -1, 0);
 				break;
 			}

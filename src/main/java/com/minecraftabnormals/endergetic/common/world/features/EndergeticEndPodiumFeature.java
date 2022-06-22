@@ -18,13 +18,13 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
-	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.get().getDefaultState();
-	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.get().getDefaultState();
-	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().getDefaultState();
-	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().getDefaultState().with(AcidianLanternBlock.FACING, Direction.UP);
+	private static final BlockState MYSTICAL_OBSIDIAN = EEBlocks.MYSTICAL_OBSIDIAN.get().defaultBlockState();
+	private static final BlockState MYSTICAL_OBSIDIAN_WALL = EEBlocks.MYSTICAL_OBSIDIAN_WALL.get().defaultBlockState();
+	private static final BlockState MYSTICAL_OBSIDIAN_RUNE = EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get().defaultBlockState();
+	private static final BlockState ACIDIAN_LANTERN = EEBlocks.ACIDIAN_LANTERN.get().defaultBlockState().setValue(AcidianLanternBlock.FACING, Direction.UP);
 
 	private static BlockState MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(boolean active) {
-		return active ? EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().getDefaultState();
+		return active ? EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().defaultBlockState() : EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get().defaultBlockState();
 	}
 
 	private final boolean activePortal;
@@ -35,62 +35,62 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	}
 
 	@Override
-	public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-		for (BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
-			boolean flag = blockpos.withinDistance(pos, 2.5D);
-			if (flag || blockpos.withinDistance(pos, 3.5D)) {
+	public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+		for (BlockPos blockpos : BlockPos.betweenClosed(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
+			boolean flag = blockpos.closerThan(pos, 2.5D);
+			if (flag || blockpos.closerThan(pos, 3.5D)) {
 				if (blockpos.getY() < pos.getY()) {
 					if (flag) {
-						this.setBlockState(worldIn, blockpos.up(), MYSTICAL_OBSIDIAN);
+						this.setBlockState(worldIn, blockpos.above(), MYSTICAL_OBSIDIAN);
 					} else if (blockpos.getY() < pos.getY()) {
-						this.setBlockState(worldIn, blockpos.up(), Blocks.END_STONE.getDefaultState());
+						this.setBlockState(worldIn, blockpos.above(), Blocks.END_STONE.defaultBlockState());
 					}
 				} else if (blockpos.getY() > pos.getY()) {
-					this.setBlockState(worldIn, blockpos.up(), Blocks.AIR.getDefaultState());
+					this.setBlockState(worldIn, blockpos.above(), Blocks.AIR.defaultBlockState());
 				} else if (!flag) {
-					this.setBlockState(worldIn, blockpos.up(), MYSTICAL_OBSIDIAN);
+					this.setBlockState(worldIn, blockpos.above(), MYSTICAL_OBSIDIAN);
 				} else if (this.activePortal) {
-					this.setBlockState(worldIn, blockpos.up(), Blocks.END_PORTAL.getDefaultState());
+					this.setBlockState(worldIn, blockpos.above(), Blocks.END_PORTAL.defaultBlockState());
 				} else {
-					this.setBlockState(worldIn, blockpos.up(), Blocks.AIR.getDefaultState());
+					this.setBlockState(worldIn, blockpos.above(), Blocks.AIR.defaultBlockState());
 				}
 			}
 		}
 
-		this.setBlockState(worldIn, pos.up(2).north(2).east(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.up(2).north(2).west(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.up(2).south(2).east(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.up(2).south(2).west(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(worldIn, pos.above(2).north(2).east(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(worldIn, pos.above(2).north(2).west(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(worldIn, pos.above(2).south(2).east(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(worldIn, pos.above(2).south(2).west(2), MYSTICAL_OBSIDIAN_WALL);
 
 		for (int i = 1; i < 6; i++) {
 			if (i > 3) {
-				this.setBlockState(worldIn, pos.up(i), MYSTICAL_OBSIDIAN_WALL);
+				this.setBlockState(worldIn, pos.above(i), MYSTICAL_OBSIDIAN_WALL);
 			} else {
-				this.setBlockState(worldIn, pos.up(i), MYSTICAL_OBSIDIAN);
+				this.setBlockState(worldIn, pos.above(i), MYSTICAL_OBSIDIAN);
 			}
 		}
 
 		for (int i = 2; i < 6; i++) {
-			this.createRuneSide(worldIn, pos, Direction.byIndex(i), this.activePortal);
+			this.createRuneSide(worldIn, pos, Direction.from3DDataValue(i), this.activePortal);
 		}
 
 		if (this.activePortal) {
-			this.setBlockState(worldIn, pos.up(3).north(2).east(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.up(3).north(2).west(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.up(3).south(2).east(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.up(3).south(2).west(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.above(3).north(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.above(3).north(2).west(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.above(3).south(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(worldIn, pos.above(3).south(2).west(2), ACIDIAN_LANTERN);
 		}
 
 		return true;
 	}
 
 	private void createRuneSide(IWorld world, BlockPos pos, Direction direction, boolean active) {
-		this.setBlockState(world, pos.offset(direction, 3).offset(direction.rotateY()).up(), MYSTICAL_OBSIDIAN_RUNE.with(HorizontalBlock.HORIZONTAL_FACING, direction.getOpposite()));
-		this.setBlockState(world, pos.offset(direction, 3).up(), MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(active).with(HorizontalBlock.HORIZONTAL_FACING, direction));
-		this.setBlockState(world, pos.offset(direction, 3).offset(direction.rotateYCCW()).up(), MYSTICAL_OBSIDIAN_RUNE.with(HorizontalBlock.HORIZONTAL_FACING, direction));
+		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalBlock.FACING, direction.getOpposite()));
+		this.setBlockState(world, pos.relative(direction, 3).above(), MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(active).setValue(HorizontalBlock.FACING, direction));
+		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getCounterClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalBlock.FACING, direction));
 	}
 
 	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
-		world.setBlockState(pos, state, 2);
+		world.setBlock(pos, state, 2);
 	}
 }

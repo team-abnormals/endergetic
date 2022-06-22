@@ -15,7 +15,7 @@ import java.util.Optional;
 public class CorrockCrownParticleData implements IParticleData {
 	public static final IParticleData.IDeserializer<CorrockCrownParticleData> DESERIALIZER = new IParticleData.IDeserializer<CorrockCrownParticleData>() {
 		@Override
-		public CorrockCrownParticleData deserialize(ParticleType<CorrockCrownParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+		public CorrockCrownParticleData fromCommand(ParticleType<CorrockCrownParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			reader.expect(' ');
 			boolean eetle = reader.readBoolean();
 			reader.expect(' ');
@@ -23,7 +23,7 @@ public class CorrockCrownParticleData implements IParticleData {
 		}
 
 		@Override
-		public CorrockCrownParticleData read(ParticleType<CorrockCrownParticleData> particleTypeIn, PacketBuffer buffer) {
+		public CorrockCrownParticleData fromNetwork(ParticleType<CorrockCrownParticleData> particleTypeIn, PacketBuffer buffer) {
 			return new CorrockCrownParticleData(particleTypeIn, buffer.readBoolean(), buffer.readBoolean() ? Optional.of(buffer.readFloat()) : Optional.empty());
 		}
 	};
@@ -60,7 +60,7 @@ public class CorrockCrownParticleData implements IParticleData {
 	}
 
 	@Override
-	public void write(PacketBuffer buffer) {
+	public void writeToNetwork(PacketBuffer buffer) {
 		buffer.writeBoolean(this.eetle);
 		Optional<Float> scale = this.scale;
 		boolean present = scale.isPresent();
@@ -71,7 +71,7 @@ public class CorrockCrownParticleData implements IParticleData {
 	}
 
 	@Override
-	public String getParameters() {
+	public String writeToString() {
 		return Registry.PARTICLE_TYPE.getKey(this.getType()) + ", eetle:" + this.eetle + ", scale:" + this.scale;
 	}
 

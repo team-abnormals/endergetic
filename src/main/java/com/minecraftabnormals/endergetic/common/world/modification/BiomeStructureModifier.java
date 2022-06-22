@@ -19,7 +19,7 @@ public final class BiomeStructureModifier extends BiomeModifier {
 
 	public static BiomeStructureModifier createStructureAdder(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Supplier<StructureFeature<?, ?>> structureFeatureSupplier) {
 		return new BiomeStructureModifier(shouldModify, context -> {
-			context.event.getGeneration().withStructure(structureFeatureSupplier.get());
+			context.event.getGeneration().addStructureStart(structureFeatureSupplier.get());
 		});
 	}
 

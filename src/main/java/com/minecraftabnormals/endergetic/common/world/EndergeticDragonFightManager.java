@@ -43,7 +43,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public final class EndergeticDragonFightManager extends DragonFightManager {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.IS_ALIVE.and(EntityPredicates.withinRange(0.0D, 128.0D, 0.0D, 192.0D));
+	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(0.0D, 128.0D, 0.0D, 192.0D));
 
 	public EndergeticDragonFightManager(ServerWorld worldIn, long seed, CompoundNBT compound) {
 		super(worldIn, seed, compound);
@@ -51,47 +51,47 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 
 	@Override
 	public void tick() {
-		this.bossInfo.setVisible(!this.dragonKilled);
+		this.dragonEvent.setVisible(!this.dragonKilled);
 		if (this.ticksSinceLastPlayerScan++ >= 20) {
 			this.updatePlayers();
 			this.ticksSinceLastPlayerScan = 0;
 		}
 
-		if (!this.bossInfo.getPlayers().isEmpty()) {
-			this.world.getChunkProvider().registerTicket(TicketType.DRAGON, new ChunkPos(0, 0), 9, Unit.INSTANCE);
-			boolean flag = this.isFightAreaLoaded();
-			if (this.scanForLegacyFight && flag) {
+		if (!this.dragonEvent.getPlayers().isEmpty()) {
+			this.level.getChunkSource().addRegionTicket(TicketType.DRAGON, new ChunkPos(0, 0), 9, Unit.INSTANCE);
+			boolean flag = this.isArenaLoaded();
+			if (this.needsStateScanning && flag) {
 				this.scanForLegacyFight();
-				this.scanForLegacyFight = false;
+				this.needsStateScanning = false;
 			}
 
-			if (this.respawnState != null) {
-				if (this.crystals == null && flag) {
-					this.respawnState = null;
-					this.tryRespawnDragon();
+			if (this.respawnStage != null) {
+				if (this.respawnCrystals == null && flag) {
+					this.respawnStage = null;
+					this.tryRespawn();
 				}
 
-				this.respawnState.process(this.world, this, this.crystals, this.respawnStateTicks++, this.exitPortalLocation);
+				this.respawnStage.tick(this.level, this, this.respawnCrystals, this.respawnTime++, this.portalLocation);
 			}
 
 			if (!this.dragonKilled) {
-				if ((this.dragonUniqueId == null || ++this.ticksSinceDragonSeen >= 1200) && flag) {
+				if ((this.dragonUUID == null || ++this.ticksSinceDragonSeen >= 1200) && flag) {
 					this.findOrCreateDragon();
 					this.ticksSinceDragonSeen = 0;
 				}
 
 				if (++this.ticksSinceCrystalsScanned >= 100 && flag) {
-					this.findAliveCrystals();
+					this.updateCrystalCount();
 					this.ticksSinceCrystalsScanned = 0;
 				}
 			}
 		} else {
-			this.world.getChunkProvider().releaseTicket(TicketType.DRAGON, new ChunkPos(0, 0), 9, Unit.INSTANCE);
+			this.level.getChunkSource().removeRegionTicket(TicketType.DRAGON, new ChunkPos(0, 0), 9, Unit.INSTANCE);
 		}
 
 		if (EEConfig.ValuesHolder.shouldDebugDragonFightManager()) {
 			LOGGER.debug("Found exit portal: " + this.findEndergeticExitPortal(true));
-			LOGGER.debug(this.exitPortalLocation != null ? this.exitPortalLocation.toString() : "null");
+			LOGGER.debug(this.portalLocation != null ? this.portalLocation.toString() : "null");
 		}
 	}
 
@@ -105,22 +105,22 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			LOGGER.info("Found that the dragon has not yet been killed in this world.");
 			this.previouslyKilled = false;
 			if (!this.findEndergeticExitPortal(false)) {
-				this.generatePortal(false);
+				this.spawnExitPortal(false);
 			}
 		}
 
-		List<EnderDragonEntity> list = this.world.getDragons();
+		List<EnderDragonEntity> list = this.level.getDragons();
 		if (list.isEmpty()) {
 			this.dragonKilled = true;
 		} else {
 			EnderDragonEntity enderdragonentity = list.get(0);
-			this.dragonUniqueId = enderdragonentity.getUniqueID();
+			this.dragonUUID = enderdragonentity.getUUID();
 			LOGGER.info("Found that there's a dragon still alive ({})", (Object) enderdragonentity);
 			this.dragonKilled = false;
 			if (!flag) {
 				LOGGER.info("But we didn't have a portal, let's remove it.");
 				enderdragonentity.remove();
-				this.dragonUniqueId = null;
+				this.dragonUUID = null;
 			}
 		}
 
@@ -132,25 +132,25 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	private void updatePlayers() {
 		Set<ServerPlayerEntity> set = Sets.newHashSet();
 
-		for (ServerPlayerEntity serverplayerentity : this.world.getPlayers(VALID_PLAYER)) {
-			this.bossInfo.addPlayer(serverplayerentity);
+		for (ServerPlayerEntity serverplayerentity : this.level.getPlayers(VALID_PLAYER)) {
+			this.dragonEvent.addPlayer(serverplayerentity);
 			set.add(serverplayerentity);
 		}
 
-		Set<ServerPlayerEntity> set1 = Sets.newHashSet(this.bossInfo.getPlayers());
+		Set<ServerPlayerEntity> set1 = Sets.newHashSet(this.dragonEvent.getPlayers());
 		set1.removeAll(set);
 
 		for (ServerPlayerEntity serverplayerentity1 : set1) {
-			this.bossInfo.removePlayer(serverplayerentity1);
+			this.dragonEvent.removePlayer(serverplayerentity1);
 		}
 	}
 
 	private boolean exitPortalExists() {
 		for (int i = -8; i <= 8; ++i) {
 			for (int j = -8; j <= 8; ++j) {
-				Chunk chunk = this.world.getChunk(i, j);
+				Chunk chunk = this.level.getChunk(i, j);
 
-				for (TileEntity tileentity : chunk.getTileEntityMap().values()) {
+				for (TileEntity tileentity : chunk.getBlockEntities().values()) {
 					if (tileentity instanceof EndPortalTileEntity) {
 						return true;
 					}
@@ -161,26 +161,26 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	@Override
-	public void tryRespawnDragon() {
-		if (this.dragonKilled && this.respawnState == null) {
-			BlockPos portalPos = this.exitPortalLocation;
+	public void tryRespawn() {
+		if (this.dragonKilled && this.respawnStage == null) {
+			BlockPos portalPos = this.portalLocation;
 			if (portalPos == null) {
 				LOGGER.debug("Tried to respawn, but need to find the portal first.");
 				if (!this.findEndergeticExitPortal(false)) {
 					LOGGER.debug("Couldn't find a portal, so we made one.");
-					this.generatePortal(true);
+					this.spawnExitPortal(true);
 				} else {
 					LOGGER.debug("Found the exit portal & temporarily using it.");
 				}
 
-				portalPos = this.exitPortalLocation;
+				portalPos = this.portalLocation;
 			}
 
 			List<EnderCrystalEntity> list1 = Lists.newArrayList();
-			BlockPos centerPos = portalPos.up(2);
+			BlockPos centerPos = portalPos.above(2);
 
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
-				List<EnderCrystalEntity> list = this.world.getEntitiesWithinAABB(EnderCrystalEntity.class, new AxisAlignedBB(centerPos.offset(direction, 2)));
+				List<EnderCrystalEntity> list = this.level.getEntitiesOfClass(EnderCrystalEntity.class, new AxisAlignedBB(centerPos.relative(direction, 2)));
 				if (list.isEmpty()) return;
 
 				list1.addAll(list);
@@ -204,17 +204,17 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	public boolean findEndergeticExitPortal(boolean debug) {
 		for (int i = -8; i <= 8; ++i) {
 			for (int j = -8; j <= 8; ++j) {
-				Chunk chunk = this.world.getChunk(i, j);
+				Chunk chunk = this.level.getChunk(i, j);
 
-				for (TileEntity tileentity : chunk.getTileEntityMap().values()) {
+				for (TileEntity tileentity : chunk.getBlockEntities().values()) {
 					if (tileentity instanceof EndPortalTileEntity) {
-						BlockPos tilePos = tileentity.getPos();
+						BlockPos tilePos = tileentity.getBlockPos();
 						for (Direction directions : Direction.Plane.HORIZONTAL) {
-							if (this.world.getBlockState(tilePos.offset(directions)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
-								BlockPos possiblePortalPos = tilePos.offset(directions).down();
+							if (this.level.getBlockState(tilePos.relative(directions)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
+								BlockPos possiblePortalPos = tilePos.relative(directions).below();
 								if (this.isPortalAtPos(possiblePortalPos)) {
 									if (!debug) {
-										this.exitPortalLocation = possiblePortalPos;
+										this.portalLocation = possiblePortalPos;
 									}
 									return true;
 								}
@@ -225,14 +225,14 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			}
 		}
 
-		int height = this.world.getHeight(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.up()).getY();
+		int height = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.above()).getY();
 
 		for (int y = height; y >= 0; y--) {
 			BlockPos pos = new BlockPos(EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getX(), y, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getZ());
 
 			if (this.isPortalAtPos(pos)) {
 				if (!debug) {
-					this.exitPortalLocation = pos;
+					this.portalLocation = pos;
 				}
 				return true;
 			}
@@ -241,17 +241,17 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	private boolean isPortalAtPos(BlockPos pos) {
-		BlockPos up = pos.up();
-		ServerWorld world = this.world;
+		BlockPos up = pos.above();
+		ServerWorld world = this.level;
 		boolean[] flag = new boolean[4];
 
 		for (Direction directions : Direction.Plane.HORIZONTAL) {
-			BlockPos side = up.offset(directions, 3);
+			BlockPos side = up.relative(directions, 3);
 			if (world.getBlockState(side).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get() || world.getBlockState(side).getBlock() == EEBlocks.ACTIVATED_MYSTICAL_OBSIDIAN_ACTIVATION_RUNE.get()) {
-				if (world.getBlockState(side.offset(directions.rotateY())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get() && world.getBlockState(side.offset(directions.rotateYCCW())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get()) {
+				if (world.getBlockState(side.relative(directions.getClockWise())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get() && world.getBlockState(side.relative(directions.getCounterClockWise())).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN_RUNE.get()) {
 					if (world.getBlockState(up).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
 						if (world.getBlockState(up.north(2).east(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.north(2).west(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.south(2).east(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get() && world.getBlockState(up.south(2).west(2)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
-							flag[directions.getIndex() - 2] = true;
+							flag[directions.get3DDataValue() - 2] = true;
 						}
 					}
 				}
@@ -261,14 +261,14 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	@Override
-	public void processDragonDeath(EnderDragonEntity dragon) {
-		if (dragon.getUniqueID().equals(this.dragonUniqueId)) {
-			this.bossInfo.setPercent(0.0F);
-			this.bossInfo.setVisible(false);
-			this.generatePortal(true);
+	public void setDragonKilled(EnderDragonEntity dragon) {
+		if (dragon.getUUID().equals(this.dragonUUID)) {
+			this.dragonEvent.setPercent(0.0F);
+			this.dragonEvent.setVisible(false);
+			this.spawnExitPortal(true);
 			this.spawnNewGateway();
 			if (!this.previouslyKilled) {
-				this.world.setBlockState(this.world.getHeight(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION), Blocks.DRAGON_EGG.getDefaultState());
+				this.level.setBlockAndUpdate(this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION), Blocks.DRAGON_EGG.defaultBlockState());
 			}
 
 			this.previouslyKilled = true;
@@ -277,14 +277,14 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	@Override
-	public void generatePortal(boolean active) {
+	public void spawnExitPortal(boolean active) {
 		EndergeticEndPodiumFeature endpodium = new EndergeticEndPodiumFeature(active);
-		if (this.exitPortalLocation == null) {
-			for (this.exitPortalLocation = this.world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).down(); this.world.getBlockState(this.exitPortalLocation).getBlock() == Blocks.BEDROCK && this.exitPortalLocation.getY() > this.world.getSeaLevel(); this.exitPortalLocation = this.exitPortalLocation.down()) {
+		if (this.portalLocation == null) {
+			for (this.portalLocation = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).below(); this.level.getBlockState(this.portalLocation).getBlock() == Blocks.BEDROCK && this.portalLocation.getY() > this.level.getSeaLevel(); this.portalLocation = this.portalLocation.below()) {
 				;
 			}
 		}
-		endpodium.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG).generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), this.exitPortalLocation);
+		endpodium.configured(IFeatureConfig.NONE).place(this.level, this.level.getChunkSource().getGenerator(), new Random(), this.portalLocation);
 	}
 
 	@Override
@@ -293,8 +293,8 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 		if (!gateways.isEmpty()) {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
-			this.world.playEvent(3000, pos, 0);
-			EEFeatures.Configured.END_GATEWAY_DELAYED.generate(this.world, this.world.getChunkProvider().getChunkGenerator(), new Random(), pos);
+			this.level.levelEvent(3000, pos, 0);
+			EEFeatures.Configured.END_GATEWAY_DELAYED.place(this.level, this.level.getChunkSource().getGenerator(), new Random(), pos);
 		}
 	}
 }

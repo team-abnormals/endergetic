@@ -23,6 +23,8 @@ import net.minecraft.world.IWorldReader;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
@@ -30,60 +32,60 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	public static final BooleanProperty PETRIFIED = BooleanProperty.create("petrified");
 	private static final VoxelShape[][] SHAPES = new VoxelShape[][] {
 			new VoxelShape[] {
-					makeCuboidShape(1.0F, 11.0F, 1.0F, 15.0F, 16.0F, 15.0F),
-					makeCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 5.0F, 15.0F),
-					makeCuboidShape(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 11.0F),
-					makeCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 5.0F),
-					makeCuboidShape(16.0F, 1.0F, 1.0F, 11.0F, 15.0F, 15.0F),
-					makeCuboidShape(0.0F, 1.0F, 1.0F, 5.0F, 15.0F, 15.0F),
+					box(1.0F, 11.0F, 1.0F, 15.0F, 16.0F, 15.0F),
+					box(1.0F, 0.0F, 1.0F, 15.0F, 5.0F, 15.0F),
+					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 11.0F),
+					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 5.0F),
+					box(16.0F, 1.0F, 1.0F, 11.0F, 15.0F, 15.0F),
+					box(0.0F, 1.0F, 1.0F, 5.0F, 15.0F, 15.0F),
 			},
 			new VoxelShape[] {
-					makeCuboidShape(1.0F, 8.0F, 1.0F, 15.0F, 16.0F, 15.0F),
-					makeCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 8.0F, 15.0F),
-					makeCuboidShape(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 8.0F),
-					makeCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 8.0F),
-					makeCuboidShape(16.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
-					makeCuboidShape(0.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
+					box(1.0F, 8.0F, 1.0F, 15.0F, 16.0F, 15.0F),
+					box(1.0F, 0.0F, 1.0F, 15.0F, 8.0F, 15.0F),
+					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 8.0F),
+					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 8.0F),
+					box(16.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
+					box(0.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
 			},
 			new VoxelShape[] {
-					makeCuboidShape(1.0F, 4.0F, 1.0F, 15.0F, 16.0F, 15.0F),
-					makeCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 12.0F, 15.0F),
-					makeCuboidShape(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 4.0F),
-					makeCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 12.0F),
-					makeCuboidShape(16.0F, 1.0F, 1.0F, 4.0F, 15.0F, 15.0F),
-					makeCuboidShape(0.0F, 1.0F, 1.0F, 12.0F, 15.0F, 15.0F),
+					box(1.0F, 4.0F, 1.0F, 15.0F, 16.0F, 15.0F),
+					box(1.0F, 0.0F, 1.0F, 15.0F, 12.0F, 15.0F),
+					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 4.0F),
+					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 12.0F),
+					box(16.0F, 1.0F, 1.0F, 4.0F, 15.0F, 15.0F),
+					box(0.0F, 1.0F, 1.0F, 12.0F, 15.0F, 15.0F),
 			}
 	};
 
 	public EetleEggBlock(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(SIZE, 0).with(FACING, Direction.UP).with(WATERLOGGED, false).with(PETRIFIED, false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(SIZE, 0).setValue(FACING, Direction.UP).setValue(WATERLOGGED, false).setValue(PETRIFIED, false));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(SIZE, FACING, WATERLOGGED, PETRIFIED);
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return SHAPES[state.get(SIZE)][state.get(FACING).getIndex()];
+		return SHAPES[state.getValue(SIZE)][state.getValue(FACING).get3DDataValue()];
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader world) {
+	public TileEntity newBlockEntity(IBlockReader world) {
 		return new EetleEggTileEntity();
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		if (!this.isValidPosition(state, world, currentPos)) {
-			return Blocks.AIR.getDefaultState();
-		} else if (state.get(WATERLOGGED)) {
-			world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-			if (!state.get(PETRIFIED)) {
-				return state.with(PETRIFIED, true);
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+		if (!this.canSurvive(state, world, currentPos)) {
+			return Blocks.AIR.defaultBlockState();
+		} else if (state.getValue(WATERLOGGED)) {
+			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			if (!state.getValue(PETRIFIED)) {
+				return state.setValue(PETRIFIED, true);
 			}
 		}
 		return state;
@@ -92,29 +94,29 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		BlockPos pos = context.getPos();
-		BlockState state = context.getWorld().getBlockState(pos);
+		BlockPos pos = context.getClickedPos();
+		BlockState state = context.getLevel().getBlockState(pos);
 		if (state.getBlock() == this) {
-			return state.with(SIZE, Math.min(2, state.get(SIZE) + 1));
+			return state.setValue(SIZE, Math.min(2, state.getValue(SIZE) + 1));
 		}
 		Direction[] nearestDirections = context.getNearestLookingDirections();
-		IWorldReader world = context.getWorld();
+		IWorldReader world = context.getLevel();
 		BlockState wallState = this.getWallState(nearestDirections, world, pos);
 		for (Direction direction : nearestDirections) {
-			BlockState directionState = direction == Direction.UP || direction == Direction.DOWN ? this.getDefaultState().with(SIZE, 0).with(FACING, direction.getOpposite()) : wallState;
-			if (directionState != null && directionState.isValidPosition(world, pos)) {
+			BlockState directionState = direction == Direction.UP || direction == Direction.DOWN ? this.defaultBlockState().setValue(SIZE, 0).setValue(FACING, direction.getOpposite()) : wallState;
+			if (directionState != null && directionState.canSurvive(world, pos)) {
 				FluidState fluidState = world.getFluidState(pos);
-				boolean waterlogged = fluidState.isTagged(FluidTags.WATER) && fluidState.getLevel() == 8;
-				return directionState.with(WATERLOGGED, waterlogged).with(PETRIFIED, waterlogged);
+				boolean waterlogged = fluidState.is(FluidTags.WATER) && fluidState.getAmount() == 8;
+				return directionState.setValue(WATERLOGGED, waterlogged).setValue(PETRIFIED, waterlogged);
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		Direction facing = state.get(FACING);
-		BlockPos blockpos = pos.offset(facing.getOpposite());
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+		Direction facing = state.getValue(FACING);
+		BlockPos blockpos = pos.relative(facing.getOpposite());
 		return isOnValidState(worldIn, worldIn.getBlockState(blockpos), blockpos, facing);
 	}
 
@@ -122,8 +124,8 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	private BlockState getWallState(Direction[] nearestDirections, IWorldReader world, BlockPos pos) {
 		for (Direction direction : nearestDirections) {
 			if (direction.getAxis().isHorizontal()) {
-				BlockState state = this.getDefaultState().with(FACING, direction.getOpposite());
-				if (state.isValidPosition(world, pos)) {
+				BlockState state = this.defaultBlockState().setValue(FACING, direction.getOpposite());
+				if (state.canSurvive(world, pos)) {
 					return state;
 				}
 			}
@@ -132,21 +134,21 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
-		return useContext.getItem().getItem() == this.asItem() && state.get(SIZE) < 2;
+	public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
+		return useContext.getItemInHand().getItem() == this.asItem() && state.getValue(SIZE) < 2;
 	}
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
 	}
 
 	@Override
-	public boolean receiveFluid(IWorld world, BlockPos pos, BlockState state, FluidState fluidStateIn) {
-		if (!state.get(BlockStateProperties.WATERLOGGED) && fluidStateIn.getFluid() == Fluids.WATER) {
-			if (!world.isRemote()) {
-				world.setBlockState(pos, state.with(BlockStateProperties.WATERLOGGED, true).with(PETRIFIED, true), 3);
-				world.getPendingFluidTicks().scheduleTick(pos, fluidStateIn.getFluid(), fluidStateIn.getFluid().getTickRate(world));
+	public boolean placeLiquid(IWorld world, BlockPos pos, BlockState state, FluidState fluidStateIn) {
+		if (!state.getValue(BlockStateProperties.WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
+			if (!world.isClientSide()) {
+				world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true).setValue(PETRIFIED, true), 3);
+				world.getLiquidTicks().scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(world));
 			}
 			return true;
 		}
@@ -154,12 +156,12 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	private static boolean isOnValidState(IWorldReader world, BlockState state, BlockPos pos, Direction direction) {
-		return !state.getCollisionShape(world, pos).project(direction).isEmpty() || state.isSolidSide(world, pos, direction);
+		return !state.getCollisionShape(world, pos).getFaceShape(direction).isEmpty() || state.isFaceSturdy(world, pos, direction);
 	}
 
 	public static void shuffleDirections(Direction[] directions, Random random) {

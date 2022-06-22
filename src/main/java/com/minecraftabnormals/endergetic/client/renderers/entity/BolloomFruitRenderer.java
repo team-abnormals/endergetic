@@ -25,21 +25,21 @@ public class BolloomFruitRenderer extends EntityRenderer<BolloomFruitEntity> {
 
 	@Override
 	public void render(BolloomFruitEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(0.0F, 1.5F, 0.0F);
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(this.getEntityTexture(entity)));
-		this.model.setRotationAngles(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-		this.model.render(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
+		this.model.setupAnim(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+		this.model.renderToBuffer(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		this.model.renderVine(matrixStack, bufferIn.getBuffer(EERenderTypes.BOLLOOM_VINE), packedLightIn);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(BolloomFruitEntity entity) {
+	public ResourceLocation getTextureLocation(BolloomFruitEntity entity) {
 		return TEXTURE;
 	}
 }

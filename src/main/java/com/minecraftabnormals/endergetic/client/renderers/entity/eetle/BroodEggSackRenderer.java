@@ -20,8 +20,8 @@ public class BroodEggSackRenderer extends EntityRenderer<BroodEggSackEntity> {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public ResourceLocation getEntityTexture(BroodEggSackEntity entity) {
-		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+	public ResourceLocation getTextureLocation(BroodEggSackEntity entity) {
+		return AtlasTexture.LOCATION_BLOCKS;
 	}
 
 }

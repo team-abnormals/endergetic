@@ -32,9 +32,9 @@ public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<Frisbloo
 
 	@Override
 	public void render(FrisbloomStemTileEntity te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-		Random rnd = new Random(((this.getLongForPos(te.getPos()) / 12)) ^ 5);
+		Random rnd = new Random(((this.getLongForPos(te.getBlockPos()) / 12)) ^ 5);
 		int rndRot = rnd.nextInt(12) - 6;
-		BlockState state = te.hasWorld() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.getDefaultState();
+		BlockState state = te.hasLevel() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.defaultBlockState();
 
 //		GlStateManager.pushMatrix();
 //		
@@ -93,6 +93,6 @@ public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<Frisbloo
 	}
 
 	public long getLongForPos(BlockPos pos) {
-		return (pos.getX() + pos.getY() + pos.getZ() * pos.toLong());
+		return (pos.getX() + pos.getY() + pos.getZ() * pos.asLong());
 	}
 }

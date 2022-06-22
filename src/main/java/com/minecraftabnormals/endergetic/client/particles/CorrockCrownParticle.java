@@ -16,44 +16,44 @@ public class CorrockCrownParticle extends SpriteTexturedParticle {
 
 	public CorrockCrownParticle(IAnimatedSprite animatedSprite, ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, boolean eetle, Optional<Float> scale) {
 		super(world, x, y, z);
-		scale.ifPresent(value -> this.particleScale = value + value * 0.1F * (this.rand.nextFloat() * 0.5F + 0.5F));
+		scale.ifPresent(value -> this.quadSize = value + value * 0.1F * (this.random.nextFloat() * 0.5F + 0.5F));
 		float size = (float) ((eetle ? 0.5D : 0.3D) + Math.random() * 0.4D);
 		this.setSize(size, size);
-		this.motionX = motionX + motionX * ((float)Math.random() - 0.5F) * 0.2F;
-		this.motionY = motionY + (eetle ? 0.05F : 0.0F);
-		this.motionZ = motionZ + motionZ * ((float)Math.random() - 0.5F) * 0.2F;
+		this.xd = motionX + motionX * ((float)Math.random() - 0.5F) * 0.2F;
+		this.yd = motionY + (eetle ? 0.05F : 0.0F);
+		this.zd = motionZ + motionZ * ((float)Math.random() - 0.5F) * 0.2F;
 		this.animatedSprite = animatedSprite;
-		this.particleGravity = eetle ? 0.8F : (float) Math.random() * 0.08F;
-		this.particleAngle = (float) Math.random() * ((float)Math.PI * 2.0F);
-		this.maxAge = (int) (Math.random() * 20 + (eetle ? 20 : 40));
+		this.gravity = eetle ? 0.8F : (float) Math.random() * 0.08F;
+		this.roll = (float) Math.random() * ((float)Math.PI * 2.0F);
+		this.lifetime = (int) (Math.random() * 20 + (eetle ? 20 : 40));
 		this.rotSpeed = ((float)Math.random() - 0.5F) * (eetle ? 0.1F : 0.075F);
-		this.selectSpriteWithAge(animatedSprite);
+		this.setSpriteFromAge(animatedSprite);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		this.prevParticleAngle = this.particleAngle;
-		this.particleAngle += (float)Math.PI * this.rotSpeed * 2.0F;
+		this.oRoll = this.roll;
+		this.roll += (float)Math.PI * this.rotSpeed * 2.0F;
 
 		if (this.onGround) {
-			this.prevParticleAngle = this.particleAngle = 0.0F;
+			this.oRoll = this.roll = 0.0F;
 		}
 
-		float particleAngle = this.particleAngle;
-		this.motionX += Math.cos(particleAngle) * 0.00175D;
-		this.motionY *= 1.025D;
-		this.motionZ += Math.sin(particleAngle) * 0.00175D;
+		float particleAngle = this.roll;
+		this.xd += Math.cos(particleAngle) * 0.00175D;
+		this.yd *= 1.025D;
+		this.zd += Math.sin(particleAngle) * 0.00175D;
 
 		if (this.isAlive()) {
-			this.selectSpriteWithAge(this.animatedSprite);
+			this.setSpriteFromAge(this.animatedSprite);
 		}
 	}
 
 	@Override
-	public int getBrightnessForRender(float partialTick) {
-		float ageFactor = MathHelper.clamp(this.maxAge / (((this.age + (this.maxAge * 0.5F)) + partialTick)), 0.0F, 1.0F);
-		int brightnessForRender = super.getBrightnessForRender(partialTick);
+	public int getLightColor(float partialTick) {
+		float ageFactor = MathHelper.clamp(this.lifetime / (((this.age + (this.lifetime * 0.5F)) + partialTick)), 0.0F, 1.0F);
+		int brightnessForRender = super.getLightColor(partialTick);
 		int j = brightnessForRender & 255;
 		int k = brightnessForRender >> 16 & 255;
 		j += (int) (ageFactor * 240.0F);
@@ -76,7 +76,7 @@ public class CorrockCrownParticle extends SpriteTexturedParticle {
 		}
 
 		@Override
-		public Particle makeParticle(CorrockCrownParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(CorrockCrownParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new CorrockCrownParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, data.isEetle(), data.getScale());
 		}
 	}

@@ -47,7 +47,7 @@ import java.util.Random;
 import java.util.UUID;
 
 public abstract class AbstractEetleEntity extends MonsterEntity implements IEndimatedEntity {
-	private static final DataParameter<Boolean> CHILD = EntityDataManager.createKey(AbstractEetleEntity.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> CHILD = EntityDataManager.defineId(AbstractEetleEntity.class, DataSerializers.BOOLEAN);
 	private static final EntitySize LEETLE_SIZE = EntitySize.fixed(0.6F, 0.4375F);
 	private static final AttributeModifier LEETLE_HEALTH = new AttributeModifier(UUID.fromString("8a1ea466-4b2d-11eb-ae93-0242ac130002"), "Leetle health decrease", -0.8F, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final Direction[] EGG_DIRECTIONS = Direction.values();
@@ -63,14 +63,14 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
 		super(type, world);
-		this.moveController = new GroundEetleMoveController(this);
-		this.stepHeight = 0.5F;
+		this.moveControl = new GroundEetleMoveController(this);
+		this.maxUpStep = 0.5F;
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(CHILD, false);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(CHILD, false);
 	}
 
 	@Override
@@ -81,11 +81,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
+	public void onSyncedDataUpdated(DataParameter<?> key) {
 		if (CHILD.equals(key)) {
-			this.recalculateSize();
+			this.refreshDimensions();
 		}
-		super.notifyDataManagerChange(key);
+		super.onSyncedDataUpdated(key);
 	}
 
 	@Override
@@ -93,24 +93,24 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		super.tick();
 		this.endimateTick();
 
-		if (!this.world.isRemote && this.isAlive()) {
+		if (!this.level.isClientSide && this.isAlive()) {
 			int age = this.growingAge;
 			if (age < 0) {
 				this.updateAge(++age);
 			} else if (age > 0) {
 				this.updateAge(--age);
 			}
-			if (!this.isChild()) {
+			if (!this.isBaby()) {
 				if (this.idleDelay > 0) this.idleDelay--;
 				if (this.despawnTimer > 0) {
 					int newTime = --this.despawnTimer;
 					if (newTime == 0) {
-						this.world.setEntityState(this, (byte) 20);
+						this.level.broadcastEntityEvent(this, (byte) 20);
 						this.remove();
 					} else if (newTime <= 100 && newTime % 10 == 0) {
-						LivingEntity attackTarget = this.getAttackTarget();
-						if (attackTarget != null && attackTarget.isAlive() && this.getDistanceSq(attackTarget) <= 256.0F && this.canEntityBeSeen(attackTarget)) {
-							this.despawnTimer += 105 + this.rand.nextInt(11);
+						LivingEntity attackTarget = this.getTarget();
+						if (attackTarget != null && attackTarget.isAlive() && this.distanceToSqr(attackTarget) <= 256.0F && this.canSee(attackTarget)) {
+							this.despawnTimer += 105 + this.random.nextInt(11);
 						}
 					}
 				}
@@ -119,42 +119,42 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putInt("Age", this.growingAge);
 		compound.putInt("DespawnTimer", this.despawnTimer);
 		compound.putBoolean("FromEgg", this.fromEgg);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 		this.updateAge(compound.getInt("Age"));
 		this.despawnTimer = Math.max(0, compound.getInt("DespawnTimer"));
 		this.fromEgg = compound.getBoolean("FromEgg");
 	}
 
 	@Override
-	public boolean isChild() {
-		return this.dataManager.get(CHILD);
+	public boolean isBaby() {
+		return this.entityData.get(CHILD);
 	}
 
 	@Override
-	public void setChild(boolean child) {
-		boolean wasChild = this.isChild();
-		this.dataManager.set(CHILD, child);
+	public void setBaby(boolean child) {
+		boolean wasChild = this.isBaby();
+		this.entityData.set(CHILD, child);
 		this.updateGoals(this.goalSelector, this.targetSelector, child);
 		if (child) {
-			this.experienceValue = 2;
-			if (this.world != null && !this.world.isRemote) {
+			this.xpReward = 2;
+			if (this.level != null && !this.level.isClientSide) {
 				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
-					maxHealth.applyNonPersistentModifier(LEETLE_HEALTH);
+					maxHealth.addTransientModifier(LEETLE_HEALTH);
 					this.setHealth(Math.max(this.getHealth(), this.getMaxHealth()));
 				}
 			}
 		} else {
-			this.experienceValue = 6;
+			this.xpReward = 6;
 			if (wasChild) {
 				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
@@ -170,13 +170,13 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		this.growingAge = growingAge;
 		if (prevAge < 0 && growingAge >= 0 || prevAge >= 0 && growingAge < 0) {
 			boolean willBeAdult = growingAge >= 0;
-			if (willBeAdult && this.isChild()) {
+			if (willBeAdult && this.isBaby()) {
 				NetworkUtil.setPlayingAnimationMessage(this, GROW_UP);
 				return;
 			} else if (this.isEndimationPlaying(GROW_UP) && !willBeAdult) {
 				NetworkUtil.setPlayingAnimationMessage(this, BLANK_ANIMATION);
 			}
-			this.setChild(!willBeAdult);
+			this.setBaby(!willBeAdult);
 		}
 	}
 
@@ -190,27 +190,27 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
+	public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
 		//Patches of baby eetles will spawn 40% of the time
-		if (reason == SpawnReason.NATURAL && this.rand.nextFloat() < 0.4F) {
-			this.updateAge(-(20000 + this.rand.nextInt(4001)));
+		if (reason == SpawnReason.NATURAL && this.random.nextFloat() < 0.4F) {
+			this.updateAge(-(20000 + this.random.nextInt(4001)));
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
-			int startX = (int) this.getPosX();
-			int startZ = (int) this.getPosZ();
+			int startX = (int) this.getX();
+			int startZ = (int) this.getZ();
 			for (int x = -2; x <= 2; x++) {
 				for (int z = -2; z <= 2; z++) {
-					if (this.rand.nextFloat() < 0.1F) {
+					if (this.random.nextFloat() < 0.1F) {
 						int currentX = startX + x;
 						int currentZ = startZ + z;
-						mutable.setPos(currentX, world.getHeight(Heightmap.Type.MOTION_BLOCKING, currentX, currentZ), currentZ);
-						if (world.isAirBlock(mutable) && Block.hasSolidSideOnTop(world, mutable.down())) {
+						mutable.set(currentX, world.getHeight(Heightmap.Type.MOTION_BLOCKING, currentX, currentZ), currentZ);
+						if (world.isEmptyBlock(mutable) && Block.canSupportRigidBlock(world, mutable.below())) {
 							EntityType<?> type = this.getType();
-							Entity entity = type.create(this.world);
+							Entity entity = type.create(this.level);
 							if (entity instanceof AbstractEetleEntity) {
 								AbstractEetleEntity eetle = (AbstractEetleEntity) entity;
-								eetle.updateAge(-(20000 + this.rand.nextInt(4001)));
-								if (this.world.addEntity(eetle)) {
-									entity.setPositionAndRotation(currentX + 0.5F, mutable.getY(), currentZ + 0.5F, this.rand.nextFloat() * 360.0F, 0.0F);
+								eetle.updateAge(-(20000 + this.random.nextInt(4001)));
+								if (this.level.addFreshEntity(eetle)) {
+									entity.absMoveTo(currentX + 0.5F, mutable.getY(), currentZ + 0.5F, this.random.nextFloat() * 360.0F, 0.0F);
 								}
 							}
 						}
@@ -218,40 +218,40 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 				}
 			}
 		}
-		return super.onInitialSpawn(world, difficultyIn, reason, spawnData, dataTag);
+		return super.finalizeSpawn(world, difficultyIn, reason, spawnData, dataTag);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onDeath(DamageSource cause) {
-		World world = this.world;
-		if (!this.isChild() && this.rand.nextFloat() < calculateEggChance(world, this.getBoundingBox().grow(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.removed && !this.dead) {
-			if (!world.isRemote) {
-				BlockPos pos = this.getPosition();
+	public void die(DamageSource cause) {
+		World world = this.level;
+		if (!this.isBaby() && this.random.nextFloat() < calculateEggChance(world, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.removed && !this.dead) {
+			if (!world.isClientSide) {
+				BlockPos pos = this.blockPosition();
 				if (world.getFluidState(pos).isEmpty() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-					Random random = this.rand;
+					Random random = this.random;
 					EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
-					BlockState defaultState = EEBlocks.EETLE_EGG.get().getDefaultState();
+					BlockState defaultState = EEBlocks.EETLE_EGG.get().defaultBlockState();
 					for (Direction direction : EGG_DIRECTIONS) {
-						BlockState state = defaultState.with(EetleEggBlock.FACING, direction);
-						if (state.isValidPosition(world, pos)) {
-							world.setBlockState(pos, state.with(EetleEggBlock.SIZE, random.nextInt(2)));
+						BlockState state = defaultState.setValue(EetleEggBlock.FACING, direction);
+						if (state.canSurvive(world, pos)) {
+							world.setBlockAndUpdate(pos, state.setValue(EetleEggBlock.SIZE, random.nextInt(2)));
 							world.playSound(null, pos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
-							TileEntity tileEntity = world.getTileEntity(pos);
+							TileEntity tileEntity = world.getBlockEntity(pos);
 							if (tileEntity instanceof EetleEggTileEntity) {
 								EetleEggTileEntity eetleEggTileEntity = (EetleEggTileEntity) tileEntity;
 								eetleEggTileEntity.updateHatchDelay(world, random.nextInt(11) + 5);
 								eetleEggTileEntity.bypassSpawningGameRule();
 							}
 							if (world instanceof ServerWorld) {
-								((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
+								((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
 							}
 						}
 					}
 				}
 			}
 		}
-		super.onDeath(cause);
+		super.die(cause);
 	}
 
 	protected void updateGoals(GoalSelector goalSelector, GoalSelector targetSelector, boolean child) {
@@ -265,11 +265,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	public void resetIdleFlapDelay() {
-		this.idleDelay = this.rand.nextInt(41) + 30;
+		this.idleDelay = this.random.nextInt(41) + 30;
 	}
 
 	public void applyDespawnTimer() {
-		this.despawnTimer = this.rand.nextInt(101) + 600;
+		this.despawnTimer = this.random.nextInt(101) + 600;
 	}
 
 	@Override
@@ -296,43 +296,43 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	public void onEndimationEnd(Endimation endimation) {
-		World world = this.world;
+		World world = this.level;
 		if (endimation == GROW_UP && world instanceof ServerWorld) {
-			this.setChild(false);
-			this.playSound(EESounds.LEETLE_TRANSFORM.get(), this.getSoundVolume(), this.getSoundPitch());
-			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getPosX(), this.getPosY() + this.getHeight(), this.getPosZ(), 5, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.1D);
+			this.setBaby(false);
+			this.playSound(EESounds.LEETLE_TRANSFORM.get(), this.getSoundVolume(), this.getVoicePitch());
+			((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
 		}
 	}
 
 	@Override
-	public EntitySize getSize(Pose poseIn) {
-		return this.isChild() ? LEETLE_SIZE : super.getSize(poseIn);
+	public EntitySize getDimensions(Pose poseIn) {
+		return this.isBaby() ? LEETLE_SIZE : super.getDimensions(poseIn);
 	}
 
 	@Override
-	public int getTalkInterval() {
+	public int getAmbientSoundInterval() {
 		return 160;
 	}
 
 	@Nullable
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return this.isChild() ? EESounds.LEETLE_AMBIENT.get() : super.getAmbientSound();
+		return this.isBaby() ? EESounds.LEETLE_AMBIENT.get() : super.getAmbientSound();
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return this.isChild() ? EESounds.LEETLE_HURT.get() : super.getHurtSound(damageSourceIn);
+		return this.isBaby() ? EESounds.LEETLE_HURT.get() : super.getHurtSound(damageSourceIn);
 	}
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return this.isChild() ? EESounds.LEETLE_DEATH.get() : super.getDeathSound();
+		return this.isBaby() ? EESounds.LEETLE_DEATH.get() : super.getDeathSound();
 	}
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState blockIn) {
-		if (this.isChild()) {
+		if (this.isBaby()) {
 			this.playSound(EESounds.LEETLE_STEP.get(), 0.15F, 1.0F);
 		} else {
 			super.playStepSound(pos, blockIn);
@@ -345,23 +345,23 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public boolean isWaterSensitive() {
+	public boolean isSensitiveToWater() {
 		return true;
 	}
 
 	@Override
-	public CreatureAttribute getCreatureAttribute() {
+	public CreatureAttribute getMobType() {
 		return CreatureAttribute.ARTHROPOD;
 	}
 
 	@Override
-	public int getMaxSpawnedInChunk() {
+	public int getMaxSpawnClusterSize() {
 		return 3;
 	}
 
 	@Override
-	protected boolean func_230282_cS_() {
-		return !this.isChild();
+	protected boolean shouldDropLoot() {
+		return !this.isBaby();
 	}
 
 	@Override
@@ -370,13 +370,13 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	private static float calculateEggChance(World world, AxisAlignedBB boundingBox) {
-		return 0.6F - 0.075F * world.getEntitiesWithinAABB(AbstractEetleEntity.class, boundingBox, eetle -> {
-			return eetle.isAlive() && !eetle.isChild();
+		return 0.6F - 0.075F * world.getEntitiesOfClass(AbstractEetleEntity.class, boundingBox, eetle -> {
+			return eetle.isAlive() && !eetle.isBaby();
 		}).size();
 	}
 
@@ -388,36 +388,36 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 		@Override
 		public void tick() {
-			if (this.action == MovementController.Action.MOVE_TO) {
+			if (this.operation == MovementController.Action.MOVE_TO) {
 				MobEntity mob = this.mob;
-				this.action = MovementController.Action.WAIT;
-				double d0 = this.posX - mob.getPosX();
-				double d1 = this.posZ - mob.getPosZ();
-				double d2 = this.posY - mob.getPosY();
+				this.operation = MovementController.Action.WAIT;
+				double d0 = this.wantedX - mob.getX();
+				double d1 = this.wantedZ - mob.getZ();
+				double d2 = this.wantedY - mob.getY();
 				double d3 = d0 * d0 + d2 * d2 + d1 * d1;
 				if (d3 < 2.5000003E-7D) {
-					mob.setMoveForward(0.0F);
+					mob.setZza(0.0F);
 					return;
 				}
 
 				float f9 = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-				mob.rotationYaw = this.limitAngle(mob.rotationYaw, f9, 90.0F);
-				float moveSpeed = (float)(this.speed * mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+				mob.yRot = this.rotlerp(mob.yRot, f9, 90.0F);
+				float moveSpeed = (float)(this.speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
 				if (mob instanceof AbstractEetleEntity) {
 					AbstractEetleEntity abstractEetleEntity = (AbstractEetleEntity) mob;
-					if (abstractEetleEntity.isChild() && abstractEetleEntity.fromEgg) {
+					if (abstractEetleEntity.isBaby() && abstractEetleEntity.fromEgg) {
 						int growingAge = Math.abs(abstractEetleEntity.growingAge);
 						moveSpeed *= Math.min(2.0F, 7.0F * growingAge / (growingAge + 300.0F));
 					}
 				}
-				mob.setAIMoveSpeed(moveSpeed);
-				BlockPos blockpos = mob.getPosition();
-				BlockState blockstate = mob.world.getBlockState(blockpos);
+				mob.setSpeed(moveSpeed);
+				BlockPos blockpos = mob.blockPosition();
+				BlockState blockstate = mob.level.getBlockState(blockpos);
 				Block block = blockstate.getBlock();
-				VoxelShape voxelshape = blockstate.getCollisionShape(mob.world, blockpos);
-				if (d2 > mob.stepHeight && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, mob.getWidth()) || !voxelshape.isEmpty() && mob.getPosY() < voxelshape.getEnd(Direction.Axis.Y) + (double)blockpos.getY() && !block.isIn(BlockTags.DOORS) && !block.isIn(BlockTags.FENCES)) {
-					mob.getJumpController().setJumping();
-					this.action = MovementController.Action.JUMPING;
+				VoxelShape voxelshape = blockstate.getCollisionShape(mob.level, blockpos);
+				if (d2 > mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + (double)blockpos.getY() && !block.is(BlockTags.DOORS) && !block.is(BlockTags.FENCES)) {
+					mob.getJumpControl().jump();
+					this.operation = MovementController.Action.JUMPING;
 				}
 				return;
 			}

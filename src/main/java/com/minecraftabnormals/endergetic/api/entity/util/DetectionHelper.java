@@ -35,7 +35,7 @@ public class DetectionHelper {
 		E entity = null;
 
 		for (E entities : list) {
-			double d1 = entities.getDistanceSq(posX, posY, posZ);
+			double d1 = entities.distanceToSqr(posX, posY, posZ);
 			if (d0 == -1.0D || d1 < d0) {
 				d0 = d1;
 				entity = entities;

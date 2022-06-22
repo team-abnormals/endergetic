@@ -33,65 +33,65 @@ public class PurpoidRenderer extends MobRenderer<PurpoidEntity, PurpoidModel> {
 
 	@Override
 	public void render(PurpoidEntity purpoid, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		this.shadowSize = 0.6F * purpoid.getSize().getScale();
+		this.shadowRadius = 0.6F * purpoid.getSize().getScale();
 		super.render(purpoid, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	protected void preRenderCallback(PurpoidEntity purpoid, MatrixStack matrixStack, float partialTickTime) {
+	protected void scale(PurpoidEntity purpoid, MatrixStack matrixStack, float partialTickTime) {
 		float scale = purpoid.getSize().getScale();
 		matrixStack.scale(scale, scale, scale);
 	}
 
 	@Override
-	protected void applyRotations(PurpoidEntity purpoid, MatrixStack matrixStack, float ageInTicks, float rotationYaw, float partialTicks) {
-		Entity ridingEntity = purpoid.getRidingEntity();
+	protected void setupRotations(PurpoidEntity purpoid, MatrixStack matrixStack, float ageInTicks, float rotationYaw, float partialTicks) {
+		Entity ridingEntity = purpoid.getVehicle();
 		if (ridingEntity != null) {
 			if (ridingEntity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) ridingEntity;
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - MathHelper.interpolateAngle(partialTicks, livingEntity.prevRotationYawHead, livingEntity.rotationYawHead)));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - MathHelper.rotLerp(partialTicks, livingEntity.yHeadRotO, livingEntity.yHeadRot)));
 			} else {
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
 			}
 		} else {
 			Vector3d pull = purpoid.getPull(partialTicks);
 
-			double pulledX = MathHelper.lerp(partialTicks, purpoid.prevPosX, purpoid.getPosX()) - pull.getX();
-			double pulledY = MathHelper.lerp(partialTicks, purpoid.prevPosY, purpoid.getPosY()) - pull.getY();
-			double pulledZ = MathHelper.lerp(partialTicks, purpoid.prevPosZ, purpoid.getPosZ()) - pull.getZ();
+			double pulledX = MathHelper.lerp(partialTicks, purpoid.xo, purpoid.getX()) - pull.x();
+			double pulledY = MathHelper.lerp(partialTicks, purpoid.yo, purpoid.getY()) - pull.y();
+			double pulledZ = MathHelper.lerp(partialTicks, purpoid.zo, purpoid.getZ()) - pull.z();
 
 			float rotationOffset = 0.5F * purpoid.getSize().getScale();
 			float yRot = (float) MathHelper.atan2(pulledZ, pulledX);
 			matrixStack.translate(0.0F, rotationOffset, 0.0F);
-			matrixStack.rotate(Vector3f.YP.rotation(-yRot));
-			matrixStack.rotate(Vector3f.ZP.rotation((float) ((MathHelper.atan2(MathHelper.sqrt(pulledX * pulledX + pulledZ * pulledZ), -pulledY)) - Math.PI)));
-			matrixStack.rotate(Vector3f.YP.rotation(yRot));
+			matrixStack.mulPose(Vector3f.YP.rotation(-yRot));
+			matrixStack.mulPose(Vector3f.ZP.rotation((float) ((MathHelper.atan2(MathHelper.sqrt(pulledX * pulledX + pulledZ * pulledZ), -pulledY)) - Math.PI)));
+			matrixStack.mulPose(Vector3f.YP.rotation(yRot));
 			matrixStack.translate(0.0F, -rotationOffset, 0.0F);
 		}
 		if (purpoid.hasCustomName()) {
-			String name = TextFormatting.getTextWithoutFormattingCodes(purpoid.getName().getString());
+			String name = TextFormatting.stripFormatting(purpoid.getName().getString());
 			if (name.equals("Dinnerbone") || name.equals("Grumm")) {
-				matrixStack.translate(0.0D, purpoid.getHeight() + 0.1D, 0.0D);
-				matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+				matrixStack.translate(0.0D, purpoid.getBbHeight() + 0.1D, 0.0D);
+				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
 			}
 		}
 	}
 
 	@Nullable
 	@Override
-	protected RenderType func_230496_a_(PurpoidEntity purpoidEntity, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
-		ResourceLocation texture = this.getEntityTexture(purpoidEntity);
+	protected RenderType getRenderType(PurpoidEntity purpoidEntity, boolean p_230496_2_, boolean p_230496_3_, boolean p_230496_4_) {
+		ResourceLocation texture = this.getTextureLocation(purpoidEntity);
 		if (p_230496_3_) {
-			return RenderType.getItemEntityTranslucentCull(texture);
+			return RenderType.itemEntityTranslucentCull(texture);
 		} else if (p_230496_2_) {
 			return EERenderTypes.createUnshadedEntity(texture);
 		} else {
-			return p_230496_4_ ? RenderType.getOutline(texture) : null;
+			return p_230496_4_ ? RenderType.outline(texture) : null;
 		}
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(PurpoidEntity entity) {
+	public ResourceLocation getTextureLocation(PurpoidEntity entity) {
 		return TEXTURE;
 	}
 }

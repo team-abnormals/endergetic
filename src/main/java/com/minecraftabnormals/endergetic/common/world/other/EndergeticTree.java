@@ -21,7 +21,7 @@ public abstract class EndergeticTree {
 		if (treefeature == null) {
 			return false;
 		} else {
-			if (treefeature.generate(world, chunkGenerator, random, pos, IFeatureConfig.NO_FEATURE_CONFIG)) {
+			if (treefeature.place(world, chunkGenerator, random, pos, IFeatureConfig.NONE)) {
 				return true;
 			} else {
 				return false;

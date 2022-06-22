@@ -55,7 +55,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 
 	public EetleEggEntity(World world, Vector3d pos) {
 		super(EEEntities.EETLE_EGG.get(), world);
-		this.setPosition(this.prevPosX = pos.getX(), this.prevPosY = pos.getY(), this.prevPosZ = pos.getZ());
+		this.setPos(this.xo = pos.x(), this.yo = pos.y(), this.zo = pos.z());
 		this.fromBroodEetle = true;
 	}
 
@@ -64,46 +64,46 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	protected void registerData() {
+	protected void defineSynchedData() {
 	}
 
 	@Override
 	public void tick() {
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
 		this.fallTime++;
-		if (!this.hasNoGravity()) {
-			this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
+		if (!this.isNoGravity()) {
+			this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
 		}
 
-		this.move(MoverType.SELF, this.getMotion());
+		this.move(MoverType.SELF, this.getDeltaMovement());
 
-		World world = this.world;
-		if (!world.isRemote) {
-			BlockPos newPos = this.getPosition();
-			if (!this.onGround && !world.getFluidState(newPos).isTagged(FluidTags.WATER)) {
+		World world = this.level;
+		if (!world.isClientSide) {
+			BlockPos newPos = this.blockPosition();
+			if (!this.onGround && !world.getFluidState(newPos).is(FluidTags.WATER)) {
 				if (this.fallTime > 100 && (newPos.getY() < 1 || newPos.getY() > 256) || this.fallTime > 600) {
-					burstOpenEgg(world, newPos, this.rand, this.eggSize.ordinal(), this.fromBroodEetle);
+					burstOpenEgg(world, newPos, this.random, this.eggSize.ordinal(), this.fromBroodEetle);
 				}
 			} else {
 				BlockState state = world.getBlockState(newPos);
-				this.setMotion(this.getMotion().mul(0.7D, -0.5D, 0.7D));
+				this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 				this.remove();
-				boolean flag3 = FallingBlock.canFallThrough(world.getBlockState(newPos.down()));
-				BlockState placingState = EETLE_EGGS_BLOCK.getDefaultState().with(EetleEggBlock.SIZE, this.eggSize.ordinal());
-				boolean flag4 = placingState.isValidPosition(world, newPos) && !flag3;
-				Random random = this.rand;
-				if (state.isReplaceable(new DirectionalPlaceContext(world, newPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP)) && flag4) {
-					if (placingState.hasProperty(BlockStateProperties.WATERLOGGED) && world.getFluidState(newPos).getFluid() == Fluids.WATER) {
-						placingState = placingState.with(BlockStateProperties.WATERLOGGED, true);
+				boolean flag3 = FallingBlock.isFree(world.getBlockState(newPos.below()));
+				BlockState placingState = EETLE_EGGS_BLOCK.defaultBlockState().setValue(EetleEggBlock.SIZE, this.eggSize.ordinal());
+				boolean flag4 = placingState.canSurvive(world, newPos) && !flag3;
+				Random random = this.random;
+				if (state.canBeReplaced(new DirectionalPlaceContext(world, newPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP)) && flag4) {
+					if (placingState.hasProperty(BlockStateProperties.WATERLOGGED) && world.getFluidState(newPos).getType() == Fluids.WATER) {
+						placingState = placingState.setValue(BlockStateProperties.WATERLOGGED, true);
 					}
 
 					placingState = assignRandomDirection(world, placingState, random, newPos);
-					if (world.setBlockState(newPos, placingState, 3)) {
+					if (world.setBlock(newPos, placingState, 3)) {
 						world.playSound(null, newPos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
-						if (!placingState.get(BlockStateProperties.WATERLOGGED)) {
-							TileEntity tileentity = world.getTileEntity(newPos);
+						if (!placingState.getValue(BlockStateProperties.WATERLOGGED)) {
+							TileEntity tileentity = world.getBlockEntity(newPos);
 							if (tileentity instanceof EetleEggTileEntity) {
 								EetleEggTileEntity eetleEggsTileEntity = (EetleEggTileEntity) tileentity;
 								eetleEggsTileEntity.fromBroodEetle = this.fromBroodEetle;
@@ -122,52 +122,52 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 			}
 		}
 
-		this.setMotion(this.getMotion().scale(0.98D));
+		this.setDeltaMovement(this.getDeltaMovement().scale(0.98D));
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundNBT compound) {
 		this.fallTime = compound.getInt("FallTime");
 		this.eggSize = EggSize.getById(Math.min(2, compound.getInt("EggSize")));
 		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundNBT compound) {
 		compound.putInt("FallTime", this.fallTime);
 		compound.putInt("EggSize", this.eggSize.ordinal());
 		compound.putBoolean("FromBroodEetle", this.fromBroodEetle);
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean canBeCollidedWith() {
+	public boolean isPickable() {
 		return !this.removed;
 	}
 
 	@Override
-	public boolean canBeAttackedWithItem() {
+	public boolean isAttackable() {
 		return false;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
 	@Override
-	public boolean ignoreItemEntityData() {
+	public boolean onlyOpCanSetNbt() {
 		return true;
 	}
 
@@ -182,7 +182,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -207,24 +207,24 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 			if (eetle != null) {
 				eetle.markFromEgg();
 				eetle.updateAge(-(random.nextInt(41) + 120));
-				eetle.setPositionAndRotation(x + random.nextFloat(), y + 0.1F, z + random.nextFloat(), random.nextFloat() * 360.0F, 0.0F);
+				eetle.absMoveTo(x + random.nextFloat(), y + 0.1F, z + random.nextFloat(), random.nextFloat() * 360.0F, 0.0F);
 				if (fromBroodEetle) {
 					eetle.applyDespawnTimer();
 				}
-				world.addEntity(eetle);
+				world.addFreshEntity(eetle);
 			}
 		}
 		if (world instanceof ServerWorld) {
 			world.playSound(null, pos, EESounds.EETLE_EGG_BREAK.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
-			((ServerWorld) world).spawnParticle(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+			((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 		}
 	}
 
 	private static BlockState assignRandomDirection(World world, BlockState state, Random random, BlockPos pos) {
 		EetleEggBlock.shuffleDirections(DIRECTIONS, random);
 		for (Direction direction : DIRECTIONS) {
-			BlockState directionState = state.with(EetleEggBlock.FACING, direction);
-			if (directionState.isValidPosition(world, pos)) {
+			BlockState directionState = state.setValue(EetleEggBlock.FACING, direction);
+			if (directionState.canSurvive(world, pos)) {
 				return directionState;
 			}
 		}

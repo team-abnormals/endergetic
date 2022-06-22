@@ -8,15 +8,15 @@ public class PuffBugTargetAggressorGoal extends HurtByTargetGoal {
 
 	public PuffBugTargetAggressorGoal(PuffBugEntity puffbug) {
 		super(puffbug);
-		this.setCallsForHelp(new Class[]{PuffBugEntity.class});
+		this.setAlertOthers(new Class[]{PuffBugEntity.class});
 	}
 
 	@Override
-	public void startExecuting() {
-		super.startExecuting();
+	public void start() {
+		super.start();
 
-		for (PuffBugEntity bugs : this.goalOwner.world.getEntitiesWithinAABB(PuffBugEntity.class, this.goalOwner.getBoundingBox().grow(16.0D), (puffbug) -> puffbug.getAttackTarget() == null)) {
-			bugs.setAttackTarget(this.goalOwner.getAttackTarget());
+		for (PuffBugEntity bugs : this.mob.level.getEntitiesOfClass(PuffBugEntity.class, this.mob.getBoundingBox().inflate(16.0D), (puffbug) -> puffbug.getTarget() == null)) {
+			bugs.setTarget(this.mob.getTarget());
 		}
 	}
 

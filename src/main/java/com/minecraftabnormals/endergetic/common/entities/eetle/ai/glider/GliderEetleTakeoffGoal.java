@@ -14,26 +14,26 @@ public class GliderEetleTakeoffGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		GliderEetleEntity glider = this.glider;
 		if (!glider.isGrounded() && !glider.isFlying() && glider.isNoEndimationPlaying()) {
-			return glider.canFly() && glider.getRNG().nextFloat() < 0.05F || !glider.isOnGround() && willFallFar(glider);
+			return glider.canFly() && glider.getRandom().nextFloat() < 0.05F || !glider.isOnGround() && willFallFar(glider);
 		}
 		return false;
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return !this.glider.isGrounded() && this.ticksPassed < 5 && this.glider.canFly();
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		this.glider.setFlying(true);
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksPassed = 0;
 	}
 
@@ -43,12 +43,12 @@ public class GliderEetleTakeoffGoal extends Goal {
 	}
 
 	private static boolean willFallFar(GliderEetleEntity gliderEetleEntity) {
-		World world = gliderEetleEntity.world;
-		BlockPos.Mutable mutable = gliderEetleEntity.getPosition().toMutable();
+		World world = gliderEetleEntity.level;
+		BlockPos.Mutable mutable = gliderEetleEntity.blockPosition().mutable();
 		int startY = mutable.getY();
 		for (int i = 0; i < 8; i++) {
 			mutable.setY(startY - i);
-			if (world.isTopSolid(mutable, gliderEetleEntity)) {
+			if (world.loadedAndEntityCanStandOn(mutable, gliderEetleEntity)) {
 				return false;
 			}
 		}

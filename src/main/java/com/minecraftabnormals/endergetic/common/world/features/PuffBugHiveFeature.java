@@ -23,7 +23,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 
 	private Supplier<BlockState> HIVE_STATE(boolean hanger) {
-		return hanger ? () -> EEBlocks.HIVE_HANGER.get().getDefaultState() : () -> EEBlocks.PUFFBUG_HIVE.get().getDefaultState();
+		return hanger ? () -> EEBlocks.HIVE_HANGER.get().defaultBlockState() : () -> EEBlocks.PUFFBUG_HIVE.get().defaultBlockState();
 	}
 
 	public PuffBugHiveFeature(Codec<NoFeatureConfig> configFactoryIn) {
@@ -31,22 +31,22 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
 		if (rand.nextFloat() < 0.1F) return false;
-		BlockPos hivePos = pos.down();
+		BlockPos hivePos = pos.below();
 
-		if (world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.up()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
+		if (world.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.above()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
 			if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-				world.setBlockState(pos, this.HIVE_STATE(true).get(), 2);
-				world.setBlockState(hivePos, this.HIVE_STATE(false).get(), 2);
+				world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
+				world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
 				this.spawnPuffBugs(world, hivePos, rand);
 				return true;
 			}
 		} else {
-			if (world.getBlockState(pos.up()).getBlock() == EEBlocks.POISE_CLUSTER.get() && world.getHeight() > 90) {
+			if (world.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_CLUSTER.get() && world.getMaxBuildHeight() > 90) {
 				if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-					world.setBlockState(pos, this.HIVE_STATE(true).get(), 2);
-					world.setBlockState(hivePos, this.HIVE_STATE(false).get(), 2);
+					world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
+					world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
 					this.spawnPuffBugs(world, hivePos, rand);
 					return true;
 				}
@@ -60,13 +60,13 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 
 		List<Direction> openSides = this.getOpenSides(world, pos);
 		for (Direction openSide : openSides) {
-			BlockPos offset = pos.offset(openSide);
-			PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world.getWorld());
+			BlockPos offset = pos.relative(openSide);
+			PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world.getLevel());
 			if (puffbug != null) {
-				puffbug.setLocationAndAngles(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
-				puffbug.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE, null, null);
+				puffbug.moveTo(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
+				puffbug.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), SpawnReason.STRUCTURE, null, null);
 				puffbug.setHivePos(pos);
-				world.addEntity(puffbug);
+				world.addFreshEntity(puffbug);
 			}
 			if (maxPuffBugs-- <= 0) break;
 		}
@@ -76,8 +76,8 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		List<Direction> openDirections = Lists.newArrayList();
 		for (Direction directions : Direction.values()) {
 			if (directions != Direction.UP) {
-				BlockPos offsetPos = pos.offset(directions);
-				if (world.isAirBlock(offsetPos) && world.isAirBlock(offsetPos.up())) {
+				BlockPos offsetPos = pos.relative(directions);
+				if (world.isEmptyBlock(offsetPos) && world.isEmptyBlock(offsetPos.above())) {
 					openDirections.add(directions);
 				}
 			}

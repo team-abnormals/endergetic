@@ -22,6 +22,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.item.Item.Properties;
+
 /**
  * @author - SmellyModder(Luke Tonon)
  */
@@ -52,28 +54,28 @@ public class BoofloVestItem extends ArmorItem {
 		}
 
 		if (tag.getInt(TICKS_BOOFED_TAG) == 10) {
-			player.getItemStackFromSlot(EquipmentSlotType.CHEST).damageItem(2, player, (onBroken) -> {
-				onBroken.sendBreakAnimation(EquipmentSlotType.CHEST);
+			player.getItemBySlot(EquipmentSlotType.CHEST).hurtAndBreak(2, player, (onBroken) -> {
+				onBroken.broadcastBreakEvent(EquipmentSlotType.CHEST);
 			});
 		}
 
-		if (player.isOnGround() || (player.isPassenger() && player.getRidingEntity().isOnGround())) {
+		if (player.isOnGround() || (player.isPassenger() && player.getVehicle().isOnGround())) {
 			tag.putInt(TIMES_BOOFED_TAG, 0);
 		}
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.TURTLE_HELMET, group, items);
 	}
 
 	@Override
-	public boolean isDamageable() {
+	public boolean canBeDepleted() {
 		return true;
 	}
 
 	public static boolean canBoof(ItemStack stack, PlayerEntity player) {
-		return !player.getCooldownTracker().hasCooldown(stack.getItem()) && !stack.getOrCreateTag().getBoolean(BOOFED_TAG);
+		return !player.getCooldowns().isOnCooldown(stack.getItem()) && !stack.getOrCreateTag().getBoolean(BOOFED_TAG);
 	}
 
 	@Override

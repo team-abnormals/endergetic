@@ -8,21 +8,23 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class BoofloSinkGoal extends Goal {
 	private BoofloEntity booflo;
 
 	public BoofloSinkGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE));
+		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.isOnGround() && this.booflo.getRNG().nextInt(70) == 0 && this.isSafePos();
+	public boolean canUse() {
+		return (this.booflo.hasCaughtFruit() || this.booflo.hasCaughtPuffBug()) && this.booflo.isBoofed() && !this.booflo.isOnGround() && this.booflo.getRandom().nextInt(70) == 0 && this.isSafePos();
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		if (!this.isSafePos()) {
 			return false;
 		}
@@ -31,15 +33,15 @@ public class BoofloSinkGoal extends Goal {
 
 	@Override
 	public void tick() {
-		this.booflo.getNavigator().clearPath();
+		this.booflo.getNavigation().stop();
 	}
 
 	private boolean isSafePos() {
-		BlockPos pos = this.booflo.getPosition();
+		BlockPos pos = this.booflo.blockPosition();
 		for (int i = 0; i < 10; i++) {
-			BlockPos newPos = pos.down(i);
-			if (Block.hasSolidSideOnTop(this.booflo.world, newPos)) {
-				if (this.booflo.world.getBlockState(newPos).getFluidState().isEmpty() && !this.booflo.world.getBlockState(newPos).isBurning(this.booflo.world, newPos)) {
+			BlockPos newPos = pos.below(i);
+			if (Block.canSupportRigidBlock(this.booflo.level, newPos)) {
+				if (this.booflo.level.getBlockState(newPos).getFluidState().isEmpty() && !this.booflo.level.getBlockState(newPos).isBurning(this.booflo.level, newPos)) {
 					return true;
 				}
 			}

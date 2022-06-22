@@ -28,7 +28,7 @@ public class EetleEggTileEntityRenderer extends TileEntityRenderer<EetleEggTileE
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_egg.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/large_eetle_egg.png")
 	};
-	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGG.get().getDefaultState();
+	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGG.get().defaultBlockState();
 	private static final Random ROTATION_RANDOM = new Random();
 	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
 			new SmallEetleEggModel(),
@@ -42,35 +42,35 @@ public class EetleEggTileEntityRenderer extends TileEntityRenderer<EetleEggTileE
 
 	@Override
 	public void render(EetleEggTileEntity eggs, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		World world = eggs.getWorld();
+		World world = eggs.getLevel();
 		BlockState state = DEFAULT_STATE;
 		Direction randomDirection = Direction.NORTH;
 		if (world != null) {
 			state = eggs.getBlockState();
-			ROTATION_RANDOM.setSeed(getPosSeed(eggs.getPos()));
-			randomDirection = Direction.Plane.HORIZONTAL.random(ROTATION_RANDOM);
+			ROTATION_RANDOM.setSeed(getPosSeed(eggs.getBlockPos()));
+			randomDirection = Direction.Plane.HORIZONTAL.getRandomDirection(ROTATION_RANDOM);
 		}
-		matrixStack.push();
-		Direction facing = state.get(EetleEggBlock.FACING);
+		matrixStack.pushPose();
+		Direction facing = state.getValue(EetleEggBlock.FACING);
 		switch (facing) {
 			case UP:
 				matrixStack.translate(0.5F, 1.5F, 0.5F);
-				matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 				break;
 			case DOWN:
 				matrixStack.translate(0.5F, -0.5F, 0.5F);
 				break;
 			default:
-				matrixStack.translate(0.5F + facing.getXOffset(), 0.5F, 0.5F + facing.getZOffset());
-				matrixStack.rotate((facing.getAxis() == Direction.Axis.X ? Vector3f.ZP : Vector3f.XN).rotationDegrees(90.0F * facing.getAxisDirection().getOffset()));
+				matrixStack.translate(0.5F + facing.getStepX(), 0.5F, 0.5F + facing.getStepZ());
+				matrixStack.mulPose((facing.getAxis() == Direction.Axis.X ? Vector3f.ZP : Vector3f.XN).rotationDegrees(90.0F * facing.getAxisDirection().getStep()));
 				break;
 		}
-		matrixStack.rotate(Vector3f.YP.rotationDegrees(randomDirection.getHorizontalAngle()));
-		int size = state.get(EetleEggBlock.SIZE);
+		matrixStack.mulPose(Vector3f.YP.rotationDegrees(randomDirection.toYRot()));
+		int size = state.getValue(EetleEggBlock.SIZE);
 		IEetleEggModel eggsModel = this.eggModels[size];
-		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.getEntityCutout(TEXTURES[size])), combinedLight, combinedOverlay, partialTicks, eggs.getSackGrowths());
+		eggsModel.render(matrixStack, buffer.getBuffer(RenderType.entityCutout(TEXTURES[size])), combinedLight, combinedOverlay, partialTicks, eggs.getSackGrowths());
 		eggsModel.renderSilk(matrixStack, buffer.getBuffer(EERenderTypes.EETLE_EGG_SILK), combinedLight, combinedOverlay);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	private static long getPosSeed(BlockPos pos) {

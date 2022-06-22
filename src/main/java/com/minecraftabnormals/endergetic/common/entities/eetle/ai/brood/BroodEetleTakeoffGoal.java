@@ -15,30 +15,30 @@ public class BroodEetleTakeoffGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		if (!broodEetle.isFlying() && broodEetle.hasWokenUp() && !broodEetle.isFiringCannon()) {
-			return !broodEetle.canFireEggCannon() && broodEetle.isOnGround() && (broodEetle.canFly() || BroodEetleDropEggsGoal.areFewEetlesNearby(broodEetle) && broodEetle.getRNG().nextFloat() < 0.025F) && !BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE)).isEmpty() && broodEetle.getRNG().nextFloat() < 0.025F || willFallFar(broodEetle);
+			return !broodEetle.canFireEggCannon() && broodEetle.isOnGround() && (broodEetle.canFly() || BroodEetleDropEggsGoal.areFewEetlesNearby(broodEetle) && broodEetle.getRandom().nextFloat() < 0.025F) && !BroodEetleFlingGoal.searchForNearbyAggressors(broodEetle, broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE)).isEmpty() && broodEetle.getRandom().nextFloat() < 0.025F || willFallFar(broodEetle);
 		}
 		return false;
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		BroodEetleEntity broodEetle = this.broodEetle;
-		broodEetle.takeoffPos = broodEetle.getPosition();
+		broodEetle.takeoffPos = broodEetle.blockPosition();
 		broodEetle.resetSlamCooldown();
 		broodEetle.setFlying(true);
 		broodEetle.setFiringCannon(false);
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.ticksPassed < 10;
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.ticksPassed = 0;
 	}
 
@@ -48,12 +48,12 @@ public class BroodEetleTakeoffGoal extends Goal {
 	}
 
 	private static boolean willFallFar(BroodEetleEntity broodEetle) {
-		World world = broodEetle.world;
-		BlockPos.Mutable mutable = broodEetle.getPosition().toMutable();
+		World world = broodEetle.level;
+		BlockPos.Mutable mutable = broodEetle.blockPosition().mutable();
 		int startY = mutable.getY();
 		for (int i = 0; i < 10; i++) {
 			mutable.setY(startY - i);
-			if (world.isTopSolid(mutable, broodEetle)) {
+			if (world.loadedAndEntityCanStandOn(mutable, broodEetle)) {
 				return false;
 			}
 		}

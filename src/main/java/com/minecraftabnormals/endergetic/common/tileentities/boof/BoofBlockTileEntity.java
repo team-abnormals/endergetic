@@ -22,12 +22,12 @@ public class BoofBlockTileEntity extends TileEntity implements ITickableTileEnti
 
 	@Override
 	public void tick() {
-		if (this.world.isRemote || this.world.getBlockState(this.pos).get(BoofBlock.BOOFED)) return;
+		if (this.level.isClientSide || this.level.getBlockState(this.worldPosition).getValue(BoofBlock.BOOFED)) return;
 
-		if (!this.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.getPos()).grow(0.05F), entity -> (!(entity instanceof PlayerEntity) || !entity.isSneaking()) && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())).isEmpty()) {
-			if (this.world.addEntity(new BoofBlockEntity(this.world, this.pos))) {
-				this.world.setBlockState(this.pos, EEBlocks.BOOF_BLOCK.get().getDefaultState().with(BoofBlock.BOOFED, true));
-				this.world.playSound(null, this.pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
+		if (!this.level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(this.getBlockPos()).inflate(0.05F), entity -> (!(entity instanceof PlayerEntity) || !entity.isShiftKeyDown()) && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())).isEmpty()) {
+			if (this.level.addFreshEntity(new BoofBlockEntity(this.level, this.worldPosition))) {
+				this.level.setBlockAndUpdate(this.worldPosition, EEBlocks.BOOF_BLOCK.get().defaultBlockState().setValue(BoofBlock.BOOFED, true));
+				this.level.playSound(null, this.worldPosition, EESounds.BOOF_BLOCK_INFLATE.get(), SoundCategory.NEUTRAL, 1.0F, 1.0F);
 			}
 		}
 	}

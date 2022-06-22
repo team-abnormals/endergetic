@@ -27,34 +27,34 @@ public class SmallEetleEggModel implements IEetleEggModel {
 		int textureWidth = 64;
 		int textureHeight = 64;
 		this.egg = new EndimatorModelRenderer(textureWidth, textureHeight, 46, 0);
-		this.egg.setRotationPoint(4.0F, 24.0F, 4.0F);
+		this.egg.setPos(4.0F, 24.0F, 4.0F);
 		this.egg.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, 0.0F);
 		this.smallEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 33, 0);
-		this.smallEgg.setRotationPoint(-4.5F, 24.0F, -5.5F);
+		this.smallEgg.setPos(-4.5F, 24.0F, -5.5F);
 		this.smallEgg.addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, 0.0F);
 		this.base = new ModelRenderer(textureWidth, textureHeight, -16, 38);
-		this.base.setRotationPoint(0.0F, 23.99F, 0.0F);
+		this.base.setPos(0.0F, 23.99F, 0.0F);
 		this.base.addBox(-8.0F, 0.0F, -8.0F, 16, 0, 16, 0.0F);
 		this.bigEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 17, 2);
-		this.bigEgg.setRotationPoint(1.5F, 24.0F, -1.5F);
+		this.bigEgg.setPos(1.5F, 24.0F, -1.5F);
 		this.bigEgg.addBox(-2.5F, -5.0F, -2.5F, 5, 5, 5, 0.0F);
 		this.cross2 = new ModelRenderer(textureWidth, textureHeight, 0, 29);
-		this.cross2.setRotationPoint(-7.8F, 21.0F, -7.8F);
+		this.cross2.setPos(-7.8F, 21.0F, -7.8F);
 		this.cross2.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
 		this.setRotateAngle(cross2, 0.0F, -0.7853981633974483F, 0.0F);
 		this.cross4 = new ModelRenderer(textureWidth, textureHeight, 0, 29);
-		this.cross4.setRotationPoint(7.8F, 21.0F, -7.8F);
+		this.cross4.setPos(7.8F, 21.0F, -7.8F);
 		this.cross4.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
 		this.setRotateAngle(cross4, 0.0F, -2.356194490192345F, 0.0F);
 		this.otherEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 0, 0);
-		this.otherEgg.setRotationPoint(-4.0F, 24.0F, 2.0F);
+		this.otherEgg.setPos(-4.0F, 24.0F, 2.0F);
 		this.otherEgg.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, 0.0F);
 		this.cross1 = new ModelRenderer(textureWidth, textureHeight, 0, 29);
-		this.cross1.setRotationPoint(-7.8F, 21.0F, 7.8F);
+		this.cross1.setPos(-7.8F, 21.0F, 7.8F);
 		this.cross1.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
 		this.setRotateAngle(cross1, 0.0F, 0.7853981633974483F, 0.0F);
 		this.cross3 = new ModelRenderer(textureWidth, textureHeight, 0, 29);
-		this.cross3.setRotationPoint(7.8F, 21.0F, 7.8F);
+		this.cross3.setPos(7.8F, 21.0F, 7.8F);
 		this.cross3.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
 		this.setRotateAngle(cross3, 0.0F, 2.356194490192345F, 0.0F);
 	}
@@ -88,8 +88,8 @@ public class SmallEetleEggModel implements IEetleEggModel {
 	}
 
 	public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

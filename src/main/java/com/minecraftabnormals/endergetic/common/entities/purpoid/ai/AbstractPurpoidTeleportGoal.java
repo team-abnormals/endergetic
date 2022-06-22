@@ -17,24 +17,24 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 
 	protected AbstractPurpoidTeleportGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE));
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		if (!purpoid.getMoveHelper().isUpdating()) {
+		if (!purpoid.getMoveControl().hasWanted()) {
 			this.notMovingTicks++;
 		} else {
 			this.notMovingTicks = 0;
 		}
 		if (this.notMovingTicks >= 20 && !purpoid.isPassenger() && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown() && purpoid.isNoEndimationPlaying()) {
-			BlockPos randomPos = this.generateTeleportPos(purpoid, purpoid.getRNG());
-			World world = purpoid.world;
-			if (randomPos != null && world.isBlockLoaded(randomPos)) {
-				AxisAlignedBB collisionBox = purpoid.getSize(purpoid.getPose()).func_242285_a(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
-				if (world.hasNoCollisions(collisionBox) && world.checkNoEntityCollision(purpoid, VoxelShapes.create(collisionBox)) && !world.containsAnyLiquid(collisionBox)) {
+			BlockPos randomPos = this.generateTeleportPos(purpoid, purpoid.getRandom());
+			World world = purpoid.level;
+			if (randomPos != null && world.hasChunkAt(randomPos)) {
+				AxisAlignedBB collisionBox = purpoid.getDimensions(purpoid.getPose()).makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+				if (world.noCollision(collisionBox) && world.isUnobstructed(purpoid, VoxelShapes.create(collisionBox)) && !world.containsAnyLiquid(collisionBox)) {
 					this.beginTeleportation(purpoid, randomPos);
 					return true;
 				}
@@ -44,7 +44,7 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.purpoid.getTeleportController().isTeleporting();
 	}
 

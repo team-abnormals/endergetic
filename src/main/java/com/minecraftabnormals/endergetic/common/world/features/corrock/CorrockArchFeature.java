@@ -25,14 +25,14 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockArchConfig config) {
-		Block below = world.getBlockState(pos.down()).getBlock();
-		if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get()) && world.isAirBlock(pos)) {
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockArchConfig config) {
+		Block below = world.getBlockState(pos.below()).getBlock();
+		if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get()) && world.isEmptyBlock(pos)) {
 			int originX = pos.getX();
 			int originY = pos.getY();
 			int originZ = pos.getZ();
 			if (isGroundSolid(world, originX, originY - 1, originZ)) {
-				BlockPos.Mutable mutable = pos.toMutable();
+				BlockPos.Mutable mutable = pos.mutable();
 				BlockPos end = null;
 				float maxDistance = config.getMaxDistance();
 				int maxDistanceInt = (int) maxDistance;
@@ -41,13 +41,13 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 				for (int i = 0; i < 10; i++) {
 					int xPos = originX + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					int zPos = originZ + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
-					mutable.setPos(xPos, originY, zPos);
+					mutable.set(xPos, originY, zPos);
 					mutable.setY(world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, xPos, zPos));
-					below = world.getBlockState(mutable.down()).getBlock();
+					below = world.getBlockState(mutable.below()).getBlock();
 					if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get() || below == Blocks.END_STONE) && isGroundSolid(world, xPos, mutable.getY() - 1, zPos)) {
-						distance = MathHelper.sqrt(mutable.distanceSq(pos));
-						if (distance >= minDistance && distance <= maxDistance && isGroundSolid(world, xPos, mutable.getY() - 1, zPos) && world.isAirBlock(mutable)) {
-							end = mutable.toImmutable();
+						distance = MathHelper.sqrt(mutable.distSqr(pos));
+						if (distance >= minDistance && distance <= maxDistance && isGroundSolid(world, xPos, mutable.getY() - 1, zPos) && world.isEmptyBlock(mutable)) {
+							end = mutable.immutable();
 							break;
 						}
 					}
@@ -73,9 +73,9 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 						for (int y = -radius; y <= radius; y++) {
 							for (int x = -radius; x <= radius; x++) {
 								for (int z = -radius; z <= radius; z++) {
-									BlockPos placingPos = interpolatedPos.add(x, y, z);
-									if (MathHelper.sqrt(pos.distanceSq(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
-										if (world.isAirBlock(placingPos)) {
+									BlockPos placingPos = interpolatedPos.offset(x, y, z);
+									if (MathHelper.sqrt(pos.distSqr(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
+										if (world.isEmptyBlock(placingPos)) {
 											corrockBlockPositions.add(placingPos);
 										} else {
 											int placingPosY = placingPos.getY();
@@ -91,33 +91,33 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 							}
 						}
 					}
-					BlockState corrockBlockState = CORROCK_BLOCK_STATE.getValue();
-					BlockState corrockState = EEBlocks.CORROCK_END.get().getDefaultState();
+					BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
+					BlockState corrockState = EEBlocks.CORROCK_END.get().defaultBlockState();
 					float crownChance = config.getCrownChance();
 					float plantChance = config.getPlantChance();
 					corrockBlockPositions.forEach(corrockPos -> {
-						world.setBlockState(corrockPos, corrockBlockState, 2);
+						world.setBlock(corrockPos, corrockBlockState, 2);
 						if (rand.nextFloat() < crownChance) {
-							BlockPos up = corrockPos.up();
-							if (!corrockBlockPositions.contains(up) && world.isAirBlock(up)) {
-								world.setBlockState(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
+							BlockPos up = corrockPos.above();
+							if (!corrockBlockPositions.contains(up) && world.isEmptyBlock(up)) {
+								world.setBlock(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
 							} else {
-								BlockPos down = corrockPos.down();
-								if (!corrockBlockPositions.contains(down) && world.isAirBlock(down)) {
-									world.setBlockState(down, getCorrockCrownStanding(rand.nextInt(16)).with(CorrockCrownStandingBlock.UPSIDE_DOWN, true), 2);
+								BlockPos down = corrockPos.below();
+								if (!corrockBlockPositions.contains(down) && world.isEmptyBlock(down)) {
+									world.setBlock(down, getCorrockCrownStanding(rand.nextInt(16)).setValue(CorrockCrownStandingBlock.UPSIDE_DOWN, true), 2);
 								} else {
 									for (Direction horizontal : Direction.Plane.HORIZONTAL) {
-										BlockPos offset = corrockPos.offset(horizontal);
-										if (!corrockBlockPositions.contains(offset) && world.isAirBlock(offset)) {
-											world.setBlockState(offset, getCorrockCrownWall(horizontal), 2);
+										BlockPos offset = corrockPos.relative(horizontal);
+										if (!corrockBlockPositions.contains(offset) && world.isEmptyBlock(offset)) {
+											world.setBlock(offset, getCorrockCrownWall(horizontal), 2);
 										}
 									}
 								}
 							}
 						} else if (rand.nextFloat() < plantChance) {
-							BlockPos up = corrockPos.up();
-							if (!corrockBlockPositions.contains(up) && world.isAirBlock(up)) {
-								world.setBlockState(up, corrockState, 2);
+							BlockPos up = corrockPos.above();
+							if (!corrockBlockPositions.contains(up) && world.isEmptyBlock(up)) {
+								world.setBlock(up, corrockState, 2);
 							}
 						}
 					});
@@ -144,8 +144,8 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 
 		private ArchSpline(BlockPos start, BlockPos end, Random rand, float maxArchHeight) {
 			List<Vector3d> points = new ArrayList<>();
-			Vector3d startVec = Vector3d.copy(start);
-			Vector3d endVec = Vector3d.copy(end);
+			Vector3d startVec = Vector3d.atLowerCornerOf(start);
+			Vector3d endVec = Vector3d.atLowerCornerOf(end);
 			Vector3d difference = endVec.subtract(startVec);
 			Vector3d normalizedDifference = difference.normalize();
 			//Anchor positions drive the spline downwards into the start and end positions
@@ -154,7 +154,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			points.add(anchorStart);
 			points.add(startVec);
 			//Generate positions in between the start and end to form an arch-like path
-			Vector3d offset = UP.crossProduct(normalizedDifference);
+			Vector3d offset = UP.cross(normalizedDifference);
 			double offsetX = offset.x;
 			double offsetZ = offset.z;
 			for (int i = 0; i < 5; i++) {

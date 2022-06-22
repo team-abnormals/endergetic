@@ -16,14 +16,14 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		if (this.glider.isFlying()) {
-			if (!this.mustUpdate) {
-				if (this.creature.getIdleTime() >= 100) {
+			if (!this.forceTrigger) {
+				if (this.mob.getNoActionTime() >= 100) {
 					return false;
 				}
 
-				if (this.creature.getRNG().nextInt(this.glider.getPassengers().isEmpty() ? this.executionChance : 40) != 0) {
+				if (this.mob.getRandom().nextInt(this.glider.getPassengers().isEmpty() ? this.interval : 40) != 0) {
 					return false;
 				}
 			}
@@ -32,18 +32,18 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
 			if (vector3d == null) {
 				return false;
 			} else {
-				this.x = vector3d.x;
-				this.y = vector3d.y;
-				this.z = vector3d.z;
-				this.mustUpdate = false;
+				this.wantedX = vector3d.x;
+				this.wantedY = vector3d.y;
+				this.wantedZ = vector3d.z;
+				this.forceTrigger = false;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean shouldContinueExecuting() {
-		return !this.creature.getNavigator().noPath();
+	public boolean canContinueToUse() {
+		return !this.mob.getNavigation().isDone();
 	}
 
 	@Nullable
@@ -51,7 +51,7 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
 	protected Vector3d getPosition() {
 		GliderEetleEntity glider = this.glider;
 		if (glider.isFlying() && !glider.getPassengers().isEmpty()) {
-			return RandomPositionGenerator.findAirTarget(glider, 8, 8, glider.getLook(0.0F), ((float)Math.PI / 2.0F), 2, 1);
+			return RandomPositionGenerator.getAboveLandPos(glider, 8, 8, glider.getViewVector(0.0F), ((float)Math.PI / 2.0F), 2, 1);
 		}
 		return super.getPosition();
 	}

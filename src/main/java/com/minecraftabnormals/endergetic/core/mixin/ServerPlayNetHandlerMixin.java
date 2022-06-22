@@ -20,15 +20,15 @@ public final class ServerPlayNetHandlerMixin {
 	private ServerPlayerEntity player;
 
 	@Shadow
-	private int vehicleFloatingTickCount;
+	private int aboveGroundVehicleTickCount;
 
 	@Inject(at = @At("TAIL"), method = "tick()V")
 	private void preventFlyingKick(CallbackInfo info) {
-		Entity ridingEntity = this.player.getRidingEntity();
+		Entity ridingEntity = this.player.getVehicle();
 		if (ridingEntity instanceof BoatEntity && !((BalloonHolder) ridingEntity).getBalloons().isEmpty()) {
-			this.vehicleFloatingTickCount = 0;
+			this.aboveGroundVehicleTickCount = 0;
 		} else if (ridingEntity instanceof BoofloEntity) {
-			this.vehicleFloatingTickCount = 0;
+			this.aboveGroundVehicleTickCount = 0;
 		}
 	}
 }

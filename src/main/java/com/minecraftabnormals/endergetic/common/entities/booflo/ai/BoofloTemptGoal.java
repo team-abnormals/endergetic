@@ -13,33 +13,35 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
+import net.minecraft.entity.ai.goal.Goal.Flag;
+
 public class BoofloTemptGoal extends Goal {
-	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().setSkipAttackChecks().allowInvulnerable();
+	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).range(10.0D).allowSameTeam().allowNonAttackable().allowInvulnerable();
 	private BoofloEntity booflo;
 	private PlayerEntity tempter;
 
 	public BoofloTemptGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
-		this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		this.tempter = this.booflo.world.getClosestPlayer(SHOULD_FOLLOW, this.booflo);
+	public boolean canUse() {
+		this.tempter = this.booflo.level.getNearestPlayer(SHOULD_FOLLOW, this.booflo);
 		if (this.tempter == null) {
 			return false;
 		} else {
-			return !this.booflo.isTamed() && !this.booflo.hasCaughtFruit() && !this.booflo.isInLove() && this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.booflo.isBoofed() && this.booflo.isOnGround() && this.isTemptedBy(this.tempter.getHeldItemMainhand()) || this.isTemptedBy(this.tempter.getHeldItemOffhand());
+			return !this.booflo.isTamed() && !this.booflo.hasCaughtFruit() && !this.booflo.isInLove() && this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.booflo.isBoofed() && this.booflo.isOnGround() && this.isTemptedBy(this.tempter.getMainHandItem()) || this.isTemptedBy(this.tempter.getOffhandItem());
 		}
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
-		this.tempter = this.booflo.world.getClosestPlayer(SHOULD_FOLLOW, this.booflo);
+	public boolean canContinueToUse() {
+		this.tempter = this.booflo.level.getNearestPlayer(SHOULD_FOLLOW, this.booflo);
 		if (this.tempter == null) {
 			return false;
 		} else {
-			return this.booflo.getMoveHelper() instanceof GroundMoveHelperController && !this.booflo.isTamed() && !this.booflo.isInLove() && !this.booflo.isBoofed();
+			return this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.booflo.isTamed() && !this.booflo.isInLove() && !this.booflo.isBoofed();
 		}
 	}
 
@@ -49,24 +51,24 @@ public class BoofloTemptGoal extends Goal {
 			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
 		}
 
-		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setSpeed(1.0D);
+		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveControl()).setSpeed(1.0D);
 		}
 
-		double dx = this.tempter.getPosX() - this.booflo.getPosX();
-		double dz = this.tempter.getPosZ() - this.booflo.getPosZ();
+		double dx = this.tempter.getX() - this.booflo.getX();
+		double dz = this.tempter.getZ() - this.booflo.getZ();
 
 		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 
-		if (this.booflo.getMoveHelper() instanceof GroundMoveHelperController) {
-			((GroundMoveHelperController) this.booflo.getMoveHelper()).setDirection(angle, false);
+		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController) {
+			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(angle, false);
 		}
 
-		this.booflo.getNavigator().tryMoveToEntityLiving(this.booflo, 1.0D);
+		this.booflo.getNavigation().moveTo(this.booflo, 1.0D);
 	}
 
 	@Override
-	public void resetTask() {
+	public void stop() {
 		this.tempter = null;
 	}
 

@@ -20,21 +20,21 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		BroodEetleEntity broodEetle = this.entity;
 		if (broodEetle.isNotDroppingEggs() && broodEetle.canSlam() && broodEetle.isFlying() && !broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying()) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			if (takeoffPos != null) {
-				return !searchForAggressorsUnder(broodEetle, new AxisAlignedBB(takeoffPos).grow(8.0D, 7.0D, 8.0D)).isEmpty();
+				return !searchForAggressorsUnder(broodEetle, new AxisAlignedBB(takeoffPos).inflate(8.0D, 7.0D, 8.0D)).isEmpty();
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		BroodEetleEntity broodEetle = this.entity;
-		broodEetle.getNavigator().clearPath();
+		broodEetle.getNavigation().stop();
 		broodEetle.resetSlamCooldown();
 		this.playEndimation();
 	}
@@ -43,7 +43,7 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	public void tick() {
 		BroodEetleEntity broodEetle = this.entity;
 		broodEetle.setTargetFlyingRotations(new TargetFlyingRotations(-30.0F, 0.0F));
-		broodEetle.addVelocity(0.0F, -0.15F, 0.0F);
+		broodEetle.push(0.0F, -0.15F, 0.0F);
 
 		if (broodEetle.isOnGround()) {
 			int animationTick = broodEetle.getAnimationTick();
@@ -54,19 +54,19 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	@Override
-	public boolean shouldContinueExecuting() {
+	public boolean canContinueToUse() {
 		return this.entity.isFlying() && this.isEndimationPlaying();
 	}
 
 	private static List<LivingEntity> searchForAggressorsUnder(BroodEetleEntity broodEetle, AxisAlignedBB otherBounds) {
-		return broodEetle.world.getEntitiesWithinAABB(LivingEntity.class, DetectionHelper.expandDownwards(broodEetle.getBoundingBox(), 10.0F), livingEntity -> {
-			if (broodEetle.getPosY() - livingEntity.getPosY() < 4 || !otherBounds.contains(livingEntity.getPositionVec())) {
+		return broodEetle.level.getEntitiesOfClass(LivingEntity.class, DetectionHelper.expandDownwards(broodEetle.getBoundingBox(), 10.0F), livingEntity -> {
+			if (broodEetle.getY() - livingEntity.getY() < 4 || !otherBounds.contains(livingEntity.position())) {
 				return false;
 			}
 			if (livingEntity instanceof PlayerEntity) {
-				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canEntityBeSeen(livingEntity) && !((PlayerEntity) livingEntity).isCreative();
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && !((PlayerEntity) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canEntityBeSeen(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getAttackTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 

@@ -16,12 +16,12 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 		super(puffbug, 1.0F, 15);
 	}
 
-	public boolean shouldExecute() {
-		if (this.creature.isBeingRidden()) {
+	public boolean canUse() {
+		if (this.mob.isVehicle()) {
 			return false;
 		} else {
-			if (!this.mustUpdate) {
-				if (this.creature.getRNG().nextInt(this.executionChance) != 0) {
+			if (!this.forceTrigger) {
+				if (this.mob.getRandom().nextInt(this.interval) != 0) {
 					return false;
 				}
 			}
@@ -30,10 +30,10 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 			if (destination == null) {
 				return false;
 			} else {
-				this.x = destination.x;
-				this.y = destination.y;
-				this.z = destination.z;
-				this.mustUpdate = false;
+				this.wantedX = destination.x;
+				this.wantedY = destination.y;
+				this.wantedZ = destination.z;
+				this.forceTrigger = false;
 				return true;
 			}
 		}
@@ -41,9 +41,9 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 
 	@Nullable
 	protected Vector3d getPosition() {
-		Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5);
+		Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 8, 5);
 
-		for (int i = 0; vec3d != null && !this.creature.world.getBlockState(new BlockPos(vec3d)).allowsMovement(this.creature.world, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.findRandomTarget(this.creature, 8, 5)) {
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.getPos(this.mob, 8, 5)) {
 			;
 		}
 

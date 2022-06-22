@@ -17,32 +17,32 @@ public class PurpoidTeleportToFlowerGoal extends AbstractPurpoidTeleportGoal {
 	}
 
 	@Override
-	public boolean shouldExecute() {
-		return !this.purpoid.hasRestCooldown() && super.shouldExecute();
+	public boolean canUse() {
+		return !this.purpoid.hasRestCooldown() && super.canUse();
 	}
 
 	@Override
 	protected void beginTeleportation(PurpoidEntity purpoid, BlockPos pos) {
 		super.beginTeleportation(purpoid, pos);
-		purpoid.setFlowerPos(pos.down());
+		purpoid.setFlowerPos(pos.below());
 	}
 
 	@Nullable
 	@Override
 	BlockPos generateTeleportPos(PurpoidEntity purpoid, Random random) {
-		BlockPos pos = purpoid.getPosition();
+		BlockPos pos = purpoid.blockPosition();
 		int originX = pos.getX();
 		int originY = pos.getY();
 		int originZ = pos.getZ();
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		World world = purpoid.world;
+		World world = purpoid.level;
 		List<BlockPos> flowerPositions = new ArrayList<>();
 		for (int x = originX - 8; x <= originX + 8; x++) {
 			for (int y = originY - 12; y <= originY + 12; y++) {
 				for (int z = originZ - 8; z <= originZ + 8; z++) {
-					mutable.setPos(x, y, z);
+					mutable.set(x, y, z);
 					if (world.getBlockState(mutable).getBlock() == Blocks.CHORUS_FLOWER) {
-						flowerPositions.add(mutable.up());
+						flowerPositions.add(mutable.above());
 					}
 				}
 			}

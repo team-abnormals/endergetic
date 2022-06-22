@@ -59,6 +59,6 @@ public final class FlyingRotations {
 	}
 
 	public static float clampedRotate(float from, float to, float delta) {
-		return from + MathHelper.clamp(MathHelper.wrapSubtractDegrees(from, to), -delta, delta);
+		return from + MathHelper.clamp(MathHelper.degreesDifference(from, to), -delta, delta);
 	}
 }

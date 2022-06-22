@@ -26,22 +26,22 @@ public final class EntityMixin implements BalloonHolder {
 	private List<BolloomBalloonEntity> balloons = Lists.newArrayList();
 
 	@Shadow
-	private UUID entityUniqueID;
+	private UUID uuid;
 
 	@Shadow
-	private World world;
+	private World level;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setLocationAndAngles(DDDFF)V", shift = At.Shift.AFTER), method = "setPositionAndUpdate")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;moveTo(DDDFF)V", shift = At.Shift.AFTER), method = "teleportTo")
 	private void updateBalloonPositions(double x, double y, double z, CallbackInfo info) {
-		ServerWorld world = (ServerWorld) this.world;
+		ServerWorld level = (ServerWorld) this.level;
 		this.balloons.forEach(balloon -> {
-			world.chunkCheck(balloon);
-			balloon.isPositionDirty = true;
+			level.updateChunkPos(balloon);
+			balloon.forceChunkAddition = true;
 			balloon.updateAttachedPosition();
 		});
 	}
 
-	@Inject(at = @At(value = "RETURN"), method = "detach")
+	@Inject(at = @At(value = "RETURN"), method = "unRide")
 	private void detach(CallbackInfo info) {
 		if (!this.getBalloons().isEmpty()) {
 			this.detachBalloons();
@@ -56,7 +56,7 @@ public final class EntityMixin implements BalloonHolder {
 	private void preventGliderEetleSuffocationDamage(DamageSource source, CallbackInfoReturnable<Boolean> info) {
 		if (source == DamageSource.IN_WALL) {
 			Entity entity = ((Entity) (Object) this);
-			if (entity.isAlive() && entity.isEntityInsideOpaqueBlock() && entity.getRidingEntity() instanceof GliderEetleEntity) {
+			if (entity.isAlive() && entity.isInWall() && entity.getVehicle() instanceof GliderEetleEntity) {
 				info.setReturnValue(true);
 			}
 		}

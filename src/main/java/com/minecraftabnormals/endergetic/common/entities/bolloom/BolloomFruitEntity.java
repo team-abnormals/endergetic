@@ -25,8 +25,8 @@ import net.minecraft.world.World;
  * @author - SmellyModder (Luke Tonon)
  */
 public class BolloomFruitEntity extends AbstractBolloomEntity {
-	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.createKey(BolloomFruitEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.createKey(BolloomFruitEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.defineId(BolloomFruitEntity.class, DataSerializers.BLOCK_POS);
+	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.defineId(BolloomFruitEntity.class, DataSerializers.INT);
 
 	public BolloomFruitEntity(EntityType<? extends BolloomFruitEntity> type, World world) {
 		super(EEEntities.BOLLOOM_FRUIT.get(), world);
@@ -39,38 +39,38 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 
 	public BolloomFruitEntity(World world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
-		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getOffset());
-		float zPos = origin.getZ() + 0.5F + (direction.getAxis() == Axis.X ? 0.0F : -0.2F * direction.getAxisDirection().getOffset());
+		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
+		float zPos = origin.getZ() + 0.5F + (direction.getAxis() == Axis.X ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
 		float yPos = origin.getY() + 1.15F;
 
-		this.setPosition(xPos, yPos, zPos);
+		this.setPos(xPos, yPos, zPos);
 		this.setOrigin(xPos, yPos, zPos);
 		this.setBudPos(budPos);
 		this.setVineHeight(height);
 
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		this.dataManager.register(VINE_HEIGHT, 1);
-		this.dataManager.register(BUD_POS, BlockPos.ZERO);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VINE_HEIGHT, 1);
+		this.entityData.define(BUD_POS, BlockPos.ZERO);
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
-		compound.putLong("BudPosition", this.getBudPos().toLong());
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putLong("BudPosition", this.getBudPos().asLong());
 		compound.putInt("VineHeight", this.getVineHeight());
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
-		this.setBudPos(BlockPos.fromLong(compound.getLong("BudPosition")));
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
+		this.setBudPos(BlockPos.of(compound.getLong("BudPosition")));
 		if (compound.contains("VineHeight", 3)) {
 			this.setVineHeight(compound.getInt("VineHeight"));
 		} else {
@@ -79,11 +79,11 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	private void setBudPos(BlockPos budPos) {
-		this.dataManager.set(BUD_POS, budPos);
+		this.entityData.set(BUD_POS, budPos);
 	}
 
 	private BlockPos getBudPos() {
-		return this.dataManager.get(BUD_POS);
+		return this.entityData.get(BUD_POS);
 	}
 
 	@Override
@@ -92,32 +92,32 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	public void setVineHeight(int height) {
-		this.dataManager.set(VINE_HEIGHT, height);
+		this.entityData.set(VINE_HEIGHT, height);
 	}
 
 	public int getVineHeight() {
-		return this.dataManager.get(VINE_HEIGHT);
+		return this.entityData.get(VINE_HEIGHT);
 	}
 
 	@Override
 	public void updatePositionAndMotion(double angleX, double angleZ) {
 		if (!this.isUntied()) {
-			this.setPosition(
+			this.setPos(
 					this.getOriginX() + this.getSway() * angleX,
 					this.getOriginY(),
 					this.getOriginZ() + this.getSway() * angleZ
 			);
 		} else {
-			this.move(MoverType.SELF, this.getMotion());
-			this.setMotion(angleX * 0.05F, 0.07F, angleZ * 0.05F);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(angleX * 0.05F, 0.07F, angleZ * 0.05F);
 		}
 	}
 
 	@Override
 	public void updateUntied() {
 		BlockPos budPos = this.getBudPos();
-		if (this.world.isAreaLoaded(budPos, 1)) {
-			if (this.world.getBlockState(budPos).getBlock() != EEBlocks.BOLLOOM_BUD.get() || !this.world.getBlockState(budPos).get(BolloomBudBlock.OPENED)) {
+		if (this.level.isAreaLoaded(budPos, 1)) {
+			if (this.level.getBlockState(budPos).getBlock() != EEBlocks.BOLLOOM_BUD.get() || !this.level.getBlockState(budPos).getValue(BolloomBudBlock.OPENED)) {
 				this.setUntied(true);
 			}
 		}
@@ -131,17 +131,17 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	public void onBroken(boolean dropFruit) {
 		super.onBroken(dropFruit);
 		if (dropFruit) {
-			Block.spawnAsEntity(this.world, this.getPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
+			Block.popResource(this.level, this.blockPosition(), new ItemStack(EEItems.BOLLOOM_FRUIT.get()));
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean isOpenPathBelowFruit() {
-		BlockPos.Mutable mutable = this.getPosition().toMutable();
+		BlockPos.Mutable mutable = this.blockPosition().mutable();
 		for (int i = 0; i < this.getVineHeight(); i++) {
-			BlockPos pos = mutable.down(i);
-			if (this.world.isAreaLoaded(pos, 1)) {
-				if (!this.world.getBlockState(pos).isAir()) {
+			BlockPos pos = mutable.below(i);
+			if (this.level.isAreaLoaded(pos, 1)) {
+				if (!this.level.getBlockState(pos).isAir()) {
 					return false;
 				}
 			}
@@ -155,23 +155,23 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public void applyEntityCollision(Entity entity) {
+	public void push(Entity entity) {
 		if (entity instanceof BolloomFruitEntity) {
 			if (entity.getBoundingBox().minY < this.getBoundingBox().maxY) {
-				super.applyEntityCollision(entity);
+				super.push(entity);
 			}
-		} else if (entity.getPosY() >= this.getBoundingBox().minY) {
-			super.applyEntityCollision(entity);
+		} else if (entity.getY() >= this.getBoundingBox().minY) {
+			super.push(entity);
 		}
 	}
 
 	@Override
-	public boolean isInRangeToRenderDist(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		return true;
 	}
 
 	@Override
-	public boolean isInRangeToRender3d(double x, double y, double z) {
+	public boolean shouldRender(double x, double y, double z) {
 		return true;
 	}
 }

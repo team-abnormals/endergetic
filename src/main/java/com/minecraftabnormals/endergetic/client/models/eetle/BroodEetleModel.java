@@ -43,108 +43,108 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	public EndimatorModelRenderer rightBackFoot;
 
 	public BroodEetleModel() {
-		this.textureWidth = 300;
-		this.textureHeight = 100;
+		this.texWidth = 300;
+		this.texHeight = 100;
 		this.rightFrontLeg = new EndimatorModelRenderer(this, 103, 79);
 		this.rightFrontLeg.mirror = true;
-		this.rightFrontLeg.setRotationPoint(-13.0F, 6.0F, 5.0F);
+		this.rightFrontLeg.setPos(-13.0F, 6.0F, 5.0F);
 		this.rightFrontLeg.addBox(0.0F, 0.0F, -2.5F, 5, 14, 5, 0.0F);
 		this.setRotateAngle(rightFrontLeg, 0.0F, -0.08726646259971647F, 0.6108652381980153F);
 		this.rightBackFoot = new EndimatorModelRenderer(this, 77, 61);
 		this.rightBackFoot.mirror = true;
-		this.rightBackFoot.setRotationPoint(2.5F, 12.0F, 0.0F);
+		this.rightBackFoot.setPos(2.5F, 12.0F, 0.0F);
 		this.rightBackFoot.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
 		this.setRotateAngle(rightBackFoot, -0.13962634015954636F, 0.0F, -0.7853981633974483F);
 		this.leftMandible = new EndimatorModelRenderer(this, 93, 60);
-		this.leftMandible.setRotationPoint(0.0F, 3.0F, -14.0F);
+		this.leftMandible.setPos(0.0F, 3.0F, -14.0F);
 		this.leftMandible.addBox(0.0F, 0.0F, -15.0F, 15, 0, 15, 0.0F);
 		this.rightBackLeg = new EndimatorModelRenderer(this, 103, 79);
 		this.rightBackLeg.mirror = true;
-		this.rightBackLeg.setRotationPoint(-13.0F, 6.0F, 23.0F);
+		this.rightBackLeg.setPos(-13.0F, 6.0F, 23.0F);
 		this.rightBackLeg.addBox(0.0F, 0.0F, -2.5F, 5, 14, 5, 0.0F);
 		this.setRotateAngle(rightBackLeg, 0.2617993877991494F, -0.08726646259971647F, 0.7853981633974483F);
 		this.horn = new EndimatorModelRenderer(this, 0, 62);
-		this.horn.setRotationPoint(0.0F, 0.0F, -11.5F);
+		this.horn.setPos(0.0F, 0.0F, -11.5F);
 		this.horn.addBox(-3.0F, -15.0F, -3.0F, 6, 15, 6, 0.0F);
 		this.setRotateAngle(horn, 0.3490658503988659F, 0.0F, 0.0F);
 		this.body = new EndimatorModelRenderer(this, 0, 59);
-		this.body.setRotationPoint(0.0F, -8.0F, -15.0F);
+		this.body.setPos(0.0F, -8.0F, -15.0F);
 		this.body.addBox(-12.0F, 0.0F, 0.0F, 24, 14, 27, 0.0F);
 		this.setRotateAngle(body, -0.08726646259971647F, 0.0F, 0.0F);
 		this.eggMouthBottom = new EndimatorModelRenderer(this, 125, 60);
-		this.eggMouthBottom.setRotationPoint(-11.0F, 10.5F, 0.5F);
+		this.eggMouthBottom.setPos(-11.0F, 10.5F, 0.5F);
 		this.eggMouthBottom.addBox(0.0F, 0.0F, 0.0F, 21, 21, 17, 0.0F);
 		this.setRotateAngle(eggMouthBottom, 0.0F, 0.0F, 4.71238898038469F);
 		this.eggSack = new EndimatorModelRenderer(this, 5, 27);
-		this.eggSack.setRotationPoint(13.0F, 0.0F, 17.0F);
+		this.eggSack.setPos(13.0F, 0.0F, 17.0F);
 		this.eggSack.addBox(-8.0F, -8.0F, 0.0F, 16, 16, 11, 0.0F);
 		this.head = new EndimatorModelRenderer(this, 0, 0);
-		this.head.setRotationPoint(0.0F, 8.5F, 1.5F);
+		this.head.setPos(0.0F, 8.5F, 1.5F);
 		this.head.addBox(-8.0F, -6.0F, -14.0F, 16, 12, 14, 0.0F);
 		this.setRotateAngle(head, 0.2617993877991494F, 0.0F, 0.0F);
 		this.rightMandible = new EndimatorModelRenderer(this, 93, 60);
 		this.rightMandible.mirror = true;
-		this.rightMandible.setRotationPoint(0.0F, 3.0F, -13.0F);
+		this.rightMandible.setPos(0.0F, 3.0F, -13.0F);
 		this.rightMandible.addBox(-15.0F, 0.0F, -16.0F, 15, 0, 15, 0.0F);
 		this.leftBackLeg = new EndimatorModelRenderer(this, 103, 79);
-		this.leftBackLeg.setRotationPoint(13.0F, 6.0F, 23.0F);
+		this.leftBackLeg.setPos(13.0F, 6.0F, 23.0F);
 		this.leftBackLeg.addBox(-5.0F, 0.0F, -2.5F, 5, 14, 5, 0.0F);
 		this.setRotateAngle(leftBackLeg, 0.2617993877991494F, 0.08726646259971647F, -0.7853981633974483F);
 		this.eggMouthLeft = new EndimatorModelRenderer(this, 125, 60);
-		this.eggMouthLeft.setRotationPoint(11.0F, 10.5F, 0.5F);
+		this.eggMouthLeft.setPos(11.0F, 10.5F, 0.5F);
 		this.eggMouthLeft.addBox(0.0F, 0.0F, 0.0F, 21, 21, 17, 0.0F);
 		this.setRotateAngle(eggMouthLeft, 0.0F, 0.0F, 3.141592653589793F);
 		this.rightFrontFoot = new EndimatorModelRenderer(this, 77, 61);
 		this.rightFrontFoot.mirror = true;
-		this.rightFrontFoot.setRotationPoint(2.5F, 12.0F, 0.0F);
+		this.rightFrontFoot.setPos(2.5F, 12.0F, 0.0F);
 		this.rightFrontFoot.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
 		this.setRotateAngle(rightFrontFoot, 0.03490658503988659F, 0.0F, -0.5759586531581287F);
 		this.eggLayer = new EndimatorModelRenderer(this, 210, 56);
-		this.eggLayer.setRotationPoint(-0.5F, -10.5F, -0.5F);
+		this.eggLayer.setPos(-0.5F, -10.5F, -0.5F);
 		this.eggLayer.addBox(0.0F, 0.0F, 0.0F, 27, 21, 18, 0.0F);
 		this.wingLeft = new EndimatorModelRenderer(this, 120, 0);
-		this.wingLeft.setRotationPoint(0.0F, -0.2F, 0.0F);
+		this.wingLeft.setPos(0.0F, -0.2F, 0.0F);
 		this.wingLeft.addBox(0.0F, 0.0F, 0.0F, 12, 0, 40, 0.0F);
 		this.setRotateAngle(wingLeft, 0.0F, 0.017453292519943295F, 0.0F);
 		this.eggMouthRight = new EndimatorModelRenderer(this, 125, 60);
-		this.eggMouthRight.setRotationPoint(-11.0F, -10.5F, 0.5F);
+		this.eggMouthRight.setPos(-11.0F, -10.5F, 0.5F);
 		this.eggMouthRight.addBox(0.0F, 0.0F, 0.0F, 21, 21, 17, 0.0F);
 		this.setRotateAngle(eggMouthRight, 0.0F, 0.006108652381980153F, 0.0F);
 		this.wingRight = new EndimatorModelRenderer(this, 120, 0);
 		this.wingRight.mirror = true;
-		this.wingRight.setRotationPoint(0.0F, -0.2F, 0.0F);
+		this.wingRight.setPos(0.0F, -0.2F, 0.0F);
 		this.wingRight.addBox(-12.0F, 0.0F, 0.0F, 12, 0, 40, 0.0F);
 		this.setRotateAngle(wingRight, 0.0F, -0.017453292519943295F, 0.0F);
 		this.leftFrontLeg = new EndimatorModelRenderer(this, 103, 79);
-		this.leftFrontLeg.setRotationPoint(13.0F, 6.0F, 5.0F);
+		this.leftFrontLeg.setPos(13.0F, 6.0F, 5.0F);
 		this.leftFrontLeg.addBox(-5.0F, 0.0F, -2.5F, 5, 14, 5, 0.0F);
 		this.setRotateAngle(leftFrontLeg, 0.0F, 0.08726646259971647F, -0.6108652381980153F);
 		this.eggMouthTop = new EndimatorModelRenderer(this, 125, 60);
-		this.eggMouthTop.setRotationPoint(11.0F, -10.5F, 0.5F);
+		this.eggMouthTop.setPos(11.0F, -10.5F, 0.5F);
 		this.eggMouthTop.addBox(0.0F, 0.0F, 0.0F, 21, 21, 17, 0.0F);
 		this.setRotateAngle(eggMouthTop, 0.0F, 0.0F, 1.5707963267948966F);
 		this.egg = new EndimatorModelRenderer(this, 61, 0);
-		this.egg.setRotationPoint(-13.0F, 6.0F, 24.0F);
+		this.egg.setPos(-13.0F, 6.0F, 24.0F);
 		this.egg.addBox(0.0F, -10.0F, 0.0F, 26, 20, 17, 0.0F);
 		this.setRotateAngle(egg, 0.40142572795869574F, 0.0F, 0.0F);
 		this.leftShell = new EndimatorModelRenderer(this, 217, 0);
-		this.leftShell.setRotationPoint(0.0F, -0.5F, -0.5F);
+		this.leftShell.setPos(0.0F, -0.5F, -0.5F);
 		this.leftShell.addBox(0.0F, 0.0F, 0.0F, 13, 12, 27, 0.0F);
 		this.setRotateAngle(leftShell, 0.0F, 0.03490658503988659F, 0.0F);
 		this.leftFrontFoot = new EndimatorModelRenderer(this, 77, 61);
-		this.leftFrontFoot.setRotationPoint(-2.5F, 12.0F, 0.0F);
+		this.leftFrontFoot.setPos(-2.5F, 12.0F, 0.0F);
 		this.leftFrontFoot.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
 		this.setRotateAngle(leftFrontFoot, 0.03490658503988659F, 0.0F, 0.5759586531581287F);
 		this.rightShell = new EndimatorModelRenderer(this, 217, 0);
 		this.rightShell.mirror = true;
-		this.rightShell.setRotationPoint(0.0F, -0.5F, -0.5F);
+		this.rightShell.setPos(0.0F, -0.5F, -0.5F);
 		this.rightShell.addBox(-13.0F, 0.0F, 0.0F, 13, 12, 27, 0.0F);
 		this.setRotateAngle(rightShell, 0.0F, -0.03490658503988659F, 0.0F);
 		this.hornTop = new EndimatorModelRenderer(this, 62, 38);
-		this.hornTop.setRotationPoint(-13.0F, -30.0F, 0.0F);
+		this.hornTop.setPos(-13.0F, -30.0F, 0.0F);
 		this.hornTop.addBox(0.0F, 0.0F, 0.0F, 26, 20, 0, 0.0F);
 		this.leftBackFoot = new EndimatorModelRenderer(this, 77, 61);
-		this.leftBackFoot.setRotationPoint(-2.5F, 12.0F, 0.0F);
+		this.leftBackFoot.setPos(-2.5F, 12.0F, 0.0F);
 		this.leftBackFoot.addBox(-3.5F, 0.0F, -3.5F, 7, 14, 7, 0.0F);
 		this.setRotateAngle(leftBackFoot, -0.13962634015954636F, 0.0F, 0.7853981633974483F);
 		this.body.addChild(this.rightFrontLeg);
@@ -177,49 +177,49 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-		this.wingLeft.showModel = this.wingLeft.rotateAngleY >= WING_SHOW_THRESHOLD;
-		this.wingRight.showModel = this.wingRight.rotateAngleY <= -WING_SHOW_THRESHOLD;
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.wingLeft.visible = this.wingLeft.yRot >= WING_SHOW_THRESHOLD;
+		this.wingRight.visible = this.wingRight.yRot <= -WING_SHOW_THRESHOLD;
 		this.body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setRotationAngles(BroodEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(BroodEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
 		FlyingRotations flyingRotations = eetle.getFlyingRotations();
-		this.body.rotateAngleX += MathHelper.clamp(flyingRotations.getRenderFlyPitch(), -30.0F, 20.0F) * ((float) Math.PI / 180.0F);
+		this.body.xRot += MathHelper.clamp(flyingRotations.getRenderFlyPitch(), -30.0F, 20.0F) * ((float) Math.PI / 180.0F);
 
 		if (eetle.isFlying()) {
-			this.body.rotateAngleZ = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
+			this.body.zRot = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
 		}
 
 		float flyingProgress = eetle.getFlyingProgress();
 		float sleepingProgress = eetle.getSleepingProgress();
-		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F)) + 0.35F * sleepingProgress + sleepingProgress * 0.06F * MathHelper.sin(0.08F * ageInTicks);
+		this.head.yRot = netHeadYaw * ((float) Math.PI / 180.0F);
+		this.head.xRot += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F)) + 0.35F * sleepingProgress + sleepingProgress * 0.06F * MathHelper.sin(0.08F * ageInTicks);
 
-		this.body.rotationPointY += sleepingProgress * 6.0F;
+		this.body.y += sleepingProgress * 6.0F;
 
 		float frontLegSleepingX = 0.7F * sleepingProgress;
 		float legFlying = 0.52F * flyingProgress;
-		this.leftFrontLeg.rotateAngleX += legFlying - frontLegSleepingX;
-		this.rightFrontLeg.rotateAngleX += legFlying - frontLegSleepingX;
+		this.leftFrontLeg.xRot += legFlying - frontLegSleepingX;
+		this.rightFrontLeg.xRot += legFlying - frontLegSleepingX;
 		float backLegSleepingX = 0.09F * sleepingProgress;
-		this.leftBackLeg.rotateAngleX += legFlying + backLegSleepingX;
-		this.rightBackLeg.rotateAngleX += legFlying + backLegSleepingX;
+		this.leftBackLeg.xRot += legFlying + backLegSleepingX;
+		this.rightBackLeg.xRot += legFlying + backLegSleepingX;
 
 		float frontLegSleepingZ = 0.52F * sleepingProgress;
-		this.leftFrontLeg.rotateAngleZ -= frontLegSleepingZ;
-		this.rightFrontLeg.rotateAngleZ += frontLegSleepingZ;
+		this.leftFrontLeg.zRot -= frontLegSleepingZ;
+		this.rightFrontLeg.zRot += frontLegSleepingZ;
 		float backLegSleepingZ = 0.33F * sleepingProgress;
-		this.leftBackLeg.rotateAngleZ -= backLegSleepingZ;
-		this.rightBackLeg.rotateAngleZ += backLegSleepingZ;
+		this.leftBackLeg.zRot -= backLegSleepingZ;
+		this.rightBackLeg.zRot += backLegSleepingZ;
 
 		float backLegSleepingY = 0.54F * sleepingProgress;
-		this.leftBackLeg.rotateAngleY += backLegSleepingY;
-		this.rightBackLeg.rotateAngleY -= backLegSleepingY;
+		this.leftBackLeg.yRot += backLegSleepingY;
+		this.rightBackLeg.yRot -= backLegSleepingY;
 
 		float healPulseProgress = eetle.getHealPulseProgress();
 		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks)) + 0.1F * MathHelper.sin((float) Math.PI * 0.5F * healPulseProgress);
@@ -229,36 +229,36 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		egg.setScale(egg.scaleX + eggScale, egg.scaleY + eggScale, egg.scaleZ + eggScale);
 
 		float eggMouthAngle = 0.087F * Math.abs(MathHelper.cos(0.05F * ageInTicks)) + 0.79F * eetle.getEggMouthProgress();
-		this.eggMouthTop.rotateAngleY -= eggMouthAngle;
-		this.eggMouthBottom.rotateAngleY -= eggMouthAngle;
-		this.eggMouthRight.rotateAngleY -= eggMouthAngle;
-		this.eggMouthLeft.rotateAngleY -= eggMouthAngle;
+		this.eggMouthTop.yRot -= eggMouthAngle;
+		this.eggMouthBottom.yRot -= eggMouthAngle;
+		this.eggMouthRight.yRot -= eggMouthAngle;
+		this.eggMouthLeft.yRot -= eggMouthAngle;
 
-		egg.rotateAngleX += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
+		egg.xRot += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
 
 		float takeOffProgress = eetle.getTakeoffProgress();
 		float thirtyDegreeProgress = 0.52F * takeOffProgress;
-		this.leftShell.rotateAngleZ -= thirtyDegreeProgress;
-		this.rightShell.rotateAngleZ += thirtyDegreeProgress;
-		this.wingLeft.rotateAngleY += thirtyDegreeProgress;
-		this.wingRight.rotateAngleY -= thirtyDegreeProgress;
+		this.leftShell.zRot -= thirtyDegreeProgress;
+		this.rightShell.zRot += thirtyDegreeProgress;
+		this.wingLeft.yRot += thirtyDegreeProgress;
+		this.wingRight.yRot -= thirtyDegreeProgress;
 
 		float shellY = 0.87F * takeOffProgress;
-		this.leftShell.rotateAngleY += shellY;
-		this.rightShell.rotateAngleY -= shellY;
+		this.leftShell.yRot += shellY;
+		this.rightShell.yRot -= shellY;
 
 		if (eetle.isFlying()) {
 			float wingX = 0.1F * MathHelper.sin(8.0F * eetle.getWingFlap()) + (0.26F * takeOffProgress);
-			this.wingLeft.rotateAngleX += wingX;
-			this.wingRight.rotateAngleX += wingX;
+			this.wingLeft.xRot += wingX;
+			this.wingRight.xRot += wingX;
 
 			float frontLegMoving = Math.abs(MathHelper.cos(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
-			this.leftFrontLeg.rotateAngleX -= frontLegMoving;
-			this.rightFrontLeg.rotateAngleX -= frontLegMoving;
+			this.leftFrontLeg.xRot -= frontLegMoving;
+			this.rightFrontLeg.xRot -= frontLegMoving;
 
 			float backLegMoving = Math.abs(MathHelper.sin(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
-			this.leftBackLeg.rotateAngleX += backLegMoving;
-			this.rightBackLeg.rotateAngleX += backLegMoving;
+			this.leftBackLeg.xRot += backLegMoving;
+			this.rightBackLeg.xRot += backLegMoving;
 		}
 	}
 
@@ -536,9 +536,9 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	 * This is a helper function from Tabula to set the rotation of model parts
 	 */
 	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 
 	/**

@@ -88,19 +88,19 @@ public final class EntityEvents {
 		if (projectileEntity instanceof PotionEntity) {
 			PotionEntity potionEntity = ((PotionEntity) projectileEntity);
 			ItemStack itemstack = potionEntity.getItem();
-			Potion potion = PotionUtils.getPotionFromItem(itemstack);
-			List<EffectInstance> list = PotionUtils.getEffectsFromStack(itemstack);
+			Potion potion = PotionUtils.getPotion(itemstack);
+			List<EffectInstance> list = PotionUtils.getMobEffects(itemstack);
 
 			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
-				World world = potionEntity.world;
+				World world = potionEntity.level;
 				BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) event.getRayTraceResult();
-				Direction direction = blockraytraceresult.getFace();
-				BlockPos blockpos = blockraytraceresult.getPos().offset(Direction.DOWN).offset(direction);
+				Direction direction = blockraytraceresult.getDirection();
+				BlockPos blockpos = blockraytraceresult.getBlockPos().relative(Direction.DOWN).relative(direction);
 
 				tryToConvertCorrockBlock(world, blockpos);
-				tryToConvertCorrockBlock(world, blockpos.offset(direction.getOpposite()));
+				tryToConvertCorrockBlock(world, blockpos.relative(direction.getOpposite()));
 				for (Direction faces : Direction.values()) {
-					tryToConvertCorrockBlock(world, blockpos.offset(faces));
+					tryToConvertCorrockBlock(world, blockpos.relative(faces));
 				}
 			}
 		}
@@ -109,34 +109,34 @@ public final class EntityEvents {
 	@SubscribeEvent
 	public static void onLivingTick(LivingUpdateEvent event) {
 		LivingEntity entity = event.getEntityLiving();
-		if (!entity.world.isRemote) {
+		if (!entity.level.isClientSide) {
 			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
 			ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
 			boolean hasABalloon = balloonCount > 0;
 			if (hasABalloon) entity.fallDistance = 0.0F;
-			boolean isFalling = entity.getMotion().y <= 0.0D;
+			boolean isFalling = entity.getDeltaMovement().y <= 0.0D;
 
 			if (isFalling && balloonCount < 3 && hasABalloon) {
-				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.applyNonPersistentModifier(SLOW_BALLOON);
+				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.addTransientModifier(SLOW_BALLOON);
 			} else if (gravity.hasModifier(SLOW_BALLOON)) {
 				gravity.removeModifier(SLOW_BALLOON);
 			}
 
 			if (isFalling && balloonCount == 3) {
-				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.applyNonPersistentModifier(SUPER_SLOW_BALLOON);
+				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.addTransientModifier(SUPER_SLOW_BALLOON);
 			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
 				gravity.removeModifier(SUPER_SLOW_BALLOON);
 			}
 
-			if (isFalling && entity.isPassenger(PurpoidEntity.class)) {
+			if (isFalling && entity.hasPassenger(PurpoidEntity.class)) {
 				entity.fallDistance = 0.0F;
-				if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.applyNonPersistentModifier(PURPOID_SLOWFALL);
+				if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.addTransientModifier(PURPOID_SLOWFALL);
 			} else if (gravity.hasModifier(PURPOID_SLOWFALL)) {
 				gravity.removeModifier(PURPOID_SLOWFALL);
 			}
 
 			if (balloonCount > 3) {
-				entity.addPotionEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
+				entity.addEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
 				if (entity instanceof ServerPlayerEntity) {
 					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity);
 				}
@@ -180,12 +180,12 @@ public final class EntityEvents {
 	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
 		if (event.isAttack()) {
 			ClientPlayerEntity player = ClientInfo.getClientPlayer();
-			if (player.rotationPitch > -25.0F) return;
-			Entity ridingEntity = player.getRidingEntity();
+			if (player.xRot > -25.0F) return;
+			Entity ridingEntity = player.getVehicle();
 			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
-					Minecraft.getInstance().playerController.attackEntity(player, balloons.get(player.getRNG().nextInt(balloons.size())));
+					Minecraft.getInstance().gameMode.attack(player, balloons.get(player.getRandom().nextInt(balloons.size())));
 					event.setSwingHand(true);
 				}
 			}
@@ -195,8 +195,8 @@ public final class EntityEvents {
 	@SubscribeEvent
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		Entity entity = event.getEntity();
-		if (entity.world.isRemote && entity instanceof PurpoidEntity) {
-			((PurpoidEntity) entity).updatePull(entity.getPositionVec());
+		if (entity.level.isClientSide && entity instanceof PurpoidEntity) {
+			((PurpoidEntity) entity).updatePull(entity.position());
 		}
 	}
 
@@ -206,7 +206,7 @@ public final class EntityEvents {
 		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || block instanceof InfestedCorrockBlock || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {
 			BlockState convertedState = convertCorrockBlock(state);
 			if (convertedState != null) {
-				world.setBlockState(pos, convertedState);
+				world.setBlockAndUpdate(pos, convertedState);
 			}
 		}
 	}
@@ -217,16 +217,16 @@ public final class EntityEvents {
 			Block petrifiedBlock = entries.getValue().get();
 			if (entries.getKey().get() == block) {
 				if (block instanceof CorrockPlantBlock) {
-					return petrifiedBlock.getDefaultState().with(CorrockPlantBlock.WATERLOGGED, state.get(CorrockPlantBlock.WATERLOGGED));
+					return petrifiedBlock.defaultBlockState().setValue(CorrockPlantBlock.WATERLOGGED, state.getValue(CorrockPlantBlock.WATERLOGGED));
 				} else if (block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || block instanceof InfestedCorrockBlock) {
-					return petrifiedBlock.getDefaultState();
+					return petrifiedBlock.defaultBlockState();
 				} else if (block instanceof CorrockCrownStandingBlock) {
-					return petrifiedBlock.getDefaultState()
-							.with(CorrockCrownStandingBlock.ROTATION, state.get(CorrockCrownStandingBlock.ROTATION))
-							.with(CorrockCrownStandingBlock.UPSIDE_DOWN, state.get(CorrockCrownStandingBlock.UPSIDE_DOWN))
-							.with(CorrockCrownStandingBlock.WATERLOGGED, state.get(CorrockCrownStandingBlock.WATERLOGGED));
+					return petrifiedBlock.defaultBlockState()
+							.setValue(CorrockCrownStandingBlock.ROTATION, state.getValue(CorrockCrownStandingBlock.ROTATION))
+							.setValue(CorrockCrownStandingBlock.UPSIDE_DOWN, state.getValue(CorrockCrownStandingBlock.UPSIDE_DOWN))
+							.setValue(CorrockCrownStandingBlock.WATERLOGGED, state.getValue(CorrockCrownStandingBlock.WATERLOGGED));
 				}
-				return petrifiedBlock.getDefaultState().with(CorrockCrownWallBlock.WATERLOGGED, state.get(CorrockCrownWallBlock.WATERLOGGED)).with(CorrockCrownWallBlock.FACING, state.get(CorrockCrownWallBlock.FACING));
+				return petrifiedBlock.defaultBlockState().setValue(CorrockCrownWallBlock.WATERLOGGED, state.getValue(CorrockCrownWallBlock.WATERLOGGED)).setValue(CorrockCrownWallBlock.FACING, state.getValue(CorrockCrownWallBlock.FACING));
 			}
 		}
 		return null;

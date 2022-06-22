@@ -41,7 +41,7 @@ public final class C2SInflateBoofloVestMessage {
 			context.enqueueWork(() -> {
 				PlayerEntity player = context.getSender();
 				if (player != null && !player.isOnGround() && !player.isSpectator()) {
-					ItemStack stack = player.inventory.armorInventory.get(2);
+					ItemStack stack = player.inventory.armor.get(2);
 					if (stack.getItem() == EEItems.BOOFLO_VEST.get() && BoofloVestItem.canBoof(stack, player)) {
 						CompoundNBT tag = stack.getOrCreateTag();
 						tag.putBoolean(BoofloVestItem.BOOFED_TAG, true);
@@ -49,10 +49,10 @@ public final class C2SInflateBoofloVestMessage {
 
 						int increment = tag.getInt(BoofloVestItem.TIMES_BOOFED_TAG) + 1;
 						tag.putInt(BoofloVestItem.TIMES_BOOFED_TAG, increment);
-						player.getCooldownTracker().setCooldown(EEItems.BOOFLO_VEST.get(), increment < DELAY_INCREASE_THRESHOLD ? DEFAULT_DELAY : DELAY_MULTIPLIER * increment);
+						player.getCooldowns().addCooldown(EEItems.BOOFLO_VEST.get(), increment < DELAY_INCREASE_THRESHOLD ? DEFAULT_DELAY : DELAY_MULTIPLIER * increment);
 
-						Entity ridingEntity = player.getRidingEntity();
-						for (Entity entity : player.world.getEntitiesWithinAABB(Entity.class, player.getBoundingBox().grow(2.0D), entity -> entity != player && entity != ridingEntity && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()))) {
+						Entity ridingEntity = player.getVehicle();
+						for (Entity entity : player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(2.0D), entity -> entity != player && entity != ridingEntity && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()))) {
 							EntityMotionHelper.knockbackEntity(entity, HORIZONTAL_BOOST_FORCE, VERTICAL_BOOST_FORCE, false, false);
 						}
 
@@ -60,10 +60,10 @@ public final class C2SInflateBoofloVestMessage {
 							EntityMotionHelper.knockbackEntity(ridingEntity, HORIZONTAL_BOOST_FORCE, VERTICAL_BOOST_FORCE, true, false);
 						}
 
-						double posX = player.getPosX();
-						double posY = player.getPosY();
-						double posZ = player.getPosZ();
-						Random rand = player.getRNG();
+						double posX = player.getX();
+						double posY = player.getY();
+						double posZ = player.getZ();
+						Random rand = player.getRandom();
 						for (int i = 0; i < 8; i++) {
 							double x = posX + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
 							double y = posY + (rand.nextFloat() * 0.05F) + 1.25F;
@@ -71,7 +71,7 @@ public final class C2SInflateBoofloVestMessage {
 							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 						}
 
-						player.world.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundCategory.PLAYERS, 1.0F, MathHelper.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
+						player.level.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundCategory.PLAYERS, 1.0F, MathHelper.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
 					}
 				}
 			});

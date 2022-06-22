@@ -28,18 +28,18 @@ public abstract class AbstractEetleRenderer<E extends AbstractEetleEntity> exten
 
 	@Override
 	public void render(E entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-		this.shadowSize = this.adultShadowSize;
-		this.entityModel = this.adultModel;
-		if (entity.isChild()) {
-			this.shadowSize = 0.7F;
-			this.entityModel = this.leetleModel;
+		this.shadowRadius = this.adultShadowSize;
+		this.model = this.adultModel;
+		if (entity.isBaby()) {
+			this.shadowRadius = 0.7F;
+			this.model = this.leetleModel;
 		}
 		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(E entity) {
-		if (entity.isChild()) {
+	public ResourceLocation getTextureLocation(E entity) {
+		if (entity.isBaby()) {
 			return LEETLE_TEXTURE;
 		}
 		return this.getAdultTexture();

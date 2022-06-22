@@ -23,23 +23,23 @@ import java.util.Set;
 public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 	private static final Block CORROCK_BLOCK = EEBlocks.CORROCK_END_BLOCK.get();
 	private static final Set<Block> TRANSFORMABLE_BLOCKS = Sets.newHashSet(Blocks.END_STONE, CORROCK_BLOCK, EEBlocks.SPECKLED_END_CORROCK.get(), EEBlocks.EUMUS.get());
-	private static final BlockState END_STONE = Blocks.END_STONE.getDefaultState();
-	private static final BlockState SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get().getDefaultState();
+	private static final BlockState END_STONE = Blocks.END_STONE.defaultBlockState();
+	private static final BlockState SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get().defaultBlockState();
 
 	public SpeckledCorrockPatchFeature(Codec<MultiPatchConfig> codec) {
 		super(codec);
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
-		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).down();
+	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
+		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).below();
 		Block downBlock = world.getBlockState(down).getBlock();
 		if (downBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
 			int extraPatches = 1 + rand.nextInt(config.getMaxExtraPatches() + 1);
 			int maxExtraRadius = config.getMaxExtraRadius();
 			generatePatch(world, down, rand, maxExtraRadius);
 			for (int i = 0; i < extraPatches; i++) {
-				generatePatch(world, down.add(rand.nextInt(3) - rand.nextInt(3) , 0, rand.nextInt(3) - rand.nextInt(3)), rand, maxExtraRadius);
+				generatePatch(world, down.offset(rand.nextInt(3) - rand.nextInt(3) , 0, rand.nextInt(3) - rand.nextInt(3)), rand, maxExtraRadius);
 			}
 			return true;
 		}
@@ -58,12 +58,12 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 			for (int z = -radius; z <= radius; z++) {
 				int distanceSq = x * x + z * z - rand.nextInt(2);
 				if (distanceSq <= radiusSquared) {
-					BlockPos pos = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, mutable.setPos(originX + x, originY, originZ + z)).down();
+					BlockPos pos = world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
 					int distanceY = Math.abs(originY - pos.getY());
 					if (distanceY <= 1) {
 						if (TRANSFORMABLE_BLOCKS.contains(world.getBlockState(pos).getBlock())) {
 							positions.add(pos);
-							world.setBlockState(pos, END_STONE, 2);
+							world.setBlock(pos, END_STONE, 2);
 						}
 					}
 				}
@@ -72,13 +72,13 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 		positions.forEach(pos -> {
 			int neighborCorrocks = 0;
 			for (Direction horizontal : Direction.Plane.HORIZONTAL) {
-				BlockPos offset = pos.offset(horizontal);
+				BlockPos offset = pos.relative(horizontal);
 				if (world.getBlockState(offset).getBlock() == CORROCK_BLOCK) {
 					neighborCorrocks++;
 				}
 			}
 			if (neighborCorrocks > 0 && rand.nextFloat() >= neighborCorrocks * 0.25F) {
-				world.setBlockState(pos, SPECKLED_CORROCK, 2);
+				world.setBlock(pos, SPECKLED_CORROCK, 2);
 			}
 		});
 	}

@@ -29,7 +29,7 @@ public class EEParticles {
 	public static final RegistryObject<BasicParticleType> POISE_BUBBLE = createBasicParticleType(true, "poise_bubble");
 	public static final RegistryObject<BasicParticleType> SHORT_POISE_BUBBLE = createBasicParticleType(true, "short_poise_bubble");
 	public static final RegistryObject<BasicParticleType> ENDER_FLAME = createBasicParticleType(true, "ender_flame");
-	public static final RegistryObject<ParticleType<BlockParticleData>> FAST_BLOCK = createParticleType("fast_block", BlockParticleData.DESERIALIZER, BlockParticleData::func_239800_a_);
+	public static final RegistryObject<ParticleType<BlockParticleData>> FAST_BLOCK = createParticleType("fast_block", BlockParticleData.DESERIALIZER, BlockParticleData::codec);
 	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> OVERWORLD_CROWN = createParticleType("overworld_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
 	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> NETHER_CROWN = createParticleType("nether_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
 	public static final RegistryObject<ParticleType<CorrockCrownParticleData>> END_CROWN = createParticleType("end_crown", CorrockCrownParticleData.DESERIALIZER, CorrockCrownParticleData::codec);
@@ -50,27 +50,27 @@ public class EEParticles {
 		@OnlyIn(Dist.CLIENT)
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
-			ParticleManager particleManager = Minecraft.getInstance().particles;
+			ParticleManager particleManager = Minecraft.getInstance().particleEngine;
 			if (ENDER_FLAME.isPresent()) {
-				particleManager.registerFactory(ENDER_FLAME.get(), FlameParticle.Factory::new);
+				particleManager.register(ENDER_FLAME.get(), FlameParticle.Factory::new);
 			}
 			if (POISE_BUBBLE.isPresent()) {
-				particleManager.registerFactory(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
+				particleManager.register(POISE_BUBBLE.get(), PoiseBubbleParticle.Factory::new);
 			}
 			if (SHORT_POISE_BUBBLE.isPresent()) {
-				particleManager.registerFactory(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
+				particleManager.register(SHORT_POISE_BUBBLE.get(), PoiseBubbleParticle.ShortFactory::new);
 			}
 			if (FAST_BLOCK.isPresent()) {
-				particleManager.registerFactory(FAST_BLOCK.get(), new FastBlockParticle.Factory());
+				particleManager.register(FAST_BLOCK.get(), new FastBlockParticle.Factory());
 			}
 			if (OVERWORLD_CROWN.isPresent()) {
-				particleManager.registerFactory(OVERWORLD_CROWN.get(), CorrockCrownParticle.Factory::new);
+				particleManager.register(OVERWORLD_CROWN.get(), CorrockCrownParticle.Factory::new);
 			}
 			if (NETHER_CROWN.isPresent()) {
-				particleManager.registerFactory(NETHER_CROWN.get(), CorrockCrownParticle.Factory::new);
+				particleManager.register(NETHER_CROWN.get(), CorrockCrownParticle.Factory::new);
 			}
 			if (END_CROWN.isPresent()) {
-				particleManager.registerFactory(END_CROWN.get(), CorrockCrownParticle.Factory::new);
+				particleManager.register(END_CROWN.get(), CorrockCrownParticle.Factory::new);
 			}
 		}
 
@@ -86,7 +86,7 @@ public class EEParticles {
 		}
 
 		@Override
-		public Codec<T> func_230522_e_() {
+		public Codec<T> codec() {
 			return this.function.apply(this);
 		}
 	}

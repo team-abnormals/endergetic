@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 public class BroodEggSackEntity extends Entity {
 	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.5F, 1.5F);
 	private static final EntitySize EXPOSED_SIZE = EntitySize.fixed(1.5F, 1.75F);
-	private static final DataParameter<Integer> BROOD_ID = EntityDataManager.createKey(BroodEggSackEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> BROOD_ID = EntityDataManager.defineId(BroodEggSackEntity.class, DataSerializers.INT);
 
 	public BroodEggSackEntity(EntityType<?> entityType, World world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
@@ -42,36 +42,36 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	protected void registerData() {
-		this.dataManager.register(BROOD_ID, -1);
+	protected void defineSynchedData() {
+		this.entityData.define(BROOD_ID, -1);
 	}
 
 	@Override
-	public void notifyDataManagerChange(DataParameter<?> key) {
-		super.notifyDataManagerChange(key);
+	public void onSyncedDataUpdated(DataParameter<?> key) {
+		super.onSyncedDataUpdated(key);
 		if (BROOD_ID.equals(key)) {
-			this.recalculateSize();
+			this.refreshDimensions();
 		}
 	}
 
 	@Override
 	public void tick() {
-		World world = this.world;
+		World world = this.level;
 		BroodEetleEntity broodEetle = this.getBroodEetle(world);
-		if (!world.isRemote && (broodEetle == null || !broodEetle.isAlive() || broodEetle.getEggSack(world) != this)) {
+		if (!world.isClientSide && (broodEetle == null || !broodEetle.isAlive() || broodEetle.getEggSack(world) != this)) {
 			this.remove();
 		}
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundNBT compound) {
 		if (compound.contains("BroodID", Constants.NBT.TAG_INT)) {
 			this.setBroodID(compound.getInt("BroodID"));
 		}
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundNBT compound) {
 		int broodID = this.getBroodID();
 		if (broodID >= 0) {
 			compound.putInt("BroodID", broodID);
@@ -80,23 +80,23 @@ public class BroodEggSackEntity extends Entity {
 
 
 	public void updatePosition(BroodEetleEntity broodEetle) {
-		Vector3d sackPos = getEggPos(broodEetle.getPositionVec(), broodEetle.renderYawOffset, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.isOnLastHealthStage());
-		this.setPosition(sackPos.getX(), sackPos.getY(), sackPos.getZ());
+		Vector3d sackPos = getEggPos(broodEetle.position(), broodEetle.yBodyRot, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.isOnLastHealthStage());
+		this.setPos(sackPos.x(), sackPos.y(), sackPos.z());
 	}
 
 	public void setBroodID(int id) {
-		this.dataManager.set(BROOD_ID, Math.max(-1, id));
+		this.entityData.set(BROOD_ID, Math.max(-1, id));
 	}
 
 	private int getBroodID() {
-		return this.dataManager.get(BROOD_ID);
+		return this.entityData.get(BROOD_ID);
 	}
 
 	@Nullable
 	private BroodEetleEntity getBroodEetle(World world) {
 		int broodID = this.getBroodID();
 		if (broodID >= 0) {
-			Entity entity = world.getEntityByID(broodID);
+			Entity entity = world.getEntity(broodID);
 			if (entity instanceof BroodEetleEntity) {
 				return (BroodEetleEntity) entity;
 			}
@@ -105,22 +105,22 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		World world = this.world;
-		if (!world.isRemote) {
+	public boolean hurt(DamageSource source, float amount) {
+		World world = this.level;
+		if (!world.isClientSide) {
 			BroodEetleEntity broodEetle = this.getBroodEetle(world);
 			if (broodEetle != null && broodEetle.isAlive() && (broodEetle.isEggMouthOpen() || broodEetle.isOnLastHealthStage())) {
-				Entity trueSource = source.getTrueSource();
+				Entity trueSource = source.getEntity();
 				LivingEntity livingEntity = trueSource instanceof LivingEntity ? (LivingEntity) trueSource : null;
 				if (livingEntity != null) {
-					amount += 0.25F * EnchantmentHelper.getModifierForCreature(livingEntity.getHeldItemMainhand(), CreatureAttribute.ARTHROPOD);
+					amount += 0.25F * EnchantmentHelper.getDamageBonus(livingEntity.getMainHandItem(), CreatureAttribute.ARTHROPOD);
 				}
 				if (broodEetle.attackEntityFromEggSack(source, amount)) {
 					if (livingEntity != null) {
-						this.applyEnchantments(livingEntity, broodEetle);
+						this.doEnchantDamageEffects(livingEntity, broodEetle);
 					}
 					if (world instanceof ServerWorld) {
-						((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().getDefaultState()), this.getPosX(), this.getPosY() + (double) this.getHeight() / 1.5D, this.getPosZ(), 15, this.getWidth() / 4.0F, this.getHeight() / 4.0F, this.getWidth() / 4.0F, 0.05D);
+						((ServerWorld) world).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 15, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
 					}
 					return true;
 				}
@@ -131,23 +131,23 @@ public class BroodEggSackEntity extends Entity {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean canBeCollidedWith() {
+	public boolean isPickable() {
 		return !this.removed;
 	}
 
 	@Override
-	protected boolean canTriggerWalking() {
+	protected boolean isMovementNoisy() {
 		return false;
 	}
 
 	@Override
-	public boolean onLivingFall(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier) {
 		return false;
 	}
 
 	@Override
-	public EntitySize getSize(Pose pose) {
-		BroodEetleEntity broodEetleEntity = this.getBroodEetle(this.world);
+	public EntitySize getDimensions(Pose pose) {
+		BroodEetleEntity broodEetleEntity = this.getBroodEetle(this.level);
 		if (broodEetleEntity != null) {
 			if (broodEetleEntity.isFlying()) {
 				return FLYING_SIZE;
@@ -155,17 +155,17 @@ public class BroodEggSackEntity extends Entity {
 				return EXPOSED_SIZE;
 			}
 		}
-		return super.getSize(pose);
+		return super.getDimensions(pose);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket() {
+	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -173,6 +173,6 @@ public class BroodEggSackEntity extends Entity {
 		flyPitch = MathHelper.clamp(flyPitch, -30.0F, 20.0F);
 		float flyPitchMultiplier = flyPitch >= 0.0F ? 0.0425F : 0.0567F;
 		float xOffset = flyPitch < 0.0F ? flyPitch * 0.033F : 0.0F;
-		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier - (exposed ? (eggCannonProgress == 0.0F ? 0.2F : eggCannonProgress * 0.75F) : 0.0F), 0.0D).rotateYaw(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
+		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier - (exposed ? (eggCannonProgress == 0.0F ? 0.2F : eggCannonProgress * 0.75F) : 0.0F), 0.0D).yRot(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
 	}
 }

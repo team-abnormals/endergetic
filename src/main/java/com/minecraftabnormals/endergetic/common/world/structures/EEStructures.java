@@ -20,10 +20,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 public final class EEStructures {
 	public static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, EndergeticExpansion.MOD_ID);
 
-	public static final RegistryObject<Structure<NoFeatureConfig>> EETLE_NEST = STRUCTURES.register("eetle_nest", () -> new EetleNestStructure(NoFeatureConfig.field_236558_a_));
+	public static final RegistryObject<Structure<NoFeatureConfig>> EETLE_NEST = STRUCTURES.register("eetle_nest", () -> new EetleNestStructure(NoFeatureConfig.CODEC));
 
 	public static final class Configured {
-		public static final StructureFeature<?, ?> EETLE_NEST = EEStructures.EETLE_NEST.get().withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
+		public static final StructureFeature<?, ?> EETLE_NEST = EEStructures.EETLE_NEST.get().configured(IFeatureConfig.NONE);
 
 		private static <FC extends IFeatureConfig> void register(String name, StructureFeature<FC, ?> stuctureFeature) {
 			Registry.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, new ResourceLocation(EndergeticExpansion.MOD_ID, name), stuctureFeature);
@@ -35,12 +35,12 @@ public final class EEStructures {
 	}
 
 	public static final class PieceTypes {
-		public static final IStructurePieceType EETLE_NEST = IStructurePieceType.register(EetleNestPieces.EetleNestPiece::new, "eetle_nest");
+		public static final IStructurePieceType EETLE_NEST = IStructurePieceType.setPieceId(EetleNestPieces.EetleNestPiece::new, "eetle_nest");
 	}
 
 	public static void setupStructureInfo() {
 		Structure<NoFeatureConfig> eetleNest = EETLE_NEST.get();
-		Structure.NAME_STRUCTURE_BIMAP.put("eetle_nest", eetleNest);
-		WorldGenRegistries.NOISE_SETTINGS.forEach(dimensionSettings -> dimensionSettings.getStructures().func_236195_a_().put(eetleNest, new StructureSeparationSettings(18, 9, 5193657)));
+		Structure.STRUCTURES_REGISTRY.put("eetle_nest", eetleNest);
+		WorldGenRegistries.NOISE_GENERATOR_SETTINGS.forEach(dimensionSettings -> dimensionSettings.structureSettings().structureConfig().put(eetleNest, new StructureSeparationSettings(18, 9, 5193657)));
 	}
 }

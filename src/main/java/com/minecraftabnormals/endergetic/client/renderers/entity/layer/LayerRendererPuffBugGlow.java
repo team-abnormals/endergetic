@@ -27,18 +27,18 @@ public class LayerRendererPuffBugGlow<T extends PuffBugEntity, M extends EntityM
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T puffbug, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (!puffbug.isInflated()) return;
 
-		M model = this.getEntityModel();
-		model.setRotationAngles(puffbug, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		M model = this.getParentModel();
+		model.setupAnim(puffbug, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		int color = puffbug.getColor();
 		switch (color) {
 			case -1:
-				model.render(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(DEFAULT_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+				model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(DEFAULT_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 				break;
 			case 13565951:
-				model.render(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(POLLINATED_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+				model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(POLLINATED_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 				break;
 			default:
-				model.render(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(GRAYSCALE_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, 1.0F);
+				model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(ACRenderTypes.getEmissiveEntity(GRAYSCALE_TEXTURE)), 240, OverlayTexture.NO_OVERLAY, (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, 1.0F);
 				break;
 		}
 	}

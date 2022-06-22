@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(ClientPlayerEntity.class)
 public final class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 	@Shadow
-	public MovementInput movementInput;
+	public MovementInput input;
 
 	private ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
 		super(world, profile);
@@ -31,15 +31,15 @@ public final class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 	 *
 	 * @param flag wasJumping boolean.
 	 */
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MovementInput;tickMovement(Z)V", shift = At.Shift.AFTER), method = "livingTick", locals = LocalCapture.CAPTURE_FAILSOFT)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MovementInput;tick(Z)V", shift = At.Shift.AFTER), method = "aiStep", locals = LocalCapture.CAPTURE_FAILSOFT)
 	private void onTickMovementInput(CallbackInfo info, boolean flag) {
-		Entity ridingEntity = this.getRidingEntity();
+		Entity ridingEntity = this.getVehicle();
 		if (ridingEntity instanceof BoofloEntity) {
 			BoofloEntity booflo = (BoofloEntity) ridingEntity;
 			if (!booflo.isOnGround()) {
-				if (!flag && this.movementInput.jump) {
+				if (!flag && this.input.jumping) {
 					EndergeticExpansion.CHANNEL.sendToServer(new C2SInflateMessage());
-				} else if (!this.movementInput.jump) {
+				} else if (!this.input.jumping) {
 					if (booflo.isBoostExpanding() && booflo.isBoofed() && !booflo.isBoostLocked() && booflo.getBoostPower() > 0) {
 						EndergeticExpansion.CHANNEL.sendToServer(new C2SBoostMessage());
 					}

@@ -18,7 +18,7 @@ public final class BiomeSurfaceBuilderModifier extends BiomeModifier {
 
 	public static BiomeSurfaceBuilderModifier surfaceBuilderReplacer(BiPredicate<RegistryKey<Biome>, Biome> shouldModify, Supplier<ConfiguredSurfaceBuilder<?>> configuredSurfaceBuilder) {
 		return new BiomeSurfaceBuilderModifier(shouldModify, context -> {
-			context.event.getGeneration().withSurfaceBuilder(configuredSurfaceBuilder);
+			context.event.getGeneration().surfaceBuilder(configuredSurfaceBuilder);
 		});
 	}
 

@@ -26,24 +26,24 @@ public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<Dis
 
 	@Override
 	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-		Direction facing = boof.hasWorld() ? boof.getBlockState().get(DispensedBoofBlock.FACING) : Direction.NORTH;
+		Direction facing = boof.hasLevel() ? boof.getBlockState().getValue(DispensedBoofBlock.FACING) : Direction.NORTH;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(0.5F, 1.5F, 0.5F);
 
 		if (facing.getAxis().isVertical()) {
-			float offset = -facing.getAxisDirection().getOffset();
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F * offset));
+			float offset = -facing.getAxisDirection().getStep();
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F * offset));
 			matrixStack.translate(0.0F, 1.125F, 1.0F * offset);
 		} else {
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(-facing.getHorizontalAngle()));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(-facing.toYRot()));
 		}
 
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 
-		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.getEntityCutout(TEXTURE));
+		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 		this.model.renderAll(matrixStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

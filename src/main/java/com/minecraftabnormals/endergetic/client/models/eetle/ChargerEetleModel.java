@@ -26,49 +26,49 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 	public EndimatorModelRenderer claw;
 
 	public ChargerEetleModel() {
-		this.textureWidth = 64;
-		this.textureHeight = 32;
+		this.texWidth = 64;
+		this.texHeight = 32;
 		this.head = new EndimatorModelRenderer(this, 0, 23);
-		this.head.setRotationPoint(0.0F, 0.5F, 0.0F);
+		this.head.setPos(0.0F, 0.5F, 0.0F);
 		this.head.addBox(-3.0F, -2.0F, -5.0F, 6, 4, 5, 0.0F);
 		this.setRotateAngle(head, 0.35F, 0.0F, 0.0F);
 		this.backLeftLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.backLeftLeg.mirror = true;
-		this.backLeftLeg.setRotationPoint(2.0F, 16.0F, 4.5F);
+		this.backLeftLeg.setPos(2.0F, 16.0F, 4.5F);
 		this.backLeftLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(backLeftLeg, 0.4363323129985824F, 0.15707963267948966F, -0.7853981633974483F);
 		this.frontLeftLeg = new EndimatorModelRenderer(this, 52, 0);
 		this.frontLeftLeg.mirror = true;
-		this.frontLeftLeg.setRotationPoint(2.0F, 16.0F, -1.5F);
+		this.frontLeftLeg.setPos(2.0F, 16.0F, -1.5F);
 		this.frontLeftLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(frontLeftLeg, -0.488692191F, 0.0F, -0.7853981633974483F);
 		this.frontRightLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.frontRightLeg.setRotationPoint(-2.0F, 16.0F, -1.5F);
+		this.frontRightLeg.setPos(-2.0F, 16.0F, -1.5F);
 		this.frontRightLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(frontRightLeg, -0.488692191F, 0.0F, 0.7853981633974483F);
 		this.backRightLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.backRightLeg.setRotationPoint(-2.0F, 16.0F, 4.5F);
+		this.backRightLeg.setPos(-2.0F, 16.0F, 4.5F);
 		this.backRightLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
 		this.setRotateAngle(backRightLeg, 0.4363323129985824F, 0.0F, 0.7853981633974483F);
 		this.mouth = new EndimatorModelRenderer(this, 22, 0);
-		this.mouth.setRotationPoint(0.0F, 2.0F, -5.0F);
+		this.mouth.setPos(0.0F, 2.0F, -5.0F);
 		this.mouth.addBox(-2.0F, -8.0F, 0.0F, 4, 8, 3, 0.0F);
 		this.setRotateAngle(mouth, 0.5235987755982988F, 0.0F, 0.0F);
 		this.claw = new EndimatorModelRenderer(this, 20, 18);
-		this.claw.setRotationPoint(0.0F, -7.0F, 1.0F);
+		this.claw.setPos(0.0F, -7.0F, 1.0F);
 		this.claw.addBox(-3.0F, -5.0F, -1.5F, 6, 5, 3, 0.0F);
 		this.setRotateAngle(claw, -0.4363323129985824F, 0.0F, 0.0F);
 		this.rightWing = new EndimatorModelRenderer(this, 0, 0);
-		this.rightWing.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.rightWing.setPos(0.0F, -3.0F, 0.0F);
 		this.rightWing.addBox(-5.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
 		this.setRotateAngle(rightWing, -0.08726646259971647F, -0.03490658503988659F, 0.0F);
 		this.body = new EndimatorModelRenderer(this, 28, 16);
-		this.body.setRotationPoint(0.0F, 13.5F, -3.5F);
+		this.body.setPos(0.0F, 13.5F, -3.5F);
 		this.body.addBox(-4.0F, -3.0F, 0.0F, 8, 6, 10, 0.0F);
 		this.setRotateAngle(body, -0.17453292519943295F, 0.0F, 0.0F);
 		this.leftWing = new EndimatorModelRenderer(this, 0, 0);
 		this.leftWing.mirror = true;
-		this.leftWing.setRotationPoint(0.0F, -3.0F, 0.0F);
+		this.leftWing.setPos(0.0F, -3.0F, 0.0F);
 		this.leftWing.addBox(0.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
 		this.setRotateAngle(leftWing, -0.08726646259971647F, 0.03490658503988659F, 0.0F);
 		this.body.addChild(this.head);
@@ -81,30 +81,30 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 	}
 
 	@Override
-	public void setRotationAngles(ChargerEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+	public void setupAnim(ChargerEetleEntity eetle, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-		this.head.rotateAngleY = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.rotateAngleX += (headPitch * ((float) Math.PI / 180.0F));
+		this.head.yRot = netHeadYaw * ((float) Math.PI / 180.0F);
+		this.head.xRot += (headPitch * ((float) Math.PI / 180.0F));
 
 		float angleX = MathHelper.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
 		float backAngleX = MathHelper.cos(limbSwing * 1.34F) * limbSwingAmount;
-		this.frontLeftLeg.rotateAngleX -= angleX;
-		this.frontRightLeg.rotateAngleX += angleX;
-		this.backLeftLeg.rotateAngleX += backAngleX;
-		this.backRightLeg.rotateAngleX -= backAngleX;
+		this.frontLeftLeg.xRot -= angleX;
+		this.frontRightLeg.xRot += angleX;
+		this.backLeftLeg.xRot += backAngleX;
+		this.backRightLeg.xRot -= backAngleX;
 
 		float angleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
 		float backAngleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
-		this.frontLeftLeg.rotateAngleZ -= angleZ;
-		this.frontRightLeg.rotateAngleZ += angleZ;
-		this.backLeftLeg.rotateAngleZ -= backAngleZ;
-		this.backRightLeg.rotateAngleZ += backAngleZ;
+		this.frontLeftLeg.zRot -= angleZ;
+		this.frontRightLeg.zRot += angleZ;
+		this.backLeftLeg.zRot -= backAngleZ;
+		this.backRightLeg.zRot += backAngleZ;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+		super.renderToBuffer(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.body.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.frontLeftLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.frontRightLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -167,8 +167,8 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 	}
 
 	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

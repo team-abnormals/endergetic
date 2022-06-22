@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.item.Item.Properties;
+
 public final class EetleSpawnEggItem extends AbnormalsSpawnEggItem {
 
 	public EetleSpawnEggItem(int primaryColor, int secondaryColor, Properties properties) {

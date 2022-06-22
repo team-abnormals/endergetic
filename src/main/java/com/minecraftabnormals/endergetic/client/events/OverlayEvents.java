@@ -50,52 +50,52 @@ public final class OverlayEvents {
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
 		ClientPlayerEntity player = MC.player;
 		if (player != null) {
-			if (!MC.gameSettings.hideGUI) {
+			if (!MC.options.hideGui) {
 				ElementType type = event.getType();
 				if (type == ElementType.EXPERIENCE) {
-					if (player.isPassenger() && player.getRidingEntity() instanceof BoofloEntity) {
+					if (player.isPassenger() && player.getVehicle() instanceof BoofloEntity) {
 						event.setCanceled(true);
 
-						int scaledWidth = event.getWindow().getScaledWidth();
-						int scaledHeight = event.getWindow().getScaledHeight();
+						int scaledWidth = event.getWindow().getGuiScaledWidth();
+						int scaledHeight = event.getWindow().getGuiScaledHeight();
 						int top = scaledHeight - 32 + 3;
 						int left = scaledWidth / 2 - 91;
-						int progress = ((BoofloEntity) player.getRidingEntity()).getBoostPower();
+						int progress = ((BoofloEntity) player.getVehicle()).getBoostPower();
 
 						MatrixStack stack = event.getMatrixStack();
-						stack.push();
-						MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
+						stack.pushPose();
+						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 
 						OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
 						if (progress > 0) {
 							OverlayEvents.drawTexture(stack, left, top, 0, 5, progress, 10);
 						}
 
-						stack.pop();
+						stack.popPose();
 					}
-				} else if (type == ElementType.HEALTHMOUNT && player.world.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getRidingEntity() instanceof GliderEetleEntity) {
+				} else if (type == ElementType.HEALTHMOUNT && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
 					event.setCanceled(true);
-				} else if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE && MC.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
+				} else if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE && MC.options.getCameraType() == PointOfView.FIRST_PERSON) {
 					float purpoidFlashProgress = MathHelper.lerp(event.getPartialTicks(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
 					if (purpoidFlashProgress > 0.0F) {
 						MatrixStack stack = event.getMatrixStack();
-						stack.push();
-						MC.textureManager.bindTexture(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
+						stack.pushPose();
+						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
 						RenderSystem.enableBlend();
 						RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 						RenderSystem.color4f(1.0F, 1.0F, 1.0F, purpoidFlashProgress);
 						Tessellator tessellator = Tessellator.getInstance();
-						BufferBuilder bufferbuilder = tessellator.getBuffer();
+						BufferBuilder bufferbuilder = tessellator.getBuilder();
 						bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-						MainWindow mainWindow = MC.getMainWindow();
-						int scaledWidth = mainWindow.getScaledWidth();
-						int scaledHeight = mainWindow.getScaledHeight();
-						bufferbuilder.pos(0.0D, scaledHeight, -90.0D).tex(0.0F, 1.0F).endVertex();
-						bufferbuilder.pos(scaledWidth, scaledHeight, -90.0D).tex(1.0F, 1.0F).endVertex();
-						bufferbuilder.pos(scaledWidth, 0.0D, -90.0D).tex(1.0F, 0.0F).endVertex();
-						bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0F, 0.0F).endVertex();
-						tessellator.draw();
-						stack.pop();
+						MainWindow mainWindow = MC.getWindow();
+						int scaledWidth = mainWindow.getGuiScaledWidth();
+						int scaledHeight = mainWindow.getGuiScaledHeight();
+						bufferbuilder.vertex(0.0D, scaledHeight, -90.0D).uv(0.0F, 1.0F).endVertex();
+						bufferbuilder.vertex(scaledWidth, scaledHeight, -90.0D).uv(1.0F, 1.0F).endVertex();
+						bufferbuilder.vertex(scaledWidth, 0.0D, -90.0D).uv(1.0F, 0.0F).endVertex();
+						bufferbuilder.vertex(0.0D, 0.0D, -90.0D).uv(0.0F, 0.0F).endVertex();
+						tessellator.end();
+						stack.popPose();
 					}
 				}
 			}
