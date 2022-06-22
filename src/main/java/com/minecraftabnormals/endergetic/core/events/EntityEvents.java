@@ -29,16 +29,23 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -52,6 +59,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -172,6 +180,28 @@ public final class EntityEvents {
 		BalloonHolder holder = (BalloonHolder) event.getPlayer();
 		if (!holder.getBalloons().isEmpty()) {
 			holder.detachBalloons();
+		}
+	}
+
+	@SubscribeEvent
+	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+		World world = event.getWorld();
+		BlockPos pos = event.getPos();
+		BlockState state = world.getBlockState(pos);
+		PlayerEntity player = event.getPlayer();
+		ItemStack stack = event.getItemStack();
+		Item item = stack.getItem();
+		Hand hand = event.getHand();
+
+		if (event.getFace() != Direction.DOWN && item instanceof ShovelItem && !player.isSpectator()) {
+			BlockState newState = state.is(EEBlocks.POISMOSS.get()) ? EEBlocks.POISMOSS_PATH.get().defaultBlockState() : state.is(EEBlocks.EUMUS_POISMOSS.get()) ? EEBlocks.EUMUS_POISMOSS_PATH.get().defaultBlockState() : null;
+			if (newState != null && world.isEmptyBlock(pos.above())) {
+				world.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				world.setBlock(pos, newState, 11);
+				event.getItemStack().hurtAndBreak(1, player, (damage) -> damage.broadcastBreakEvent(hand));
+				event.setCancellationResult(ActionResultType.sidedSuccess(world.isClientSide()));
+				event.setCanceled(true);
+			}
 		}
 	}
 

@@ -1,0 +1,9 @@
+{
+	"parent": "block/grass_path",
+	"textures": {
+		"particle": "minecraft:block/end_stone",
+		"top": "endergetic:block/poismoss_path_top",
+		"side": "endergetic:block/poismoss_path_side",
+		"bottom": "minecraft:block/end_stone"
+	}
+}
