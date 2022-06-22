@@ -15,6 +15,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -53,11 +54,17 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	private Endimation endimation = BLANK_ANIMATION;
 	private final TeleportController teleportController = new TeleportController();
 	private int animationTick;
+	private int growingAge;
 	private int teleportCooldown;
 	private int restCooldown;
 	private Vector3d prevPull = Vector3d.ZERO, pull = Vector3d.ZERO;
 	@Nullable
 	private BlockPos flowerPos;
+	private PurpoidTelefragGoal telefragGoal;
+	private PurpoidMoveNearTargetGoal moveNearTargetGoal;
+	private PurpoidAttackGoal attackGoal;
+	private PurpoidRestOnFlowerGoal restOnFlowerGoal;
+	private PurpoidTeleportToFlowerGoal teleportToFlowerGoal;
 
 	public PurpoidEntity(EntityType<? extends CreatureEntity> type, World world) {
 		super(type, world);
@@ -75,11 +82,11 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(1, new PurpoidTelefragGoal(this));
-		this.goalSelector.addGoal(2, new PurpoidMoveNearTargetGoal(this));
-		this.goalSelector.addGoal(2, new PurpoidAttackGoal(this));
-		this.goalSelector.addGoal(3, new PurpoidRestOnFlowerGoal(this));
-		this.goalSelector.addGoal(4, new PurpoidTeleportToFlowerGoal(this));
+		this.goalSelector.addGoal(1, this.telefragGoal = new PurpoidTelefragGoal(this));
+		this.goalSelector.addGoal(2, this.moveNearTargetGoal = new PurpoidMoveNearTargetGoal(this));
+		this.goalSelector.addGoal(2, this.attackGoal = new PurpoidAttackGoal(this));
+		this.goalSelector.addGoal(3, this.restOnFlowerGoal = new PurpoidRestOnFlowerGoal(this));
+		this.goalSelector.addGoal(4, this.teleportToFlowerGoal = new PurpoidTeleportToFlowerGoal(this));
 		this.goalSelector.addGoal(4, new PurpoidRandomTeleportGoal(this));
 		this.goalSelector.addGoal(5, new PurpoidMoveRandomGoal(this));
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
@@ -135,6 +142,15 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 				}
 			}
 		} else {
+			if (this.isAlive() && this.getSize() != PurpoidSize.PURPAZOID) {
+				int age = this.growingAge;
+				if (age < 0) {
+					this.updateAge(++age);
+				} else if (age > 0) {
+					this.updateAge(--age);
+				}
+			}
+
 			if (this.hasTeleportCooldown()) {
 				this.teleportCooldown--;
 			}
@@ -174,6 +190,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		compound.putInt("Size", this.getSize().ordinal());
+		compound.putInt("Age", this.growingAge);
 		compound.putInt("BoostingTicks", this.getBoostingTicks());
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
 		compound.putInt("RestCooldown", this.restCooldown);
@@ -186,6 +203,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	public void readAdditional(CompoundNBT compound) {
 		super.readAdditional(compound);
 		this.setSize(PurpoidSize.values()[MathHelper.clamp(compound.getInt("Size"), 0, 2)], false);
+		this.updateAge(compound.getInt("Age"));
 		this.setBoostingTicks(Math.max(0, compound.getInt("BoostingTicks")));
 		if (compound.contains("TeleportCooldown", Constants.NBT.TAG_INT)) {
 			this.teleportCooldown = Math.max(0, compound.getInt("TeleportCooldown"));
@@ -206,6 +224,24 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		if (updateHealth) {
 			this.setHealth(this.getMaxHealth());
 		}
+		GoalSelector goalSelector = this.goalSelector;
+		if (size == PurpoidSize.PURPAZOID) {
+			goalSelector.removeGoal(this.moveNearTargetGoal);
+			goalSelector.removeGoal(this.attackGoal);
+			goalSelector.removeGoal(this.restOnFlowerGoal);
+			goalSelector.removeGoal(this.teleportToFlowerGoal);
+			goalSelector.removeGoal(this.telefragGoal);
+		} else {
+			if (size == PurpoidSize.NORMAL) {
+				goalSelector.addGoal(1, this.telefragGoal);
+			} else {
+				goalSelector.removeGoal(this.telefragGoal);
+			}
+			goalSelector.addGoal(2, this.moveNearTargetGoal);
+			goalSelector.addGoal(2, this.attackGoal);
+			goalSelector.addGoal(3, this.restOnFlowerGoal);
+			goalSelector.addGoal(4, this.teleportToFlowerGoal);
+		}
 		this.experienceValue = (int) (2 * scale);
 	}
 
@@ -219,6 +255,14 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	public int getBoostingTicks() {
 		return this.dataManager.get(BOOSTING_TICKS);
+	}
+
+	public void updateAge(int growingAge) {
+		int prevAge = this.growingAge;
+		this.growingAge = growingAge;
+		if (prevAge < 0 && growingAge >= 0 || prevAge >= 0 && growingAge < 0) {
+			this.setSize(growingAge < 0 ? PurpoidSize.PURP : PurpoidSize.NORMAL, true);
+		}
 	}
 
 	public boolean isBoosting() {
@@ -266,6 +310,11 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		return this.flowerPos != null;
 	}
 
+	@Override
+	public boolean isChild() {
+		return this.getSize() == PurpoidSize.PURP;
+	}
+
 	private CorrockCrownParticleData createParticleData() {
 		return new CorrockCrownParticleData(EEParticles.END_CROWN.get(), false, 0.2F * this.getSize().getScale());
 	}
@@ -283,9 +332,22 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Nullable
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-		this.setSize(this.rand.nextFloat() <= 0.005F ? PurpoidSize.GIANT : PurpoidSize.NORMAL, true);
-		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
+		if (spawnData == null) {
+			spawnData = new AgeableEntity.AgeableData(true);
+		}
+
+		Random random = this.rand;
+		if (spawnData instanceof AgeableEntity.AgeableData) {
+			AgeableEntity.AgeableData ageableData = (AgeableEntity.AgeableData) spawnData;
+			if (ageableData.canBabySpawn() && ageableData.getIndexInGroup() > 0 && random.nextFloat() <= ageableData.getBabySpawnProbability()) {
+				this.updateAge(-24000);
+			} else if (random.nextFloat() <= 0.005F) {
+				this.setSize(PurpoidSize.PURPAZOID, true);
+			}
+			ageableData.incrementIndexInGroup();
+		}
+		return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnData, dataTag);
 	}
 
 	@Override

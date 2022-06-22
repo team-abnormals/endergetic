@@ -80,7 +80,7 @@ public class PurpoidAttackGoal extends Goal {
 			}
 		}
 
-		boolean small = purpoid.getSize() == PurpoidSize.SMALL;
+		boolean small = purpoid.getSize() == PurpoidSize.PURP;
 		float width = purpoid.getWidth() * (small ? 2.85F : 2.0F);
 		double reachRange = width * width + target.getWidth();
 		if (distanceToTargetSq <= reachRange) {
@@ -124,7 +124,7 @@ public class PurpoidAttackGoal extends Goal {
 
 	public static boolean shouldFollowTarget(PurpoidEntity purpoid, boolean near) {
 		LivingEntity attackTarget = purpoid.getAttackTarget();
-		return attackTarget != null && attackTarget.isAlive() && attackTarget.isPassenger(PurpoidEntity.class) == near && purpoid.getSize() != PurpoidSize.GIANT && !purpoid.isPassenger() && (!(attackTarget instanceof PlayerEntity) || !attackTarget.isSpectator() && !((PlayerEntity) attackTarget).isCreative());
+		return attackTarget != null && attackTarget.isAlive() && attackTarget.isPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof PlayerEntity) || !attackTarget.isSpectator() && !((PlayerEntity) attackTarget).isCreative());
 	}
 
 	public static BlockPos findAirPosAboveTarget(World world, LivingEntity target) {

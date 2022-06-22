@@ -108,6 +108,7 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	@Override
 	public void setRotationAngles(PurpoidEntity purpoid, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setRotationAngles(purpoid, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		if (purpoid.isChild()) limbSwing /= 3.0F;
 		float rimAngle = 0.17F * MathHelper.sin(0.1F * ageInTicks) + MathHelper.cos(limbSwing * 0.8F) * limbSwingAmount * 1.16F;
 		this.rim1.rotateAngleX -= rimAngle;
 		this.rim2.rotateAngleX += rimAngle;

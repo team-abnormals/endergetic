@@ -37,7 +37,7 @@ public class PurpoidTelefragGoal extends Goal {
 	public boolean shouldExecute() {
 		PurpoidEntity purpoid = this.purpoid;
 		Entity ridingEntity = purpoid.getRidingEntity();
-		return purpoid.getSize() == PurpoidSize.NORMAL && purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
+		return purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class PurpoidTelefragGoal extends Goal {
 	public boolean shouldContinueExecuting() {
 		PurpoidEntity purpoid = this.purpoid;
 		Entity ridingEntity = purpoid.getRidingEntity();
-		return purpoid.getSize() == PurpoidSize.NORMAL && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
+		return ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
 	}
 
 	@Override
