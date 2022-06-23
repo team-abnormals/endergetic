@@ -6,14 +6,14 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class PuffBugDescentGoal extends Goal {
 	private PuffBugEntity puffbug;
-	private World world;
+	private Level world;
 	@Nullable
 	private BlockPos budPos;
 	private float originalPosX, originalPosZ;
@@ -35,7 +35,7 @@ public class PuffBugDescentGoal extends Goal {
 
 	@Override
 	public boolean canContinueToUse() {
-		TileEntity te = this.world.getBlockEntity(this.budPos);
+		BlockEntity te = this.world.getBlockEntity(this.budPos);
 		if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 			return false;
 		}
@@ -44,7 +44,7 @@ public class PuffBugDescentGoal extends Goal {
 
 	@Override
 	public void start() {
-		TileEntity te = this.world.getBlockEntity(this.puffbug.getBudPos());
+		BlockEntity te = this.world.getBlockEntity(this.puffbug.getBudPos());
 		if (te instanceof BolloomBudTileEntity) {
 			((BolloomBudTileEntity) te).setTeleportingBug(null);
 		}
@@ -75,7 +75,7 @@ public class PuffBugDescentGoal extends Goal {
 
 	@Override
 	public void stop() {
-		TileEntity te = this.world.getBlockEntity(this.budPos);
+		BlockEntity te = this.world.getBlockEntity(this.budPos);
 		if ((te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) && this.puffbug.getX() == this.originalPosX && this.puffbug.getZ() == this.originalPosZ && this.puffbug.isOnGround()) {
 			this.puffbug.setPollinationPos(this.budPos);
 		}

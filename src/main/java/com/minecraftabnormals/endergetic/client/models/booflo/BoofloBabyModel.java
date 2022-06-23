@@ -3,11 +3,11 @@ package com.minecraftabnormals.endergetic.client.models.booflo;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * ModelBoofloBaby - Endergized
@@ -37,7 +37,7 @@ public class BoofloBabyModel<E extends BoofloBabyEntity> extends EndimatorEntity
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
@@ -61,14 +61,14 @@ public class BoofloBabyModel<E extends BoofloBabyEntity> extends EndimatorEntity
 		this.Head.xRot = headPitch * (float) (Math.PI / 180F);
 
 		if (entityIn.isBeingBorn()) {
-			float angle = MathHelper.lerp(ClientInfo.getPartialTicks(), (180 % 360), (180 % 360));
+			float angle = Mth.lerp(ClientInfo.getPartialTicks(), (180 % 360), (180 % 360));
 			this.Head.xRot = angle * (float) (Math.PI / 180F);
 		}
 
 		if (entityIn.isMoving()) {
-			this.Head.yRot += -1.1F * 0.2F * MathHelper.sin(0.55F * ageInTicks);
+			this.Head.yRot += -1.1F * 0.2F * Mth.sin(0.55F * ageInTicks);
 		}
 
-		this.Tail.yRot = MathHelper.sin(tailAnimation) * (float) Math.PI * 0.09F;
+		this.Tail.yRot = Mth.sin(tailAnimation) * (float) Math.PI * 0.09F;
 	}
 }

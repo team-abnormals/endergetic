@@ -4,21 +4,21 @@ import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger.EetleCatapultGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger.EetleMeleeAttackGoal;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -33,7 +33,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	private ChargerEetleEntity catapultingTarget;
 	private int catapultTimer;
 
-	public ChargerEetleEntity(EntityType<? extends AbstractEetleEntity> type, World worldIn) {
+	public ChargerEetleEntity(EntityType<? extends AbstractEetleEntity> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
@@ -44,13 +44,13 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		this.meleeAttackGoal = new EetleMeleeAttackGoal(this);
 		this.goalSelector.addGoal(1, this.catapultGoal);
 		this.goalSelector.addGoal(2, this.meleeAttackGoal);
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
-		this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8.0F));
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 6.0F)
 				.add(Attributes.ATTACK_KNOCKBACK, 1.0F)
 				.add(Attributes.MOVEMENT_SPEED, 0.2F)
@@ -86,13 +86,13 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("CatapultCooldown", this.catapultGoal.cooldown);
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.catapultGoal.cooldown = compound.getInt("CatapultCooldown");
 	}
@@ -129,7 +129,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 			if (knockbackForce > 0.0D) {
 				Random random = this.level.random;
 				double scale = knockbackForce * (random.nextFloat() * 1.0F + 0.5F);
-				Vector3d horizontalVelocity = new Vector3d(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
+				Vec3 horizontalVelocity = new Vec3(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
 				target.push(horizontalVelocity.x, knockbackForce * (random.nextFloat() * 0.05F), horizontalVelocity.z);
 				target.hurtMarked = true;
 			}
@@ -175,10 +175,10 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		this.catapultTimer = 25;
 		double xDifference = target.getX() - this.getX();
 		double zDifference = target.getZ() - this.getZ();
-		double verticalOffset = MathHelper.sqrt(xDifference * xDifference + zDifference * zDifference) * 0.475F;
-		Vector3d launchMotion = new Vector3d(xDifference, Math.max(0.0F, target.getY(0.25F) - this.getY() + verticalOffset), zDifference).normalize().scale(1.325F);
+		double verticalOffset = Mth.sqrt(xDifference * xDifference + zDifference * zDifference) * 0.475F;
+		Vec3 launchMotion = new Vec3(xDifference, Math.max(0.0F, target.getY(0.25F) - this.getY() + verticalOffset), zDifference).normalize().scale(1.325F);
 		if (launchMotion.y > 0.9F) {
-			launchMotion = new Vector3d(launchMotion.x(), 0.9F, launchMotion.z());
+			launchMotion = new Vec3(launchMotion.x(), 0.9F, launchMotion.z());
 		}
 		this.setDeltaMovement(launchMotion);
 	}

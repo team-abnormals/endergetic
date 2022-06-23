@@ -7,13 +7,13 @@ import com.minecraftabnormals.endergetic.common.items.BoofloVestItem;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -28,10 +28,10 @@ public final class C2SInflateBoofloVestMessage {
 	private static final int DELAY_INCREASE_THRESHOLD = 5;
 	private static final int DELAY_MULTIPLIER = 5;
 
-	public static void serialize(C2SInflateBoofloVestMessage message, PacketBuffer buffer) {
+	public static void serialize(C2SInflateBoofloVestMessage message, FriendlyByteBuf buffer) {
 	}
 
-	public static C2SInflateBoofloVestMessage deserialize(PacketBuffer buffer) {
+	public static C2SInflateBoofloVestMessage deserialize(FriendlyByteBuf buffer) {
 		return new C2SInflateBoofloVestMessage();
 	}
 
@@ -39,11 +39,11 @@ public final class C2SInflateBoofloVestMessage {
 		NetworkEvent.Context context = contextSupplier.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
-				PlayerEntity player = context.getSender();
+				Player player = context.getSender();
 				if (player != null && !player.isOnGround() && !player.isSpectator()) {
 					ItemStack stack = player.inventory.armor.get(2);
 					if (stack.getItem() == EEItems.BOOFLO_VEST.get() && BoofloVestItem.canBoof(stack, player)) {
-						CompoundNBT tag = stack.getOrCreateTag();
+						CompoundTag tag = stack.getOrCreateTag();
 						tag.putBoolean(BoofloVestItem.BOOFED_TAG, true);
 						tag.putInt(BoofloVestItem.TICKS_BOOFED_TAG, 0);
 
@@ -71,7 +71,7 @@ public final class C2SInflateBoofloVestMessage {
 							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 						}
 
-						player.level.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundCategory.PLAYERS, 1.0F, MathHelper.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
+						player.level.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundSource.PLAYERS, 1.0F, Mth.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
 					}
 				}
 			});

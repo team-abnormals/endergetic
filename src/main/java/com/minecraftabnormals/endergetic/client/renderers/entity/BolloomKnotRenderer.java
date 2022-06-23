@@ -3,29 +3,29 @@ package com.minecraftabnormals.endergetic.client.renderers.entity;
 import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomKnotModel;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class BolloomKnotRenderer extends EntityRenderer<BolloomKnotEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_knot.png");
 	public BolloomKnotModel<BolloomKnotEntity> model;
 
-	public BolloomKnotRenderer(EntityRendererManager manager) {
+	public BolloomKnotRenderer(EntityRenderDispatcher manager) {
 		super(manager);
 		this.model = new BolloomKnotModel<BolloomKnotEntity>();
 	}
 
 	@Override
-	public void render(BolloomKnotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn) {
+	public void render(BolloomKnotEntity entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int packedLightIn) {
 		matrixStack.pushPose();
 		matrixStack.translate(0.0F, -1.31F, 0.0F);
-		IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
+		VertexConsumer ivertexbuilder = bufferIn.getBuffer(this.model.renderType(this.getTextureLocation(entity)));
 		this.model.renderToBuffer(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		matrixStack.popPose();
 		super.render(entity, entityYaw, partialTicks, matrixStack, bufferIn, packedLightIn);

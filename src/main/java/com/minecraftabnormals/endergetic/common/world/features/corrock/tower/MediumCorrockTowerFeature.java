@@ -8,15 +8,17 @@ import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractC
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 import java.util.List;
 import java.util.Random;
+
+import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature.ChorusPlantPart;
 
 public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<CorrockTowerConfig> {
 
@@ -25,7 +27,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
 		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 			GenerationPiece base = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
@@ -35,7 +37,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 			if (!base.canPlace(world)) return false;
 
 			BlockPos downPos = pos.below(2);
-			BlockPos.Mutable mutable = new BlockPos.Mutable();
+			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			if (GenerationUtils.isAreaCompletelySolid(world, downPos.getX() - 1, downPos.getY(), downPos.getZ() - 1, downPos.getX() + 1, downPos.getY(), downPos.getZ() + 1)) {
 				for (int x = downPos.getX() - 1; x <= downPos.getX() + 1; x++) {
 					for (int y = downPos.getY(); y <= downPos.getY() + 1; y++) {
@@ -116,7 +118,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 		}
 	}
 
-	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(IWorld world, BlockPos pos, Random rand, float crownChance, float chorusChance) {
+	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(LevelAccessor world, BlockPos pos, Random rand, float crownChance, float chorusChance) {
 		GenerationPiece top = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
 		List<ChorusPlantPart> growths = Lists.newArrayList();
 		List<BlockPos> corners = Lists.newArrayList();

@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.core.api.AbnormalsArmorMaterial;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 
 /**
  * @author - SmellyModder(Luke Tonon)

@@ -9,15 +9,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-@Mixin(ServerPlayNetHandler.class)
+@Mixin(ServerGamePacketListenerImpl.class)
 public final class ServerPlayNetHandlerMixin {
 	@Shadow
-	private ServerPlayerEntity player;
+	private ServerPlayer player;
 
 	@Shadow
 	private int aboveGroundVehicleTickCount;
@@ -25,7 +25,7 @@ public final class ServerPlayNetHandlerMixin {
 	@Inject(at = @At("TAIL"), method = "tick()V")
 	private void preventFlyingKick(CallbackInfo info) {
 		Entity ridingEntity = this.player.getVehicle();
-		if (ridingEntity instanceof BoatEntity && !((BalloonHolder) ridingEntity).getBalloons().isEmpty()) {
+		if (ridingEntity instanceof Boat && !((BalloonHolder) ridingEntity).getBalloons().isEmpty()) {
 			this.aboveGroundVehicleTickCount = 0;
 		} else if (ridingEntity instanceof BoofloEntity) {
 			this.aboveGroundVehicleTickCount = 0;

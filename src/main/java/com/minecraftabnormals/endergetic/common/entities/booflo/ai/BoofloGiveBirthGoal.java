@@ -7,8 +7,8 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 
 public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 	private int birthTicks;
@@ -51,7 +51,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 		this.entity.yRot = this.originalYaw;
 
 		if (this.birthTicks % 20 == 0 && this.birthTicks > 0 && this.birthTicks < 70) {
-			World world = this.entity.level;
+			Level world = this.entity.level;
 			Random rand = this.entity.getRandom();
 
 			double dx = Math.cos((this.entity.yRot + 90) * Math.PI / 180.0D) * -0.2F;

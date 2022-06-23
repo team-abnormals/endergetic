@@ -11,35 +11,35 @@ import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 
 /**
  * @author - SmellyModder (Luke Tonon)
  */
 public class BolloomBalloonEntity extends AbstractBolloomEntity {
-	private static final DataParameter<Optional<UUID>> KNOT_UNIQUE_ID = EntityDataManager.defineId(BolloomBalloonEntity.class, DataSerializers.OPTIONAL_UUID);
-	private static final DataParameter<BlockPos> FENCE_POS = EntityDataManager.defineId(BolloomBalloonEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<BalloonColor> COLOR = EntityDataManager.defineId(BolloomBalloonEntity.class, EEDataSerializers.BALLOON_COLOR);
+	private static final EntityDataAccessor<Optional<UUID>> KNOT_UNIQUE_ID = SynchedEntityData.defineId(BolloomBalloonEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	private static final EntityDataAccessor<BlockPos> FENCE_POS = SynchedEntityData.defineId(BolloomBalloonEntity.class, EntityDataSerializers.BLOCK_POS);
+	private static final EntityDataAccessor<BalloonColor> COLOR = SynchedEntityData.defineId(BolloomBalloonEntity.class, EEDataSerializers.BALLOON_COLOR);
 
 	public boolean hasModifiedBoatOrder;
 	@Nullable
@@ -47,18 +47,18 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	@Nullable
 	private UUID attachedEntityUUID;
 
-	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, World world) {
+	public BolloomBalloonEntity(EntityType<? extends BolloomBalloonEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public BolloomBalloonEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public BolloomBalloonEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 	}
 
 	/*
 	 * Used for Adding onto a fence
 	 */
-	public BolloomBalloonEntity(World world, UUID ownerKnot, BlockPos pos, float offset) {
+	public BolloomBalloonEntity(Level world, UUID ownerKnot, BlockPos pos, float offset) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 		float posX = pos.getX() + 0.5F + (this.random.nextBoolean() ? -offset : offset);
 		float posY = pos.getY() + 3;
@@ -75,7 +75,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	/*
 	 * Used for Dispensers
 	 */
-	public BolloomBalloonEntity(World world, BlockPos pos) {
+	public BolloomBalloonEntity(Level world, BlockPos pos) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 		float posX = pos.getX() + 0.5F;
 		float posY = pos.getY();
@@ -95,7 +95,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		if (this.isAttachedToEntity() && (!this.attachedEntity.isAlive() || this.attachedEntity.isSpectator())) {
 			this.detachFromEntity();
 		} else if (!this.level.isClientSide && this.attachedEntityUUID != null) {
-			Entity entity = ((ServerWorld) this.level).getEntity(this.attachedEntityUUID);
+			Entity entity = ((ServerLevel) this.level).getEntity(this.attachedEntityUUID);
 			if (entity != null) {
 				this.attachToEntity(entity);
 			} else {
@@ -115,21 +115,21 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		if (this.getKnotId() != null) {
 			compound.putUUID("KnotUUID", this.getKnotId());
 		}
 		compound.putLong("FENCE_POS", this.getFencePos().asLong());
 		compound.putByte("Color", (byte) this.getColor().ordinal());
-		if (this.isAttachedToEntity() && !(this.attachedEntity instanceof PlayerEntity)) {
+		if (this.isAttachedToEntity() && !(this.attachedEntity instanceof Player)) {
 			compound.put("Pos", this.newDoubleList(this.attachedEntity.getX(), this.attachedEntity.getY(), this.attachedEntity.getZ()));
 			compound.putUUID("AttachedUUID", this.attachedEntity.getUUID());
 		}
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setKnotId(compound.contains("KnotUUID") ? compound.getUUID("KnotUUID") : null);
 		this.setFencePos(BlockPos.of(compound.getLong("FENCE_POS")));
@@ -150,7 +150,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 
 	@Nullable
 	public Entity getKnot() {
-		return ((ServerWorld) this.level).getEntity(this.getKnotId());
+		return ((ServerLevel) this.level).getEntity(this.getKnotId());
 	}
 
 	private void setFencePos(BlockPos fencePos) {
@@ -197,14 +197,14 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	public void updateAttachedPosition() {
-		this.setDeltaMovement(Vector3d.ZERO);
+		this.setDeltaMovement(Vec3.ZERO);
 		if (this.canUpdate()) {
 			this.tick();
 			this.incrementTicksExisted();
 			if (this.attachedEntity instanceof CustomBalloonPositioner) {
 				((CustomBalloonPositioner) this.attachedEntity).updateAttachedPosition(this);
 			} else if (this.attachedEntity != null) {
-				this.setPos(this.attachedEntity.getX() + this.getSway() * MathHelper.sin(-this.getAngle()), this.attachedEntity.getY() + this.getPassengersRidingOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getZ() + this.getSway() * MathHelper.cos(-this.getAngle()));
+				this.setPos(this.attachedEntity.getX() + this.getSway() * Mth.sin(-this.getAngle()), this.attachedEntity.getY() + this.getPassengersRidingOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getZ() + this.getSway() * Mth.cos(-this.getAngle()));
 			}
 		}
 	}
@@ -228,7 +228,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	@Override
 	public void updateUntied() {
 		if (this.level.isAreaLoaded(this.getFencePos(), 1) && !this.isUntied()) {
-			if (!this.level.getBlockState(this.getFencePos()).getBlock().is(BlockTags.FENCES)) {
+			if (!this.level.getBlockState(this.getFencePos()).is(BlockTags.FENCES)) {
 				if (!this.level.isClientSide && this.getKnot() != null) {
 					BolloomKnotEntity knotEntity = ((BolloomKnotEntity) this.getKnot());
 					knotEntity.setBalloonsTied(knotEntity.getBalloonsTied() - 1);
@@ -261,7 +261,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	public boolean isAttachmentBlocked() {
-		BlockPos.Mutable mutable = this.getFencePos().above(3).mutable();
+		BlockPos.MutableBlockPos mutable = this.getFencePos().above(3).mutable();
 		for (int i = 0; i < 3; i++) {
 			BlockPos pos = mutable.below(i);
 			if (this.level.isAreaLoaded(pos, 1)) {
@@ -286,14 +286,14 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public ActionResultType interactAt(PlayerEntity player, Vector3d vec, Hand hand) {
+	public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (itemstack.getItem() instanceof DyeItem && this.getColor().color != ((DyeItem) itemstack.getItem()).getDyeColor()) {
 			if (!this.level.isClientSide) {
 				this.setColor(BalloonColor.byDyeColor(((DyeItem) itemstack.getItem()).getDyeColor()));
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
-			return ActionResultType.CONSUME;
+			return InteractionResult.CONSUME;
 		}
 		return super.interactAt(player, vec, hand);
 	}
@@ -304,7 +304,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(this.getColor().balloonItem.get());
 	}
 

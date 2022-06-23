@@ -10,28 +10,28 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
+public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 
 	private Supplier<BlockState> HIVE_STATE(boolean hanger) {
 		return hanger ? () -> EEBlocks.HIVE_HANGER.get().defaultBlockState() : () -> EEBlocks.PUFFBUG_HIVE.get().defaultBlockState();
 	}
 
-	public PuffBugHiveFeature(Codec<NoFeatureConfig> configFactoryIn) {
+	public PuffBugHiveFeature(Codec<NoneFeatureConfiguration> configFactoryIn) {
 		super(configFactoryIn);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		if (rand.nextFloat() < 0.1F) return false;
 		BlockPos hivePos = pos.below();
 
@@ -55,7 +55,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		return false;
 	}
 
-	private void spawnPuffBugs(ISeedReader world, BlockPos pos, Random rand) {
+	private void spawnPuffBugs(WorldGenLevel world, BlockPos pos, Random rand) {
 		int maxPuffBugs = rand.nextInt(4) + 2;
 
 		List<Direction> openSides = this.getOpenSides(world, pos);
@@ -64,7 +64,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 			PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world.getLevel());
 			if (puffbug != null) {
 				puffbug.moveTo(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
-				puffbug.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), SpawnReason.STRUCTURE, null, null);
+				puffbug.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null, null);
 				puffbug.setHivePos(pos);
 				world.addFreshEntity(puffbug);
 			}
@@ -72,7 +72,7 @@ public class PuffBugHiveFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private List<Direction> getOpenSides(IWorld world, BlockPos pos) {
+	private List<Direction> getOpenSides(LevelAccessor world, BlockPos pos) {
 		List<Direction> openDirections = Lists.newArrayList();
 		for (Direction directions : Direction.values()) {
 			if (directions != Direction.UP) {

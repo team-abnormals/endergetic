@@ -4,24 +4,24 @@ import java.util.Random;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class FrisbloomBudBlock extends Block {
 	public static final IntegerProperty LAYER = IntegerProperty.create("layers_total", 0, 3);
@@ -35,21 +35,21 @@ public class FrisbloomBudBlock extends Block {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+	public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
 		return SHAPE;
 	}
 
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(LAYER);
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		return canSurvive(stateIn, worldIn, currentPos) ? worldIn.getBlockState(currentPos) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		if (!world.isAreaLoaded(pos, 1)) return;
 
 		if (random.nextInt(2) == 1 && world.isEmptyBlock(pos.above())) {
@@ -61,7 +61,7 @@ public class FrisbloomBudBlock extends Block {
 		}
 	}
 
-	public void grow(BlockState state, World worldIn, BlockPos pos, Random random) {
+	public void grow(BlockState state, Level worldIn, BlockPos pos, Random random) {
 		if (state.getValue(LAYER) == 0) {
 			worldIn.setBlockAndUpdate(pos, EEBlocks.FRISBLOOM_STEM.defaultBlockState().setValue(FrisbloomStemBlock.LAYER, 1));
 			worldIn.setBlock(pos.above(), this.defaultBlockState().setValue(LAYER, this.getProbabilityForLayer(random, 1)), 2);
@@ -83,13 +83,13 @@ public class FrisbloomBudBlock extends Block {
 		return random.nextInt(2) == 1 ? 3 : 2;
 	}
 
-	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		BlockState ground = worldIn.getBlockState(pos.below());
 		return state.getValue(LAYER) == 0 ? ground.getBlock() == Blocks.END_STONE : ground.getBlock() == EEBlocks.FRISBLOOM_STEM;
 	}
 
 	@Override
-	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
+	public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
 		return SoundType.GRASS;
 	}
 }

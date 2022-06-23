@@ -3,8 +3,8 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -46,10 +46,10 @@ public class BroodEetleLastStageGoal extends Goal {
 				Random random = broodEetle.getRandom();
 				if (BroodEetleLaunchEggsGoal.getNearbyEetleCount(broodEetle) <= 9 || this.cannonTicks <= 75 || random.nextFloat() <= 0.05F) {
 					NetworkUtil.setPlayingAnimationMessage(broodEetle, BroodEetleEntity.LAUNCH);
-					Vector3d firingPos = new Vector3d(-1.0D, 3.0D, 0.0D).yRot(-broodEetle.yBodyRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
+					Vec3 firingPos = new Vec3(-1.0D, 3.0D, 0.0D).yRot(-broodEetle.yBodyRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
 					EetleEggEntity eetleEgg = new EetleEggEntity(broodEetle.level, broodEetle.position().add(firingPos));
 					eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, false));
-					eetleEgg.setDeltaMovement(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
+					eetleEgg.setDeltaMovement(new Vec3((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
 					broodEetle.level.addFreshEntity(eetleEgg);
 				} else {
 					broodEetle.heal(5.0F);

@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 public class PuffBugAttachToHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -30,7 +30,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 		this.puffbug.getNavigation().stop();
 		this.puffbug.setSpeed(0.0F);
 
-		this.puffbug.setDeltaMovement(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vec3.ZERO);
 	}
 
 	@Override

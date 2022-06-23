@@ -4,12 +4,12 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IData
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.EntityPredicates;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntitySelector;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -65,7 +65,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 		Random random = this.random;
 		if (canSeeTarget && this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
-			PathNavigator pathNavigator = glider.getNavigation();
+			PathNavigation pathNavigator = glider.getNavigation();
 			if (distanceToTargetSq >= 9.0F) {
 				Path path = pathNavigator.createPath(GliderEetleGrabGoal.getAirPosAboveTarget(glider.level, target), 0);
 				if (path == null || !pathNavigator.moveTo(path, 1.25F)) {
@@ -92,7 +92,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 	public void stop() {
 		GliderEetleEntity glider = this.entity;
 		LivingEntity livingentity = glider.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			glider.setTarget(null);
 		}
 		glider.setAggressive(false);

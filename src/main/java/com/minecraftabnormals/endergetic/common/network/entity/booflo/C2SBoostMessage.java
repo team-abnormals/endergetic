@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -17,10 +17,10 @@ import java.util.function.Supplier;
  */
 public final class C2SBoostMessage {
 
-	public final void serialize(PacketBuffer buf) {
+	public final void serialize(FriendlyByteBuf buf) {
 	}
 
-	public static C2SBoostMessage deserialize(PacketBuffer buf) {
+	public static C2SBoostMessage deserialize(FriendlyByteBuf buf) {
 		return new C2SBoostMessage();
 	}
 
@@ -28,7 +28,7 @@ public final class C2SBoostMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			context.enqueueWork(() -> {
-				PlayerEntity player = context.getSender();
+				Player player = context.getSender();
 				if (player != null) {
 					Entity entity = player.getVehicle();
 					if (entity instanceof BoofloEntity) {

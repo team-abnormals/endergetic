@@ -5,16 +5,16 @@ import java.util.EnumSet;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.block.Block;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
-	private final World world;
+	private final Level world;
 
 	public BoofloBoofGoal(BoofloEntity booflo) {
 		super(booflo, BoofloEntity.INFLATE);

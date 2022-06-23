@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -30,7 +30,7 @@ public class RotateMessage {
 		this.roll = roll;
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeInt(this.entityId);
 		buf.writeInt(this.tickLength);
 		buf.writeFloat(this.yaw);
@@ -38,7 +38,7 @@ public class RotateMessage {
 		buf.writeFloat(this.roll);
 	}
 
-	public static RotateMessage deserialize(PacketBuffer buf) {
+	public static RotateMessage deserialize(FriendlyByteBuf buf) {
 		return new RotateMessage(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(), buf.readFloat());
 	}
 

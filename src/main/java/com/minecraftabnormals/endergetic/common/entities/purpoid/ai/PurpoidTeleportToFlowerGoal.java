@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ public class PurpoidTeleportToFlowerGoal extends AbstractPurpoidTeleportGoal {
 		int originX = pos.getX();
 		int originY = pos.getY();
 		int originZ = pos.getZ();
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		World world = purpoid.level;
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+		Level world = purpoid.level;
 		List<BlockPos> flowerPositions = new ArrayList<>();
 		for (int x = originX - 8; x <= originX + 8; x++) {
 			for (int y = originY - 12; y <= originY + 12; y++) {

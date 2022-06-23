@@ -6,7 +6,7 @@ import com.minecraftabnormals.endergetic.common.items.PuffBugBottleItem;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
-import net.minecraft.block.DispenserBlock;
+import net.minecraft.world.level.block.DispenserBlock;
 
 public final class EEDispenserBehaviors {
 

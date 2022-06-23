@@ -5,17 +5,17 @@ import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -69,7 +69,7 @@ public class PurpoidAttackGoal extends Goal {
 		Random random = purpoid.getRandom();
 		if (this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
-			PathNavigator pathNavigator = purpoid.getNavigation();
+			PathNavigation pathNavigator = purpoid.getNavigation();
 			if (distanceToTargetSq >= 9.0F) {
 				Path path = pathNavigator.createPath(findAirPosAboveTarget(purpoid.level, target), 0);
 				if (path == null || !pathNavigator.moveTo(path, 2.25F)) {
@@ -95,8 +95,8 @@ public class PurpoidAttackGoal extends Goal {
 						double randomZ = targetZ + (random.nextDouble() - 0.5D) * 32.0D;
 						if (target.randomTeleport(randomX, randomY, randomZ, false)) {
 							target.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
-							if (target instanceof ServerPlayerEntity) {
-								EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) target), new S2CEnablePurpoidFlash());
+							if (target instanceof ServerPlayer) {
+								EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) target), new S2CEnablePurpoidFlash());
 							}
 							break;
 						}
@@ -114,7 +114,7 @@ public class PurpoidAttackGoal extends Goal {
 	public void stop() {
 		PurpoidEntity purpoid = this.purpoid;
 		LivingEntity livingentity = purpoid.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			purpoid.setTarget(null);
 		}
 
@@ -124,11 +124,11 @@ public class PurpoidAttackGoal extends Goal {
 
 	public static boolean shouldFollowTarget(PurpoidEntity purpoid, boolean near) {
 		LivingEntity attackTarget = purpoid.getTarget();
-		return attackTarget != null && attackTarget.isAlive() && attackTarget.hasPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof PlayerEntity) || !attackTarget.isSpectator() && !((PlayerEntity) attackTarget).isCreative());
+		return attackTarget != null && attackTarget.isAlive() && attackTarget.hasPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof Player) || !attackTarget.isSpectator() && !((Player) attackTarget).isCreative());
 	}
 
-	public static BlockPos findAirPosAboveTarget(World world, LivingEntity target) {
-		BlockPos.Mutable mutable = target.blockPosition().mutable();
+	public static BlockPos findAirPosAboveTarget(Level world, LivingEntity target) {
+		BlockPos.MutableBlockPos mutable = target.blockPosition().mutable();
 		int maxHeight = target.getRandom().nextInt(3) + 4;
 		for (int y = 0; y < maxHeight; y++) {
 			mutable.move(0, 1, 0);

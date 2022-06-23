@@ -3,25 +3,25 @@ package com.minecraftabnormals.endergetic.common.blocks.poise.hive;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class PuffbugHiveHangerBlock extends Block {
 	private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
@@ -31,14 +31,14 @@ public class PuffbugHiveHangerBlock extends Block {
 	}
 
 	@Override
-	public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entity) {
 		if (!(entity instanceof PuffBugEntity)) {
-			entity.makeStuckInBlock(state, new Vector3d(0.25D, 0.05D, 0.25D));
+			entity.makeStuckInBlock(state, new Vec3(0.25D, 0.05D, 0.25D));
 		}
 	}
 
 	@Override
-	public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		if (!world.isClientSide) {
 			BlockPos down = pos.below();
 			BlockPos doubleDown = down.below();
@@ -54,17 +54,17 @@ public class PuffbugHiveHangerBlock extends Block {
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
 		return new ItemStack(EEBlocks.PUFFBUG_HIVE.get());
 	}
 
-	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+	public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
 		return SHAPE;
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (worldIn.getBlockState(currentPos.above()).isAir() || worldIn.getBlockState(currentPos.below()).getBlock() != EEBlocks.PUFFBUG_HIVE.get()) {
 			return Blocks.AIR.defaultBlockState();
 		}

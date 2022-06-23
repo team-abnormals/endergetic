@@ -5,21 +5,21 @@ import java.util.Random;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.SphereReplaceConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 
-public class CorrockGroundPatchFeature extends Feature<SphereReplaceConfig> {
+public class CorrockGroundPatchFeature extends Feature<DiskConfiguration> {
 
-	public CorrockGroundPatchFeature(Codec<SphereReplaceConfig> config) {
+	public CorrockGroundPatchFeature(Codec<DiskConfiguration> config) {
 		super(config);
 	}
 
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, SphereReplaceConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, DiskConfiguration config) {
 		int i = 0;
 		int radius = rand.nextInt(config.radius.sample(rand));
 

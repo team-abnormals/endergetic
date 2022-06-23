@@ -5,18 +5,18 @@ import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
@@ -24,21 +24,21 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BolloomKnotEntity extends Entity {
 	private BlockPos hangingPosition;
-	private static final DataParameter<Integer> BALLOONS_TIED = EntityDataManager.defineId(BolloomKnotEntity.class, DataSerializers.INT);
+	private static final EntityDataAccessor<Integer> BALLOONS_TIED = SynchedEntityData.defineId(BolloomKnotEntity.class, EntityDataSerializers.INT);
 
-	public BolloomKnotEntity(EntityType<? extends BolloomKnotEntity> entityType, World world) {
+	public BolloomKnotEntity(EntityType<? extends BolloomKnotEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public BolloomKnotEntity(World world, BlockPos pos) {
+	public BolloomKnotEntity(Level world, BlockPos pos) {
 		this(EEEntities.BOLLOOM_KNOT.get(), world);
 		this.setPos(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
 		this.hangingPosition = pos;
-		this.setDeltaMovement(Vector3d.ZERO);
+		this.setDeltaMovement(Vec3.ZERO);
 		this.forcedLoading = true;
 	}
 
-	public BolloomKnotEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public BolloomKnotEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_KNOT.get(), world);
 	}
 
@@ -55,8 +55,8 @@ public class BolloomKnotEntity extends Entity {
 	}
 
 	@Nullable
-	public static BolloomKnotEntity getKnotForPosition(World worldIn, BlockPos pos) {
-		for (BolloomKnotEntity entity : worldIn.getEntitiesOfClass(BolloomKnotEntity.class, new AxisAlignedBB(pos))) {
+	public static BolloomKnotEntity getKnotForPosition(Level worldIn, BlockPos pos) {
+		for (BolloomKnotEntity entity : worldIn.getEntitiesOfClass(BolloomKnotEntity.class, new AABB(pos))) {
 			if (entity.getHangingPos().equals(pos)) {
 				return entity;
 			}
@@ -64,7 +64,7 @@ public class BolloomKnotEntity extends Entity {
 		return null;
 	}
 
-	public static void createStartingKnot(World world, BlockPos pos, BalloonColor balloonColor) {
+	public static void createStartingKnot(Level world, BlockPos pos, BalloonColor balloonColor) {
 		BolloomKnotEntity knot = new BolloomKnotEntity(world, pos);
 		BolloomBalloonEntity balloon = new BolloomBalloonEntity(world, knot.getUUID(), pos, 0);
 		knot.setBalloonsTied(1);
@@ -110,13 +110,13 @@ public class BolloomKnotEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT nbt) {
+	protected void readAdditionalSaveData(CompoundTag nbt) {
 		this.hangingPosition = new BlockPos(nbt.getInt("TileX"), nbt.getInt("TileY"), nbt.getInt("TileZ"));
 		this.setBalloonsTied(nbt.getInt("Ballons_Tied"));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT nbt) {
+	protected void addAdditionalSaveData(CompoundTag nbt) {
 		BlockPos blockpos = this.getHangingPos();
 		nbt.putInt("TileX", blockpos.getX());
 		nbt.putInt("TileY", blockpos.getY());
@@ -143,7 +143,7 @@ public class BolloomKnotEntity extends Entity {
 
 	@Nonnull
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

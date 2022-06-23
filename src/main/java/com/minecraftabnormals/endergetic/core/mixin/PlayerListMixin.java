@@ -4,17 +4,17 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonE
 import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.NetworkManager;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.PlayerData;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,17 +30,17 @@ import java.util.List;
 public final class PlayerListMixin {
 	@Shadow
 	@Final
-	private PlayerData playerIo;
+	private PlayerDataStorage playerIo;
 	@Shadow
 	@Final
 	private MinecraftServer server;
 
 	@SuppressWarnings("deprecation")
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;save(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "remove")
-	private void removeBalloons(ServerPlayerEntity player, CallbackInfo info) {
+	private void removeBalloons(ServerPlayer player, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) player).getBalloons();
 		if (!balloons.isEmpty()) {
-			ServerWorld serverWorld = (ServerWorld) player.level;
+			ServerLevel serverWorld = (ServerLevel) player.level;
 			for (BolloomBalloonEntity balloon : balloons) {
 				serverWorld.despawn(balloon);
 				balloon.removed = true;
@@ -50,15 +50,15 @@ public final class PlayerListMixin {
 	}
 
 	@Inject(at = @At("RETURN"), method = "placeNewPlayer")
-	private void spawnBalloons(NetworkManager netManager, ServerPlayerEntity player, CallbackInfo info) {
-		ServerWorld serverWorld = (ServerWorld) player.level;
+	private void spawnBalloons(Connection netManager, ServerPlayer player, CallbackInfo info) {
+		ServerLevel serverWorld = (ServerLevel) player.level;
 
-		CompoundNBT compound = this.server.getWorldData().getLoadedPlayerTag();
+		CompoundTag compound = this.server.getWorldData().getLoadedPlayerTag();
 		if (!(compound != null && player.getName().getString().equals(this.server.getSingleplayerName()))) {
 			try {
 				File playerDataFile = new File(this.playerIo.getPlayerDataFolder(), player.getStringUUID() + ".dat");
 				if (playerDataFile.exists() && playerDataFile.isFile()) {
-					compound = CompressedStreamTools.readCompressed(playerDataFile);
+					compound = NbtIo.readCompressed(playerDataFile);
 				}
 			} catch (Exception exception) {
 				EndergeticExpansion.LOGGER.warn("Failed to load player data for {}", player.getName().getString());
@@ -66,7 +66,7 @@ public final class PlayerListMixin {
 		}
 
 		if (compound != null && compound.contains("Balloons", 9)) {
-			ListNBT balloonsTag = compound.getList("Balloons", 10);
+			ListTag balloonsTag = compound.getList("Balloons", 10);
 			if (!balloonsTag.isEmpty()) {
 				for (int i = 0; i < balloonsTag.size(); i++) {
 					Entity entity = EntityType.loadEntityRecursive(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.addWithUUID(balloon) ? null : balloon));

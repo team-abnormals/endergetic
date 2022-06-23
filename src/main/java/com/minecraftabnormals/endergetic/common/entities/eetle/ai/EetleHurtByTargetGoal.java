@@ -2,10 +2,10 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -19,14 +19,14 @@ public class EetleHurtByTargetGoal extends HurtByTargetGoal {
 	}
 
 	@Override
-	protected boolean canAttack(@Nullable LivingEntity potentialTarget, EntityPredicate targetPredicate) {
+	protected boolean canAttack(@Nullable LivingEntity potentialTarget, TargetingConditions targetPredicate) {
 		return !(potentialTarget instanceof BroodEetleEntity || potentialTarget instanceof AbstractEetleEntity) && super.canAttack(potentialTarget, targetPredicate);
 	}
 
 	@Override
 	protected void alertOthers() {
 		double targetDistance = this.getFollowDistance();
-		AxisAlignedBB axisalignedbb = AxisAlignedBB.unitCubeFromLowerCorner(this.mob.position()).inflate(targetDistance, 10.0D, targetDistance);
+		AABB axisalignedbb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(targetDistance, 10.0D, targetDistance);
 		List<AbstractEetleEntity> list = this.mob.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 		Iterator<AbstractEetleEntity> iterator = list.iterator();
 		LivingEntity revengeTarget = this.mob.getLastHurtByMob();

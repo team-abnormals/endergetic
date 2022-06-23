@@ -11,49 +11,63 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class AbstractEetleEntity extends MonsterEntity implements IEndimatedEntity {
-	private static final DataParameter<Boolean> CHILD = EntityDataManager.defineId(AbstractEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final EntitySize LEETLE_SIZE = EntitySize.fixed(0.6F, 0.4375F);
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+
+public abstract class AbstractEetleEntity extends Monster implements IEndimatedEntity {
+	private static final EntityDataAccessor<Boolean> CHILD = SynchedEntityData.defineId(AbstractEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDimensions LEETLE_SIZE = EntityDimensions.fixed(0.6F, 0.4375F);
 	private static final AttributeModifier LEETLE_HEALTH = new AttributeModifier(UUID.fromString("8a1ea466-4b2d-11eb-ae93-0242ac130002"), "Leetle health decrease", -0.8F, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final Direction[] EGG_DIRECTIONS = Direction.values();
 	public static final Endimation GROW_UP = new Endimation(30);
-	private final AvoidEntityGoal<PlayerEntity> avoidEntityGoal = new AvoidEntityGoal<>(this, PlayerEntity.class, 12.0F, 1.0F, 1.0F);
-	private NearestAttackableTargetGoal<PlayerEntity> attackableTargetGoal;
+	private final AvoidEntityGoal<Player> avoidEntityGoal = new AvoidEntityGoal<>(this, Player.class, 12.0F, 1.0F, 1.0F);
+	private NearestAttackableTargetGoal<Player> attackableTargetGoal;
 	private Endimation endimation = BLANK_ANIMATION;
 	private int animationTick;
 	private int growingAge;
@@ -61,7 +75,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	private boolean fromEgg;
 	protected int idleDelay;
 
-	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
+	protected AbstractEetleEntity(EntityType<? extends AbstractEetleEntity> type, Level world) {
 		super(type, world);
 		this.moveControl = new GroundEetleMoveController(this);
 		this.maxUpStep = 0.5F;
@@ -75,13 +89,13 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	protected void registerGoals() {
-		this.attackableTargetGoal = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true);
+		this.attackableTargetGoal = new NearestAttackableTargetGoal<>(this, Player.class, true);
 		this.targetSelector.addGoal(2, this.attackableTargetGoal);
 		this.targetSelector.addGoal(1, new EetleHurtByTargetGoal(this));
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		if (CHILD.equals(key)) {
 			this.refreshDimensions();
 		}
@@ -119,7 +133,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("Age", this.growingAge);
 		compound.putInt("DespawnTimer", this.despawnTimer);
@@ -127,7 +141,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.updateAge(compound.getInt("Age"));
 		this.despawnTimer = Math.max(0, compound.getInt("DespawnTimer"));
@@ -147,7 +161,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		if (child) {
 			this.xpReward = 2;
 			if (this.level != null && !this.level.isClientSide) {
-				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+				AttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
 					maxHealth.addTransientModifier(LEETLE_HEALTH);
 					this.setHealth(Math.max(this.getHealth(), this.getMaxHealth()));
@@ -156,7 +170,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		} else {
 			this.xpReward = 6;
 			if (wasChild) {
-				ModifiableAttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
+				AttributeInstance maxHealth = this.getAttribute(Attributes.MAX_HEALTH);
 				if (maxHealth != null) {
 					maxHealth.removeModifier(LEETLE_HEALTH);
 				}
@@ -190,11 +204,11 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
 		//Patches of baby eetles will spawn 40% of the time
-		if (reason == SpawnReason.NATURAL && this.random.nextFloat() < 0.4F) {
+		if (reason == MobSpawnType.NATURAL && this.random.nextFloat() < 0.4F) {
 			this.updateAge(-(20000 + this.random.nextInt(4001)));
-			BlockPos.Mutable mutable = new BlockPos.Mutable();
+			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			int startX = (int) this.getX();
 			int startZ = (int) this.getZ();
 			for (int x = -2; x <= 2; x++) {
@@ -202,7 +216,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 					if (this.random.nextFloat() < 0.1F) {
 						int currentX = startX + x;
 						int currentZ = startZ + z;
-						mutable.set(currentX, world.getHeight(Heightmap.Type.MOTION_BLOCKING, currentX, currentZ), currentZ);
+						mutable.set(currentX, world.getHeight(Heightmap.Types.MOTION_BLOCKING, currentX, currentZ), currentZ);
 						if (world.isEmptyBlock(mutable) && Block.canSupportRigidBlock(world, mutable.below())) {
 							EntityType<?> type = this.getType();
 							Entity entity = type.create(this.level);
@@ -224,7 +238,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	@SuppressWarnings("deprecation")
 	@Override
 	public void die(DamageSource cause) {
-		World world = this.level;
+		Level world = this.level;
 		if (!this.isBaby() && this.random.nextFloat() < calculateEggChance(world, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.removed && !this.dead) {
 			if (!world.isClientSide) {
 				BlockPos pos = this.blockPosition();
@@ -236,15 +250,15 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 						BlockState state = defaultState.setValue(EetleEggBlock.FACING, direction);
 						if (state.canSurvive(world, pos)) {
 							world.setBlockAndUpdate(pos, state.setValue(EetleEggBlock.SIZE, random.nextInt(2)));
-							world.playSound(null, pos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
-							TileEntity tileEntity = world.getBlockEntity(pos);
+							world.playSound(null, pos, EESounds.EETLE_EGG_PLACE.get(), SoundSource.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
+							BlockEntity tileEntity = world.getBlockEntity(pos);
 							if (tileEntity instanceof EetleEggTileEntity) {
 								EetleEggTileEntity eetleEggTileEntity = (EetleEggTileEntity) tileEntity;
 								eetleEggTileEntity.updateHatchDelay(world, random.nextInt(11) + 5);
 								eetleEggTileEntity.bypassSpawningGameRule();
 							}
-							if (world instanceof ServerWorld) {
-								((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
+							if (world instanceof ServerLevel) {
+								((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
 							}
 						}
 					}
@@ -296,16 +310,16 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 
 	@Override
 	public void onEndimationEnd(Endimation endimation) {
-		World world = this.level;
-		if (endimation == GROW_UP && world instanceof ServerWorld) {
+		Level world = this.level;
+		if (endimation == GROW_UP && world instanceof ServerLevel) {
 			this.setBaby(false);
 			this.playSound(EESounds.LEETLE_TRANSFORM.get(), this.getSoundVolume(), this.getVoicePitch());
-			((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
+			((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
 		}
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose poseIn) {
+	public EntityDimensions getDimensions(Pose poseIn) {
 		return this.isBaby() ? LEETLE_SIZE : super.getDimensions(poseIn);
 	}
 
@@ -340,7 +354,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return 0.65F;
 	}
 
@@ -350,8 +364,8 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.ARTHROPOD;
+	public MobType getMobType() {
+		return MobType.ARTHROPOD;
 	}
 
 	@Override
@@ -365,7 +379,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(EEItems.EETLE_SPAWN_EGG.get());
 	}
 
@@ -374,23 +388,23 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 		return false;
 	}
 
-	private static float calculateEggChance(World world, AxisAlignedBB boundingBox) {
+	private static float calculateEggChance(Level world, AABB boundingBox) {
 		return 0.6F - 0.075F * world.getEntitiesOfClass(AbstractEetleEntity.class, boundingBox, eetle -> {
 			return eetle.isAlive() && !eetle.isBaby();
 		}).size();
 	}
 
-	protected static class GroundEetleMoveController extends MovementController {
+	protected static class GroundEetleMoveController extends MoveControl {
 
-		protected GroundEetleMoveController(MobEntity mob) {
+		protected GroundEetleMoveController(Mob mob) {
 			super(mob);
 		}
 
 		@Override
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO) {
-				MobEntity mob = this.mob;
-				this.operation = MovementController.Action.WAIT;
+			if (this.operation == MoveControl.Operation.MOVE_TO) {
+				Mob mob = this.mob;
+				this.operation = MoveControl.Operation.WAIT;
 				double d0 = this.wantedX - mob.getX();
 				double d1 = this.wantedZ - mob.getZ();
 				double d2 = this.wantedY - mob.getY();
@@ -400,7 +414,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 					return;
 				}
 
-				float f9 = (float)(MathHelper.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+				float f9 = (float)(Mth.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
 				mob.yRot = this.rotlerp(mob.yRot, f9, 90.0F);
 				float moveSpeed = (float)(this.speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
 				if (mob instanceof AbstractEetleEntity) {
@@ -417,7 +431,7 @@ public abstract class AbstractEetleEntity extends MonsterEntity implements IEndi
 				VoxelShape voxelshape = blockstate.getCollisionShape(mob.level, blockpos);
 				if (d2 > mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + (double)blockpos.getY() && !block.is(BlockTags.DOORS) && !block.is(BlockTags.FENCES)) {
 					mob.getJumpControl().jump();
-					this.operation = MovementController.Action.JUMPING;
+					this.operation = MoveControl.Operation.JUMPING;
 				}
 				return;
 			}

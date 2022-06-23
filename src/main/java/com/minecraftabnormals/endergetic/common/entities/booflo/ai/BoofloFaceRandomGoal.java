@@ -5,10 +5,10 @@ import java.util.EnumSet;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.effect.MobEffects;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloFaceRandomGoal extends Goal {
 	private final BoofloEntity booflo;
@@ -22,7 +22,7 @@ public class BoofloFaceRandomGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		return !this.booflo.isBoofed() && this.booflo.getTarget() == null && (this.booflo.isOnGround() || this.booflo.hasEffect(Effects.LEVITATION)) && this.booflo.getMoveControl() instanceof BoofloEntity.GroundMoveHelperController;
+		return !this.booflo.isBoofed() && this.booflo.getTarget() == null && (this.booflo.isOnGround() || this.booflo.hasEffect(MobEffects.LEVITATION)) && this.booflo.getMoveControl() instanceof BoofloEntity.GroundMoveHelperController;
 	}
 
 	@Override

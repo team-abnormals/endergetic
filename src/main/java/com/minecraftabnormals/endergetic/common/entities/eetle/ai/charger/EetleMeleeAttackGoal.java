@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.EntitySelector;
 
 import java.util.EnumSet;
 
@@ -89,7 +89,7 @@ public class EetleMeleeAttackGoal extends Goal {
 	@Override
 	public void stop() {
 		LivingEntity livingentity = this.attacker.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			this.attacker.setTarget(null);
 		}
 

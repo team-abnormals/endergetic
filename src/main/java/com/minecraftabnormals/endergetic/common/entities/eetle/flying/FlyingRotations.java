@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.flying;
 
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public final class FlyingRotations {
 	private float prevFlyPitch, flyPitch;
@@ -51,14 +51,14 @@ public final class FlyingRotations {
 	}
 
 	public float getRenderFlyPitch() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevFlyPitch, this.flyPitch);
+		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevFlyPitch, this.flyPitch);
 	}
 
 	public float getRenderFlyRoll() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevFlyRoll, this.flyRoll);
+		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevFlyRoll, this.flyRoll);
 	}
 
 	public static float clampedRotate(float from, float to, float delta) {
-		return from + MathHelper.clamp(MathHelper.degreesDifference(from, to), -delta, delta);
+		return from + Mth.clamp(Mth.degreesDifference(from, to), -delta, delta);
 	}
 }

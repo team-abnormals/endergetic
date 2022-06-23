@@ -3,28 +3,28 @@ package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class LayerRendererPuffBugGlow<T extends PuffBugEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> {
+public class LayerRendererPuffBugGlow<T extends PuffBugEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 	private static final ResourceLocation GRAYSCALE_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay_grayscale.png");
 	private static final ResourceLocation POLLINATED_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_levitation_overlay.png");
 	private static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated_overlay.png");
 
-	public LayerRendererPuffBugGlow(IEntityRenderer<T, M> entityRenderer) {
+	public LayerRendererPuffBugGlow(RenderLayerParent<T, M> entityRenderer) {
 		super(entityRenderer);
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T puffbug, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T puffbug, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		if (!puffbug.isInflated()) return;
 
 		M model = this.getParentModel();

@@ -15,36 +15,36 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.BossInfo;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerBossInfo;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -56,17 +56,26 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity, IFlyingEetle {
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+
+public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyingEetle {
 	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213325_aI");
 	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213326_aJ");
-	private static final DataParameter<Boolean> FIRING_CANNON = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> FLYING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> DROPPING_EGGS = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> SLEEPING = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.defineId(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
-	private static final DataParameter<Integer> EGG_SACK_ID = EntityDataManager.defineId(BroodEetleEntity.class, DataSerializers.INT);
-	private static final DataParameter<HealthStage> HEALTH_STAGE = EntityDataManager.defineId(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
+	private static final EntityDataAccessor<Boolean> FIRING_CANNON = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DROPPING_EGGS = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = SynchedEntityData.defineId(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
+	private static final EntityDataAccessor<Integer> EGG_SACK_ID = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<HealthStage> HEALTH_STAGE = SynchedEntityData.defineId(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
 	public static final Endimation FLAP = new Endimation(22);
 	public static final Endimation MUNCH = new Endimation(25);
 	public static final Endimation ATTACK = new Endimation(12);
@@ -75,8 +84,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	public static final Endimation AIR_CHARGE = new Endimation(80);
 	public static final Endimation AIR_SLAM = new Endimation(11);
 	public static final Endimation DEATH = new Endimation(115);
-	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.875F, 2.125F);
-	private static final EntitySize FINAL_STAGE_SIZE = EntitySize.fixed(2.1875F, 2.125F);
+	private static final EntityDimensions FLYING_SIZE = EntityDimensions.fixed(1.875F, 2.125F);
+	private static final EntityDimensions FINAL_STAGE_SIZE = EntityDimensions.fixed(2.1875F, 2.125F);
 	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
 	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
@@ -84,8 +93,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation sleepingEndimation = new ControlledEndimation(20, 0);
 	private final ControlledEndimation healPulseEndimation = new ControlledEndimation(10, 0);
-	private final ServerBossInfo bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.NOTCHED_6);
-	private final Set<ServerPlayerEntity> trackedPlayers = new HashSet<>();
+	private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.NOTCHED_6);
+	private final Set<ServerPlayer> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
 	private Endimation endimation = BLANK_ANIMATION;
@@ -105,7 +114,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	private float prevHealthPercentage;
 	public boolean wokenUpAggressively;
 
-	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, World world) {
+	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, Level world) {
 		super(type, world);
 		this.headTiltDirection = this.getRandom().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
 		this.xpReward = 50;
@@ -129,8 +138,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		this.goalSelector.addGoal(4, new BroodEetleTakeoffGoal(this));
 		this.goalSelector.addGoal(5, new BroodEetleSlamGoal(this));
 		this.goalSelector.addGoal(6, new BroodEetleFlingGoal(this));
-		this.goalSelector.addGoal(7, new LookRandomlyGoal(this));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, AbstractEetleEntity.class, 8.0F));
+		this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, AbstractEetleEntity.class, 8.0F));
 		this.targetSelector.addGoal(1, new BroodEetleHurtByTargetGoal(this));
 	}
 
@@ -148,14 +157,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 		if (FLYING.equals(key)) {
 			if (this.isFlying()) {
 				this.moveControl = new FlyingEetleMoveController<>(this, 10.0F, 30.0F);
 				this.navigation = new EndergeticFlyingPathNavigator(this, this.level);
 			} else {
-				this.moveControl = new MovementController(this);
+				this.moveControl = new MoveControl(this);
 				this.navigation = this.createNavigation(this.level);
 			}
 			this.resetIdleFlapDelay();
@@ -167,7 +176,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		} else if (TARGET_FLYING_ROTATIONS.equals(key)) {
 			this.flyingRotations.setLooking(true);
 		} else if (SLEEPING.equals(key) && !this.isSleeping()) {
-			for (ServerPlayerEntity playerEntity : this.trackedPlayers) {
+			for (ServerPlayer playerEntity : this.trackedPlayers) {
 				this.bossInfo.addPlayer(playerEntity);
 			}
 		} else if (HEALTH_STAGE.equals(key)) {
@@ -180,8 +189,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	//TODO: Possibly tweak these values
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 11.0F)
 				.add(Attributes.FLYING_SPEED, 0.35F)
 				.add(Attributes.MOVEMENT_SPEED, 0.2F)
@@ -197,7 +206,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		super.tick();
 		this.endimateTick();
 
-		World world = this.level;
+		Level world = this.level;
 		if (this.isDeadOrDying()) {
 			if (!this.isEndimationPlaying(DEATH) && !world.isClientSide) {
 				NetworkUtil.setPlayingAnimationMessage(this, DEATH);
@@ -209,10 +218,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 						elytra.setExtendedLifetime();
 					}
 					this.remove();
-					if (world instanceof ServerWorld) {
-						Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-						((ServerWorld) world).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
-						((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+					if (world instanceof ServerLevel) {
+						Vec3 eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
+						((ServerLevel) world).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
+						((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 30, 0.3125F, 0.3125F, 0.3125F, 0.2D);
 					}
 				} else {
 					for (int i = 0; i < 20; ++i) {
@@ -260,7 +269,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 			if (this.level.getGameTime() % 5 == 0) {
 				BlockPos takeoffPos = this.takeoffPos;
-				if (takeoffPos != null && this.position().distanceToSqr(Vector3d.atLowerCornerOf(takeoffPos)) > 256.0F) {
+				if (takeoffPos != null && this.position().distanceToSqr(Vec3.atLowerCornerOf(takeoffPos)) > 256.0F) {
 					this.takeoffPos = null;
 				}
 			}
@@ -331,7 +340,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void travel(Vector3d travelVector) {
+	public void travel(Vec3 travelVector) {
 		if (this.isEffectiveAi() && !this.isBaby() && this.isFlying()) {
 			this.moveRelative(0.1F, travelVector);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -343,11 +352,11 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("IsSleeping", this.isSleeping());
 		if (this.takeoffPos != null) {
-			compound.put("TakeoffPos", NBTUtil.writeBlockPos(this.takeoffPos));
+			compound.put("TakeoffPos", NbtUtils.writeBlockPos(this.takeoffPos));
 		}
 		compound.putInt("EggCannonCooldown", this.eggCannonCooldown);
 		compound.putInt("FlyCooldown", this.flyCooldown);
@@ -356,14 +365,14 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		if (this.hasCustomName()) {
 			this.bossInfo.setName(this.getDisplayName());
 		}
 		this.setSleeping(compound.getBoolean("IsSleeping"));
 		if (compound.contains("TakeoffPos", Constants.NBT.TAG_COMPOUND)) {
-			this.takeoffPos = NBTUtil.readBlockPos(compound.getCompound("TakeoffPos"));
+			this.takeoffPos = NbtUtils.readBlockPos(compound.getCompound("TakeoffPos"));
 		}
 		this.eggCannonCooldown = compound.getInt("EggCannonCooldown");
 		this.flyCooldown = compound.getInt("FlyCooldown");
@@ -380,9 +389,9 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			if (!collider.noPhysics && !this.noPhysics) {
 				double d0 = collider.getX() - this.getX();
 				double d1 = collider.getZ() - this.getZ();
-				double d2 = MathHelper.absMax(d0, d1);
+				double d2 = Mth.absMax(d0, d1);
 				if (d2 >= 0.01D) {
-					d2 = MathHelper.sqrt(d2);
+					d2 = Mth.sqrt(d2);
 					d0 = d0 / d2;
 					d1 = d1 / d2;
 					double d3 = 1.0D / d2;
@@ -438,8 +447,8 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.ARTHROPOD;
+	public MobType getMobType() {
+		return MobType.ARTHROPOD;
 	}
 
 	@Override
@@ -469,7 +478,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		if (source.getDirectEntity() instanceof AbstractArrowEntity) {
+		if (source.getDirectEntity() instanceof AbstractArrow) {
 			return false;
 		}
 		return super.hurt(source, amount * (source.isProjectile() ? 0.05F : 0.1F));
@@ -493,20 +502,20 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		if (knockbackForce > 0.0D) {
 			Random random = this.level.random;
 			double scale = knockbackForce * (random.nextFloat() * 0.5F + 0.5F);
-			Vector3d horizontalVelocity = new Vector3d(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
+			Vec3 horizontalVelocity = new Vec3(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
 			target.push(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F, horizontalVelocity.z);
 			target.hurtMarked = true;
 		}
 	}
 
 	@Override
-	public void setCustomName(@Nullable ITextComponent name) {
+	public void setCustomName(@Nullable Component name) {
 		super.setCustomName(name);
 		this.bossInfo.setName(this.getDisplayName());
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayerEntity player) {
+	public void startSeenByPlayer(ServerPlayer player) {
 		if (this.isSleeping()) {
 			this.trackedPlayers.add(player);
 		} else {
@@ -515,7 +524,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public void stopSeenByPlayer(ServerPlayerEntity player) {
+	public void stopSeenByPlayer(ServerPlayer player) {
 		if (this.isSleeping()) {
 			this.trackedPlayers.remove(player);
 		} else {
@@ -524,7 +533,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose pose) {
+	public EntityDimensions getDimensions(Pose pose) {
 		return this.isFlying() ? FLYING_SIZE : this.isOnLastHealthStage() ? FINAL_STAGE_SIZE : super.getDimensions(pose);
 	}
 
@@ -586,7 +595,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public float getSleepingProgress() {
-		return MathHelper.sin(1.5708F * this.sleepingEndimation.getAnimationProgress());
+		return Mth.sin(1.5708F * this.sleepingEndimation.getAnimationProgress());
 	}
 
 	public float getFlyingProgress() {
@@ -708,7 +717,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	@Nullable
-	public BroodEggSackEntity getEggSack(World world) {
+	public BroodEggSackEntity getEggSack(Level world) {
 		int eggSackID = this.getEggSackID();
 		if (eggSackID >= 0) {
 			Entity entity = world.getEntity(eggSackID);
@@ -732,7 +741,7 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	}
 
 	public float getWingFlap() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevWingFlap, this.wingFlap);
+		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevWingFlap, this.wingFlap);
 	}
 
 	@Override
@@ -772,10 +781,10 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 			this.setDroppingEggs(false);
 			this.setFiringCannon(false);
 		} else if (endimation == LAUNCH) {
-			World world = this.level;
-			if (world instanceof ServerWorld) {
-				Vector3d eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
-				((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
+			Level world = this.level;
+			if (world instanceof ServerLevel) {
+				Vec3 eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
+				((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), eggSackPos.x(), eggSackPos.y() + (this.isFlying() ? 0.0F : 1.0F), eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.15D);
 			}
 		}
 	}
@@ -784,19 +793,19 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 	@Override
 	public void refreshDimensions() {
 		try {
-			EntitySize currentSize = (EntitySize) SIZE_FIELD.get(this);
+			EntityDimensions currentSize = (EntityDimensions) SIZE_FIELD.get(this);
 			Pose pose = this.getPose();
-			EntitySize newSize = this.getDimensions(pose);
+			EntityDimensions newSize = this.getDimensions(pose);
 			EntityEvent.Size sizeEvent = ForgeEventFactory.getEntitySizeForge(this, pose, currentSize, newSize, this.getEyeHeight(pose, newSize));
 			newSize = sizeEvent.getNewSize();
 			SIZE_FIELD.set(this, newSize);
 			EYE_HEIGHT_FIELD.set(this, sizeEvent.getNewEyeHeight());
 			if (newSize.width < currentSize.width) {
 				double d0 = newSize.width / 2.0D;
-				this.setBoundingBox(new AxisAlignedBB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + newSize.height, this.getZ() + d0));
+				this.setBoundingBox(new AABB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + newSize.height, this.getZ() + d0));
 			} else {
-				AxisAlignedBB axisalignedbb = this.getBoundingBox();
-				this.setBoundingBox(new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + newSize.width, axisalignedbb.minY + newSize.height, axisalignedbb.minZ + newSize.width));
+				AABB axisalignedbb = this.getBoundingBox();
+				this.setBoundingBox(new AABB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + newSize.width, axisalignedbb.minY + newSize.height, axisalignedbb.minZ + newSize.width));
 			}
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
@@ -832,17 +841,17 @@ public class BroodEetleEntity extends MonsterEntity implements IEndimatedEntity,
 		}
 
 		private void awakeNearbyEggs(BroodEetleEntity broodEetle) {
-			BlockPos.Mutable mutable = broodEetle.blockPosition().mutable();
+			BlockPos.MutableBlockPos mutable = broodEetle.blockPosition().mutable();
 			int originX = mutable.getX();
 			int originY = mutable.getY();
 			int originZ = mutable.getZ();
-			World world = broodEetle.level;
+			Level world = broodEetle.level;
 			Random random = broodEetle.random;
 			for (int x = -10; x <= 10; x++) {
 				for (int y = -6; y <= 14; y++) {
 					for (int z = -10; z <= 10; z++) {
 						mutable.set(originX + x, originY + y, originZ + z);
-						TileEntity tileEntity = world.getBlockEntity(mutable);
+						BlockEntity tileEntity = world.getBlockEntity(mutable);
 						if (tileEntity instanceof EetleEggTileEntity && random.nextFloat() < this.eggGrowthChance) {
 							EetleEggTileEntity eetleEggs = (EetleEggTileEntity) tileEntity;
 							if (eetleEggs.getHatchDelay() < -60) {

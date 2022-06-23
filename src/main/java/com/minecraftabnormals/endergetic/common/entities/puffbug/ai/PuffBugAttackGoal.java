@@ -7,20 +7,20 @@ import javax.annotation.Nullable;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugAttackGoal extends Goal {
 	public static final float SHOOT_RANGE = 8.0F;
@@ -85,23 +85,23 @@ public class PuffBugAttackGoal extends Goal {
 			}
 
 			if (this.puffbug.distanceTo(target) <= SHOOT_RANGE) {
-				Vector3d distance = new Vector3d(target.getX() - this.puffbug.getX(), target.getY() - this.puffbug.getY(), target.getZ() - this.puffbug.getZ());
+				Vec3 distance = new Vec3(target.getX() - this.puffbug.getX(), target.getY() - this.puffbug.getY(), target.getZ() - this.puffbug.getZ());
 
-				float pitch = -((float) (MathHelper.atan2(distance.y(), (double) MathHelper.sqrt(distance.x() * distance.x() + distance.z() * distance.z())) * (double) (180F / (float) Math.PI)));
-				float yaw = (float) (MathHelper.atan2(distance.z(), distance.x()) * (double) (180F / (float) Math.PI)) - 90F;
+				float pitch = -((float) (Mth.atan2(distance.y(), (double) Mth.sqrt(distance.x() * distance.x() + distance.z() * distance.z())) * (double) (180F / (float) Math.PI)));
+				float yaw = (float) (Mth.atan2(distance.z(), distance.x()) * (double) (180F / (float) Math.PI)) - 90F;
 
 				double startingDistance = SHOOT_RANGE;
 				startingDistance = startingDistance * startingDistance;
-				RayTraceResult blockTrace = this.traceBlocks(MathHelper.wrapDegrees(pitch), yaw);
+				HitResult blockTrace = this.traceBlocks(Mth.wrapDegrees(pitch), yaw);
 
 				if (blockTrace != null) {
 					startingDistance = blockTrace.getLocation().distanceToSqr(this.puffbug.getEyePosition(1.0F));
 				}
 
-				RayTraceResult rayTrace = RayTraceHelper.rayTraceEntityResult(this.puffbug, MathHelper.wrapDegrees(pitch), yaw, SHOOT_RANGE, startingDistance, 1.0F);
+				HitResult rayTrace = RayTraceHelper.rayTraceEntityResult(this.puffbug, Mth.wrapDegrees(pitch), yaw, SHOOT_RANGE, startingDistance, 1.0F);
 
 				if (this.ticksChased >= 30 && this.canFitNewCollisionShape() && rayTrace != null && rayTrace.getType() != Type.BLOCK && pitch > 30.0F) {
-					this.puffbug.setLaunchDirection(MathHelper.wrapDegrees(pitch), yaw);
+					this.puffbug.setLaunchDirection(Mth.wrapDegrees(pitch), yaw);
 					this.puffbug.getNavigation().stop();
 				}
 			}
@@ -110,7 +110,7 @@ public class PuffBugAttackGoal extends Goal {
 
 	public void stop() {
 		Entity target = this.puffbug.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(target)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 			this.puffbug.setTarget(null);
 		}
 		this.puffbug.setAggressive(false);
@@ -121,17 +121,17 @@ public class PuffBugAttackGoal extends Goal {
 		return this.puffbug.isBaby() ? this.puffbug.level.noCollision(this.getBoundingBoxForSize(PuffBugEntity.PROJECTILE_SIZE_CHILD).move(0.0F, 0.225F, 0.0F)) : this.puffbug.level.noCollision(this.getBoundingBoxForSize(PuffBugEntity.PROJECTILE_SIZE).move(0.0F, 0.225F, 0.0F));
 	}
 
-	private AxisAlignedBB getBoundingBoxForSize(EntitySize size) {
+	private AABB getBoundingBoxForSize(EntityDimensions size) {
 		float f = size.width / 2.0F;
-		Vector3d vec3d = new Vector3d(this.puffbug.getX() - (double) f, this.puffbug.getY(), this.puffbug.getZ() - (double) f);
-		Vector3d vec3d1 = new Vector3d(this.puffbug.getX() + (double) f, this.puffbug.getY() + (double) size.height, this.puffbug.getZ() + (double) f);
-		return new AxisAlignedBB(vec3d, vec3d1);
+		Vec3 vec3d = new Vec3(this.puffbug.getX() - (double) f, this.puffbug.getY(), this.puffbug.getZ() - (double) f);
+		Vec3 vec3d1 = new Vec3(this.puffbug.getX() + (double) f, this.puffbug.getY() + (double) size.height, this.puffbug.getZ() + (double) f);
+		return new AABB(vec3d, vec3d1);
 	}
 
-	public RayTraceResult traceBlocks(float pitch, float yaw) {
-		Vector3d eyeVec = this.puffbug.getEyePosition(1.0F);
-		Vector3d lookVec = RayTraceHelper.getVectorForRotation(pitch, yaw);
-		Vector3d vec3d2 = eyeVec.add(lookVec.x() * SHOOT_RANGE, lookVec.y() * SHOOT_RANGE, lookVec.z() * SHOOT_RANGE);
-		return this.puffbug.level.clip(new RayTraceContext(eyeVec, vec3d2, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, this.puffbug));
+	public HitResult traceBlocks(float pitch, float yaw) {
+		Vec3 eyeVec = this.puffbug.getEyePosition(1.0F);
+		Vec3 lookVec = RayTraceHelper.getVectorForRotation(pitch, yaw);
+		Vec3 vec3d2 = eyeVec.add(lookVec.x() * SHOOT_RANGE, lookVec.y() * SHOOT_RANGE, lookVec.z() * SHOOT_RANGE);
+		return this.puffbug.level.clip(new ClipContext(eyeVec, vec3d2, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.puffbug));
 	}
 }

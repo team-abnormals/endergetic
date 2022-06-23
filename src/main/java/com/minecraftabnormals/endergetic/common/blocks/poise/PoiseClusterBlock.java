@@ -8,26 +8,26 @@ import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class PoiseClusterBlock extends Block {
 
@@ -37,7 +37,7 @@ public class PoiseClusterBlock extends Block {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
 		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.above()).getCollisionShape(worldIn, pos.above()).isEmpty())
 			return;
 
@@ -52,11 +52,11 @@ public class PoiseClusterBlock extends Block {
 	}
 
 	@Override
-	public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+	public void attack(BlockState state, Level world, BlockPos pos, Player player) {
 		ItemStack stack = player.getMainHandItem();
 		Item item = stack.getItem();
 		if (!item.is(Tags.Items.SHEARS)) {
-			if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AxisAlignedBB(pos).move(0, 1, 0)).isEmpty()) {
+			if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AABB(pos).move(0, 1, 0)).isEmpty()) {
 				if (!world.isClientSide) {
 					PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
@@ -85,20 +85,20 @@ public class PoiseClusterBlock extends Block {
 	}
 
 	@Override
-	public void onProjectileHit(World world, BlockState state, BlockRayTraceResult hit, ProjectileEntity projectile) {
+	public void onProjectileHit(Level world, BlockState state, BlockHitResult hit, Projectile projectile) {
 		BlockPos pos = hit.getBlockPos();
-		if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AxisAlignedBB(pos.above())).isEmpty()) {
+		if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AABB(pos.above())).isEmpty()) {
 			if (!world.isClientSide) {
 				PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 				cluster.setBlocksToMoveUp(10);
 				world.addFreshEntity(cluster);
 
-				if (projectile instanceof ArrowEntity) {
+				if (projectile instanceof Arrow) {
 					projectile.remove();
 				}
 
 				world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
-				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundCategory.BLOCKS, 0.90F, 0.75F);
+				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundSource.BLOCKS, 0.90F, 0.75F);
 
 				Random rand = new Random();
 				for (int i = 0; i < 8; i++) {

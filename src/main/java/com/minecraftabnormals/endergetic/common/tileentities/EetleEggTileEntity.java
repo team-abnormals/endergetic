@@ -7,28 +7,28 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEnti
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class EetleEggTileEntity extends TileEntity implements ITickableTileEntity {
+public class EetleEggTileEntity extends BlockEntity implements TickableBlockEntity {
 	private static final Random RANDOM = new Random();
 	private final SackGrowth[] sackGrowths;
 	private int hatchDelay = -30000 - RANDOM.nextInt(12001);
@@ -48,7 +48,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 
 	@Override
 	public void tick() {
-		World world = this.getLevel();
+		Level world = this.getLevel();
 		if (world != null) {
 			BlockPos pos = this.worldPosition;
 			if (world.isClientSide) {
@@ -57,7 +57,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 				}
 			} else if ((world.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().getValue(EetleEggBlock.PETRIFIED)) {
 				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
-					if (!world.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(pos).inflate(1.0D), player -> player.isAlive() && !player.isShiftKeyDown() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
+					if (!world.getEntitiesOfClass(Player.class, new AABB(pos).inflate(1.0D), player -> player.isAlive() && !player.isShiftKeyDown() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
 						this.hatchDelay = -60;
 						world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 					}
@@ -65,7 +65,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 
 				int delay = this.hatchDelay;
 				if (delay < 0) {
-					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesOfClass(AbstractEetleEntity.class, new AxisAlignedBB(this.getBlockPos()).inflate(14.0D)).size() >= 7) {
+					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesOfClass(AbstractEetleEntity.class, new AABB(this.getBlockPos()).inflate(14.0D)).size() >= 7) {
 						delay = -600 - RANDOM.nextInt(201);
 					}
 
@@ -99,8 +99,8 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 									world.addFreshEntity(eetle);
 								}
 							}
-							if (world instanceof ServerWorld) {
-								((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+							if (world instanceof ServerLevel) {
+								((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 							}
 						}
 					}
@@ -111,12 +111,12 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 				world.sendBlockUpdated(pos, this.getBlockState(), this.getBlockState(), 3);
 			}
 			if (!world.isClientSide && RANDOM.nextFloat() <= 0.0025F) {
-				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundCategory.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
+				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundSource.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
 			}
 		}
 	}
 
-	public void updateHatchDelay(World world, int hatchDelay) {
+	public void updateHatchDelay(Level world, int hatchDelay) {
 		int prevDelay = this.hatchDelay;
 		this.hatchDelay = hatchDelay;
 		if (prevDelay < 0 && hatchDelay >= 0 || prevDelay >= 0 && hatchDelay < 0) {
@@ -137,7 +137,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
 		if (this.level != null) {
 			this.load(this.level.getBlockState(packet.getPos()), packet.getTag());
 			if (this.hatchProgress > 0) {
@@ -155,7 +155,7 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT compound) {
+	public CompoundTag save(CompoundTag compound) {
 		super.save(compound);
 		compound.putInt("HatchDelay", this.hatchDelay);
 		compound.putInt("HatchProgress", this.hatchProgress);
@@ -165,25 +165,25 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT compound) {
+	public void load(BlockState state, CompoundTag compound) {
 		super.load(state, compound);
 		if (compound.contains("HatchDelay", Constants.NBT.TAG_INT)) {
 			this.hatchDelay = compound.getInt("HatchDelay");
 		}
-		this.hatchProgress = MathHelper.clamp(compound.getInt("HatchProgress"), 0, 2);
+		this.hatchProgress = Mth.clamp(compound.getInt("HatchProgress"), 0, 2);
 		this.bypassesSpawningGameRule = compound.getBoolean("BypassSpawningGameRule");
 		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		return this.save(new CompoundNBT());
+	public CompoundTag getUpdateTag() {
+		return this.save(new CompoundTag());
 	}
 
 	@Nullable
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.worldPosition, 100, this.getUpdateTag());
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return new ClientboundBlockEntityDataPacket(this.worldPosition, 100, this.getUpdateTag());
 	}
 
 	@Override
@@ -217,11 +217,11 @@ public class EetleEggTileEntity extends TileEntity implements ITickableTileEntit
 		}
 
 		public float getGrowth(float partialTicks) {
-			return 1.0F + MathHelper.lerp(partialTicks, this.prevGrowth, this.growth);
+			return 1.0F + Mth.lerp(partialTicks, this.prevGrowth, this.growth);
 		}
 
 		public float getGrowthMultiplied(float partialTicks, float multiplier) {
-			return 1.0F + multiplier * MathHelper.lerp(partialTicks, this.prevGrowth, this.growth);
+			return 1.0F + multiplier * Mth.lerp(partialTicks, this.prevGrowth, this.growth);
 		}
 
 		enum Stage {

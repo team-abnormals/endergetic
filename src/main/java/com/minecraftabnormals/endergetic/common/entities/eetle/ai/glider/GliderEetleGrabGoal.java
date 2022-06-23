@@ -4,14 +4,14 @@ import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IData
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -79,14 +79,14 @@ public class GliderEetleGrabGoal extends Goal {
 		double distanceToTargetSq = glider.distanceToSqr(target);
 		if (glider.getSensing().canSee(target) && this.delayCounter <= 0 && glider.getRandom().nextFloat() < 0.05F) {
 			this.delayCounter = 4 + glider.getRandom().nextInt(9);
-			PathNavigator pathNavigator = glider.getNavigation();
+			PathNavigation pathNavigator = glider.getNavigation();
 			if (distanceToTargetSq > 1024.0D) {
 				this.delayCounter += 10;
 			} else if (distanceToTargetSq > 256.0D) {
 				this.delayCounter += 5;
 			}
 
-			float blocksFromTarget = MathHelper.sqrt(distanceToTargetSq);
+			float blocksFromTarget = Mth.sqrt(distanceToTargetSq);
 			if (blocksFromTarget >= 3.0F) {
 				Path path = pathNavigator.createPath(getAirPosAboveTarget(glider.level, target), 0);
 				if (path == null || !pathNavigator.moveTo(path, 1.25F)) {
@@ -104,8 +104,8 @@ public class GliderEetleGrabGoal extends Goal {
 			if (target.startRiding(glider, true)) {
 				Random random = glider.getRandom();
 				float yaw = glider.yRot + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
-				float xMotion = -MathHelper.sin(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-				float zMotion = MathHelper.cos(yaw * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+				float xMotion = -Mth.sin(yaw * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
+				float zMotion = Mth.cos(yaw * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
 				glider.setDeltaMovement(glider.getDeltaMovement().add(xMotion * 0.3F, 0.45F, zMotion * 0.3F));
 				this.swoopTimer = 10;
 			}
@@ -116,15 +116,15 @@ public class GliderEetleGrabGoal extends Goal {
 	public void stop() {
 		GliderEetleEntity glider = this.glider;
 		LivingEntity livingentity = glider.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			glider.setTarget(null);
 		}
 		glider.setAggressive(false);
 		glider.getNavigation().stop();
 	}
 
-	public static BlockPos getAirPosAboveTarget(World world, LivingEntity target) {
-		BlockPos.Mutable mutable = target.blockPosition().mutable();
+	public static BlockPos getAirPosAboveTarget(Level world, LivingEntity target) {
+		BlockPos.MutableBlockPos mutable = target.blockPosition().mutable();
 		for (int y = 0; y < 4; y++) {
 			mutable.move(0, 1, 0);
 			if (!world.isEmptyBlock(mutable)) {

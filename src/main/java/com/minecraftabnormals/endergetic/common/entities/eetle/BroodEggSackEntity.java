@@ -2,20 +2,20 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -24,20 +24,27 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
+
 public class BroodEggSackEntity extends Entity {
-	private static final EntitySize FLYING_SIZE = EntitySize.fixed(1.5F, 1.5F);
-	private static final EntitySize EXPOSED_SIZE = EntitySize.fixed(1.5F, 1.75F);
-	private static final DataParameter<Integer> BROOD_ID = EntityDataManager.defineId(BroodEggSackEntity.class, DataSerializers.INT);
+	private static final EntityDimensions FLYING_SIZE = EntityDimensions.fixed(1.5F, 1.5F);
+	private static final EntityDimensions EXPOSED_SIZE = EntityDimensions.fixed(1.5F, 1.75F);
+	private static final EntityDataAccessor<Integer> BROOD_ID = SynchedEntityData.defineId(BroodEggSackEntity.class, EntityDataSerializers.INT);
 
-	public BroodEggSackEntity(EntityType<?> entityType, World world) {
+	public BroodEggSackEntity(EntityType<?> entityType, Level world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
 	}
 
-	public BroodEggSackEntity(World world) {
+	public BroodEggSackEntity(Level world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
 	}
 
-	public BroodEggSackEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public BroodEggSackEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
 	}
 
@@ -47,7 +54,7 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 		if (BROOD_ID.equals(key)) {
 			this.refreshDimensions();
@@ -56,7 +63,7 @@ public class BroodEggSackEntity extends Entity {
 
 	@Override
 	public void tick() {
-		World world = this.level;
+		Level world = this.level;
 		BroodEetleEntity broodEetle = this.getBroodEetle(world);
 		if (!world.isClientSide && (broodEetle == null || !broodEetle.isAlive() || broodEetle.getEggSack(world) != this)) {
 			this.remove();
@@ -64,14 +71,14 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		if (compound.contains("BroodID", Constants.NBT.TAG_INT)) {
 			this.setBroodID(compound.getInt("BroodID"));
 		}
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		int broodID = this.getBroodID();
 		if (broodID >= 0) {
 			compound.putInt("BroodID", broodID);
@@ -80,7 +87,7 @@ public class BroodEggSackEntity extends Entity {
 
 
 	public void updatePosition(BroodEetleEntity broodEetle) {
-		Vector3d sackPos = getEggPos(broodEetle.position(), broodEetle.yBodyRot, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.isOnLastHealthStage());
+		Vec3 sackPos = getEggPos(broodEetle.position(), broodEetle.yBodyRot, broodEetle.getEggCannonProgressServer(), broodEetle.getEggCannonFlyingProgressServer(), broodEetle.getFlyingRotations().getFlyPitch(), broodEetle.isOnLastHealthStage());
 		this.setPos(sackPos.x(), sackPos.y(), sackPos.z());
 	}
 
@@ -93,7 +100,7 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Nullable
-	private BroodEetleEntity getBroodEetle(World world) {
+	private BroodEetleEntity getBroodEetle(Level world) {
 		int broodID = this.getBroodID();
 		if (broodID >= 0) {
 			Entity entity = world.getEntity(broodID);
@@ -106,21 +113,21 @@ public class BroodEggSackEntity extends Entity {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
-		World world = this.level;
+		Level world = this.level;
 		if (!world.isClientSide) {
 			BroodEetleEntity broodEetle = this.getBroodEetle(world);
 			if (broodEetle != null && broodEetle.isAlive() && (broodEetle.isEggMouthOpen() || broodEetle.isOnLastHealthStage())) {
 				Entity trueSource = source.getEntity();
 				LivingEntity livingEntity = trueSource instanceof LivingEntity ? (LivingEntity) trueSource : null;
 				if (livingEntity != null) {
-					amount += 0.25F * EnchantmentHelper.getDamageBonus(livingEntity.getMainHandItem(), CreatureAttribute.ARTHROPOD);
+					amount += 0.25F * EnchantmentHelper.getDamageBonus(livingEntity.getMainHandItem(), MobType.ARTHROPOD);
 				}
 				if (broodEetle.attackEntityFromEggSack(source, amount)) {
 					if (livingEntity != null) {
 						this.doEnchantDamageEffects(livingEntity, broodEetle);
 					}
-					if (world instanceof ServerWorld) {
-						((ServerWorld) world).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 15, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+					if (world instanceof ServerLevel) {
+						((ServerLevel) world).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 15, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
 					}
 					return true;
 				}
@@ -146,7 +153,7 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose pose) {
+	public EntityDimensions getDimensions(Pose pose) {
 		BroodEetleEntity broodEetleEntity = this.getBroodEetle(this.level);
 		if (broodEetleEntity != null) {
 			if (broodEetleEntity.isFlying()) {
@@ -165,14 +172,14 @@ public class BroodEggSackEntity extends Entity {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public static Vector3d getEggPos(Vector3d pos, float yaw, float eggCannonProgress, float eggCannonFlyingProgress, float flyPitch, boolean exposed) {
-		flyPitch = MathHelper.clamp(flyPitch, -30.0F, 20.0F);
+	public static Vec3 getEggPos(Vec3 pos, float yaw, float eggCannonProgress, float eggCannonFlyingProgress, float flyPitch, boolean exposed) {
+		flyPitch = Mth.clamp(flyPitch, -30.0F, 20.0F);
 		float flyPitchMultiplier = flyPitch >= 0.0F ? 0.0425F : 0.0567F;
 		float xOffset = flyPitch < 0.0F ? flyPitch * 0.033F : 0.0F;
-		return pos.add(new Vector3d(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier - (exposed ? (eggCannonProgress == 0.0F ? 0.2F : eggCannonProgress * 0.75F) : 0.0F), 0.0D).yRot(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
+		return pos.add(new Vec3(-1.75F + 0.8F * eggCannonProgress - xOffset, 1.3D + Math.sin(eggCannonProgress * 0.91F) - Math.sin(eggCannonFlyingProgress * 1.2F) + flyPitch * flyPitchMultiplier - (exposed ? (eggCannonProgress == 0.0F ? 0.2F : eggCannonProgress * 0.75F) : 0.0F), 0.0D).yRot(-yaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F)));
 	}
 }

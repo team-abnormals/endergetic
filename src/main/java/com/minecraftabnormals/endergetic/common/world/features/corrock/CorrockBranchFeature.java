@@ -13,12 +13,12 @@ import com.mojang.serialization.Codec;
 import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -30,7 +30,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockBranchConfig config) {
 		BlockState belowState = world.getBlockState(pos.below());
 		if (config.isValidGround(belowState) && world.getBlockState(pos.below(2)).canOcclude()) {
 			int baseHeight = rand.nextInt(4) + 4;
@@ -66,7 +66,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 					BlockPos groundModifierPos = new BlockPos(pos.getX() - 1 + (rand.nextInt(3) - rand.nextInt(3)), pos.getY() - 1, pos.getZ() - 1 + (rand.nextInt(3) - rand.nextInt(3)));
 					EEFeatures.Configured.CORROCK_GROUND_PATCH.place(world, generator, rand, groundModifierPos);
 
-					BlockPos.Mutable corrockPlantPos = new BlockPos.Mutable();
+					BlockPos.MutableBlockPos corrockPlantPos = new BlockPos.MutableBlockPos();
 					for (int x = pos.getX() - 4; x < pos.getX() + 4; x++) {
 						for (int y = pos.getY(); y < pos.getY() + baseHeight + 10; y++) {
 							for (int z = pos.getZ() - 4; z < pos.getZ() + 4; z++) {
@@ -88,7 +88,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	/**
 	 * Creates the base of the branch feature, this includes the middle pillar where the branches will start from and the cluster around the origin.
 	 */
-	private GenerationPiece createBase(IWorld world, BlockPos pos, Random rand, int height) {
+	private GenerationPiece createBase(LevelAccessor world, BlockPos pos, Random rand, int height) {
 		GenerationPiece piece = new GenerationPiece((iworld, part) -> iworld.isEmptyBlock(part.pos));
 		BlockState corrockState = CORROCK_BLOCK_STATE.get();
 		int heightMinusOne = height - 1;
@@ -110,7 +110,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 		int startZ = posZ - 1;
 		int endX = posX + 1;
 		int endZ = posZ + 1;
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		for (int x = startX; x <= endX; x++) {
 			for (int z = startZ; z <= endZ; z++) {
 				if (rand.nextFloat() < 0.4F) {
@@ -130,7 +130,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	/**
 	 * Tries to make the area below the cluster around the origin have no air spaces.
 	 */
-	private boolean tryToMakeAreaBelowPlacableOn(GenerationPiece piece, IWorld world, BlockPos pos) {
+	private boolean tryToMakeAreaBelowPlacableOn(GenerationPiece piece, LevelAccessor world, BlockPos pos) {
 		BlockState corrockState = CORROCK_BLOCK_STATE.get();
 		BlockPos down = pos.below();
 		if (world.isEmptyBlock(down) && !world.isEmptyBlock(pos.below(3))) {
@@ -147,7 +147,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	/**
 	 * Tries to create an amount (count) of branches. Each branch has a {@link GenerationPiece} for its formation and a {@link ChorusPlantPart} if it has a chorus growth at the top.
 	 */
-	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(IWorld world, BlockPos pos, Random rand, int count, int height, float crownChance, float decorationChance) {
+	private List<Pair<GenerationPiece, ChorusPlantPart>> createBranches(LevelAccessor world, BlockPos pos, Random rand, int count, int height, float crownChance, float decorationChance) {
 		List<Pair<GenerationPiece, ChorusPlantPart>> pieces = Lists.newArrayList();
 		BlockPos branchStart = pos.above(height - 1);
 		for (int i = 0; i < count; i++) {
@@ -161,7 +161,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	 * Creates a branch starting from a position and a direction with a max amount of sub-branches.
 	 */
 	@Nullable
-	private ChorusPlantPart createBranch(IWorld world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int subBranches, float crownChance, float decorationChance) {
+	private ChorusPlantPart createBranch(LevelAccessor world, BlockPos pos, Random rand, GenerationPiece basePiece, Direction horizontalStep, int subBranches, float crownChance, float decorationChance) {
 		ChorusPlantPart chorusPlantPart = null;
 		int branched = 0;
 		int prevBranchHeight = 0;
@@ -211,7 +211,7 @@ public class CorrockBranchFeature extends AbstractCorrockFeature<CorrockBranchCo
 	/**
 	 * Creates corrock crowns 'orbiting' (i.e. attached to all open sides) a position.
 	 */
-	private void createCrownOrbit(GenerationPiece branch, IWorld world, BlockPos pos, Random rand, float crownChance) {
+	private void createCrownOrbit(GenerationPiece branch, LevelAccessor world, BlockPos pos, Random rand, float crownChance) {
 		for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 			BlockPos placingPos = pos.relative(horizontal);
 			if (rand.nextFloat() < crownChance && world.isEmptyBlock(placingPos)) {

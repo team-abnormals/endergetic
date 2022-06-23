@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class GliderEetleTakeoffGoal extends Goal {
 	private final GliderEetleEntity glider;
@@ -43,8 +43,8 @@ public class GliderEetleTakeoffGoal extends Goal {
 	}
 
 	private static boolean willFallFar(GliderEetleEntity gliderEetleEntity) {
-		World world = gliderEetleEntity.level;
-		BlockPos.Mutable mutable = gliderEetleEntity.blockPosition().mutable();
+		Level world = gliderEetleEntity.level;
+		BlockPos.MutableBlockPos mutable = gliderEetleEntity.blockPosition().mutable();
 		int startY = mutable.getY();
 		for (int i = 0; i < 8; i++) {
 			mutable.setY(startY - i);

@@ -7,27 +7,27 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -49,17 +49,17 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	private int fallTime;
 	private boolean fromBroodEetle;
 
-	public EetleEggEntity(EntityType<? extends EetleEggEntity> type, World world) {
+	public EetleEggEntity(EntityType<? extends EetleEggEntity> type, Level world) {
 		super(EEEntities.EETLE_EGG.get(), world);
 	}
 
-	public EetleEggEntity(World world, Vector3d pos) {
+	public EetleEggEntity(Level world, Vec3 pos) {
 		super(EEEntities.EETLE_EGG.get(), world);
 		this.setPos(this.xo = pos.x(), this.yo = pos.y(), this.zo = pos.z());
 		this.fromBroodEetle = true;
 	}
 
-	public EetleEggEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public EetleEggEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		super(EEEntities.EETLE_EGG.get(), world);
 	}
 
@@ -79,7 +79,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 
 		this.move(MoverType.SELF, this.getDeltaMovement());
 
-		World world = this.level;
+		Level world = this.level;
 		if (!world.isClientSide) {
 			BlockPos newPos = this.blockPosition();
 			if (!this.onGround && !world.getFluidState(newPos).is(FluidTags.WATER)) {
@@ -101,9 +101,9 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 
 					placingState = assignRandomDirection(world, placingState, random, newPos);
 					if (world.setBlock(newPos, placingState, 3)) {
-						world.playSound(null, newPos, EESounds.EETLE_EGG_PLACE.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
+						world.playSound(null, newPos, EESounds.EETLE_EGG_PLACE.get(), SoundSource.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
 						if (!placingState.getValue(BlockStateProperties.WATERLOGGED)) {
-							TileEntity tileentity = world.getBlockEntity(newPos);
+							BlockEntity tileentity = world.getBlockEntity(newPos);
 							if (tileentity instanceof EetleEggTileEntity) {
 								EetleEggTileEntity eetleEggsTileEntity = (EetleEggTileEntity) tileentity;
 								eetleEggsTileEntity.fromBroodEetle = this.fromBroodEetle;
@@ -131,14 +131,14 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		this.fallTime = compound.getInt("FallTime");
 		this.eggSize = EggSize.getById(Math.min(2, compound.getInt("EggSize")));
 		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		compound.putInt("FallTime", this.fallTime);
 		compound.putInt("EggSize", this.eggSize.ordinal());
 		compound.putBoolean("FromBroodEetle", this.fromBroodEetle);
@@ -172,17 +172,17 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public void writeSpawnData(PacketBuffer buffer) {
+	public void writeSpawnData(FriendlyByteBuf buffer) {
 		buffer.writeInt(this.eggSize.ordinal());
 	}
 
 	@Override
-	public void readSpawnData(PacketBuffer buffer) {
+	public void readSpawnData(FriendlyByteBuf buffer) {
 		this.eggSize = EggSize.getById(buffer.readInt());
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
@@ -198,7 +198,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 		return this.eggSize;
 	}
 
-	private static void burstOpenEgg(World world, BlockPos pos, Random random, int size, boolean fromBroodEetle) {
+	private static void burstOpenEgg(Level world, BlockPos pos, Random random, int size, boolean fromBroodEetle) {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -214,13 +214,13 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 				world.addFreshEntity(eetle);
 			}
 		}
-		if (world instanceof ServerWorld) {
-			world.playSound(null, pos, EESounds.EETLE_EGG_BREAK.get(), SoundCategory.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
-			((ServerWorld) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+		if (world instanceof ServerLevel) {
+			world.playSound(null, pos, EESounds.EETLE_EGG_BREAK.get(), SoundSource.BLOCKS, 1.0F - random.nextFloat() * 0.1F, 0.8F + random.nextFloat() * 0.2F);
+			((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 		}
 	}
 
-	private static BlockState assignRandomDirection(World world, BlockState state, Random random, BlockPos pos) {
+	private static BlockState assignRandomDirection(Level world, BlockState state, Random random, BlockPos pos) {
 		EetleEggBlock.shuffleDirections(DIRECTIONS, random);
 		for (Direction direction : DIRECTIONS) {
 			BlockState directionState = state.setValue(EetleEggBlock.FACING, direction);

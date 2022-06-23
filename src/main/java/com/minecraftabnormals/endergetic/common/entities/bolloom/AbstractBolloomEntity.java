@@ -1,23 +1,23 @@
 package com.minecraftabnormals.endergetic.common.entities.bolloom;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -28,19 +28,19 @@ import javax.annotation.Nullable;
  * @author - SmellyModder (Luke Tonon)
  */
 public abstract class AbstractBolloomEntity extends Entity {
-	private static final DataParameter<Float> ORIGIN_X = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGIN_Y = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ORIGIN_Z = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> ANGLE = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> DESIRED_ANGLE = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> SWAY = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.INT); //Vanilla's ticksExisted isn't synced between server and client
-	private static final DataParameter<Boolean> UNTIED = EntityDataManager.defineId(AbstractBolloomEntity.class, DataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> ORIGIN_X = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> ORIGIN_Y = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> ORIGIN_Z = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> ANGLE = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> DESIRED_ANGLE = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> SWAY = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.INT); //Vanilla's ticksExisted isn't synced between server and client
+	private static final EntityDataAccessor<Boolean> UNTIED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.BOOLEAN);
 
 	private float prevVineAngle;
 	private float prevAngle;
 
-	protected AbstractBolloomEntity(EntityType<?> entityType, World world) {
+	protected AbstractBolloomEntity(EntityType<?> entityType, Level world) {
 		super(entityType, world);
 	}
 
@@ -64,8 +64,8 @@ public abstract class AbstractBolloomEntity extends Entity {
 		this.prevVineAngle = this.getVineAngle();
 		this.prevAngle = this.getAngle();
 
-		this.setSway(MathHelper.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
-		this.updatePositionAndMotion(MathHelper.sin(-this.getAngle()), MathHelper.cos(-this.getAngle()));
+		this.setSway(Mth.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
+		this.updatePositionAndMotion(Mth.sin(-this.getAngle()), Mth.cos(-this.getAngle()));
 
 		if (!this.level.isClientSide) {
 			if (this.getTicksExisted() % 45 == 0) {
@@ -104,7 +104,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT compound) {
+	protected void addAdditionalSaveData(CompoundTag compound) {
 		compound.putBoolean("UNTIED", this.isUntied());
 		compound.putFloat("ORIGIN_X", this.getOriginX());
 		compound.putFloat("ORIGIN_Y", this.getOriginY());
@@ -112,7 +112,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT compound) {
+	protected void readAdditionalSaveData(CompoundTag compound) {
 		this.setUntied(compound.getBoolean("UNTIED"));
 		if (compound.contains("ORIGIN_X", 5) && compound.contains("ORIGIN_Y", 5) && compound.contains("ORIGIN_Z", 5)) {
 			this.setOrigin(compound.getFloat("ORIGIN_X"), compound.getFloat("ORIGIN_Y"), compound.getFloat("ORIGIN_Z"));
@@ -186,8 +186,8 @@ public abstract class AbstractBolloomEntity extends Entity {
 	@OnlyIn(Dist.CLIENT)
 	public float[] getVineAnimation(float partialTicks) {
 		return new float[]{
-				MathHelper.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
-				MathHelper.lerp(partialTicks, this.prevAngle, this.getAngle()),
+				Mth.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
+				Mth.lerp(partialTicks, this.prevAngle, this.getAngle()),
 		};
 	}
 
@@ -205,8 +205,8 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	protected void doParticles() {
-		if (this.level instanceof ServerWorld) {
-			((ServerWorld) this.level).sendParticles(new BlockParticleData(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
+		if (this.level instanceof ServerLevel) {
+			((ServerLevel) this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, EEBlocks.BOLLOOM_PARTICLE.get().defaultBlockState()), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.05D);
 		}
 	}
 
@@ -241,13 +241,13 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected Vector3d limitPistonMovement(Vector3d pos) {
-		return Vector3d.ZERO;
+	protected Vec3 limitPistonMovement(Vec3 pos) {
+		return Vec3.ZERO;
 	}
 
 	@Override
 	public boolean skipAttackInteraction(Entity entityIn) {
-		return entityIn instanceof PlayerEntity && this.hurt(DamageSource.playerAttack((PlayerEntity) entityIn), 0.0F);
+		return entityIn instanceof Player && this.hurt(DamageSource.playerAttack((Player) entityIn), 0.0F);
 	}
 
 	@Override
@@ -271,22 +271,22 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBoxForCulling() {
+	public AABB getBoundingBoxForCulling() {
 		return super.getBoundingBoxForCulling().inflate(5);
 	}
 
 	@Nullable
-	public AxisAlignedBB getCollisionBoundingBox() {
+	public AABB getCollisionBoundingBox() {
 		return this.getBoundingBox();
 	}
 
 	@Nullable
-	public AxisAlignedBB getCollisionBox(Entity entityIn) {
+	public AABB getCollisionBox(Entity entityIn) {
 		return entityIn.isPushable() ? entityIn.getBoundingBox() : null;
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

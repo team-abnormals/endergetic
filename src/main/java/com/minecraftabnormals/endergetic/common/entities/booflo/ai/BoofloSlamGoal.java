@@ -5,13 +5,13 @@ import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
-	private World world;
+	private Level world;
 
 	public BoofloSlamGoal(BoofloEntity booflo) {
 		super(booflo, BoofloEntity.CHARGE);
@@ -58,7 +58,7 @@ public class BoofloSlamGoal extends EndimatedGoal<BoofloEntity> {
 
 	private boolean isSolidUnderTarget() {
 		boolean isSomewhatSolidUnder = false;
-		BlockPos.Mutable mutable = this.entity.getBoofloAttackTarget().blockPosition().mutable();
+		BlockPos.MutableBlockPos mutable = this.entity.getBoofloAttackTarget().blockPosition().mutable();
 		for (int y = 1; y < 4; y++) {
 			isSomewhatSolidUnder = isSomewhatSolidUnder || this.entity.getBoofloAttackTarget() != null && Block.canSupportRigidBlock(this.world, mutable.below(y));
 		}

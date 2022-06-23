@@ -5,28 +5,28 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntit
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class GliderEetleDropOffGoal extends Goal {
 	private final GliderEetleEntity glider;
 	@Nullable
 	private Path path;
 	@Nullable
-	private Vector3d clusterPos;
+	private Vec3 clusterPos;
 	@Nullable
-	private AxisAlignedBB searchBox;
+	private AABB searchBox;
 	private int missingClusterTicks;
 
 	public GliderEetleDropOffGoal(GliderEetleEntity glider) {
@@ -44,8 +44,8 @@ public class GliderEetleDropOffGoal extends Goal {
 				if (clusterPosPair != null) {
 					BlockPos pos = clusterPosPair.getFirst();
 					this.path = glider.getNavigation().createPath(pos, 0);
-					this.searchBox = new AxisAlignedBB(clusterPosPair.getSecond()).inflate(4.0D, 1.0D, 4.0D);
-					this.clusterPos = Vector3d.atCenterOf(pos);
+					this.searchBox = new AABB(clusterPosPair.getSecond()).inflate(4.0D, 1.0D, 4.0D);
+					this.clusterPos = Vec3.atCenterOf(pos);
 					return this.path != null;
 				}
 			}
@@ -91,7 +91,7 @@ public class GliderEetleDropOffGoal extends Goal {
 				((IDataManager) attackTarget).setValue(EEDataProcessors.CATCHING_COOLDOWN, 40 + glider.getRandom().nextInt(11));
 			}
 		} else if (distance <= 20.25D) {
-			AxisAlignedBB projectedBox = getProjectedBoundingBox(glider);
+			AABB projectedBox = getProjectedBoundingBox(glider);
 			if (projectedBox != null && glider.level.getEntitiesOfClass(ChargerEetleEntity.class, projectedBox.inflate(1.0F, 0.0F, 1.0F)).size() >= 4) {
 				glider.makeGrounded();
 				if (attackTarget instanceof IDataManager) {
@@ -102,14 +102,14 @@ public class GliderEetleDropOffGoal extends Goal {
 	}
 
 	@Nullable
-	private static AxisAlignedBB getProjectedBoundingBox(GliderEetleEntity glider) {
-		BlockPos.Mutable mutable = glider.blockPosition().mutable();
+	private static AABB getProjectedBoundingBox(GliderEetleEntity glider) {
+		BlockPos.MutableBlockPos mutable = glider.blockPosition().mutable();
 		int startY = mutable.getY();
-		World world = glider.level;
+		Level world = glider.level;
 		for (int y = 0; y <= 7; y++) {
 			mutable.setY(startY - y);
 			if (world.loadedAndEntityCanStandOn(mutable, glider)) {
-				AxisAlignedBB bb = glider.getBoundingBox();
+				AABB bb = glider.getBoundingBox();
 				return bb.move(0.0F, -(bb.minY - mutable.getY()), 0.0F);
 			}
 		}
@@ -117,18 +117,18 @@ public class GliderEetleDropOffGoal extends Goal {
 	}
 
 	@Nullable
-	private static Pair<BlockPos, BlockPos> findLargestClusterAirAndGroundPositions(World world, BlockPos origin) {
+	private static Pair<BlockPos, BlockPos> findLargestClusterAirAndGroundPositions(Level world, BlockPos origin) {
 		BlockPos clusterPos = null;
 		int largestCluster = 2;
 		Set<ChargerEetleEntity> foundInCluster = new HashSet<>();
-		List<ChargerEetleEntity> chargerEetleEntityList = world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(origin).inflate(24.0D, 6.0D, 24.0D), Entity::isOnGround);
+		List<ChargerEetleEntity> chargerEetleEntityList = world.getEntitiesOfClass(ChargerEetleEntity.class, new AABB(origin).inflate(24.0D, 6.0D, 24.0D), Entity::isOnGround);
 		List<Pair<Double, Double>> points = new ArrayList<>();
 		for (ChargerEetleEntity charger : chargerEetleEntityList) {
 			if (!foundInCluster.contains(charger)) {
 				int others = 0;
-				for (ChargerEetleEntity otherCharger : world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(charger.blockPosition()).inflate(4.0D, 6.0D, 4.0D))) {
+				for (ChargerEetleEntity otherCharger : world.getEntitiesOfClass(ChargerEetleEntity.class, new AABB(charger.blockPosition()).inflate(4.0D, 6.0D, 4.0D))) {
 					foundInCluster.add(otherCharger);
-					Vector3d pos = otherCharger.position();
+					Vec3 pos = otherCharger.position();
 					points.add(Pair.of(pos.x, pos.z));
 					others++;
 				}
@@ -140,7 +140,7 @@ public class GliderEetleDropOffGoal extends Goal {
 			}
 		}
 		if (clusterPos != null) {
-			BlockPos.Mutable airPos = clusterPos.mutable();
+			BlockPos.MutableBlockPos airPos = clusterPos.mutable();
 			int startY = airPos.getY();
 			for (int y = 0; y <= 7; y++) {
 				airPos.setY(startY + y);

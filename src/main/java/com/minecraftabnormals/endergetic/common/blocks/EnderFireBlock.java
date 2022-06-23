@@ -2,28 +2,28 @@ package com.minecraftabnormals.endergetic.common.blocks;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public class EnderFireBlock extends AbstractFireBlock {
+public class EnderFireBlock extends BaseFireBlock {
 
 	public EnderFireBlock(Properties builder) {
 		super(builder, 3.0F);
 	}
 
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		return this.canSurvive(stateIn, worldIn, currentPos) ? this.defaultBlockState() : Blocks.AIR.defaultBlockState();
 	}
 
-	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		return isEnderFireBase(worldIn.getBlockState(pos.below()).getBlock());
 	}
 

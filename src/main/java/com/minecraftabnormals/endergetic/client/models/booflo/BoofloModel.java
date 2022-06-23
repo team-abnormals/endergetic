@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.client.models.booflo;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -124,7 +124,7 @@ public class BoofloModel<E extends BoofloEntity> extends EndimatorEntityModel<E>
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		this.animateModel(this.entity);
 
 		if (this.entity.isBoofed()) {

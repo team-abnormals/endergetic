@@ -4,12 +4,12 @@ import com.minecraftabnormals.endergetic.client.models.eetle.LeetleModel;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.EetleEmissiveLayer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +19,7 @@ public abstract class AbstractEetleRenderer<E extends AbstractEetleEntity> exten
 	private final EntityModel<E> adultModel;
 	private final float adultShadowSize;
 
-	public AbstractEetleRenderer(EntityRendererManager renderManager, EntityModel<E> adultModel, ResourceLocation emissiveAdultTexture, float adultShadowSize) {
+	public AbstractEetleRenderer(EntityRenderDispatcher renderManager, EntityModel<E> adultModel, ResourceLocation emissiveAdultTexture, float adultShadowSize) {
 		super(renderManager, adultModel, adultShadowSize);
 		this.addLayer(new EetleEmissiveLayer<>(this, emissiveAdultTexture));
 		this.adultModel = adultModel;
@@ -27,7 +27,7 @@ public abstract class AbstractEetleRenderer<E extends AbstractEetleEntity> exten
 	}
 
 	@Override
-	public void render(E entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+	public void render(E entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		this.shadowRadius = this.adultShadowSize;
 		this.model = this.adultModel;
 		if (entity.isBaby()) {

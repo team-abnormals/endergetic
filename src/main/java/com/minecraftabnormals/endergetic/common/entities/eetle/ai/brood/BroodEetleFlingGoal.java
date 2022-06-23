@@ -2,20 +2,20 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleFlingGoal extends Goal {
-	private static final EntityPredicate PREDICATE = new EntityPredicate().selector(livingEntity -> !(livingEntity instanceof AbstractEetleEntity));
+	private static final TargetingConditions PREDICATE = new TargetingConditions().selector(livingEntity -> !(livingEntity instanceof AbstractEetleEntity));
 	private final BroodEetleEntity broodEetle;
 	@Nullable
 	private LivingEntity target;
@@ -85,10 +85,10 @@ public class BroodEetleFlingGoal extends Goal {
 
 	public static List<LivingEntity> searchForNearbyAggressors(BroodEetleEntity broodEetle, double size) {
 		return broodEetle.level.getEntitiesOfClass(LivingEntity.class, broodEetle.getBoundingBox().inflate(size), livingEntity -> {
-			if (livingEntity instanceof PlayerEntity) {
-				return livingEntity.isAlive() && !livingEntity.isInvisible() && !((PlayerEntity) livingEntity).isCreative();
+			if (livingEntity instanceof Player) {
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && !((Player) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getSensing().canSee(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getSensing().canSee(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 }

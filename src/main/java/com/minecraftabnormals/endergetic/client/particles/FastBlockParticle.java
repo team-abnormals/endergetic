@@ -1,27 +1,27 @@
 package com.minecraftabnormals.endergetic.client.particles;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public class FastBlockParticle extends SpriteTexturedParticle {
+public class FastBlockParticle extends TextureSheetParticle {
 	private final BlockState sourceState;
 	private BlockPos sourcePos;
 	private final float uCoord;
 	private final float vCoord;
 
 	@SuppressWarnings("deprecation")
-	public FastBlockParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, BlockState state) {
+	public FastBlockParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, BlockState state) {
 		super(world, x, y, z, motionX, motionY, motionZ);
 		this.xd = motionX + (Math.random() * 2.0D - 1.0D) * 0.4F;
 		this.yd = Math.random() * 0.1F;
@@ -78,8 +78,8 @@ public class FastBlockParticle extends SpriteTexturedParticle {
 	}
 
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.TERRAIN_SHEET;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.TERRAIN_SHEET;
 	}
 
 	@Override
@@ -108,15 +108,15 @@ public class FastBlockParticle extends SpriteTexturedParticle {
 		int brightnessForRender = super.getLightColor(partialTick);
 		int light = 0;
 		if (this.level.hasChunkAt(this.sourcePos)) {
-			light = WorldRenderer.getLightColor(this.level, this.sourcePos);
+			light = LevelRenderer.getLightColor(this.level, this.sourcePos);
 		}
 		return brightnessForRender == 0 ? light : brightnessForRender;
 	}
 
-	public static class Factory implements IParticleFactory<BlockParticleData> {
+	public static class Factory implements ParticleProvider<BlockParticleOption> {
 		@SuppressWarnings("deprecation")
 		@Override
-		public Particle createParticle(BlockParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(BlockParticleOption data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			BlockState blockstate = data.getState();
 			return !blockstate.isAir() && !blockstate.is(Blocks.MOVING_PISTON) ? new FastBlockParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, blockstate).init().updateSprite(data.getPos()) : null;
 		}

@@ -4,25 +4,31 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntit
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 
 public class GliderEetleDiveGoal extends Goal {
 	private final GliderEetleEntity glider;
 	@Nullable
-	private Vector3d divePos;
+	private Vec3 divePos;
 	@Nullable
-	private Vector3d divingMotion;
+	private Vec3 divingMotion;
 	private float prevHealth;
 	private int ticksGrabbed;
 	private float targetYaw, targetPitch;
@@ -45,19 +51,19 @@ public class GliderEetleDiveGoal extends Goal {
 		}
 		this.prevHealth = glider.getHealth();
 		if (this.ticksGrabbed >= 30) {
-			World world = glider.level;
+			Level world = glider.level;
 			BlockPos pos = glider.blockPosition();
 			int distanceFromGround = distanceFromGround(glider, world, pos.mutable());
 			if (distanceFromGround > 3 && distanceFromGround < 11) {
 				pos = pos.below(distanceFromGround);
-				if (world.getEntitiesOfClass(ChargerEetleEntity.class, new AxisAlignedBB(pos).inflate(4.0D)).size() < 3) {
+				if (world.getEntitiesOfClass(ChargerEetleEntity.class, new AABB(pos).inflate(4.0D)).size() < 3) {
 					Random random = glider.getRandom();
 					for (int i = 0; i < 5; i++) {
 						BlockPos offsetPos = pos.offset(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
-						if (world.loadedAndEntityCanStandOn(offsetPos.below(), glider) && world.noCollision(new AxisAlignedBB(offsetPos))) {
-							Vector3d gliderPos = new Vector3d(glider.getX(), glider.getEyeY(), glider.getZ());
-							if (world.clip(new RayTraceContext(gliderPos, Vector3d.atLowerCornerOf(offsetPos), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, glider)).getType() == RayTraceResult.Type.MISS) {
-								this.divePos = Vector3d.atLowerCornerOf(offsetPos);
+						if (world.loadedAndEntityCanStandOn(offsetPos.below(), glider) && world.noCollision(new AABB(offsetPos))) {
+							Vec3 gliderPos = new Vec3(glider.getX(), glider.getEyeY(), glider.getZ());
+							if (world.clip(new ClipContext(gliderPos, Vec3.atLowerCornerOf(offsetPos), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, glider)).getType() == HitResult.Type.MISS) {
+								this.divePos = Vec3.atLowerCornerOf(offsetPos);
 								return true;
 							}
 						}
@@ -72,15 +78,15 @@ public class GliderEetleDiveGoal extends Goal {
 	public void start() {
 		GliderEetleEntity glider = this.glider;
 		glider.getNavigation().stop();
-		Vector3d target = this.divePos;
+		Vec3 target = this.divePos;
 		double xDif = (target.x() + 0.5F) - glider.getX();
 		double yDif = target.y() - glider.getEyeY();
 		double zDif = (target.z() + 0.5F) - glider.getZ();
-		float magnitude = MathHelper.sqrt(xDif * xDif + yDif * yDif + zDif * zDif);
+		float magnitude = Mth.sqrt(xDif * xDif + yDif * yDif + zDif * zDif);
 		double toDeg = 180.0F / Math.PI;
-		this.targetYaw = (float) (MathHelper.atan2(zDif, xDif) * toDeg) - 90.0F;
-		this.targetPitch = (float) -(MathHelper.atan2(yDif, magnitude) * toDeg);
-		this.divingMotion = new Vector3d(xDif, yDif, zDif).normalize().multiply(1.0F, 1.3F, 1.0F);
+		this.targetYaw = (float) (Mth.atan2(zDif, xDif) * toDeg) - 90.0F;
+		this.targetPitch = (float) -(Mth.atan2(yDif, magnitude) * toDeg);
+		this.divingMotion = new Vec3(xDif, yDif, zDif).normalize().multiply(1.0F, 1.3F, 1.0F);
 	}
 
 	@Override
@@ -122,7 +128,7 @@ public class GliderEetleDiveGoal extends Goal {
 		this.targetPitch = this.targetYaw = 0.0F;
 	}
 
-	private static int distanceFromGround(GliderEetleEntity glider, World world, BlockPos.Mutable pos) {
+	private static int distanceFromGround(GliderEetleEntity glider, Level world, BlockPos.MutableBlockPos pos) {
 		int y = pos.getY();
 		for (int i = 0; i <= 11; i++) {
 			pos.setY(y - i);

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class GliderEetleLandGoal extends Goal {
 	private final GliderEetleEntity glider;

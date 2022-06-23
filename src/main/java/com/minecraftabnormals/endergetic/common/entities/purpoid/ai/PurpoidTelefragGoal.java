@@ -4,26 +4,26 @@ import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PurpoidTelefragGoal extends Goal {
 	private final PurpoidEntity purpoid;
@@ -39,7 +39,7 @@ public class PurpoidTelefragGoal extends Goal {
 	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
 		Entity ridingEntity = purpoid.getVehicle();
-		return purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
+		return purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof Player) || !ridingEntity.isSpectator() && !((Player) ridingEntity).isCreative());
 	}
 
 	@Override
@@ -61,26 +61,26 @@ public class PurpoidTelefragGoal extends Goal {
 				BlockPos teleportPos = null;
 				BlockPos pos = purpoid.blockPosition();
 				Random random = purpoid.getRandom();
-				World world = purpoid.level;
+				Level world = purpoid.level;
 				Entity ridingEntity = purpoid.getVehicle();
 				if (sky) {
-					EntitySize size = purpoid.getDimensions(purpoid.getPose());
+					EntityDimensions size = purpoid.getDimensions(purpoid.getPose());
 					for (int i = 0; i < 16; i++) {
 						BlockPos randomPos = pos.offset(random.nextInt(32) - random.nextInt(32), random.nextInt(32) + 8, random.nextInt(32) - random.nextInt(32));
-						AxisAlignedBB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+						AABB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
 						if (world.hasChunkAt(randomPos) && world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
 							teleportPos = randomPos;
 							break;
 						}
 					}
 				} else {
-					EntitySize size = ridingEntity.getDimensions(ridingEntity.getPose());
+					EntityDimensions size = ridingEntity.getDimensions(ridingEntity.getPose());
 					int x = pos.getX();
 					int z = pos.getZ();
 					for (int i = 0; i < 32; i++) {
 						int randomX = x + (random.nextInt(32) - random.nextInt(32));
 						int randomZ = z + (random.nextInt(32) - random.nextInt(32));
-						BlockPos.Mutable mutable = new BlockPos.Mutable(randomX, (int) ridingEntity.getY(), randomZ);
+						BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(randomX, (int) ridingEntity.getY(), randomZ);
 						if (world.hasChunkAt(mutable)) {
 							boolean successful = true;
 							while (true) {
@@ -96,7 +96,7 @@ public class PurpoidTelefragGoal extends Goal {
 							}
 							if (successful) {
 								mutable.move(Direction.UP);
-								AxisAlignedBB collisionBox = size.makeBoundingBox(mutable.getX() + 0.5F, mutable.getY(), mutable.getZ() + 0.5F);
+								AABB collisionBox = size.makeBoundingBox(mutable.getX() + 0.5F, mutable.getY(), mutable.getZ() + 0.5F);
 								if (world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
 									teleportPos = mutable;
 									break;
@@ -108,8 +108,8 @@ public class PurpoidTelefragGoal extends Goal {
 				if (teleportPos != null) {
 					teleportController.beginTeleportation(purpoid, teleportPos, true);
 					ridingEntity.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
-					if (ridingEntity instanceof ServerPlayerEntity) {
-						EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) ridingEntity), new S2CEnablePurpoidFlash());
+					if (ridingEntity instanceof ServerPlayer) {
+						EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) ridingEntity), new S2CEnablePurpoidFlash());
 					}
 				}
 			}
@@ -120,7 +120,7 @@ public class PurpoidTelefragGoal extends Goal {
 	public boolean canContinueToUse() {
 		PurpoidEntity purpoid = this.purpoid;
 		Entity ridingEntity = purpoid.getVehicle();
-		return ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof PlayerEntity) || !ridingEntity.isSpectator() && !((PlayerEntity) ridingEntity).isCreative());
+		return ridingEntity instanceof LivingEntity && ridingEntity.isAlive() && (!(ridingEntity instanceof Player) || !ridingEntity.isSpectator() && !((Player) ridingEntity).isCreative());
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class PurpoidTelefragGoal extends Goal {
 		this.teleportPattern = null;
 		PurpoidEntity purpoid = this.purpoid;
 		LivingEntity livingentity = purpoid.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			purpoid.setTarget(null);
 		}
 		purpoid.setAggressive(false);

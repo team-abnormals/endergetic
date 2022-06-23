@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -31,12 +31,12 @@ public final class S2CUpdateBalloonsMessage {
 		}
 	}
 
-	public void serialize(PacketBuffer buf) {
+	public void serialize(FriendlyByteBuf buf) {
 		buf.writeVarInt(this.entityId);
 		buf.writeVarIntArray(this.balloonIds);
 	}
 
-	public static S2CUpdateBalloonsMessage deserialize(PacketBuffer buf) {
+	public static S2CUpdateBalloonsMessage deserialize(FriendlyByteBuf buf) {
 		return new S2CUpdateBalloonsMessage(buf.readVarInt(), buf.readVarIntArray());
 	}
 
@@ -44,7 +44,7 @@ public final class S2CUpdateBalloonsMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				World world = ClientInfo.getClientPlayerWorld();
+				Level world = ClientInfo.getClientPlayerWorld();
 				Entity entity = world.getEntity(message.entityId);
 				if (entity == null) {
 					EndergeticExpansion.LOGGER.warn("Received balloons for unknown entity!");

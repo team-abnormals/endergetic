@@ -6,10 +6,10 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEnti
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEggSackEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
-import net.minecraft.entity.ai.EntitySenses;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.sensing.Sensing;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -42,13 +42,13 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		BroodEetleEntity broodEetle = this.entity;
 		if (broodEetle.isEggMouthOpen() && this.ticksPassed % 20 == 0) {
 			this.playEndimation();
-			World world = broodEetle.level;
+			Level world = broodEetle.level;
 			BroodEggSackEntity eggSack = broodEetle.getEggSack(world);
 			if (eggSack != null) {
 				EetleEggEntity eetleEgg = new EetleEggEntity(world, eggSack.position());
 				Random random = this.random;
 				eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, true));
-				eetleEgg.setDeltaMovement(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.3F, -0.1F, (random.nextFloat() - random.nextFloat()) * 0.3F).add(broodEetle.getDeltaMovement()));
+				eetleEgg.setDeltaMovement(new Vec3((random.nextFloat() - random.nextFloat()) * 0.3F, -0.1F, (random.nextFloat() - random.nextFloat()) * 0.3F).add(broodEetle.getDeltaMovement()));
 				world.addFreshEntity(eetleEgg);
 				this.eggsToDrop--;
 			}
@@ -67,7 +67,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public static boolean areFewEetlesNearby(BroodEetleEntity broodEetle) {
 		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
-		EntitySenses senses = broodEetle.getSensing();
+		Sensing senses = broodEetle.getSensing();
 		return broodEetle.level.getEntitiesOfClass(AbstractEetleEntity.class, broodEetle.getBoundingBox().inflate(followRange, followRange * 0.5D, followRange), eetle -> {
 			return eetle.isAlive() && senses.canSee(eetle) && (!eetle.isBaby() || eetle.getGrowingAge() >= -240);
 		}).size() <= 2;

@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.core.BlockPos;
 
 public class AdolescentAttackGoal extends Goal {
 	protected final BoofloAdolescentEntity attacker;
@@ -85,7 +85,7 @@ public class AdolescentAttackGoal extends Goal {
 		} else if (!this.attacker.isWithinRestriction(target.blockPosition())) {
 			return false;
 		} else {
-			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
+			return !(target instanceof Player) || !target.isSpectator() && !((Player) target).isCreative();
 		}
 	}
 
@@ -97,7 +97,7 @@ public class AdolescentAttackGoal extends Goal {
 
 	public void stop() {
 		Entity target = this.attacker.getBoofloAttackTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(target)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 			this.attacker.setBoofloAttackTarget(null);
 		}
 		this.attacker.setAggressive(false);

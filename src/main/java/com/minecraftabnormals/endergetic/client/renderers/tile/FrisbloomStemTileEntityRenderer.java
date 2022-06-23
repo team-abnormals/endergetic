@@ -7,31 +7,31 @@ import com.minecraftabnormals.endergetic.client.models.frisbloom.FrisbloomStemMo
 import com.minecraftabnormals.endergetic.common.tileentities.FrisbloomStemTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 
 @SuppressWarnings("unused")
-public class FrisbloomStemTileEntityRenderer extends TileEntityRenderer<FrisbloomStemTileEntity> {
+public class FrisbloomStemTileEntityRenderer extends BlockEntityRenderer<FrisbloomStemTileEntity> {
 	private FrisbloomStemModel model;
 
 	private FrisbloomFlowerModel modelFlower;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_stem.png");
 	private static final ResourceLocation TEXTURE_FLOWER = new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/frisbloom_flower.png");
 
-	public FrisbloomStemTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
+	public FrisbloomStemTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new FrisbloomStemModel();
 		this.modelFlower = new FrisbloomFlowerModel();
 	}
 
 	@Override
-	public void render(FrisbloomStemTileEntity te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+	public void render(FrisbloomStemTileEntity te, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 		Random rnd = new Random(((this.getLongForPos(te.getBlockPos()) / 12)) ^ 5);
 		int rndRot = rnd.nextInt(12) - 6;
 		BlockState state = te.hasLevel() ? te.getBlockState() : (BlockState) EEBlocks.FRISBLOOM_STEM.defaultBlockState();

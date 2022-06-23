@@ -4,18 +4,18 @@ import java.util.Random;
 
 import com.minecraftabnormals.endergetic.common.tileentities.EnderCampfireTileEntity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class EnderCampfireBlock extends CampfireBlock {
 
@@ -23,15 +23,15 @@ public class EnderCampfireBlock extends CampfireBlock {
 		super(false, 3, properties);
 	}
 
-	public TileEntity newBlockEntity(IBlockReader worldIn) {
+	public BlockEntity newBlockEntity(BlockGetter worldIn) {
 		return new EnderCampfireTileEntity();
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
 		if (stateIn.getValue(LIT)) {
 			if (rand.nextInt(10) == 0) {
-				worldIn.playLocalSound((double) ((float) pos.getX() + 0.5F), (double) ((float) pos.getY() + 0.5F), (double) ((float) pos.getZ() + 0.5F), SoundEvents.CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.5F + rand.nextFloat(),
+				worldIn.playLocalSound((double) ((float) pos.getX() + 0.5F), (double) ((float) pos.getY() + 0.5F), (double) ((float) pos.getZ() + 0.5F), SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.5F + rand.nextFloat(),
 						rand.nextFloat() * 0.7F + 0.6F, false);
 			}
 		}

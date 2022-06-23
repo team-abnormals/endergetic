@@ -4,28 +4,28 @@ import com.minecraftabnormals.endergetic.client.models.BoofBlockDispenserModel;
 import com.minecraftabnormals.endergetic.common.blocks.poise.boof.DispensedBoofBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 
-public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<DispensedBlockBoofTileEntity> {
+public class DispensedBoofBlockTileEntityRenderer extends BlockEntityRenderer<DispensedBlockBoofTileEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
 	private final BoofBlockDispenserModel model;
 
-	public DispensedBoofBlockTileEntityRenderer(TileEntityRendererDispatcher renderDispatcher) {
+	public DispensedBoofBlockTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
 		super(renderDispatcher);
 		this.model = new BoofBlockDispenserModel();
 	}
 
 	@Override
-	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+	public void render(DispensedBlockBoofTileEntity boof, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
 		Direction facing = boof.hasLevel() ? boof.getBlockState().getValue(DispensedBoofBlock.FACING) : Direction.NORTH;
 
 		matrixStack.pushPose();
@@ -41,7 +41,7 @@ public class DispensedBoofBlockTileEntityRenderer extends TileEntityRenderer<Dis
 
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 
-		IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
+		VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 		this.model.renderAll(matrixStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
 		matrixStack.popPose();

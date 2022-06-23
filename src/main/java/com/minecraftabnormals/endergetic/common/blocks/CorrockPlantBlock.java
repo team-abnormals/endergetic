@@ -10,34 +10,34 @@ import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.server.level.ServerLevel;
 
-import net.minecraft.block.AbstractBlock.OffsetType;
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public class CorrockPlantBlock extends Block implements IWaterLoggable {
+public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
 		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD);
 		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER);
@@ -54,28 +54,28 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(WATERLOGGED);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 
 	@Override
-	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
+	public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
 		return SoundType.CORAL_BLOCK;
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
 		if (this.shouldConvert(world)) {
 			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD).get().defaultBlockState());
 		}
 	}
 
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos)) {
 			return Blocks.AIR.defaultBlockState();
 		} else {
@@ -94,13 +94,13 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		BlockPos blockpos = pos.below();
 		return worldIn.getBlockState(blockpos).isFaceSturdy(worldIn, blockpos, Direction.UP);
 	}
 
 	@Nullable
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		if (this.shouldConvert(context.getLevel())) {
 			context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
 		}
@@ -118,7 +118,7 @@ public class CorrockPlantBlock extends Block implements IWaterLoggable {
 		return OffsetType.NONE;
 	}
 
-	private boolean shouldConvert(IWorld world) {
+	private boolean shouldConvert(LevelAccessor world) {
 		return !this.petrified && CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD).get() != this;
 	}
 }

@@ -2,17 +2,17 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
 
 import java.util.EnumSet;
 import java.util.List;
 
 public class BroodEetleHurtByTargetGoal extends Goal {
-	private static final EntityPredicate PREDICATE = (new EntityPredicate()).allowUnseeable().ignoreInvisibilityTesting();
+	private static final TargetingConditions PREDICATE = (new TargetingConditions()).allowUnseeable().ignoreInvisibilityTesting();
 	private final BroodEetleEntity broodEetle;
 	private int revengeTimerOld;
 
@@ -40,7 +40,7 @@ public class BroodEetleHurtByTargetGoal extends Goal {
 			this.revengeTimerOld = broodEetle.getLastHurtByMobTimestamp();
 
 			double targetDistance = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
-			AxisAlignedBB axisalignedbb = AxisAlignedBB.unitCubeFromLowerCorner(broodEetle.position()).inflate(targetDistance, 10.0D, targetDistance);
+			AABB axisalignedbb = AABB.unitCubeFromLowerCorner(broodEetle.position()).inflate(targetDistance, 10.0D, targetDistance);
 			List<AbstractEetleEntity> list = broodEetle.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 			for (AbstractEetleEntity eetle : list) {
 				if (!eetle.isBaby() && (eetle.getTarget() == null || !eetle.getTarget().isAlive()) && !eetle.isAlliedTo(revengeTarget)) {

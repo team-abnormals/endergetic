@@ -43,82 +43,82 @@ import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.LookController;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
-		if (entity instanceof PlayerEntity) {
-			return !entity.isSpectator() && !((PlayerEntity) entity).isCreative();
+		if (entity instanceof Player) {
+			return !entity.isSpectator() && !((Player) entity).isCreative();
 		}
 		return false;
 	};
 	private static final int BOOST_POWER_INCREMENT = 10;
 	private static final int MAX_BOOST_POWER = 182;
 	private static final int HALF_BOOST_POWER = 91;
-	private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.OPTIONAL_UUID);
-	private static final DataParameter<Optional<UUID>> LAST_FED_UNIQUE_ID = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.OPTIONAL_UUID);
-	private static final DataParameter<Boolean> ON_GROUND = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> TAMED = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> MOVING_IN_AIR = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> BOOFED = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> PREGNANT = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Integer> FRUITS_NEEDED = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.INT);
-	private static final DataParameter<Byte> BOOST_STATUS = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.BYTE);
-	private static final DataParameter<Integer> BOOST_POWER = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.INT);
-	private static final DataParameter<Integer> LOVE_TICKS = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.INT);
-	private static final DataParameter<Integer> ATTACK_TARGET = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.INT);
-	private static final DataParameter<Integer> BRACELETS_COLOR = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.INT);
-	private static final DataParameter<Float> LOCKED_YAW = EntityDataManager.defineId(BoofloEntity.class, DataSerializers.FLOAT);
+	private static final EntityDataAccessor<Optional<UUID>> OWNER_UNIQUE_ID = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	private static final EntityDataAccessor<Optional<UUID>> LAST_FED_UNIQUE_ID = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	private static final EntityDataAccessor<Boolean> ON_GROUND = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> MOVING_IN_AIR = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> BOOFED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> PREGNANT = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HUNGRY = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HAS_FRUIT = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Integer> FRUITS_NEEDED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Byte> BOOST_STATUS = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Integer> BOOST_POWER = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> LOVE_TICKS = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> ATTACK_TARGET = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> BRACELETS_COLOR = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.FLOAT);
 
 	public static final Endimation CROAK = new Endimation(55);
 	public static final Endimation HOP = new Endimation(25);
@@ -131,7 +131,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public static final Endimation SLAM = new Endimation(10);
 	public static final Endimation GROWL = new Endimation(60);
 
-	private static final EntitySize BOOFED_SIZE = EntitySize.fixed(2.0F, 1.5F);
+	private static final EntityDimensions BOOFED_SIZE = EntityDimensions.fixed(2.0F, 1.5F);
 	public final ControlledEndimation OPEN_JAW = new ControlledEndimation(25, 0);
 	public final ControlledEndimation FRUIT_HOVER = new ControlledEndimation(8, 0);
 
@@ -145,7 +145,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	private boolean shouldPlayLandSound;
 	private boolean wasOnGround;
 
-	public BoofloEntity(EntityType<? extends BoofloEntity> type, World world) {
+	public BoofloEntity(EntityType<? extends BoofloEntity> type, Level world) {
 		super(type, world);
 		this.attackingNavigator = new EndergeticFlyingPathNavigator(this, this.level);
 		this.moveControl = new GroundMoveHelperController(this);
@@ -195,8 +195,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		this.targetSelector.addGoal(2, new BoofloNearestAttackableTargetGoal<>(this, BolloomFruitEntity.class, true));
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 7.0F)
 				.add(Attributes.MAX_HEALTH, 40.0F)
 				.add(Attributes.MOVEMENT_SPEED, 1.05F)
@@ -218,7 +218,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.navigation = this.attackingNavigator;
 			} else {
 				if (this.navigation instanceof EndergeticFlyingPathNavigator) {
-					this.navigation = new FlyingPathNavigator(this, this.level) {
+					this.navigation = new FlyingPathNavigation(this, this.level) {
 
 						@Override
 						public boolean isStableDestination(BlockPos pos) {
@@ -259,7 +259,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 						this.setBoostPower(Math.min(MAX_BOOST_POWER, power + BOOST_POWER_INCREMENT));
 					}
 				} else {
-					if (!this.isBoostLocked() && this.getControllingPassenger() instanceof PlayerEntity) {
+					if (!this.isBoostLocked() && this.getControllingPassenger() instanceof Player) {
 						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
 						this.playSound(this.getInflateSound(), 0.75F, 1.0F);
 					}
@@ -292,8 +292,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			if (this.isEndimationPlaying(EAT)) {
 				if ((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if (this.getAnimationTick() % 20 == 0) {
-						if (this.level instanceof ServerWorld && this.hasCaughtFruit()) {
-							((ServerWorld) this.level).sendParticles(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, (double) (this.getBbWidth() / 4.0F), (double) (this.getBbHeight() / 4.0F), (double) (this.getBbWidth() / 4.0F), 0.05D);
+						if (this.level instanceof ServerLevel && this.hasCaughtFruit()) {
+							((ServerLevel) this.level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, (double) (this.getBbWidth() / 4.0F), (double) (this.getBbHeight() / 4.0F), (double) (this.getBbWidth() / 4.0F), 0.05D);
 						}
 
 						if (this.hasCaughtPuffBug()) {
@@ -337,7 +337,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 
 			if (this.getAnimationTick() >= 20) {
-				for (PlayerEntity players : this.getNearbyPlayers(0.4F)) {
+				for (Player players : this.getNearbyPlayers(0.4F)) {
 					if (!this.hasAggressiveAttackTarget()) {
 						this.setBoofloAttackTargetId(players.getId());
 					}
@@ -452,7 +452,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("IsMovingInAir", this.isMovingInAir());
 		compound.putBoolean("IsBoofed", this.isBoofed());
@@ -480,7 +480,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setMovingInAir(compound.getBoolean("IsMovingInAir"));
 		this.setBoofed(compound.getBoolean("IsBoofed"));
@@ -501,8 +501,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			this.setFruitsNeeded(compound.getInt("FruitsNeededTillTamed"));
 		}
 
-		UUID ownerUUID = compound.hasUUID("Owner") ? compound.getUUID("Owner") : PreYggdrasilConverter.convertMobOwnerIfNecessary(this.getServer(), compound.getString("Owner"));
-		UUID lastFedUUID = compound.hasUUID("LastFed") ? compound.getUUID("LastFed") : PreYggdrasilConverter.convertMobOwnerIfNecessary(this.getServer(), compound.getString("LastFed"));
+		UUID ownerUUID = compound.hasUUID("Owner") ? compound.getUUID("Owner") : OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), compound.getString("Owner"));
+		UUID lastFedUUID = compound.hasUUID("LastFed") ? compound.getUUID("LastFed") : OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), compound.getString("LastFed"));
 
 		if (ownerUUID != null) {
 			try {
@@ -522,11 +522,11 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		if (BOOFED.equals(key)) {
 			this.refreshDimensions();
 			if (this.isBoofed()) {
-				this.navigation = new FlyingPathNavigator(this, this.level) {
+				this.navigation = new FlyingPathNavigation(this, this.level) {
 
 					@Override
 					public boolean isStableDestination(BlockPos pos) {
@@ -545,7 +545,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			} else {
 				this.navigation = this.createNavigation(this.level);
 				this.moveControl = new GroundMoveHelperController(this);
-				this.lookControl = new LookController(this);
+				this.lookControl = new LookControl(this);
 
 				if (!this.isWorldRemote() && this.tickCount > 5) {
 					this.playSound(this.getDeflateSound(), this.getSoundVolume(), this.getVoicePitch());
@@ -560,7 +560,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public void travel(Vector3d vec3d) {
+	public void travel(Vec3 vec3d) {
 		if (this.isAlive() && this.isVehicle() && this.canBeControlledByRider()) {
 			LivingEntity rider = (LivingEntity) this.getControllingPassenger();
 			this.yRot = rider.yRot;
@@ -598,15 +598,15 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				}
 			} else {
 				if (this.onGround && this.isEndimationPlaying(HOP) && this.getAnimationTick() == 10) {
-					Vector3d motion = this.getDeltaMovement();
-					EffectInstance jumpBoost = this.getEffect(Effects.JUMP);
+					Vec3 motion = this.getDeltaMovement();
+					MobEffectInstance jumpBoost = this.getEffect(MobEffects.JUMP);
 					float boostPower = jumpBoost == null ? 1.0F : (float) (jumpBoost.getAmplifier() + 1);
 
 					this.setDeltaMovement(motion.x, 0.55F * boostPower, motion.z);
 					this.hasImpulse = true;
 
-					float xMotion = -MathHelper.sin(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
-					float zMotion = MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(1.0F * ((float) Math.PI / 180F));
+					float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
+					float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
 
 					float multiplier = 0.35F + (float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
 
@@ -614,9 +614,9 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				}
 
 				if (this.isControlledByLocalInstance()) {
-					super.travel(new Vector3d(0.0F, vec3d.y, 0.0F));
+					super.travel(new Vec3(0.0F, vec3d.y, 0.0F));
 				} else {
-					this.setDeltaMovement(Vector3d.ZERO);
+					this.setDeltaMovement(Vec3.ZERO);
 				}
 			}
 		} else {
@@ -635,8 +635,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
-		if (reason == SpawnReason.NATURAL) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+		if (reason == MobSpawnType.NATURAL) {
 			Random rand = new Random();
 			if (rand.nextFloat() < 0.2F) {
 				this.setPregnant(true);
@@ -648,7 +648,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	protected void removePassenger(Entity passenger) {
-		if (!this.level.isClientSide && this.isBoostExpanding() && !this.isBoostLocked() && passenger instanceof PlayerEntity && this.getControllingPassenger() == passenger) {
+		if (!this.level.isClientSide && this.isBoostExpanding() && !this.isBoostLocked() && passenger instanceof Player && this.getControllingPassenger() == passenger) {
 			this.setBoostExpanding(false);
 		}
 		super.removePassenger(passenger);
@@ -789,7 +789,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		this.entityData.set(ATTACK_TARGET, id);
 	}
 
-	public void setInLove(@Nullable PlayerEntity player) {
+	public void setInLove(@Nullable Player player) {
 		this.setInLove(600);
 		if (player != null) {
 			this.playerInLove = player.getUUID();
@@ -846,20 +846,20 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Nullable
-	public ServerPlayerEntity getLoveCause() {
+	public ServerPlayer getLoveCause() {
 		if (this.playerInLove == null) {
 			return null;
 		} else {
-			PlayerEntity playerentity = this.level.getPlayerByUUID(this.playerInLove);
-			return playerentity instanceof ServerPlayerEntity ? (ServerPlayerEntity) playerentity : null;
+			Player playerentity = this.level.getPlayerByUUID(this.playerInLove);
+			return playerentity instanceof ServerPlayer ? (ServerPlayer) playerentity : null;
 		}
 	}
 
-	public void setTamedBy(PlayerEntity player) {
+	public void setTamedBy(Player player) {
 		this.setTamed(true);
 		this.setOwnerId(player.getUUID());
-		if (player instanceof ServerPlayerEntity) {
-			ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+		if (player instanceof ServerPlayer) {
+			ServerPlayer serverPlayer = (ServerPlayer) player;
 			//Creates wolf to still trigger tamed - as booflo isn't an AnimalEntity
 			CriteriaTriggers.TAME_ANIMAL.trigger(serverPlayer, EntityType.WOLF.create(this.level));
 			if (!this.isWorldRemote()) {
@@ -903,18 +903,18 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public void boof(float internalStrength, float offensiveStrength, boolean slam) {
 		float verticalStrength = 1.0F;
 
-		if (this.isVehicle() && this.getControllingPassenger() instanceof PlayerEntity && !this.isEndimationPlaying(SLAM) && !this.isBoostLocked()) {
-			float boostPower = MathHelper.clamp(this.getBoostPower() * 0.01F, 0.35F, 1.82F);
-			offensiveStrength *= MathHelper.clamp(boostPower / 2, 0.5F, 1.85F);
-			verticalStrength *= MathHelper.clamp(boostPower, 0.35F, 1.5F);
+		if (this.isVehicle() && this.getControllingPassenger() instanceof Player && !this.isEndimationPlaying(SLAM) && !this.isBoostLocked()) {
+			float boostPower = Mth.clamp(this.getBoostPower() * 0.01F, 0.35F, 1.82F);
+			offensiveStrength *= Mth.clamp(boostPower / 2, 0.5F, 1.85F);
+			verticalStrength *= Mth.clamp(boostPower, 0.35F, 1.5F);
 
-			float xMotion = -MathHelper.sin(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(this.xRot * ((float) Math.PI / 180F));
-			float zMotion = MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(this.xRot * ((float) Math.PI / 180F));
-			Vector3d boostFowardForce = new Vector3d(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(boostPower > 0.35 ? boostPower * 2.0F : boostPower);
+			float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(this.xRot * ((float) Math.PI / 180F));
+			float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(this.xRot * ((float) Math.PI / 180F));
+			Vec3 boostFowardForce = new Vec3(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(boostPower > 0.35 ? boostPower * 2.0F : boostPower);
 
 			this.setDeltaMovement(boostFowardForce.x(), 1.3F * verticalStrength, boostFowardForce.z());
 		} else {
-			this.push(-MathHelper.sin((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, MathHelper.cos((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F);
+			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F);
 		}
 
 		if (slam) {
@@ -932,14 +932,14 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 		}
 
-		for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(3.5F * Math.max(offensiveStrength / 2.0F, 1.0F)), entity -> entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && !(entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative() && ((PlayerEntity) entity).abilities.flying))) {
+		for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(3.5F * Math.max(offensiveStrength / 2.0F, 1.0F)), entity -> entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && !(entity instanceof Player && ((Player) entity).isCreative() && ((Player) entity).abilities.flying))) {
 			float resistance = this.isResistantToBoof(entity) ? 0.15F : 1.0F;
 			float amount = (0.2F * offensiveStrength) * resistance;
 			if (offensiveStrength > 2.0F && resistance > 0.15F && entity != this.getControllingPassenger()) {
 				entity.hurt(DamageSource.mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getBaseValue());
 				entity.hurtMarked = false;
 			}
-			Vector3d result = entity.position().subtract(this.position());
+			Vec3 result = entity.position().subtract(this.position());
 			entity.push(result.x * amount, (this.random.nextFloat() * 0.75D + 0.25D) * (offensiveStrength * 0.75F), result.z * amount);
 		}
 	}
@@ -983,15 +983,15 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	public boolean isTempted() {
 		for (Object goals : this.goalSelector.getRunningGoals().toArray()) {
-			if (goals instanceof PrioritizedGoal) {
-				return ((PrioritizedGoal) goals).getGoal() instanceof BoofloTemptGoal;
+			if (goals instanceof WrappedGoal) {
+				return ((WrappedGoal) goals).getGoal() instanceof BoofloTemptGoal;
 			}
 		}
 		return false;
 	}
 
-	public List<PlayerEntity> getNearbyPlayers(float multiplier) {
-		return this.level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(8.0F * multiplier, 4.0F, 8.0F * multiplier), IS_SCARED_BY);
+	public List<Player> getNearbyPlayers(float multiplier) {
+		return this.level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(8.0F * multiplier, 4.0F, 8.0F * multiplier), IS_SCARED_BY);
 	}
 
 	public boolean isPlayerNear(float multiplier) {
@@ -999,7 +999,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return this.isBoofed() ? 1.2F : 0.9F;
 	}
 
@@ -1033,13 +1033,13 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public void onEndimationStart(Endimation endimation) {
 		if (endimation == SWIM) {
 			float pitch = this.isVehicle() ? 1.0F : this.xRot;
-			float xMotion = -MathHelper.sin(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
-			float yMotion = -MathHelper.sin(pitch * ((float) Math.PI / 180F));
-			float zMotion = MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * MathHelper.cos(pitch * ((float) Math.PI / 180F));
+			float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
+			float yMotion = -Mth.sin(pitch * ((float) Math.PI / 180F));
+			float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
 
 			double motionScale = (this.hasAggressiveAttackTarget() && !this.hasCaughtPuffBug()) || (!this.getPassengers().isEmpty() && !this.hasCaughtPuffBug()) ? 0.85F : 0.5F;
 
-			Vector3d motion = new Vector3d(xMotion, yMotion, zMotion).normalize().multiply(motionScale, 0.5D, motionScale);
+			Vec3 motion = new Vec3(xMotion, yMotion, zMotion).normalize().multiply(motionScale, 0.5D, motionScale);
 
 			this.push(motion.x * (this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() - 0.05F), motion.y, motion.z * (this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() - 0.05F));
 		}
@@ -1047,7 +1047,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	protected void jumpFromGround() {
-		Vector3d vec3d = this.getDeltaMovement();
+		Vec3 vec3d = this.getDeltaMovement();
 		this.setDeltaMovement(vec3d.x, 0.55D, vec3d.z);
 		this.hasImpulse = true;
 	}
@@ -1060,7 +1060,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	protected ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		Item item = itemstack.getItem();
 
@@ -1076,13 +1076,13 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
-			return ActionResultType.sidedSuccess(this.level.isClientSide);
+			return InteractionResult.sidedSuccess(this.level.isClientSide);
 		} else if (item == EEBlocks.POISE_CLUSTER.get().asItem() && this.canBreed()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setInLove(player);
-			return ActionResultType.sidedSuccess(this.level.isClientSide);
+			return InteractionResult.sidedSuccess(this.level.isClientSide);
 		} else if (item == EEItems.BOLLOOM_FRUIT.get() && !this.isAggressive() && !this.hasCaughtFruit() && this.onGround) {
-			IParticleData particle = ParticleTypes.HEART;
+			ParticleOptions particle = ParticleTypes.HEART;
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.setCaughtFruit(true);
 			this.setHungry(false);
@@ -1113,7 +1113,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					this.level.addParticle(particle, this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getY() + 0.5D + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), d0, d1, d2);
 				}
 			}
-			return ActionResultType.sidedSuccess(this.level.isClientSide);
+			return InteractionResult.sidedSuccess(this.level.isClientSide);
 		} else if (item instanceof DyeItem && this.isTamed()) {
 			DyeColor dyecolor = ((DyeItem) item).getDyeColor();
 			if (dyecolor != this.getBraceletsColor()) {
@@ -1121,12 +1121,12 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				if (!player.abilities.instabuild) {
 					itemstack.shrink(1);
 				}
-				return ActionResultType.sidedSuccess(this.level.isClientSide);
+				return InteractionResult.sidedSuccess(this.level.isClientSide);
 			}
 		} else {
-			ActionResultType result = itemstack.interactLivingEntity(player, this, hand);
-			if (result == ActionResultType.CONSUME || result == ActionResultType.SUCCESS) {
-				return ActionResultType.PASS;
+			InteractionResult result = itemstack.interactLivingEntity(player, this, hand);
+			if (result == InteractionResult.CONSUME || result == InteractionResult.SUCCESS) {
+				return InteractionResult.PASS;
 			}
 
 			if (this.isTamed() && !this.isVehicle() && !this.isPregnant()) {
@@ -1135,7 +1135,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					player.xRot = this.xRot;
 					player.startRiding(this);
 				}
-				return ActionResultType.PASS;
+				return InteractionResult.PASS;
 			}
 		}
 		return super.mobInteract(player, hand);
@@ -1149,14 +1149,14 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 				double xOffset = passengerIndex == 0 ? 0.25F : -0.25F;
 				double zOffset = passengerIndex == 0 ? 0.0F : passengerIndex == 1 ? -0.25F : 0.25F;
-				Vector3d ridingOffset = (new Vector3d(xOffset, 0.0D, zOffset)).yRot(-this.getLockedYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+				Vec3 ridingOffset = (new Vec3(xOffset, 0.0D, zOffset)).yRot(-this.getLockedYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 
 				passenger.setPos(this.getX() + ridingOffset.x, this.getY() + 0.9F, this.getZ() + ridingOffset.z);
 			} else if (passenger instanceof PuffBugEntity) {
 				PuffBugEntity puffbug = (PuffBugEntity) passenger;
 				passenger.yRot = puffbug.yBodyRot = puffbug.yHeadRot = (this.yRot - 75.0F);
 				if (this.isEndimationPlaying(EAT) && this.getAnimationTick() > 15) {
-					Vector3d ridingPos = (new Vector3d(1.0D, 0.0D, 0.0D)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+					Vec3 ridingPos = (new Vec3(1.0D, 0.0D, 0.0D)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 					float yOffset = puffbug.isBaby() ? 0.1F : 0.3F;
 
 					passenger.setPos(this.getX() + ridingPos.x(), this.getY() - yOffset - (0.15F * this.FRUIT_HOVER.getAnimationProgressServer()), this.getZ() + ridingPos.z());
@@ -1165,8 +1165,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				}
 			} else {
 				super.positionRider(passenger);
-				if (passenger instanceof MobEntity) {
-					this.yBodyRot = ((MobEntity) passenger).yBodyRot;
+				if (passenger instanceof Mob) {
+					this.yBodyRot = ((Mob) passenger).yBodyRot;
 				}
 			}
 		}
@@ -1180,7 +1180,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	public boolean canBeControlledByRider() {
-		return this.getControllingPassenger() instanceof PlayerEntity;
+		return this.getControllingPassenger() instanceof Player;
 	}
 
 	@Override
@@ -1203,8 +1203,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public boolean hurt(DamageSource source, float amount) {
 		Entity entitySource = source.getEntity();
 		if (entitySource instanceof LivingEntity && !this.isVehicle()) {
-			if (entitySource instanceof PlayerEntity) {
-				if (!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
+			if (entitySource instanceof Player) {
+				if (!entitySource.isSpectator() && !((Player) entitySource).isCreative()) {
 					this.setBoofloAttackTargetId(entitySource.getId());
 				}
 			} else {
@@ -1219,8 +1219,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
 		Entity entitySource = damageSrc.getEntity();
 		if (entitySource instanceof LivingEntity && !this.isVehicle()) {
-			if (entitySource instanceof PlayerEntity) {
-				if (!entitySource.isSpectator() && !((PlayerEntity) entitySource).isCreative()) {
+			if (entitySource instanceof Player) {
+				if (!entitySource.isSpectator() && !((Player) entitySource).isCreative()) {
 					this.setBoofloAttackTargetId(entitySource.getId());
 				}
 			} else {
@@ -1241,7 +1241,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose poseIn) {
+	public EntityDimensions getDimensions(Pose poseIn) {
 		return this.isBoofed() ? BOOFED_SIZE : super.getDimensions(poseIn);
 	}
 
@@ -1319,7 +1319,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
 
@@ -1342,7 +1342,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		return isGrowing ? this : this.growDown();
 	}
 
-	public static class GroundMoveHelperController extends MovementController {
+	public static class GroundMoveHelperController extends MoveControl {
 		private final BoofloEntity booflo;
 		private float yRot;
 		public boolean isAggressive;
@@ -1360,7 +1360,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 		public void setSpeed(double speed) {
 			this.speedModifier = speed;
-			this.operation = MovementController.Action.MOVE_TO;
+			this.operation = MoveControl.Operation.MOVE_TO;
 		}
 
 		public void tick() {
@@ -1370,10 +1370,10 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.mob.yBodyRot = this.mob.yRot;
 			}
 
-			if (this.operation != MovementController.Action.MOVE_TO) {
+			if (this.operation != MoveControl.Operation.MOVE_TO) {
 				this.mob.setZza(0.0F);
 			} else {
-				this.operation = MovementController.Action.WAIT;
+				this.operation = MoveControl.Operation.WAIT;
 				if (this.mob.isOnGround()) {
 					this.mob.setSpeed((float) (this.speedModifier * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 					if (this.booflo.hopDelay == 0 && this.booflo.isEndimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
@@ -1392,7 +1392,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		}
 	}
 
-	public static class FlyingMoveController extends MovementController {
+	public static class FlyingMoveController extends MoveControl {
 		private final BoofloEntity booflo;
 
 		public FlyingMoveController(BoofloEntity booflo) {
@@ -1401,30 +1401,30 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		}
 
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO && !this.booflo.getNavigation().isDone()) {
+			if (this.operation == MoveControl.Operation.MOVE_TO && !this.booflo.getNavigation().isDone()) {
 				if (this.booflo.hasAggressiveAttackTarget()) {
-					Vector3d vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
+					Vec3 vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
 
 					this.booflo.yRot = this.rotlerp(this.booflo.yRot, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
 					this.booflo.yBodyRot = this.booflo.yRot;
 					this.booflo.yHeadRot = this.booflo.yRot;
 
 					float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
-					float f2 = MathHelper.lerp(0.125F, this.booflo.getSpeed(), f1);
+					float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);
 
 					this.booflo.setSpeed(f2);
 				} else {
-					Vector3d vec3d = new Vector3d(this.wantedX - this.booflo.getX(), this.wantedY - this.booflo.getY(), this.wantedZ - this.booflo.getZ());
+					Vec3 vec3d = new Vec3(this.wantedX - this.booflo.getX(), this.wantedY - this.booflo.getY(), this.wantedZ - this.booflo.getZ());
 					double d0 = vec3d.length();
 					double d1 = vec3d.y / d0;
-					float f = (float) (MathHelper.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
+					float f = (float) (Mth.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 
 					this.booflo.yRot = this.rotlerp(this.booflo.yRot, f, 10.0F);
 					this.booflo.yBodyRot = this.booflo.yRot;
 					this.booflo.yHeadRot = this.booflo.yRot;
 
 					float f1 = (float) (this.speedModifier * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
-					float f2 = MathHelper.lerp(0.125F, this.booflo.getSpeed(), f1);
+					float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);
 
 					this.booflo.setSpeed(f2);
 
@@ -1433,8 +1433,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					double d5 = Math.sin((double) (this.booflo.tickCount + this.booflo.getId()) * 0.75D) * 0.05D;
 
 					if (!this.booflo.isInWater()) {
-						float f3 = -((float) (MathHelper.atan2(vec3d.y, (double) MathHelper.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double) (180F / (float) Math.PI)));
-						f3 = MathHelper.clamp(MathHelper.wrapDegrees(f3), -85.0F, 85.0F);
+						float f3 = -((float) (Mth.atan2(vec3d.y, (double) Mth.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double) (180F / (float) Math.PI)));
+						f3 = Mth.clamp(Mth.wrapDegrees(f3), -85.0F, 85.0F);
 						this.booflo.xRot = this.rotlerp(this.booflo.xRot, f3, 5.0F);
 					}
 
@@ -1448,7 +1448,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		}
 	}
 
-	static class FlyingLookController extends LookController {
+	static class FlyingLookController extends LookControl {
 		private final int angleLimit;
 
 		public FlyingLookController(BoofloEntity booflo, int angleLimit) {
@@ -1468,7 +1468,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, this.mob.yBodyRot, this.yMaxRotSpeed);
 			}
 
-			float wrappedDegrees = MathHelper.wrapDegrees(this.mob.yHeadRot - this.mob.yBodyRot);
+			float wrappedDegrees = Mth.wrapDegrees(this.mob.yHeadRot - this.mob.yBodyRot);
 			if (wrappedDegrees < (float) (-this.angleLimit)) {
 				this.mob.yBodyRot -= 4.0F;
 			} else if (wrappedDegrees > (float) this.angleLimit) {

@@ -10,20 +10,20 @@ import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.GameRules;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloBreedGoal extends Goal {
-	private static final EntityPredicate MATE_CHECKER = (new EntityPredicate()).range(16.0D).allowInvulnerable().allowSameTeam().allowUnseeable();
+	private static final TargetingConditions MATE_CHECKER = (new TargetingConditions()).range(16.0D).allowInvulnerable().allowSameTeam().allowUnseeable();
 	protected final BoofloEntity booflo;
 	protected BoofloEntity mate;
 	private int impregnateDelay;
@@ -65,7 +65,7 @@ public class BoofloBreedGoal extends Goal {
 		double dx = this.mate.getX() - this.booflo.getX();
 		double dz = this.mate.getZ() - this.booflo.getZ();
 
-		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
+		float angle = (float) (Mth.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 
 		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(angle, false);
@@ -88,7 +88,7 @@ public class BoofloBreedGoal extends Goal {
 			return;
 		}
 
-		ServerPlayerEntity serverplayerentity = this.booflo.getLoveCause();
+		ServerPlayer serverplayerentity = this.booflo.getLoveCause();
 		if (serverplayerentity == null && this.mate.getLoveCause() != null) {
 			serverplayerentity = this.mate.getLoveCause();
 		}
@@ -109,7 +109,7 @@ public class BoofloBreedGoal extends Goal {
 
 		this.booflo.level.broadcastEntityEvent(this.booflo, (byte) 18);
 		if (this.booflo.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-			this.booflo.level.addFreshEntity(new ExperienceOrbEntity(this.booflo.level, this.booflo.getX(), this.booflo.getY(), this.booflo.getZ(), this.booflo.getRandom().nextInt(7) + 1));
+			this.booflo.level.addFreshEntity(new ExperienceOrb(this.booflo.level, this.booflo.getX(), this.booflo.getY(), this.booflo.getZ(), this.booflo.getRandom().nextInt(7) + 1));
 		}
 	}
 

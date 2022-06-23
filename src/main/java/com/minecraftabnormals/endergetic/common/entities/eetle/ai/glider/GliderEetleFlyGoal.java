@@ -1,13 +1,13 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
+public class GliderEetleFlyGoal extends WaterAvoidingRandomStrollGoal {
 	private final GliderEetleEntity glider;
 
 	public GliderEetleFlyGoal(GliderEetleEntity glider) {
@@ -28,7 +28,7 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
 				}
 			}
 
-			Vector3d vector3d = this.getPosition();
+			Vec3 vector3d = this.getPosition();
 			if (vector3d == null) {
 				return false;
 			} else {
@@ -48,10 +48,10 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomWalkingGoal {
 
 	@Nullable
 	@Override
-	protected Vector3d getPosition() {
+	protected Vec3 getPosition() {
 		GliderEetleEntity glider = this.glider;
 		if (glider.isFlying() && !glider.getPassengers().isEmpty()) {
-			return RandomPositionGenerator.getAboveLandPos(glider, 8, 8, glider.getViewVector(0.0F), ((float)Math.PI / 2.0F), 2, 1);
+			return RandomPos.getAboveLandPos(glider, 8, 8, glider.getViewVector(0.0F), ((float)Math.PI / 2.0F), 2, 1);
 		}
 		return super.getPosition();
 	}

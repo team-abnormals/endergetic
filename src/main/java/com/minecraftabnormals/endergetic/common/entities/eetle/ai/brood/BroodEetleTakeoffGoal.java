@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class BroodEetleTakeoffGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -48,8 +48,8 @@ public class BroodEetleTakeoffGoal extends Goal {
 	}
 
 	private static boolean willFallFar(BroodEetleEntity broodEetle) {
-		World world = broodEetle.level;
-		BlockPos.Mutable mutable = broodEetle.blockPosition().mutable();
+		Level world = broodEetle.level;
+		BlockPos.MutableBlockPos mutable = broodEetle.blockPosition().mutable();
 		int startY = mutable.getY();
 		for (int i = 0; i < 10; i++) {
 			mutable.setY(startY - i);

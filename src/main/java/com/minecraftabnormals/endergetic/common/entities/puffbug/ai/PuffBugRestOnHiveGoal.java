@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.Direction;
 
 import java.util.Random;
 

@@ -2,18 +2,18 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
-	private static final EntityPredicate PREDICATE = new EntityPredicate().allowSameTeam();
+	private static final TargetingConditions PREDICATE = new TargetingConditions().allowSameTeam();
 	private static final float MIN_DISTANCE = 2.0F;
 	public int cooldown;
 
@@ -30,7 +30,7 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 			ChargerEetleEntity chargerEetle = this.entity;
 			LivingEntity attackTarget = chargerEetle.getTarget();
 			if (attackTarget != null && attackTarget.isAlive() && !chargerEetle.isCatapultProjectile() && chargerEetle.isOnGround()) {
-				World world = chargerEetle.level;
+				Level world = chargerEetle.level;
 				ChargerEetleEntity closestCharger = world.getNearestEntity(world.getEntitiesOfClass(ChargerEetleEntity.class, chargerEetle.getBoundingBox().inflate(2.5F), eetle -> {
 					return eetle != chargerEetle && eetle.isOnGround() && !eetle.isBaby() && eetle.getTarget() == attackTarget && !eetle.isCatapulting() && attackTarget.distanceTo(eetle) >= MIN_DISTANCE;
 				}), PREDICATE, null, chargerEetle.getX(), chargerEetle.getY(), chargerEetle.getZ());
@@ -76,7 +76,7 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 		this.entity.getNavigation().stop();
 		this.entity.setAggressive(false);
 		LivingEntity attackTarget = this.entity.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(attackTarget)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(attackTarget)) {
 			this.entity.setTarget(null);
 		}
 	}

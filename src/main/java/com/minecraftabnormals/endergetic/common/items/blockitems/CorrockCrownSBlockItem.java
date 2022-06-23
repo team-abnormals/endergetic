@@ -5,15 +5,15 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.level.LevelReader;
 
 public class CorrockCrownSBlockItem extends BlockItem {
 	protected final Supplier<Block> wallBlock;
@@ -24,10 +24,10 @@ public class CorrockCrownSBlockItem extends BlockItem {
 	}
 
 	@Nullable
-	protected BlockState getPlacementState(BlockItemUseContext context) {
+	protected BlockState getPlacementState(BlockPlaceContext context) {
 		BlockState iblockstate = this.wallBlock.get().getStateForPlacement(context);
 		BlockState iblockstate1 = null;
-		IWorldReader iworldreaderbase = context.getLevel();
+		LevelReader iworldreaderbase = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 
 		for (Direction enumfacing : context.getNearestLookingDirections()) {
@@ -38,7 +38,7 @@ public class CorrockCrownSBlockItem extends BlockItem {
 			}
 		}
 
-		return iblockstate1 != null && iworldreaderbase.isUnobstructed(iblockstate1, blockpos, ISelectionContext.empty()) ? iblockstate1 : null;
+		return iblockstate1 != null && iworldreaderbase.isUnobstructed(iblockstate1, blockpos, CollisionContext.empty()) ? iblockstate1 : null;
 	}
 
 	@Override

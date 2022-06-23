@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.items;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class BolloomFruitItem extends Item {
 
@@ -15,11 +15,11 @@ public class BolloomFruitItem extends Item {
 	}
 
 	@Override
-	public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity eater) {
+	public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity eater) {
 		ItemStack itemstack = super.finishUsingItem(stack, worldIn, eater);
 
-		if (!worldIn.isClientSide && eater instanceof PlayerEntity) {
-			((PlayerEntity) eater).getCooldowns().addCooldown(this, 25);
+		if (!worldIn.isClientSide && eater instanceof Player) {
+			((Player) eater).getCooldowns().addCooldown(this, 25);
 		}
 
 		return itemstack;

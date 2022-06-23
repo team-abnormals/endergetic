@@ -16,52 +16,66 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.ai.BoofloNearest
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathType;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
 public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableEntity {
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> HAS_FRUIT = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> DESCENTING = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> EATING = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> EATEN = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> WANTS_TO_GROW = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Float> FALL_SPEED = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Integer> BOOF_BOOST_COOLDOWN = EntityDataManager.defineId(BoofloAdolescentEntity.class, DataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HAS_FRUIT = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DESCENTING = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> EATING = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> HUNGRY = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> EATEN = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> WANTS_TO_GROW = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> FALL_SPEED = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Integer> BOOF_BOOST_COOLDOWN = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.INT);
 	public static final Endimation BOOF_ANIMATION = new Endimation(10);
 	public static final Endimation EATING_ANIMATION = new Endimation(10);
 	private Entity boofloAttackTarget;
@@ -76,7 +90,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	private float swimmingAnimationSpeed;
 	public boolean wasBred;
 
-	public BoofloAdolescentEntity(EntityType<? extends BoofloAdolescentEntity> type, World worldIn) {
+	public BoofloAdolescentEntity(EntityType<? extends BoofloAdolescentEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new BoofloAdolescentEntity.BoofloAdolescentMoveController(this);
 		this.tailAnimation = this.random.nextFloat();
@@ -106,15 +120,15 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		this.targetSelector.addGoal(4, new BoofloNearestAttackableTargetGoal<>(this, BolloomFruitEntity.class, true));
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 10.0F)
 				.add(Attributes.MOVEMENT_SPEED, 1.7F)
 				.add(Attributes.FOLLOW_RANGE, 25.0F);
 	}
 
 	@Override
-	public void travel(Vector3d vec3d) {
+	public void travel(Vec3 vec3d) {
 		if (this.isEffectiveAi() && !this.isInWater()) {
 			this.moveRelative(0.015F, vec3d);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -126,7 +140,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	protected PathNavigator createNavigation(World worldIn) {
+	protected PathNavigation createNavigation(Level worldIn) {
 		return new EndergeticFlyingPathNavigator(this, worldIn) {
 
 			@Override
@@ -137,7 +151,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		};
 	}
 
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
 
@@ -146,8 +160,8 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		super.tick();
 
 		if (this.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION) && this.getAnimationTick() == 9) {
-			if (this.level instanceof ServerWorld) {
-				((ServerWorld) this.level).sendParticles(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, (double) (this.getBbWidth() / 4.0F), (double) (this.getBbHeight() / 4.0F), (double) (this.getBbWidth() / 4.0F), 0.05D);
+			if (this.level instanceof ServerLevel) {
+				((ServerLevel) this.level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, (double) (this.getBbWidth() / 4.0F), (double) (this.getBbHeight() / 4.0F), (double) (this.getBbWidth() / 4.0F), 0.05D);
 			}
 			this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
 		}
@@ -200,7 +214,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		}
 
 		if (!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.isEyeInFluid(FluidTags.WATER)))) {
-			this.push(-MathHelper.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
+			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
 			this.setPlayingEndimation(BOOF_ANIMATION);
 			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
 			this.setFallSpeed(0.0F);
@@ -216,13 +230,13 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 			this.setFallSpeed(0.0F);
 
 			if (this.getY() <= 50) {
-				this.push(-MathHelper.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, MathHelper.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
+				this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
 				this.setPlayingEndimation(BOOF_ANIMATION);
 			}
 		}
 
 		if (!this.onGround && this.level.dimensionType() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.blockPosition(), 3) && !this.isWorldRemote()) {
-			this.push(-MathHelper.sin((float) (this.yRot * Math.PI / 180.0F)) * 0.01F, 0, MathHelper.cos((float) (this.yRot * Math.PI / 180.0F)) * 0.01F);
+			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * 0.01F, 0, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * 0.01F);
 		}
 
 		if (this.getBoofloAttackTarget() != null && this.canSee(this.getBoofloAttackTarget())) {
@@ -250,7 +264,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
 
@@ -272,7 +286,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("Moving", this.isMoving());
 		compound.putBoolean("HasFruit", this.hasFruit());
@@ -289,7 +303,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setMoving(compound.getBoolean("Moving"));
 		this.setHasFruit(compound.getBoolean("HasFruit"));
@@ -491,12 +505,12 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 	@OnlyIn(Dist.CLIENT)
 	public float getTailAnimation(float ptc) {
-		return MathHelper.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
+		return Mth.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public float getSwimmingAnimation(float ptc) {
-		return MathHelper.lerp(ptc, this.prevSwimmingAnimation, this.swimmingAnimation);
+		return Mth.lerp(ptc, this.prevSwimmingAnimation, this.swimmingAnimation);
 	}
 
 	public boolean isSafePos(BlockPos pos, int muliplier) {
@@ -519,7 +533,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	public boolean isPlayerNear() {
-		return this.level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(2.0F), BoofloEntity.IS_SCARED_BY).size() > 0;
+		return this.level.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(2.0F), BoofloEntity.IS_SCARED_BY).size() > 0;
 	}
 
 	@Override
@@ -528,7 +542,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	protected ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		Item item = itemstack.getItem();
 
@@ -544,19 +558,19 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 				EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			}
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		} else if (item == EEItems.BOLLOOM_FRUIT.get()) {
 			EntityItemStackHelper.consumeItemFromStack(player, itemstack);
 			this.ageUp((int) ((-this.getGrowingAge() / 20) * 0.1F), true);
 			this.setEaten(true);
-			return ActionResultType.sidedSuccess(this.level.isClientSide);
+			return InteractionResult.sidedSuccess(this.level.isClientSide);
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnDataIn, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
 		this.setGrowingAge(-24000);
 		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
 	}
@@ -594,17 +608,17 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		return isGrowing ? this.growUp() : this.growDown();
 	}
 
-	static class RandomFlyingGoal extends RandomWalkingGoal {
+	static class RandomFlyingGoal extends RandomStrollGoal {
 
-		public RandomFlyingGoal(CreatureEntity booflo, double speed, int chance) {
+		public RandomFlyingGoal(PathfinderMob booflo, double speed, int chance) {
 			super(booflo, speed, chance);
 		}
 
 		@Nullable
-		protected Vector3d getPosition() {
-			Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 10, 0);
+		protected Vec3 getPosition() {
+			Vec3 vec3d = RandomPos.getPos(this.mob, 10, 0);
 
-			for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.getPos(this.mob, 10, 0)) {
+			for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = RandomPos.getPos(this.mob, 10, 0)) {
 				;
 			}
 
@@ -623,7 +637,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 	}
 
-	static class BoofloAdolescentMoveController extends MovementController {
+	static class BoofloAdolescentMoveController extends MoveControl {
 		private final BoofloAdolescentEntity booflo;
 
 		BoofloAdolescentMoveController(BoofloAdolescentEntity booflo) {
@@ -632,15 +646,15 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		}
 
 		public void tick() {
-			if (this.operation == MovementController.Action.MOVE_TO && !this.booflo.getNavigation().isDone()) {
-				Vector3d vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
+			if (this.operation == MoveControl.Operation.MOVE_TO && !this.booflo.getNavigation().isDone()) {
+				Vec3 vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
 
 				this.booflo.yRot = this.rotlerp(this.booflo.yRot, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
 				this.booflo.yBodyRot = this.booflo.yRot;
 				this.booflo.yHeadRot = this.booflo.yRot;
 
 				float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
-				float f2 = MathHelper.lerp(0.125F, this.booflo.getSpeed(), f1);
+				float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);
 
 				this.booflo.setSpeed(f2);
 

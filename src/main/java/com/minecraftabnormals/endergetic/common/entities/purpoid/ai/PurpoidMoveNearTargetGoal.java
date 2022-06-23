@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.EntityPredicates;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntitySelector;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -62,7 +62,7 @@ public class PurpoidMoveNearTargetGoal extends Goal {
 				this.delayCounter += 5;
 			}
 
-			PathNavigator pathNavigator = purpoid.getNavigation();
+			PathNavigation pathNavigator = purpoid.getNavigation();
 			Path path = pathNavigator.createPath(PurpoidAttackGoal.findAirPosAboveTarget(purpoid.level, target), random.nextInt(3) + 3);
 			if (path == null || !pathNavigator.moveTo(path, 2.0F)) {
 				this.delayCounter += 15;
@@ -74,7 +74,7 @@ public class PurpoidMoveNearTargetGoal extends Goal {
 	public void stop() {
 		PurpoidEntity purpoid = this.purpoid;
 		LivingEntity target = purpoid.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(target)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 			purpoid.setTarget(null);
 		}
 

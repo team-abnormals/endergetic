@@ -5,24 +5,24 @@ import com.minecraftabnormals.endergetic.client.models.armor.BoofloVestModel;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.other.EEArmorMaterials;
 
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -35,12 +35,12 @@ public class BoofloVestItem extends ArmorItem {
 	public static final String TIMES_BOOFED_TAG = "timesBoofed";
 
 	public BoofloVestItem(Properties properties) {
-		super(EEArmorMaterials.BOOFLO_VEST, EquipmentSlotType.CHEST, properties);
+		super(EEArmorMaterials.BOOFLO_VEST, EquipmentSlot.CHEST, properties);
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
-		CompoundNBT tag = stack.getOrCreateTag();
+	public void onArmorTick(ItemStack stack, Level world, Player player) {
+		CompoundTag tag = stack.getOrCreateTag();
 		int ticksBoofed = tag.getInt(TICKS_BOOFED_TAG);
 		if (tag.getBoolean(BOOFED_TAG)) {
 			ticksBoofed++;
@@ -54,8 +54,8 @@ public class BoofloVestItem extends ArmorItem {
 		}
 
 		if (tag.getInt(TICKS_BOOFED_TAG) == 10) {
-			player.getItemBySlot(EquipmentSlotType.CHEST).hurtAndBreak(2, player, (onBroken) -> {
-				onBroken.broadcastBreakEvent(EquipmentSlotType.CHEST);
+			player.getItemBySlot(EquipmentSlot.CHEST).hurtAndBreak(2, player, (onBroken) -> {
+				onBroken.broadcastBreakEvent(EquipmentSlot.CHEST);
 			});
 		}
 
@@ -65,7 +65,7 @@ public class BoofloVestItem extends ArmorItem {
 	}
 
 	@Override
-	public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
 		ItemStackUtil.fillAfterItemForGroup(this, Items.TURTLE_HELMET, group, items);
 	}
 
@@ -74,12 +74,12 @@ public class BoofloVestItem extends ArmorItem {
 		return true;
 	}
 
-	public static boolean canBoof(ItemStack stack, PlayerEntity player) {
+	public static boolean canBoof(ItemStack stack, Player player) {
 		return !player.getCooldowns().isOnCooldown(stack.getItem()) && !stack.getOrCreateTag().getBoolean(BOOFED_TAG);
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BOOFED_TEXTURE : DEFAULT_TEXTURE;
 	}
 
@@ -87,7 +87,7 @@ public class BoofloVestItem extends ArmorItem {
 	@Override
 	@Nullable
 	@OnlyIn(Dist.CLIENT)
-	public <A extends BipedModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlotType armorSlot, A _default) {
+	public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlot armorSlot, A _default) {
 		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? (A) BoofloVestModel.INSTANCE : null;
 	}
 }

@@ -2,19 +2,19 @@ package com.minecraftabnormals.endergetic.client.particles;
 
 import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
-public class CorrockCrownParticle extends SpriteTexturedParticle {
-	private final IAnimatedSprite animatedSprite;
+public class CorrockCrownParticle extends TextureSheetParticle {
+	private final SpriteSet animatedSprite;
 	private final float rotSpeed;
 
-	public CorrockCrownParticle(IAnimatedSprite animatedSprite, ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, boolean eetle, Optional<Float> scale) {
+	public CorrockCrownParticle(SpriteSet animatedSprite, ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, boolean eetle, Optional<Float> scale) {
 		super(world, x, y, z);
 		scale.ifPresent(value -> this.quadSize = value + value * 0.1F * (this.random.nextFloat() * 0.5F + 0.5F));
 		float size = (float) ((eetle ? 0.5D : 0.3D) + Math.random() * 0.4D);
@@ -52,7 +52,7 @@ public class CorrockCrownParticle extends SpriteTexturedParticle {
 
 	@Override
 	public int getLightColor(float partialTick) {
-		float ageFactor = MathHelper.clamp(this.lifetime / (((this.age + (this.lifetime * 0.5F)) + partialTick)), 0.0F, 1.0F);
+		float ageFactor = Mth.clamp(this.lifetime / (((this.age + (this.lifetime * 0.5F)) + partialTick)), 0.0F, 1.0F);
 		int brightnessForRender = super.getLightColor(partialTick);
 		int j = brightnessForRender & 255;
 		int k = brightnessForRender >> 16 & 255;
@@ -64,19 +64,19 @@ public class CorrockCrownParticle extends SpriteTexturedParticle {
 	}
 
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 
-	public static class Factory implements IParticleFactory<CorrockCrownParticleData> {
-		private IAnimatedSprite animatedSprite;
+	public static class Factory implements ParticleProvider<CorrockCrownParticleData> {
+		private SpriteSet animatedSprite;
 
-		public Factory(IAnimatedSprite animatedSprite) {
+		public Factory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
 		}
 
 		@Override
-		public Particle createParticle(CorrockCrownParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(CorrockCrownParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new CorrockCrownParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, data.isEetle(), data.getScale());
 		}
 	}

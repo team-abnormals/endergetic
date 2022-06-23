@@ -11,34 +11,42 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+
 public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEetle {
-	private static final DataParameter<Boolean> FLYING = EntityDataManager.defineId(GliderEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> MOVING = EntityDataManager.defineId(GliderEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Boolean> DIVING = EntityDataManager.defineId(GliderEetleEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = EntityDataManager.defineId(GliderEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
-	private static final DataParameter<EntitySize> CAUGHT_SIZE = EntityDataManager.defineId(GliderEetleEntity.class, EEDataSerializers.ENTITY_SIZE);
-	public static final EntitySize DEFAULT_SIZE = EntitySize.fixed(1.0F, 0.85F);
+	private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(GliderEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(GliderEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> DIVING = SynchedEntityData.defineId(GliderEetleEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = SynchedEntityData.defineId(GliderEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
+	private static final EntityDataAccessor<EntityDimensions> CAUGHT_SIZE = SynchedEntityData.defineId(GliderEetleEntity.class, EEDataSerializers.ENTITY_SIZE);
+	public static final EntityDimensions DEFAULT_SIZE = EntityDimensions.fixed(1.0F, 0.85F);
 	public static final AttributeModifier CAUGHT_KNOCKBACK_RESISTANCE = new AttributeModifier(UUID.fromString("17da0b48-6e5f-11eb-9439-0242ac130002"), "Caught target knockback resistance", 0.8F, AttributeModifier.Operation.ADDITION);
 	public static final Endimation FLAP = new Endimation(22);
 	public static final Endimation MUNCH = new Endimation(25);
@@ -65,7 +73,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	private float wingFlapSpeed;
 	private float damageTakenWhileFlying;
 
-	public GliderEetleEntity(EntityType<? extends AbstractEetleEntity> type, World world) {
+	public GliderEetleEntity(EntityType<? extends AbstractEetleEntity> type, Level world) {
 		super(type, world);
 		this.prevWingFlap = this.wingFlap = this.random.nextFloat();
 		this.takeoffEndimation.setDecrementing(true);
@@ -84,7 +92,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		super.onSyncedDataUpdated(key);
 		if (FLYING.equals(key)) {
 			if (!this.isBaby() && this.isFlying()) {
@@ -94,12 +102,12 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 				if (!this.isBaby()) {
 					for (Entity passenger : this.getPassengers()) {
 						passenger.removeVehicle();
-						World world = this.level;
+						Level world = this.level;
 						if (passenger instanceof LivingEntity && passenger.getVehicle() != this && !world.isClientSide) {
-							AxisAlignedBB passengerBoundingBox = passenger.getBoundingBox();
+							AABB passengerBoundingBox = passenger.getBoundingBox();
 							double xSize = passengerBoundingBox.getXsize();
 							double zSize = passengerBoundingBox.getZsize();
-							AxisAlignedBB detectionBox = AxisAlignedBB.ofSize(xSize * 0.8F, 0.2F, zSize * 0.8F).move(passenger.getX(), passenger.getY(), passenger.getZ());
+							AABB detectionBox = AABB.ofSize(xSize * 0.8F, 0.2F, zSize * 0.8F).move(passenger.getX(), passenger.getY(), passenger.getZ());
 							if (world.getBlockCollisions(passenger, detectionBox, (state, pos) -> !state.getCollisionShape(world, pos).isEmpty()).findAny().isPresent()) {
 								BlockPos pos = passenger.blockPosition();
 								if (!hasCollisionsAbove(world, pos.mutable(), getEntitySizeBlocksCeil(passenger))) {
@@ -133,9 +141,9 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		this.goalSelector.addGoal(3, this.landGoal = new GliderEetleLandGoal(this));
 		this.goalSelector.addGoal(4, this.takeoffGoal = new GliderEetleTakeoffGoal(this));
 		this.goalSelector.addGoal(5, this.flyGoal = new GliderEetleFlyGoal(this));
-		this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.8D));
+		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.8D));
 		this.goalSelector.addGoal(7, new GliderEetleLookRandomlyGoal(this));
-		this.goalSelector.addGoal(8, new LookAtGoal(this, MobEntity.class, 8.0F) {
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Mob.class, 8.0F) {
 			@Override
 			public boolean canUse() {
 				return this.mob.getPassengers().isEmpty() && super.canUse();
@@ -148,8 +156,8 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		});
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 4.0F)
 				.add(Attributes.FLYING_SPEED, 0.35F)
 				.add(Attributes.MOVEMENT_SPEED, 0.2F)
@@ -164,7 +172,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		super.tick();
 
 		if (!this.level.isClientSide) {
-			ModifiableAttributeInstance knockbackResistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+			AttributeInstance knockbackResistance = this.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
 			if (knockbackResistance != null) {
 				boolean noPassengers = this.getPassengers().isEmpty();
 				boolean hasModifier = knockbackResistance.hasModifier(CAUGHT_KNOCKBACK_RESISTANCE);
@@ -232,7 +240,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	@Override
-	public void travel(Vector3d travelVector) {
+	public void travel(Vec3 travelVector) {
 		if (this.isEffectiveAi() && !this.isBaby() && this.isFlying()) {
 			this.moveRelative(0.1F, travelVector);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -244,14 +252,14 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("FlyCooldown", this.flyCooldown);
 		compound.putBoolean("IsFlying", this.isFlying());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.flyCooldown = compound.getInt("FlyCooldown");
 		this.setFlying(compound.getBoolean("IsFlying"));
@@ -298,10 +306,10 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		this.setYBodyRot(this.yRot);
 		if (this.hasPassenger(passenger)) {
 			if (passenger instanceof LivingEntity && !isEntityLarge(passenger)) {
-				AxisAlignedBB boundingBox = passenger.getBoundingBox();
+				AABB boundingBox = passenger.getBoundingBox();
 				float y = (float) (boundingBox.maxY - boundingBox.minY) * -0.25F;
 				float pitch = this.flyingRotations.getFlyPitch();
-				Vector3d riderPos = (new Vector3d(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).xRot(pitch * ((float)Math.PI / 180F));
+				Vec3 riderPos = (new Vec3(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).xRot(pitch * ((float)Math.PI / 180F));
 				passenger.setPos(this.getX() + riderPos.x, this.getY() + 0.25F + riderPos.y, this.getZ() + riderPos.z);
 			} else {
 				super.positionRider(passenger);
@@ -313,7 +321,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	protected void addPassenger(Entity passenger) {
 		super.addPassenger(passenger);
 		if (!this.level.isClientSide && passenger instanceof LivingEntity && passenger.getVehicle() == this && this.getPassengers().indexOf(passenger) == 0) {
-			this.setCaughtSize(EntitySize.fixed(1.0F + passenger.getDimensions(passenger.getPose()).width, 0.85F));
+			this.setCaughtSize(EntityDimensions.fixed(1.0F + passenger.getDimensions(passenger.getPose()).width, 0.85F));
 		}
 	}
 
@@ -328,7 +336,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 			if (!this.getPassengers().isEmpty()) {
 				Entity indexZeroPassenger = this.getPassengers().get(0);
 				if (indexZeroPassenger instanceof LivingEntity && passenger.getVehicle() == this) {
-					this.setCaughtSize(EntitySize.fixed(1.0F + passenger.getDimensions(passenger.getPose()).width, 0.85F));
+					this.setCaughtSize(EntityDimensions.fixed(1.0F + passenger.getDimensions(passenger.getPose()).width, 0.85F));
 				} else {
 					this.setCaughtSize(DEFAULT_SIZE);
 				}
@@ -357,7 +365,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose poseIn) {
+	public EntityDimensions getDimensions(Pose poseIn) {
 		if (!this.isBaby() && !this.getPassengers().isEmpty()) {
 			return this.getCaughtSize();
 		}
@@ -414,11 +422,11 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		return this.entityData.get(TARGET_FLYING_ROTATIONS);
 	}
 
-	public void setCaughtSize(EntitySize size) {
+	public void setCaughtSize(EntityDimensions size) {
 		this.entityData.set(CAUGHT_SIZE, size);
 	}
 
-	public EntitySize getCaughtSize() {
+	public EntityDimensions getCaughtSize() {
 		return this.entityData.get(CAUGHT_SIZE);
 	}
 
@@ -451,7 +459,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	public float getWingFlap() {
-		return MathHelper.lerp(ClientInfo.getPartialTicks(), this.prevWingFlap, this.wingFlap);
+		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevWingFlap, this.wingFlap);
 	}
 
 	@Override
@@ -467,7 +475,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 		return (int) Math.ceil(entity.getBoundingBox().getYsize());
 	}
 
-	private static boolean hasCollisionsAbove(World world, BlockPos.Mutable mutable, int blocksAbove) {
+	private static boolean hasCollisionsAbove(Level world, BlockPos.MutableBlockPos mutable, int blocksAbove) {
 		int y = mutable.getY();
 		for (int i = 1; i <= blocksAbove; i++) {
 			mutable.setY(y + i);

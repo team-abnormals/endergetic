@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.world.configs;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public final class MultiPatchConfig implements IFeatureConfig {
+public final class MultiPatchConfig implements FeatureConfiguration {
 	public static final Codec<MultiPatchConfig> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				Codec.INT.fieldOf("max_extra_patches").forGetter(config -> config.maxExtraPatches),

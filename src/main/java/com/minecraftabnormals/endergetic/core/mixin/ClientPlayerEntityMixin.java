@@ -5,11 +5,11 @@ import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SBoostMe
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.C2SInflateMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.MovementInput;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.client.player.Input;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,12 +17,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(ClientPlayerEntity.class)
-public final class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
+@Mixin(LocalPlayer.class)
+public final class ClientPlayerEntityMixin extends AbstractClientPlayer {
 	@Shadow
-	public MovementInput input;
+	public Input input;
 
-	private ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+	private ClientPlayerEntityMixin(ClientLevel world, GameProfile profile) {
 		super(world, profile);
 	}
 

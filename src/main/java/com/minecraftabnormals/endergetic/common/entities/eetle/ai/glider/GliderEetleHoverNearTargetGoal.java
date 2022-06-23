@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.EntityPredicates;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntitySelector;
 
 import java.util.EnumSet;
 
@@ -60,7 +60,7 @@ public class GliderEetleHoverNearTargetGoal extends Goal {
 		boolean canSeeTarget = glider.getSensing().canSee(target);
 		if (canSeeTarget && this.delayCounter <= 0 && glider.getRandom().nextFloat() < 0.05F) {
 			this.delayCounter = 4 + glider.getRandom().nextInt(9);
-			PathNavigator pathNavigator = glider.getNavigation();
+			PathNavigation pathNavigator = glider.getNavigation();
 			if (distanceToTargetSq > 1024.0D) {
 				this.delayCounter += 10;
 			} else if (distanceToTargetSq > 256.0D) {
@@ -78,7 +78,7 @@ public class GliderEetleHoverNearTargetGoal extends Goal {
 	public void stop() {
 		GliderEetleEntity glider = this.glider;
 		LivingEntity livingentity = glider.getTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
 			glider.setTarget(null);
 		}
 		glider.setAggressive(false);

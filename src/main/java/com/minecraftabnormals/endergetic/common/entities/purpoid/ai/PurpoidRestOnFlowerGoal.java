@@ -1,14 +1,14 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PurpoidRestOnFlowerGoal extends Goal {
 	private final PurpoidEntity purpoid;
@@ -57,6 +57,6 @@ public class PurpoidRestOnFlowerGoal extends Goal {
 
 	private static boolean isNearFlower(PurpoidEntity purpoid) {
 		BlockPos flowerPos = purpoid.getFlowerPos();
-		return flowerPos != null && purpoid.level.getBlockState(flowerPos).getBlock() == Blocks.CHORUS_FLOWER && Vector3d.upFromBottomCenterOf(flowerPos, 1.0F).distanceToSqr(purpoid.position()) <= 0.02F;
+		return flowerPos != null && purpoid.level.getBlockState(flowerPos).getBlock() == Blocks.CHORUS_FLOWER && Vec3.upFromBottomCenterOf(flowerPos, 1.0F).distanceToSqr(purpoid.position()) <= 0.02F;
 	}
 }

@@ -5,16 +5,16 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock
 import com.minecraftabnormals.endergetic.common.world.configs.CorrockArchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.*;
 
@@ -25,14 +25,14 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockArchConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockArchConfig config) {
 		Block below = world.getBlockState(pos.below()).getBlock();
 		if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get()) && world.isEmptyBlock(pos)) {
 			int originX = pos.getX();
 			int originY = pos.getY();
 			int originZ = pos.getZ();
 			if (isGroundSolid(world, originX, originY - 1, originZ)) {
-				BlockPos.Mutable mutable = pos.mutable();
+				BlockPos.MutableBlockPos mutable = pos.mutable();
 				BlockPos end = null;
 				float maxDistance = config.getMaxDistance();
 				int maxDistanceInt = (int) maxDistance;
@@ -42,10 +42,10 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 					int xPos = originX + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					int zPos = originZ + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					mutable.set(xPos, originY, zPos);
-					mutable.setY(world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, xPos, zPos));
+					mutable.setY(world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, xPos, zPos));
 					below = world.getBlockState(mutable.below()).getBlock();
 					if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get() || below == Blocks.END_STONE) && isGroundSolid(world, xPos, mutable.getY() - 1, zPos)) {
-						distance = MathHelper.sqrt(mutable.distSqr(pos));
+						distance = Mth.sqrt(mutable.distSqr(pos));
 						if (distance >= minDistance && distance <= maxDistance && isGroundSolid(world, xPos, mutable.getY() - 1, zPos) && world.isEmptyBlock(mutable)) {
 							end = mutable.immutable();
 							break;
@@ -74,7 +74,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 							for (int x = -radius; x <= radius; x++) {
 								for (int z = -radius; z <= radius; z++) {
 									BlockPos placingPos = interpolatedPos.offset(x, y, z);
-									if (MathHelper.sqrt(pos.distSqr(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
+									if (Mth.sqrt(pos.distSqr(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
 										if (world.isEmptyBlock(placingPos)) {
 											corrockBlockPositions.add(placingPos);
 										} else {
@@ -128,7 +128,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 		return false;
 	}
 
-	private static boolean isGroundSolid(ISeedReader world, int x, int y, int z) {
+	private static boolean isGroundSolid(WorldGenLevel world, int x, int y, int z) {
 		return GenerationUtils.isAreaCompletelySolid(world, x - 2, y, z - 2, x + 2, y, z + 2);
 	}
 
@@ -139,46 +139,46 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	 * @author SmellyModder (Luke Tonon)
 	 */
 	static class ArchSpline {
-		private static final Vector3d UP = new Vector3d(0.0D, 1.0D, 1.0D);
-		private final Vector3d[] points;
+		private static final Vec3 UP = new Vec3(0.0D, 1.0D, 1.0D);
+		private final Vec3[] points;
 
 		private ArchSpline(BlockPos start, BlockPos end, Random rand, float maxArchHeight) {
-			List<Vector3d> points = new ArrayList<>();
-			Vector3d startVec = Vector3d.atLowerCornerOf(start);
-			Vector3d endVec = Vector3d.atLowerCornerOf(end);
-			Vector3d difference = endVec.subtract(startVec);
-			Vector3d normalizedDifference = difference.normalize();
+			List<Vec3> points = new ArrayList<>();
+			Vec3 startVec = Vec3.atLowerCornerOf(start);
+			Vec3 endVec = Vec3.atLowerCornerOf(end);
+			Vec3 difference = endVec.subtract(startVec);
+			Vec3 normalizedDifference = difference.normalize();
 			//Anchor positions drive the spline downwards into the start and end positions
-			Vector3d anchorStart = startVec.subtract(normalizedDifference).add(0, -6, 0);
-			Vector3d anchorEnd = endVec.add(normalizedDifference).add(0, -6, 0);
+			Vec3 anchorStart = startVec.subtract(normalizedDifference).add(0, -6, 0);
+			Vec3 anchorEnd = endVec.add(normalizedDifference).add(0, -6, 0);
 			points.add(anchorStart);
 			points.add(startVec);
 			//Generate positions in between the start and end to form an arch-like path
-			Vector3d offset = UP.cross(normalizedDifference);
+			Vec3 offset = UP.cross(normalizedDifference);
 			double offsetX = offset.x;
 			double offsetZ = offset.z;
 			for (int i = 0; i < 5; i++) {
-				points.add(startVec.add(difference.scale(i / 5.0F)).add(offsetX * (rand.nextDouble() - 0.5D) * 3.0D, (rand.nextDouble() - 0.25D) * 8.0D + MathHelper.sin((float) (i / 5.0F * Math.PI)) * maxArchHeight, offsetZ * (rand.nextDouble() - 0.5D) * 3.0D));
+				points.add(startVec.add(difference.scale(i / 5.0F)).add(offsetX * (rand.nextDouble() - 0.5D) * 3.0D, (rand.nextDouble() - 0.25D) * 8.0D + Mth.sin((float) (i / 5.0F * Math.PI)) * maxArchHeight, offsetZ * (rand.nextDouble() - 0.5D) * 3.0D));
 			}
 			points.add(endVec);
 			points.add(anchorEnd);
-			this.points = points.toArray(new Vector3d[0]);
+			this.points = points.toArray(new Vec3[0]);
 		}
 
 		/**
 		 * Gets a position on the spline based on a given progress percentage.
 		 */
 		private BlockPos interpolate(float progress) {
-			Vector3d[] points = this.points;
+			Vec3[] points = this.points;
 			float sections = points.length - 3;
 			int currentPoint = (int) Math.min(Math.floor(progress * sections), sections - 1);
 
-			Vector3d point0 = points[currentPoint];
-			Vector3d point1 = points[currentPoint + 1];
+			Vec3 point0 = points[currentPoint];
+			Vec3 point1 = points[currentPoint + 1];
 			float t0 = computeT(point0, point1, 0.0F);
 
-			Vector3d point2 = points[currentPoint + 2];
-			Vector3d point3 = points[currentPoint + 3];
+			Vec3 point2 = points[currentPoint + 2];
+			Vec3 point3 = points[currentPoint + 3];
 			float t1 = computeT(point1, point2, t0);
 
 			float t = t0 + (progress * sections - (float) currentPoint) * (t1 - t0);
@@ -227,9 +227,9 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			return point1 * multiplier1 + point2 * multiplier2;
 		}
 
-		private static float computeT(Vector3d point1, Vector3d point2, float offset) {
+		private static float computeT(Vec3 point1, Vec3 point2, float offset) {
 			//Raising to power of 0.5 results in a centripetal Catmull–Rom spline, which is equivalent to taking the square root
-			return MathHelper.sqrt(point2.subtract(point1).length()) + offset;
+			return Mth.sqrt(point2.subtract(point1).length()) + offset;
 		}
 	}
 

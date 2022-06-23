@@ -3,9 +3,9 @@ package com.minecraftabnormals.endergetic.client.models.purpoid;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 
 /**
  * @author Endergized
@@ -100,7 +100,7 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.head.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
@@ -109,12 +109,12 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	public void setupAnim(PurpoidEntity purpoid, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(purpoid, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		if (purpoid.isBaby()) limbSwing /= 3.0F;
-		float rimAngle = 0.17F * MathHelper.sin(0.1F * ageInTicks) + MathHelper.cos(limbSwing * 0.8F) * limbSwingAmount * 1.16F;
+		float rimAngle = 0.17F * Mth.sin(0.1F * ageInTicks) + Mth.cos(limbSwing * 0.8F) * limbSwingAmount * 1.16F;
 		this.rim1.xRot -= rimAngle;
 		this.rim2.xRot += rimAngle;
 		this.rim3.zRot -= rimAngle;
         this.rim4.zRot += rimAngle;
-        float tentacleAngle = 0.09F * MathHelper.cos(0.1F * ageInTicks + 1.0F) + MathHelper.sin(limbSwing * 0.6F) * Math.min(0.3F, limbSwingAmount) * 0.5F;
+        float tentacleAngle = 0.09F * Mth.cos(0.1F * ageInTicks + 1.0F) + Mth.sin(limbSwing * 0.6F) * Math.min(0.3F, limbSwingAmount) * 0.5F;
         this.tentacleLarge1.xRot -= tentacleAngle;
 		this.tentacleLarge2.xRot += tentacleAngle;
 		this.tentacleLarge3.xRot += tentacleAngle;

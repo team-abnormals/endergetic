@@ -2,16 +2,16 @@ package com.minecraftabnormals.endergetic.common.tileentities;
 
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
-import net.minecraft.tileentity.CampfireTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class EnderCampfireTileEntity extends CampfireTileEntity {
+public class EnderCampfireTileEntity extends CampfireBlockEntity {
 
 	public EnderCampfireTileEntity() {
 		super();
 	}
 
-	public TileEntityType<?> getType() {
+	public BlockEntityType<?> getType() {
 		return EETileEntities.ENDER_CAMPFIRE.get();
 	}
 }

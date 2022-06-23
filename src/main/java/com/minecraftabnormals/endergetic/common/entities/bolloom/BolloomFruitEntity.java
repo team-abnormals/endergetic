@@ -5,39 +5,39 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * @author - SmellyModder (Luke Tonon)
  */
 public class BolloomFruitEntity extends AbstractBolloomEntity {
-	private static final DataParameter<BlockPos> BUD_POS = EntityDataManager.defineId(BolloomFruitEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> VINE_HEIGHT = EntityDataManager.defineId(BolloomFruitEntity.class, DataSerializers.INT);
+	private static final EntityDataAccessor<BlockPos> BUD_POS = SynchedEntityData.defineId(BolloomFruitEntity.class, EntityDataSerializers.BLOCK_POS);
+	private static final EntityDataAccessor<Integer> VINE_HEIGHT = SynchedEntityData.defineId(BolloomFruitEntity.class, EntityDataSerializers.INT);
 
-	public BolloomFruitEntity(EntityType<? extends BolloomFruitEntity> type, World world) {
+	public BolloomFruitEntity(EntityType<? extends BolloomFruitEntity> type, Level world) {
 		super(EEEntities.BOLLOOM_FRUIT.get(), world);
 		this.setNoGravity(true);
 	}
 
-	public BolloomFruitEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public BolloomFruitEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 	}
 
-	public BolloomFruitEntity(World world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
+	public BolloomFruitEntity(Level world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
 		float zPos = origin.getZ() + 0.5F + (direction.getAxis() == Axis.X ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
@@ -61,14 +61,14 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putLong("BudPosition", this.getBudPos().asLong());
 		compound.putInt("VineHeight", this.getVineHeight());
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setBudPos(BlockPos.of(compound.getLong("BudPosition")));
 		if (compound.contains("VineHeight", 3)) {
@@ -137,7 +137,7 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 
 	@SuppressWarnings("deprecation")
 	public boolean isOpenPathBelowFruit() {
-		BlockPos.Mutable mutable = this.blockPosition().mutable();
+		BlockPos.MutableBlockPos mutable = this.blockPosition().mutable();
 		for (int i = 0; i < this.getVineHeight(); i++) {
 			BlockPos pos = mutable.below(i);
 			if (this.level.isAreaLoaded(pos, 1)) {
@@ -150,7 +150,7 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public ItemStack getPickedResult(RayTraceResult target) {
+	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(EEItems.BOLLOOM_FRUIT.get());
 	}
 

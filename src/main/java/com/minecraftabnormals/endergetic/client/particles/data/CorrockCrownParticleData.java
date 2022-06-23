@@ -4,16 +4,16 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.Registry;
 
 import java.util.Optional;
 
 @SuppressWarnings("deprecation")
-public class CorrockCrownParticleData implements IParticleData {
-	public static final IParticleData.IDeserializer<CorrockCrownParticleData> DESERIALIZER = new IParticleData.IDeserializer<CorrockCrownParticleData>() {
+public class CorrockCrownParticleData implements ParticleOptions {
+	public static final ParticleOptions.Deserializer<CorrockCrownParticleData> DESERIALIZER = new ParticleOptions.Deserializer<CorrockCrownParticleData>() {
 		@Override
 		public CorrockCrownParticleData fromCommand(ParticleType<CorrockCrownParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
 			reader.expect(' ');
@@ -23,7 +23,7 @@ public class CorrockCrownParticleData implements IParticleData {
 		}
 
 		@Override
-		public CorrockCrownParticleData fromNetwork(ParticleType<CorrockCrownParticleData> particleTypeIn, PacketBuffer buffer) {
+		public CorrockCrownParticleData fromNetwork(ParticleType<CorrockCrownParticleData> particleTypeIn, FriendlyByteBuf buffer) {
 			return new CorrockCrownParticleData(particleTypeIn, buffer.readBoolean(), buffer.readBoolean() ? Optional.of(buffer.readFloat()) : Optional.empty());
 		}
 	};
@@ -60,7 +60,7 @@ public class CorrockCrownParticleData implements IParticleData {
 	}
 
 	@Override
-	public void writeToNetwork(PacketBuffer buffer) {
+	public void writeToNetwork(FriendlyByteBuf buffer) {
 		buffer.writeBoolean(this.eetle);
 		Optional<Float> scale = this.scale;
 		boolean present = scale.isPresent();

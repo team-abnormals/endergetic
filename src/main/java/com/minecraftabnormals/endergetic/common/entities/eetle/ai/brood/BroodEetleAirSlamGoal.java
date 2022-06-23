@@ -5,11 +5,11 @@ import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		if (broodEetle.isNotDroppingEggs() && broodEetle.canSlam() && broodEetle.isFlying() && !broodEetle.isOnGround() && broodEetle.isNoEndimationPlaying()) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			if (takeoffPos != null) {
-				return !searchForAggressorsUnder(broodEetle, new AxisAlignedBB(takeoffPos).inflate(8.0D, 7.0D, 8.0D)).isEmpty();
+				return !searchForAggressorsUnder(broodEetle, new AABB(takeoffPos).inflate(8.0D, 7.0D, 8.0D)).isEmpty();
 			}
 		}
 		return false;
@@ -58,15 +58,15 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		return this.entity.isFlying() && this.isEndimationPlaying();
 	}
 
-	private static List<LivingEntity> searchForAggressorsUnder(BroodEetleEntity broodEetle, AxisAlignedBB otherBounds) {
+	private static List<LivingEntity> searchForAggressorsUnder(BroodEetleEntity broodEetle, AABB otherBounds) {
 		return broodEetle.level.getEntitiesOfClass(LivingEntity.class, DetectionHelper.expandDownwards(broodEetle.getBoundingBox(), 10.0F), livingEntity -> {
 			if (broodEetle.getY() - livingEntity.getY() < 4 || !otherBounds.contains(livingEntity.position())) {
 				return false;
 			}
-			if (livingEntity instanceof PlayerEntity) {
-				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && !((PlayerEntity) livingEntity).isCreative();
+			if (livingEntity instanceof Player) {
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && !((Player) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && (livingEntity instanceof MobEntity && ((MobEntity) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 

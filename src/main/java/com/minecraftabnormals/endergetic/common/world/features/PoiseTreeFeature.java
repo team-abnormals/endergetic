@@ -10,32 +10,32 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.IWorldGenerationReader;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.LevelSimulatedRW;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
+public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 	private final Supplier<BlockState> POISMOSS_EUMUS = () -> EEBlocks.EUMUS_POISMOSS.get().defaultBlockState();
 	private final Supplier<BlockState> POISE_STEM = () -> EEBlocks.POISE_STEM.get().defaultBlockState();
 	private final Supplier<BlockState> GLOWING_POISE_STEM = () -> EEBlocks.GLOWING_POISE_STEM.get().defaultBlockState();
 
-	public PoiseTreeFeature(Codec<NoFeatureConfig> configFactoryIn) {
+	public PoiseTreeFeature(Codec<NoneFeatureConfiguration> configFactoryIn) {
 		super(configFactoryIn);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		int treeHeight = rand.nextInt(19) + 13;
 		int size = 0;
 		//Random tree top size; small(45%), medium(40%), large(15%)
@@ -153,7 +153,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		return false;
 	}
 
-	private void buildTreeBase(IWorld world, BlockPos pos, Random rand) {
+	private void buildTreeBase(LevelAccessor world, BlockPos pos, Random rand) {
 		int[] sideRandValues = new int[]{
 				rand.nextInt(8) + 2,
 				rand.nextInt(8) + 2,
@@ -185,14 +185,14 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void buildStem(IWorld world, BlockPos pos, Random rand, int height) {
+	private void buildStem(LevelAccessor world, BlockPos pos, Random rand, int height) {
 		for (int y = 1; y < height; y++) {
 			boolean doBubbles = y <= height - 2 ? false : true;
 			this.setPoiseLog(world, pos.above(y), rand, false, doBubbles);
 		}
 	}
 
-	private void buildTreeTop(IWorld world, BlockPos pos, Random rand, int arrivedPos, int size) {
+	private void buildTreeTop(LevelAccessor world, BlockPos pos, Random rand, int arrivedPos, int size) {
 		if (size == 0) {
 			for (int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
 				for (int z = pos.getZ() - 1; z <= pos.getZ() + 1; z++) {
@@ -620,7 +620,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void addTreeDomeTop(IWorld world, BlockPos pos, Random rand, int arrivedPos, int size) {
+	private void addTreeDomeTop(LevelAccessor world, BlockPos pos, Random rand, int arrivedPos, int size) {
 		BlockPos origin = pos.above(arrivedPos);
 		if (size == 0) {
 			//North
@@ -907,7 +907,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void tryToBuildBranch(IWorld world, BlockPos pos, Random rand, int treeHeight) {
+	private void tryToBuildBranch(LevelAccessor world, BlockPos pos, Random rand, int treeHeight) {
 		// First array - Values for the amout of blocks in the facing direction, Second Array - Values for the amount of blocks up
 		int[] branchLengths = new int[]{
 				rand.nextInt(3) + 1,
@@ -963,7 +963,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void buildSideBubble(IWorld world, BlockPos pos, Random rand) {
+	private void buildSideBubble(LevelAccessor world, BlockPos pos, Random rand) {
 		int variant = rand.nextInt(100);
 		if (variant >= 49) {
 			Direction randDir = Direction.from3DDataValue(rand.nextInt(4) + 2);
@@ -1055,7 +1055,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	public void buildPoismossCircle(IWorld world, IWorldGenerationReader reader, Random random, BlockPos pos) {
+	public void buildPoismossCircle(LevelAccessor world, LevelSimulatedRW reader, Random random, BlockPos pos) {
 		this.placePoismossCircle(world, reader, pos.west().north());
 		this.placePoismossCircle(world, reader, pos.east(2).north());
 		this.placePoismossCircle(world, reader, pos.west().south(2));
@@ -1071,7 +1071,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void placePoismossCircle(IWorld world, IWorldGenerationReader reader, BlockPos center) {
+	private void placePoismossCircle(LevelAccessor world, LevelSimulatedRW reader, BlockPos center) {
 		for (int i = -2; i <= 2; ++i) {
 			for (int j = -2; j <= 2; ++j) {
 				if (Math.abs(i) != 2 || Math.abs(j) != 2) {
@@ -1081,7 +1081,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void placePoismossAt(IWorld world, IWorldGenerationReader reader, BlockPos pos) {
+	private void placePoismossAt(LevelAccessor world, LevelSimulatedRW reader, BlockPos pos) {
 		for (int i = 2; i >= -3; --i) {
 			BlockPos blockpos = pos.above(i);
 			if (world.getBlockState(blockpos).getBlock() == EEBlocks.EUMUS.get() || world.getBlockState(blockpos).getBlock() == Blocks.END_STONE) {
@@ -1096,7 +1096,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void placeInnerDomeFeatures(IWorld world, Random rand, BlockPos pos) {
+	private void placeInnerDomeFeatures(LevelAccessor world, Random rand, BlockPos pos) {
 		if (rand.nextFloat() > 0.75) return;
 
 		for (int x = 0; x < 128; x++) {
@@ -1121,7 +1121,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	public boolean canFitBud(IWorld world, BlockPos pos) {
+	public boolean canFitBud(LevelAccessor world, BlockPos pos) {
 		for (int y = pos.getY(); y < pos.getY() + 5; y++) {
 			for (int x = pos.getX() - 1; x < pos.getX() + 1; x++) {
 				for (int z = pos.getZ() - 1; z < pos.getZ() + 1; z++) {
@@ -1135,7 +1135,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		return true;
 	}
 
-	private void setPoiseLog(IWorld world, BlockPos pos, Random rand, boolean isTreeBase, boolean noBubbles) {
+	private void setPoiseLog(LevelAccessor world, BlockPos pos, Random rand, boolean isTreeBase, boolean noBubbles) {
 		BlockState logState = rand.nextFloat() <= 0.11F ? GLOWING_POISE_STEM.get() : POISE_STEM.get();
 		if (world.getBlockState(pos).getMaterial().isReplaceable() || world.getBlockState(pos).getBlock() == EEBlocks.POISE_CLUSTER.get()) {
 			world.setBlock(pos, logState, 2);
@@ -1158,24 +1158,24 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void setPoiseLogWithDirection(IWorld world, BlockPos pos, Random rand, Direction direction) {
+	private void setPoiseLogWithDirection(LevelAccessor world, BlockPos pos, Random rand, Direction direction) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? POISE_STEM.get().setValue(GlowingPoiseStemBlock.AXIS, direction.getAxis()) : GLOWING_POISE_STEM.get().setValue(GlowingPoiseStemBlock.AXIS, direction.getAxis());
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, logState, 2);
 		}
 	}
 
-	private void setPoiseCluster(IWorld world, BlockPos pos) {
+	private void setPoiseCluster(LevelAccessor world, BlockPos pos) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, EEBlocks.POISE_CLUSTER.get().defaultBlockState(), 2);
 		}
 	}
 
-	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
+	private void setBlockState(LevelAccessor world, BlockPos pos, BlockState state) {
 		world.setBlock(pos, state, 2);
 	}
 
-	private boolean isViableBranchArea(IWorld world, BlockPos pos, Direction direction, int directionLength, BlockPos topPosition) {
+	private boolean isViableBranchArea(LevelAccessor world, BlockPos pos, Direction direction, int directionLength, BlockPos topPosition) {
 		int y = topPosition.getY() - pos.getY();
 		if (direction == Direction.NORTH) {
 			if (GenerationUtils.isAreaReplacable(world, pos.below().west().north(directionLength).getX(), pos.below().west().north(directionLength).getY(), pos.below().west().north(directionLength).getZ(), pos.above(y).east().getX(), pos.above(y).east().getY(), pos.above(y).east().getZ())) {
@@ -1205,7 +1205,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		return false;
 	}
 
-	public boolean isAreaOpen(IWorld world, BlockPos pos) {
+	public boolean isAreaOpen(LevelAccessor world, BlockPos pos) {
 		for (int y = pos.getY(); y < pos.getY() + 1; y++) {
 			for (int x = pos.getX() - 1; x < pos.getX() + 2; x++) {
 				for (int z = pos.getZ() - 1; z < pos.getZ() + 2; z++) {
@@ -1218,7 +1218,7 @@ public class PoiseTreeFeature extends Feature<NoFeatureConfig> {
 		return true;
 	}
 
-	private boolean isValidGround(IWorld world, BlockPos pos) {
+	private boolean isValidGround(LevelAccessor world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		return block == Blocks.END_STONE.getBlock() || block.is(EETags.Blocks.END_PLANTABLE) || block.is(EETags.Blocks.POISE_PLANTABLE);
 	}

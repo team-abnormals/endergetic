@@ -9,35 +9,35 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescent
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.phys.AABB;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetGoal {
 	protected final Class<E> targetClass;
 	protected final int targetChance;
 	protected Entity nearestTarget;
-	protected EntityPredicate targetEntitySelector;
+	protected TargetingConditions targetEntitySelector;
 
-	public BoofloNearestAttackableTargetGoal(MobEntity attacker, Class<E> targetClass, boolean p_i50313_3_) {
+	public BoofloNearestAttackableTargetGoal(Mob attacker, Class<E> targetClass, boolean p_i50313_3_) {
 		this(attacker, targetClass, p_i50313_3_, false);
 	}
 
-	public BoofloNearestAttackableTargetGoal(MobEntity attacker, Class<E> targetClass, boolean p_i50314_3_, boolean p_i50314_4_) {
+	public BoofloNearestAttackableTargetGoal(Mob attacker, Class<E> targetClass, boolean p_i50314_3_, boolean p_i50314_4_) {
 		this(attacker, targetClass, 5, p_i50314_3_, p_i50314_4_);
 	}
 
-	public BoofloNearestAttackableTargetGoal(MobEntity p_i50315_1_, Class<E> p_i50315_2_, int p_i50315_3_, boolean p_i50315_4_, boolean p_i50315_5_) {
+	public BoofloNearestAttackableTargetGoal(Mob p_i50315_1_, Class<E> p_i50315_2_, int p_i50315_3_, boolean p_i50315_4_, boolean p_i50315_5_) {
 		super(p_i50315_1_, p_i50315_4_, p_i50315_5_);
 		this.targetClass = p_i50315_2_;
 		this.targetChance = p_i50315_3_;
 		this.setFlags(EnumSet.of(Flag.TARGET));
-		this.targetEntitySelector = EntityPredicate.DEFAULT.range(this.getFollowDistance());
+		this.targetEntitySelector = TargetingConditions.DEFAULT.range(this.getFollowDistance());
 	}
 
 	public boolean canUse() {
@@ -57,7 +57,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 		}
 	}
 
-	protected AxisAlignedBB getTargetableArea(double targetDistance) {
+	protected AABB getTargetableArea(double targetDistance) {
 		return this.mob.getBoundingBox().inflate(targetDistance, 4.0D, targetDistance);
 	}
 
@@ -75,12 +75,12 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 	}
 
 	@Nullable
-	public E findEntity(Class<? extends E> target, EntityPredicate predicate, @Nullable LivingEntity attacker, double p_225318_4_, double p_225318_6_, double p_225318_8_, AxisAlignedBB bb) {
+	public E findEntity(Class<? extends E> target, TargetingConditions predicate, @Nullable LivingEntity attacker, double p_225318_4_, double p_225318_6_, double p_225318_8_, AABB bb) {
 		return this.getClosestEntity(attacker.level.getEntitiesOfClass(target, bb, null), predicate, attacker, p_225318_4_, p_225318_6_, p_225318_8_);
 	}
 
 	@Nullable
-	private E getClosestEntity(List<? extends E> p_217361_1_, EntityPredicate p_217361_2_, @Nullable LivingEntity attacker, double p_217361_4_, double p_217361_6_, double p_217361_8_) {
+	private E getClosestEntity(List<? extends E> p_217361_1_, TargetingConditions p_217361_2_, @Nullable LivingEntity attacker, double p_217361_4_, double p_217361_6_, double p_217361_8_) {
 		double d0 = -1.0D;
 		E e = null;
 
@@ -123,7 +123,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 					}
 				}
 
-				if (attacker instanceof MobEntity && !((MobEntity) attacker).getSensing().canSee(target)) {
+				if (attacker instanceof Mob && !((Mob) attacker).getSensing().canSee(target)) {
 					return false;
 				}
 			}

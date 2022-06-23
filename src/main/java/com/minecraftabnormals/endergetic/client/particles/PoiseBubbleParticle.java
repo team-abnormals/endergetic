@@ -1,22 +1,22 @@
 package com.minecraftabnormals.endergetic.client.particles;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class PoiseBubbleParticle extends SpriteTexturedParticle {
-	protected final IAnimatedSprite animatedSprite;
+public class PoiseBubbleParticle extends TextureSheetParticle {
+	protected final SpriteSet animatedSprite;
 	private float angle;
 
-	public PoiseBubbleParticle(IAnimatedSprite animatedSprite, ClientWorld world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, boolean isShort) {
+	public PoiseBubbleParticle(SpriteSet animatedSprite, ClientLevel world, double posX, double posY, double posZ, double motionX, double motionY, double motionZ, boolean isShort) {
 		super(world, posX, posY, posZ, motionX, motionY, motionZ);
 		this.xd = motionX;
 		this.yd = isShort ? motionY + (random.nextDouble() * 0.05D + 0.055F) : motionY + (random.nextDouble() * 0.05D + 0.075F);
@@ -52,7 +52,7 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 	@Override
 	public int getLightColor(float partialTick) {
 		float f = this.lifetime / (((this.age + (this.lifetime * 0.5F)) + partialTick));
-		f = MathHelper.clamp(f, 0F, 0.5F);
+		f = Mth.clamp(f, 0F, 0.5F);
 		int i = super.getLightColor(partialTick);
 		int j = i & 255;
 		int k = i >> 16 & 255;
@@ -64,32 +64,32 @@ public class PoiseBubbleParticle extends SpriteTexturedParticle {
 	}
 
 	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+	public ParticleRenderType getRenderType() {
+		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 	}
 
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private IAnimatedSprite animatedSprite;
+	public static class Factory implements ParticleProvider<SimpleParticleType> {
+		private SpriteSet animatedSprite;
 
-		public Factory(IAnimatedSprite animatedSprite) {
+		public Factory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
 		}
 
 		@Override
-		public Particle createParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new PoiseBubbleParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, false);
 		}
 	}
 
-	public static class ShortFactory implements IParticleFactory<BasicParticleType> {
-		private IAnimatedSprite animatedSprite;
+	public static class ShortFactory implements ParticleProvider<SimpleParticleType> {
+		private SpriteSet animatedSprite;
 
-		public ShortFactory(IAnimatedSprite animatedSprite) {
+		public ShortFactory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
 		}
 
 		@Override
-		public Particle createParticle(BasicParticleType type, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			return new PoiseBubbleParticle(this.animatedSprite, world, x, y, z, xSpeed, ySpeed, zSpeed, true);
 		}
 	}

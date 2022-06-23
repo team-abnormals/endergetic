@@ -7,13 +7,13 @@ import com.minecraftabnormals.endergetic.client.renderers.entity.layer.LayerRend
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.LayerRendererBoofloFruit;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +25,7 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 		skinHelper.putSkins("cam", "cameron", "cam");
 	});
 
-	public BoofloRenderer(EntityRendererManager manager) {
+	public BoofloRenderer(EntityRenderDispatcher manager) {
 		super(manager, new BoofloModel<>(), 1.25F);
 		this.addLayer(new BoofloEmissiveLayer<>(this));
 		this.addLayer(new LayerRendererBoofloBracelets<>(this));
@@ -33,7 +33,7 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 	}
 
 	@Override
-	public void render(BoofloEntity booflo, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+	public void render(BoofloEntity booflo, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		this.shadowRadius = booflo.isBoofed() ? 2.0F : 1.25F;
 		super.render(booflo, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}

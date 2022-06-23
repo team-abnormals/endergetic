@@ -1,17 +1,17 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleLandGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -31,7 +31,7 @@ public class BroodEetleLandGoal extends Goal {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		if (broodEetle.isFlying() && ((broodEetle.getTicksFlying() >= 700 && broodEetle.getRandom().nextFloat() < 0.1F) || broodEetle.isOnLastHealthStage())) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
-			World world = broodEetle.level;
+			Level world = broodEetle.level;
 			boolean canSitOnTakeoffPos = takeoffPos != null && world.loadedAndEntityCanStandOn(takeoffPos.below(), broodEetle);
 			if (canSitOnTakeoffPos) {
 				this.path = broodEetle.getNavigation().createPath(takeoffPos, 0);
@@ -41,7 +41,7 @@ public class BroodEetleLandGoal extends Goal {
 				this.failedPaths++;
 			}
 			if (!canSitOnTakeoffPos || this.failedPaths >= 6) {
-				Vector3d foundGroundPos = RandomPositionGenerator.getAirPos(broodEetle, 8, 4, -3, broodEetle.getViewVector(0.0F), (float)Math.PI / 2F);
+				Vec3 foundGroundPos = RandomPos.getAirPos(broodEetle, 8, 4, -3, broodEetle.getViewVector(0.0F), (float)Math.PI / 2F);
 				if (foundGroundPos != null) {
 					this.path = broodEetle.getNavigation().createPath(foundGroundPos.x, foundGroundPos.y, foundGroundPos.z, 0);
 					if (this.path != null) {
@@ -73,7 +73,7 @@ public class BroodEetleLandGoal extends Goal {
 	public void tick() {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		BlockPos takeoffPos = broodEetle.takeoffPos;
-		if (broodEetle.isFlying() && broodEetle.position().distanceToSqr(Vector3d.atCenterOf(takeoffPos)) <= 3.0F) {
+		if (broodEetle.isFlying() && broodEetle.position().distanceToSqr(Vec3.atCenterOf(takeoffPos)) <= 3.0F) {
 			broodEetle.setDeltaMovement(broodEetle.getDeltaMovement().scale(0.95F));
 			if (++this.ticksNearTakeoffPos >= 5 && broodEetle.isOnGround()) {
 				broodEetle.resetFlyCooldown();

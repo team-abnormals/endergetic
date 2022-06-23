@@ -4,16 +4,16 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.EntitySenses;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.sensing.Sensing;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	private int ticksOffGround;
@@ -57,11 +57,11 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		BroodEetleEntity broodEetle = this.entity;
 		if (broodEetle.isEggMouthOpen() && this.ticksPassed % 20 == 0) {
 			this.playEndimation();
-			Vector3d firingPos = new Vector3d(-1.0D, 3.0D, 0.0D).yRot(-broodEetle.yBodyRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
+			Vec3 firingPos = new Vec3(-1.0D, 3.0D, 0.0D).yRot(-broodEetle.yBodyRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F));
 			EetleEggEntity eetleEgg = new EetleEggEntity(broodEetle.level, broodEetle.position().add(firingPos));
 			Random random = this.random;
 			eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, true));
-			eetleEgg.setDeltaMovement(new Vector3d((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
+			eetleEgg.setDeltaMovement(new Vec3((random.nextFloat() - random.nextFloat()) * 0.35F, 0.8F + random.nextFloat() * 0.1F, (random.nextFloat() - random.nextFloat()) * 0.35F));
 			broodEetle.level.addFreshEntity(eetleEgg);
 			this.shotsToFire--;
 		}
@@ -76,7 +76,7 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		this.shotsToFire = 0;
 	}
 
-	private static double computeAverageAggressorDistanceSq(Vector3d pos, List<LivingEntity> aggressors) {
+	private static double computeAverageAggressorDistanceSq(Vec3 pos, List<LivingEntity> aggressors) {
 		double total = 0.0F;
 		for (LivingEntity livingEntity : aggressors) {
 			total += pos.distanceToSqr(livingEntity.position());
@@ -87,7 +87,7 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	public static int getNearbyEetleCount(BroodEetleEntity broodEetle) {
 		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
 		double posY = broodEetle.getY();
-		EntitySenses senses = broodEetle.getSensing();
+		Sensing senses = broodEetle.getSensing();
 		return broodEetle.level.getEntitiesOfClass(AbstractEetleEntity.class, broodEetle.getBoundingBox().inflate(followRange, followRange * 0.75D, followRange), eetle -> {
 			if (eetle.getY() - posY >= 0.5F && !senses.canSee(eetle)) {
 				return false;

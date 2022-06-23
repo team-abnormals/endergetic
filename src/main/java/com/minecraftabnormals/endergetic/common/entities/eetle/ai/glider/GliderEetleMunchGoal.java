@@ -2,10 +2,10 @@ package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 
 public class GliderEetleMunchGoal extends EndimatedGoal<GliderEetleEntity> {
 	private int munchCooldown;

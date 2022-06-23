@@ -2,13 +2,13 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 
 import com.minecraftabnormals.abnormals_core.core.registry.LootInjectionRegistry;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import net.minecraft.loot.LootTables;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 
 public final class EELootInjectors {
 
 	public static void registerLootInjectors() {
 		LootInjectionRegistry.LootInjector injector = new LootInjectionRegistry.LootInjector(EndergeticExpansion.MOD_ID);
-		injector.addLootInjection(injector.buildLootPool("end_city_treasure", 1, 0), LootTables.END_CITY_TREASURE);
+		injector.addLootInjection(injector.buildLootPool("end_city_treasure", 1, 0), BuiltInLootTables.END_CITY_TREASURE);
 	}
 
 }

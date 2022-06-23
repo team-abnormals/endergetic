@@ -1,53 +1,53 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.item.EnderCrystalItem;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.item.EndCrystalItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(EnderCrystalItem.class)
+@Mixin(EndCrystalItem.class)
 public final class EnderCrystalItemMixin {
 
 	@Inject(at = @At("HEAD"), method = "useOn", cancellable = true)
-	private void onItemUse(ItemUseContext context, CallbackInfoReturnable<ActionResultType> info) {
-		World world = context.getLevel();
+	private void onItemUse(UseOnContext context, CallbackInfoReturnable<InteractionResult> info) {
+		Level world = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 		BlockState blockstate = world.getBlockState(blockpos);
 		if (!blockstate.getBlock().is(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
-			info.setReturnValue(ActionResultType.FAIL);
+			info.setReturnValue(InteractionResult.FAIL);
 		} else {
 			BlockPos blockpos1 = blockpos.above();
 			if (!world.isEmptyBlock(blockpos1)) {
-				info.setReturnValue(ActionResultType.FAIL);
+				info.setReturnValue(InteractionResult.FAIL);
 			} else {
 				double d0 = blockpos1.getX();
 				double d1 = blockpos1.getY();
 				double d2 = blockpos1.getZ();
-				if (!world.getEntities(null, new AxisAlignedBB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D)).isEmpty()) {
-					info.setReturnValue(ActionResultType.FAIL);
+				if (!world.getEntities(null, new AABB(d0, d1, d2, d0 + 1.0D, d1 + 2.0D, d2 + 1.0D)).isEmpty()) {
+					info.setReturnValue(InteractionResult.FAIL);
 				} else {
-					if (world instanceof ServerWorld) {
-						EnderCrystalEntity endercrystalentity = new EnderCrystalEntity(world, d0 + 0.5D, d1, d2 + 0.5D);
+					if (world instanceof ServerLevel) {
+						EndCrystal endercrystalentity = new EndCrystal(world, d0 + 0.5D, d1, d2 + 0.5D);
 						endercrystalentity.setShowBottom(false);
 						world.addFreshEntity(endercrystalentity);
-						DragonFightManager dragonfightmanager = ((ServerWorld) world).dragonFight();
+						EndDragonFight dragonfightmanager = ((ServerLevel) world).dragonFight();
 						if (dragonfightmanager != null) {
 							dragonfightmanager.tryRespawn();
 						}
 					}
 					context.getItemInHand().shrink(1);
-					info.setReturnValue(ActionResultType.sidedSuccess(world.isClientSide));
+					info.setReturnValue(InteractionResult.sidedSuccess(world.isClientSide));
 				}
 			}
 		}

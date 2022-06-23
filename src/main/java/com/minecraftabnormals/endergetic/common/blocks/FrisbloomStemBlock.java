@@ -7,25 +7,25 @@ import javax.annotation.Nullable;
 import com.minecraftabnormals.endergetic.common.tileentities.FrisbloomStemTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class FrisbloomStemBlock extends Block {
 	//The height position of the current stem; 5 layers total
@@ -40,37 +40,37 @@ public class FrisbloomStemBlock extends Block {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+	public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
 		return SHAPE;
 	}
 
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(LAYER);
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		if (!world.isAreaLoaded(pos, 0)) return;
 		if (!state.canSurvive(world, pos)) {
 			world.destroyBlock(pos, true);
 		}
 	}
 
-	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		BlockState ground = worldIn.getBlockState(pos.below());
 		return ground.getBlock() == Blocks.END_STONE || ground.getBlock() == EEBlocks.FRISBLOOM_STEM && !worldIn.getBlockState(pos.above()).getMaterial().isLiquid();
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		return canSurvive(stateIn, worldIn, currentPos) ? worldIn.getBlockState(currentPos) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
 	@Nullable
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		World world = context.getLevel();
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos().below();
 		if (world.getBlockState(pos).getBlock() == Blocks.END_STONE) {
 			return this.defaultBlockState();
@@ -87,12 +87,12 @@ public class FrisbloomStemBlock extends Block {
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
 		return new FrisbloomStemTileEntity();
 	}
 
 	@Override
-	public BlockRenderType getRenderShape(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 }

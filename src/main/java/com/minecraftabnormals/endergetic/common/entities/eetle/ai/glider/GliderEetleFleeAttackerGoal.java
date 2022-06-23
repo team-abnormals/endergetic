@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
@@ -24,7 +24,7 @@ public class GliderEetleFleeAttackerGoal extends Goal {
 		if (glider.isGrounded() && !glider.isFlying()) {
 			LivingEntity attacker = glider.groundedAttacker;
 			if (attacker != null) {
-				Vector3d pointAway = RandomPositionGenerator.getPosAvoid(glider, 16, 7, attacker.position());
+				Vec3 pointAway = RandomPos.getPosAvoid(glider, 16, 7, attacker.position());
 				if (pointAway == null) {
 					return false;
 				} else if (attacker.distanceToSqr(pointAway.x, pointAway.y, pointAway.z) < attacker.distanceToSqr(glider)) {

@@ -4,22 +4,22 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
@@ -58,12 +58,12 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	public static void slam(BroodEetleEntity broodEetle, Random random, float power) {
-		ServerWorld world = (ServerWorld) broodEetle.level;
+		ServerLevel world = (ServerLevel) broodEetle.level;
 		double posX = broodEetle.getX();
 		double posY = broodEetle.getY();
 		double posZ = broodEetle.getZ();
 		for (BlockState state : sampleGround(world, broodEetle.blockPosition().below(), random)) {
-			world.sendParticles(new BlockParticleData(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
+			world.sendParticles(new BlockParticleOption(EEParticles.FAST_BLOCK.get(), state), posX, posY, posZ, 8, 0.0D, 0.0D, 0.0D, 0.225F);
 		}
 		float attackDamage = (float) broodEetle.getAttributeValue(Attributes.ATTACK_DAMAGE) * power;
 		double knockback = broodEetle.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
@@ -83,7 +83,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 				broodEetle.doEnchantDamageEffects(broodEetle, livingEntity);
 				double knockbackForce = knockback - livingEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 				float inAirFactor = livingEntity.isOnGround() ? 1.0F : 0.75F;
-				Vector3d horizontalVelocity = new Vector3d(livingEntity.getX() - posX, 0.0D, livingEntity.getZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor * power);
+				Vec3 horizontalVelocity = new Vec3(livingEntity.getX() - posX, 0.0D, livingEntity.getZ() - posZ).normalize().scale((knockbackForce * (random.nextFloat() * 0.75F + 0.5F)) * inAirFactor * power);
 				livingEntity.push(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F * inAirFactor, horizontalVelocity.z);
 				livingEntity.hurtMarked = true;
 			}
@@ -91,12 +91,12 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static List<BlockState> sampleGround(World world, BlockPos groundPos, Random random) {
+	private static List<BlockState> sampleGround(Level world, BlockPos groundPos, Random random) {
 		List<BlockState> list = new ArrayList<>();
 		int originX = groundPos.getX();
 		int originY = groundPos.getY();
 		int originZ = groundPos.getZ();
-		BlockPos.Mutable mutable = groundPos.mutable();
+		BlockPos.MutableBlockPos mutable = groundPos.mutable();
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				BlockState state = world.getBlockState(mutable.set(originX + x, originY, originZ + z));

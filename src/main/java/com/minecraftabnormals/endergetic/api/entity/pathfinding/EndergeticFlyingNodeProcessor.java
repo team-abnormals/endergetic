@@ -2,38 +2,38 @@ package com.minecraftabnormals.endergetic.api.entity.pathfinding;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.pathfinding.FlaggedPathPoint;
-import net.minecraft.pathfinding.NodeProcessor;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.PathPoint;
-import net.minecraft.pathfinding.PathType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.pathfinder.Target;
+import net.minecraft.world.level.pathfinder.NodeEvaluator;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.Node;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.BlockGetter;
 
-public class EndergeticFlyingNodeProcessor extends NodeProcessor {
+public class EndergeticFlyingNodeProcessor extends NodeEvaluator {
 
 	@Override
-	public PathPoint getStart() {
-		return super.getNode(MathHelper.floor(this.mob.getBoundingBox().minX), MathHelper.floor(this.mob.getBoundingBox().minY + 0.5D), MathHelper.floor(this.mob.getBoundingBox().minZ));
+	public Node getStart() {
+		return super.getNode(Mth.floor(this.mob.getBoundingBox().minX), Mth.floor(this.mob.getBoundingBox().minY + 0.5D), Mth.floor(this.mob.getBoundingBox().minZ));
 	}
 
 	@Override
-	public FlaggedPathPoint getGoal(double p_224768_1_, double p_224768_3_, double p_224768_5_) {
-		return new FlaggedPathPoint(super.getNode(MathHelper.floor(p_224768_1_ - (double) (this.mob.getBbWidth() / 2.0F)), MathHelper.floor(p_224768_3_ + 0.5D), MathHelper.floor(p_224768_5_ - (double) (this.mob.getBbWidth() / 2.0F))));
+	public Target getGoal(double p_224768_1_, double p_224768_3_, double p_224768_5_) {
+		return new Target(super.getNode(Mth.floor(p_224768_1_ - (double) (this.mob.getBbWidth() / 2.0F)), Mth.floor(p_224768_3_ + 0.5D), Mth.floor(p_224768_5_ - (double) (this.mob.getBbWidth() / 2.0F))));
 	}
 
 	@Override
-	public int getNeighbors(PathPoint[] pathPoints, PathPoint pathNode) {
+	public int getNeighbors(Node[] pathPoints, Node pathNode) {
 		int i = 0;
 
 		for (Direction direction : Direction.values()) {
-			PathPoint pathpoint = this.getPoint(pathNode.x + direction.getStepX(), pathNode.y + direction.getStepY(), pathNode.z + direction.getStepZ());
+			Node pathpoint = this.getPoint(pathNode.x + direction.getStepX(), pathNode.y + direction.getStepY(), pathNode.z + direction.getStepZ());
 			if (pathpoint != null && !pathpoint.closed) {
 				pathPoints[i++] = pathpoint;
 			}
@@ -43,27 +43,27 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	}
 
 	@Override
-	public PathNodeType getBlockPathType(IBlockReader blockaccessIn, int x, int y, int z, MobEntity entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
+	public BlockPathTypes getBlockPathType(BlockGetter blockaccessIn, int x, int y, int z, Mob entitylivingIn, int xSize, int ySize, int zSize, boolean canBreakDoorsIn, boolean canEnterDoorsIn) {
 		return this.getBlockPathType(blockaccessIn, x, y, z);
 	}
 
 	@Override
-	public PathNodeType getBlockPathType(IBlockReader blockaccessIn, int x, int y, int z) {
+	public BlockPathTypes getBlockPathType(BlockGetter blockaccessIn, int x, int y, int z) {
 		BlockPos blockpos = new BlockPos(x, y, z);
 		BlockState blockstate = blockaccessIn.getBlockState(blockpos);
-		return blockstate.isPathfindable(blockaccessIn, blockpos, PathType.AIR) ? PathNodeType.WALKABLE : PathNodeType.BLOCKED;
+		return blockstate.isPathfindable(blockaccessIn, blockpos, PathComputationType.AIR) ? BlockPathTypes.WALKABLE : BlockPathTypes.BLOCKED;
 	}
 
 	@Nullable
-	private PathPoint getPoint(int x, int y, int z) {
-		PathNodeType pathnodetype = this.isFree(x, y, z);
-		return (pathnodetype != PathNodeType.BREACH) && pathnodetype != PathNodeType.WALKABLE ? null : this.getNode(x, y, z);
+	private Node getPoint(int x, int y, int z) {
+		BlockPathTypes pathnodetype = this.isFree(x, y, z);
+		return (pathnodetype != BlockPathTypes.BREACH) && pathnodetype != BlockPathTypes.WALKABLE ? null : this.getNode(x, y, z);
 	}
 
 	@Override
-	protected PathPoint getNode(int x, int y, int z) {
-		PathPoint pathpoint = null;
-		PathNodeType pathnodetype = this.getBlockPathType(this.mob.level, x, y, z);
+	protected Node getNode(int x, int y, int z) {
+		Node pathpoint = null;
+		BlockPathTypes pathnodetype = this.getBlockPathType(this.mob.level, x, y, z);
 		float malus = this.mob.getPathfindingMalus(pathnodetype);
 		if (malus >= 0.0F) {
 			pathpoint = super.getNode(x, y, z);
@@ -78,30 +78,30 @@ public class EndergeticFlyingNodeProcessor extends NodeProcessor {
 	}
 
 	@SuppressWarnings("deprecation")
-	private PathNodeType isFree(int x, int y, int z) {
-		BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
+	private BlockPathTypes isFree(int x, int y, int z) {
+		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
 		for (int i = x; i < x + this.entityWidth; ++i) {
 			for (int j = y; j < y + this.entityHeight; ++j) {
 				for (int k = z; k < z + this.entityDepth; ++k) {
 					FluidState ifluidstate = this.level.getFluidState(blockpos$mutableblockpos.set(i, j, k));
 					BlockState blockstate = this.level.getBlockState(blockpos$mutableblockpos.set(i, j, k));
-					if (ifluidstate.isEmpty() && blockstate.isPathfindable(this.level, blockpos$mutableblockpos.below(), PathType.AIR) && blockstate.isAir()) {
-						return PathNodeType.WALKABLE;
+					if (ifluidstate.isEmpty() && blockstate.isPathfindable(this.level, blockpos$mutableblockpos.below(), PathComputationType.AIR) && blockstate.isAir()) {
+						return BlockPathTypes.WALKABLE;
 					}
 
 					if (ifluidstate.is(FluidTags.WATER)) {
-						return PathNodeType.BLOCKED;
+						return BlockPathTypes.BLOCKED;
 					}
 				}
 			}
 		}
 
 		BlockState blockstate1 = this.level.getBlockState(blockpos$mutableblockpos);
-		if (blockstate1.isPathfindable(this.level, blockpos$mutableblockpos, PathType.AIR)) {
-			return PathNodeType.WALKABLE;
+		if (blockstate1.isPathfindable(this.level, blockpos$mutableblockpos, PathComputationType.AIR)) {
+			return BlockPathTypes.WALKABLE;
 		} else {
-			return PathNodeType.BLOCKED;
+			return BlockPathTypes.BLOCKED;
 		}
 	}
 

@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEnti
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 
 /**
  * @author Endergized
@@ -138,28 +138,28 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 		this.rightWing.yRot += -wingY;
 
 		if (entity.isFlying()) {
-			float wingX = 0.1F * MathHelper.sin(8.0F * entity.getWingFlap()) + 0.15F;
+			float wingX = 0.1F * Mth.sin(8.0F * entity.getWingFlap()) + 0.15F;
 
 			this.leftWing.xRot += wingX;
 			this.rightWing.xRot += wingX;
 
-			float frontLegMoving = Math.abs(MathHelper.cos(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
+			float frontLegMoving = Math.abs(Mth.cos(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
 			this.leftFrontLeg.xRot -= frontLegMoving;
 			this.rightFrontLeg.xRot -= frontLegMoving;
 
-			float backLegMoving = Math.abs(MathHelper.sin(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
+			float backLegMoving = Math.abs(Mth.sin(limbSwing * 0.3F)) * 0.28F * limbSwingAmount;
 			this.leftBackLeg.xRot += backLegMoving;
 			this.rightBackLeg.xRot += backLegMoving;
 		} else {
-			float angleX = MathHelper.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
-			float backAngleX = MathHelper.cos(limbSwing * 1.34F) * limbSwingAmount;
+			float angleX = Mth.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
+			float backAngleX = Mth.cos(limbSwing * 1.34F) * limbSwingAmount;
 			this.leftFrontLeg.xRot -= angleX;
 			this.rightFrontLeg.xRot += angleX;
 			this.leftBackLeg.xRot += backAngleX;
 			this.rightBackLeg.xRot -= backAngleX;
 
-			float angleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
-			float backAngleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
+			float angleZ = Math.abs(Mth.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
+			float backAngleZ = Math.abs(Mth.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
 			this.leftFrontLeg.zRot -= angleZ;
 			this.rightFrontLeg.zRot += angleZ;
 			this.leftBackLeg.zRot -= backAngleZ;
@@ -168,7 +168,7 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.leftWing.visible = this.leftWing.yRot >= WING_SHOW_THRESHOLD;
 		this.rightWing.visible = this.rightWing.yRot <= -WING_SHOW_THRESHOLD;

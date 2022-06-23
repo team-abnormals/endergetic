@@ -6,9 +6,9 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.world.phys.HitResult.Type;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloSwimmingGoal extends EndimatedGoal<BoofloEntity> {
 

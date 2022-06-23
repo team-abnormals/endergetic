@@ -9,19 +9,19 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugTeleportToBudGoal extends Goal {
 	private static final int AREA_CHECK_SIZE = 26;
 	private PuffBugEntity puffbug;
-	private World world;
+	private Level world;
 
 	public PuffBugTeleportToBudGoal(PuffBugEntity puffbug) {
 		this.puffbug = puffbug;
@@ -48,12 +48,12 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	@Override
 	public void start() {
 		this.puffbug.getTeleportController().processTeleportation();
-		this.puffbug.setDeltaMovement(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vec3.ZERO);
 	}
 
 	@Override
 	public void tick() {
-		this.puffbug.setDeltaMovement(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vec3.ZERO);
 	}
 
 	@Override
@@ -92,6 +92,6 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	}
 
 	private boolean isPathNotBlockedByEntity(BolloomBudTileEntity bud) {
-		return this.world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(bud.getBlockPos()).expandTowards(0.0F, 3.0F, 0.0F)).isEmpty();
+		return this.world.getEntitiesOfClass(Entity.class, new AABB(bud.getBlockPos()).expandTowards(0.0F, 3.0F, 0.0F)).isEmpty();
 	}
 }

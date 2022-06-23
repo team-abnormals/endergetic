@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.damagesource.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ public final class LivingEntityMixin {
 	@Shadow
 	protected int lastHurtByPlayerTime;
 	@Shadow
-	protected PlayerEntity lastHurtByPlayer;
+	protected Player lastHurtByPlayer;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setLastHurtByMob(Lnet/minecraft/entity/LivingEntity;)V", ordinal = 0), method = "hurt")
 	private void tryToAttackAsBoofloOwner(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
@@ -26,8 +26,8 @@ public final class LivingEntityMixin {
 			if (booflo.isTamed()) {
 				this.lastHurtByPlayerTime = 100;
 				LivingEntity owner = booflo.getOwner();
-				if (owner instanceof PlayerEntity) {
-					this.lastHurtByPlayer = (PlayerEntity) owner;
+				if (owner instanceof Player) {
+					this.lastHurtByPlayer = (Player) owner;
 				} else {
 					this.lastHurtByPlayer = null;
 				}

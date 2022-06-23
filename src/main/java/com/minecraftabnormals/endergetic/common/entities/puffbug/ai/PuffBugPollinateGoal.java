@@ -4,11 +4,11 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
-	private World world;
+	private Level world;
 	private float originalPosX, originalPosY, originalPosZ;
 
 	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
@@ -19,7 +19,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	@Override
 	public boolean canUse() {
 		if (this.entity.getPollinationPos() != null) {
-			TileEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
+			BlockEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
 			if (te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
 				return true;
 			}
@@ -30,7 +30,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	@Override
 	public boolean canContinueToUse() {
 		if (this.entity.getPollinationPos() != null) {
-			TileEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
+			BlockEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
 			if (!(te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened())) {
 				return false;
 			}

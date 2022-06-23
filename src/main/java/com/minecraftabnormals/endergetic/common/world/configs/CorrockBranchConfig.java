@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.List;
 import java.util.Set;
 
-public final class CorrockBranchConfig implements IFeatureConfig {
+public final class CorrockBranchConfig implements FeatureConfiguration {
 	public static final Codec<CorrockBranchConfig> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				BlockState.CODEC.listOf().fieldOf("valid_ground_states").forGetter(config -> ImmutableList.copyOf(config.validGround)),

@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleSleepGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -54,7 +54,7 @@ public class BroodEetleSleepGoal extends Goal {
 	}
 
 	private static boolean areAnyPlayersClose(BroodEetleEntity broodEetle) {
-		return !broodEetle.level.getEntitiesOfClass(PlayerEntity.class, broodEetle.getBoundingBox().inflate(2.0F, 0.1F, 2.0F), player -> {
+		return !broodEetle.level.getEntitiesOfClass(Player.class, broodEetle.getBoundingBox().inflate(2.0F, 0.1F, 2.0F), player -> {
 			return player.isAlive() && !player.isInvisible() && !player.isCreative();
 		}).isEmpty();
 	}

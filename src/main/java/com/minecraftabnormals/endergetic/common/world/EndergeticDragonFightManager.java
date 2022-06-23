@@ -17,35 +17,35 @@ import com.minecraftabnormals.endergetic.common.world.features.EndergeticEndPodi
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockPattern.PatternHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.EndPortalTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EntityPredicates;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.pattern.BlockPattern.BlockPatternMatch;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.TheEndPortalBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.TicketType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public final class EndergeticDragonFightManager extends DragonFightManager {
+public final class EndergeticDragonFightManager extends EndDragonFight {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final Predicate<Entity> VALID_PLAYER = EntityPredicates.ENTITY_STILL_ALIVE.and(EntityPredicates.withinDistance(0.0D, 128.0D, 0.0D, 192.0D));
+	private static final Predicate<Entity> VALID_PLAYER = EntitySelector.ENTITY_STILL_ALIVE.and(EntitySelector.withinDistance(0.0D, 128.0D, 0.0D, 192.0D));
 
-	public EndergeticDragonFightManager(ServerWorld worldIn, long seed, CompoundNBT compound) {
+	public EndergeticDragonFightManager(ServerLevel worldIn, long seed, CompoundTag compound) {
 		super(worldIn, seed, compound);
 	}
 
@@ -109,11 +109,11 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			}
 		}
 
-		List<EnderDragonEntity> list = this.level.getDragons();
+		List<EnderDragon> list = this.level.getDragons();
 		if (list.isEmpty()) {
 			this.dragonKilled = true;
 		} else {
-			EnderDragonEntity enderdragonentity = list.get(0);
+			EnderDragon enderdragonentity = list.get(0);
 			this.dragonUUID = enderdragonentity.getUUID();
 			LOGGER.info("Found that there's a dragon still alive ({})", (Object) enderdragonentity);
 			this.dragonKilled = false;
@@ -130,17 +130,17 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	private void updatePlayers() {
-		Set<ServerPlayerEntity> set = Sets.newHashSet();
+		Set<ServerPlayer> set = Sets.newHashSet();
 
-		for (ServerPlayerEntity serverplayerentity : this.level.getPlayers(VALID_PLAYER)) {
+		for (ServerPlayer serverplayerentity : this.level.getPlayers(VALID_PLAYER)) {
 			this.dragonEvent.addPlayer(serverplayerentity);
 			set.add(serverplayerentity);
 		}
 
-		Set<ServerPlayerEntity> set1 = Sets.newHashSet(this.dragonEvent.getPlayers());
+		Set<ServerPlayer> set1 = Sets.newHashSet(this.dragonEvent.getPlayers());
 		set1.removeAll(set);
 
-		for (ServerPlayerEntity serverplayerentity1 : set1) {
+		for (ServerPlayer serverplayerentity1 : set1) {
 			this.dragonEvent.removePlayer(serverplayerentity1);
 		}
 	}
@@ -148,10 +148,10 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	private boolean exitPortalExists() {
 		for (int i = -8; i <= 8; ++i) {
 			for (int j = -8; j <= 8; ++j) {
-				Chunk chunk = this.level.getChunk(i, j);
+				LevelChunk chunk = this.level.getChunk(i, j);
 
-				for (TileEntity tileentity : chunk.getBlockEntities().values()) {
-					if (tileentity instanceof EndPortalTileEntity) {
+				for (BlockEntity tileentity : chunk.getBlockEntities().values()) {
+					if (tileentity instanceof TheEndPortalBlockEntity) {
 						return true;
 					}
 				}
@@ -176,11 +176,11 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 				portalPos = this.portalLocation;
 			}
 
-			List<EnderCrystalEntity> list1 = Lists.newArrayList();
+			List<EndCrystal> list1 = Lists.newArrayList();
 			BlockPos centerPos = portalPos.above(2);
 
 			for (Direction direction : Direction.Plane.HORIZONTAL) {
-				List<EnderCrystalEntity> list = this.level.getEntitiesOfClass(EnderCrystalEntity.class, new AxisAlignedBB(centerPos.relative(direction, 2)));
+				List<EndCrystal> list = this.level.getEntitiesOfClass(EndCrystal.class, new AABB(centerPos.relative(direction, 2)));
 				if (list.isEmpty()) return;
 
 				list1.addAll(list);
@@ -194,7 +194,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	//Not used anymore
 	@Override
 	@Nullable
-	public PatternHelper findExitPortal() {
+	public BlockPatternMatch findExitPortal() {
 		return null;
 	}
 
@@ -204,10 +204,10 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	public boolean findEndergeticExitPortal(boolean debug) {
 		for (int i = -8; i <= 8; ++i) {
 			for (int j = -8; j <= 8; ++j) {
-				Chunk chunk = this.level.getChunk(i, j);
+				LevelChunk chunk = this.level.getChunk(i, j);
 
-				for (TileEntity tileentity : chunk.getBlockEntities().values()) {
-					if (tileentity instanceof EndPortalTileEntity) {
+				for (BlockEntity tileentity : chunk.getBlockEntities().values()) {
+					if (tileentity instanceof TheEndPortalBlockEntity) {
 						BlockPos tilePos = tileentity.getBlockPos();
 						for (Direction directions : Direction.Plane.HORIZONTAL) {
 							if (this.level.getBlockState(tilePos.relative(directions)).getBlock() == EEBlocks.MYSTICAL_OBSIDIAN.get()) {
@@ -225,7 +225,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 			}
 		}
 
-		int height = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.above()).getY();
+		int height = this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.above()).getY();
 
 		for (int y = height; y >= 0; y--) {
 			BlockPos pos = new BlockPos(EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getX(), y, EndergeticEndPodiumFeature.END_PODIUM_LOCATION.getZ());
@@ -242,7 +242,7 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 
 	private boolean isPortalAtPos(BlockPos pos) {
 		BlockPos up = pos.above();
-		ServerWorld world = this.level;
+		ServerLevel world = this.level;
 		boolean[] flag = new boolean[4];
 
 		for (Direction directions : Direction.Plane.HORIZONTAL) {
@@ -261,14 +261,14 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	}
 
 	@Override
-	public void setDragonKilled(EnderDragonEntity dragon) {
+	public void setDragonKilled(EnderDragon dragon) {
 		if (dragon.getUUID().equals(this.dragonUUID)) {
 			this.dragonEvent.setPercent(0.0F);
 			this.dragonEvent.setVisible(false);
 			this.spawnExitPortal(true);
 			this.spawnNewGateway();
 			if (!this.previouslyKilled) {
-				this.level.setBlockAndUpdate(this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION), Blocks.DRAGON_EGG.defaultBlockState());
+				this.level.setBlockAndUpdate(this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, EndergeticEndPodiumFeature.END_PODIUM_LOCATION), Blocks.DRAGON_EGG.defaultBlockState());
 			}
 
 			this.previouslyKilled = true;
@@ -280,19 +280,19 @@ public final class EndergeticDragonFightManager extends DragonFightManager {
 	public void spawnExitPortal(boolean active) {
 		EndergeticEndPodiumFeature endpodium = new EndergeticEndPodiumFeature(active);
 		if (this.portalLocation == null) {
-			for (this.portalLocation = this.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).below(); this.level.getBlockState(this.portalLocation).getBlock() == Blocks.BEDROCK && this.portalLocation.getY() > this.level.getSeaLevel(); this.portalLocation = this.portalLocation.below()) {
+			for (this.portalLocation = this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EndergeticEndPodiumFeature.END_PODIUM_LOCATION).below(); this.level.getBlockState(this.portalLocation).getBlock() == Blocks.BEDROCK && this.portalLocation.getY() > this.level.getSeaLevel(); this.portalLocation = this.portalLocation.below()) {
 				;
 			}
 		}
-		endpodium.configured(IFeatureConfig.NONE).place(this.level, this.level.getChunkSource().getGenerator(), new Random(), this.portalLocation);
+		endpodium.configured(FeatureConfiguration.NONE).place(this.level, this.level.getChunkSource().getGenerator(), new Random(), this.portalLocation);
 	}
 
 	@Override
 	protected void spawnNewGateway() {
-		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(DragonFightManager.class, this, "field_186111_e");
+		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(EndDragonFight.class, this, "field_186111_e");
 		if (!gateways.isEmpty()) {
 			int removed = gateways.remove(gateways.size() - 1);
-			BlockPos pos = new BlockPos(MathHelper.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, MathHelper.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
+			BlockPos pos = new BlockPos(Mth.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, Mth.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
 			this.level.levelEvent(3000, pos, 0);
 			EEFeatures.Configured.END_GATEWAY_DELAYED.place(this.level, this.level.getChunkSource().getGenerator(), new Random(), pos);
 		}

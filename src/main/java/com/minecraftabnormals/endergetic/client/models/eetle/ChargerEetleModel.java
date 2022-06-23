@@ -3,9 +3,9 @@ package com.minecraftabnormals.endergetic.client.models.eetle;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 
 /**
  * @author Endergized
@@ -87,15 +87,15 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 		this.head.yRot = netHeadYaw * ((float) Math.PI / 180.0F);
 		this.head.xRot += (headPitch * ((float) Math.PI / 180.0F));
 
-		float angleX = MathHelper.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
-		float backAngleX = MathHelper.cos(limbSwing * 1.34F) * limbSwingAmount;
+		float angleX = Mth.cos(limbSwing * 1.34F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
+		float backAngleX = Mth.cos(limbSwing * 1.34F) * limbSwingAmount;
 		this.frontLeftLeg.xRot -= angleX;
 		this.frontRightLeg.xRot += angleX;
 		this.backLeftLeg.xRot += backAngleX;
 		this.backRightLeg.xRot -= backAngleX;
 
-		float angleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
-		float backAngleZ = Math.abs(MathHelper.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
+		float angleZ = Math.abs(Mth.sin(limbSwing * 0.67F + ((float) Math.PI * 1.5F))) * 0.5F * limbSwingAmount;
+		float backAngleZ = Math.abs(Mth.sin(limbSwing * 0.67F)) * 0.5F * limbSwingAmount;
 		this.frontLeftLeg.zRot -= angleZ;
 		this.frontRightLeg.zRot += angleZ;
 		this.backLeftLeg.zRot -= backAngleZ;
@@ -103,7 +103,7 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.body.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.frontLeftLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);

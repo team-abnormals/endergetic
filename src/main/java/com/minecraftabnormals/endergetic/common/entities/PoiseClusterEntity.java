@@ -10,51 +10,51 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PoiseClusterEntity extends LivingEntity {
 	private static final int MAX_BLOCKS_TO_MOVE_UP = 30;
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Integer> BLOCKS_TO_MOVE_UP = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.INT);
-	private static final DataParameter<Integer> TIMES_HIT = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.INT);
-	private static final DataParameter<Boolean> ASCEND = EntityDataManager.defineId(PoiseClusterEntity.class, DataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<BlockPos> ORIGIN = SynchedEntityData.defineId(PoiseClusterEntity.class, EntityDataSerializers.BLOCK_POS);
+	private static final EntityDataAccessor<Integer> BLOCKS_TO_MOVE_UP = SynchedEntityData.defineId(PoiseClusterEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> TIMES_HIT = SynchedEntityData.defineId(PoiseClusterEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> ASCEND = SynchedEntityData.defineId(PoiseClusterEntity.class, EntityDataSerializers.BOOLEAN);
 	private boolean playedSound;
 
-	public PoiseClusterEntity(EntityType<? extends PoiseClusterEntity> cluster, World worldIn) {
+	public PoiseClusterEntity(EntityType<? extends PoiseClusterEntity> cluster, Level worldIn) {
 		super(EEEntities.POISE_CLUSTER.get(), worldIn);
 	}
 
-	public PoiseClusterEntity(World worldIn, BlockPos origin, double x, double y, double z) {
+	public PoiseClusterEntity(Level worldIn, BlockPos origin, double x, double y, double z) {
 		this(EEEntities.POISE_CLUSTER.get(), worldIn);
 		this.setHealth(100);
 		this.setOrigin(new BlockPos(origin));
@@ -75,7 +75,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT nbt) {
+	public void addAdditionalSaveData(CompoundTag nbt) {
 		super.addAdditionalSaveData(nbt);
 		nbt.putLong("OriginPos", this.getOrigin().asLong());
 		nbt.putInt("BlocksToMoveUp", this.getBlocksToMoveUp());
@@ -84,7 +84,7 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT nbt) {
+	public void readAdditionalSaveData(CompoundTag nbt) {
 		super.readAdditionalSaveData(nbt);
 		this.setOrigin(BlockPos.of(nbt.getLong("OriginPos")));
 		this.setBlocksToMoveUp(nbt.getInt("BlocksToMoveUp"));
@@ -157,7 +157,7 @@ public class PoiseClusterEntity extends LivingEntity {
 		/*
 		 * Used to make it try to move down if  there is another entity of itself above it
 		 */
-		AxisAlignedBB bb = this.getBoundingBox().move(0, 1, 0);
+		AABB bb = this.getBoundingBox().move(0, 1, 0);
 		List<Entity> entities = this.getCommandSenderWorld().getEntitiesOfClass(Entity.class, bb);
 		int entityCount = entities.size();
 		boolean hasEntity = entityCount > 0;
@@ -267,35 +267,35 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize size) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions size) {
 		return size.height;
 	}
 
 	private boolean isBlockBlockingPath(boolean down) {
-		Vector3d eyePos = down ? this.position() : this.getEyePosition(1.0F);
-		return this.level.clip(new RayTraceContext(
+		Vec3 eyePos = down ? this.position() : this.getEyePosition(1.0F);
+		return this.level.clip(new ClipContext(
 				eyePos,
 				eyePos.add(this.getDeltaMovement()),
-				RayTraceContext.BlockMode.OUTLINE,
-				RayTraceContext.FluidMode.ANY,
+				ClipContext.Block.OUTLINE,
+				ClipContext.Fluid.ANY,
 				this
 		)).getType() != Type.MISS;
 	}
 
 	private void moveEntitiesUp() {
 		if (this.getDeltaMovement().length() > 0 && this.isAscending()) {
-			AxisAlignedBB clusterBB = this.getBoundingBox().move(0.0F, 0.01F, 0.0F);
+			AABB clusterBB = this.getBoundingBox().move(0.0F, 0.01F, 0.0F);
 			List<Entity> entitiesAbove = this.level.getEntities(this, clusterBB);
 			if (!entitiesAbove.isEmpty()) {
 				for (Entity entity : entitiesAbove) {
 					if (!entity.isPassenger() && !(entity instanceof PoiseClusterEntity) && entity.getPistonPushReaction() != PushReaction.IGNORE) {
-						AxisAlignedBB entityBB = entity.getBoundingBox();
-						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof PlayerEntity ? 0.0225F : 0.02F);
+						AABB entityBB = entity.getBoundingBox();
+						double distanceMotion = (clusterBB.maxY - entityBB.minY) + (entity instanceof Player ? 0.0225F : 0.02F);
 
-						if (entity instanceof PlayerEntity) {
-							entity.move(MoverType.PISTON, new Vector3d(0.0F, distanceMotion, 0.0F));
+						if (entity instanceof Player) {
+							entity.move(MoverType.PISTON, new Vec3(0.0F, distanceMotion, 0.0F));
 						} else {
-							entity.move(MoverType.SELF, new Vector3d(0.0F, distanceMotion, 0.0F));
+							entity.move(MoverType.SELF, new Vec3(0.0F, distanceMotion, 0.0F));
 						}
 						entity.setOnGround(true);
 					}
@@ -352,8 +352,8 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public CreatureAttribute getMobType() {
-		return CreatureAttribute.ILLAGER;
+	public MobType getMobType() {
+		return MobType.ILLAGER;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -368,12 +368,12 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Nullable
-	public AxisAlignedBB getCollisionBox(Entity entityIn) {
+	public AABB getCollisionBox(Entity entityIn) {
 		return entityIn.isPushable() ? entityIn.getBoundingBox() : null;
 	}
 
 	@Nullable
-	public AxisAlignedBB getCollisionBoundingBox() {
+	public AABB getCollisionBoundingBox() {
 		return this.getBoundingBox();
 	}
 
@@ -417,26 +417,26 @@ public class PoiseClusterEntity extends LivingEntity {
 	}
 
 	@Override
-	public ItemStack getItemBySlot(EquipmentSlotType slotIn) {
+	public ItemStack getItemBySlot(EquipmentSlot slotIn) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setItemSlot(EquipmentSlotType slotIn, ItemStack stack) {
+	public void setItemSlot(EquipmentSlot slotIn, ItemStack stack) {
 	}
 
 	@Override
-	public HandSide getMainArm() {
-		return HandSide.RIGHT;
+	public HumanoidArm getMainArm() {
+		return HumanoidArm.RIGHT;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static class PoiseClusterSound extends TickableSound {
+	private static class PoiseClusterSound extends AbstractTickableSoundInstance {
 		private final PoiseClusterEntity cluster;
 		private int ticksRemoved;
 
 		private PoiseClusterSound(PoiseClusterEntity cluster) {
-			super(EESounds.POISE_CLUSTER_AMBIENT.get(), SoundCategory.NEUTRAL);
+			super(EESounds.POISE_CLUSTER_AMBIENT.get(), SoundSource.NEUTRAL);
 			this.cluster = cluster;
 			this.looping = true;
 			this.delay = 0;

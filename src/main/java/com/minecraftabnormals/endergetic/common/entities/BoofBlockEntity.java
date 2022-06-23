@@ -6,39 +6,39 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 //TODO: Refactor this a bit, it's kinda weird how some things are done internally.
 public class BoofBlockEntity extends Entity {
-	private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.defineId(BoofBlockEntity.class, DataSerializers.BLOCK_POS);
-	private static final DataParameter<Boolean> FOR_PROJECTILE = EntityDataManager.defineId(BoofBlockEntity.class, DataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<BlockPos> ORIGIN = SynchedEntityData.defineId(BoofBlockEntity.class, EntityDataSerializers.BLOCK_POS);
+	private static final EntityDataAccessor<Boolean> FOR_PROJECTILE = SynchedEntityData.defineId(BoofBlockEntity.class, EntityDataSerializers.BOOLEAN);
 
-	public BoofBlockEntity(EntityType<? extends BoofBlockEntity> type, World world) {
+	public BoofBlockEntity(EntityType<? extends BoofBlockEntity> type, Level world) {
 		super(EEEntities.BOOF_BLOCK.get(), world);
 	}
 
-	public BoofBlockEntity(FMLPlayMessages.SpawnEntity spawnEntity, World world) {
+	public BoofBlockEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOOF_BLOCK.get(), world);
 	}
 
-	public BoofBlockEntity(World world, BlockPos pos) {
+	public BoofBlockEntity(Level world, BlockPos pos) {
 		this(EEEntities.BOOF_BLOCK.get(), world);
 		this.setPos(pos.getX() + 0.5F, pos.getY() - 0.375F, pos.getZ() + 0.5F);
 		this.setOrigin(pos);
@@ -52,14 +52,14 @@ public class BoofBlockEntity extends Entity {
 
 	@Override
 	public void tick() {
-		AxisAlignedBB bb = this.getBoundingBox().inflate(0, 0.25F, 0);
+		AABB bb = this.getBoundingBox().inflate(0, 0.25F, 0);
 		List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, bb, (entity -> !entity.isPassenger()));
 		for (Entity entity : entities) {
 			if (!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
-				if (entity instanceof AbstractArrowEntity) {
+				if (entity instanceof AbstractArrow) {
 					this.setForProjectile(true);
 					this.level.setBlockAndUpdate(getOrigin(), Blocks.AIR.defaultBlockState());
-					entity.push(MathHelper.sin((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -MathHelper.cos((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F);
+					entity.push(Mth.sin((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -Mth.cos((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F);
 				} else {
 					if (entity.getY() - 0.45F >= this.getY()) {
 						entity.push(0, this.random.nextFloat() * 0.05D + 0.35D, 0);
@@ -67,11 +67,11 @@ public class BoofBlockEntity extends Entity {
 						entity.push(0, this.random.nextFloat() * -0.05D - 0.35D, 0);
 					} else {
 						float amount = 0.5F;
-						Vector3d result = entity.position().subtract(this.position());
+						Vec3 result = entity.position().subtract(this.position());
 						entity.push(result.x * amount, this.random.nextFloat() * 0.45D + 0.25D, result.z * amount);
 					}
 				}
-				if (!(entity instanceof PlayerEntity)) {
+				if (!(entity instanceof Player)) {
 					entity.hurtMarked = true;
 				}
 			}
@@ -88,13 +88,13 @@ public class BoofBlockEntity extends Entity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT nbt) {
+	public void readAdditionalSaveData(CompoundTag nbt) {
 		this.setOrigin(new BlockPos(nbt.getInt("OriginX"), nbt.getInt("OriginY"), nbt.getInt("OriginZ")));
 		this.setForProjectile(nbt.getBoolean("ForProjectile"));
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT nbt) {
+	public void addAdditionalSaveData(CompoundTag nbt) {
 		BlockPos blockpos = this.getOrigin();
 		nbt.putInt("OriginX", blockpos.getX());
 		nbt.putInt("OriginY", blockpos.getY());
@@ -144,7 +144,7 @@ public class BoofBlockEntity extends Entity {
 	}
 
 	@Override
-	public IPacket<?> getAddEntityPacket() {
+	public Packet<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

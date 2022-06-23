@@ -13,27 +13,33 @@ import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParti
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.*;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.dimension.DimensionType;
 
 public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	private static final Map<DimensionType, Supplier<CorrockCrownWallBlock>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
@@ -41,7 +47,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_CROWN_NETHER_WALL);
 		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_CROWN_END_WALL);
 	});
-	public static final DirectionProperty FACING = HorizontalBlock.FACING;
+	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(Direction.NORTH, Block.box(0.0D, 4.5D, 14.0D, 16.0D, 12.5D, 16.0D), Direction.SOUTH, Block.box(0.0D, 4.5D, 0.0D, 16.0D, 12.5D, 2.0D), Direction.EAST, Block.box(0.0D, 4.5D, 0.0D, 2.0D, 12.5D, 16.0D), Direction.WEST, Block.box(14.0D, 4.5D, 0.0D, 16.0D, 12.5D, 16.0D)));
 
 	public CorrockCrownWallBlock(Properties builder, DimensionalType dimensionalType, boolean petrified) {
@@ -50,7 +56,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	}
 
 	@Override
-	public void animateTick(BlockState state, World world, BlockPos pos, Random rand) {
+	public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
 		Direction facing = state.getValue(FACING).getOpposite();
 		int xFacingOffset = facing.getStepX();
 		int zFacingOffset = facing.getStepZ();
@@ -64,28 +70,28 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		if (this.shouldConvert(world)) {
 			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get().defaultBlockState().setValue(FACING, world.getBlockState(pos).getValue(FACING)));
 		}
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+	public VoxelShape getShape(BlockState state, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
 		return SHAPES.get(state.getValue(FACING));
 	}
 
-	public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		Direction direction = state.getValue(FACING);
 		BlockPos blockpos = pos.relative(direction.getOpposite());
 		return Block.canSupportCenter(world, blockpos, direction);
 	}
 
 	@Nullable
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		BlockState state = this.defaultBlockState();
 		FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-		IWorldReader iworldreaderbase = context.getLevel();
+		LevelReader iworldreaderbase = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 		Direction[] aDirection = context.getNearestLookingDirections();
 
@@ -105,7 +111,7 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		return null;
 	}
 
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.getValue(WATERLOGGED)) {
 			worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
 			if (!this.petrified) {
@@ -130,11 +136,11 @@ public class CorrockCrownWallBlock extends CorrockCrownBlock {
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
 	}
 
-	private boolean shouldConvert(IWorld world) {
+	private boolean shouldConvert(LevelAccessor world) {
 		return !this.petrified && CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_CROWN_OVERWORLD_WALL).get() != this;
 	}
 }

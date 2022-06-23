@@ -3,17 +3,17 @@ package com.minecraftabnormals.endergetic.client.models.puffbug;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.LightType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LightLayer;
 
 /**
  * ModelPuffBugInflated - Endergized
@@ -133,7 +133,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		Entity ridingEntity = this.entity.getVehicle();
 		if (ridingEntity instanceof BoofloEntity && !(((BoofloEntity) ridingEntity).isEndimationPlaying(BoofloEntity.EAT) && ((BoofloEntity) ridingEntity).getAnimationTick() >= 20)) {
 			return;
@@ -157,7 +157,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 
 	private int getPackedLightForStuck(PuffBugEntity puffbug) {
 		float partialTicks = ClientInfo.getPartialTicks();
-		return LightTexture.pack(puffbug.isOnFire() ? 15 : puffbug.level.getBrightness(LightType.BLOCK, this.getStuckLightPos(puffbug, partialTicks)), this.entity.level.getBrightness(LightType.SKY, this.getStuckLightPos(puffbug, partialTicks)));
+		return LightTexture.pack(puffbug.isOnFire() ? 15 : puffbug.level.getBrightness(LightLayer.BLOCK, this.getStuckLightPos(puffbug, partialTicks)), this.entity.level.getBrightness(LightLayer.SKY, this.getStuckLightPos(puffbug, partialTicks)));
 	}
 
 	private BlockPos getStuckLightPos(PuffBugEntity puffbug, float partialTicks) {
@@ -182,13 +182,13 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 		this.revertBoxesToDefaultValues();
 
 		if (!puffBug.isEndimationPlaying(PuffBugEntity.PUFF_ANIMATION) && !puffBug.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION)) {
-			float angle = 0.1F * MathHelper.sin(0.25F * ageInTicks);
+			float angle = 0.1F * Mth.sin(0.25F * ageInTicks);
 			this.Sensor1.zRot += angle;
 			this.Sensor2.xRot += angle;
 		}
 
 		if (!puffBug.isEndimationPlaying(PuffBugEntity.FLY_ANIMATION)) {
-			this.Head.xRot += 0.075F * MathHelper.sin(0.1F * ageInTicks);
+			this.Head.xRot += 0.075F * Mth.sin(0.1F * ageInTicks);
 			this.HeadDeflated.xRot = this.Head.xRot;
 		}
 
@@ -231,7 +231,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 			this.Sensor2Deflated.yRot = -2.64F;
 			this.Sensor2Deflated.zRot = 0.09F;
 
-			float spin = MathHelper.lerp(ClientInfo.getPartialTicks(), puffBug.prevSpin, puffBug.spin);
+			float spin = Mth.lerp(ClientInfo.getPartialTicks(), puffBug.prevSpin, puffBug.spin);
 
 			this.NeckDeflatedProjectile.yRot += Math.toRadians(spin);
 			this.StingerDeflatedProjectile.yRot += Math.toRadians(spin);

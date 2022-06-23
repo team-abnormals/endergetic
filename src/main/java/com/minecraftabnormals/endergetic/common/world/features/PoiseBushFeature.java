@@ -6,27 +6,27 @@ import java.util.function.Supplier;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
 @SuppressWarnings("deprecation")
-public class PoiseBushFeature extends Feature<NoFeatureConfig> {
+public class PoiseBushFeature extends Feature<NoneFeatureConfiguration> {
 	private static final Supplier<BlockState> POISE_BUSH = () -> EEBlocks.POISE_BUSH.get().defaultBlockState();
 
-	public PoiseBushFeature(Codec<NoFeatureConfig> config) {
+	public PoiseBushFeature(Codec<NoneFeatureConfiguration> config) {
 		super(config);
 	}
 
-	public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		for (BlockState blockstate = worldIn.getBlockState(pos); (blockstate.isAir() || blockstate.is(BlockTags.LEAVES)) && pos.getY() > 0; blockstate = worldIn.getBlockState(pos)) {
 			pos = pos.below();
 		}
@@ -43,7 +43,7 @@ public class PoiseBushFeature extends Feature<NoFeatureConfig> {
 		return i > 0;
 	}
 
-	protected boolean isNearBolloomBud(IWorld world, BlockPos pos) {
+	protected boolean isNearBolloomBud(LevelAccessor world, BlockPos pos) {
 		return world.getBlockState(pos.north()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.east()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.south()).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(pos.west()).getBlock() == EEBlocks.BOLLOOM_BUD.get();
 	}
 }

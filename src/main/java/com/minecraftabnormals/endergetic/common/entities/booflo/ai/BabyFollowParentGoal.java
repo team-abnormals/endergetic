@@ -5,7 +5,7 @@ import java.util.List;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class BabyFollowParentGoal extends Goal {
 	private final BoofloBabyEntity baby;

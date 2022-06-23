@@ -11,33 +11,33 @@ import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.BlockSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class BolloomBalloonItem extends Item {
 	private final BalloonColor balloonColor;
@@ -52,32 +52,32 @@ public class BolloomBalloonItem extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!world.isClientSide && hasNoEntityTarget(player) && EntityUtil.rayTrace(player, getPlayerReach(player), 1.0F).getType() == Type.MISS && !player.isShiftKeyDown()) {
 			Entity ridingEntity = player.getVehicle();
-			boolean isRidingBoat = ridingEntity instanceof BoatEntity;
+			boolean isRidingBoat = ridingEntity instanceof Boat;
 			if (isRidingBoat && canAttachBalloonToTarget(ridingEntity)) {
 				attachToEntity(this.balloonColor, ridingEntity);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
-				return ActionResult.consume(stack);
+				return InteractionResultHolder.consume(stack);
 			}
 
 			if (!isRidingBoat && canAttachBalloonToTarget(player)) {
 				attachToEntity(this.balloonColor, player);
 				player.swing(hand, true);
 				if (!player.isCreative()) stack.shrink(1);
-				return ActionResult.consume(stack);
+				return InteractionResultHolder.consume(stack);
 			}
 		}
-		return ActionResult.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
+	public InteractionResult useOn(UseOnContext context) {
 		BlockPos pos = context.getClickedPos();
-		World world = context.getLevel();
+		Level world = context.getLevel();
 		Block block = world.getBlockState(pos).getBlock();
 
 		if (block instanceof FenceBlock) {
@@ -86,41 +86,41 @@ public class BolloomBalloonItem extends Item {
 					ItemStack stack = context.getItemInHand();
 					if (this.attachToFence(pos, world, stack)) {
 						stack.shrink(1);
-						return ActionResultType.SUCCESS;
+						return InteractionResult.SUCCESS;
 					}
 				}
 			} else {
-				return ActionResultType.FAIL;
+				return InteractionResult.FAIL;
 			}
-			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(pos))) {
+			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(pos))) {
 				if (entity instanceof BolloomKnotEntity) {
 					if (((BolloomKnotEntity) entity).hasMaxBalloons()) {
-						return ActionResultType.FAIL;
+						return InteractionResult.FAIL;
 					}
 				}
 			}
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Override
-	public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
-		World world = player.level;
+	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+		Level world = player.level;
 		if (!world.isClientSide && canAttachBalloonToTarget(target)) {
 			player.swing(hand, true);
 			attachToEntity(this.balloonColor, target);
 			if (!player.isCreative()) stack.shrink(1);
-			return ActionResultType.CONSUME;
+			return InteractionResult.CONSUME;
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	public static boolean canAttachBalloonToTarget(Entity target) {
-		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && ((BalloonHolder) target).getBalloons().size() < (target instanceof BoatEntity ? 4 : 6);
+		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && ((BalloonHolder) target).getBalloons().size() < (target instanceof Boat ? 4 : 6);
 	}
 
 	public static void attachToEntity(BalloonColor color, Entity target) {
-		World world = target.level;
+		Level world = target.level;
 		BolloomBalloonEntity balloon = EEEntities.BOLLOOM_BALLOON.get().create(world);
 		if (balloon != null) {
 			balloon.setColor(color);
@@ -131,7 +131,7 @@ public class BolloomBalloonItem extends Item {
 		}
 	}
 
-	private boolean attachToFence(BlockPos fencePos, World world, ItemStack stack) {
+	private boolean attachToFence(BlockPos fencePos, Level world, ItemStack stack) {
 		BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, fencePos);
 		if (setKnot != null && !setKnot.hasMaxBalloons()) {
 			setKnot.addBalloon(this.getBalloonColor());
@@ -143,8 +143,8 @@ public class BolloomBalloonItem extends Item {
 		return false;
 	}
 
-	private boolean isAirUpwards(World world, BlockPos pos) {
-		BlockPos.Mutable mutable = new BlockPos.Mutable(pos.getX(), pos.getY(), pos.getZ());
+	private boolean isAirUpwards(Level world, BlockPos pos) {
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
 		for (int i = 0; i < 4; i++) {
 			if (!world.isEmptyBlock(mutable.move(0, 1, 0))) {
 				return false;
@@ -153,20 +153,20 @@ public class BolloomBalloonItem extends Item {
 		return true;
 	}
 
-	public static double getPlayerReach(PlayerEntity player) {
+	public static double getPlayerReach(Player player) {
 		double reach = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 		return (player.isCreative() ? reach : reach - 0.5F);
 	}
 
-	public static boolean hasNoEntityTarget(PlayerEntity player) {
+	public static boolean hasNoEntityTarget(Player player) {
 		double distance = getPlayerReach(player);
-		Vector3d vec3d = player.getEyePosition(1.0F);
-		Vector3d vec3d1 = player.getViewVector(1.0F).scale(distance);
-		Vector3d vec3d2 = vec3d.add(vec3d1);
-		AxisAlignedBB axisalignedbb = player.getBoundingBox().expandTowards(vec3d1).inflate(1.0D);
+		Vec3 vec3d = player.getEyePosition(1.0F);
+		Vec3 vec3d1 = player.getViewVector(1.0F).scale(distance);
+		Vec3 vec3d2 = vec3d.add(vec3d1);
+		AABB axisalignedbb = player.getBoundingBox().expandTowards(vec3d1).inflate(1.0D);
 		double sqrDistance = distance * distance;
 		Predicate<Entity> predicate = (entity) -> !entity.isSpectator() && entity.isPickable();
-		EntityRayTraceResult entityraytraceresult = rayTraceEntities(player, vec3d, vec3d2, axisalignedbb, predicate, sqrDistance);
+		EntityHitResult entityraytraceresult = rayTraceEntities(player, vec3d, vec3d2, axisalignedbb, predicate, sqrDistance);
 		if (entityraytraceresult == null) {
 			return true;
 		} else {
@@ -177,15 +177,15 @@ public class BolloomBalloonItem extends Item {
 	/**
 	 * Moved here since {@link ProjectileHelper#rayTraceEntities(Entity, Vector3d, Vector3d, AxisAlignedBB, Predicate, double)} is client only
 	 */
-	private static EntityRayTraceResult rayTraceEntities(Entity shooter, Vector3d startVec, Vector3d endVec, AxisAlignedBB boundingBox, Predicate<Entity> filter, double distance) {
-		World world = shooter.level;
+	private static EntityHitResult rayTraceEntities(Entity shooter, Vec3 startVec, Vec3 endVec, AABB boundingBox, Predicate<Entity> filter, double distance) {
+		Level world = shooter.level;
 		double d0 = distance;
 		Entity entity = null;
-		Vector3d vector3d = null;
+		Vec3 vector3d = null;
 
 		for (Entity entity1 : world.getEntities(shooter, boundingBox, filter)) {
-			AxisAlignedBB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
-			Optional<Vector3d> optional = axisalignedbb.clip(startVec, endVec);
+			AABB axisalignedbb = entity1.getBoundingBox().inflate(entity1.getPickRadius());
+			Optional<Vec3> optional = axisalignedbb.clip(startVec, endVec);
 			if (axisalignedbb.contains(startVec)) {
 				if (d0 >= 0.0D) {
 					entity = entity1;
@@ -193,7 +193,7 @@ public class BolloomBalloonItem extends Item {
 					d0 = 0.0D;
 				}
 			} else if (optional.isPresent()) {
-				Vector3d vector3d1 = optional.get();
+				Vec3 vector3d1 = optional.get();
 				double d1 = startVec.distanceToSqr(vector3d1);
 				if (d1 < d0 || d0 == 0.0D) {
 					if (entity1.getRootVehicle() == shooter.getRootVehicle() && !entity1.canRiderInteract()) {
@@ -209,19 +209,19 @@ public class BolloomBalloonItem extends Item {
 				}
 			}
 		}
-		return entity == null ? null : new EntityRayTraceResult(entity, vector3d);
+		return entity == null ? null : new EntityHitResult(entity, vector3d);
 	}
 
 	public static class BalloonDispenseBehavior extends DefaultDispenseItemBehavior {
 
 		@Override
-		protected ItemStack execute(IBlockSource source, ItemStack stack) {
+		protected ItemStack execute(BlockSource source, ItemStack stack) {
 			BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-			World world = source.getLevel();
+			Level world = source.getLevel();
 			BlockState state = world.getBlockState(blockpos);
 
-			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AxisAlignedBB(blockpos))) {
-				if (!world.isClientSide && (entity instanceof LivingEntity || entity instanceof BoatEntity) && canAttachBalloonToTarget(entity)) {
+			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(blockpos))) {
+				if (!world.isClientSide && (entity instanceof LivingEntity || entity instanceof Boat) && canAttachBalloonToTarget(entity)) {
 					attachToEntity(((BolloomBalloonItem) stack.getItem()).getBalloonColor(), entity);
 					stack.shrink(1);
 					return stack;

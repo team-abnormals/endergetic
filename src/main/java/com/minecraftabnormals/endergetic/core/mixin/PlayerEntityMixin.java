@@ -3,10 +3,10 @@ package com.minecraftabnormals.endergetic.core.mixin;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Difficulty;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,17 +16,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public final class PlayerEntityMixin {
 
 	@Inject(at = @At("RETURN"), method = "addAdditionalSaveData")
-	private void writeBalloons(CompoundNBT compound, CallbackInfo info) {
+	private void writeBalloons(CompoundTag compound, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) (Object) this).getBalloons();
 		if (!balloons.isEmpty()) {
-			ListNBT balloonsTag = new ListNBT();
+			ListTag balloonsTag = new ListTag();
 
 			for (BolloomBalloonEntity balloon : balloons) {
-				CompoundNBT compoundnbt = new CompoundNBT();
+				CompoundTag compoundnbt = new CompoundTag();
 				if (balloon.saveAsPassenger(compoundnbt)) {
 					balloonsTag.add(compoundnbt);
 				}
@@ -40,7 +40,7 @@ public final class PlayerEntityMixin {
 
 	@Inject(at = @At("HEAD"), method = "wantsToStopRiding", cancellable = true)
 	private void preventGliderEetleDismount(CallbackInfoReturnable<Boolean> info) {
-		PlayerEntity player = (PlayerEntity) (Object) this;
+		Player player = (Player) (Object) this;
 		if (player.isShiftKeyDown() && player.isAlive() && !player.isSpectator() && !player.isCreative() && player.level.getDifficulty() != Difficulty.PEACEFUL) {
 			Entity entity = player.getVehicle();
 			if (entity instanceof GliderEetleEntity) {

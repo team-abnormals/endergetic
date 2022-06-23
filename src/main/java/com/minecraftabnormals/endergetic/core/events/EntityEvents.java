@@ -20,37 +20,37 @@ import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.PotionEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.world.World;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -91,17 +91,17 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void onThrowableImpact(final ProjectileImpactEvent.Throwable event) {
-		ThrowableEntity projectileEntity = event.getThrowable();
+		ThrowableProjectile projectileEntity = event.getThrowable();
 
-		if (projectileEntity instanceof PotionEntity) {
-			PotionEntity potionEntity = ((PotionEntity) projectileEntity);
+		if (projectileEntity instanceof ThrownPotion) {
+			ThrownPotion potionEntity = ((ThrownPotion) projectileEntity);
 			ItemStack itemstack = potionEntity.getItem();
 			Potion potion = PotionUtils.getPotion(itemstack);
-			List<EffectInstance> list = PotionUtils.getMobEffects(itemstack);
+			List<MobEffectInstance> list = PotionUtils.getMobEffects(itemstack);
 
-			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockRayTraceResult) {
-				World world = potionEntity.level;
-				BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult) event.getRayTraceResult();
+			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockHitResult) {
+				Level world = potionEntity.level;
+				BlockHitResult blockraytraceresult = (BlockHitResult) event.getRayTraceResult();
 				Direction direction = blockraytraceresult.getDirection();
 				BlockPos blockpos = blockraytraceresult.getBlockPos().relative(Direction.DOWN).relative(direction);
 
@@ -119,7 +119,7 @@ public final class EntityEvents {
 		LivingEntity entity = event.getEntityLiving();
 		if (!entity.level.isClientSide) {
 			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
-			ModifiableAttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+			AttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
 			boolean hasABalloon = balloonCount > 0;
 			if (hasABalloon) entity.fallDistance = 0.0F;
 			boolean isFalling = entity.getDeltaMovement().y <= 0.0D;
@@ -144,9 +144,9 @@ public final class EntityEvents {
 			}
 
 			if (balloonCount > 3) {
-				entity.addEffect(new EffectInstance(Effects.LEVITATION, 2, balloonCount - 4, false, false, false));
-				if (entity instanceof ServerPlayerEntity) {
-					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayerEntity) entity);
+				entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 2, balloonCount - 4, false, false, false));
+				if (entity instanceof ServerPlayer) {
+					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayer) entity);
 				}
 			}
 
@@ -162,7 +162,7 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void onEntityTracked(PlayerEvent.StartTracking event) {
-		ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getPlayer();
 		Entity trackingEntity = event.getTarget();
 		if (trackingEntity instanceof BolloomBalloonEntity) {
 			BolloomBalloonEntity balloon = (BolloomBalloonEntity) trackingEntity;
@@ -185,21 +185,21 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		World world = event.getWorld();
+		Level world = event.getWorld();
 		BlockPos pos = event.getPos();
 		BlockState state = world.getBlockState(pos);
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
 		Item item = stack.getItem();
-		Hand hand = event.getHand();
+		InteractionHand hand = event.getHand();
 
 		if (event.getFace() != Direction.DOWN && item instanceof ShovelItem && !player.isSpectator()) {
 			BlockState newState = state.is(EEBlocks.POISMOSS.get()) ? EEBlocks.POISMOSS_PATH.get().defaultBlockState() : state.is(EEBlocks.EUMUS_POISMOSS.get()) ? EEBlocks.EUMUS_POISMOSS_PATH.get().defaultBlockState() : null;
 			if (newState != null && world.isEmptyBlock(pos.above())) {
-				world.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+				world.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
 				world.setBlock(pos, newState, 11);
 				event.getItemStack().hurtAndBreak(1, player, (damage) -> damage.broadcastBreakEvent(hand));
-				event.setCancellationResult(ActionResultType.sidedSuccess(world.isClientSide()));
+				event.setCancellationResult(InteractionResult.sidedSuccess(world.isClientSide()));
 				event.setCanceled(true);
 			}
 		}
@@ -209,10 +209,10 @@ public final class EntityEvents {
 	@SubscribeEvent
 	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
 		if (event.isAttack()) {
-			ClientPlayerEntity player = ClientInfo.getClientPlayer();
+			LocalPlayer player = ClientInfo.getClientPlayer();
 			if (player.xRot > -25.0F) return;
 			Entity ridingEntity = player.getVehicle();
-			if (ridingEntity instanceof BoatEntity && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
+			if (ridingEntity instanceof Boat && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();
 				if (!balloons.isEmpty()) {
 					Minecraft.getInstance().gameMode.attack(player, balloons.get(player.getRandom().nextInt(balloons.size())));
@@ -230,7 +230,7 @@ public final class EntityEvents {
 		}
 	}
 
-	private static void tryToConvertCorrockBlock(World world, BlockPos pos) {
+	private static void tryToConvertCorrockBlock(Level world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		if ((block instanceof CorrockPlantBlock && !((CorrockPlantBlock) block).petrified) || block instanceof CorrockBlock || block instanceof SpeckledCorrockBlock || block instanceof InfestedCorrockBlock || (block instanceof CorrockCrownBlock && !((CorrockCrownBlock) block).petrified)) {

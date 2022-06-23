@@ -11,21 +11,21 @@ import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEntity {
+public class PuffBugHiveTileEntity extends BlockEntity implements TickableBlockEntity {
 	private final List<HiveOccupantData> hiveOccupants = Lists.newArrayList();
 	private int ticksTillResetTeleport;
 	private int teleportCooldown;
@@ -37,7 +37,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 
 	@Override
 	public void tick() {
-		World world = this.level;
+		Level world = this.level;
 
 		if (!world.isClientSide && !this.hiveOccupants.isEmpty()) {
 			if (this.ticksTillResetTeleport > 0) {
@@ -81,7 +81,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 				}
 
 				if (breaker == null) {
-					LivingEntity target = DetectionHelper.getClosestEntity(this.level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(hivePos).inflate(12.0D), PuffBugEntity.CAN_ANGER), hivePos.getX(), hivePos.getY(), hivePos.getZ());
+					LivingEntity target = DetectionHelper.getClosestEntity(this.level.getEntitiesOfClass(LivingEntity.class, new AABB(hivePos).inflate(12.0D), PuffBugEntity.CAN_ANGER), hivePos.getX(), hivePos.getY(), hivePos.getZ());
 					if (target != null && puffBug.getTarget() == null) {
 						puffBug.setTarget(target);
 					}
@@ -145,7 +145,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 
 	@Override
 	@Nonnull
-	public CompoundNBT save(CompoundNBT compound) {
+	public CompoundTag save(CompoundTag compound) {
 		compound.put("HiveOccupants", HiveOccupantData.createCompoundList(this));
 
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
@@ -154,12 +154,12 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT compound) {
+	public void load(BlockState state, CompoundTag compound) {
 		this.hiveOccupants.clear();
-		ListNBT Occupants = compound.getList("HiveOccupants", 10);
+		ListTag Occupants = compound.getList("HiveOccupants", 10);
 
 		for (int i = 0; i < Occupants.size(); i++) {
-			CompoundNBT Occupant = Occupants.getCompound(i);
+			CompoundTag Occupant = Occupants.getCompound(i);
 			String OccupantUUID = Occupant.contains("OccupantUUID", 8) ? Occupant.getString("OccupantUUID") : "";
 
 			UUID foundUUID = !OccupantUUID.isEmpty() ? UUID.fromString(OccupantUUID) : null;
@@ -172,14 +172,14 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 	}
 
 	@Nullable
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.worldPosition, 9, this.getUpdateTag());
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return new ClientboundBlockEntityDataPacket(this.worldPosition, 9, this.getUpdateTag());
 	}
 
 	@Nonnull
 	@Override
-	public CompoundNBT getUpdateTag() {
-		return this.save(new CompoundNBT());
+	public CompoundTag getUpdateTag() {
+		return this.save(new CompoundTag());
 	}
 
 	public boolean onlyOpCanSetNbt() {
@@ -187,7 +187,7 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 	}
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() {
 		return super.getRenderBoundingBox().inflate(1084);
 	}
 
@@ -206,16 +206,16 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 			this.occupant = occupant;
 		}
 
-		public void tick(World world) {
+		public void tick(Level world) {
 			if (this.getOccupant(world) == null) {
 				this.occupant = null;
 			}
 		}
 
 		@Nullable
-		public PuffBugEntity getOccupant(World world) {
+		public PuffBugEntity getOccupant(Level world) {
 			if (!world.isClientSide) {
-				Entity entity = ((ServerWorld) world).getEntity(this.occupant);
+				Entity entity = ((ServerLevel) world).getEntity(this.occupant);
 				if (entity instanceof PuffBugEntity) {
 					return (PuffBugEntity) entity;
 				}
@@ -223,11 +223,11 @@ public class PuffBugHiveTileEntity extends TileEntity implements ITickableTileEn
 			return null;
 		}
 
-		public static ListNBT createCompoundList(PuffBugHiveTileEntity hive) {
-			ListNBT listnbt = new ListNBT();
+		public static ListTag createCompoundList(PuffBugHiveTileEntity hive) {
+			ListTag listnbt = new ListTag();
 
 			for (HiveOccupantData occuptentData : hive.hiveOccupants) {
-				CompoundNBT compound = new CompoundNBT();
+				CompoundTag compound = new CompoundTag();
 
 				if (occuptentData.occupant == null) {
 					compound.putString("OccupantUUID", "");

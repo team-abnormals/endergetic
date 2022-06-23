@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 
 public final class EERenderLayers {
 
@@ -38,7 +38,7 @@ public final class EERenderLayers {
 	}
 
 	private static void setRenderLayer(Block block, RenderType type) {
-		RenderTypeLookup.setRenderLayer(block, type::equals);
+		ItemBlockRenderTypes.setRenderLayer(block, type::equals);
 	}
 
 }

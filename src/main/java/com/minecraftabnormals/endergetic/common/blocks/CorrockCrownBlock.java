@@ -4,27 +4,27 @@ import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.tileentities.CorrockCrownTileEntity;
 
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ContainerBlock;
-import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
 
 import java.util.function.Supplier;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public abstract class CorrockCrownBlock extends ContainerBlock implements IBucketPickupHandler, ILiquidContainer {
+public abstract class CorrockCrownBlock extends BaseEntityBlock implements BucketPickup, LiquidBlockContainer {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected final DimensionalType dimensionalType;
 	public final boolean petrified;
@@ -36,11 +36,11 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 	}
 
 	@Override
-	public TileEntity newBlockEntity(IBlockReader worldIn) {
+	public BlockEntity newBlockEntity(BlockGetter worldIn) {
 		return new CorrockCrownTileEntity();
 	}
 
-	public Fluid takeLiquid(IWorld worldIn, BlockPos pos, BlockState state) {
+	public Fluid takeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state) {
 		if (state.getValue(WATERLOGGED)) {
 			worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.FALSE), 3);
 			return Fluids.WATER;
@@ -54,11 +54,11 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
-	public boolean canPlaceLiquid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
+	public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
 		return !state.getValue(WATERLOGGED) && fluidIn == Fluids.WATER;
 	}
 
-	public boolean placeLiquid(IWorld worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
+	public boolean placeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
 		if (!state.getValue(WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 			if (!worldIn.isClientSide()) {
 				worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
@@ -71,8 +71,8 @@ public abstract class CorrockCrownBlock extends ContainerBlock implements IBucke
 	}
 
 	@Override
-	public BlockRenderType getRenderShape(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	public enum DimensionalType {

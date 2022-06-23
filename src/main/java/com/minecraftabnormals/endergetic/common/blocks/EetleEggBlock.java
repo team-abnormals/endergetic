@@ -2,30 +2,38 @@ package com.minecraftabnormals.endergetic.common.blocks;
 
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import net.minecraft.block.*;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 	public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
 	public static final DirectionProperty FACING = DirectionalBlock.FACING;
 	private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -63,23 +71,23 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(SIZE, FACING, WATERLOGGED, PETRIFIED);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPES[state.getValue(SIZE)][state.getValue(FACING).get3DDataValue()];
 	}
 
 	@Nullable
 	@Override
-	public TileEntity newBlockEntity(IBlockReader world) {
+	public BlockEntity newBlockEntity(BlockGetter world) {
 		return new EetleEggTileEntity();
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
 		if (!this.canSurvive(state, world, currentPos)) {
 			return Blocks.AIR.defaultBlockState();
 		} else if (state.getValue(WATERLOGGED)) {
@@ -93,14 +101,14 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		BlockPos pos = context.getClickedPos();
 		BlockState state = context.getLevel().getBlockState(pos);
 		if (state.getBlock() == this) {
 			return state.setValue(SIZE, Math.min(2, state.getValue(SIZE) + 1));
 		}
 		Direction[] nearestDirections = context.getNearestLookingDirections();
-		IWorldReader world = context.getLevel();
+		LevelReader world = context.getLevel();
 		BlockState wallState = this.getWallState(nearestDirections, world, pos);
 		for (Direction direction : nearestDirections) {
 			BlockState directionState = direction == Direction.UP || direction == Direction.DOWN ? this.defaultBlockState().setValue(SIZE, 0).setValue(FACING, direction.getOpposite()) : wallState;
@@ -114,14 +122,14 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		Direction facing = state.getValue(FACING);
 		BlockPos blockpos = pos.relative(facing.getOpposite());
 		return isOnValidState(worldIn, worldIn.getBlockState(blockpos), blockpos, facing);
 	}
 
 	@Nullable
-	private BlockState getWallState(Direction[] nearestDirections, IWorldReader world, BlockPos pos) {
+	private BlockState getWallState(Direction[] nearestDirections, LevelReader world, BlockPos pos) {
 		for (Direction direction : nearestDirections) {
 			if (direction.getAxis().isHorizontal()) {
 				BlockState state = this.defaultBlockState().setValue(FACING, direction.getOpposite());
@@ -134,7 +142,7 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean canBeReplaced(BlockState state, BlockItemUseContext useContext) {
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
 		return useContext.getItemInHand().getItem() == this.asItem() && state.getValue(SIZE) < 2;
 	}
 
@@ -144,7 +152,7 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public boolean placeLiquid(IWorld world, BlockPos pos, BlockState state, FluidState fluidStateIn) {
+	public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidStateIn) {
 		if (!state.getValue(BlockStateProperties.WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 			if (!world.isClientSide()) {
 				world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true).setValue(PETRIFIED, true), 3);
@@ -156,11 +164,11 @@ public class EetleEggBlock extends ContainerBlock implements IWaterLoggable {
 	}
 
 	@Override
-	public BlockRenderType getRenderShape(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
-	private static boolean isOnValidState(IWorldReader world, BlockState state, BlockPos pos, Direction direction) {
+	private static boolean isOnValidState(LevelReader world, BlockState state, BlockPos pos, Direction direction) {
 		return !state.getCollisionShape(world, pos).getFaceShape(direction).isEmpty() || state.isFaceSturdy(world, pos, direction);
 	}
 

@@ -3,9 +3,9 @@ package com.minecraftabnormals.endergetic.client.models.eetle;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 
 /**
  * @author Endergized
@@ -75,25 +75,25 @@ public class LeetleModel<E extends AbstractEetleEntity> extends EndimatorEntityM
 		limbSwing /= 3.0F;
 
 		this.leftLeg1.xRot = this.rightLeg1.xRot = this.leftLeg2.xRot = this.rightLeg2.xRot = 0.0F;
-		float frontLegAnglesX = MathHelper.sin(limbSwing * 1.5F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
+		float frontLegAnglesX = Mth.sin(limbSwing * 1.5F + ((float) Math.PI * 1.5F)) * limbSwingAmount;
 		this.leftLeg1.xRot = frontLegAnglesX;
 		this.rightLeg1.xRot = frontLegAnglesX;
 
-		float frontLegAnglesZ = Math.abs(MathHelper.sin(limbSwing * 0.75F + (float) Math.PI) * 1.5F) * limbSwingAmount;
+		float frontLegAnglesZ = Math.abs(Mth.sin(limbSwing * 0.75F + (float) Math.PI) * 1.5F) * limbSwingAmount;
 		this.leftLeg1.zRot = -0.785F - frontLegAnglesZ;
 		this.rightLeg1.zRot = 0.785F + frontLegAnglesZ;
 
-		float backLegAnglesX = MathHelper.sin(limbSwing * 1.5F - ((float) Math.PI * 1.5F)) * limbSwingAmount;
+		float backLegAnglesX = Mth.sin(limbSwing * 1.5F - ((float) Math.PI * 1.5F)) * limbSwingAmount;
 		this.leftLeg2.xRot = backLegAnglesX;
 		this.rightLeg2.xRot = backLegAnglesX;
 
-		float backLegAnglesZ = Math.abs(MathHelper.sin(limbSwing * 0.75F + (float) Math.PI) * 1.5F) * limbSwingAmount;
+		float backLegAnglesZ = Math.abs(Mth.sin(limbSwing * 0.75F + (float) Math.PI) * 1.5F) * limbSwingAmount;
 		this.leftLeg2.zRot = -0.785F - backLegAnglesZ;
 		this.rightLeg2.zRot = 0.785F + backLegAnglesZ;
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder vertexBuilder, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer vertexBuilder, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, vertexBuilder, packedLight, packedOverlay, red, green, blue, alpha);
 		this.body.render(matrixStack, vertexBuilder, packedLight, packedOverlay, red, green, blue, alpha);
 	}

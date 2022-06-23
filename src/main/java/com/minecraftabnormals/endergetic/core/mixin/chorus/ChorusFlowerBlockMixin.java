@@ -2,8 +2,8 @@ package com.minecraftabnormals.endergetic.core.mixin.chorus;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import net.minecraft.block.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +12,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Random;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChorusFlowerBlock;
+import net.minecraft.world.level.block.ChorusPlantBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -28,7 +34,7 @@ public final class ChorusFlowerBlockMixin {
 	}
 
 	@Redirect(at = @At(value = "JUMP", opcode = Opcodes.IF_ACMPNE, shift = At.Shift.BEFORE, ordinal = 0), method = "randomTick")
-	private Block isEndStone(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	private Block isEndStone(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		Block block = world.getBlockState(pos.below()).getBlock();
 		return block.is(EETags.Blocks.CHORUS_PLANTABLE) ? Blocks.END_STONE : null;
 	}

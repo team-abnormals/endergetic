@@ -3,20 +3,20 @@ package com.minecraftabnormals.endergetic.client.events;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.client.CameraType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -48,7 +48,7 @@ public final class OverlayEvents {
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
-		ClientPlayerEntity player = MC.player;
+		LocalPlayer player = MC.player;
 		if (player != null) {
 			if (!MC.options.hideGui) {
 				ElementType type = event.getType();
@@ -62,7 +62,7 @@ public final class OverlayEvents {
 						int left = scaledWidth / 2 - 91;
 						int progress = ((BoofloEntity) player.getVehicle()).getBoostPower();
 
-						MatrixStack stack = event.getMatrixStack();
+						PoseStack stack = event.getMatrixStack();
 						stack.pushPose();
 						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 
@@ -75,19 +75,19 @@ public final class OverlayEvents {
 					}
 				} else if (type == ElementType.HEALTHMOUNT && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
 					event.setCanceled(true);
-				} else if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE && MC.options.getCameraType() == PointOfView.FIRST_PERSON) {
-					float purpoidFlashProgress = MathHelper.lerp(event.getPartialTicks(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
+				} else if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
+					float purpoidFlashProgress = Mth.lerp(event.getPartialTicks(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
 					if (purpoidFlashProgress > 0.0F) {
-						MatrixStack stack = event.getMatrixStack();
+						PoseStack stack = event.getMatrixStack();
 						stack.pushPose();
 						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
 						RenderSystem.enableBlend();
 						RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 						RenderSystem.color4f(1.0F, 1.0F, 1.0F, purpoidFlashProgress);
-						Tessellator tessellator = Tessellator.getInstance();
+						Tesselator tessellator = Tesselator.getInstance();
 						BufferBuilder bufferbuilder = tessellator.getBuilder();
-						bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-						MainWindow mainWindow = MC.getWindow();
+						bufferbuilder.begin(7, DefaultVertexFormat.POSITION_TEX);
+						Window mainWindow = MC.getWindow();
 						int scaledWidth = mainWindow.getGuiScaledWidth();
 						int scaledHeight = mainWindow.getGuiScaledHeight();
 						bufferbuilder.vertex(0.0D, scaledHeight, -90.0D).uv(0.0F, 1.0F).endVertex();
@@ -102,8 +102,8 @@ public final class OverlayEvents {
 		}
 	}
 
-	private static void drawTexture(MatrixStack stack, int posX, int posY, int p_blit_3_, int p_blit_4_, int p_blit_5_, int p_blit_6_) {
-		AbstractGui.blit(stack, posX, posY, -90, (float) p_blit_3_, (float) p_blit_4_, p_blit_5_, p_blit_6_, 256, 256);
+	private static void drawTexture(PoseStack stack, int posX, int posY, int p_blit_3_, int p_blit_4_, int p_blit_5_, int p_blit_6_) {
+		GuiComponent.blit(stack, posX, posY, -90, (float) p_blit_3_, (float) p_blit_4_, p_blit_5_, p_blit_6_, 256, 256);
 	}
 
 	public static void enablePurpoidFlash() {

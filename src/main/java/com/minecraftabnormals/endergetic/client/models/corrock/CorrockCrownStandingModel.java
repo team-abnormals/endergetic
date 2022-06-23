@@ -1,37 +1,37 @@
 package com.minecraftabnormals.endergetic.client.models.corrock;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.model.geom.ModelPart;
 
 /**
  * ModelCorrockCrownStanding - Endergized
  * Created using Tabula 7.0.0
  */
 public class CorrockCrownStandingModel {
-	public ModelRenderer shape1;
-	public ModelRenderer shape1_1;
+	public ModelPart shape1;
+	public ModelPart shape1_1;
 
 	public CorrockCrownStandingModel() {
 		int[] textureSizes = {64, 32};
-		this.shape1 = new ModelRenderer(textureSizes[0], textureSizes[1], 0, 0);
+		this.shape1 = new ModelPart(textureSizes[0], textureSizes[1], 0, 0);
 		this.shape1.mirror = true;
 		this.shape1.setPos(-8.0F, 24.0F, 0.0F);
 		this.shape1.addBox(0.0F, -16.0F, 0.0F, 16, 16, 0, 0.0F);
 		this.setRotateAngle(shape1, 0.17453292519943295F, 0.0F, 0.0F);
-		this.shape1_1 = new ModelRenderer(textureSizes[0], textureSizes[1], 0, 0);
+		this.shape1_1 = new ModelPart(textureSizes[0], textureSizes[1], 0, 0);
 		this.shape1_1.setPos(-8.0F, 24.0F, 0.0F);
 		this.shape1_1.addBox(0.0F, -16.0F, 0.0F, 16, 16, 0, 0.0F);
 		this.setRotateAngle(shape1_1, -0.17453292519943295F, 0.0F, 0.0F);
 	}
 
-	public void renderAll(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn) {
+	public void renderAll(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn) {
 		this.shape1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
 		this.shape1_1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
 	}
 
-	public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {
+	public void setRotateAngle(ModelPart ModelRenderer, float x, float y, float z) {
 		ModelRenderer.xRot = x;
 		ModelRenderer.yRot = y;
 		ModelRenderer.zRot = z;

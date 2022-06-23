@@ -4,24 +4,24 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.server.level.ServerLevel;
 
 public abstract class EndergeticTree {
 	@Nullable
-	protected abstract Feature<NoFeatureConfig> getTreeFeature(Random random);
+	protected abstract Feature<NoneFeatureConfiguration> getTreeFeature(Random random);
 
-	public boolean spawn(ServerWorld world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState blockUnder, Random random) {
-		Feature<NoFeatureConfig> treefeature = this.getTreeFeature(random);
+	public boolean spawn(ServerLevel world, ChunkGenerator chunkGenerator, BlockPos pos, BlockState blockUnder, Random random) {
+		Feature<NoneFeatureConfiguration> treefeature = this.getTreeFeature(random);
 		if (treefeature == null) {
 			return false;
 		} else {
-			if (treefeature.place(world, chunkGenerator, random, pos, IFeatureConfig.NONE)) {
+			if (treefeature.place(world, chunkGenerator, random, pos, FeatureConfiguration.NONE)) {
 				return true;
 			} else {
 				return false;

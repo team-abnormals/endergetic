@@ -5,8 +5,8 @@ import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonE
 import com.minecraftabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.entity.Entity;
-import net.minecraft.world.TrackedEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(TrackedEntity.class)
+@Mixin(ServerEntity.class)
 public final class TrackedEntityMixin {
 	private List<BolloomBalloonEntity> prevBalloons = Lists.newArrayList();
 

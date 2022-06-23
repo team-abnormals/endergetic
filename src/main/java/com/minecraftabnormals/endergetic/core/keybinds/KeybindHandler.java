@@ -12,9 +12,9 @@ import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -27,17 +27,17 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
  */
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public final class KeybindHandler {
-	private static List<KeyBinding> keyBinds = Lists.newArrayList();
-	private static final KeyBinding BOOF_VEST = registerKeybind(new KeyBinding("key.endergetic.booflo_vest", 32, "key.categories.movement"));
-	public static final KeyBinding BOOFLO_SLAM = registerKeybind(new KeyBinding("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
+	private static List<KeyMapping> keyBinds = Lists.newArrayList();
+	private static final KeyMapping BOOF_VEST = registerKeybind(new KeyMapping("key.endergetic.booflo_vest", 32, "key.categories.movement"));
+	public static final KeyMapping BOOFLO_SLAM = registerKeybind(new KeyMapping("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
 
 	public static void registerKeys() {
-		for (KeyBinding keys : keyBinds) {
+		for (KeyMapping keys : keyBinds) {
 			ClientRegistry.registerKeyBinding(keys);
 		}
 	}
 
-	private static KeyBinding registerKeybind(KeyBinding keybind) {
+	private static KeyMapping registerKeybind(KeyMapping keybind) {
 		keyBinds.add(keybind);
 		return keybind;
 	}
@@ -45,7 +45,7 @@ public final class KeybindHandler {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onKeyPressed(KeyInputEvent event) {
 		if (Minecraft.getInstance().screen != null) return;
-		PlayerEntity player = Minecraft.getInstance().player;
+		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 
 		if (BOOF_VEST.consumeClick() && !player.abilities.flying) {

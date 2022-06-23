@@ -3,8 +3,8 @@ package com.minecraftabnormals.endergetic.core.registry;
 import com.minecraftabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.util.ForgeSoundType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;

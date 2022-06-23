@@ -4,13 +4,13 @@ import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
-public class PuffBugBoostGoal extends RandomWalkingGoal {
+public class PuffBugBoostGoal extends RandomStrollGoal {
 
 	public PuffBugBoostGoal(PuffBugEntity puffbug) {
 		super(puffbug, 1.0F, 15);
@@ -26,7 +26,7 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 				}
 			}
 
-			Vector3d destination = this.getPosition();
+			Vec3 destination = this.getPosition();
 			if (destination == null) {
 				return false;
 			} else {
@@ -40,10 +40,10 @@ public class PuffBugBoostGoal extends RandomWalkingGoal {
 	}
 
 	@Nullable
-	protected Vector3d getPosition() {
-		Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 8, 5);
+	protected Vec3 getPosition() {
+		Vec3 vec3d = RandomPos.getPos(this.mob, 8, 5);
 
-		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.AIR) && i++ < 10; vec3d = RandomPositionGenerator.getPos(this.mob, 8, 5)) {
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = RandomPos.getPos(this.mob, 8, 5)) {
 			;
 		}
 

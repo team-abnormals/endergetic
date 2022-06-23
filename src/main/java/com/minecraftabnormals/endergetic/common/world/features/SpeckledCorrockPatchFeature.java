@@ -5,15 +5,15 @@ import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchCon
 import com.minecraftabnormals.endergetic.common.world.configs.MultiPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
 		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).below();
 		Block downBlock = world.getBlockState(down).getBlock();
 		if (downBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
@@ -46,19 +46,19 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 		return false;
 	}
 
-	private static void generatePatch(ISeedReader world, BlockPos origin, Random rand, int maxExtraRadius) {
+	private static void generatePatch(WorldGenLevel world, BlockPos origin, Random rand, int maxExtraRadius) {
 		int radius = 2 + rand.nextInt(maxExtraRadius);
 		int radiusSquared = radius * radius;
 		int originX = origin.getX();
 		int originY = origin.getY();
 		int originZ = origin.getZ();
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		List<BlockPos> positions = new ArrayList<>();
 		for (int x = -radius; x <= radius; x++) {
 			for (int z = -radius; z <= radius; z++) {
 				int distanceSq = x * x + z * z - rand.nextInt(2);
 				if (distanceSq <= radiusSquared) {
-					BlockPos pos = world.getHeightmapPos(Heightmap.Type.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
+					BlockPos pos = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
 					int distanceY = Math.abs(originY - pos.getY());
 					if (distanceY <= 1) {
 						if (TRANSFORMABLE_BLOCKS.contains(world.getBlockState(pos).getBlock())) {

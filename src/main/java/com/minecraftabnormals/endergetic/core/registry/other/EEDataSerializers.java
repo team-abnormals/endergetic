@@ -5,10 +5,10 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity.
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.IDataSerializer;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,13 +21,13 @@ import java.util.Optional;
 public final class EEDataSerializers {
 	public static final DeferredRegister<DataSerializerEntry> SERIALIZERS = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
 
-	public static final IDataSerializer<Optional<Vector3d>> OPTIONAL_VEC3D = new IDataSerializer<Optional<Vector3d>>() {
+	public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VEC3D = new EntityDataSerializer<Optional<Vec3>>() {
 		@Override
-		public void write(PacketBuffer buf, Optional<Vector3d> value) {
+		public void write(FriendlyByteBuf buf, Optional<Vec3> value) {
 			buf.writeBoolean(value.isPresent());
 
 			if (value.isPresent()) {
-				Vector3d vec3d = value.get();
+				Vec3 vec3d = value.get();
 				buf.writeDouble(vec3d.x());
 				buf.writeDouble(vec3d.y());
 				buf.writeDouble(vec3d.z());
@@ -35,24 +35,24 @@ public final class EEDataSerializers {
 		}
 
 		@Override
-		public Optional<Vector3d> read(PacketBuffer buf) {
-			return !buf.readBoolean() ? Optional.empty() : Optional.of(new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+		public Optional<Vec3> read(FriendlyByteBuf buf) {
+			return !buf.readBoolean() ? Optional.empty() : Optional.of(new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
 		}
 
 		@Override
-		public Optional<Vector3d> copy(Optional<Vector3d> value) {
+		public Optional<Vec3> copy(Optional<Vec3> value) {
 			return value;
 		}
 	};
 
-	public static final IDataSerializer<BalloonColor> BALLOON_COLOR = new IDataSerializer<BalloonColor>() {
+	public static final EntityDataSerializer<BalloonColor> BALLOON_COLOR = new EntityDataSerializer<BalloonColor>() {
 		@Override
-		public void write(PacketBuffer buf, BalloonColor value) {
+		public void write(FriendlyByteBuf buf, BalloonColor value) {
 			buf.writeEnum(value);
 		}
 
 		@Override
-		public BalloonColor read(PacketBuffer buf) {
+		public BalloonColor read(FriendlyByteBuf buf) {
 			return buf.readEnum(BalloonColor.class);
 		}
 
@@ -62,15 +62,15 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final IDataSerializer<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new IDataSerializer<TargetFlyingRotations>() {
+	public static final EntityDataSerializer<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new EntityDataSerializer<TargetFlyingRotations>() {
 		@Override
-		public void write(PacketBuffer buf, TargetFlyingRotations value) {
+		public void write(FriendlyByteBuf buf, TargetFlyingRotations value) {
 			buf.writeFloat(value.getTargetFlyPitch());
 			buf.writeFloat(value.getTargetFlyRoll());
 		}
 
 		@Override
-		public TargetFlyingRotations read(PacketBuffer buf) {
+		public TargetFlyingRotations read(FriendlyByteBuf buf) {
 			return new TargetFlyingRotations(buf.readFloat(), buf.readFloat());
 		}
 
@@ -80,31 +80,31 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final IDataSerializer<EntitySize> ENTITY_SIZE = new IDataSerializer<EntitySize>() {
+	public static final EntityDataSerializer<EntityDimensions> ENTITY_SIZE = new EntityDataSerializer<EntityDimensions>() {
 		@Override
-		public void write(PacketBuffer buf, EntitySize value) {
+		public void write(FriendlyByteBuf buf, EntityDimensions value) {
 			buf.writeFloat(value.width);
 			buf.writeFloat(value.height);
 			buf.writeBoolean(value.fixed);
 		}
 
 		@Override
-		public EntitySize read(PacketBuffer buf) {
-			return new EntitySize(buf.readFloat(), buf.readFloat(), buf.readBoolean());
+		public EntityDimensions read(FriendlyByteBuf buf) {
+			return new EntityDimensions(buf.readFloat(), buf.readFloat(), buf.readBoolean());
 		}
 
 		@Override
-		public EntitySize copy(EntitySize value) {
+		public EntityDimensions copy(EntityDimensions value) {
 			return value;
 		}
 	};
 
-	public static final IDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new IDataSerializer<HealthStage>() {
-		public void write(PacketBuffer buf, HealthStage value) {
+	public static final EntityDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new EntityDataSerializer<HealthStage>() {
+		public void write(FriendlyByteBuf buf, HealthStage value) {
 			buf.writeEnum(value);
 		}
 
-		public HealthStage read(PacketBuffer buf) {
+		public HealthStage read(FriendlyByteBuf buf) {
 			return buf.readEnum(HealthStage.class);
 		}
 
@@ -113,12 +113,12 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final IDataSerializer<PurpoidSize> PURPOID_SIZE = new IDataSerializer<PurpoidSize>() {
-		public void write(PacketBuffer buf, PurpoidSize value) {
+	public static final EntityDataSerializer<PurpoidSize> PURPOID_SIZE = new EntityDataSerializer<PurpoidSize>() {
+		public void write(FriendlyByteBuf buf, PurpoidSize value) {
 			buf.writeEnum(value);
 		}
 
-		public PurpoidSize read(PacketBuffer buf) {
+		public PurpoidSize read(FriendlyByteBuf buf) {
 			return buf.readEnum(PurpoidSize.class);
 		}
 

@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.world.configs;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public final class CorrockArchConfig implements IFeatureConfig {
+public final class CorrockArchConfig implements FeatureConfiguration {
 	public static final Codec<CorrockArchConfig> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				Codec.FLOAT.fieldOf("crown_chance").forGetter(config -> config.crownChance),

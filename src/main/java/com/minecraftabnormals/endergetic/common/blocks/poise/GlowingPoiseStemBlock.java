@@ -3,17 +3,17 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 import com.minecraftabnormals.abnormals_core.common.blocks.wood.AbnormalsLogBlock;
 import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class GlowingPoiseStemBlock extends AbnormalsLogBlock {
 
@@ -23,7 +23,7 @@ public class GlowingPoiseStemBlock extends AbnormalsLogBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
 		if (rand.nextFloat() > 0.05F) {
 			BlockPos up = pos.above();
 			if (worldIn.getBlockState(up).getCollisionShape(worldIn, up).isEmpty()) {

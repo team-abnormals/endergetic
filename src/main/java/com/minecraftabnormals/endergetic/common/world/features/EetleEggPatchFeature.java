@@ -4,13 +4,13 @@ import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.Random;
 
@@ -24,11 +24,11 @@ public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, EndergeticPatchConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, EndergeticPatchConfig config) {
 		int i = 0;
 		pos = EndergeticPatchConfig.getPos(world, pos, config.shouldSearchDown());
 		EetleEggBlock.shuffleDirections(DIRECTIONS, rand);
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		float chance = config.getFrequency();
 		Block corrockBlock = EEBlocks.CORROCK_END_BLOCK.get();
 		Block eumus = EEBlocks.EUMUS.get();
@@ -53,10 +53,10 @@ public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 		return i > 0;
 	}
 
-	private static void spreadInfestedCorrockAtPos(ISeedReader world, BlockPos pos, Random random, Block corrockBlock) {
+	private static void spreadInfestedCorrockAtPos(WorldGenLevel world, BlockPos pos, Random random, Block corrockBlock) {
 		int radius = 1;
 		world.setBlock(pos, INFESTED_STATE, 2);
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int z = -radius; z <= radius; z++) {

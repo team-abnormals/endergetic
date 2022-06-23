@@ -13,23 +13,34 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.ToolType;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-public class CorrockBlock extends Block implements IGrowable {
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.DimensionType;
+
+public class CorrockBlock extends Block implements BonemealableBlock {
 	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
 		conversions.put(DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD_BLOCK);
 		conversions.put(DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER_BLOCK);
@@ -50,18 +61,18 @@ public class CorrockBlock extends Block implements IGrowable {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		if (this.shouldConvert(world)) {
 			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().defaultBlockState());
 		}
 	}
 
 	@Override
-	public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, Entity entity) {
+	public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
 		return SoundType.CORAL_BLOCK;
 	}
 
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
 			worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
@@ -74,18 +85,18 @@ public class CorrockBlock extends Block implements IGrowable {
 	}
 
 	@Nullable
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		if (this.shouldConvert(context.getLevel())) {
 			context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
 		}
 		return this.defaultBlockState();
 	}
 
-	protected boolean shouldConvert(IWorld world) {
+	protected boolean shouldConvert(LevelAccessor world) {
 		return CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
 	}
 
-	public static boolean isSubmerged(IWorld world, BlockPos pos) {
+	public static boolean isSubmerged(LevelAccessor world, BlockPos pos) {
 		for (Direction offsets : Direction.values()) {
 			FluidState fluidState = world.getFluidState(pos.relative(offsets));
 			if (!fluidState.isEmpty() && fluidState.is(FluidTags.WATER)) {
@@ -96,24 +107,24 @@ public class CorrockBlock extends Block implements IGrowable {
 	}
 
 	@Override
-	public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
+	public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
 		return entityType == EEEntities.CHARGER_EETLE.get() || super.canCreatureSpawn(state, world, pos, type, entityType);
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(BlockGetter worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return true;
 	}
 
 	@Override
-	public boolean isBonemealSuccess(World worldIn, Random rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
 		return true;
 	}
 
 	@Override
-	public void performBonemeal(ServerWorld world, Random rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel world, Random rand, BlockPos pos, BlockState state) {
 		int radius = 2;
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		Block speckledBlock = this.speckledBlock.get();
 		BlockState speckledState = speckledBlock.defaultBlockState();
 		BlockState plantState = this.plantBlock.get().defaultBlockState();
@@ -136,7 +147,7 @@ public class CorrockBlock extends Block implements IGrowable {
 		}
 	}
 
-	private void placeSpreadBlock(ServerWorld world, BlockPos pos, BlockState state, BlockState plantState, Random random, boolean speckled) {
+	private void placeSpreadBlock(ServerLevel world, BlockPos pos, BlockState state, BlockState plantState, Random random, boolean speckled) {
 		world.setBlockAndUpdate(pos, state);
 		if (random.nextFloat() < (speckled ? 0.1F : 0.2F)) {
 			BlockPos up = pos.above();
@@ -147,7 +158,7 @@ public class CorrockBlock extends Block implements IGrowable {
 	}
 
 	@Nullable
-	private Block findHighestSpreadableBlock(ServerWorld world, BlockPos.Mutable mutable, Block speckledBlock) {
+	private Block findHighestSpreadableBlock(ServerLevel world, BlockPos.MutableBlockPos mutable, Block speckledBlock) {
 		int originY = mutable.getY();
 		for (int y = 1; y > -2; y--) {
 			mutable.setY(originY + y);

@@ -9,45 +9,57 @@ import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.ai.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.LookController;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SSetPassengersPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-import net.minecraft.entity.ai.controller.MovementController.Action;
+import net.minecraft.world.entity.ai.control.MoveControl.Operation;
 
-public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
-	private static final DataParameter<PurpoidSize> SIZE = EntityDataManager.defineId(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
-	private static final DataParameter<Integer> BOOSTING_TICKS = EntityDataManager.defineId(PurpoidEntity.class, DataSerializers.INT);
+import net.minecraft.world.entity.AgableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+
+public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
+	private static final EntityDataAccessor<PurpoidSize> SIZE = SynchedEntityData.defineId(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
+	private static final EntityDataAccessor<Integer> BOOSTING_TICKS = SynchedEntityData.defineId(PurpoidEntity.class, EntityDataSerializers.INT);
 	public static final Endimation TELEPORT_TO_ANIMATION = new Endimation(18);
 	public static final Endimation FAST_TELEPORT_TO_ANIMATION = new Endimation(15);
 	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
@@ -59,7 +71,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	private int growingAge;
 	private int teleportCooldown;
 	private int restCooldown;
-	private Vector3d prevPull = Vector3d.ZERO, pull = Vector3d.ZERO;
+	private Vec3 prevPull = Vec3.ZERO, pull = Vec3.ZERO;
 	@Nullable
 	private BlockPos flowerPos;
 	private PurpoidTelefragGoal telefragGoal;
@@ -68,7 +80,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	private PurpoidRestOnFlowerGoal restOnFlowerGoal;
 	private PurpoidTeleportToFlowerGoal teleportToFlowerGoal;
 
-	public PurpoidEntity(EntityType<? extends CreatureEntity> type, World world) {
+	public PurpoidEntity(EntityType<? extends PathfinderMob> type, Level world) {
 		super(type, world);
 		this.resetTeleportCooldown();
 		this.resetRestCooldown();
@@ -95,15 +107,15 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void onSyncedDataUpdated(DataParameter<?> key) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		if (SIZE.equals(key)) {
 			this.refreshDimensions();
 		}
 		super.onSyncedDataUpdated(key);
 	}
 
-	public static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return MobEntity.createMobAttributes()
+	public static AttributeSupplier.Builder registerAttributes() {
+		return Mob.createMobAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 4.0F)
 				.add(Attributes.MOVEMENT_SPEED, 0.2F)
 				.add(Attributes.MAX_HEALTH, 25.0F)
@@ -115,10 +127,10 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	public void tick() {
 		super.tick();
 		this.endimateTick();
-		World world = this.level;
+		Level world = this.level;
 		if (world.isClientSide) {
 			this.prevPull = this.pull;
-			Vector3d pos = this.position();
+			Vec3 pos = this.position();
 			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
 
 			if (this.isBoosting() && world.getGameTime() % 4 == 0) {
@@ -189,7 +201,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundNBT compound) {
+	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("Size", this.getSize().ordinal());
 		compound.putInt("Age", this.growingAge);
@@ -197,14 +209,14 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
 		compound.putInt("RestCooldown", this.restCooldown);
 		if (this.isResting()) {
-			compound.put("FlowerPos", NBTUtil.writeBlockPos(this.flowerPos));
+			compound.put("FlowerPos", NbtUtils.writeBlockPos(this.flowerPos));
 		}
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundNBT compound) {
+	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		this.setSize(PurpoidSize.values()[MathHelper.clamp(compound.getInt("Size"), 0, 2)], false);
+		this.setSize(PurpoidSize.values()[Mth.clamp(compound.getInt("Size"), 0, 2)], false);
 		this.updateAge(compound.getInt("Age"));
 		this.setBoostingTicks(Math.max(0, compound.getInt("BoostingTicks")));
 		if (compound.contains("TeleportCooldown", Constants.NBT.TAG_INT)) {
@@ -214,7 +226,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			this.restCooldown = Math.max(0, compound.getInt("RestCooldown"));
 		}
 		if (compound.contains("FlowerPos", Constants.NBT.TAG_COMPOUND)) {
-			this.flowerPos = NBTUtil.readBlockPos(compound.getCompound("FlowerPos"));
+			this.flowerPos = NbtUtils.readBlockPos(compound.getCompound("FlowerPos"));
 		}
 	}
 
@@ -287,11 +299,11 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		return this.restCooldown > 0;
 	}
 
-	public void updatePull(Vector3d pos) {
+	public void updatePull(Vec3 pos) {
 		this.prevPull = this.pull = pos.subtract(0.0F, 1.0F, 0.0F);
 	}
 
-	public Vector3d getPull(float partialTicks) {
+	public Vec3 getPull(float partialTicks) {
 		return MathUtil.lerp(this.prevPull, this.pull, partialTicks);
 	}
 
@@ -322,7 +334,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public void travel(Vector3d travelVector) {
+	public void travel(Vec3 travelVector) {
 		if (this.isEffectiveAi()) {
 			this.moveRelative(0.1F, travelVector);
 			this.move(MoverType.SELF, this.getDeltaMovement());
@@ -334,14 +346,14 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 
 	@Nullable
 	@Override
-	public ILivingEntityData finalizeSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable CompoundNBT dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
 		if (spawnData == null) {
-			spawnData = new AgeableEntity.AgeableData(true);
+			spawnData = new AgableMob.AgableMobGroupData(true);
 		}
 
 		Random random = this.random;
-		if (spawnData instanceof AgeableEntity.AgeableData) {
-			AgeableEntity.AgeableData ageableData = (AgeableEntity.AgeableData) spawnData;
+		if (spawnData instanceof AgableMob.AgableMobGroupData) {
+			AgableMob.AgableMobGroupData ageableData = (AgableMob.AgableMobGroupData) spawnData;
 			if (ageableData.isShouldSpawnBaby() && ageableData.getGroupSize() > 0 && random.nextFloat() <= ageableData.getBabySpawnChance()) {
 				this.updateAge(-24000);
 			} else if (random.nextFloat() <= 0.005F) {
@@ -369,8 +381,8 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	@Override
 	public boolean startRiding(Entity entity, boolean force) {
 		boolean riding = super.startRiding(entity, force);
-		if (entity instanceof ServerPlayerEntity) {
-			((ServerPlayerEntity) entity).connection.send(new SSetPassengersPacket(entity));
+		if (entity instanceof ServerPlayer) {
+			((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
 		}
 		return riding;
 	}
@@ -379,17 +391,17 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	public void stopRiding() {
 		Entity entity = this.getVehicle();
 		super.stopRiding();
-		if (entity instanceof ServerPlayerEntity) {
-			((ServerPlayerEntity) entity).connection.send(new SSetPassengersPacket(entity));
+		if (entity instanceof ServerPlayer) {
+			((ServerPlayer) entity).connection.send(new ClientboundSetPassengersPacket(entity));
 		}
 	}
 
 	@Override
-	protected ActionResultType mobInteract(PlayerEntity player, Hand hand) {
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (player.getMainHandItem().isEmpty() && !this.isPassenger() && this.getSize() == PurpoidSize.NORMAL && this.isAlive()) {
 			this.startRiding(player);
 			this.setTarget(player);
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
 	}
@@ -416,7 +428,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public PathNavigator createNavigation(World world) {
+	public PathNavigation createNavigation(Level world) {
 		return new EndergeticFlyingPathNavigator(this, world);
 	}
 
@@ -439,12 +451,12 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	}
 
 	@Override
-	public EntitySize getDimensions(Pose poseIn) {
+	public EntityDimensions getDimensions(Pose poseIn) {
 		return super.getDimensions(poseIn).scale(this.getSize().getScale());
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntitySize size) {
+	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions size) {
 		return size.height * 0.5F;
 	}
 
@@ -507,11 +519,11 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 	private boolean tryToTeleportRandomly(int attempts) {
 		BlockPos pos = this.blockPosition();
 		Random random = this.getRandom();
-		EntitySize size = this.getDimensions(this.getPose());
-		World world = this.level;
+		EntityDimensions size = this.getDimensions(this.getPose());
+		Level world = this.level;
 		for (int i = 0; i < attempts; i++) {
 			BlockPos randomPos = pos.offset(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
-			AxisAlignedBB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+			AABB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
 			if (world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
 				this.teleportController.beginTeleportation(this, randomPos, this.getVehicle() != null);
 				return true;
@@ -520,8 +532,8 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		return false;
 	}
 
-	static class PurpoidMoveController extends MovementController {
-		private Vector3d prevPos;
+	static class PurpoidMoveController extends MoveControl {
+		private Vec3 prevPos;
 		private int stuckTicks;
 
 		public PurpoidMoveController(PurpoidEntity mob) {
@@ -539,23 +551,23 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 		public void tick() {
 			PurpoidEntity purpoid = (PurpoidEntity) this.mob;
 			boolean boosting = purpoid.isBoosting();
-			if (this.operation == Action.MOVE_TO) {
-				Vector3d pos = purpoid.position();
+			if (this.operation == Operation.MOVE_TO) {
+				Vec3 pos = purpoid.position();
 				double x = pos.x();
 				double z = pos.z();
-				Vector3d vector3d = new Vector3d(this.wantedX - x, this.wantedY - pos.y(), this.wantedZ - z);
+				Vec3 vector3d = new Vec3(this.wantedX - x, this.wantedY - pos.y(), this.wantedZ - z);
 				double distance = vector3d.length();
 				if (distance <= 0.2F * purpoid.getSize().getScale()) {
-					this.operation = Action.WAIT;
+					this.operation = Operation.WAIT;
 				} else {
 					double dx = vector3d.x;
 					double dz = vector3d.z;
-					purpoid.yRot = purpoid.yBodyRot = this.rotlerp(purpoid.yRot, (float)(MathHelper.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F);
-					float newMoveSpeed = MathHelper.lerp(0.125F, purpoid.getSpeed(), (boosting ? 1.25F : 1.0F) * (float)(this.speedModifier * purpoid.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+					purpoid.yRot = purpoid.yBodyRot = this.rotlerp(purpoid.yRot, (float)(Mth.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F);
+					float newMoveSpeed = Mth.lerp(0.125F, purpoid.getSpeed(), (boosting ? 1.25F : 1.0F) * (float)(this.speedModifier * purpoid.getAttributeValue(Attributes.MOVEMENT_SPEED)));
 					purpoid.setSpeed(newMoveSpeed);
 					double normalizedY = vector3d.y / distance;
 					purpoid.setDeltaMovement(purpoid.getDeltaMovement().add(0.0F, newMoveSpeed * normalizedY * 0.1D, 0.0F));
-					LookController lookcontroller = purpoid.getLookControl();
+					LookControl lookcontroller = purpoid.getLookControl();
 					double d11 = lookcontroller.getWantedX();
 					double d12 = lookcontroller.getWantedY();
 					double d13 = lookcontroller.getWantedZ();
@@ -568,11 +580,11 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 						d13 = d10;
 					}
 
-					purpoid.getLookControl().setLookAt(MathHelper.lerp(0.125D, d11, d8), MathHelper.lerp(0.125D, d12, d9), MathHelper.lerp(0.125D, d13, d10), 10.0F, 40.0F);
+					purpoid.getLookControl().setLookAt(Mth.lerp(0.125D, d11, d8), Mth.lerp(0.125D, d12, d9), Mth.lerp(0.125D, d13, d10), 10.0F, 40.0F);
 
 					if (this.prevPos.distanceToSqr(pos) <= 0.005F) {
 						if (++this.stuckTicks >= 60) {
-							this.operation = Action.WAIT;
+							this.operation = Operation.WAIT;
 						}
 					} else {
 						this.stuckTicks = 0;
@@ -597,7 +609,7 @@ public class PurpoidEntity extends CreatureEntity implements IEndimatedEntity {
 			if ((purpoid.isEndimationPlaying(TELEPORT_TO_ANIMATION) || purpoid.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION)) && purpoid.getAnimationTick() == 10) {
 				this.teleportToDestination(purpoid);
 			} else if (purpoid.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
-				purpoid.setDeltaMovement(Vector3d.ZERO);
+				purpoid.setDeltaMovement(Vec3.ZERO);
 			}
 		}
 

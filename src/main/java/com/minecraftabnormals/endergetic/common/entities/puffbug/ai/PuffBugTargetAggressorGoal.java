@@ -2,7 +2,7 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 
 public class PuffBugTargetAggressorGoal extends HurtByTargetGoal {
 

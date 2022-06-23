@@ -7,26 +7,26 @@ import com.minecraftabnormals.endergetic.common.blocks.poise.PoiseTallBushBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
+public class TallPoiseBushFeature extends Feature<NoneFeatureConfiguration> {
 	private static final Supplier<BlockState> TALL_POISE_BUSH = () -> EEBlocks.TALL_POISE_BUSH.get().defaultBlockState();
 
-	public TallPoiseBushFeature(Codec<NoFeatureConfig> config) {
+	public TallPoiseBushFeature(Codec<NoneFeatureConfiguration> config) {
 		super(config);
 	}
 
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		boolean flag = false;
 
 		for (int i = 0; i < 64; ++i) {
@@ -40,8 +40,8 @@ public class TallPoiseBushFeature extends Feature<NoFeatureConfig> {
 		return flag;
 	}
 
-	private boolean isTouchingBolloomBud(IWorld world, BlockPos pos) {
-		BlockPos.Mutable mutable = pos.mutable();
+	private boolean isTouchingBolloomBud(LevelAccessor world, BlockPos pos) {
+		BlockPos.MutableBlockPos mutable = pos.mutable();
 		for (Direction direction : Direction.Plane.HORIZONTAL) {
 			BlockPos offset = mutable.relative(direction);
 			if (world.getBlockState(offset).getBlock() == EEBlocks.BOLLOOM_BUD.get() || world.getBlockState(offset.above()).getBlock() == EEBlocks.BOLLOOM_BUD.get()) {

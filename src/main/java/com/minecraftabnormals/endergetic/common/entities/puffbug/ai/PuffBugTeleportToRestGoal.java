@@ -6,12 +6,12 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity.HiveOccupantData;
 
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugTeleportToRestGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -42,12 +42,12 @@ public class PuffBugTeleportToRestGoal extends Goal {
 	@Override
 	public void start() {
 		this.puffbug.getTeleportController().processTeleportation();
-		this.puffbug.setDeltaMovement(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vec3.ZERO);
 	}
 
 	@Override
 	public void tick() {
-		this.puffbug.setDeltaMovement(Vector3d.ZERO);
+		this.puffbug.setDeltaMovement(Vec3.ZERO);
 	}
 
 	@Override

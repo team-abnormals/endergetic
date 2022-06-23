@@ -4,11 +4,11 @@ import java.util.EnumSet;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloSinkGoal extends Goal {
 	private BoofloEntity booflo;

@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -31,10 +31,10 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 		}
 		if (this.notMovingTicks >= 20 && !purpoid.isPassenger() && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown() && purpoid.isNoEndimationPlaying()) {
 			BlockPos randomPos = this.generateTeleportPos(purpoid, purpoid.getRandom());
-			World world = purpoid.level;
+			Level world = purpoid.level;
 			if (randomPos != null && world.hasChunkAt(randomPos)) {
-				AxisAlignedBB collisionBox = purpoid.getDimensions(purpoid.getPose()).makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
-				if (world.noCollision(collisionBox) && world.isUnobstructed(purpoid, VoxelShapes.create(collisionBox)) && !world.containsAnyLiquid(collisionBox)) {
+				AABB collisionBox = purpoid.getDimensions(purpoid.getPose()).makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
+				if (world.noCollision(collisionBox) && world.isUnobstructed(purpoid, Shapes.create(collisionBox)) && !world.containsAnyLiquid(collisionBox)) {
 					this.beginTeleportation(purpoid, randomPos);
 					return true;
 				}

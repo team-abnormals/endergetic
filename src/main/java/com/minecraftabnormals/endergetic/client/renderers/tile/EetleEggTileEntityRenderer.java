@@ -8,21 +8,21 @@ import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
-public class EetleEggTileEntityRenderer extends TileEntityRenderer<EetleEggTileEntity> {
+public class EetleEggTileEntityRenderer extends BlockEntityRenderer<EetleEggTileEntity> {
 	public static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/small_eetle_egg.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_egg.png"),
@@ -36,13 +36,13 @@ public class EetleEggTileEntityRenderer extends TileEntityRenderer<EetleEggTileE
 			new LargeEetleEggModel()
 	};
 
-	public EetleEggTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+	public EetleEggTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(EetleEggTileEntity eggs, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		World world = eggs.getLevel();
+	public void render(EetleEggTileEntity eggs, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+		Level world = eggs.getLevel();
 		BlockState state = DEFAULT_STATE;
 		Direction randomDirection = Direction.NORTH;
 		if (world != null) {

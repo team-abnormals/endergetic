@@ -10,12 +10,19 @@ import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
-import net.minecraft.client.audio.BackgroundMusicTracks;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.sounds.Musics;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.biome.*;
-import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.Mod;
+
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
+import net.minecraft.world.level.biome.AmbientMoodSettings;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEBiomes {
@@ -29,7 +36,7 @@ public final class EEBiomes {
 		BiomeUtil.addEndBiome(POISE_FOREST.getKey(), 6);
 
 		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
-		BiPredicate<RegistryKey<Biome>, Biome> poiseOnly = BiomeModificationPredicates.forBiomeKey(POISE_FOREST.getKey());
+		BiPredicate<ResourceKey<Biome>, Biome> poiseOnly = BiomeModificationPredicates.forBiomeKey(POISE_FOREST.getKey());
 		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(poiseOnly, EEEntities.END_CREATURE,
 				Sets.newHashSet(
 						new BiomeSpawnsModifier.SpawnInfo(EEEntities.BOOFLO_ADOLESCENT, 5, 1, 2),
@@ -37,14 +44,14 @@ public final class EEBiomes {
 						new BiomeSpawnsModifier.SpawnInfo(EEEntities.PUFF_BUG, 10, 2, 4)
 				)
 		));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStage.Decoration.SURFACE_STRUCTURES,
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStep.Decoration.SURFACE_STRUCTURES,
 				Sets.newHashSet(
 						() -> EEFeatures.Configured.POISE_DOME,
 						() -> EEFeatures.Configured.POISE_TREE,
 						() -> EEFeatures.Configured.END_GATEWAY
 				)
 		));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStage.Decoration.VEGETAL_DECORATION,
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(poiseOnly, GenerationStep.Decoration.VEGETAL_DECORATION,
 				Sets.newHashSet(
 						() -> EEFeatures.Configured.POISE_CLUSTER,
 						() -> EEFeatures.Configured.PUFFBUG_HIVE,
@@ -53,20 +60,20 @@ public final class EEBiomes {
 						() -> EEFeatures.Configured.POISE_GRASS
 				)
 		));
-		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(poiseOnly, () -> new BiomeAmbience.Builder()
+		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(poiseOnly, () -> new BiomeSpecialEffects.Builder()
 				.skyColor(0)
 				.waterColor(4159204)
 				.waterFogColor(329011)
 				.fogColor(10518688)
-				.backgroundMusic(BackgroundMusicTracks.createGameMusic(EESounds.POISE_FOREST_MUSIC.get()))
+				.backgroundMusic(Musics.createGameMusic(EESounds.POISE_FOREST_MUSIC.get()))
 				.ambientLoopSound(EESounds.POISE_FOREST_LOOP.get())
-				.ambientAdditionsSound(new SoundAdditionsAmbience(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
-				.ambientMoodSound(new MoodSoundAmbience(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
+				.ambientAdditionsSound(new AmbientAdditionsSettings(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
+				.ambientMoodSound(new AmbientMoodSettings(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
 				.build()));
 	}
 
 	public static BiomeSubRegistryHelper.KeyedBiome createPoiseForest() {
-		Biome.Builder builder = new Biome.Builder();
+		Biome.BiomeBuilder builder = new Biome.BiomeBuilder();
 		builder
 				.generationSettings(
 						new BiomeGenerationSettings.Builder()
@@ -74,21 +81,21 @@ public final class EEBiomes {
 								.build()
 				)
 				.mobSpawnSettings(
-						new MobSpawnInfo.Builder()
+						new MobSpawnSettings.Builder()
 								.creatureGenerationProbability(0.9F)
 								.build()
 				)
 				.specialEffects(
-						new BiomeAmbience.Builder()
+						new BiomeSpecialEffects.Builder()
 								.skyColor(0)
 								.waterColor(4159204)
 								.waterFogColor(329011)
 								.fogColor(10518688)
-								.ambientMoodSound(MoodSoundAmbience.LEGACY_CAVE_SETTINGS)
+								.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
 								.build()
 				)
-				.precipitation(Biome.RainType.NONE)
-				.biomeCategory(Biome.Category.THEEND)
+				.precipitation(Biome.Precipitation.NONE)
+				.biomeCategory(Biome.BiomeCategory.THEEND)
 				.depth(0.1F)
 				.scale(0.2F)
 				.temperature(0.5F)

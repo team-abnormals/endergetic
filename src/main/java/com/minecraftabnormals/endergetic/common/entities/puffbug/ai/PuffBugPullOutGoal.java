@@ -6,10 +6,10 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	private int pulls;
@@ -47,11 +47,11 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 
 			float[] rotations = this.entity.getRotationController().getRotations(1.0F);
 
-			float motionX = MathHelper.sin(rotations[1] * ((float) Math.PI / 180F)) * MathHelper.cos(rotations[0] * ((float) Math.PI / 180F));
-			float motionY = -MathHelper.sin(rotations[0] * ((float) Math.PI / 180F));
-			float motionZ = -MathHelper.cos(rotations[1] * ((float) Math.PI / 180F)) * MathHelper.cos(rotations[0] * ((float) Math.PI / 180F));
+			float motionX = Mth.sin(rotations[1] * ((float) Math.PI / 180F)) * Mth.cos(rotations[0] * ((float) Math.PI / 180F));
+			float motionY = -Mth.sin(rotations[0] * ((float) Math.PI / 180F));
+			float motionZ = -Mth.cos(rotations[1] * ((float) Math.PI / 180F)) * Mth.cos(rotations[0] * ((float) Math.PI / 180F));
 
-			Vector3d popOutMotion = new Vector3d(motionX, motionY, motionZ).normalize().scale(0.25F);
+			Vec3 popOutMotion = new Vec3(motionX, motionY, motionZ).normalize().scale(0.25F);
 			this.entity.setDeltaMovement(popOutMotion);
 		}
 	}

@@ -2,9 +2,9 @@ package com.minecraftabnormals.endergetic.common.world.configs;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public final class CorrockTowerConfig implements IFeatureConfig {
+public final class CorrockTowerConfig implements FeatureConfiguration {
 	public static Codec<CorrockTowerConfig> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				Codec.intRange(1, 128).optionalFieldOf("min_height", 2).forGetter(config -> config.minHeight),

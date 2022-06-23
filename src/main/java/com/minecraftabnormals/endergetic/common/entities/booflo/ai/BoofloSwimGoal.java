@@ -2,24 +2,24 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
-public class BoofloSwimGoal extends RandomWalkingGoal {
+public class BoofloSwimGoal extends RandomStrollGoal {
 
-	public BoofloSwimGoal(CreatureEntity booflo, double p_i48937_2_, int p_i48937_4_) {
+	public BoofloSwimGoal(PathfinderMob booflo, double p_i48937_2_, int p_i48937_4_) {
 		super(booflo, p_i48937_2_, p_i48937_4_);
 	}
 
 	@Nullable
-	protected Vector3d getPosition() {
-		Vector3d vec3d = RandomPositionGenerator.getPos(this.mob, 8, 2);
+	protected Vec3 getPosition() {
+		Vec3 vec3d = RandomPos.getPos(this.mob, 8, 2);
 
-		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathType.AIR) && i++ < 8; vec3d = RandomPositionGenerator.getPos(this.mob, 10, 2)) {
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 8; vec3d = RandomPos.getPos(this.mob, 10, 2)) {
 			;
 		}
 
@@ -36,7 +36,7 @@ public class BoofloSwimGoal extends RandomWalkingGoal {
 			}
 		}
 
-		Vector3d vec3d = this.getPosition();
+		Vec3 vec3d = this.getPosition();
 		if (vec3d == null) {
 			return false;
 		} else {

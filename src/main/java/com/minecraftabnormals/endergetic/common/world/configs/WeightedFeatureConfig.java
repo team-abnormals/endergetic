@@ -3,13 +3,13 @@ package com.minecraftabnormals.endergetic.common.world.configs;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.WeightedList;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.entity.ai.behavior.WeightedList;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 import java.util.Random;
 
-public final class WeightedFeatureConfig implements IFeatureConfig {
+public final class WeightedFeatureConfig implements FeatureConfiguration {
 	public static Codec<WeightedFeatureConfig> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
 				WeightedList.codec(ConfiguredFeature.DIRECT_CODEC).fieldOf("features").forGetter(config -> config.weightedFeatures)

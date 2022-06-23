@@ -1,15 +1,15 @@
 package com.minecraftabnormals.endergetic.api.entity.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
 
 public class EntityMotionHelper {
 
 	public static void knockbackEntity(Entity entity, float xzForce, float yForce, boolean reverse, boolean setVelocity) {
 		if (reverse) {
-			setOrAddVelocity(entity, -MathHelper.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, MathHelper.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, -Mth.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, Mth.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
 		} else {
-			setOrAddVelocity(entity, MathHelper.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, -MathHelper.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, Mth.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, -Mth.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
 		}
 	}
 

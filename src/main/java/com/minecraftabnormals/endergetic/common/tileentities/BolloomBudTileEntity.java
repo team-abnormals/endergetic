@@ -16,22 +16,22 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
-public class BolloomBudTileEntity extends TileEntity implements ITickableTileEntity {
+public class BolloomBudTileEntity extends BlockEntity implements TickableBlockEntity {
 	public final ControlledEndimation pedalAnimation = new ControlledEndimation(20, 20);
 	private EnumMap<BudSide, SideData> sideData = Util.make(new EnumMap<>(BudSide.class), (side) -> {
 		side.put(BudSide.NORTH, new SideData());
@@ -47,7 +47,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() {
 		return super.getRenderBoundingBox().inflate(1.0F);
 	}
 
@@ -95,7 +95,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 
 		if (!this.level.isClientSide) {
 			if (this.teleportingBug != null) {
-				Entity entity = ((ServerWorld) this.level).getEntity(this.teleportingBug);
+				Entity entity = ((ServerLevel) this.level).getEntity(this.teleportingBug);
 				if (entity != null && !entity.isAlive()) {
 					this.teleportingBug = null;
 				} else if (entity == null) {
@@ -172,10 +172,10 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT compound) {
+	public void load(BlockState state, CompoundTag compound) {
 		super.load(state, compound);
 
-		this.maxFruitHeight = compound.contains("MaxFruitHeight") ? MathHelper.clamp(compound.getInt("MaxFruitHeight"), 1, 7) : 7;
+		this.maxFruitHeight = compound.contains("MaxFruitHeight") ? Mth.clamp(compound.getInt("MaxFruitHeight"), 1, 7) : 7;
 
 		this.sideData.forEach((side, sideData) -> {
 			String sideName = StringUtils.capitaliseFirstLetter(side.direction.toString());
@@ -191,7 +191,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT compound) {
+	public CompoundTag save(CompoundTag compound) {
 		super.save(compound);
 
 		if (compound.contains("MaxFruitHeight")) {
@@ -217,12 +217,12 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 	}
 
 	@Nullable
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(this.worldPosition, 100, this.getUpdateTag());
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return new ClientboundBlockEntityDataPacket(this.worldPosition, 100, this.getUpdateTag());
 	}
 
-	public CompoundNBT getUpdateTag() {
-		return this.save(new CompoundNBT());
+	public CompoundTag getUpdateTag() {
+		return this.save(new CompoundTag());
 	}
 
 	@Override
@@ -285,9 +285,9 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 		private int growTimer;
 		private boolean growing;
 
-		public BolloomFruitEntity getFruit(World world) {
+		public BolloomFruitEntity getFruit(Level world) {
 			if (!world.isClientSide() && this.fruitUUID != null) {
-				Entity entity = ((ServerWorld) world).getEntity(this.fruitUUID);
+				Entity entity = ((ServerLevel) world).getEntity(this.fruitUUID);
 				if (entity instanceof BolloomFruitEntity) {
 					return (BolloomFruitEntity) entity;
 				}
@@ -295,7 +295,7 @@ public class BolloomBudTileEntity extends TileEntity implements ITickableTileEnt
 			return null;
 		}
 
-		public boolean hasFruit(World world) {
+		public boolean hasFruit(Level world) {
 			if (this.growing) {
 				return true;
 			}

@@ -5,36 +5,36 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
 import com.minecraftabnormals.endergetic.common.world.structures.pieces.EetleNestPieces;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfig> {
+public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatureConfiguration> {
 	private static final Direction[] DIRECTIONS = getDirections(false);
 	private static final Direction[] DIRECTIONS_REVERSED = getDirections(true);
 	private static final BlockState SPECKLED_CORROCK = EEBlocks.SPECKLED_END_CORROCK.get().defaultBlockState();
 
-	public CorrockShelfFeature(Codec<ProbabilityConfig> configFactory) {
+	public CorrockShelfFeature(Codec<ProbabilityFeatureConfiguration> configFactory) {
 		super(configFactory);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityFeatureConfiguration config) {
 		//Dirty trick to fix Shelfs attaching to not yet generated chunks in Eetle Nests
 		if (EetleNestPieces.isNotInsideGeneratingBounds(pos) && world.isEmptyBlock(pos) && world.getBlockState(pos.above()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
 			int size = rand.nextBoolean() ? 3 : 4;
 			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, 10, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
-			BlockPos.Mutable mutable = new BlockPos.Mutable();
+			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			BlockState corrockState = CORROCK_STATE.get();
 			for (int i = 0; i < 16; i++) {
 				if (rand.nextFloat() < 0.4F && world.isEmptyBlock(mutable.setWithOffset(pos, rand.nextInt(size) - rand.nextInt(size), 1, rand.nextInt(size) - rand.nextInt(size)))) {
@@ -54,7 +54,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		return directions;
 	}
 
-	private static boolean isTouchingWall(ISeedReader world, BlockPos origin) {
+	private static boolean isTouchingWall(WorldGenLevel world, BlockPos origin) {
 		for (Direction direction : DIRECTIONS) {
 			if (searchForWall(world, origin.mutable(), direction) && searchForWall(world, origin.mutable().move(direction.getClockWise()), direction) && searchForWall(world, origin.mutable().move(direction.getCounterClockWise()), direction)) {
 				return true;
@@ -63,7 +63,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		return false;
 	}
 
-	private static boolean searchForWall(ISeedReader world, BlockPos.Mutable mutable, Direction facing) {
+	private static boolean searchForWall(WorldGenLevel world, BlockPos.MutableBlockPos mutable, Direction facing) {
 		for (int i = 0; i < 2; i++) {
 			Block block = world.getBlockState(mutable.move(facing)).getBlock();
 			if (block == Blocks.END_STONE || block == CORROCK_BLOCK_BLOCK || block == EEBlocks.EUMUS.get()) {
@@ -73,10 +73,10 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		return false;
 	}
 
-	private static void generateShelf(ISeedReader world, Random rand, int originX, int originY, int originZ, int size, int edgeBias, float underXDistance, float underZDistance, float crownChance) {
+	private static void generateShelf(WorldGenLevel world, Random rand, int originX, int originY, int originZ, int size, int edgeBias, float underXDistance, float underZDistance, float crownChance) {
 		int min = -(size / edgeBias + size);
 		int max = size / edgeBias + size;
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 		List<BlockPos> wallCrowns = new ArrayList<>();
 		List<BlockPos> speckledPatchPositions = new ArrayList<>();
@@ -153,7 +153,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityConfi
 		}
 	}
 
-	private static boolean canReplace(ISeedReader world, BlockPos pos) {
+	private static boolean canReplace(WorldGenLevel world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		return state.getMaterial().isReplaceable() || state.getBlock() instanceof CorrockPlantBlock || state.getBlock() instanceof CorrockCrownBlock;
 	}

@@ -5,27 +5,27 @@ import java.util.Random;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
+public class PoiseClusterFeature extends Feature<NoneFeatureConfiguration> {
 	private static final BlockState GLOWING_POISE_LOG = EEBlocks.GLOWING_POISE_WOOD.get().defaultBlockState();
 	private static final BlockState POISE_CLUSTER = EEBlocks.POISE_CLUSTER.get().defaultBlockState();
 
-	public PoiseClusterFeature(Codec<NoFeatureConfig> configFactoryIn) {
+	public PoiseClusterFeature(Codec<NoneFeatureConfiguration> configFactoryIn) {
 		super(configFactoryIn);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.below()).getBlock() == EEBlocks.POISMOSS.get()) {
 			this.createGlob(rand.nextInt(12), world, pos, rand);
 			return true;
@@ -33,7 +33,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 		return false;
 	}
 
-	private void createGlob(int variation, IWorld world, BlockPos pos, Random rand) {
+	private void createGlob(int variation, LevelAccessor world, BlockPos pos, Random rand) {
 		this.setBlockIfReplacable(world, pos, GLOWING_POISE_LOG);
 		this.setBlockIfReplacable(world, pos.north(), POISE_CLUSTER);
 		this.setBlockIfReplacable(world, pos.east(), POISE_CLUSTER);
@@ -94,7 +94,7 @@ public class PoiseClusterFeature extends Feature<NoFeatureConfig> {
 		}
 	}
 
-	private void setBlockIfReplacable(IWorld world, BlockPos pos, BlockState newState) {
+	private void setBlockIfReplacable(LevelAccessor world, BlockPos pos, BlockState newState) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos.above()).getBlock() != EEBlocks.TALL_POISE_BUSH.get() && world.getBlockState(pos.below()).getBlock() != EEBlocks.TALL_POISE_BUSH.get()) {
 			world.setBlock(pos, newState, 2);
 		}

@@ -4,26 +4,26 @@ import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<ProbabilityConfig> {
+public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<ProbabilityFeatureConfiguration> {
 
-	public SmallCorrockTowerFeature(Codec<ProbabilityConfig> configFactory) {
+	public SmallCorrockTowerFeature(Codec<ProbabilityFeatureConfiguration> configFactory) {
 		super(configFactory);
 	}
 
 	@Override
-	public boolean place(ISeedReader world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityFeatureConfiguration config) {
 		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
 			GenerationPiece base = getBase(world, pos, rand);
 			if (base != null) {
@@ -74,7 +74,7 @@ public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<Proba
 	}
 
 	@Nullable
-	private static GenerationPiece getBase(IWorld world, BlockPos pos, Random rand) {
+	private static GenerationPiece getBase(LevelAccessor world, BlockPos pos, Random rand) {
 		int successfulSides = 0;
 		GenerationPiece piece = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos) && Block.canSupportRigidBlock(w, p.pos.below()));
 		BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();

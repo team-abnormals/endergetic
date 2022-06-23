@@ -5,13 +5,13 @@ import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.resources.ResourceLocation;
 
-public class PoiseClusterRender extends LivingRenderer<PoiseClusterEntity, PoiseClusterModel<PoiseClusterEntity>> {
+public class PoiseClusterRender extends LivingEntityRenderer<PoiseClusterEntity, PoiseClusterModel<PoiseClusterEntity>> {
 
-	public PoiseClusterRender(EntityRendererManager renderManager) {
+	public PoiseClusterRender(EntityRenderDispatcher renderManager) {
 		super(renderManager, new PoiseClusterModel<>(), 0.0F);
 	}
 

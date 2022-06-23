@@ -13,11 +13,11 @@ import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.biome.*;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,9 +40,9 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EnderCrystalRenderer;
-import net.minecraft.client.renderer.tileentity.CampfireTileEntityRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EndCrystalRenderer;
+import net.minecraft.client.renderer.blockentity.CampfireRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -61,6 +61,11 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.EnumSet;
 import java.util.function.BiPredicate;
+
+import net.minecraft.world.level.biome.AmbientAdditionsSettings;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.Biomes;
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
@@ -129,15 +134,15 @@ public class EndergeticExpansion {
 	@SuppressWarnings("unchecked")
 	private static void modifyBiomes() {
 		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
-		BiPredicate<RegistryKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
-		BiPredicate<RegistryKey<Biome>, Biome> highlandsOrMidlands = highlandsOnly.or(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS));
-		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStage.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
+		BiPredicate<ResourceKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
+		BiPredicate<ResourceKey<Biome>, Biome> highlandsOrMidlands = highlandsOnly.or(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS));
+		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStep.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
 		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOrMidlands, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStep.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_PATCH,
 				() -> EEFeatures.Configured.EETLE_EGG
 		)));
-		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStage.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
+		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStep.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
 				() -> EEFeatures.Configured.CORROCK_BRANCH,
 				() -> EEFeatures.Configured.CORROCK_TOWER,
 				() -> EEFeatures.Configured.CORROCK_SHELF,
@@ -146,18 +151,18 @@ public class EndergeticExpansion {
 				() -> EEFeatures.Configured.SPECKLED_CORROCK_PATCH
 		)));
 		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));
-		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOrMidlands, EntityClassification.MONSTER, Sets.newHashSet(
+		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOrMidlands, MobCategory.MONSTER, Sets.newHashSet(
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.CHARGER_EETLE, 12, 2, 5),
 				new BiomeSpawnsModifier.SpawnInfo(EEEntities.GLIDER_EETLE, 8, 2, 4)
 		)));
 		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
 		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.GLIDER_EETLE::get, 0.8D, 1.0D));
-		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStage.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
+		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStep.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
 
 		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), () -> {
-			return new BiomeAmbience.Builder().waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0)
+			return new BiomeSpecialEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0)
 					.ambientLoopSound(EESounds.SMALL_END_ISLANDS_LOOP.get())
-					.ambientAdditionsSound(new SoundAdditionsAmbience(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
+					.ambientAdditionsSound(new AmbientAdditionsSettings(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
 					.build();
 		}));
 	}
@@ -171,7 +176,7 @@ public class EndergeticExpansion {
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntityRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), DispensedBoofBlockTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(EETileEntities.ENDER_CAMPFIRE.get(), CampfireTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(EETileEntities.ENDER_CAMPFIRE.get(), CampfireRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(EETileEntities.EETLE_EGG.get(), EetleEggTileEntityRenderer::new);
 
 		RenderingRegistry.registerEntityRenderingHandler(EEEntities.BOLLOOM_FRUIT.get(), BolloomFruitRenderer::new);
@@ -192,7 +197,7 @@ public class EndergeticExpansion {
 
 		KeybindHandler.registerKeys();
 
-		EnderCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
+		EndCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("endergetic:poise_forest"));
 	}
 

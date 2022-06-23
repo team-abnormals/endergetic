@@ -3,11 +3,11 @@ package com.minecraftabnormals.endergetic.client.models.booflo;
 import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 /**
  * ModelAdolescentBooflo - Endergized
@@ -60,7 +60,7 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 		this.animateModel(this.entity);
 
 		this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -82,30 +82,30 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
 
 		this.revertBoxesToDefaultValues();
 
-		this.Tail.yRot = 0.1F * MathHelper.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
+		this.Tail.yRot = 0.1F * Mth.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
 
 		if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && !entityIn.isInWater()) {
 			if (entityIn.getVehicle() == null && !entityIn.isEating()) {
-				this.Head.y += 0.5F * MathHelper.sin(0.4F * ageInTicks);
-				this.Jaw.y += 0.5F * MathHelper.sin(0.4F * ageInTicks);
+				this.Head.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+				this.Jaw.y += 0.5F * Mth.sin(0.4F * ageInTicks);
 			}
 			if (!entityIn.isEating()) {
-				this.KneeLeft.zRot += 0.1F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
-				this.KneeRight.zRot += 0.1F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
-				this.ArmLeft.zRot += 0.3F * -MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
-				this.ArmRight.zRot += 0.3F * MathHelper.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
+				this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
+				this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
+				this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
+				this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
 			}
 		} else if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && entityIn.isInWater()) {
-			this.Head.y += 0.5F * MathHelper.sin(0.4F * ageInTicks);
-			this.Jaw.y += 0.5F * MathHelper.sin(0.4F * ageInTicks);
-			this.KneeLeft.zRot += 0.1F * -MathHelper.sin(0.6F * ageInTicks);
-			this.KneeRight.zRot += 0.1F * MathHelper.sin(0.6F * ageInTicks);
-			this.ArmLeft.zRot += 0.3F * -MathHelper.sin(0.6F * ageInTicks) - 0.17F;
-			this.ArmRight.zRot += 0.3F * MathHelper.sin(0.6F * ageInTicks) + 0.17F;
+			this.Head.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+			this.Jaw.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+			this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * ageInTicks);
+			this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * ageInTicks);
+			this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * ageInTicks) - 0.17F;
+			this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * ageInTicks) + 0.17F;
 		}
 
 		if (entityIn.isAggressive()) {
-			this.Jaw.xRot += 0.2F * MathHelper.sin(0.3F * ageInTicks) + 0.4F;
+			this.Jaw.xRot += 0.2F * Mth.sin(0.3F * ageInTicks) + 0.4F;
 		}
 	}
 

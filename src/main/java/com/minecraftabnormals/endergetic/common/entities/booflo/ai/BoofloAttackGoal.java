@@ -8,14 +8,14 @@ import javax.annotation.Nullable;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.core.BlockPos;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloAttackGoal extends Goal {
 	private final int UPPER_DISTANCE = 16;
@@ -71,7 +71,7 @@ public class BoofloAttackGoal extends Goal {
 		} else if (this.booflo.blockPosition().distSqr(this.upperAirPos) > UPPER_DISTANCE) {
 			return false;
 		} else {
-			return !(target instanceof PlayerEntity) || !target.isSpectator() && !((PlayerEntity) target).isCreative();
+			return !(target instanceof Player) || !target.isSpectator() && !((Player) target).isCreative();
 		}
 	}
 
@@ -83,7 +83,7 @@ public class BoofloAttackGoal extends Goal {
 
 	public void stop() {
 		Entity target = this.booflo.getBoofloAttackTarget();
-		if (!EntityPredicates.NO_CREATIVE_OR_SPECTATOR.test(target)) {
+		if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
 			this.booflo.setBoofloAttackTargetId(0);
 		}
 		this.booflo.setAggressive(false);

@@ -5,16 +5,16 @@ import java.util.Random;
 import com.minecraftabnormals.endergetic.common.blocks.AcidianLanternBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.EndPodiumFeature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	public static final BlockPos END_PODIUM_LOCATION = BlockPos.ZERO;
@@ -35,7 +35,7 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	}
 
 	@Override
-	public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
 		for (BlockPos blockpos : BlockPos.betweenClosed(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
 			boolean flag = blockpos.closerThan(pos, 2.5D);
 			if (flag || blockpos.closerThan(pos, 3.5D)) {
@@ -84,13 +84,13 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 		return true;
 	}
 
-	private void createRuneSide(IWorld world, BlockPos pos, Direction direction, boolean active) {
-		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalBlock.FACING, direction.getOpposite()));
-		this.setBlockState(world, pos.relative(direction, 3).above(), MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(active).setValue(HorizontalBlock.FACING, direction));
-		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getCounterClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalBlock.FACING, direction));
+	private void createRuneSide(LevelAccessor world, BlockPos pos, Direction direction, boolean active) {
+		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalDirectionalBlock.FACING, direction.getOpposite()));
+		this.setBlockState(world, pos.relative(direction, 3).above(), MYSTICAL_OBSIDIAN_ACTIVATION_RUNE(active).setValue(HorizontalDirectionalBlock.FACING, direction));
+		this.setBlockState(world, pos.relative(direction, 3).relative(direction.getCounterClockWise()).above(), MYSTICAL_OBSIDIAN_RUNE.setValue(HorizontalDirectionalBlock.FACING, direction));
 	}
 
-	private void setBlockState(IWorld world, BlockPos pos, BlockState state) {
+	private void setBlockState(LevelAccessor world, BlockPos pos, BlockState state) {
 		world.setBlock(pos, state, 2);
 	}
 }

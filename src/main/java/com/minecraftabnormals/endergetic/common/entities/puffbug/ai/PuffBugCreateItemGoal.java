@@ -8,10 +8,10 @@ import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.effect.MobEffects;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 	private int ticksPassed;
@@ -59,7 +59,7 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 				this.entity.level.addFreshEntity(itementity);
 				this.entity.setStackToCreate(null);
 
-				this.entity.removeEffect(Effects.LEVITATION);
+				this.entity.removeEffect(MobEffects.LEVITATION);
 
 				double posX = this.entity.getX();
 				double posY = this.entity.getY();

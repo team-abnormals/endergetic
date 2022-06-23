@@ -4,23 +4,23 @@ import java.util.Random;
 
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IGrowable;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.lighting.LightEngine;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.lighting.LayerLightEngine;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.ToolType;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 @SuppressWarnings("deprecation")
-public class PoismossEumusBlock extends Block implements IGrowable {
+public class PoismossEumusBlock extends Block implements BonemealableBlock {
 
 	public PoismossEumusBlock(Properties properties) {
 		super(properties);
@@ -32,7 +32,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
 		if (!worldIn.isClientSide) {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
 
@@ -53,24 +53,24 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 		}
 	}
 
-	private static boolean isLightCoveringPos(BlockState p_220257_0_, IWorldReader p_220257_1_, BlockPos p_220257_2_) {
+	private static boolean isLightCoveringPos(BlockState p_220257_0_, LevelReader p_220257_1_, BlockPos p_220257_2_) {
 		BlockPos blockpos = p_220257_2_.above();
 		BlockState blockstate = p_220257_1_.getBlockState(blockpos);
-		int i = LightEngine.getLightBlockInto(p_220257_1_, p_220257_0_, p_220257_2_, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(p_220257_1_, blockpos));
+		int i = LayerLightEngine.getLightBlockInto(p_220257_1_, p_220257_0_, p_220257_2_, blockstate, blockpos, Direction.UP, blockstate.getLightBlock(p_220257_1_, blockpos));
 		return i < p_220257_1_.getMaxLightLevel();
 	}
 
-	private static boolean shouldGrowOnto(BlockState p_220256_0_, IWorldReader p_220256_1_, BlockPos p_220256_2_) {
+	private static boolean shouldGrowOnto(BlockState p_220256_0_, LevelReader p_220256_1_, BlockPos p_220256_2_) {
 		BlockPos blockpos = p_220256_2_.above();
 		return isLightCoveringPos(p_220256_0_, p_220256_1_, p_220256_2_) && !p_220256_1_.getFluidState(blockpos).is(FluidTags.WATER);
 	}
 
-	public boolean isValidBonemealTarget(IBlockReader worldIn, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(BlockGetter worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return worldIn.getBlockState(pos.above()).isAir();
 	}
 
 	@Override
-	public void performBonemeal(ServerWorld worldIn, Random rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel worldIn, Random rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.above();
 		BlockState blockstate = EEBlocks.POISE_BUSH.get().defaultBlockState();
 
@@ -82,7 +82,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 				if (j >= i / 16) {
 					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
-						((IGrowable) blockstate.getBlock()).performBonemeal(worldIn, rand, blockpos1, blockstate2);
+						((BonemealableBlock) blockstate.getBlock()).performBonemeal(worldIn, rand, blockpos1, blockstate2);
 					}
 
 					if (!blockstate2.isAir()) {
@@ -108,7 +108,7 @@ public class PoismossEumusBlock extends Block implements IGrowable {
 		}
 	}
 
-	public boolean isBonemealSuccess(World worldIn, Random rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
 		return true;
 	}
 }

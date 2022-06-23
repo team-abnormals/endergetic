@@ -4,14 +4,14 @@ import com.minecraftabnormals.endergetic.client.EERenderTypes;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.*;
 import com.minecraftabnormals.endergetic.client.renderers.tile.EetleEggTileEntityRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
 
 public class EetleEggRenderer extends EntityRenderer<EetleEggEntity> {
 	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
@@ -20,12 +20,12 @@ public class EetleEggRenderer extends EntityRenderer<EetleEggEntity> {
 			new LargeEetleEggModel()
 	};
 
-	public EetleEggRenderer(EntityRendererManager renderManager) {
+	public EetleEggRenderer(EntityRenderDispatcher renderManager) {
 		super(renderManager);
 	}
 
 	@Override
-	public void render(EetleEggEntity eggsEntity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn) {
+	public void render(EetleEggEntity eggsEntity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn) {
 		matrixStack.pushPose();
 		matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -1.5F, 0.0F);

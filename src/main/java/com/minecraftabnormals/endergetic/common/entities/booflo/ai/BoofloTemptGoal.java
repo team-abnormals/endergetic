@@ -7,18 +7,18 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Mth;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloTemptGoal extends Goal {
-	private static final EntityPredicate SHOULD_FOLLOW = (new EntityPredicate()).range(10.0D).allowSameTeam().allowNonAttackable().allowInvulnerable();
+	private static final TargetingConditions SHOULD_FOLLOW = (new TargetingConditions()).range(10.0D).allowSameTeam().allowNonAttackable().allowInvulnerable();
 	private BoofloEntity booflo;
-	private PlayerEntity tempter;
+	private Player tempter;
 
 	public BoofloTemptGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
@@ -58,7 +58,7 @@ public class BoofloTemptGoal extends Goal {
 		double dx = this.tempter.getX() - this.booflo.getX();
 		double dz = this.tempter.getZ() - this.booflo.getZ();
 
-		float angle = (float) (MathHelper.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
+		float angle = (float) (Mth.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
 
 		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController) {
 			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(angle, false);

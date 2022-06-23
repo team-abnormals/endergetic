@@ -4,9 +4,9 @@ import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEnti
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 
 /**
  * @author Endergized
@@ -177,7 +177,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	}
 
 	@Override
-	public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.wingLeft.visible = this.wingLeft.yRot >= WING_SHOW_THRESHOLD;
 		this.wingRight.visible = this.wingRight.yRot <= -WING_SHOW_THRESHOLD;
@@ -189,7 +189,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		super.setupAnim(eetle, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
 		FlyingRotations flyingRotations = eetle.getFlyingRotations();
-		this.body.xRot += MathHelper.clamp(flyingRotations.getRenderFlyPitch(), -30.0F, 20.0F) * ((float) Math.PI / 180.0F);
+		this.body.xRot += Mth.clamp(flyingRotations.getRenderFlyPitch(), -30.0F, 20.0F) * ((float) Math.PI / 180.0F);
 
 		if (eetle.isFlying()) {
 			this.body.zRot = flyingRotations.getRenderFlyRoll() * ((float) Math.PI / 180.0F);
@@ -198,7 +198,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		float flyingProgress = eetle.getFlyingProgress();
 		float sleepingProgress = eetle.getSleepingProgress();
 		this.head.yRot = netHeadYaw * ((float) Math.PI / 180.0F);
-		this.head.xRot += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F)) + 0.35F * sleepingProgress + sleepingProgress * 0.06F * MathHelper.sin(0.08F * ageInTicks);
+		this.head.xRot += 0.35F * flyingProgress + (headPitch * ((float) Math.PI / 180.0F)) + 0.35F * sleepingProgress + sleepingProgress * 0.06F * Mth.sin(0.08F * ageInTicks);
 
 		this.body.y += sleepingProgress * 6.0F;
 
@@ -222,19 +222,19 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.rightBackLeg.yRot -= backLegSleepingY;
 
 		float healPulseProgress = eetle.getHealPulseProgress();
-		float scale = 1.0F + 0.05F * Math.abs(MathHelper.sin(0.05F * ageInTicks)) + 0.1F * MathHelper.sin((float) Math.PI * 0.5F * healPulseProgress);
+		float scale = 1.0F + 0.05F * Math.abs(Mth.sin(0.05F * ageInTicks)) + 0.1F * Mth.sin((float) Math.PI * 0.5F * healPulseProgress);
 		this.eggSack.setScale(scale, scale, scale);
 		EndimatorModelRenderer egg = this.egg;
 		float eggScale = 0.15F * healPulseProgress * healPulseProgress * healPulseProgress;
 		egg.setScale(egg.scaleX + eggScale, egg.scaleY + eggScale, egg.scaleZ + eggScale);
 
-		float eggMouthAngle = 0.087F * Math.abs(MathHelper.cos(0.05F * ageInTicks)) + 0.79F * eetle.getEggMouthProgress();
+		float eggMouthAngle = 0.087F * Math.abs(Mth.cos(0.05F * ageInTicks)) + 0.79F * eetle.getEggMouthProgress();
 		this.eggMouthTop.yRot -= eggMouthAngle;
 		this.eggMouthBottom.yRot -= eggMouthAngle;
 		this.eggMouthRight.yRot -= eggMouthAngle;
 		this.eggMouthLeft.yRot -= eggMouthAngle;
 
-		egg.xRot += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * MathHelper.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
+		egg.xRot += computeSmoothCurve(eetle.getEggCannonProgress(), 0.0F, 0.01F, 0.91F) - computeSmoothCurve(eetle.getEggCannonFlyingProgress(), 0.0F, 0.0F, 0.8F) + 0.07F * Mth.sin(0.09F * ageInTicks) - 0.44F * sleepingProgress;
 
 		float takeOffProgress = eetle.getTakeoffProgress();
 		float thirtyDegreeProgress = 0.52F * takeOffProgress;
@@ -248,15 +248,15 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.rightShell.yRot -= shellY;
 
 		if (eetle.isFlying()) {
-			float wingX = 0.1F * MathHelper.sin(8.0F * eetle.getWingFlap()) + (0.26F * takeOffProgress);
+			float wingX = 0.1F * Mth.sin(8.0F * eetle.getWingFlap()) + (0.26F * takeOffProgress);
 			this.wingLeft.xRot += wingX;
 			this.wingRight.xRot += wingX;
 
-			float frontLegMoving = Math.abs(MathHelper.cos(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
+			float frontLegMoving = Math.abs(Mth.cos(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
 			this.leftFrontLeg.xRot -= frontLegMoving;
 			this.rightFrontLeg.xRot -= frontLegMoving;
 
-			float backLegMoving = Math.abs(MathHelper.sin(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
+			float backLegMoving = Math.abs(Mth.sin(limbSwing * 0.3F)) * 0.21F * limbSwingAmount;
 			this.leftBackLeg.xRot += backLegMoving;
 			this.rightBackLeg.xRot += backLegMoving;
 		}

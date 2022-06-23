@@ -1,15 +1,15 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-import net.minecraft.entity.ai.goal.Goal.Flag;
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleFlyNearPosGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -28,7 +28,7 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 		if (broodEetle.isFlying() && broodEetle.hasWokenUp() && broodEetle.getRandom().nextFloat() < 0.1F) {
 			BlockPos takeoffPos = broodEetle.takeoffPos;
 			if (takeoffPos != null) {
-				Vector3d vector3d = findPos(broodEetle, Vector3d.atCenterOf(broodEetle.takeoffPos));
+				Vec3 vector3d = findPos(broodEetle, Vec3.atCenterOf(broodEetle.takeoffPos));
 				if (vector3d == null) {
 					return false;
 				} else {
@@ -57,9 +57,9 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 	}
 
 	@Nullable
-	private static Vector3d findPos(BroodEetleEntity broodEetle, Vector3d takeoffPos) {
-		Vector3d differenceNormalized = takeoffPos.subtract(broodEetle.position()).normalize();
+	private static Vec3 findPos(BroodEetleEntity broodEetle, Vec3 takeoffPos) {
+		Vec3 differenceNormalized = takeoffPos.subtract(broodEetle.position()).normalize();
 		boolean verticalFarAway = Math.abs(broodEetle.getY() - takeoffPos.y()) >= 6;
-		return RandomPositionGenerator.generateRandomPos(broodEetle, 8, verticalFarAway ? 2 : 1, verticalFarAway ? -1 : 6, differenceNormalized, false, ((float)Math.PI / 2.0F), broodEetle::getWalkTargetValue, true, 2, 1, true);
+		return RandomPos.generateRandomPos(broodEetle, 8, verticalFarAway ? 2 : 1, verticalFarAway ? -1 : 6, differenceNormalized, false, ((float)Math.PI / 2.0F), broodEetle::getWalkTargetValue, true, 2, 1, true);
 	}
 }

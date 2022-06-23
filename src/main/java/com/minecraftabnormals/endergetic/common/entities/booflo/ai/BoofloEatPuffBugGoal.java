@@ -3,8 +3,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
 
 public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	private float originalYaw;
@@ -36,7 +36,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 		if (this.entity.isPlayerNear(0.6F)) {
 			if (!this.entity.isTamed()) {
 				this.entity.hopDelay = 0;
-				for (PlayerEntity players : this.entity.getNearbyPlayers(0.6F)) {
+				for (Player players : this.entity.getNearbyPlayers(0.6F)) {
 					if (!this.entity.hasAggressiveAttackTarget()) {
 						this.entity.setBoofloAttackTargetId(players.getId());
 					}
@@ -69,7 +69,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 
 		if (this.entity.isPlayerNear(1.0F) && this.soundDelay == 0) {
 			if (!this.entity.isTamed()) {
-				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) MathHelper.clamp(this.entity.getRandom().nextFloat() * 1.0, 0.95F, 1.0F));
+				this.entity.playSound(this.entity.getGrowlSound(), 0.75F, (float) Mth.clamp(this.entity.getRandom().nextFloat() * 1.0, 0.95F, 1.0F));
 				this.soundDelay = 50;
 			}
 		}

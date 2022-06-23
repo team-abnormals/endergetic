@@ -7,9 +7,9 @@ import java.util.UUID;
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
@@ -29,11 +29,11 @@ public final class EntityMixin implements BalloonHolder {
 	private UUID uuid;
 
 	@Shadow
-	private World level;
+	private Level level;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;moveTo(DDDFF)V", shift = At.Shift.AFTER), method = "teleportTo")
 	private void updateBalloonPositions(double x, double y, double z, CallbackInfo info) {
-		ServerWorld level = (ServerWorld) this.level;
+		ServerLevel level = (ServerLevel) this.level;
 		this.balloons.forEach(balloon -> {
 			level.updateChunkPos(balloon);
 			balloon.forceChunkAddition = true;
