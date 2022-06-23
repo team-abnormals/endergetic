@@ -20,9 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nullable;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * @author - SmellyModder (Luke Tonon)
@@ -74,7 +72,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 
 			if (this.getY() >= 254 && this.isUntied()) {
 				this.onBroken(true);
-				this.remove();
+				this.discard();
 			}
 
 			float dangle = this.getDesiredAngle() - this.getAngle();
@@ -231,11 +229,6 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	@Override
-	protected boolean isMovementNoisy() {
-		return false;
-	}
-
-	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
 		return this.isInvulnerable() && source != DamageSource.OUT_OF_WORLD && source != DamageSource.CRAMMING;
 	}
@@ -256,7 +249,7 @@ public abstract class AbstractBolloomEntity extends Entity {
 			return false;
 		} else {
 			if (this.isAlive() && !this.level.isClientSide) {
-				this.remove();
+				this.discard();
 				this.markHurt();
 				this.onBroken(true);
 			}
@@ -275,14 +268,9 @@ public abstract class AbstractBolloomEntity extends Entity {
 		return super.getBoundingBoxForCulling().inflate(5);
 	}
 
-	@Nullable
-	public AABB getCollisionBoundingBox() {
-		return this.getBoundingBox();
-	}
-
-	@Nullable
-	public AABB getCollisionBox(Entity entityIn) {
-		return entityIn.isPushable() ? entityIn.getBoundingBox() : null;
+	@Override
+	protected MovementEmission getMovementEmission() {
+		return MovementEmission.NONE;
 	}
 
 	@Override

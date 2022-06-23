@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
 import java.util.Map.Entry;
 
+import com.teamabnormals.blueprint.core.util.item.ItemStackUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -42,13 +42,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class PuffBugBottleItem extends Item {
 
@@ -95,7 +91,7 @@ public class PuffBugBottleItem extends Item {
 					puffbug.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(puffbug.blockPosition()), MobSpawnType.BUCKET, null, stack.getOrCreateTag());
 					world.addFreshEntity(puffbug);
 					booflo.catchPuffBug(puffbug);
-					if (!player.abilities.instabuild) {
+					if (!player.getAbilities().instabuild) {
 						this.emptyBottle(player, hand);
 					}
 				}
@@ -124,7 +120,7 @@ public class PuffBugBottleItem extends Item {
 					if (entitytype.spawn((ServerLevel) worldIn, itemstack, playerIn, blockpos, MobSpawnType.SPAWN_EGG, false, false) == null) {
 						return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 					} else {
-						if (!playerIn.abilities.instabuild) {
+						if (!playerIn.getAbilities().instabuild) {
 							this.emptyBottle(playerIn, handIn);
 						}
 
@@ -142,10 +138,10 @@ public class PuffBugBottleItem extends Item {
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		CompoundTag nbt = stack.getTag();
 		if (nbt != null && nbt.contains("CustomPotionEffects")) {
-			tooltip.add(new TranslatableComponent("tooltip.endergetic.activePotions").withStyle(ChatFormatting.DARK_PURPLE));
+			tooltip.add(Component.translatable("tooltip.endergetic.activePotions").withStyle(ChatFormatting.DARK_PURPLE));
 			for (MobEffectInstance effects : PotionUtils.getCustomEffects(nbt)) {
 				ChatFormatting[] potionTextFormat = new ChatFormatting[]{ChatFormatting.ITALIC, this.getEffectTextColor(effects)};
-				tooltip.add(new TextComponent(" " + I18n.get(effects.getDescriptionId()) + " " + ItemStackUtil.intToRomanNumerals(effects.getAmplifier() + 1)).withStyle(potionTextFormat));
+				tooltip.add(Component.literal(" " + I18n.get(effects.getDescriptionId()) + " " + ItemStackUtil.intToRomanNumerals(effects.getAmplifier() + 1)).withStyle(potionTextFormat));
 			}
 		}
 	}

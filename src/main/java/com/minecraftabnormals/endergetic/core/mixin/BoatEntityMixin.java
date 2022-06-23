@@ -2,12 +2,12 @@ package com.minecraftabnormals.endergetic.core.mixin;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonOrder;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.interfaces.CustomBalloonPositioner;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
@@ -65,7 +65,7 @@ public abstract class BoatEntityMixin extends Entity implements CustomBalloonPos
 		Map<UUID, BalloonOrder> orderMap = ((IDataManager) this).getValue(EEDataProcessors.ORDER_DATA);
 		if (!orderMap.containsKey(balloon.getUUID())) return;
 		BalloonOrder balloonOrder = orderMap.get(balloon.getUUID());
-		Vec3 attachedOffset = (new Vec3(this.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, balloonOrder.normalZ)).yRot((float) (-this.yRot * (Math.PI / 180F) - (Math.PI / 2F)));
+		Vec3 attachedOffset = (new Vec3(this.getType() == ForgeRegistries.ENTITIES.getValue(LARGE_BOAT_NAME) ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, balloonOrder.normalZ)).yRot((float) (-this.getYRot() * (Math.PI / 180F) - (Math.PI / 2F)));
 		balloon.setPos(this.getX() + attachedOffset.x() + balloon.getSway() * Math.sin(-balloon.getAngle()), this.getY() + balloon.getPassengersRidingOffset() + balloon.getEyeHeight(), this.getZ() + attachedOffset.z() + balloon.getSway() * Math.cos(-balloon.getAngle()));
 	}
 
@@ -97,12 +97,11 @@ public abstract class BoatEntityMixin extends Entity implements CustomBalloonPos
 	@Inject(at = @At("HEAD"), method = "interact", cancellable = true)
 	private void addBalloonAttachingInteraction(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
 		ItemStack stack = player.getItemInHand(hand);
-		Entity boat = this.getEntity();
 		Item item = stack.getItem();
-		if (item instanceof BolloomBalloonItem && BolloomBalloonItem.canAttachBalloonToTarget(boat)) {
+		if (item instanceof BolloomBalloonItem && BolloomBalloonItem.canAttachBalloonToTarget(this)) {
 			player.swing(hand, true);
-			if (!boat.level.isClientSide) {
-				BolloomBalloonItem.attachToEntity(((BolloomBalloonItem) item).getBalloonColor(), boat);
+			if (!this.level.isClientSide) {
+				BolloomBalloonItem.attachToEntity(((BolloomBalloonItem) item).getBalloonColor(), this);
 			}
 			if (!player.isCreative()) stack.shrink(1);
 			info.setReturnValue(InteractionResult.CONSUME);

@@ -1,9 +1,8 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import java.util.Random;
-
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -15,9 +14,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.lighting.LayerLightEngine;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.ToolType;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 @SuppressWarnings("deprecation")
 public class PoismossEumusBlock extends Block implements BonemealableBlock {
@@ -27,12 +23,7 @@ public class PoismossEumusBlock extends Block implements BonemealableBlock {
 	}
 
 	@Override
-	public ToolType getHarvestTool(BlockState state) {
-		return ToolType.SHOVEL;
-	}
-
-	@Override
-	public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
+	public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
 		if (!worldIn.isClientSide) {
 			if (!worldIn.isAreaLoaded(pos, 3)) return;
 
@@ -65,12 +56,18 @@ public class PoismossEumusBlock extends Block implements BonemealableBlock {
 		return isLightCoveringPos(p_220256_0_, p_220256_1_, p_220256_2_) && !p_220256_1_.getFluidState(blockpos).is(FluidTags.WATER);
 	}
 
+	@Override
 	public boolean isValidBonemealTarget(BlockGetter worldIn, BlockPos pos, BlockState state, boolean isClient) {
 		return worldIn.getBlockState(pos.above()).isAir();
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel worldIn, Random rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level p_220878_, RandomSource p_220879_, BlockPos p_220880_, BlockState p_220881_) {
+		return true;
+	}
+
+	@Override
+	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
 		BlockPos blockpos = pos.above();
 		BlockState blockstate = EEBlocks.POISE_BUSH.get().defaultBlockState();
 
@@ -80,9 +77,9 @@ public class PoismossEumusBlock extends Block implements BonemealableBlock {
 
 			while (true) {
 				if (j >= i / 16) {
-					BlockState blockstate2 = worldIn.getBlockState(blockpos1);
+					BlockState blockstate2 = level.getBlockState(blockpos1);
 					if (blockstate2.getBlock() == blockstate.getBlock() && rand.nextInt(10) == 0) {
-						((BonemealableBlock) blockstate.getBlock()).performBonemeal(worldIn, rand, blockpos1, blockstate2);
+						((BonemealableBlock) blockstate.getBlock()).performBonemeal(level, rand, blockpos1, blockstate2);
 					}
 
 					if (!blockstate2.isAir()) {
@@ -92,14 +89,14 @@ public class PoismossEumusBlock extends Block implements BonemealableBlock {
 					BlockState blockstate1;
 					blockstate1 = blockstate;
 
-					if (blockstate1.canSurvive(worldIn, blockpos1)) {
-						worldIn.setBlock(blockpos1, blockstate1, 3);
+					if (blockstate1.canSurvive(level, blockpos1)) {
+						level.setBlock(blockpos1, blockstate1, 3);
 					}
 					break;
 				}
 
 				blockpos1 = blockpos1.offset(rand.nextInt(3) - 1, (rand.nextInt(3) - 1) * rand.nextInt(3) / 2, rand.nextInt(3) - 1);
-				if (worldIn.getBlockState(blockpos1.below()).getBlock() != this || worldIn.getBlockState(blockpos1).isSolidRender(worldIn, blockpos1)) {
+				if (level.getBlockState(blockpos1.below()).getBlock() != this || level.getBlockState(blockpos1).isSolidRender(level, blockpos1)) {
 					break;
 				}
 
@@ -108,7 +105,4 @@ public class PoismossEumusBlock extends Block implements BonemealableBlock {
 		}
 	}
 
-	public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
-		return true;
-	}
 }

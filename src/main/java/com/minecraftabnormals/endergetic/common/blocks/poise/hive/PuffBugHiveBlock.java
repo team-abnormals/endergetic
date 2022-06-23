@@ -1,7 +1,12 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise.hive;
 
+import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
@@ -17,8 +22,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.*;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,18 +32,16 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import java.util.List;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 
-public class PuffBugHiveBlock extends Block {
+public class PuffBugHiveBlock extends BaseEntityBlock {
 	private static final VoxelShape HIVE_SHAPE = Shapes.or(Block.box(0.0D, 3.0D, 0.0D, 16.0D, 16.0D, 16.0D), Block.box(1.0D, 0.0D, 1.0D, 15.0D, 3.0D, 15.0D));
 
-	public PuffBugHiveBlock(Properties properties) {
+	public PuffBugHiveBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 	}
 
@@ -109,22 +110,6 @@ public class PuffBugHiveBlock extends Block {
 	}
 
 	@Override
-	public ToolType getHarvestTool(BlockState state) {
-		return ToolType.PICKAXE;
-	}
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return new PuffBugHiveTileEntity();
-	}
-
-	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
@@ -144,5 +129,15 @@ public class PuffBugHiveBlock extends Block {
 			}
 		}
 		return Blocks.AIR.defaultBlockState();
+	}
+
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new PuffBugHiveTileEntity(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntity::tick);
 	}
 }

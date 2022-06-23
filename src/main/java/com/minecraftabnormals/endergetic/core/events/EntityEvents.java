@@ -6,9 +6,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
-import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.blocks.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
@@ -20,6 +17,10 @@ import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
+import com.teamabnormals.blueprint.core.util.EntityUtil;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,6 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.ThrownPotion;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
@@ -62,7 +62,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID)
 public final class EntityEvents {
@@ -90,9 +90,8 @@ public final class EntityEvents {
 	});
 
 	@SubscribeEvent
-	public static void onThrowableImpact(final ProjectileImpactEvent.Throwable event) {
-		ThrowableProjectile projectileEntity = event.getThrowable();
-
+	public static void onThrowableImpact(final ProjectileImpactEvent event) {
+		Projectile projectileEntity = event.getProjectile();
 		if (projectileEntity instanceof ThrownPotion) {
 			ThrownPotion potionEntity = ((ThrownPotion) projectileEntity);
 			ItemStack itemstack = potionEntity.getItem();
@@ -136,7 +135,7 @@ public final class EntityEvents {
 				gravity.removeModifier(SUPER_SLOW_BALLOON);
 			}
 
-			if (isFalling && entity.hasPassenger(PurpoidEntity.class)) {
+			if (isFalling && entity.hasPassenger(e -> e instanceof PurpoidEntity)) {
 				entity.fallDistance = 0.0F;
 				if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.addTransientModifier(PURPOID_SLOWFALL);
 			} else if (gravity.hasModifier(PURPOID_SLOWFALL)) {
@@ -210,7 +209,7 @@ public final class EntityEvents {
 	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
 		if (event.isAttack()) {
 			LocalPlayer player = ClientInfo.getClientPlayer();
-			if (player.xRot > -25.0F) return;
+			if (player.getXRot() > -25.0F) return;
 			Entity ridingEntity = player.getVehicle();
 			if (ridingEntity instanceof Boat && BolloomBalloonItem.hasNoEntityTarget(player) && EntityUtil.rayTrace(player, BolloomBalloonItem.getPlayerReach(player), 1.0F).getType() == Type.MISS) {
 				List<BolloomBalloonEntity> balloons = ((BalloonHolder) ridingEntity).getBalloons();

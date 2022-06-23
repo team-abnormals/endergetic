@@ -9,15 +9,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public class BolloomBudTileEntityRenderer extends BlockEntityRenderer<BolloomBudTileEntity> {
-	private BolloomBudModel budModel;
+public class BolloomBudTileEntityRenderer implements BlockEntityRenderer<BolloomBudTileEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/bolloom_bud.png");
+	private BolloomBudModel budModel;
 
-	public BolloomBudTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-		super(renderDispatcher);
+	public BolloomBudTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.budModel = new BolloomBudModel();
 	}
 

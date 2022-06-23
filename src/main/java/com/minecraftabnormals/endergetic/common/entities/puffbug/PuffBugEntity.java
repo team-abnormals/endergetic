@@ -6,11 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
@@ -41,7 +36,6 @@ import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
 
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -90,9 +84,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.PacketDistributor;
 
-import net.minecraft.world.entity.AgableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -103,6 +95,7 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraftforge.network.PacketDistributor;
 
 public class PuffBugEntity extends Animal implements IEndimatedEntity {
 	public static final Predicate<LivingEntity> CAN_ANGER = (entity) -> {

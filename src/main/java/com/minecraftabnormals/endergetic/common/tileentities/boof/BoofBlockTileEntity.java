@@ -7,27 +7,28 @@ import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class BoofBlockTileEntity extends BlockEntity implements TickableBlockEntity {
+public class BoofBlockTileEntity extends BlockEntity {
 
-	public BoofBlockTileEntity() {
-		super(EETileEntities.BOOF_BLOCK.get());
+	public BoofBlockTileEntity(BlockPos pos, BlockState state) {
+		super(EETileEntities.BOOF_BLOCK.get(), pos, state);
 	}
 
-	@Override
-	public void tick() {
-		if (this.level.isClientSide || this.level.getBlockState(this.worldPosition).getValue(BoofBlock.BOOFED)) return;
+	public static void tick(Level level, BlockPos pos, BlockState state, BoofBlockTileEntity boofBlock) {
+		if (level.isClientSide || state.getValue(BoofBlock.BOOFED)) return;
 
-		if (!this.level.getEntitiesOfClass(Entity.class, new AABB(this.getBlockPos()).inflate(0.05F), entity -> (!(entity instanceof Player) || !entity.isShiftKeyDown()) && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())).isEmpty()) {
-			if (this.level.addFreshEntity(new BoofBlockEntity(this.level, this.worldPosition))) {
-				this.level.setBlockAndUpdate(this.worldPosition, EEBlocks.BOOF_BLOCK.get().defaultBlockState().setValue(BoofBlock.BOOFED, true));
-				this.level.playSound(null, this.worldPosition, EESounds.BOOF_BLOCK_INFLATE.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+		if (!level.getEntitiesOfClass(Entity.class, new AABB(pos).inflate(0.05F), entity -> (!(entity instanceof Player) || !entity.isShiftKeyDown()) && !entity.getType().is(EETags.EntityTypes.BOOF_BLOCK_RESISTANT)).isEmpty()) {
+			if (level.addFreshEntity(new BoofBlockEntity(level, pos))) {
+				level.setBlockAndUpdate(pos, EEBlocks.BOOF_BLOCK.get().defaultBlockState().setValue(BoofBlock.BOOFED, true));
+				level.playSound(null, pos, EESounds.BOOF_BLOCK_INFLATE.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
 			}
 		}
 	}

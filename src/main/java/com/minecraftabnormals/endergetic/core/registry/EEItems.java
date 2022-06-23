@@ -1,18 +1,19 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
-import com.minecraftabnormals.abnormals_core.common.items.AbnormalsMusicDiscItem;
-import com.minecraftabnormals.abnormals_core.common.items.AbnormalsSpawnEggItem;
-import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.items.*;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
+import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.item.BlueprintRecordItem;
+import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEItems {
@@ -20,12 +21,12 @@ public final class EEItems {
 
 	public static final RegistryObject<Item> EUMUS_BRICK = HELPER.createItem("eumus_brick", () -> new Item(ItemSubRegistryHelper.createSimpleItemProperty(64, CreativeModeTab.TAB_MATERIALS)));
 
-	public static final RegistryObject<Item> POISE_BOAT = HELPER.createBoatItem("poise", EEBlocks.POISE_PLANKS);
+	public static final Pair<RegistryObject<Item>, RegistryObject<Item>> POISE_BOAT = HELPER.createBoatAndChestBoatItem("poise", EEBlocks.POISE_PLANKS);
 	public static final RegistryObject<Item> BOLLOOM_FRUIT = HELPER.createItem("bolloom_fruit", () -> new BolloomFruitItem(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(EEFoods.BOLLOOM_FRUIT)));
 	public static final RegistryObject<Item> BOOFLO_HIDE = HELPER.createItem("booflo_hide", () -> new Item(ItemSubRegistryHelper.createSimpleItemProperty(64, CreativeModeTab.TAB_MATERIALS)));
 	public static final RegistryObject<Item> BOOFLO_VEST = HELPER.createItem("booflo_vest", () -> new BoofloVestItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 	public static final RegistryObject<Item> PUFFBUG_BOTTLE = HELPER.createItem("puffbug_bottle", () -> new PuffBugBottleItem(ItemSubRegistryHelper.createSimpleItemProperty(1, CreativeModeTab.TAB_MISC)));
-	public static final RegistryObject<Item> MUSIC_DISC_KILOBYTE = HELPER.createItem("music_disc_kilobyte", () -> new AbnormalsMusicDiscItem(14, EESounds.KILOBYTE, new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> MUSIC_DISC_KILOBYTE = HELPER.createItem("music_disc_kilobyte", () -> new BlueprintRecordItem(14, EESounds.KILOBYTE, new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC).rarity(Rarity.RARE)));
 
 	public static final RegistryObject<Item> BOLLOOM_BALLOON = HELPER.createItem("bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.DEFAULT));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED = HELPER.createItem("red_bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.RED));
@@ -45,8 +46,8 @@ public final class EEItems {
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_WHITE = HELPER.createItem("white_bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.WHITE));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_BLACK = HELPER.createItem("black_bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.BLACK));
 
-	public static final RegistryObject<AbnormalsSpawnEggItem> PUFF_BUG_SPAWN_EGG = HELPER.createSpawnEggItem("puff_bug", EEEntities.PUFF_BUG::get, 15660724, 16610303);
-	public static final RegistryObject<AbnormalsSpawnEggItem> BOOFLO_SPAWN_EGG = HELPER.createSpawnEggItem("booflo", EEEntities.BOOFLO::get, 8143741, 16641190);
+	public static final RegistryObject<SpawnEggItem> PUFF_BUG_SPAWN_EGG = HELPER.createSpawnEggItem("puff_bug", EEEntities.PUFF_BUG, 15660724, 16610303);
+	public static final RegistryObject<SpawnEggItem> BOOFLO_SPAWN_EGG = HELPER.createSpawnEggItem("booflo", EEEntities.BOOFLO, 8143741, 16641190);
 	public static final RegistryObject<EetleSpawnEggItem> EETLE_SPAWN_EGG = HELPER.createEetleSpawnEgg();
-	public static final RegistryObject<AbnormalsSpawnEggItem> PURPOID_SPAWN_EGG = HELPER.createSpawnEggItem("purpoid", EEEntities.PURPOID::get, 6240129, 11179503);
+	public static final RegistryObject<SpawnEggItem> PURPOID_SPAWN_EGG = HELPER.createSpawnEggItem("purpoid", EEEntities.PURPOID, 6240129, 11179503);
 }

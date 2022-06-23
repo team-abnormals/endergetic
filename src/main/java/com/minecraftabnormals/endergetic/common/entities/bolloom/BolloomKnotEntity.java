@@ -19,8 +19,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 
 public class BolloomKnotEntity extends Entity {
 	private BlockPos hangingPosition;
@@ -35,10 +35,9 @@ public class BolloomKnotEntity extends Entity {
 		this.setPos(pos.getX() + 0.5F, pos.getY() + 0.9F, pos.getZ() + 0.5F);
 		this.hangingPosition = pos;
 		this.setDeltaMovement(Vec3.ZERO);
-		this.forcedLoading = true;
 	}
 
-	public BolloomKnotEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public BolloomKnotEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_KNOT.get(), world);
 	}
 
@@ -48,9 +47,9 @@ public class BolloomKnotEntity extends Entity {
 		this.yo = this.getY();
 		this.zo = this.getZ();
 		if (!this.level.isClientSide && this.isAlive() && this.level.isAreaLoaded(this.getHangingPos(), 1) && !this.onValidBlock()) {
-			this.remove();
+			this.discard();
 		} else if (this.getBalloonsTied() <= 0) {
-			this.remove();
+			this.discard();
 		}
 	}
 
@@ -81,7 +80,7 @@ public class BolloomKnotEntity extends Entity {
 	}
 
 	private boolean onValidBlock() {
-		return this.level.getBlockState(this.hangingPosition).getBlock().is(BlockTags.FENCES);
+		return this.level.getBlockState(this.hangingPosition).is(BlockTags.FENCES);
 	}
 
 	public boolean isPickable() {
@@ -112,7 +111,7 @@ public class BolloomKnotEntity extends Entity {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag nbt) {
 		this.hangingPosition = new BlockPos(nbt.getInt("TileX"), nbt.getInt("TileY"), nbt.getInt("TileZ"));
-		this.setBalloonsTied(nbt.getInt("Ballons_Tied"));
+		this.setBalloonsTied(nbt.getInt("BalloonsTied"));
 	}
 
 	@Override
@@ -121,8 +120,7 @@ public class BolloomKnotEntity extends Entity {
 		nbt.putInt("TileX", blockpos.getX());
 		nbt.putInt("TileY", blockpos.getY());
 		nbt.putInt("TileZ", blockpos.getZ());
-		//Cursed NBT name, rename in 1.16.2
-		nbt.putInt("Ballons_Tied", this.getBalloonsTied());
+		nbt.putInt("BalloonsTied", this.getBalloonsTied());
 	}
 
 	public BlockPos getHangingPos() {

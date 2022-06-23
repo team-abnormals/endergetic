@@ -18,8 +18,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.network.PlayMessages;
 
 /**
  * @author - SmellyModder (Luke Tonon)
@@ -33,7 +33,7 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 		this.setNoGravity(true);
 	}
 
-	public BolloomFruitEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public BolloomFruitEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
 	}
 

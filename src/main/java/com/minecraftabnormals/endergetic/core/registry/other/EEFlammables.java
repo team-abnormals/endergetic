@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.core.registry.other;
 
-import com.minecraftabnormals.abnormals_core.core.util.DataUtil;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
+import com.teamabnormals.blueprint.core.util.DataUtil;
 
 public final class EEFlammables {
 

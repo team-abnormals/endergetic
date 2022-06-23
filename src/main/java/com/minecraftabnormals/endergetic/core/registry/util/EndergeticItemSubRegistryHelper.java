@@ -1,11 +1,11 @@
 package com.minecraftabnormals.endergetic.core.registry.util;
 
-import com.minecraftabnormals.abnormals_core.core.util.registry.ItemSubRegistryHelper;
-import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.items.EetleSpawnEggItem;
+import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
+import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public final class EndergeticItemSubRegistryHelper extends ItemSubRegistryHelper {
 
@@ -14,9 +14,7 @@ public final class EndergeticItemSubRegistryHelper extends ItemSubRegistryHelper
 	}
 
 	public RegistryObject<EetleSpawnEggItem> createEetleSpawnEgg() {
-		EetleSpawnEggItem spawnEggItem = new EetleSpawnEggItem(7964867, 3943508, new Item.Properties().tab(CreativeModeTab.TAB_MISC));
-		this.spawnEggs.add(spawnEggItem);
-		return this.deferredRegister.register("eetle_spawn_egg", () -> spawnEggItem);
+		return this.deferredRegister.register("eetle_spawn_egg", () -> new EetleSpawnEggItem(7964867, 3943508, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
 	}
 
 }

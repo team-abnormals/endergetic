@@ -78,7 +78,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigation {
 
 			for (int j = Math.min(this.path.getNextNodeIndex() + 6, this.path.getNodeCount() - 1); j > this.path.getNextNodeIndex(); --j) {
 				Vector3d2 = this.path.getEntityPosAtNode(this.mob, j);
-				if (!(Vector3d2.distanceToSqr(entityPos) > 36.0D) && this.canMoveDirectly(entityPos, Vector3d2, 0, 0, 0)) {
+				if (!(Vector3d2.distanceToSqr(entityPos) > 36.0D) && this.canMoveDirectly(entityPos, Vector3d2)) {
 					this.path.setNextNodeIndex(j);
 					break;
 				}
@@ -123,7 +123,7 @@ public class EndergeticFlyingPathNavigator extends PathNavigation {
 	}
 
 	@Override
-	protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32, int sizeX, int sizeY, int sizeZ) {
+	protected boolean canMoveDirectly(Vec3 posVec31, Vec3 posVec32) {
 		Vec3 Vector3d = new Vec3(posVec32.x, posVec32.y + (double) this.mob.getBbHeight() * 0.5D, posVec32.z);
 		return this.level.clip(new ClipContext(posVec31, Vector3d, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.mob)).getType() == HitResult.Type.MISS;
 	}

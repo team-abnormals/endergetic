@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -10,12 +9,16 @@ import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -28,20 +31,16 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.server.level.ServerLevel;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
-	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD);
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER);
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_END);
+	private static final Map<ResourceLocation, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+		conversions.put(BuiltinDimensionTypes.OVERWORLD.location(), EEBlocks.CORROCK_OVERWORLD);
+		conversions.put(BuiltinDimensionTypes.NETHER.location(), EEBlocks.CORROCK_NETHER);
+		conversions.put(BuiltinDimensionTypes.END.location(), EEBlocks.CORROCK_END);
 	});
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 15.0D, 14.0D);
@@ -69,9 +68,10 @@ public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
-		if (this.shouldConvert(world)) {
-			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD).get().defaultBlockState());
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+		Block conversionBlock = this.getConversionBlock(level);
+		if (!this.petrified && conversionBlock != this) {
+			level.setBlockAndUpdate(pos, conversionBlock.defaultBlockState());
 		}
 	}
 
@@ -80,14 +80,14 @@ public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
 			return Blocks.AIR.defaultBlockState();
 		} else {
 			if (stateIn.getValue(WATERLOGGED)) {
-				worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+				worldIn.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
 				if (!this.petrified) {
 					return EntityEvents.convertCorrockBlock(stateIn);
 				}
 			}
 
 			if (this.shouldConvert(worldIn)) {
-				worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
+				worldIn.scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 			}
 			return stateIn;
 		}
@@ -102,7 +102,7 @@ public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
 	@Nullable
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		if (this.shouldConvert(context.getLevel())) {
-			context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
+			context.getLevel().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
 		}
 		FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
 		return this.defaultBlockState().setValue(WATERLOGGED, fluidState.is(FluidTags.WATER) && fluidState.getAmount() >= 8);
@@ -113,12 +113,11 @@ public class CorrockPlantBlock extends Block implements SimpleWaterloggedBlock {
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : Fluids.EMPTY.defaultFluidState();
 	}
 
-	@Override
-	public OffsetType getOffsetType() {
-		return OffsetType.NONE;
+	protected Block getConversionBlock(LevelAccessor level) {
+		return CONVERSIONS.getOrDefault(level.registryAccess().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getKey(level.dimensionType()), EEBlocks.CORROCK_OVERWORLD).get();
 	}
 
-	private boolean shouldConvert(LevelAccessor world) {
-		return !this.petrified && CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD).get() != this;
+	private boolean shouldConvert(LevelAccessor level) {
+		return !this.petrified && this.getConversionBlock(level) != this;
 	}
 }

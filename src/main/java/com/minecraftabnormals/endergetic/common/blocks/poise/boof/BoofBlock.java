@@ -5,8 +5,12 @@ import com.minecraftabnormals.endergetic.common.tileentities.boof.BoofBlockTileE
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
+import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -28,8 +32,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import org.jetbrains.annotations.Nullable;
 
 public class BoofBlock extends BaseEntityBlock {
 	public static final BooleanProperty BOOFED = BooleanProperty.create("boofed");
@@ -40,41 +43,48 @@ public class BoofBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockPathTypes getAiPathNodeType(BlockState state, BlockGetter world, BlockPos pos, Mob entity) {
-		return BlockPathTypes.DAMAGE_CACTUS;
+	@Nullable
+	public BlockPathTypes getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, @Nullable Mob mob) {
+		return BlockPathTypes.DANGER_OTHER;
 	}
 
 	@Override
-	public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, Type type, EntityType<?> entityType) {
+	public boolean isPossibleToRespawnInThis() {
 		return false;
 	}
 
+	@Override
+	public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, Type type, EntityType<?> entityType) {
+		return false;
+	}
+
+	@Override
 	public boolean isSignalSource(BlockState state) {
 		return state.getValue(BOOFED);
 	}
 
+	@Override
 	public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		return 15;
 	}
 
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(BOOFED);
 	}
 
 	@Override
-	public void fallOn(Level worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-		if (entityIn.isShiftKeyDown()) {
-			super.fallOn(worldIn, pos, entityIn, fallDistance);
+	public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+		if (entity.isSuppressingBounce()) {
+			super.fallOn(level, state, pos, entity, fallDistance);
 		} else {
-			entityIn.causeFallDamage(fallDistance, 0.0F);
+			entity.causeFallDamage(fallDistance, 0.0F, DamageSource.FALL);
 		}
 	}
 
 	@Override
 	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entity) {
-		if (entity instanceof Player) {
-			Player player = (Player) entity;
-			player.pushthrough = Float.MAX_VALUE;
+		if (entity instanceof Player player) {
 			player.fallDistance = 0;
 		}
 	}
@@ -88,9 +98,16 @@ public class BoofBlock extends BaseEntityBlock {
 		world.setBlockAndUpdate(pos, EEBlocks.BOOF_BLOCK.get().defaultBlockState().setValue(BOOFED, true));
 	}
 
+	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(BlockGetter worldIn) {
-		return new BoofBlockTileEntity();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new BoofBlockTileEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, EETileEntities.BOOF_BLOCK.get(), BoofBlockTileEntity::tick);
 	}
 
 	@Override

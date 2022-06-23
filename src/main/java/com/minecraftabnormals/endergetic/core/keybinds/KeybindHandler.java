@@ -16,10 +16,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 /**
@@ -48,8 +48,8 @@ public final class KeybindHandler {
 		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		if (BOOF_VEST.consumeClick() && !player.abilities.flying) {
-			ItemStack stack = player.inventory.getArmor(2);
+		if (BOOF_VEST.consumeClick() && !player.getAbilities().flying) {
+			ItemStack stack = player.getInventory().getArmor(2);
 			if (stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
 				if (BoofloVestItem.canBoof(stack, player)) {
 					EntityMotionHelper.knockbackEntity(player, C2SInflateBoofloVestMessage.HORIZONTAL_BOOST_FORCE, C2SInflateBoofloVestMessage.VERTICAL_BOOST_FORCE, true, true);

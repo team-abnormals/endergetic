@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  */
 public final class C2SSlamMessage {
 
-	public final void serialize(FriendlyByteBuf buf) {
+	public void serialize(FriendlyByteBuf buf) {
 	}
 
 	public static C2SSlamMessage deserialize(FriendlyByteBuf buf) {
@@ -34,7 +34,7 @@ public final class C2SSlamMessage {
 					if (ridingEntity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) ridingEntity;
 						if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {
-							NetworkUtil.setPlayingAnimationMessage(booflo, BoofloEntity.CHARGE);
+							NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.CHARGE);
 							booflo.setBoostExpanding(true);
 							booflo.setBoostLocked(true);
 						}

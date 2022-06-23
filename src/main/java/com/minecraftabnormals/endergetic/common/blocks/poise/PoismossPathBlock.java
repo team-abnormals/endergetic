@@ -1,5 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
@@ -41,13 +41,13 @@ public class PoismossPathBlock extends Block {
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (facing == Direction.UP && !stateIn.canSurvive(worldIn, currentPos)) {
-			worldIn.getBlockTicks().scheduleTick(currentPos, this, 1);
+			worldIn.scheduleTick(currentPos, this, 1);
 		}
 		return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
 		worldIn.setBlockAndUpdate(pos, pushEntitiesUp(state, this.baseBlock.get().defaultBlockState(), worldIn, pos));
 	}
 

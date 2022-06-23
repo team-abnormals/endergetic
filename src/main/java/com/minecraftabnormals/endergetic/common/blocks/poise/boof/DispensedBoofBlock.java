@@ -1,15 +1,22 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise.boof;
 
 import java.util.Map;
-
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
 
+import com.minecraftabnormals.endergetic.common.tileentities.boof.DispensedBlockBoofTileEntity;
+import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.BucketPickup;
@@ -21,17 +28,15 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-public class DispensedBoofBlock extends DirectionalBlock implements BucketPickup, LiquidBlockContainer {
+public class DispensedBoofBlock extends DirectionalBlock implements BucketPickup, LiquidBlockContainer, EntityBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	private static final Map<Direction, VoxelShape> SHAPES = Maps.newEnumMap(ImmutableMap.of(
 			Direction.NORTH, Block.box(2.0D, 0.0D, 4.0D, 14.0D, 12.0D, 16.0D),
@@ -54,27 +59,15 @@ public class DispensedBoofBlock extends DirectionalBlock implements BucketPickup
 		FluidState ifluidstate = context.getLevel().getFluidState(context.getClickedPos());
 		return this.defaultBlockState()
 				.setValue(FACING, context.getNearestLookingDirection().getOpposite())
-				.setValue(WATERLOGGED, Boolean.valueOf(ifluidstate.getType() == Fluids.WATER)
-				);
+				.setValue(WATERLOGGED, ifluidstate.getType() == Fluids.WATER);
 	}
 
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.getValue(WATERLOGGED)) {
-			worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+			worldIn.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
 		}
 		return stateIn;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return new DispensedBlockBoofTileEntity();
-	}
-
-	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
 	}
 
 	@Override
@@ -106,7 +99,7 @@ public class DispensedBoofBlock extends DirectionalBlock implements BucketPickup
 		if (!state.getValue(WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 			if (!worldIn.isClientSide()) {
 				worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(true)), 3);
-				worldIn.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+				worldIn.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
 			}
 			return true;
 		} else {
@@ -117,5 +110,32 @@ public class DispensedBoofBlock extends DirectionalBlock implements BucketPickup
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED);
+	}
+
+	@Override
+	public ItemStack pickupBlock(LevelAccessor p_152719_, BlockPos p_152720_, BlockState p_152721_) {
+		return new ItemStack(this);
+	}
+
+	@Override
+	public Optional<SoundEvent> getPickupSound() {
+		return Optional.empty();
+	}
+
+	@Nullable
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new DispensedBlockBoofTileEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, EETileEntities.BOOF_BLOCK_DISPENSED.get(), DispensedBlockBoofTileEntity::tick);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> p_152133_, BlockEntityType<E> p_152134_, BlockEntityTicker<? super E> p_152135_) {
+		return p_152134_ == p_152133_ ? (BlockEntityTicker<A>) p_152135_ : null;
 	}
 }

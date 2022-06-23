@@ -9,36 +9,33 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import com.mojang.math.Vector3f;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-
-public class EetleEggTileEntityRenderer extends BlockEntityRenderer<EetleEggTileEntity> {
+public class EetleEggTileEntityRenderer implements BlockEntityRenderer<EetleEggTileEntity> {
 	public static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/small_eetle_egg.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/medium_eetle_egg.png"),
 			new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/eggs/large_eetle_egg.png")
 	};
 	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGG.get().defaultBlockState();
-	private static final Random ROTATION_RANDOM = new Random();
+	private static final RandomSource ROTATION_RANDOM = RandomSource.create();
 	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
 			new SmallEetleEggModel(),
 			new MediumEetleEggModel(),
 			new LargeEetleEggModel()
 	};
 
-	public EetleEggTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-		super(rendererDispatcherIn);
-	}
+	public EetleEggTileEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
 	@Override
 	public void render(EetleEggTileEntity eggs, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {

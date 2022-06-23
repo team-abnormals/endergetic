@@ -1,14 +1,14 @@
 package com.minecraftabnormals.endergetic.common.network.entity;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
+import com.teamabnormals.blueprint.client.ClientInfo;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -44,7 +44,7 @@ public final class S2CUpdateBalloonsMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				Level world = ClientInfo.getClientPlayerWorld();
+				Level world = ClientInfo.getClientPlayerLevel();
 				Entity entity = world.getEntity(message.entityId);
 				if (entity == null) {
 					EndergeticExpansion.LOGGER.warn("Received balloons for unknown entity!");

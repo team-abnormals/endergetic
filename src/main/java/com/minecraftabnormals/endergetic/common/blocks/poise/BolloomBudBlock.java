@@ -1,14 +1,16 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import javax.annotation.Nullable;
-
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity.BudSide;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
+import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.player.Player;
@@ -25,12 +27,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import org.jetbrains.annotations.Nullable;
 
-public class BolloomBudBlock extends Block {
+public class BolloomBudBlock extends BaseEntityBlock {
 	public static final BooleanProperty OPENED = BooleanProperty.create("opened");
 	private static final VoxelShape INSIDE = box(3.5D, 0.0D, 3.5D, 12.5D, 15.0D, 12.5D);
 	protected static final VoxelShape SHAPE = Shapes.join(box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D), Shapes.or(INSIDE), BooleanOp.ONLY_FIRST);
@@ -51,11 +51,11 @@ public class BolloomBudBlock extends Block {
 		super.playerWillDestroy(worldIn, pos, state, player);
 	}
 
-	protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
-		Block block = state.getBlock();
-		return block == Blocks.END_STONE.getBlock() || block.is(EETags.Blocks.END_PLANTABLE) || block.is(EETags.Blocks.POISE_PLANTABLE);
+	protected boolean isValidGround(BlockState state, BlockGetter getter, BlockPos pos) {
+		return state.is(Blocks.END_STONE) || state.is(EETags.Blocks.END_PLANTABLE) || state.is(EETags.Blocks.POISE_PLANTABLE);
 	}
 
+	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
 		if (stateIn.canSurvive(world, currentPos)) {
 			boolean opened = stateIn.getValue(OPENED);
@@ -64,6 +64,7 @@ public class BolloomBudBlock extends Block {
 		return Blocks.AIR.defaultBlockState();
 	}
 
+	@Override
 	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		BlockPos blockpos = pos.below();
 		return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos) && !isAcrossOrAdjacentToBud(worldIn, pos);
@@ -121,24 +122,21 @@ public class BolloomBudBlock extends Block {
 		return p_220053_1_.getValue(OPENED) ? SHAPE_OPENED : SHAPE;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public boolean hasCustomBreakingProgress(BlockState state) {
-		return true;
-	}
-
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(OPENED);
 	}
 
+	@Nullable
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new BolloomBudTileEntity(pos, state);
 	}
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return new BolloomBudTileEntity();
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntity::tick);
 	}
 
 	@Override

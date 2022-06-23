@@ -7,6 +7,8 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.FallingBlock;
@@ -30,9 +32,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 
 import java.util.Random;
 
@@ -59,13 +61,12 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 		this.fromBroodEetle = true;
 	}
 
-	public EetleEggEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public EetleEggEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		super(EEEntities.EETLE_EGG.get(), world);
 	}
 
 	@Override
-	protected void defineSynchedData() {
-	}
+	protected void defineSynchedData() {}
 
 	@Override
 	public void tick() {
@@ -89,11 +90,11 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 			} else {
 				BlockState state = world.getBlockState(newPos);
 				this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
-				this.remove();
+				this.discard();
 				boolean flag3 = FallingBlock.isFree(world.getBlockState(newPos.below()));
 				BlockState placingState = EETLE_EGGS_BLOCK.defaultBlockState().setValue(EetleEggBlock.SIZE, this.eggSize.ordinal());
 				boolean flag4 = placingState.canSurvive(world, newPos) && !flag3;
-				Random random = this.random;
+				RandomSource random = this.random;
 				if (state.canBeReplaced(new DirectionalPlaceContext(world, newPos, Direction.DOWN, ItemStack.EMPTY, Direction.UP)) && flag4) {
 					if (placingState.hasProperty(BlockStateProperties.WATERLOGGED) && world.getFluidState(newPos).getType() == Fluids.WATER) {
 						placingState = placingState.setValue(BlockStateProperties.WATERLOGGED, true);
@@ -126,7 +127,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource damageSource) {
 		return false;
 	}
 
@@ -145,14 +146,14 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	protected boolean isMovementNoisy() {
-		return false;
+	protected Entity.MovementEmission getMovementEmission() {
+		return Entity.MovementEmission.NONE;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isPickable() {
-		return !this.removed;
+		return !this.isRemoved();
 	}
 
 	@Override
@@ -198,7 +199,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 		return this.eggSize;
 	}
 
-	private static void burstOpenEgg(Level world, BlockPos pos, Random random, int size, boolean fromBroodEetle) {
+	private static void burstOpenEgg(Level world, BlockPos pos, RandomSource random, int size, boolean fromBroodEetle) {
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -220,7 +221,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 		}
 	}
 
-	private static BlockState assignRandomDirection(Level world, BlockState state, Random random, BlockPos pos) {
+	private static BlockState assignRandomDirection(Level world, BlockState state, RandomSource random, BlockPos pos) {
 		EetleEggBlock.shuffleDirections(DIRECTIONS, random);
 		for (Direction direction : DIRECTIONS) {
 			BlockState directionState = state.setValue(EetleEggBlock.FACING, direction);

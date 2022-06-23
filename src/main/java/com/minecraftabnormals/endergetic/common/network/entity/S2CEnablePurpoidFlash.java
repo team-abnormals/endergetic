@@ -3,7 +3,7 @@ package com.minecraftabnormals.endergetic.common.network.entity;
 import com.minecraftabnormals.endergetic.client.events.OverlayEvents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

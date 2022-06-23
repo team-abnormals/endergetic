@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -23,12 +22,11 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class EetleEggTileEntity extends BlockEntity implements TickableBlockEntity {
+public class EetleEggTileEntity extends BlockEntity {
 	private static final Random RANDOM = new Random();
 	private final SackGrowth[] sackGrowths;
 	private int hatchDelay = -30000 - RANDOM.nextInt(12001);
@@ -36,8 +34,8 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 	private boolean bypassesSpawningGameRule;
 	public boolean fromBroodEetle;
 
-	public EetleEggTileEntity() {
-		super(EETileEntities.EETLE_EGG.get());
+	public EetleEggTileEntity(BlockPos pos, BlockState state) {
+		super(EETileEntities.EETLE_EGG.get(), pos, state);
 		this.sackGrowths = new SackGrowth[]{
 				new SackGrowth(),
 				new SackGrowth(),
@@ -46,49 +44,45 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 		};
 	}
 
-	@Override
-	public void tick() {
-		Level world = this.getLevel();
-		if (world != null) {
-			BlockPos pos = this.worldPosition;
-			if (world.isClientSide) {
-				for (SackGrowth growth : this.sackGrowths) {
+	public static void tick(Level level, BlockPos pos, BlockState state, EetleEggTileEntity eetleEgg) {
+		if (level != null) {
+			if (level.isClientSide) {
+				for (SackGrowth growth : eetleEgg.sackGrowths) {
 					growth.tick();
 				}
-			} else if ((world.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || this.bypassesSpawningGameRule) && !world.isRainingAt(pos) && world.getDifficulty() != Difficulty.PEACEFUL && !this.getBlockState().getValue(EetleEggBlock.PETRIFIED)) {
-				if (RANDOM.nextFloat() < 0.05F && this.hatchDelay < -60) {
-					if (!world.getEntitiesOfClass(Player.class, new AABB(pos).inflate(1.0D), player -> player.isAlive() && !player.isShiftKeyDown() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
-						this.hatchDelay = -60;
-						world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+			} else if ((level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || eetleEgg.bypassesSpawningGameRule) && !level.isRainingAt(pos) && level.getDifficulty() != Difficulty.PEACEFUL && !eetleEgg.getBlockState().getValue(EetleEggBlock.PETRIFIED)) {
+				if (RANDOM.nextFloat() < 0.05F && eetleEgg.hatchDelay < -60) {
+					if (!level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(1.0D), player -> player.isAlive() && !player.isShiftKeyDown() && !player.isInvisible() && !player.isCreative() && !player.isSpectator()).isEmpty()) {
+						eetleEgg.hatchDelay = -60;
+						level.sendBlockUpdated(eetleEgg.getBlockPos(), eetleEgg.getBlockState(), eetleEgg.getBlockState(), 3);
 					}
 				}
 
-				int delay = this.hatchDelay;
+				int delay = eetleEgg.hatchDelay;
 				if (delay < 0) {
-					if (!this.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && world.getEntitiesOfClass(AbstractEetleEntity.class, new AABB(this.getBlockPos()).inflate(14.0D)).size() >= 7) {
+					if (!eetleEgg.bypassesSpawningGameRule && delay > -300 && delay % 5 == 0 && level.getEntitiesOfClass(AbstractEetleEntity.class, new AABB(eetleEgg.getBlockPos()).inflate(14.0D)).size() >= 7) {
 						delay = -600 - RANDOM.nextInt(201);
 					}
 
-					this.updateHatchDelay(world, ++delay);
+					eetleEgg.updateHatchDelay(level, ++delay);
 				} else if (delay > 0) {
-					this.updateHatchDelay(world, --delay);
+					eetleEgg.updateHatchDelay(level, --delay);
 				} else {
-					if (this.hatchProgress < 20 && RANDOM.nextFloat() < 0.9F) {
-						world.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-						if (++this.hatchProgress >= 20) {
-							world.destroyBlock(pos, false);
+					if (eetleEgg.hatchProgress < 20 && RANDOM.nextFloat() < 0.9F) {
+						level.sendBlockUpdated(eetleEgg.getBlockPos(), eetleEgg.getBlockState(), eetleEgg.getBlockState(), 3);
+						if (++eetleEgg.hatchProgress >= 20) {
+							level.destroyBlock(pos, false);
 							int x = pos.getX();
 							int y = pos.getY();
 							int z = pos.getZ();
-							BlockState state = this.getBlockState();
 							Direction facing = state.getValue(EetleEggBlock.FACING);
 							float xOffset = facing.getStepX();
 							float yOffset = facing == Direction.DOWN ? 0.25F : 0.1F;
 							float zOffset = facing.getStepZ();
 							int size = state.getValue(EetleEggBlock.SIZE);
-							boolean fromBroodEetle = this.fromBroodEetle;
+							boolean fromBroodEetle = eetleEgg.fromBroodEetle;
 							for (int i = 0; i <= size; i++) {
-								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(world) : EEEntities.GLIDER_EETLE.get().create(world);
+								AbstractEetleEntity eetle = RANDOM.nextFloat() < 0.6F ? EEEntities.CHARGER_EETLE.get().create(level) : EEEntities.GLIDER_EETLE.get().create(level);
 								if (eetle != null) {
 									eetle.markFromEgg();
 									eetle.updateAge(-(RANDOM.nextInt(41) + 120));
@@ -96,22 +90,22 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 									if (fromBroodEetle) {
 										eetle.applyDespawnTimer();
 									}
-									world.addFreshEntity(eetle);
+									level.addFreshEntity(eetle);
 								}
 							}
-							if (world instanceof ServerLevel) {
-								((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
+							if (level instanceof ServerLevel) {
+								((ServerLevel) level).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), x + 0.5F, y + 0.25F * (size + 1.0F), z + 0.5F, 5 + size, 0.3F, 0.1F, 0.3F, 0.1D);
 							}
 						}
 					}
 				}
-			} else if (this.hatchDelay > -80 || this.hatchProgress > 0) {
-				this.hatchProgress = 0;
-				this.hatchDelay = -80;
-				world.sendBlockUpdated(pos, this.getBlockState(), this.getBlockState(), 3);
+			} else if (eetleEgg.hatchDelay > -80 || eetleEgg.hatchProgress > 0) {
+				eetleEgg.hatchProgress = 0;
+				eetleEgg.hatchDelay = -80;
+				level.sendBlockUpdated(pos, eetleEgg.getBlockState(), eetleEgg.getBlockState(), 3);
 			}
-			if (!world.isClientSide && RANDOM.nextFloat() <= 0.0025F) {
-				world.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundSource.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
+			if (!level.isClientSide && RANDOM.nextFloat() <= 0.0025F) {
+				level.playSound(null, pos, EESounds.EETLE_EGG_AMBIENT.get(), SoundSource.BLOCKS, 0.25F + RANDOM.nextFloat() * 0.25F, (float) (0.9D + RANDOM.nextDouble() * 0.1D));
 			}
 		}
 	}
@@ -139,7 +133,7 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
 		if (this.level != null) {
-			this.load(this.level.getBlockState(packet.getPos()), packet.getTag());
+			this.load(packet.getTag());
 			if (this.hatchProgress > 0) {
 				for (SackGrowth growth : this.sackGrowths) {
 					growth.stage = SackGrowth.Stage.BURSTING;
@@ -155,21 +149,23 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
-		super.save(compound);
+	protected void saveAdditional(CompoundTag compound) {
+		super.saveAdditional(compound);
+
 		compound.putInt("HatchDelay", this.hatchDelay);
 		compound.putInt("HatchProgress", this.hatchProgress);
 		compound.putBoolean("BypassSpawningGameRule", this.bypassesSpawningGameRule);
 		compound.putBoolean("FromBroodEetle", this.fromBroodEetle);
-		return compound;
 	}
 
 	@Override
-	public void load(BlockState state, CompoundTag compound) {
-		super.load(state, compound);
-		if (compound.contains("HatchDelay", Constants.NBT.TAG_INT)) {
+	public void load(CompoundTag compound) {
+		super.load(compound);
+
+		if (compound.contains("HatchDelay", 3)) {
 			this.hatchDelay = compound.getInt("HatchDelay");
 		}
+
 		this.hatchProgress = Mth.clamp(compound.getInt("HatchProgress"), 0, 2);
 		this.bypassesSpawningGameRule = compound.getBoolean("BypassSpawningGameRule");
 		this.fromBroodEetle = compound.getBoolean("FromBroodEetle");
@@ -177,18 +173,13 @@ public class EetleEggTileEntity extends BlockEntity implements TickableBlockEnti
 
 	@Override
 	public CompoundTag getUpdateTag() {
-		return this.save(new CompoundTag());
+		return this.saveWithoutMetadata();
 	}
 
 	@Nullable
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 100, this.getUpdateTag());
-	}
-
-	@Override
-	public double getViewDistance() {
-		return 128.0D;
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	public static class SackGrowth {

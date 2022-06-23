@@ -14,8 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 @Mixin(BaseFireBlock.class)
 public final class AbstractFireBlockMixin extends Block {
 
@@ -25,7 +23,7 @@ public final class AbstractFireBlockMixin extends Block {
 
 	@Inject(at = @At("HEAD"), method = "getState(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", cancellable = true)
 	private static void enderFirePlacement(BlockGetter reader, BlockPos pos, CallbackInfoReturnable<BlockState> info) {
-		if (EnderFireBlock.isEnderFireBase(reader.getBlockState(pos.below()).getBlock())) {
+		if (EnderFireBlock.isEnderFireBase(reader.getBlockState(pos.below()))) {
 			info.setReturnValue(EEBlocks.ENDER_FIRE.get().defaultBlockState());
 		}
 	}

@@ -22,7 +22,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class CorrockCrownBlock extends BaseEntityBlock implements BucketPickup, LiquidBlockContainer {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -35,9 +35,10 @@ public abstract class CorrockCrownBlock extends BaseEntityBlock implements Bucke
 		this.petrified = petrified;
 	}
 
+	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(BlockGetter worldIn) {
-		return new CorrockCrownTileEntity();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new CorrockCrownTileEntity(pos, state);
 	}
 
 	public Fluid takeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state) {
@@ -62,7 +63,7 @@ public abstract class CorrockCrownBlock extends BaseEntityBlock implements Bucke
 		if (!state.getValue(WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 			if (!worldIn.isClientSide()) {
 				worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
-				worldIn.getLiquidTicks().scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(worldIn));
+				worldIn.scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(worldIn));
 			}
 			return true;
 		} else {

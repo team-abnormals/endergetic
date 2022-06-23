@@ -3,26 +3,26 @@ package com.minecraftabnormals.endergetic.common.blocks;
 import com.google.common.collect.Maps;
 import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class SpeckledCorrockBlock extends Block {
-	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(CorrockBlock.DimensionTypeAccessor.OVERWORLD, EEBlocks.SPECKLED_OVERWORLD_CORROCK);
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_NETHER, EEBlocks.SPECKLED_NETHER_CORROCK);
-		conversions.put(CorrockBlock.DimensionTypeAccessor.THE_END, EEBlocks.SPECKLED_END_CORROCK);
+	private static final Map<ResourceLocation, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+		conversions.put(BuiltinDimensionTypes.OVERWORLD.location(), EEBlocks.SPECKLED_OVERWORLD_CORROCK);
+		conversions.put(BuiltinDimensionTypes.NETHER.location(), EEBlocks.SPECKLED_NETHER_CORROCK);
+		conversions.put(BuiltinDimensionTypes.END.location(), EEBlocks.SPECKLED_END_CORROCK);
 	});
 
 	public SpeckledCorrockBlock(Properties properties) {
@@ -30,16 +30,18 @@ public class SpeckledCorrockBlock extends Block {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
-		if (this.shouldConvert(world)) {
-			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get().defaultBlockState());
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		Block conversion = this.getConversionBlock(level);
+		if (conversion != this) {
+			level.setBlockAndUpdate(pos, conversion.defaultBlockState());
 		}
 	}
 
 	@SuppressWarnings("deprecation")
+	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
-			worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
+			worldIn.scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
 		if (CorrockBlock.isSubmerged(worldIn, currentPos)) {
@@ -49,7 +51,11 @@ public class SpeckledCorrockBlock extends Block {
 		return stateIn;
 	}
 
-	private boolean shouldConvert(LevelAccessor world) {
-		return CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get() != this;
+	protected Block getConversionBlock(LevelAccessor level) {
+		return CONVERSIONS.getOrDefault(level.registryAccess().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getKey(level.dimensionType()), EEBlocks.SPECKLED_OVERWORLD_CORROCK).get();
+	}
+
+	protected boolean shouldConvert(LevelAccessor level) {
+		return this.getConversionBlock(level) != this;
 	}
 }

@@ -9,15 +9,14 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public class PuffBugHiveTileEntityRenderer extends BlockEntityRenderer<PuffBugHiveTileEntity> {
+public class PuffBugHiveTileEntityRenderer implements BlockEntityRenderer<PuffBugHiveTileEntity> {
 	private PuffBugHiveModel hiveModel;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/puffbug_hive.png");
 
-	public PuffBugHiveTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-		super(renderDispatcher);
+	public PuffBugHiveTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.hiveModel = new PuffBugHiveModel();
 	}
 

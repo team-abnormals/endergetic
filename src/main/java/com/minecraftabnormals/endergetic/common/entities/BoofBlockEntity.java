@@ -22,8 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PlayMessages;
 
 //TODO: Refactor this a bit, it's kinda weird how some things are done internally.
 public class BoofBlockEntity extends Entity {
@@ -34,7 +34,7 @@ public class BoofBlockEntity extends Entity {
 		super(EEEntities.BOOF_BLOCK.get(), world);
 	}
 
-	public BoofBlockEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public BoofBlockEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOOF_BLOCK.get(), world);
 	}
 
@@ -55,11 +55,11 @@ public class BoofBlockEntity extends Entity {
 		AABB bb = this.getBoundingBox().inflate(0, 0.25F, 0);
 		List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, bb, (entity -> !entity.isPassenger()));
 		for (Entity entity : entities) {
-			if (!EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType())) {
+			if (!entity.getType().is(EETags.EntityTypes.BOOF_BLOCK_RESISTANT)) {
 				if (entity instanceof AbstractArrow) {
 					this.setForProjectile(true);
 					this.level.setBlockAndUpdate(getOrigin(), Blocks.AIR.defaultBlockState());
-					entity.push(Mth.sin((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -Mth.cos((float) (entity.yRot * Math.PI / 180.0F)) * 3 * 0.1F);
+					entity.push(Mth.sin((float) (entity.getYRot() * Math.PI / 180.0F)) * 3 * 0.1F, 0.55D, -Mth.cos((float) (entity.getYRot() * Math.PI / 180.0F)) * 3 * 0.1F);
 				} else {
 					if (entity.getY() - 0.45F >= this.getY()) {
 						entity.push(0, this.random.nextFloat() * 0.05D + 0.35D, 0);
@@ -83,7 +83,7 @@ public class BoofBlockEntity extends Entity {
 			} else if (this.level.isAreaLoaded(this.getOrigin(), 1) && this.isForProjectile()) {
 				this.level.setBlockAndUpdate(this.getOrigin(), EEBlocks.BOOF_BLOCK.get().defaultBlockState());
 			}
-			this.remove();
+			this.discard();
 		}
 	}
 

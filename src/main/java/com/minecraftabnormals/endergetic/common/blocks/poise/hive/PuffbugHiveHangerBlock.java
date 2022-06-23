@@ -21,8 +21,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class PuffbugHiveHangerBlock extends Block {
 	private static final VoxelShape SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 
@@ -54,7 +52,7 @@ public class PuffbugHiveHangerBlock extends Block {
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
 		return new ItemStack(EEBlocks.PUFFBUG_HIVE.get());
 	}
 

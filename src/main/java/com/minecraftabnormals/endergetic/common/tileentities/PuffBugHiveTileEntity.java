@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
@@ -25,42 +24,38 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 
-public class PuffBugHiveTileEntity extends BlockEntity implements TickableBlockEntity {
+public class PuffBugHiveTileEntity extends BlockEntity {
 	private final List<HiveOccupantData> hiveOccupants = Lists.newArrayList();
 	private int ticksTillResetTeleport;
 	private int teleportCooldown;
 	private boolean shouldReset;
 
-	public PuffBugHiveTileEntity() {
-		super(EETileEntities.PUFFBUG_HIVE.get());
+	public PuffBugHiveTileEntity(BlockPos pos, BlockState state) {
+		super(EETileEntities.PUFFBUG_HIVE.get(), pos, state);
 	}
-
-	@Override
-	public void tick() {
-		Level world = this.level;
-
-		if (!world.isClientSide && !this.hiveOccupants.isEmpty()) {
-			if (this.ticksTillResetTeleport > 0) {
-				this.ticksTillResetTeleport--;
-			} else if (this.shouldReset) {
-				this.hiveOccupants.forEach(occupent -> occupent.teleportSide = null);
-				this.shouldReset = false;
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, PuffBugHiveTileEntity hive) {
+		if (!level.isClientSide && !hive.hiveOccupants.isEmpty()) {
+			if (hive.ticksTillResetTeleport > 0) {
+				hive.ticksTillResetTeleport--;
+			} else if (hive.shouldReset) {
+				hive.hiveOccupants.forEach(occupent -> occupent.teleportSide = null);
+				hive.shouldReset = false;
 			}
 
-			if (this.teleportCooldown > 0) {
-				this.teleportCooldown--;
+			if (hive.teleportCooldown > 0) {
+				hive.teleportCooldown--;
 			}
 
-			for (int i = 0; i < this.hiveOccupants.size(); i++) {
-				HiveOccupantData hiveOccupant = this.hiveOccupants.get(i);
+			for (int i = 0; i < hive.hiveOccupants.size(); i++) {
+				HiveOccupantData hiveOccupant = hive.hiveOccupants.get(i);
 
 				if (hiveOccupant.occupant == null) {
-					this.hiveOccupants.remove(i);
+					hive.hiveOccupants.remove(i);
 				} else {
-					hiveOccupant.tick(world);
+					hiveOccupant.tick(level);
 				}
 			}
-			;
 		}
 	}
 
@@ -144,17 +139,16 @@ public class PuffBugHiveTileEntity extends BlockEntity implements TickableBlockE
 	}
 
 	@Override
-	@Nonnull
-	public CompoundTag save(CompoundTag compound) {
+	protected void saveAdditional(CompoundTag compound) {
+		super.saveAdditional(compound);
 		compound.put("HiveOccupants", HiveOccupantData.createCompoundList(this));
-
 		compound.putInt("TeleportCooldown", this.teleportCooldown);
-
-		return super.save(compound);
 	}
 
 	@Override
-	public void load(BlockState state, CompoundTag compound) {
+	public void load(CompoundTag compound) {
+		super.load(compound);
+
 		this.hiveOccupants.clear();
 		ListTag Occupants = compound.getList("HiveOccupants", 10);
 
@@ -167,19 +161,17 @@ public class PuffBugHiveTileEntity extends BlockEntity implements TickableBlockE
 		}
 
 		this.teleportCooldown = compound.getInt("TeleportCooldown");
-
-		super.load(state, compound);
 	}
 
 	@Nullable
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 9, this.getUpdateTag());
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Nonnull
 	@Override
 	public CompoundTag getUpdateTag() {
-		return this.save(new CompoundTag());
+		return this.saveWithoutMetadata();
 	}
 
 	public boolean onlyOpCanSetNbt() {
@@ -189,11 +181,6 @@ public class PuffBugHiveTileEntity extends BlockEntity implements TickableBlockE
 	@Override
 	public AABB getRenderBoundingBox() {
 		return super.getRenderBoundingBox().inflate(1084);
-	}
-
-	@Override
-	public double getViewDistance() {
-		return 16384.0D;
 	}
 
 	public static class HiveOccupantData {

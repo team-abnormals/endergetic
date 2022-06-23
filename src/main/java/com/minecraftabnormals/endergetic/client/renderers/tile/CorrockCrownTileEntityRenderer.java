@@ -1,6 +1,5 @@
 package com.minecraftabnormals.endergetic.client.renderers.tile;
 
-import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
@@ -10,17 +9,18 @@ import com.minecraftabnormals.endergetic.common.tileentities.CorrockCrownTileEnt
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import com.teamabnormals.blueprint.client.BlueprintRenderTypes;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
 
-public class CorrockCrownTileEntityRenderer extends BlockEntityRenderer<CorrockCrownTileEntity> {
+public class CorrockCrownTileEntityRenderer implements BlockEntityRenderer<CorrockCrownTileEntity> {
 	public CorrockCrownStandingModel standingModel;
 	public CorrockCrownWallModel wallModel;
 	private static final ResourceLocation[] TEXTURES = {
@@ -29,8 +29,7 @@ public class CorrockCrownTileEntityRenderer extends BlockEntityRenderer<CorrockC
 			new ResourceLocation(EndergeticExpansion.MOD_ID + ":textures/tile/overworld_corrock_crown.png")
 	};
 
-	public CorrockCrownTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-		super(renderDispatcher);
+	public CorrockCrownTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.standingModel = new CorrockCrownStandingModel();
 		this.wallModel = new CorrockCrownWallModel();
 	}
@@ -60,11 +59,10 @@ public class CorrockCrownTileEntityRenderer extends BlockEntityRenderer<CorrockC
 		}
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 
+		VertexConsumer ivertexbuilder = buffer.getBuffer(BlueprintRenderTypes.getUnshadedCutoutEntity(TEXTURES[this.getTexture(te)], true));
 		if (isStanding) {
-			VertexConsumer ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
 			this.standingModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		} else {
-			VertexConsumer ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(TEXTURES[this.getTexture(te)]));
 			this.wallModel.renderAll(matrixStack, ivertexbuilder, 240, combinedOverlay);
 		}
 

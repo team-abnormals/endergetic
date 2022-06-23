@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
-import java.util.Random;
-
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.EndRodBlock;
@@ -25,8 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class AcidianLanternBlock extends EndRodBlock implements SimpleWaterloggedBlock {
 	//DOWN, UP, NORTH, SOUTH, WEST, EAST
 	protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -49,6 +46,7 @@ public class AcidianLanternBlock extends EndRodBlock implements SimpleWaterlogge
 		builder.add(FACING, WATERLOGGED);
 	}
 
+	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return SHAPES[state.getValue(FACING).get3DDataValue()];
 	}
@@ -62,7 +60,7 @@ public class AcidianLanternBlock extends EndRodBlock implements SimpleWaterlogge
 	@Override
 	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
 		if (state.getValue(WATERLOGGED)) {
-			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 		return state;
 	}
@@ -73,7 +71,8 @@ public class AcidianLanternBlock extends EndRodBlock implements SimpleWaterlogge
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
+	@Override
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
 		Direction direction = stateIn.getValue(FACING);
 		double offset = direction == Direction.UP ? 0.1D : direction == Direction.DOWN ? 1D : 0.5D;
 		double xOffset;

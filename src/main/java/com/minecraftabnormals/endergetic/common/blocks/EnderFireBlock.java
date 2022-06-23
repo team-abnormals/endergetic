@@ -3,15 +3,12 @@ package com.minecraftabnormals.endergetic.common.blocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class EnderFireBlock extends BaseFireBlock {
 
@@ -24,11 +21,11 @@ public class EnderFireBlock extends BaseFireBlock {
 	}
 
 	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
-		return isEnderFireBase(worldIn.getBlockState(pos.below()).getBlock());
+		return isEnderFireBase(worldIn.getBlockState(pos.below()));
 	}
 
-	public static boolean isEnderFireBase(Block block) {
-		return block.is(EETags.Blocks.ENDER_FIRE_BASE_BLOCKS);
+	public static boolean isEnderFireBase(BlockState state) {
+		return state.is(EETags.Blocks.ENDER_FIRE_BASE_BLOCKS);
 	}
 
 	protected boolean canBurn(BlockState stateIn) {

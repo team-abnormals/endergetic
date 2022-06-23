@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.core.registry.util;
 
-import com.minecraftabnormals.abnormals_core.core.util.registry.BlockSubRegistryHelper;
-import com.minecraftabnormals.abnormals_core.core.util.registry.RegistryHelper;
 import com.minecraftabnormals.endergetic.common.items.blockitems.CorrockCrownSBlockItem;
+import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
+import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;

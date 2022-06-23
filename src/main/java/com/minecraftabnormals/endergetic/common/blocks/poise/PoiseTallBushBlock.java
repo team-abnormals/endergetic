@@ -1,16 +1,14 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.world.other.PoiseTree;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
+import com.teamabnormals.blueprint.core.util.item.ItemStackUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -56,11 +54,11 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, Level world, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, Level world, BlockPos pos, RandomSource rand) {
 		if (stateIn.getValue(HALF) == DoubleBlockHalf.LOWER || rand.nextFloat() > 0.2F) return;
 
-		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetX = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetZ = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -81,6 +79,7 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 		return 60;
 	}
 
+	@Override
 	public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
 		return SHAPE;
 	}
@@ -91,8 +90,7 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 	}
 
 	protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
-		Block block = state.getBlock();
-		return block.is(EETags.Blocks.POISE_PLANTABLE) || block.is(EETags.Blocks.END_PLANTABLE);
+		return state.is(EETags.Blocks.POISE_PLANTABLE) || state.is(EETags.Blocks.END_PLANTABLE);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -106,15 +104,18 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 	}
 
 	@Nullable
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		BlockPos blockpos = context.getClickedPos();
 		return blockpos.getY() < context.getLevel().getMaxBuildHeight() - 1 && context.getLevel().getBlockState(blockpos.above()).canBeReplaced(context) ? super.getStateForPlacement(context) : null;
 	}
 
+	@Override
 	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		worldIn.setBlock(pos.above(), this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER), 3);
 	}
 
+	@Override
 	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		if (state.getValue(HALF) != DoubleBlockHalf.UPPER) {
 			return this.isValidGround(worldIn.getBlockState(pos.below()), worldIn, pos);
@@ -152,16 +153,14 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 		super.playerWillDestroy(worldIn, pos, state, player);
 	}
 
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(HALF, STAGE);
 	}
 
+	@Override
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
-	}
-
-	public Block.OffsetType getOffsetType() {
-		return Block.OffsetType.XZ;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -175,16 +174,16 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
-		return worldIn.random.nextFloat() <= 0.35F;
+	public boolean isBonemealSuccess(Level level, RandomSource rand, BlockPos pos, BlockState state) {
+		return rand.nextFloat() <= 0.35F;
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel worldIn, Random rand, BlockPos pos, BlockState state) {
-		this.grow(worldIn, pos, state, rand);
+	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
+		this.grow(level, pos, state, rand);
 	}
 
-	public void grow(ServerLevel worldIn, BlockPos pos, BlockState state, Random rand) {
+	public void grow(ServerLevel worldIn, BlockPos pos, BlockState state, RandomSource rand) {
 		if (state.getValue(STAGE) == 0) {
 			worldIn.setBlock(pos, state.cycle(STAGE), 4);
 		} else {
@@ -197,13 +196,6 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		if (ItemStackUtil.isInGroup(this.asItem(), group)) {
-			int targetIndex = ItemStackUtil.findIndexOfItem(Items.LARGE_FERN, items);
-			if (targetIndex != -1) {
-				items.add(targetIndex + 1, new ItemStack(this));
-			} else {
-				super.fillItemCategory(group, items);
-			}
-		}
+		ItemStackUtil.fillAfterItemForCategory(this.asItem(), Items.LARGE_FERN, group, items);
 	}
 }

@@ -8,8 +8,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class RotatableBlock extends HorizontalDirectionalBlock {
 
 	public RotatableBlock(Properties builder) {

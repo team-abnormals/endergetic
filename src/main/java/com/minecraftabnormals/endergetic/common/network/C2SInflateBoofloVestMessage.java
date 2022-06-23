@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.network;
 
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityMotionHelper;
 import com.minecraftabnormals.endergetic.common.items.BoofloVestItem;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -15,9 +15,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public final class C2SInflateBoofloVestMessage {
@@ -41,7 +40,7 @@ public final class C2SInflateBoofloVestMessage {
 			context.enqueueWork(() -> {
 				Player player = context.getSender();
 				if (player != null && !player.isOnGround() && !player.isSpectator()) {
-					ItemStack stack = player.inventory.armor.get(2);
+					ItemStack stack = player.getInventory().armor.get(2);
 					if (stack.getItem() == EEItems.BOOFLO_VEST.get() && BoofloVestItem.canBoof(stack, player)) {
 						CompoundTag tag = stack.getOrCreateTag();
 						tag.putBoolean(BoofloVestItem.BOOFED_TAG, true);
@@ -52,7 +51,7 @@ public final class C2SInflateBoofloVestMessage {
 						player.getCooldowns().addCooldown(EEItems.BOOFLO_VEST.get(), increment < DELAY_INCREASE_THRESHOLD ? DEFAULT_DELAY : DELAY_MULTIPLIER * increment);
 
 						Entity ridingEntity = player.getVehicle();
-						for (Entity entity : player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(2.0D), entity -> entity != player && entity != ridingEntity && !EETags.EntityTypes.BOOF_BLOCK_RESISTANT.contains(entity.getType()))) {
+						for (Entity entity : player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(2.0D), entity -> entity != player && entity != ridingEntity && !entity.getType().is(EETags.EntityTypes.BOOF_BLOCK_RESISTANT))) {
 							EntityMotionHelper.knockbackEntity(entity, HORIZONTAL_BOOST_FORCE, VERTICAL_BOOST_FORCE, false, false);
 						}
 
@@ -63,12 +62,12 @@ public final class C2SInflateBoofloVestMessage {
 						double posX = player.getX();
 						double posY = player.getY();
 						double posZ = player.getZ();
-						Random rand = player.getRandom();
+						RandomSource rand = player.getRandom();
 						for (int i = 0; i < 8; i++) {
-							double x = posX + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+							double x = posX + makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
 							double y = posY + (rand.nextFloat() * 0.05F) + 1.25F;
-							double z = posZ + MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
-							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
+							double z = posZ + makeNegativeRandomly(rand.nextFloat() * 0.15F, rand);
+							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 						}
 
 						player.level.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundSource.PLAYERS, 1.0F, Mth.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
@@ -78,5 +77,9 @@ public final class C2SInflateBoofloVestMessage {
 			return true;
 		}
 		return false;
+	}
+
+	private static double makeNegativeRandomly(double value, RandomSource rand) {
+		return rand.nextBoolean() ? -value : value;
 	}
 }

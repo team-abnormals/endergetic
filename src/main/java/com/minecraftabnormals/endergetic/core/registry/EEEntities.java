@@ -1,7 +1,5 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
-import java.util.Random;
-
 import com.minecraftabnormals.endergetic.common.entities.*;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.*;
 import com.minecraftabnormals.endergetic.common.entities.booflo.*;
@@ -11,19 +9,18 @@ import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import net.minecraft.world.entity.EntityType;
@@ -32,6 +29,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class EEEntities {
@@ -55,12 +54,14 @@ public final class EEEntities {
 	public static final RegistryObject<EntityType<PurpoidEntity>> PURPOID = HELPER.createLivingEntity("purpoid", PurpoidEntity::new, MobCategory.CREATURE, 1.0F, 1.0F);
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void registerSpawnPlacements(RegistryEvent.Register<EntityType<?>> event) {
-		SpawnPlacements.register(BOOFLO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EEEntities::endIslandCondition);
-		SpawnPlacements.register(BOOFLO_ADOLESCENT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EEEntities::endIslandCondition);
-		SpawnPlacements.register(PUFF_BUG.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::endIslandCondition);
-		SpawnPlacements.register(CHARGER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
-		SpawnPlacements.register(GLIDER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
+	public static void registerSpawnPlacements(RegisterEvent event) {
+		if (event.getRegistryKey() == Registry.ENTITY_TYPE_REGISTRY) {
+			SpawnPlacements.register(BOOFLO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EEEntities::endIslandCondition);
+			SpawnPlacements.register(BOOFLO_ADOLESCENT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, EEEntities::endIslandCondition);
+			SpawnPlacements.register(PUFF_BUG.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::endIslandCondition);
+			SpawnPlacements.register(CHARGER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
+			SpawnPlacements.register(GLIDER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntities::eetleCondition);
+		}
 	}
 
 	@SubscribeEvent
@@ -76,7 +77,7 @@ public final class EEEntities {
 		event.put(PURPOID.get(), PurpoidEntity.registerAttributes().build());
 	}
 
-	private static boolean eetleCondition(EntityType<? extends Monster> entityType, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, Random random) {
+	private static boolean eetleCondition(EntityType<? extends Monster> entityType, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		if (Monster.checkMonsterSpawnRules(entityType, world, spawnReason, pos, random) || isInfestedCorrockNearby(world, pos)) {
 			BlockPos down = pos.below();
 			Block downBlock = world.getBlockState(down).getBlock();
@@ -109,7 +110,7 @@ public final class EEEntities {
 		return false;
 	}
 
-	private static boolean endIslandCondition(EntityType<? extends PathfinderMob> entityType, LevelAccessor world, MobSpawnType spawnReason, BlockPos pos, Random random) {
+	private static boolean endIslandCondition(EntityType<? extends PathfinderMob> entityType, LevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
 		return pos.getY() >= 40;
 	}
 }

@@ -77,7 +77,6 @@ public class EndergeticFlyingNodeProcessor extends NodeEvaluator {
 		return pathpoint;
 	}
 
-	@SuppressWarnings("deprecation")
 	private BlockPathTypes isFree(int x, int y, int z) {
 		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 

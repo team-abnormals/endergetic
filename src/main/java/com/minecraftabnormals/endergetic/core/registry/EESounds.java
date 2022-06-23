@@ -1,13 +1,13 @@
 package com.minecraftabnormals.endergetic.core.registry;
 
-import com.minecraftabnormals.abnormals_core.core.util.registry.SoundSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
+import com.teamabnormals.blueprint.core.util.registry.SoundSubRegistryHelper;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.util.ForgeSoundType;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EESounds {

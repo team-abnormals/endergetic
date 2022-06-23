@@ -3,7 +3,6 @@ package com.minecraftabnormals.endergetic.common.entities.eetle;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -18,9 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.network.FMLPlayMessages;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -30,6 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
+import net.minecraftforge.network.PlayMessages;
 
 public class BroodEggSackEntity extends Entity {
 	private static final EntityDimensions FLYING_SIZE = EntityDimensions.fixed(1.5F, 1.5F);
@@ -44,7 +41,7 @@ public class BroodEggSackEntity extends Entity {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
 	}
 
-	public BroodEggSackEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public BroodEggSackEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		super(EEEntities.BROOD_EGG_SACK.get(), world);
 	}
 
@@ -66,7 +63,7 @@ public class BroodEggSackEntity extends Entity {
 		Level world = this.level;
 		BroodEetleEntity broodEetle = this.getBroodEetle(world);
 		if (!world.isClientSide && (broodEetle == null || !broodEetle.isAlive() || broodEetle.getEggSack(world) != this)) {
-			this.remove();
+			this.discard();
 		}
 	}
 

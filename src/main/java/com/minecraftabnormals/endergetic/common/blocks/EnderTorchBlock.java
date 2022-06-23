@@ -12,8 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class EnderTorchBlock extends TorchBlock {
 
 	public EnderTorchBlock(Properties properties) {
@@ -28,4 +26,5 @@ public class EnderTorchBlock extends TorchBlock {
 		worldIn.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
 		worldIn.addParticle(EEParticles.ENDER_FLAME.get(), d0, d1, d2, 0.0D, 0.0D, 0.0D);
 	}
+
 }	

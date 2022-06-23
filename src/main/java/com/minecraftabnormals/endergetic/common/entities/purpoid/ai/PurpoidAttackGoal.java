@@ -1,10 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -16,11 +17,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
 
 public class PurpoidAttackGoal extends Goal {
 	private final PurpoidEntity purpoid;
@@ -66,7 +66,7 @@ public class PurpoidAttackGoal extends Goal {
 		this.delayCounter = Math.max(this.delayCounter - 1, 0);
 		LivingEntity target = purpoid.getTarget();
 		double distanceToTargetSq = purpoid.distanceToSqr(target);
-		Random random = purpoid.getRandom();
+		RandomSource random = purpoid.getRandom();
 		if (this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
 			PathNavigation pathNavigator = purpoid.getNavigation();
@@ -102,7 +102,7 @@ public class PurpoidAttackGoal extends Goal {
 						}
 					}
 				} else if (purpoid.isNoEndimationPlaying()) {
-					NetworkUtil.setPlayingAnimationMessage(purpoid, PurpoidEntity.TELEFRAG_ANIMATION);
+					NetworkUtil.setPlayingAnimation(purpoid, PurpoidEntity.TELEFRAG_ANIMATION);
 				}
 			} else {
 				purpoid.startRiding(target);
@@ -124,7 +124,7 @@ public class PurpoidAttackGoal extends Goal {
 
 	public static boolean shouldFollowTarget(PurpoidEntity purpoid, boolean near) {
 		LivingEntity attackTarget = purpoid.getTarget();
-		return attackTarget != null && attackTarget.isAlive() && attackTarget.hasPassenger(PurpoidEntity.class) == near && !purpoid.isPassenger() && (!(attackTarget instanceof Player) || !attackTarget.isSpectator() && !((Player) attackTarget).isCreative());
+		return attackTarget != null && attackTarget.isAlive() && attackTarget.hasPassenger(e -> e instanceof PurpoidEntity) == near && !purpoid.isPassenger() && (!(attackTarget instanceof Player) || !attackTarget.isSpectator() && !((Player) attackTarget).isCreative());
 	}
 
 	public static BlockPos findAirPosAboveTarget(Level world, LivingEntity target) {

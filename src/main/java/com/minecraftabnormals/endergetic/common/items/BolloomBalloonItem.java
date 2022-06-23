@@ -3,7 +3,6 @@ package com.minecraftabnormals.endergetic.common.items;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.minecraftabnormals.abnormals_core.core.util.EntityUtil;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomKnotEntity;
@@ -11,6 +10,7 @@ import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
+import com.teamabnormals.blueprint.core.util.EntityUtil;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -21,7 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -36,8 +35,6 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class BolloomBalloonItem extends Item {
 	private final BalloonColor balloonColor;
@@ -116,7 +113,7 @@ public class BolloomBalloonItem extends Item {
 	}
 
 	public static boolean canAttachBalloonToTarget(Entity target) {
-		return !EETags.EntityTypes.NOT_BALLOON_ATTACHABLE.contains(target.getType()) && ((BalloonHolder) target).getBalloons().size() < (target instanceof Boat ? 4 : 6);
+		return !target.getType().is(EETags.EntityTypes.NOT_BALLOON_ATTACHABLE) && ((BalloonHolder) target).getBalloons().size() < (target instanceof Boat ? 4 : 6);
 	}
 
 	public static void attachToEntity(BalloonColor color, Entity target) {
@@ -174,9 +171,6 @@ public class BolloomBalloonItem extends Item {
 		}
 	}
 
-	/**
-	 * Moved here since {@link ProjectileHelper#rayTraceEntities(Entity, Vector3d, Vector3d, AxisAlignedBB, Predicate, double)} is client only
-	 */
 	private static EntityHitResult rayTraceEntities(Entity shooter, Vec3 startVec, Vec3 endVec, AABB boundingBox, Predicate<Entity> filter, double distance) {
 		Level world = shooter.level;
 		double d0 = distance;
@@ -233,9 +227,9 @@ public class BolloomBalloonItem extends Item {
 				balloon.setColor(((BolloomBalloonItem) stack.getItem()).getBalloonColor());
 				world.addFreshEntity(balloon);
 				stack.shrink(1);
-			} else if (!state.getMaterial().isReplaceable() && !state.getBlock().is(BlockTags.FENCES)) {
+			} else if (!state.getMaterial().isReplaceable() && !state.is(BlockTags.FENCES)) {
 				return super.execute(source, stack);
-			} else if (state.getBlock().is(BlockTags.FENCES)) {
+			} else if (state.is(BlockTags.FENCES)) {
 				BolloomKnotEntity setKnot = BolloomKnotEntity.getKnotForPosition(world, blockpos);
 				if (setKnot == null) {
 					BolloomKnotEntity.createStartingKnot(world, blockpos, ((BolloomBalloonItem) stack.getItem()).getBalloonColor());

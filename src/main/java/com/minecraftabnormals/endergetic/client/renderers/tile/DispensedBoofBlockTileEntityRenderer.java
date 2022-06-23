@@ -10,17 +10,16 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
 
-public class DispensedBoofBlockTileEntityRenderer extends BlockEntityRenderer<DispensedBlockBoofTileEntity> {
+public class DispensedBoofBlockTileEntityRenderer implements BlockEntityRenderer<DispensedBlockBoofTileEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/block/boof_block_dispensed.png");
 	private final BoofBlockDispenserModel model;
 
-	public DispensedBoofBlockTileEntityRenderer(BlockEntityRenderDispatcher renderDispatcher) {
-		super(renderDispatcher);
+	public DispensedBoofBlockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
 		this.model = new BoofBlockDispenserModel();
 	}
 

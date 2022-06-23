@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.GuiComponent;
@@ -20,7 +21,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -45,14 +47,13 @@ public final class OverlayEvents {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@SubscribeEvent
-	public static void renderOverlays(RenderGameOverlayEvent.Pre event) {
+	public static void renderOverlays(RenderGameOverlayEvent.PreLayer event) {
 		LocalPlayer player = MC.player;
 		if (player != null) {
 			if (!MC.options.hideGui) {
-				ElementType type = event.getType();
-				if (type == ElementType.EXPERIENCE) {
+				IIngameOverlay overlay = event.getOverlay();
+				if (overlay == ForgeIngameGui.EXPERIENCE_BAR_ELEMENT) {
 					if (player.isPassenger() && player.getVehicle() instanceof BoofloEntity) {
 						event.setCanceled(true);
 
@@ -62,9 +63,9 @@ public final class OverlayEvents {
 						int left = scaledWidth / 2 - 91;
 						int progress = ((BoofloEntity) player.getVehicle()).getBoostPower();
 
-						PoseStack stack = event.getMatrixStack();
+						PoseStack stack = event.getPoseStack();
 						stack.pushPose();
-						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
+						RenderSystem.setShaderTexture(0, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/booflo_bar.png"));
 
 						OverlayEvents.drawTexture(stack, left, top, 0, 0, 182, 5);
 						if (progress > 0) {
@@ -73,20 +74,20 @@ public final class OverlayEvents {
 
 						stack.popPose();
 					}
-				} else if (type == ElementType.HEALTHMOUNT && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
+				} else if (overlay == ForgeIngameGui.MOUNT_HEALTH_ELEMENT && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
 					event.setCanceled(true);
-				} else if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
-					float purpoidFlashProgress = Mth.lerp(event.getPartialTicks(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
+				} else if (overlay == ForgeIngameGui.VIGNETTE_ELEMENT && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
+					float purpoidFlashProgress = Mth.lerp(event.getPartialTick(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
 					if (purpoidFlashProgress > 0.0F) {
-						PoseStack stack = event.getMatrixStack();
+						PoseStack stack = event.getPoseStack();
 						stack.pushPose();
-						MC.textureManager.bind(new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
+						RenderSystem.setShaderTexture(0, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
 						RenderSystem.enableBlend();
 						RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-						RenderSystem.color4f(1.0F, 1.0F, 1.0F, purpoidFlashProgress);
+						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, purpoidFlashProgress);
 						Tesselator tessellator = Tesselator.getInstance();
 						BufferBuilder bufferbuilder = tessellator.getBuilder();
-						bufferbuilder.begin(7, DefaultVertexFormat.POSITION_TEX);
+						bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 						Window mainWindow = MC.getWindow();
 						int scaledWidth = mainWindow.getGuiScaledWidth();
 						int scaledHeight = mainWindow.getGuiScaledHeight();

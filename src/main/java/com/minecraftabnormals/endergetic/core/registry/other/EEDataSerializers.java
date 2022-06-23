@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -19,7 +18,7 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class EEDataSerializers {
-	public static final DeferredRegister<DataSerializerEntry> SERIALIZERS = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
+	public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS.get(), EndergeticExpansion.MOD_ID);
 
 	public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VEC3D = new EntityDataSerializer<Optional<Vec3>>() {
 		@Override
@@ -128,11 +127,11 @@ public final class EEDataSerializers {
 	};
 
 	static {
-		SERIALIZERS.register("optional_vec3d", () -> new DataSerializerEntry(OPTIONAL_VEC3D));
-		SERIALIZERS.register("balloon_color", () -> new DataSerializerEntry(BALLOON_COLOR));
-		SERIALIZERS.register("target_flying_rotations", () -> new DataSerializerEntry(TARGET_FLYING_ROTATIONS));
-		SERIALIZERS.register("entity_size", () -> new DataSerializerEntry(ENTITY_SIZE));
-		SERIALIZERS.register("brood_health_stage", () -> new DataSerializerEntry(BROOD_HEALTH_STAGE));
-		SERIALIZERS.register("purpoid_size", () -> new DataSerializerEntry(PURPOID_SIZE));
+		SERIALIZERS.register("optional_vec3d", () -> OPTIONAL_VEC3D);
+		SERIALIZERS.register("balloon_color", () -> BALLOON_COLOR);
+		SERIALIZERS.register("target_flying_rotations", () -> TARGET_FLYING_ROTATIONS);
+		SERIALIZERS.register("entity_size", () -> ENTITY_SIZE);
+		SERIALIZERS.register("brood_health_stage", () -> BROOD_HEALTH_STAGE);
+		SERIALIZERS.register("purpoid_size", () -> PURPOID_SIZE);
 	}
 }

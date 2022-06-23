@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.common.items;
 
-import com.minecraftabnormals.abnormals_core.core.util.item.ItemStackUtil;
 import com.minecraftabnormals.endergetic.client.models.armor.BoofloVestModel;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.other.EEArmorMaterials;
 
+import com.teamabnormals.blueprint.core.util.item.ItemStackUtil;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,10 +19,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.world.item.Item.Properties;
+import java.util.function.Consumer;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -66,7 +65,7 @@ public class BoofloVestItem extends ArmorItem {
 
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-		ItemStackUtil.fillAfterItemForGroup(this, Items.TURTLE_HELMET, group, items);
+		ItemStackUtil.fillAfterItemForCategory(this, Items.TURTLE_HELMET, group, items);
 	}
 
 	@Override
@@ -83,11 +82,14 @@ public class BoofloVestItem extends ArmorItem {
 		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BOOFED_TEXTURE : DEFAULT_TEXTURE;
 	}
 
-	@SuppressWarnings({"unchecked"})
 	@Override
-	@Nullable
 	@OnlyIn(Dist.CLIENT)
-	public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity wearer, ItemStack stack, EquipmentSlot armorSlot, A _default) {
-		return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? (A) BoofloVestModel.INSTANCE : null;
+	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+		consumer.accept(new IItemRenderProperties() {
+			@Override
+			public HumanoidModel<?> getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
+				return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BoofloVestModel.INSTANCE : null;
+			}
+		});
 	}
 }

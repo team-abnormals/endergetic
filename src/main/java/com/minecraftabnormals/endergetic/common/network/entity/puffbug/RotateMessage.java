@@ -1,14 +1,14 @@
 package com.minecraftabnormals.endergetic.common.network.entity.puffbug;
 
-import java.util.function.Supplier;
-
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Message that tells the client to rotate a Puff Bug
@@ -46,7 +46,7 @@ public class RotateMessage {
 		NetworkEvent.Context context = ctx.get();
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
-				Entity entity = ClientInfo.getClientPlayerWorld().getEntity(message.entityId);
+				Entity entity = ClientInfo.getClientPlayerLevel().getEntity(message.entityId);
 				if (entity instanceof PuffBugEntity) {
 					((PuffBugEntity) entity).getRotationController().rotate(message.yaw, message.pitch, message.roll, message.tickLength);
 				}

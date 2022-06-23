@@ -1,7 +1,11 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
-import net.minecraft.block.*;
+import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,9 +25,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 
 import javax.annotation.Nullable;
-import java.util.Random;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -80,10 +81,14 @@ public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedB
 		return SHAPES[state.getValue(SIZE)][state.getValue(FACING).get3DDataValue()];
 	}
 
-	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(BlockGetter world) {
-		return new EetleEggTileEntity();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new EetleEggTileEntity(pos, state);
+	}
+
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		return createTickerHelper(type, EETileEntities.EETLE_EGG.get(), EetleEggTileEntity::tick);
 	}
 
 	@Override
@@ -91,7 +96,7 @@ public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedB
 		if (!this.canSurvive(state, world, currentPos)) {
 			return Blocks.AIR.defaultBlockState();
 		} else if (state.getValue(WATERLOGGED)) {
-			world.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 			if (!state.getValue(PETRIFIED)) {
 				return state.setValue(PETRIFIED, true);
 			}
@@ -156,7 +161,7 @@ public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedB
 		if (!state.getValue(BlockStateProperties.WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 			if (!world.isClientSide()) {
 				world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true).setValue(PETRIFIED, true), 3);
-				world.getLiquidTicks().scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(world));
+				world.scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(world));
 			}
 			return true;
 		}
@@ -172,7 +177,7 @@ public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedB
 		return !state.getCollisionShape(world, pos).getFaceShape(direction).isEmpty() || state.isFaceSturdy(world, pos, direction);
 	}
 
-	public static void shuffleDirections(Direction[] directions, Random random) {
+	public static void shuffleDirections(Direction[] directions, RandomSource random) {
 		int length = directions.length;
 		for (int i = length; i > 1; i--) {
 			int offset1 = Math.max(0, i - 1);

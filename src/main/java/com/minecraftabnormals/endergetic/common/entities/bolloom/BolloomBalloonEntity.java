@@ -31,7 +31,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.network.PlayMessages;
 
 /**
  * @author - SmellyModder (Luke Tonon)
@@ -51,7 +51,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		super(entityType, world);
 	}
 
-	public BolloomBalloonEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level world) {
+	public BolloomBalloonEntity(PlayMessages.SpawnEntity spawnEntity, Level world) {
 		this(EEEntities.BOLLOOM_BALLOON.get(), world);
 	}
 

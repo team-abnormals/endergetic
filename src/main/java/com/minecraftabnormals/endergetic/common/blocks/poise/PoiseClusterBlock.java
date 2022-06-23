@@ -1,13 +1,11 @@
 package com.minecraftabnormals.endergetic.common.blocks.poise;
 
-import java.util.Random;
-
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -15,7 +13,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -27,8 +24,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class PoiseClusterBlock extends Block {
 
 	public PoiseClusterBlock(Properties properties) {
@@ -37,12 +32,12 @@ public class PoiseClusterBlock extends Block {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
 		if (rand.nextFloat() > 0.05F || !worldIn.getBlockState(pos.above()).getCollisionShape(worldIn, pos.above()).isEmpty())
 			return;
 
-		double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-		double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetX = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+		double offsetZ = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 		double x = pos.getX() + 0.5D + offsetX;
 		double y = pos.getY() + 0.95D + (rand.nextFloat() * 0.05F);
@@ -54,25 +49,24 @@ public class PoiseClusterBlock extends Block {
 	@Override
 	public void attack(BlockState state, Level world, BlockPos pos, Player player) {
 		ItemStack stack = player.getMainHandItem();
-		Item item = stack.getItem();
-		if (!item.is(Tags.Items.SHEARS)) {
+		if (!stack.is(Tags.Items.SHEARS)) {
 			if (world.isEmptyBlock(pos.above()) && world.getEntitiesOfClass(PoiseClusterEntity.class, new AABB(pos).move(0, 1, 0)).isEmpty()) {
 				if (!world.isClientSide) {
 					PoiseClusterEntity cluster = new PoiseClusterEntity(world, pos, pos.getX(), pos.getY(), pos.getZ());
 					cluster.setBlocksToMoveUp(10);
 					world.addFreshEntity(cluster);
 
-					Random rand = player.getRandom();
+					RandomSource rand = player.getRandom();
 
 					for (int i = 0; i < 8; i++) {
-						double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-						double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+						double offsetX = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+						double offsetZ = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 						double x = pos.getX() + 0.5D + offsetX;
 						double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
 						double z = pos.getZ() + 0.5D + offsetZ;
 
-						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+						NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, GlowingPoiseStemBlock.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, GlowingPoiseStemBlock.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 					}
 				}
 				world.removeBlock(pos, false);
@@ -94,22 +88,22 @@ public class PoiseClusterBlock extends Block {
 				world.addFreshEntity(cluster);
 
 				if (projectile instanceof Arrow) {
-					projectile.remove();
+					projectile.discard();
 				}
 
 				world.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 				world.playSound(null, pos, EESounds.CLUSTER_BREAK.get(), SoundSource.BLOCKS, 0.90F, 0.75F);
 
-				Random rand = new Random();
+				RandomSource rand = cluster.getRandom();
 				for (int i = 0; i < 8; i++) {
-					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
-					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetX = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
+					double offsetZ = GlowingPoiseStemBlock.makeNegativeRandomly(rand.nextFloat() * 0.25F, rand);
 
 					double x = pos.getX() + 0.5D + offsetX;
 					double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
 					double z = pos.getZ() + 0.5D + offsetZ;
 
-					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, GlowingPoiseStemBlock.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, GlowingPoiseStemBlock.makeNegativeRandomly((rand.nextFloat() * 0.1F), rand) + 0.025F);
 				}
 			}
 		}
@@ -117,6 +111,7 @@ public class PoiseClusterBlock extends Block {
 
 	@SuppressWarnings("deprecation")
 	@OnlyIn(Dist.CLIENT)
+	@Override
 	public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
 		return adjacentBlockState.getBlock() == this || super.skipRendering(state, adjacentBlockState, side);
 	}

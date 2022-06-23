@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.core.mixin.chorus;
 
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
-import net.minecraft.block.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -24,12 +23,12 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class ChorusPlantBlockMixin {
 
 	@Inject(at = @At(value = "RETURN", shift = At.Shift.BEFORE), method = "getStateForPlacement(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-	private void makePlantConnections(BlockGetter blockReader, BlockPos pos, CallbackInfoReturnable<BlockState> info, Block block, Block block1, Block block2, Block block3, Block block4, Block block5) {
+	private void makePlantConnections(BlockGetter blockReader, BlockPos pos, CallbackInfoReturnable<BlockState> info, BlockState block, BlockState block1, BlockState block2, BlockState block3, BlockState block4, BlockState block5) {
 		Block thisBlock = (Block) (Object) this;
 		if (block.is(EETags.Blocks.CHORUS_PLANTABLE)) {
-			info.setReturnValue(Blocks.CHORUS_PLANT.defaultBlockState().setValue(PipeBlock.DOWN, true).setValue(PipeBlock.UP, block1 == thisBlock || block1 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.NORTH, block2 == thisBlock || block2 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.EAST, block3 == thisBlock || block3 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.SOUTH, block4 == thisBlock || block4 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.WEST, block5 == thisBlock || block5 == Blocks.CHORUS_FLOWER));
-		} else if (block == Blocks.END_STONE) {
-			info.setReturnValue(Blocks.CHORUS_PLANT.defaultBlockState().setValue(PipeBlock.DOWN, false).setValue(PipeBlock.UP, block1 == thisBlock || block1 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.NORTH, block2 == thisBlock || block2 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.EAST, block3 == thisBlock || block3 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.SOUTH, block4 == thisBlock || block4 == Blocks.CHORUS_FLOWER).setValue(PipeBlock.WEST, block5 == thisBlock || block5 == Blocks.CHORUS_FLOWER));
+			info.setReturnValue(Blocks.CHORUS_PLANT.defaultBlockState().setValue(PipeBlock.DOWN, true).setValue(PipeBlock.UP, block1.is(thisBlock) || block1.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.NORTH, block2.is(thisBlock) || block2.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.EAST, block3.is(thisBlock) || block3.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.SOUTH, block4.is(thisBlock) || block4.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.WEST, block5.is(thisBlock) || block5.is(Blocks.CHORUS_FLOWER)));
+		} else if (block.is(Blocks.END_STONE)) {
+			info.setReturnValue(Blocks.CHORUS_PLANT.defaultBlockState().setValue(PipeBlock.DOWN, false).setValue(PipeBlock.UP, block1.is(thisBlock) || block1.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.NORTH, block2.is(thisBlock) || block2.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.EAST, block3.is(thisBlock) || block3.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.SOUTH, block4.is(thisBlock) || block4.is(Blocks.CHORUS_FLOWER)).setValue(PipeBlock.WEST, block5.is(thisBlock) || block5.is(Blocks.CHORUS_FLOWER)));
 		}
 	}
 
@@ -61,14 +60,13 @@ public final class ChorusPlantBlockMixin {
 					return false;
 				}
 
-				Block offsetDownBlock = worldIn.getBlockState(offset.below()).getBlock();
-				if (offsetDownBlock == (Object) this || offsetDownBlock.is(EETags.Blocks.CHORUS_PLANTABLE)) {
+				BlockState offsetDownBlock = worldIn.getBlockState(offset.below());
+				if (offsetDownBlock.is((Block) (Object) this) || offsetDownBlock.is(EETags.Blocks.CHORUS_PLANTABLE)) {
 					return true;
 				}
 			}
 		}
-		Block block = downState.getBlock();
-		return block == (Object) this || block.is(EETags.Blocks.CHORUS_PLANTABLE);
+		return downState.is((Block) (Object) this) || downState.is(EETags.Blocks.CHORUS_PLANTABLE);
 	}
 
 }

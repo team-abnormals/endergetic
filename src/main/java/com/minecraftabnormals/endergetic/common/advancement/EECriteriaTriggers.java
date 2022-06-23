@@ -1,8 +1,8 @@
 package com.minecraftabnormals.endergetic.common.advancement;
 
-import com.minecraftabnormals.abnormals_core.common.advancement.EmptyTrigger;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
+import com.teamabnormals.blueprint.common.advancement.EmptyTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;

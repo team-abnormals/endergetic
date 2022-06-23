@@ -1,8 +1,6 @@
 package com.minecraftabnormals.endergetic.common.blocks;
 
 import java.util.Map;
-import java.util.OptionalLong;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -12,22 +10,20 @@ import com.minecraftabnormals.endergetic.core.events.EntityEvents;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import net.minecraft.block.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.*;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.ToolType;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -38,32 +34,27 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.DimensionType;
 
 public class CorrockBlock extends Block implements BonemealableBlock {
-	private static final Map<DimensionType, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
-		conversions.put(DimensionTypeAccessor.OVERWORLD, EEBlocks.CORROCK_OVERWORLD_BLOCK);
-		conversions.put(DimensionTypeAccessor.THE_NETHER, EEBlocks.CORROCK_NETHER_BLOCK);
-		conversions.put(DimensionTypeAccessor.THE_END, EEBlocks.CORROCK_END_BLOCK);
+	private static final Map<ResourceLocation, Supplier<Block>> CONVERSIONS = Util.make(Maps.newHashMap(), (conversions) -> {
+		conversions.put(BuiltinDimensionTypes.OVERWORLD.location(), EEBlocks.CORROCK_OVERWORLD_BLOCK);
+		conversions.put(BuiltinDimensionTypes.NETHER.location(), EEBlocks.CORROCK_NETHER_BLOCK);
+		conversions.put(BuiltinDimensionTypes.END.location(), EEBlocks.CORROCK_END_BLOCK);
 	});
 	private final Supplier<Block> speckledBlock;
 	private final Supplier<Block> plantBlock;
 
-	public CorrockBlock(Properties properties, Supplier<Block> speckledBlock, Supplier<Block> plantBlock, boolean petrified) {
+	public CorrockBlock(Properties properties, Supplier<Block> speckledBlock, Supplier<Block> plantBlock) {
 		super(properties);
 		this.speckledBlock = speckledBlock;
 		this.plantBlock = plantBlock;
 	}
 
 	@Override
-	public ToolType getHarvestTool(BlockState state) {
-		return ToolType.PICKAXE;
-	}
-
-	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
-		if (this.shouldConvert(world)) {
-			world.setBlockAndUpdate(pos, CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get().defaultBlockState());
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		Block conversion = this.getConversionBlock(level);
+		if (conversion != this) {
+			level.setBlockAndUpdate(pos, conversion.defaultBlockState());
 		}
 	}
 
@@ -72,9 +63,10 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 		return SoundType.CORAL_BLOCK;
 	}
 
+	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if (this.shouldConvert(worldIn)) {
-			worldIn.getBlockTicks().scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
+			worldIn.scheduleTick(currentPos, this, 60 + worldIn.getRandom().nextInt(40));
 		}
 
 		if (isSubmerged(worldIn, currentPos)) {
@@ -85,15 +77,20 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 	}
 
 	@Nullable
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		if (this.shouldConvert(context.getLevel())) {
-			context.getLevel().getBlockTicks().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
+			context.getLevel().scheduleTick(context.getClickedPos(), this, 60 + context.getLevel().getRandom().nextInt(40));
 		}
 		return this.defaultBlockState();
 	}
 
-	protected boolean shouldConvert(LevelAccessor world) {
-		return CONVERSIONS.getOrDefault(world.dimensionType(), EEBlocks.CORROCK_OVERWORLD_BLOCK).get() != this;
+	protected Block getConversionBlock(LevelAccessor level) {
+		return CONVERSIONS.getOrDefault(level.registryAccess().registry(Registry.DIMENSION_TYPE_REGISTRY).get().getKey(level.dimensionType()), EEBlocks.CORROCK_OVERWORLD_BLOCK).get();
+	}
+
+	protected boolean shouldConvert(LevelAccessor level) {
+		return this.getConversionBlock(level) != this;
 	}
 
 	public static boolean isSubmerged(LevelAccessor world, BlockPos pos) {
@@ -107,8 +104,8 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 	}
 
 	@Override
-	public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
-		return entityType == EEEntities.CHARGER_EETLE.get() || super.canCreatureSpawn(state, world, pos, type, entityType);
+	public boolean isValidSpawn(BlockState state, BlockGetter level, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
+		return entityType == EEEntities.CHARGER_EETLE.get() || super.isValidSpawn(state, level, pos, type, entityType);
 	}
 
 	@Override
@@ -117,12 +114,12 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 	}
 
 	@Override
-	public boolean isBonemealSuccess(Level worldIn, Random rand, BlockPos pos, BlockState state) {
+	public boolean isBonemealSuccess(Level p_220878_, RandomSource p_220879_, BlockPos p_220880_, BlockState p_220881_) {
 		return true;
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel world, Random rand, BlockPos pos, BlockState state) {
+	public void performBonemeal(ServerLevel level, RandomSource rand, BlockPos pos, BlockState state) {
 		int radius = 2;
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		Block speckledBlock = this.speckledBlock.get();
@@ -131,23 +128,23 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 		for (int x = -radius; x <= radius; x++) {
 			for (int z = -radius; z <= radius; z++) {
 				mutable.setWithOffset(pos, x, 0, z);
-				Block block = this.findHighestSpreadableBlock(world, mutable, speckledBlock);
+				Block block = this.findHighestSpreadableBlock(level, mutable, speckledBlock);
 				boolean thisBlock = block == this;
 				boolean isSpeckled = block == speckledBlock;
 				if (block == Blocks.END_STONE || thisBlock || isSpeckled) {
 					int distanceSq = x * x + z * z - rand.nextInt(2);
 					if (distanceSq <= 1) {
-						this.placeSpreadBlock(world, mutable, this.defaultBlockState(), plantState, rand, false);
+						this.placeSpreadBlock(level, mutable, this.defaultBlockState(), plantState, rand, false);
 					} else if (distanceSq <= 4) {
 						boolean notSpeckled = isSpeckled || thisBlock;
-						this.placeSpreadBlock(world, mutable, notSpeckled ? this.defaultBlockState() : speckledState, plantState, rand, !notSpeckled);
+						this.placeSpreadBlock(level, mutable, notSpeckled ? this.defaultBlockState() : speckledState, plantState, rand, !notSpeckled);
 					}
 				}
 			}
 		}
 	}
 
-	private void placeSpreadBlock(ServerLevel world, BlockPos pos, BlockState state, BlockState plantState, Random random, boolean speckled) {
+	private void placeSpreadBlock(ServerLevel world, BlockPos pos, BlockState state, BlockState plantState, RandomSource random, boolean speckled) {
 		world.setBlockAndUpdate(pos, state);
 		if (random.nextFloat() < (speckled ? 0.1F : 0.2F)) {
 			BlockPos up = pos.above();
@@ -168,15 +165,5 @@ public class CorrockBlock extends Block implements BonemealableBlock {
 			}
 		}
 		return null;
-	}
-
-	public static final class DimensionTypeAccessor extends DimensionType {
-		public static final DimensionType OVERWORLD = DEFAULT_OVERWORLD;
-		public static final DimensionType THE_NETHER = DEFAULT_NETHER;
-		public static final DimensionType THE_END = DEFAULT_END;
-
-		protected DimensionTypeAccessor(OptionalLong fixedTime, boolean hasSkyLight, boolean hasCeiling, boolean ultrawarm, boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks, boolean hasRaids, int logicalHeight, ResourceLocation infiniburn, ResourceLocation effects, float ambientLight) {
-			super(fixedTime, hasSkyLight, hasCeiling, ultrawarm, natural, coordinateScale, piglinSafe, bedWorks, respawnAnchorWorks, hasRaids, logicalHeight, infiniburn, effects, ambientLight);
-		}
 	}
 }

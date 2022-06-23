@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  */
 public final class C2SBoostMessage {
 
-	public final void serialize(FriendlyByteBuf buf) {
+	public void serialize(FriendlyByteBuf buf) {
 	}
 
 	public static C2SBoostMessage deserialize(FriendlyByteBuf buf) {
@@ -34,7 +34,7 @@ public final class C2SBoostMessage {
 					if (entity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) entity;
 						if (booflo.isBoostExpanding() && !booflo.isBoostLocked() && !booflo.isOnGround() && booflo.isBoofed() && booflo.getBoostPower() > 0) {
-							NetworkUtil.setPlayingAnimationMessage(booflo, BoofloEntity.INFLATE);
+							NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.INFLATE);
 							booflo.playSound(booflo.getInflateSound(), 0.75F, 1.0F);
 							booflo.setBoostExpanding(false);
 						}

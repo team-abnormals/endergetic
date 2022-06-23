@@ -1,12 +1,12 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -17,8 +17,7 @@ import java.util.function.Supplier;
  */
 public final class C2SInflateMessage {
 
-	public final void serialize(FriendlyByteBuf buf) {
-	}
+	public void serialize(FriendlyByteBuf buf) {}
 
 	public static C2SInflateMessage deserialize(FriendlyByteBuf buf) {
 		return new C2SInflateMessage();
@@ -37,7 +36,7 @@ public final class C2SInflateMessage {
 							if (!booflo.isBoofed()) {
 								booflo.setBoostLocked(true);
 								booflo.setBoofed(true);
-								NetworkUtil.setPlayingAnimationMessage(booflo, BoofloEntity.INFLATE);
+								NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.INFLATE);
 							}
 							booflo.setBoostExpanding(true);
 						}
@@ -47,4 +46,5 @@ public final class C2SInflateMessage {
 			context.setPacketHandled(true);
 		}
 	}
+
 }
