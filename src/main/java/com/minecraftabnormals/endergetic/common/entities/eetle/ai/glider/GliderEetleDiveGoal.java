@@ -4,18 +4,15 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntit
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRotations;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.math.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -57,7 +54,7 @@ public class GliderEetleDiveGoal extends Goal {
 			if (distanceFromGround > 3 && distanceFromGround < 11) {
 				pos = pos.below(distanceFromGround);
 				if (world.getEntitiesOfClass(ChargerEetleEntity.class, new AABB(pos).inflate(4.0D)).size() < 3) {
-					Random random = glider.getRandom();
+					RandomSource random = glider.getRandom();
 					for (int i = 0; i < 5; i++) {
 						BlockPos offsetPos = pos.offset(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
 						if (world.loadedAndEntityCanStandOn(offsetPos.below(), glider) && world.noCollision(new AABB(offsetPos))) {
@@ -82,7 +79,7 @@ public class GliderEetleDiveGoal extends Goal {
 		double xDif = (target.x() + 0.5F) - glider.getX();
 		double yDif = target.y() - glider.getEyeY();
 		double zDif = (target.z() + 0.5F) - glider.getZ();
-		float magnitude = Mth.sqrt(xDif * xDif + yDif * yDif + zDif * zDif);
+		float magnitude = Mth.sqrt((float) (xDif * xDif + yDif * yDif + zDif * zDif));
 		double toDeg = 180.0F / Math.PI;
 		this.targetYaw = (float) (Mth.atan2(zDif, xDif) * toDeg) - 90.0F;
 		this.targetPitch = (float) -(Mth.atan2(yDif, magnitude) * toDeg);
@@ -107,7 +104,7 @@ public class GliderEetleDiveGoal extends Goal {
 		glider.setDiving(true);
 		glider.setMoving(true);
 		glider.setTargetFlyingRotations(new TargetFlyingRotations(this.targetPitch, glider.getTargetFlyingRotations().getTargetFlyRoll()));
-		glider.yRot = FlyingRotations.clampedRotate(glider.yRot, this.targetYaw, 15.0F);
+		glider.setYRot(FlyingRotations.clampedRotate(glider.getYRot(), this.targetYaw, 15.0F));
 		glider.getLookControl().setLookAt(this.divePos);
 		if (ticksDiving > 5 && (glider.isOnGround() || glider.horizontalCollision)) {
 			LivingEntity attackTarget = glider.getTarget();

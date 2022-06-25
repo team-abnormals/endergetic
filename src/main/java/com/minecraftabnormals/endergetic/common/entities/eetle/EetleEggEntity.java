@@ -36,8 +36,6 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
-import java.util.Random;
-
 public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData {
 	private static final Block EETLE_EGGS_BLOCK = EEBlocks.EETLE_EGG.get();
 	private static final Direction[] DIRECTIONS = Direction.values();
@@ -150,7 +148,6 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 		return Entity.MovementEmission.NONE;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isPickable() {
 		return !this.isRemoved();
@@ -239,7 +236,7 @@ public class EetleEggEntity extends Entity implements IEntityAdditionalSpawnData
 
 		private static final EggSize[] VALUES = values();
 
-		public static EggSize random(Random random, boolean biased) {
+		public static EggSize random(RandomSource random, boolean biased) {
 			return biased ? (random.nextFloat() < 0.6F ? SMALL : VALUES[random.nextInt(VALUES.length)]) : VALUES[random.nextInt(VALUES.length)];
 		}
 

@@ -1,10 +1,5 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
@@ -14,7 +9,13 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
-import net.minecraft.entity.*;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.TimedEndimation;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -45,15 +46,12 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.world.entity.Entity;
@@ -64,8 +62,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyingEetle {
+public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEetle {
 	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213325_aI");
 	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213326_aJ");
 	private static final EntityDataAccessor<Boolean> FIRING_CANNON = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
@@ -76,32 +75,22 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	private static final EntityDataAccessor<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = SynchedEntityData.defineId(BroodEetleEntity.class, EEDataSerializers.TARGET_FLYING_ROTATIONS);
 	private static final EntityDataAccessor<Integer> EGG_SACK_ID = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<HealthStage> HEALTH_STAGE = SynchedEntityData.defineId(BroodEetleEntity.class, EEDataSerializers.BROOD_HEALTH_STAGE);
-	public static final Endimation FLAP = new Endimation(22);
-	public static final Endimation MUNCH = new Endimation(25);
-	public static final Endimation ATTACK = new Endimation(12);
-	public static final Endimation SLAM = new Endimation(20);
-	public static final Endimation LAUNCH = new Endimation(18);
-	public static final Endimation AIR_CHARGE = new Endimation(80);
-	public static final Endimation AIR_SLAM = new Endimation(11);
-	public static final Endimation DEATH = new Endimation(115);
 	private static final EntityDimensions FLYING_SIZE = EntityDimensions.fixed(1.875F, 2.125F);
 	private static final EntityDimensions FINAL_STAGE_SIZE = EntityDimensions.fixed(2.1875F, 2.125F);
-	private final ControlledEndimation eggCannonEndimation = new ControlledEndimation(20, 0);
-	private final ControlledEndimation eggMouthEndimation = new ControlledEndimation(15, 0);
-	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
-	private final ControlledEndimation eggCannonFlyingEndimation = new ControlledEndimation(20, 0);
-	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
-	private final ControlledEndimation sleepingEndimation = new ControlledEndimation(20, 0);
-	private final ControlledEndimation healPulseEndimation = new ControlledEndimation(10, 0);
+	private final TimedEndimation eggCannonEndimation = new TimedEndimation(20, 0);
+	private final TimedEndimation eggMouthEndimation = new TimedEndimation(15, 0);
+	private final TimedEndimation takeoffEndimation = new TimedEndimation(15, 0);
+	private final TimedEndimation eggCannonFlyingEndimation = new TimedEndimation(20, 0);
+	private final TimedEndimation flyingEndimation = new TimedEndimation(20, 0);
+	private final TimedEndimation sleepingEndimation = new TimedEndimation(20, 0);
+	private final TimedEndimation healPulseEndimation = new TimedEndimation(10, 0);
 	private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.NOTCHED_6);
 	private final Set<ServerPlayer> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
-	private Endimation endimation = BLANK_ANIMATION;
 	public final HeadTiltDirection headTiltDirection;
 	@Nullable
 	public BlockPos takeoffPos;
-	private int animationTick;
 	private int idleDelay;
 	private int slamCooldown;
 	private int eggCannonCooldown;
@@ -208,8 +197,8 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 
 		Level world = this.level;
 		if (this.isDeadOrDying()) {
-			if (!this.isEndimationPlaying(DEATH) && !world.isClientSide) {
-				NetworkUtil.setPlayingAnimationMessage(this, DEATH);
+			if (!this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH) && !world.isClientSide) {
+				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BROOD_EETLE_DEATH);
 			}
 			if (++this.deathTime >= 105) {
 				if (!world.isClientSide) {
@@ -217,7 +206,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 					if (elytra != null) {
 						elytra.setExtendedLifetime();
 					}
-					this.remove();
+					this.discard();
 					if (world instanceof ServerLevel) {
 						Vec3 eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
 						((ServerLevel) world).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, EEBlocks.EETLE_EGG.get().defaultBlockState()), eggSackPos.x(), eggSackPos.y() + 0.83F, eggSackPos.z(), 20, 0.3125F, 0.3125F, 0.3125F, 0.2D);
@@ -239,7 +228,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			if (this.eggDropOffCooldown > 0) this.eggDropOffCooldown--;
 
 			if (this.random.nextFloat() < 0.005F && this.idleDelay <= 0 && this.isOnGround() && !this.isFiringCannon() && this.isNoEndimationPlaying()) {
-				NetworkUtil.setPlayingAnimationMessage(this, this.random.nextFloat() < 0.6F && !this.isFlying() ? FLAP : MUNCH);
+				NetworkUtil.setPlayingAnimation(this, this.random.nextFloat() < 0.6F && !this.isFlying() ? EEPlayableEndimations.BROOD_EETLE_FLAP : EEPlayableEndimations.BROOD_EETLE_MUNCH);
 				this.resetIdleFlapDelay();
 			}
 
@@ -260,7 +249,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			if (this.isFlying()) {
 				this.ticksFlying++;
 
-				if (this.isEndimationPlaying(AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.level.noCollision(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
+				if (this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_AIR_SLAM) && this.getAnimationTick() == 5 && (this.onGround || !this.level.noCollision(DetectionHelper.checkOnGround(this.getBoundingBox(), 0.25F)))) {
 					BroodEetleSlamGoal.slam(this, this.random, 1.0F);
 				}
 			} else {
@@ -275,7 +264,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			}
 
 			float percentage = this.getHealth() / this.getMaxHealth();
-			this.bossInfo.setPercent(percentage);
+			this.bossInfo.setProgress(percentage);
 			if (percentage != this.prevHealthPercentage) {
 				HealthStage newStage = HealthStage.getStage(percentage);
 				if (newStage.eggGrowthChance > 0.0F && newStage.ordinal() > this.getHealthStage().ordinal()) {
@@ -285,10 +274,9 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			}
 			this.prevHealthPercentage = percentage;
 		} else {
-			ControlledEndimation takeoff = this.takeoffEndimation;
-			takeoff.update();
+			TimedEndimation takeoff = this.takeoffEndimation;
 			takeoff.tick();
-			if (takeoff.isAtMax()) {
+			if (takeoff.isMaxed()) {
 				this.takeoffMoving = true;
 				takeoff.setDecrementing(true);
 			} else {
@@ -304,36 +292,30 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			this.wingFlap += this.wingFlapSpeed;
 		}
 
-		ControlledEndimation eggCannonEndimation = this.eggCannonEndimation;
-		eggCannonEndimation.setDecrementing(!this.isFiringCannon() && !(this.isEndimationPlaying(DEATH) && this.getAnimationTick() >= 15));
-		eggCannonEndimation.update();
+		TimedEndimation eggCannonEndimation = this.eggCannonEndimation;
+		eggCannonEndimation.setDecrementing(!this.isFiringCannon() && !(this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH) && this.getAnimationTick() >= 15));
 		eggCannonEndimation.tick();
 
-		ControlledEndimation eggMouthEndimation = this.eggMouthEndimation;
-		eggMouthEndimation.setDecrementing(!eggCannonEndimation.isAtMax() && this.isNotDroppingEggs());
-		eggMouthEndimation.update();
+		TimedEndimation eggMouthEndimation = this.eggMouthEndimation;
+		eggMouthEndimation.setDecrementing(!eggCannonEndimation.isMaxed() && this.isNotDroppingEggs());
 		eggMouthEndimation.tick();
 
-		ControlledEndimation eggCannonFlyingEndimation = this.eggCannonFlyingEndimation;
+		TimedEndimation eggCannonFlyingEndimation = this.eggCannonFlyingEndimation;
 		eggCannonFlyingEndimation.setDecrementing(!this.isFlying());
-		eggCannonFlyingEndimation.update();
 		eggCannonFlyingEndimation.tick();
 
-		ControlledEndimation flying = this.flyingEndimation;
+		TimedEndimation flying = this.flyingEndimation;
 		flying.setDecrementing(!this.isMoving());
-		flying.update();
 		flying.tick();
 
-		ControlledEndimation sleepingEndimation = this.sleepingEndimation;
+		TimedEndimation sleepingEndimation = this.sleepingEndimation;
 		sleepingEndimation.setDecrementing(!this.isSleeping());
-		sleepingEndimation.update();
 		sleepingEndimation.tick();
 
-		ControlledEndimation healPulseEndimation = this.healPulseEndimation;
-		if (healPulseEndimation.isAtMax()) {
+		TimedEndimation healPulseEndimation = this.healPulseEndimation;
+		if (healPulseEndimation.isMaxed()) {
 			healPulseEndimation.setDecrementing(true);
 		}
-		healPulseEndimation.update();
 		healPulseEndimation.tick();
 
 		this.flyingRotations.tick(this.getTargetFlyingRotations());
@@ -371,7 +353,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			this.bossInfo.setName(this.getDisplayName());
 		}
 		this.setSleeping(compound.getBoolean("IsSleeping"));
-		if (compound.contains("TakeoffPos", Constants.NBT.TAG_COMPOUND)) {
+		if (compound.contains("TakeoffPos", 10)) {
 			this.takeoffPos = NbtUtils.readBlockPos(compound.getCompound("TakeoffPos"));
 		}
 		this.eggCannonCooldown = compound.getInt("EggCannonCooldown");
@@ -391,7 +373,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 				double d1 = collider.getZ() - this.getZ();
 				double d2 = Mth.absMax(d0, d1);
 				if (d2 >= 0.01D) {
-					d2 = Mth.sqrt(d2);
+					d2 = Mth.sqrt((float) d2);
 					d0 = d0 / d2;
 					d1 = d1 / d2;
 					double d3 = 1.0D / d2;
@@ -403,8 +385,6 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 					d1 = d1 * d3;
 					d0 = d0 * 0.05D;
 					d1 = d1 * 0.05D;
-					d0 = d0 * (1.0D - this.pushthrough);
-					d1 = d1 * (1.0D - this.pushthrough);
 					if (!this.isVehicle()) {
 						this.push(-d0 * 0.2F, 0.0D, -d1 * 0.2F);
 					}
@@ -420,14 +400,14 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	@Override
 	public void checkDespawn() {
 		if (this.level.getDifficulty() == Difficulty.PEACEFUL && this.shouldDespawnInPeaceful()) {
-			this.remove();
+			this.discard();
 		} else {
 			this.noActionTime = 0;
 		}
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 
@@ -457,7 +437,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			return false;
 		} else {
 			if (!this.level.isClientSide) {
-				NetworkUtil.setPlayingAnimationMessage(this, ATTACK);
+				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BROOD_EETLE_ATTACK);
 			}
 			float attackDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 			float damage;
@@ -500,7 +480,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	protected void blockedByShield(LivingEntity target) {
 		double knockbackForce = this.getAttributeValue(Attributes.ATTACK_KNOCKBACK) - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 		if (knockbackForce > 0.0D) {
-			Random random = this.level.random;
+			RandomSource random = this.level.random;
 			double scale = knockbackForce * (random.nextFloat() * 0.5F + 0.5F);
 			Vec3 horizontalVelocity = new Vec3(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
 			target.push(horizontalVelocity.x, knockbackForce * 0.5F * random.nextFloat() * 0.5F, horizontalVelocity.z);
@@ -555,35 +535,35 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	}
 
 	public float getEggCannonProgress() {
-		return this.eggCannonEndimation.getAnimationProgress();
+		return this.eggCannonEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public float getEggCannonProgressServer() {
-		return this.eggCannonEndimation.getAnimationProgressServer();
+		return this.eggCannonEndimation.getServerProgress();
 	}
 
 	public float getEggMouthProgress() {
-		return this.eggMouthEndimation.getAnimationProgress();
+		return this.eggMouthEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public boolean isEggMouthOpen() {
-		return this.eggMouthEndimation.isAtMax();
+		return this.eggMouthEndimation.isMaxed();
 	}
 
 	public float getTakeoffProgress() {
-		return this.takeoffEndimation.getAnimationProgress();
+		return this.takeoffEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public boolean isEggCannonFlyingAtMax() {
-		return this.eggCannonFlyingEndimation.isAtMax();
+		return this.eggCannonFlyingEndimation.isMaxed();
 	}
 
 	public float getEggCannonFlyingProgress() {
-		return this.eggCannonFlyingEndimation.getAnimationProgress();
+		return this.eggCannonFlyingEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public float getEggCannonFlyingProgressServer() {
-		return this.eggCannonFlyingEndimation.getAnimationProgressServer();
+		return this.eggCannonFlyingEndimation.getServerProgress();
 	}
 
 	public boolean hasWokenUp() {
@@ -595,15 +575,15 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	}
 
 	public float getSleepingProgress() {
-		return Mth.sin(1.5708F * this.sleepingEndimation.getAnimationProgress());
+		return Mth.sin(1.5708F * this.sleepingEndimation.getProgress(ClientInfo.getPartialTicks()));
 	}
 
 	public float getFlyingProgress() {
-		return this.flyingEndimation.getAnimationProgress();
+		return this.flyingEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public float getHealPulseProgress() {
-		return this.healPulseEndimation.getAnimationProgress();
+		return this.healPulseEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public void resetIdleFlapDelay() {
@@ -745,42 +725,13 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 	}
 
 	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[] {
-				FLAP, MUNCH, ATTACK, SLAM, LAUNCH, AIR_CHARGE, AIR_SLAM, DEATH
-		};
-	}
-
-	@Override
-	public Endimation getPlayingEndimation() {
-		return this.endimation;
-	}
-
-	@Override
-	public int getAnimationTick() {
-		return this.animationTick;
-	}
-
-	@Override
-	public void setAnimationTick(int animationTick) {
-		this.animationTick = animationTick;
-	}
-
-	@Override
-	public void setPlayingEndimation(Endimation endimation) {
-		this.onEndimationEnd(this.endimation);
-		this.endimation = endimation;
-		this.setAnimationTick(0);
-	}
-
-	@Override
-	public void onEndimationStart(Endimation endimation) {
-		if (endimation == DEATH) {
+	public void onEndimationStart(PlayableEndimation endimation, PlayableEndimation oldEndimation) {
+		if (endimation == EEPlayableEndimations.BROOD_EETLE_DEATH) {
 			this.deathTime = 0;
 			this.setFlying(false);
 			this.setDroppingEggs(false);
 			this.setFiringCannon(false);
-		} else if (endimation == LAUNCH) {
+		} else if (endimation == EEPlayableEndimations.BROOD_EETLE_LAUNCH) {
 			Level world = this.level;
 			if (world instanceof ServerLevel) {
 				Vec3 eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());
@@ -846,7 +797,7 @@ public class BroodEetleEntity extends Monster implements IEndimatedEntity, IFlyi
 			int originY = mutable.getY();
 			int originZ = mutable.getZ();
 			Level world = broodEetle.level;
-			Random random = broodEetle.random;
+			RandomSource random = broodEetle.random;
 			for (int x = -10; x <= 10; x++) {
 				for (int y = -6; y <= 14; y++) {
 					for (int z = -10; z <= 10; z++) {

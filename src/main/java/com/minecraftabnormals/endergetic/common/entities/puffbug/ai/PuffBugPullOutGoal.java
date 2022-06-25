@@ -2,20 +2,20 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import java.util.EnumSet;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	private int pulls;
 
 	public PuffBugPullOutGoal(PuffBugEntity puffbug) {
-		super(puffbug, PuffBugEntity.PULL_ANIMATION);
+		super(puffbug, EEPlayableEndimations.PUFF_BUG_PULL);
 		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
@@ -58,6 +58,6 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 
 	@Override
 	public void stop() {
-		NetworkUtil.setPlayingAnimationMessage(this.entity, PuffBugEntity.BLANK_ANIMATION);
+		NetworkUtil.setPlayingAnimation(this.entity, PlayableEndimation.BLANK);
 	}
 }

@@ -1,10 +1,19 @@
 package com.minecraftabnormals.endergetic.client.models.eetle.eggs;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
+
+import static com.minecraftabnormals.endergetic.api.util.ModelUtil.setScale;
 
 /**
  * @author Endergized
@@ -13,68 +22,60 @@ import net.minecraft.client.model.geom.ModelPart;
  * Created using Tabula 7.0.0
  */
 public class SmallEetleEggModel implements IEetleEggModel {
-	public EndimatorModelRenderer egg;
-	public EndimatorModelRenderer otherEgg;
-	public EndimatorModelRenderer bigEgg;
-	public EndimatorModelRenderer smallEgg;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "small_eetle_egg"), "main");
+	public ModelPart egg;
+	public ModelPart otherEgg;
+	public ModelPart bigEgg;
+	public ModelPart smallEgg;
 	public ModelPart cross1;
 	public ModelPart cross2;
 	public ModelPart base;
 	public ModelPart cross3;
 	public ModelPart cross4;
 
-	public SmallEetleEggModel() {
-		int textureWidth = 64;
-		int textureHeight = 64;
-		this.egg = new EndimatorModelRenderer(textureWidth, textureHeight, 46, 0);
-		this.egg.setPos(4.0F, 24.0F, 4.0F);
-		this.egg.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, 0.0F);
-		this.smallEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 33, 0);
-		this.smallEgg.setPos(-4.5F, 24.0F, -5.5F);
-		this.smallEgg.addBox(-1.5F, -3.0F, -1.5F, 3, 3, 3, 0.0F);
-		this.base = new ModelPart(textureWidth, textureHeight, -16, 38);
-		this.base.setPos(0.0F, 23.99F, 0.0F);
-		this.base.addBox(-8.0F, 0.0F, -8.0F, 16, 0, 16, 0.0F);
-		this.bigEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 17, 2);
-		this.bigEgg.setPos(1.5F, 24.0F, -1.5F);
-		this.bigEgg.addBox(-2.5F, -5.0F, -2.5F, 5, 5, 5, 0.0F);
-		this.cross2 = new ModelPart(textureWidth, textureHeight, 0, 29);
-		this.cross2.setPos(-7.8F, 21.0F, -7.8F);
-		this.cross2.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
-		this.setRotateAngle(cross2, 0.0F, -0.7853981633974483F, 0.0F);
-		this.cross4 = new ModelPart(textureWidth, textureHeight, 0, 29);
-		this.cross4.setPos(7.8F, 21.0F, -7.8F);
-		this.cross4.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
-		this.setRotateAngle(cross4, 0.0F, -2.356194490192345F, 0.0F);
-		this.otherEgg = new EndimatorModelRenderer(textureWidth, textureHeight, 0, 0);
-		this.otherEgg.setPos(-4.0F, 24.0F, 2.0F);
-		this.otherEgg.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, 0.0F);
-		this.cross1 = new ModelPart(textureWidth, textureHeight, 0, 29);
-		this.cross1.setPos(-7.8F, 21.0F, 7.8F);
-		this.cross1.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
-		this.setRotateAngle(cross1, 0.0F, 0.7853981633974483F, 0.0F);
-		this.cross3 = new ModelPart(textureWidth, textureHeight, 0, 29);
-		this.cross3.setPos(7.8F, 21.0F, 7.8F);
-		this.cross3.addBox(0.0F, 0.0F, 0.0F, 11, 3, 0, 0.0F);
-		this.setRotateAngle(cross3, 0.0F, 2.356194490192345F, 0.0F);
+	public SmallEetleEggModel(ModelPart root) {
+		this.egg = root.getChild("egg");
+		this.otherEgg = root.getChild("otherEgg");
+		this.bigEgg = root.getChild("bigEgg");
+		this.smallEgg = root.getChild("smallEgg");
+		this.cross1 = root.getChild("cross1");
+		this.cross2 = root.getChild("cross2");
+		this.base = root.getChild("base");
+		this.cross3 = root.getChild("cross3");
+		this.cross4 = root.getChild("cross4");
+	}
+
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition egg = root.addOrReplaceChild("egg", CubeListBuilder.create(), PartPose.offsetAndRotation(4.0F, 24.0F, 4.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition otherEgg = root.addOrReplaceChild("otherEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(-4.0F, 24.0F, 2.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition bigEgg = root.addOrReplaceChild("bigEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(1.5F, 24.0F, -1.5F, 0.0F, 0.0F, 0.0F));
+		PartDefinition smallEgg = root.addOrReplaceChild("smallEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(-4.5F, 24.0F, -5.5F, 0.0F, 0.0F, 0.0F));
+		PartDefinition cross1 = root.addOrReplaceChild("cross1", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(-7.8F, 21.0F, 7.8F, 0.0F, 0.7853982F, 0.0F));
+		PartDefinition cross2 = root.addOrReplaceChild("cross2", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(-7.8F, 21.0F, -7.8F, 0.0F, -0.7853982F, 0.0F));
+		PartDefinition base = root.addOrReplaceChild("base", CubeListBuilder.create().texOffs(-16, 38).addBox(-8.0F, 0.0F, -8.0F, 16.0F, 0.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, 23.99F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition cross3 = root.addOrReplaceChild("cross3", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(7.8F, 21.0F, 7.8F, 0.0F, 2.3561945F, 0.0F));
+		PartDefinition cross4 = root.addOrReplaceChild("cross4", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(7.8F, 21.0F, -7.8F, 0.0F, -2.3561945F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
 	@Override
 	public void render(PoseStack matrixStack, VertexConsumer builder, int packedLight, int packedOverlay, float partialTicks, EetleEggTileEntity.SackGrowth[] sackGrowths) {
 		float eggScale1 = sackGrowths[0].getGrowth(partialTicks);
-		this.egg.setScale(eggScale1, eggScale1, eggScale1);
+		setScale(this.egg, eggScale1, eggScale1, eggScale1);
 		this.egg.render(matrixStack, builder, 240, packedOverlay);
 
 		float eggScale2 = sackGrowths[1].getGrowth(partialTicks);
-		this.smallEgg.setScale(eggScale2, eggScale2, eggScale2);
+		setScale(this.smallEgg, eggScale2, eggScale2, eggScale2);
 		this.smallEgg.render(matrixStack, builder, 240, packedOverlay);
 
 		float eggScale3 = sackGrowths[2].getGrowth(partialTicks);
-		this.otherEgg.setScale(eggScale3, eggScale3, eggScale3);
+		setScale(this.otherEgg, eggScale3, eggScale3, eggScale3);
 		this.otherEgg.render(matrixStack, builder, 240, packedOverlay);
 
 		float eggScale4 = sackGrowths[3].getGrowth(partialTicks);
-		this.bigEgg.setScale(eggScale4, eggScale4, eggScale4);
+		setScale(this.bigEgg, eggScale4, eggScale4, eggScale4);
 		this.bigEgg.render(matrixStack, builder, 240, packedOverlay);
 	}
 

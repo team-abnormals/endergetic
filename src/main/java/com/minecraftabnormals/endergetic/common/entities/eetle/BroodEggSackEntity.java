@@ -26,6 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 public class BroodEggSackEntity extends Entity {
@@ -69,7 +70,7 @@ public class BroodEggSackEntity extends Entity {
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		if (compound.contains("BroodID", Constants.NBT.TAG_INT)) {
+		if (compound.contains("BroodID", 3)) {
 			this.setBroodID(compound.getInt("BroodID"));
 		}
 	}
@@ -133,19 +134,18 @@ public class BroodEggSackEntity extends Entity {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isPickable() {
-		return !this.removed;
+		return !this.isRemoved();
 	}
 
 	@Override
-	protected boolean isMovementNoisy() {
-		return false;
+	protected MovementEmission getMovementEmission() {
+		return MovementEmission.NONE;
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 

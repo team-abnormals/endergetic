@@ -1,13 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.flying;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-
-import net.minecraft.world.entity.ai.control.MoveControl.Operation;
 
 public final class FlyingEetleMoveController<F extends Mob & IFlyingEetle> extends MoveControl {
 	private final F eetle;
@@ -38,19 +35,19 @@ public final class FlyingEetleMoveController<F extends Mob & IFlyingEetle> exten
 			}
 
 			float yaw = (float) (Mth.atan2(distanceZ, distanceX) * 57.3D) - 90.0F;
-			eetle.yRot = this.rotlerp(eetle.yRot, yaw, this.deltaYaw);
+			eetle.setYRot(this.rotlerp(eetle.getYRot(), yaw, this.deltaYaw));
 			float f1 = (float) (this.speedModifier * eetle.getAttributeValue(Attributes.FLYING_SPEED));
 			eetle.setSpeed(f1);
-			double horizontalMag = Mth.sqrt(distanceX * distanceX + distanceZ * distanceZ);
+			double horizontalMag = Mth.sqrt((float) (distanceX * distanceX + distanceZ * distanceZ));
 			float pitch = (float) (-(Mth.atan2(distanceY, horizontalMag) * 57.3D));
-			float limitedPitch = this.rotlerp(eetle.xRot, pitch, 40.0F);
-			eetle.xRot = limitedPitch;
+			float limitedPitch = this.rotlerp(eetle.getXRot(), pitch, 40.0F);
+			eetle.setXRot(limitedPitch);
 
 			float targetRoll = 0.0F;
 			Vec3 lookVec = eetle.getViewVector(1.0F);
 			Vec3 motion = eetle.getDeltaMovement();
-			double motionHMag = Entity.getHorizontalDistanceSqr(motion);
-			double lookHMag = Entity.getHorizontalDistanceSqr(lookVec);
+			double motionHMag = motion.horizontalDistanceSqr();
+			double lookHMag = lookVec.horizontalDistanceSqr();
 			if (motionHMag > 0.0D && lookHMag > 0.0D) {
 				double rollRatio = Mth.clamp((motion.x * lookVec.x + motion.z * lookVec.z) / Math.sqrt(motionHMag * lookHMag), -1.0F, 1.0F);
 				double horizontalDifference = motion.x * lookVec.z - motion.z * lookVec.x;

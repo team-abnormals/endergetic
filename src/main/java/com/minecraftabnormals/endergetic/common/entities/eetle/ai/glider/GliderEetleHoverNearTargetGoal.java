@@ -57,7 +57,7 @@ public class GliderEetleHoverNearTargetGoal extends Goal {
 		GliderEetleEntity glider = this.glider;
 		LivingEntity target = glider.getTarget();
 		double distanceToTargetSq = glider.distanceToSqr(target);
-		boolean canSeeTarget = glider.getSensing().canSee(target);
+		boolean canSeeTarget = glider.getSensing().hasLineOfSight(target);
 		if (canSeeTarget && this.delayCounter <= 0 && glider.getRandom().nextFloat() < 0.05F) {
 			this.delayCounter = 4 + glider.getRandom().nextInt(9);
 			PathNavigation pathNavigator = glider.getNavigation();

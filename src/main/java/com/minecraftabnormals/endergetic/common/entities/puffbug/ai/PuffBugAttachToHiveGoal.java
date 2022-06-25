@@ -18,9 +18,7 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	public boolean canUse() {
 		Direction side = this.puffbug.getDesiredHiveSide();
 		if (side != null && this.puffbug.getHive() != null) {
-			if (this.puffbug.isAtCorrectRestLocation(side)) {
-				return true;
-			}
+			return this.puffbug.isAtCorrectRestLocation(side);
 		}
 		return false;
 	}

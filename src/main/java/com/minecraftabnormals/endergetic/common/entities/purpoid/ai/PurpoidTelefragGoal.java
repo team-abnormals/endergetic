@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
-import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,13 +17,11 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PurpoidTelefragGoal extends Goal {
 	private final PurpoidEntity purpoid;
@@ -60,7 +58,7 @@ public class PurpoidTelefragGoal extends Goal {
 				boolean sky = this.teleportPattern.next();
 				BlockPos teleportPos = null;
 				BlockPos pos = purpoid.blockPosition();
-				Random random = purpoid.getRandom();
+				RandomSource random = purpoid.getRandom();
 				Level world = purpoid.level;
 				Entity ridingEntity = purpoid.getVehicle();
 				if (sky) {
@@ -138,7 +136,7 @@ public class PurpoidTelefragGoal extends Goal {
 		private final boolean[] sequence;
 		private int index;
 
-		TeleportPattern(Random random) {
+		TeleportPattern(RandomSource random) {
 			if (random.nextBoolean()) {
 				boolean first = random.nextBoolean();
 				boolean second = random.nextBoolean();

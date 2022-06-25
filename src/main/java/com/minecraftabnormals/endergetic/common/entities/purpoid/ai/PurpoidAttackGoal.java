@@ -4,6 +4,7 @@ import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.minecraftabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -85,7 +86,7 @@ public class PurpoidAttackGoal extends Goal {
 		double reachRange = width * width + target.getBbWidth();
 		if (distanceToTargetSq <= reachRange) {
 			if (small) {
-				if (purpoid.isEndimationPlaying(PurpoidEntity.TELEFRAG_ANIMATION) && purpoid.getAnimationTick() == 5) {
+				if (purpoid.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEFRAG) && purpoid.getAnimationTick() == 5) {
 					double targetX = target.getX();
 					double targetY = target.getY();
 					double targetZ = target.getZ();
@@ -102,7 +103,7 @@ public class PurpoidAttackGoal extends Goal {
 						}
 					}
 				} else if (purpoid.isNoEndimationPlaying()) {
-					NetworkUtil.setPlayingAnimation(purpoid, PurpoidEntity.TELEFRAG_ANIMATION);
+					NetworkUtil.setPlayingAnimation(purpoid, EEPlayableEndimations.PURPOID_TELEFRAG);
 				}
 			} else {
 				purpoid.startRiding(target);

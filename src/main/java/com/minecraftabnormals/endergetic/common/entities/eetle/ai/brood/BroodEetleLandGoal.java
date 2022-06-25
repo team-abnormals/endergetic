@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.core.BlockPos;
@@ -10,8 +10,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleLandGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -41,7 +39,8 @@ public class BroodEetleLandGoal extends Goal {
 				this.failedPaths++;
 			}
 			if (!canSitOnTakeoffPos || this.failedPaths >= 6) {
-				Vec3 foundGroundPos = RandomPos.getAirPos(broodEetle, 8, 4, -3, broodEetle.getViewVector(0.0F), (float)Math.PI / 2F);
+				Vec3 view = broodEetle.getViewVector(0.0F);
+				Vec3 foundGroundPos = AirAndWaterRandomPos.getPos(broodEetle, 8, 4, -3, view.x, view.z, (float)Math.PI / 2F);
 				if (foundGroundPos != null) {
 					this.path = broodEetle.getNavigation().createPath(foundGroundPos.x, foundGroundPos.y, foundGroundPos.z, 0);
 					if (this.path != null) {

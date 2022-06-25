@@ -2,18 +2,17 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.phys.HitResult.Type;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloSwimmingGoal extends EndimatedGoal<BoofloEntity> {
 
 	public BoofloSwimmingGoal(BoofloEntity booflo) {
-		super(booflo, BoofloEntity.SWIM);
+		super(booflo, EEPlayableEndimations.BOOFLO_SWIM);
 		this.setFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
 	}
 

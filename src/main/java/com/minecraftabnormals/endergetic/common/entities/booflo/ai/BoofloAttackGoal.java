@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -14,8 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.core.BlockPos;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BoofloAttackGoal extends Goal {
 	private final int UPPER_DISTANCE = 16;
@@ -44,7 +41,7 @@ public class BoofloAttackGoal extends Goal {
 				return false;
 			}
 
-			this.upperAirPos = this.getUpperPosToTarget(target, this.booflo.getRandom());
+			this.upperAirPos = this.getUpperPosToTarget(target);
 			if (this.upperAirPos == null) {
 				Path newPath = this.booflo.getNavigation().createPath(target, 0);
 				this.upperAirPos = newPath != null ? newPath.getTarget() : null;
@@ -53,11 +50,8 @@ public class BoofloAttackGoal extends Goal {
 
 			this.path = this.booflo.getNavigation().createPath(this.upperAirPos, 0);
 
-			if (this.path != null && this.booflo.hasAggressiveAttackTarget()) {
-				return true;
-			}
+			return this.path != null && this.booflo.hasAggressiveAttackTarget();
 		}
-		return false;
 	}
 
 	public boolean canContinueToUse() {
@@ -114,7 +108,7 @@ public class BoofloAttackGoal extends Goal {
 	}
 
 	@Nullable
-	private BlockPos getUpperPosToTarget(Entity target, Random rand) {
+	private BlockPos getUpperPosToTarget(Entity target) {
 		BlockPos startingPos = target.blockPosition();
 		BlockPos targetPos = BlockPos.ZERO;
 		boolean isOpenBelow = true;

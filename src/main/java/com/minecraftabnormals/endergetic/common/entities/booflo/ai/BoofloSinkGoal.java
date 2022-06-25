@@ -8,10 +8,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.core.BlockPos;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloSinkGoal extends Goal {
-	private BoofloEntity booflo;
+	private final BoofloEntity booflo;
 
 	public BoofloSinkGoal(BoofloEntity booflo) {
 		this.booflo = booflo;

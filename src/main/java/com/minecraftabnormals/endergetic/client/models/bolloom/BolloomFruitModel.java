@@ -1,19 +1,28 @@
 package com.minecraftabnormals.endergetic.client.models.bolloom;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * ModelBolloomFruit - Endergized
  * Created using Tabula 7.0.0
  */
 public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel<T> {
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "bolloom_fruit"), "main");
 	public ModelPart vine_x;
 	public ModelPart fruit;
 	public ModelPart vine_z;
@@ -31,78 +40,45 @@ public class BolloomFruitModel<T extends BolloomFruitEntity> extends EntityModel
 	public ModelPart vine_z_6;
 	public ModelPart flap;
 
-	public BolloomFruitModel() {
-		this.texWidth = 64;
-		this.texHeight = 32;
-		this.vine_z = new ModelPart(this, 0, 10);
-		this.vine_z.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_z_3 = new ModelPart(this, 0, 10);
-		this.vine_z_3.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_3.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_3, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_z_5 = new ModelPart(this, 0, 10);
-		this.vine_z_5.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_5.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_5, 0.0F, -1.5707963267948966F, 0.0F);
-		this.fruit = new ModelPart(this, 0, 0);
-		this.fruit.setPos(-4.0F, 16.0F, -4.0F);
-		this.fruit.addBox(0.0F, 0.0F, 0.0F, 8, 8, 8, 0.0F);
-		this.vine_z_1 = new ModelPart(this, 0, 10);
-		this.vine_z_1.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_1.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_1, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_x_2 = new ModelPart(this, 13, 10);
-		this.vine_x_2.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_2.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.flap = new ModelPart(this, 20, 4);
-		this.flap.setPos(-2.0F, 8.1F, -2.0F);
-		this.flap.addBox(0.0F, 0.0F, 0.0F, 12, 0, 12, 0.0F);
-		this.vine_x_4 = new ModelPart(this, 13, 10);
-		this.vine_x_4.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_4.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_x_1 = new ModelPart(this, 13, 10);
-		this.vine_x_1.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_1.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_z_2 = new ModelPart(this, 0, 10);
-		this.vine_z_2.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_2.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_2, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_z_6 = new ModelPart(this, 0, 10);
-		this.vine_z_6.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_6.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_6, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_x_3 = new ModelPart(this, 13, 10);
-		this.vine_x_3.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_3.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_z_4 = new ModelPart(this, 0, 10);
-		this.vine_z_4.setPos(0.0F, 0.0F, 0.0F);
-		this.vine_z_4.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(vine_z_4, 0.0F, -1.5707963267948966F, 0.0F);
-		this.vine_x = new ModelPart(this, 13, 10);
-		this.vine_x.setPos(0.0F, 24.0F, 0.0F);
-		this.vine_x.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_x_6 = new ModelPart(this, 13, 10);
-		this.vine_x_6.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_6.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_x_5 = new ModelPart(this, 13, 10);
-		this.vine_x_5.setPos(0.0F, 16.0F, 0.0F);
-		this.vine_x_5.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.vine_x.addChild(this.vine_z);
-		this.vine_x_3.addChild(this.vine_z_3);
-		this.vine_x_5.addChild(this.vine_z_5);
-		this.vine_x_1.addChild(this.vine_z_1);
-		this.vine_z_1.addChild(this.vine_x_2);
-		this.fruit.addChild(this.flap);
-		this.vine_z_3.addChild(this.vine_x_4);
-		this.vine_z.addChild(this.vine_x_1);
-		this.vine_x_2.addChild(this.vine_z_2);
-		this.vine_x_6.addChild(this.vine_z_6);
-		this.vine_z_2.addChild(this.vine_x_3);
-		this.vine_x_4.addChild(this.vine_z_4);
-		this.vine_z_5.addChild(this.vine_x_6);
-		this.vine_z_4.addChild(this.vine_x_5);
+	public BolloomFruitModel(ModelPart root) {
+		this.vine_x = root.getChild("vine_x");
+		this.vine_z = this.vine_x.getChild("vine_z");
+		this.vine_x_1 = this.vine_z.getChild("vine_x_1");
+		this.vine_z_1 = this.vine_x_1.getChild("vine_z_1");
+		this.vine_x_2 = this.vine_z_1.getChild("vine_x_2");
+		this.vine_z_2 = this.vine_x_2.getChild("vine_z_2");
+		this.vine_x_3 = this.vine_z_2.getChild("vine_x_3");
+		this.vine_z_3 = this.vine_x_3.getChild("vine_z_3");
+		this.vine_x_4 = this.vine_z_3.getChild("vine_x_4");
+		this.vine_z_4 = this.vine_x_4.getChild("vine_z_4");
+		this.vine_x_5 = this.vine_z_4.getChild("vine_x_5");
+		this.vine_z_5 = this.vine_x_5.getChild("vine_z_5");
+		this.vine_x_6 = this.vine_z_5.getChild("vine_x_6");
+		this.vine_z_6 = this.vine_x_6.getChild("vine_z_6");
+		this.fruit = root.getChild("fruit");
+		this.flap = this.fruit.getChild("flap");
+	}
+
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition vine_x = root.addOrReplaceChild("vine_x", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 24.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z = vine_x.addOrReplaceChild("vine_z", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_1 = vine_z.addOrReplaceChild("vine_x_1", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_1 = vine_x_1.addOrReplaceChild("vine_z_1", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_2 = vine_z_1.addOrReplaceChild("vine_x_2", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_2 = vine_x_2.addOrReplaceChild("vine_z_2", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_3 = vine_z_2.addOrReplaceChild("vine_x_3", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_3 = vine_x_3.addOrReplaceChild("vine_z_3", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_4 = vine_z_3.addOrReplaceChild("vine_x_4", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_4 = vine_x_4.addOrReplaceChild("vine_z_4", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_5 = vine_z_4.addOrReplaceChild("vine_x_5", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_5 = vine_x_5.addOrReplaceChild("vine_z_5", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition vine_x_6 = vine_z_5.addOrReplaceChild("vine_x_6", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition vine_z_6 = vine_x_6.addOrReplaceChild("vine_z_6", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition fruit = root.addOrReplaceChild("fruit", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 8.0F, 8.0F, 8.0F, false), PartPose.offsetAndRotation(-4.0F, 16.0F, -4.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition flap = fruit.addOrReplaceChild("flap", CubeListBuilder.create().texOffs(20, 4).addBox(0.0F, 0.0F, 0.0F, 12.0F, 0.0F, 12.0F, false), PartPose.offsetAndRotation(-2.0F, 8.1F, -2.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override

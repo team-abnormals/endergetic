@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
@@ -18,9 +18,9 @@ public class BolloomFruitRenderer extends EntityRenderer<BolloomFruitEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_fruit.png");
 	private final BolloomFruitModel<BolloomFruitEntity> model;
 
-	public BolloomFruitRenderer(EntityRenderDispatcher renderManager) {
-		super(renderManager);
-		this.model = new BolloomFruitModel<BolloomFruitEntity>();
+	public BolloomFruitRenderer(EntityRendererProvider.Context context) {
+		super(context);
+		this.model = new BolloomFruitModel<>(context.bakeLayer(BolloomFruitModel.LOCATION));
 	}
 
 	@Override

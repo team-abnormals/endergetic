@@ -1,12 +1,13 @@
 package com.minecraftabnormals.endergetic.common.world;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.util.RandomSource;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +40,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public final class EndergeticDragonFightManager extends EndDragonFight {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -109,17 +109,17 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 			}
 		}
 
-		List<EnderDragon> list = this.level.getDragons();
+		List<? extends EnderDragon> list = this.level.getDragons();
 		if (list.isEmpty()) {
 			this.dragonKilled = true;
 		} else {
 			EnderDragon enderdragonentity = list.get(0);
 			this.dragonUUID = enderdragonentity.getUUID();
-			LOGGER.info("Found that there's a dragon still alive ({})", (Object) enderdragonentity);
+			LOGGER.info("Found that there's a dragon still alive ({})", enderdragonentity);
 			this.dragonKilled = false;
 			if (!flag) {
 				LOGGER.info("But we didn't have a portal, let's remove it.");
-				enderdragonentity.remove();
+				enderdragonentity.discard();
 				this.dragonUUID = null;
 			}
 		}
@@ -263,7 +263,7 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 	@Override
 	public void setDragonKilled(EnderDragon dragon) {
 		if (dragon.getUUID().equals(this.dragonUUID)) {
-			this.dragonEvent.setPercent(0.0F);
+			this.dragonEvent.setProgress(0.0F);
 			this.dragonEvent.setVisible(false);
 			this.spawnExitPortal(true);
 			this.spawnNewGateway();
@@ -284,7 +284,7 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 				;
 			}
 		}
-		endpodium.configured(FeatureConfiguration.NONE).place(this.level, this.level.getChunkSource().getGenerator(), new Random(), this.portalLocation);
+		endpodium.place(FeatureConfiguration.NONE, this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), this.portalLocation);
 	}
 
 	@Override
@@ -294,7 +294,7 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(Mth.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, Mth.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
 			this.level.levelEvent(3000, pos, 0);
-			EEFeatures.Configured.END_GATEWAY_DELAYED.place(this.level, this.level.getChunkSource().getGenerator(), new Random(), pos);
+			EEFeatures.Configured.END_GATEWAY_DELAYED.place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), pos);
 		}
 	}
 }

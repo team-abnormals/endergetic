@@ -8,20 +8,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
 
 public class EetleEggRenderer extends EntityRenderer<EetleEggEntity> {
-	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
-			new SmallEetleEggModel(),
-			new MediumEetleEggModel(),
-			new LargeEetleEggModel()
-	};
+	private final IEetleEggModel[] eggModels;
 
-	public EetleEggRenderer(EntityRenderDispatcher renderManager) {
-		super(renderManager);
+	public EetleEggRenderer(EntityRendererProvider.Context context) {
+		super(context);
+		this.eggModels = new IEetleEggModel[] {
+				new SmallEetleEggModel(context.bakeLayer(SmallEetleEggModel.LOCATION)),
+				new MediumEetleEggModel(context.bakeLayer(MediumEetleEggModel.LOCATION)),
+				new LargeEetleEggModel(context.bakeLayer(LargeEetleEggModel.LOCATION))
+		};
 	}
 
 	@Override

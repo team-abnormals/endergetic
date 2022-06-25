@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class PurpoidTeleportToFlowerGoal extends AbstractPurpoidTeleportGoal {
 
@@ -29,7 +29,7 @@ public class PurpoidTeleportToFlowerGoal extends AbstractPurpoidTeleportGoal {
 
 	@Nullable
 	@Override
-	BlockPos generateTeleportPos(PurpoidEntity purpoid, Random random) {
+	BlockPos generateTeleportPos(PurpoidEntity purpoid, RandomSource random) {
 		BlockPos pos = purpoid.blockPosition();
 		int originX = pos.getX();
 		int originY = pos.getY();

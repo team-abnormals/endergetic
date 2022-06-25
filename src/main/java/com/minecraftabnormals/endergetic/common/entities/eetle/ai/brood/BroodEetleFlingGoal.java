@@ -12,10 +12,8 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BroodEetleFlingGoal extends Goal {
-	private static final TargetingConditions PREDICATE = new TargetingConditions().selector(livingEntity -> !(livingEntity instanceof AbstractEetleEntity));
+	private static final TargetingConditions PREDICATE = TargetingConditions.forCombat().selector(livingEntity -> !(livingEntity instanceof AbstractEetleEntity));
 	private final BroodEetleEntity broodEetle;
 	@Nullable
 	private LivingEntity target;
@@ -88,7 +86,7 @@ public class BroodEetleFlingGoal extends Goal {
 			if (livingEntity instanceof Player) {
 				return livingEntity.isAlive() && !livingEntity.isInvisible() && !((Player) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getSensing().canSee(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.getSensing().hasLineOfSight(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 }

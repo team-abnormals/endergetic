@@ -1,25 +1,37 @@
 package com.minecraftabnormals.endergetic.client.models;
 
 import com.minecraftabnormals.endergetic.common.entities.PoiseClusterEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * ModelPoiseBlock - Endergized
  * Created using Tabula 7.0.0
  */
 public class PoiseClusterModel<T extends PoiseClusterEntity> extends EntityModel<T> {
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "poise_cluster"), "main");
 	public ModelPart cube;
 
-	public PoiseClusterModel() {
-		this.texWidth = 64;
-		this.texHeight = 32;
-		this.cube = new ModelPart(this, 0, 0);
-		this.cube.setPos(0.0F, 16.0F, 0.0F);
-		this.cube.addBox(-8.0F, -8.0F, -8.0F, 16, 16, 16, 0.0F);
+	public PoiseClusterModel(ModelPart root) {
+		this.cube = root.getChild("cube");
+	}
+
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition cube = root.addOrReplaceChild("cube", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -8.0F, -8.0F, 16.0F, 16.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override

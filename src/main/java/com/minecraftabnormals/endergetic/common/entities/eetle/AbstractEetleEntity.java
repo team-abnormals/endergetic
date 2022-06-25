@@ -1,8 +1,5 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
@@ -11,9 +8,12 @@ import com.minecraftabnormals.endergetic.common.tileentities.EetleEggTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.DifficultyInstance;
@@ -43,7 +42,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.core.Direction;
@@ -60,16 +58,13 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 
-public abstract class AbstractEetleEntity extends Monster implements IEndimatedEntity {
+public abstract class AbstractEetleEntity extends Monster implements Endimatable {
 	private static final EntityDataAccessor<Boolean> CHILD = SynchedEntityData.defineId(AbstractEetleEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions LEETLE_SIZE = EntityDimensions.fixed(0.6F, 0.4375F);
 	private static final AttributeModifier LEETLE_HEALTH = new AttributeModifier(UUID.fromString("8a1ea466-4b2d-11eb-ae93-0242ac130002"), "Leetle health decrease", -0.8F, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final Direction[] EGG_DIRECTIONS = Direction.values();
-	public static final Endimation GROW_UP = new Endimation(30);
 	private final AvoidEntityGoal<Player> avoidEntityGoal = new AvoidEntityGoal<>(this, Player.class, 12.0F, 1.0F, 1.0F);
 	private NearestAttackableTargetGoal<Player> attackableTargetGoal;
-	private Endimation endimation = BLANK_ANIMATION;
-	private int animationTick;
 	private int growingAge;
 	private int despawnTimer;
 	private boolean fromEgg;
@@ -120,10 +115,10 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 					int newTime = --this.despawnTimer;
 					if (newTime == 0) {
 						this.level.broadcastEntityEvent(this, (byte) 20);
-						this.remove();
+						this.discard();
 					} else if (newTime <= 100 && newTime % 10 == 0) {
 						LivingEntity attackTarget = this.getTarget();
-						if (attackTarget != null && attackTarget.isAlive() && this.distanceToSqr(attackTarget) <= 256.0F && this.canSee(attackTarget)) {
+						if (attackTarget != null && attackTarget.isAlive() && this.distanceToSqr(attackTarget) <= 256.0F && this.hasLineOfSight(attackTarget)) {
 							this.despawnTimer += 105 + this.random.nextInt(11);
 						}
 					}
@@ -185,10 +180,10 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 		if (prevAge < 0 && growingAge >= 0 || prevAge >= 0 && growingAge < 0) {
 			boolean willBeAdult = growingAge >= 0;
 			if (willBeAdult && this.isBaby()) {
-				NetworkUtil.setPlayingAnimationMessage(this, GROW_UP);
+				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.EETLE_GROW_UP);
 				return;
-			} else if (this.isEndimationPlaying(GROW_UP) && !willBeAdult) {
-				NetworkUtil.setPlayingAnimationMessage(this, BLANK_ANIMATION);
+			} else if (this.isEndimationPlaying(EEPlayableEndimations.EETLE_GROW_UP) && !willBeAdult) {
+				NetworkUtil.setPlayingAnimation(this, PlayableEndimation.BLANK);
 			}
 			this.setBaby(!willBeAdult);
 		}
@@ -235,15 +230,14 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 		return super.finalizeSpawn(world, difficultyIn, reason, spawnData, dataTag);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void die(DamageSource cause) {
 		Level world = this.level;
-		if (!this.isBaby() && this.random.nextFloat() < calculateEggChance(world, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.removed && !this.dead) {
+		if (!this.isBaby() && this.random.nextFloat() < calculateEggChance(world, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE) * 1.25F)) && !this.isRemoved() && !this.dead) {
 			if (!world.isClientSide) {
 				BlockPos pos = this.blockPosition();
 				if (world.getFluidState(pos).isEmpty() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-					Random random = this.random;
+					RandomSource random = this.random;
 					EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
 					BlockState defaultState = EEBlocks.EETLE_EGG.get().defaultBlockState();
 					for (Direction direction : EGG_DIRECTIONS) {
@@ -287,31 +281,9 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 	}
 
 	@Override
-	public Endimation getPlayingEndimation() {
-		return this.endimation;
-	}
-
-	@Override
-	public void setPlayingEndimation(Endimation endimation) {
-		this.onEndimationEnd(this.endimation);
-		this.endimation = endimation;
-		this.setAnimationTick(0);
-	}
-
-	@Override
-	public int getAnimationTick() {
-		return this.animationTick;
-	}
-
-	@Override
-	public void setAnimationTick(int animationTick) {
-		this.animationTick = animationTick;
-	}
-
-	@Override
-	public void onEndimationEnd(Endimation endimation) {
+	public void onEndimationEnd(PlayableEndimation endimation, PlayableEndimation newEndimation) {
 		Level world = this.level;
-		if (endimation == GROW_UP && world instanceof ServerLevel) {
+		if (endimation == EEPlayableEndimations.EETLE_GROW_UP && world instanceof ServerLevel) {
 			this.setBaby(false);
 			this.playSound(EESounds.LEETLE_TRANSFORM.get(), this.getSoundVolume(), this.getVoicePitch());
 			((ServerLevel) world).sendParticles(new CorrockCrownParticleData(EEParticles.END_CROWN.get(), true), this.getX(), this.getY() + this.getBbHeight(), this.getZ(), 5, this.getBbWidth() / 4.0F, this.getBbHeight() / 4.0F, this.getBbWidth() / 4.0F, 0.1D);
@@ -384,7 +356,7 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 
@@ -415,10 +387,9 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 				}
 
 				float f9 = (float)(Mth.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-				mob.yRot = this.rotlerp(mob.yRot, f9, 90.0F);
+				mob.setYRot(this.rotlerp(mob.getYRot(), f9, 90.0F));
 				float moveSpeed = (float)(this.speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
-				if (mob instanceof AbstractEetleEntity) {
-					AbstractEetleEntity abstractEetleEntity = (AbstractEetleEntity) mob;
+				if (mob instanceof AbstractEetleEntity abstractEetleEntity) {
 					if (abstractEetleEntity.isBaby() && abstractEetleEntity.fromEgg) {
 						int growingAge = Math.abs(abstractEetleEntity.growingAge);
 						moveSpeed *= Math.min(2.0F, 7.0F * growingAge / (growingAge + 300.0F));
@@ -427,9 +398,8 @@ public abstract class AbstractEetleEntity extends Monster implements IEndimatedE
 				mob.setSpeed(moveSpeed);
 				BlockPos blockpos = mob.blockPosition();
 				BlockState blockstate = mob.level.getBlockState(blockpos);
-				Block block = blockstate.getBlock();
 				VoxelShape voxelshape = blockstate.getCollisionShape(mob.level, blockpos);
-				if (d2 > mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + (double)blockpos.getY() && !block.is(BlockTags.DOORS) && !block.is(BlockTags.FENCES)) {
+				if (d2 > mob.maxUpStep && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, mob.getBbWidth()) || !voxelshape.isEmpty() && mob.getY() < voxelshape.max(Direction.Axis.Y) + (double)blockpos.getY() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
 					mob.getJumpControl().jump();
 					this.operation = MoveControl.Operation.JUMPING;
 				}

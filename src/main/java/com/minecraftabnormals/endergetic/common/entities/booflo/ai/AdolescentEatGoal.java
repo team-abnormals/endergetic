@@ -1,8 +1,9 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
 
@@ -10,7 +11,7 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 	private int eatingTicks;
 
 	public AdolescentEatGoal(BoofloAdolescentEntity adolescent) {
-		super(adolescent, BoofloAdolescentEntity.EATING_ANIMATION);
+		super(adolescent, EEPlayableEndimations.ADOLESCENT_BOOFLO_EATING);
 	}
 
 	@Override

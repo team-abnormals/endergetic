@@ -16,6 +16,7 @@ import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
 import com.teamabnormals.blueprint.core.endimator.TimedEndimation;
 import com.teamabnormals.blueprint.core.util.MathUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
@@ -96,7 +97,7 @@ public class BolloomBudTileEntity extends BlockEntity {
 		}
 	}
 
-	public void startGrowing(Random rand, int maxHeight, boolean instant) {
+	public void startGrowing(RandomSource rand, int maxHeight, boolean instant) {
 		boolean didOneGrow = false;
 		this.maxFruitHeight = maxHeight;
 
@@ -264,7 +265,7 @@ public class BolloomBudTileEntity extends BlockEntity {
 			return pos.relative(this.direction);
 		}
 
-		public static BudSide random(Random rand) {
+		public static BudSide random(RandomSource rand) {
 			return values()[rand.nextInt(values().length)];
 		}
 	}

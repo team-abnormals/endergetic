@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
@@ -13,11 +14,10 @@ import net.minecraft.world.level.LevelSimulatedReader;
 
 public final class GenerationUtils {
 
-	@SuppressWarnings("deprecation")
 	public static boolean isAir(LevelSimulatedReader worldIn, BlockPos pos) {
 		if (!(worldIn instanceof net.minecraft.world.level.BlockGetter))
 			return worldIn.isStateAtPosition(pos, BlockState::isAir);
-		else return worldIn.isStateAtPosition(pos, state -> state.isAir((net.minecraft.world.level.BlockGetter) worldIn, pos));
+		else return worldIn.isStateAtPosition(pos, BlockBehaviour.BlockStateBase::isAir);
 	}
 
 	public static <B extends BlockState> boolean isProperBlock(B blockState, Block[] validBlocks, boolean orSolid) {

@@ -12,8 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 public class PuffBugDescentGoal extends Goal {
-	private PuffBugEntity puffbug;
-	private Level world;
+	private final PuffBugEntity puffbug;
+	private final Level world;
 	@Nullable
 	private BlockPos budPos;
 	private float originalPosX, originalPosZ;

@@ -20,7 +20,7 @@ public class DispensedBoofBlockTileEntityRenderer implements BlockEntityRenderer
 	private final BoofBlockDispenserModel model;
 
 	public DispensedBoofBlockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.model = new BoofBlockDispenserModel();
+		this.model = new BoofBlockDispenserModel(context.bakeLayer(BoofBlockDispenserModel.LOCATION));
 	}
 
 	@Override

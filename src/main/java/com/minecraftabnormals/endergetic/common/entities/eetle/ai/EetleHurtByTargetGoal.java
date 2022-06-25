@@ -27,7 +27,7 @@ public class EetleHurtByTargetGoal extends HurtByTargetGoal {
 	protected void alertOthers() {
 		double targetDistance = this.getFollowDistance();
 		AABB axisalignedbb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(targetDistance, 10.0D, targetDistance);
-		List<AbstractEetleEntity> list = this.mob.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
+		List<AbstractEetleEntity> list = this.mob.level.getEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 		Iterator<AbstractEetleEntity> iterator = list.iterator();
 		LivingEntity revengeTarget = this.mob.getLastHurtByMob();
 		while (iterator.hasNext()) {

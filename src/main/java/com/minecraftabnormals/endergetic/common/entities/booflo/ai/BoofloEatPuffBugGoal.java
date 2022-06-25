@@ -1,8 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Mth;
 
@@ -11,7 +13,7 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	private int soundDelay;
 
 	public BoofloEatPuffBugGoal(BoofloEntity booflo) {
-		super(booflo, BoofloEntity.EAT);
+		super(booflo, EEPlayableEndimations.BOOFLO_EAT);
 	}
 
 	@Override
@@ -50,21 +52,21 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 	@Override
 	public void start() {
 		this.playEndimation();
-		this.originalYaw = this.entity.yRot;
+		this.originalYaw = this.entity.getYRot();
 		this.entity.setLockedYaw(this.originalYaw);
 	}
 
 	@Override
 	public void stop() {
 		this.originalYaw = 0;
-		this.playEndimation(BoofloEntity.BLANK_ANIMATION);
+		this.playEndimation(PlayableEndimation.BLANK);
 	}
 
 	@Override
 	public void tick() {
 		if (this.soundDelay > 0) this.soundDelay--;
 
-		this.entity.yRot = this.originalYaw;
+		this.entity.setYRot(this.originalYaw);
 		this.entity.yRotO = this.originalYaw;
 
 		if (this.entity.isPlayerNear(1.0F) && this.soundDelay == 0) {

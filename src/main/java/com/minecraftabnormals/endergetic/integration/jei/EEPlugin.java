@@ -4,7 +4,7 @@ import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class EEPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-		registration.addRecipeCatalyst(new ItemStack(EEBlocks.ENDER_CAMPFIRE.get()), VanillaRecipeCategoryUid.CAMPFIRE);
+		registration.addRecipeCatalyst(new ItemStack(EEBlocks.ENDER_CAMPFIRE.get()), RecipeTypes.CAMPFIRE_COOKING);
 	}
 
 }

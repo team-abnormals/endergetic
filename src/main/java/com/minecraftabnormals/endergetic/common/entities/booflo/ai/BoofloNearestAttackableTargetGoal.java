@@ -16,8 +16,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.phys.AABB;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetGoal {
 	protected final Class<E> targetClass;
 	protected final int targetChance;
@@ -123,9 +121,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 					}
 				}
 
-				if (attacker instanceof Mob && !((Mob) attacker).getSensing().canSee(target)) {
-					return false;
-				}
+				return !(attacker instanceof Mob) || ((Mob) attacker).getSensing().hasLineOfSight(target);
 			}
 			return true;
 		}

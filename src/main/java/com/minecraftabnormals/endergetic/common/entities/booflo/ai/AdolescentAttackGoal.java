@@ -24,7 +24,6 @@ public class AdolescentAttackGoal extends Goal {
 	private double targetX;
 	private double targetY;
 	private double targetZ;
-	protected final int attackInterval = 20;
 	private long lastCanUseCheck;
 	private boolean canPenalize = false;
 
@@ -112,7 +111,7 @@ public class AdolescentAttackGoal extends Goal {
 
 		this.delayCounter--;
 
-		if ((this.longMemory || this.attacker.getSensing().canSee(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
+		if ((this.longMemory || this.attacker.getSensing().hasLineOfSight(target)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || target.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
 			this.targetX = target.getX();
 			this.targetY = target.getBoundingBox().minY;
 			this.targetZ = target.getZ();
@@ -141,7 +140,7 @@ public class AdolescentAttackGoal extends Goal {
 			this.attacker.setHasFruit(true);
 			if (prey instanceof BolloomFruitEntity) {
 				((BolloomFruitEntity) prey).onBroken(false);
-				prey.remove();
+				prey.discard();
 			}
 		}
 	}

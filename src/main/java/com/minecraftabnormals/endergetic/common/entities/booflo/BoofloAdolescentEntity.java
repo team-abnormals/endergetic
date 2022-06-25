@@ -2,13 +2,8 @@ package com.minecraftabnormals.endergetic.common.entities.booflo;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
-import com.minecraftabnormals.endergetic.common.blocks.CorrockBlock.DimensionTypeAccessor;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.ai.AdolescentAttackGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.ai.AdolescentEatGoal;
@@ -16,9 +11,12 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.ai.BoofloNearest
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.core.Position;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -66,7 +64,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 /**
  * @author - SmellyModder(Luke Tonon)
  */
-public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableEntity {
+public class BoofloAdolescentEntity extends PathfinderMob implements Endimatable {
 	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> HAS_FRUIT = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DESCENTING = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
@@ -76,8 +74,6 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	private static final EntityDataAccessor<Boolean> WANTS_TO_GROW = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Float> FALL_SPEED = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Integer> BOOF_BOOST_COOLDOWN = SynchedEntityData.defineId(BoofloAdolescentEntity.class, EntityDataSerializers.INT);
-	public static final Endimation BOOF_ANIMATION = new Endimation(10);
-	public static final Endimation EATING_ANIMATION = new Endimation(10);
 	private Entity boofloAttackTarget;
 	public int growingAge;
 	public int forcedAge;
@@ -151,6 +147,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		};
 	}
 
+	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
 		return sizeIn.height * 0.65F;
 	}
@@ -159,7 +156,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	public void tick() {
 		super.tick();
 
-		if (this.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION) && this.getAnimationTick() == 9) {
+		if (this.isEndimationPlaying(EEPlayableEndimations.ADOLESCENT_BOOFLO_EATING) && this.getAnimationTick() == 9) {
 			if (this.level instanceof ServerLevel) {
 				((ServerLevel) this.level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(EEItems.BOLLOOM_FRUIT.get())), this.getX(), this.getY() + (double) this.getBbHeight() / 1.5D, this.getZ(), 10, (double) (this.getBbWidth() / 4.0F), (double) (this.getBbHeight() / 4.0F), (double) (this.getBbWidth() / 4.0F), 0.05D);
 			}
@@ -213,10 +210,9 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 			this.growUp();
 		}
 
-		if (!this.isWorldRemote() && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.isEyeInFluid(FluidTags.WATER)))) {
-			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
-			this.setPlayingEndimation(BOOF_ANIMATION);
-			NetworkUtil.setPlayingAnimationMessage(this, BOOF_ANIMATION);
+		if (!this.level.isClientSide && ((!this.isDescenting() && !this.isEating()) && this.getBoofBoostCooldown() <= 0 && (this.onGround || this.isEyeInFluid(FluidTags.WATER)))) {
+			this.push(-Mth.sin((float) (this.getYRot() * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.getYRot() * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
+			NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.ADOLESCENT_BOOFLO_BOOF);
 			this.setFallSpeed(0.0F);
 			//Fixes super boosting underwater
 			if (this.wasEyeInWater) {
@@ -225,22 +221,22 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 		}
 
 		//Helps them not fall off the edge
-		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.level.dimensionType() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.blockPosition(), 3)) {
+		if ((this.getBoofBoostCooldown() <= 0 && !this.onGround) && this.level.dimension() == Level.END && !this.isSafePos(this.blockPosition(), 3)) {
 			this.setBoofBoostCooldown(20);
 			this.setFallSpeed(0.0F);
 
 			if (this.getY() <= 50) {
-				this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
-				this.setPlayingEndimation(BOOF_ANIMATION);
+				this.push(-Mth.sin((float) (this.getYRot() * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F, (random.nextFloat() * 0.45F) + 0.65F, Mth.cos((float) (this.getYRot() * Math.PI / 180.0F)) * (5 * (random.nextFloat() + 0.1F)) * 0.1F);
+				this.setPlayingEndimation(EEPlayableEndimations.ADOLESCENT_BOOFLO_BOOF);
 			}
 		}
 
-		if (!this.onGround && this.level.dimensionType() == DimensionTypeAccessor.THE_END && !this.isSafePos(this.blockPosition(), 3) && !this.isWorldRemote()) {
-			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * 0.01F, 0, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * 0.01F);
+		if (!this.onGround && this.level.dimension() == Level.END && !this.isSafePos(this.blockPosition(), 3) && !this.level.isClientSide) {
+			this.push(-Mth.sin((float) (this.getYRot() * Math.PI / 180.0F)) * 0.01F, 0, Mth.cos((float) (this.getYRot() * Math.PI / 180.0F)) * 0.01F);
 		}
 
-		if (this.getBoofloAttackTarget() != null && this.canSee(this.getBoofloAttackTarget())) {
-			this.yRot = this.yHeadRot;
+		if (this.getBoofloAttackTarget() != null && this.hasLineOfSight(this.getBoofloAttackTarget())) {
+			this.setYRot(this.yHeadRot);
 		}
 
 		if (this.level.isClientSide) {
@@ -269,13 +265,12 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 
 	@Override
-	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {
-	}
+	protected void checkFallDamage(double y, boolean onGroundIn, BlockState state, BlockPos pos) {}
 
 	@Override
 	public void die(DamageSource cause) {
@@ -448,7 +443,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 			this.spawnAtLocation(EEItems.BOOFLO_HIDE.get(), 1);
 
 			BoofloEntity booflo = EEEntities.BOOFLO.get().create(this.level);
-			booflo.moveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
+			booflo.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
 
 			if (this.hasCustomName()) {
 				booflo.setCustomName(this.getCustomName());
@@ -467,7 +462,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 			booflo.wasBred = this.wasBred;
 			booflo.setHealth(booflo.getMaxHealth());
 			this.level.addFreshEntity(booflo);
-			this.remove();
+			this.discard();
 
 			return booflo;
 		}
@@ -477,7 +472,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	public LivingEntity growDown() {
 		if (this.isAlive()) {
 			BoofloBabyEntity boofloBaby = EEEntities.BOOFLO_BABY.get().create(this.level);
-			boofloBaby.moveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
+			boofloBaby.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
 
 			if (this.hasCustomName()) {
 				boofloBaby.setCustomName(this.getCustomName());
@@ -496,7 +491,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 			boofloBaby.wasBred = this.wasBred;
 			boofloBaby.setHealth(boofloBaby.getMaxHealth());
 			this.level.addFreshEntity(boofloBaby);
-			this.remove();
+			this.discard();
 
 			return boofloBaby;
 		}
@@ -526,7 +521,7 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	public void dropFruit() {
-		if (!this.isWorldRemote()) {
+		if (!this.level.isClientSide) {
 			this.spawnAtLocation(EEItems.BOLLOOM_FRUIT.get());
 			this.setHasFruit(false);
 		}
@@ -576,36 +571,8 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 	}
 
 	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[]{
-				BOOF_ANIMATION,
-				EATING_ANIMATION
-		};
-	}
-
-	@Override
 	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
 		return !this.wasBred;
-	}
-
-	@Override
-	public boolean hasGrowthProgress() {
-		return true;
-	}
-
-	@Override
-	public void resetGrowthProgress() {
-		this.setGrowingAge(-24000);
-	}
-
-	@Override
-	public boolean canAge(boolean isGrowing) {
-		return true;
-	}
-
-	@Override
-	public LivingEntity attemptAging(boolean isGrowing) {
-		return isGrowing ? this.growUp() : this.growDown();
 	}
 
 	static class RandomFlyingGoal extends RandomStrollGoal {
@@ -616,9 +583,12 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 		@Nullable
 		protected Vec3 getPosition() {
-			Vec3 vec3d = RandomPos.getPos(this.mob, 10, 0);
+			Vec3 view = this.mob.getViewVector(0.0F);
+			double viewX = view.x;
+			double viewZ = view.z;
+			Vec3 vec3d = HoverRandomPos.getPos(this.mob, 10, 0, viewX, viewZ, ((float)Math.PI / 2F), 3, 1);
 
-			for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = RandomPos.getPos(this.mob, 10, 0)) {
+			for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = HoverRandomPos.getPos(this.mob, 10, 0, viewX, viewZ, ((float)Math.PI / 2F), 3, 1)) {
 				;
 			}
 
@@ -647,11 +617,11 @@ public class BoofloAdolescentEntity extends EndimatedEntity implements IAgeableE
 
 		public void tick() {
 			if (this.operation == MoveControl.Operation.MOVE_TO && !this.booflo.getNavigation().isDone()) {
-				Vec3 vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
-
-				this.booflo.yRot = this.rotlerp(this.booflo.yRot, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
-				this.booflo.yBodyRot = this.booflo.yRot;
-				this.booflo.yHeadRot = this.booflo.yRot;
+				Position pos = this.booflo.getPos();
+				Vec3 vec3d = new Vec3(this.wantedX - pos.x(), this.wantedY - pos.y(), this.wantedZ - pos.z());
+				this.booflo.setYRot(this.rotlerp(this.booflo.getYRot(), (float) ((Mth.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F), 10.0F));
+				this.booflo.yBodyRot = this.booflo.getYRot();
+				this.booflo.yHeadRot = this.booflo.getYRot();
 
 				float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 				float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);

@@ -1,9 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.pathfinder.Path;
@@ -14,7 +15,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 public class GliderEetleGrabGoal extends Goal {
 	private final GliderEetleEntity glider;
@@ -77,7 +77,7 @@ public class GliderEetleGrabGoal extends Goal {
 		LivingEntity target = glider.getTarget();
 		glider.getLookControl().setLookAt(target, 30.0F, 30.0F);
 		double distanceToTargetSq = glider.distanceToSqr(target);
-		if (glider.getSensing().canSee(target) && this.delayCounter <= 0 && glider.getRandom().nextFloat() < 0.05F) {
+		if (glider.getSensing().hasLineOfSight(target) && this.delayCounter <= 0 && glider.getRandom().nextFloat() < 0.05F) {
 			this.delayCounter = 4 + glider.getRandom().nextInt(9);
 			PathNavigation pathNavigator = glider.getNavigation();
 			if (distanceToTargetSq > 1024.0D) {
@@ -86,7 +86,7 @@ public class GliderEetleGrabGoal extends Goal {
 				this.delayCounter += 5;
 			}
 
-			float blocksFromTarget = Mth.sqrt(distanceToTargetSq);
+			float blocksFromTarget = Mth.sqrt((float) distanceToTargetSq);
 			if (blocksFromTarget >= 3.0F) {
 				Path path = pathNavigator.createPath(getAirPosAboveTarget(glider.level, target), 0);
 				if (path == null || !pathNavigator.moveTo(path, 1.25F)) {
@@ -100,12 +100,12 @@ public class GliderEetleGrabGoal extends Goal {
 		}
 
 		double reachRange = glider.getBbWidth() * 2.0F * glider.getBbWidth() * 2.0F + target.getBbWidth();
-		if (distanceToTargetSq <= reachRange && glider.canSee(target)) {
+		if (distanceToTargetSq <= reachRange && glider.hasLineOfSight(target)) {
 			if (target.startRiding(glider, true)) {
-				Random random = glider.getRandom();
-				float yaw = glider.yRot + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
-				float xMotion = -Mth.sin(yaw * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
-				float zMotion = Mth.cos(yaw * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
+				RandomSource random = glider.getRandom();
+				float yaw = glider.getYRot() + (random.nextFloat() * 15.0F - random.nextFloat() * 15.0F);
+				float xMotion = -Mth.sin(yaw * ((float) Math.PI / 180F));
+				float zMotion = Mth.cos(yaw * ((float) Math.PI / 180F));
 				glider.setDeltaMovement(glider.getDeltaMovement().add(xMotion * 0.3F, 0.45F, zMotion * 0.3F));
 				this.swoopTimer = 10;
 			}

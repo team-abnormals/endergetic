@@ -9,14 +9,13 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugTeleportToBudGoal extends Goal {
 	private static final int AREA_CHECK_SIZE = 26;
@@ -58,14 +57,15 @@ public class PuffBugTeleportToBudGoal extends Goal {
 
 	@Override
 	public boolean canContinueToUse() {
-		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);
+		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO);
 	}
 
 	@Nullable
 	private BolloomBudTileEntity findNearbyBud() {
 		BlockPos pos = this.puffbug.blockPosition();
+		//TODO: Change to use BlockPos.findClosestMatch()
 		for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-AREA_CHECK_SIZE, -AREA_CHECK_SIZE / 2, -AREA_CHECK_SIZE), pos.offset(AREA_CHECK_SIZE, AREA_CHECK_SIZE / 2, AREA_CHECK_SIZE))) {
-			if (blockpos.closerThan(this.puffbug.position(), AREA_CHECK_SIZE)) {
+			if (blockpos.closerToCenterThan(this.puffbug.position(), AREA_CHECK_SIZE)) {
 				if (this.world.getBlockState(blockpos).getBlock() == EEBlocks.BOLLOOM_BUD.get() && this.world.getBlockEntity(blockpos) instanceof BolloomBudTileEntity) {
 					BolloomBudTileEntity bud = (BolloomBudTileEntity) this.world.getBlockEntity(blockpos);
 					if (!bud.getBlockState().getValue(BolloomBudBlock.OPENED) && this.isPathNotBlockedByEntity(bud) && !bud.hasTeleportingBug() && bud.canBeOpened()) {

@@ -1,24 +1,24 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEggSackEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.EetleEggEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.sensing.Sensing;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-
-import java.util.Random;
 
 public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	private int eggsToDrop;
 	private int ticksPassed;
 
 	public BroodEetleDropEggsGoal(BroodEetleEntity entity) {
-		super(entity, BroodEetleEntity.LAUNCH);
+		super(entity, EEPlayableEndimations.BROOD_EETLE_LAUNCH);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 			BroodEggSackEntity eggSack = broodEetle.getEggSack(world);
 			if (eggSack != null) {
 				EetleEggEntity eetleEgg = new EetleEggEntity(world, eggSack.position());
-				Random random = this.random;
+				RandomSource random = broodEetle.getRandom();
 				eetleEgg.setEggSize(EetleEggEntity.EggSize.random(random, true));
 				eetleEgg.setDeltaMovement(new Vec3((random.nextFloat() - random.nextFloat()) * 0.3F, -0.1F, (random.nextFloat() - random.nextFloat()) * 0.3F).add(broodEetle.getDeltaMovement()));
 				world.addFreshEntity(eetleEgg);
@@ -69,7 +69,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
 		Sensing senses = broodEetle.getSensing();
 		return broodEetle.level.getEntitiesOfClass(AbstractEetleEntity.class, broodEetle.getBoundingBox().inflate(followRange, followRange * 0.5D, followRange), eetle -> {
-			return eetle.isAlive() && senses.canSee(eetle) && (!eetle.isBaby() || eetle.getGrowingAge() >= -240);
+			return eetle.isAlive() && senses.hasLineOfSight(eetle) && (!eetle.isBaby() || eetle.getGrowingAge() >= -240);
 		}).size() <= 2;
 	}
 

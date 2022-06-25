@@ -8,15 +8,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class BoofBlockRenderer extends EntityRenderer<BoofBlockEntity> {
-	private final BoofBlockModel<?> model = new BoofBlockModel<>();
+	private final BoofBlockModel<?> model;
 
-	public BoofBlockRenderer(EntityRenderDispatcher renderManager) {
-		super(renderManager);
+	public BoofBlockRenderer(EntityRendererProvider.Context context) {
+		super(context);
+		this.model = new BoofBlockModel<>(context.bakeLayer(BoofBlockModel.LOCATION));
 		this.shadowRadius = 0.0F;
 	}
 

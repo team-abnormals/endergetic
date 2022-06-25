@@ -6,12 +6,11 @@ import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity.HiveOccupantData;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugTeleportToRestGoal extends Goal {
 	private PuffBugEntity puffbug;
@@ -52,6 +51,6 @@ public class PuffBugTeleportToRestGoal extends Goal {
 
 	@Override
 	public boolean canContinueToUse() {
-		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(PuffBugEntity.TELEPORT_TO_ANIMATION);
+		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO);
 	}
 }

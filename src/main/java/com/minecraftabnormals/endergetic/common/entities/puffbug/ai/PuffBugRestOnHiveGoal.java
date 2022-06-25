@@ -2,14 +2,13 @@ package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.core.Direction;
 
-import java.util.Random;
-
 public class PuffBugRestOnHiveGoal extends Goal {
 	private PuffBugEntity puffbug;
-	private final Random random;
+	private final RandomSource random;
 	private int ticksRested;
 
 	public PuffBugRestOnHiveGoal(PuffBugEntity puffbug) {

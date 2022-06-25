@@ -30,8 +30,8 @@ public class CorrockCrownTileEntityRenderer implements BlockEntityRenderer<Corro
 	};
 
 	public CorrockCrownTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.standingModel = new CorrockCrownStandingModel();
-		this.wallModel = new CorrockCrownWallModel();
+		this.standingModel = new CorrockCrownStandingModel(context.bakeLayer(CorrockCrownStandingModel.LOCATION));
+		this.wallModel = new CorrockCrownWallModel(context.bakeLayer(CorrockCrownWallModel.LOCATION));
 	}
 
 	@Override

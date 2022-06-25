@@ -1,15 +1,13 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleFlyNearPosGoal extends Goal {
 	private final BroodEetleEntity broodEetle;
@@ -58,8 +56,7 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 
 	@Nullable
 	private static Vec3 findPos(BroodEetleEntity broodEetle, Vec3 takeoffPos) {
-		Vec3 differenceNormalized = takeoffPos.subtract(broodEetle.position()).normalize();
 		boolean verticalFarAway = Math.abs(broodEetle.getY() - takeoffPos.y()) >= 6;
-		return RandomPos.generateRandomPos(broodEetle, 8, verticalFarAway ? 2 : 1, verticalFarAway ? -1 : 6, differenceNormalized, false, ((float)Math.PI / 2.0F), broodEetle::getWalkTargetValue, true, 2, 1, true);
+		return DefaultRandomPos.getPosTowards(broodEetle, 8, verticalFarAway ? -1 : 6, takeoffPos, ((float)Math.PI / 2.0F));
 	}
 }

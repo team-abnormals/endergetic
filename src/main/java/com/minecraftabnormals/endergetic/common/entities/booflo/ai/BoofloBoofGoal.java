@@ -2,22 +2,21 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
 import java.util.EnumSet;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 	private final Level world;
 
 	public BoofloBoofGoal(BoofloEntity booflo) {
-		super(booflo, BoofloEntity.INFLATE);
+		super(booflo, EEPlayableEndimations.BOOFLO_INFLATE);
 		this.world = booflo.level;
 		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
@@ -40,7 +39,7 @@ public class BoofloBoofGoal extends EndimatedGoal<BoofloEntity> {
 				return true;
 			}
 		}
-		return (this.entity.hasCaughtPuffBug() || this.entity.getPassengers().isEmpty()) && !onGround && !this.entity.isTempted() && flagChance && this.entity.isEndimationPlaying(BoofloEntity.HOP);
+		return (this.entity.hasCaughtPuffBug() || this.entity.getPassengers().isEmpty()) && !onGround && !this.entity.isTempted() && flagChance && this.entity.isEndimationPlaying(EEPlayableEndimations.BOOFLO_HOP);
 	}
 
 	@Override

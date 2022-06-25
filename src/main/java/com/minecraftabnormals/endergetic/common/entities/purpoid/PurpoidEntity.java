@@ -1,16 +1,19 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.IEndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
+import com.minecraftabnormals.endergetic.api.util.TemporaryMathUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.client.particles.data.CorrockCrownParticleData;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.ai.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.util.MathUtil;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
@@ -38,36 +41,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-import net.minecraft.world.entity.ai.control.MoveControl.Operation;
-
-import net.minecraft.world.entity.AgableMob;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.SpawnGroupData;
-
-public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
+public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	private static final EntityDataAccessor<PurpoidSize> SIZE = SynchedEntityData.defineId(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
 	private static final EntityDataAccessor<Integer> BOOSTING_TICKS = SynchedEntityData.defineId(PurpoidEntity.class, EntityDataSerializers.INT);
-	public static final Endimation TELEPORT_TO_ANIMATION = new Endimation(18);
-	public static final Endimation FAST_TELEPORT_TO_ANIMATION = new Endimation(15);
-	public static final Endimation TELEPORT_FROM_ANIMATION = new Endimation(10);
-	public static final Endimation TELEFRAG_ANIMATION = new Endimation(10);
-	public static final Endimation DEATH_ANIMATION = new Endimation(20);
-	private Endimation endimation = BLANK_ANIMATION;
 	private final TeleportController teleportController = new TeleportController();
-	private int animationTick;
 	private int growingAge;
 	private int teleportCooldown;
 	private int restCooldown;
@@ -136,23 +116,23 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 			if (this.isBoosting() && world.getGameTime() % 4 == 0) {
 				double dy = this.pull.y() - pos.y();
 				CorrockCrownParticleData particleData = this.createParticleData();
-				Random random = this.getRandom();
+				RandomSource random = this.getRandom();
 				for (int i = 0; i < 2; i++) {
-					world.addParticle(particleData, this.getRandomX(0.5D), this.getY() + this.getEyeHeight(), this.getRandomZ(0.5D), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), MathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
+					world.addParticle(particleData, this.getRandomX(0.5D), this.getY() + this.getEyeHeight(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
 				}
 			}
 
-			if (!this.isDeadOrDying() && (this.isEndimationPlaying(TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) || this.isPassenger())) {
+			if (!this.isDeadOrDying() && (this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM) || this.isPassenger())) {
 				pos = pos.subtract(0.0F, 1.0F, 0.0F);
 				this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
 			}
 
 			int animationTick = this.getAnimationTick();
-			if ((this.isEndimationPlaying(TELEPORT_TO_ANIMATION) || this.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION)) && animationTick == 7 || this.isEndimationPlaying(TELEPORT_FROM_ANIMATION) && animationTick == 4 || this.isEndimationPlaying(TELEFRAG_ANIMATION) && animationTick == 2) {
+			if ((this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO)) && animationTick == 7 || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM) && animationTick == 4 || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEFRAG) && animationTick == 2) {
 				CorrockCrownParticleData particleData = this.createParticleData();
-				Random random = this.getRandom();
+				RandomSource random = this.getRandom();
 				for (int i = 0; i < 12; i++) {
-					world.addParticle(particleData, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+					world.addParticle(particleData, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 				}
 			}
 		} else {
@@ -180,17 +160,17 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 		}
 
 		if (this.isDeadOrDying()) {
-			if (!this.isEndimationPlaying(DEATH_ANIMATION) && !world.isClientSide) {
-				NetworkUtil.setPlayingAnimationMessage(this, DEATH_ANIMATION);
+			if (!this.isEndimationPlaying(EEPlayableEndimations.PURPOID_DEATH) && !world.isClientSide) {
+				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.PURPOID_DEATH);
 			}
 			if (++this.deathTime >= 10) {
 				if (!world.isClientSide) {
-					this.remove();
+					this.discard();
 				} else {
 					CorrockCrownParticleData particleData = this.createParticleData();
-					Random random = this.getRandom();
+					RandomSource random = this.getRandom();
 					for (int i = 0; i < 12; ++i) {
-						world.addParticle(particleData, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, MathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+						world.addParticle(particleData, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 					}
 					for (int i = 0; i < 20; ++i) {
 						world.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
@@ -219,13 +199,13 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 		this.setSize(PurpoidSize.values()[Mth.clamp(compound.getInt("Size"), 0, 2)], false);
 		this.updateAge(compound.getInt("Age"));
 		this.setBoostingTicks(Math.max(0, compound.getInt("BoostingTicks")));
-		if (compound.contains("TeleportCooldown", Constants.NBT.TAG_INT)) {
+		if (compound.contains("TeleportCooldown", 3)) {
 			this.teleportCooldown = Math.max(0, compound.getInt("TeleportCooldown"));
 		}
-		if (compound.contains("RestCooldown", Constants.NBT.TAG_INT)) {
+		if (compound.contains("RestCooldown", 3)) {
 			this.restCooldown = Math.max(0, compound.getInt("RestCooldown"));
 		}
-		if (compound.contains("FlowerPos", Constants.NBT.TAG_COMPOUND)) {
+		if (compound.contains("FlowerPos", 10)) {
 			this.flowerPos = NbtUtils.readBlockPos(compound.getCompound("FlowerPos"));
 		}
 	}
@@ -348,12 +328,12 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
 		if (spawnData == null) {
-			spawnData = new AgableMob.AgableMobGroupData(true);
+			spawnData = new AgeableMob.AgeableMobGroupData(true);
 		}
 
-		Random random = this.random;
-		if (spawnData instanceof AgableMob.AgableMobGroupData) {
-			AgableMob.AgableMobGroupData ageableData = (AgableMob.AgableMobGroupData) spawnData;
+		RandomSource random = this.random;
+		if (spawnData instanceof AgeableMob.AgeableMobGroupData) {
+			AgeableMob.AgeableMobGroupData ageableData = (AgeableMob.AgeableMobGroupData) spawnData;
 			if (ageableData.isShouldSpawnBaby() && ageableData.getGroupSize() > 0 && random.nextFloat() <= ageableData.getBabySpawnChance()) {
 				this.updateAge(-24000);
 			} else if (random.nextFloat() <= 0.005F) {
@@ -433,7 +413,7 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 
@@ -471,54 +451,22 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 	}
 
 	@Override
-	public void onEndimationStart(Endimation endimation) {
-		if (endimation == DEATH_ANIMATION) {
+	public void onEndimationStart(PlayableEndimation endimation, PlayableEndimation oldEndimation) {
+		if (endimation == EEPlayableEndimations.PURPOID_DEATH) {
 			this.deathTime = 0;
 		}
 	}
 
 	@Override
-	public void onEndimationEnd(Endimation endimation) {
-		if (!this.level.isClientSide && (endimation == TELEPORT_TO_ANIMATION || endimation == FAST_TELEPORT_TO_ANIMATION)) {
-			NetworkUtil.setPlayingAnimationMessage(this, TELEPORT_FROM_ANIMATION);
+	public void onEndimationEnd(PlayableEndimation endimation, PlayableEndimation newEndimation) {
+		if (!this.level.isClientSide && (endimation == EEPlayableEndimations.PURPOID_TELEPORT_TO || endimation == EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO)) {
+			NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.PURPOID_TELEPORT_FROM);
 		}
-	}
-
-	@Override
-	public Endimation getPlayingEndimation() {
-		return this.endimation;
-	}
-
-	@Override
-	public int getAnimationTick() {
-		return this.animationTick;
-	}
-
-	@Override
-	public void setAnimationTick(int animationTick) {
-		this.animationTick = animationTick;
-	}
-
-	@Override
-	public void setPlayingEndimation(Endimation endimation) {
-		this.endimation = endimation;
-		this.setAnimationTick(0);
-	}
-
-	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[] {
-				TELEPORT_TO_ANIMATION,
-				FAST_TELEPORT_TO_ANIMATION,
-				TELEPORT_FROM_ANIMATION,
-				TELEFRAG_ANIMATION,
-				DEATH_ANIMATION
-		};
 	}
 
 	private boolean tryToTeleportRandomly(int attempts) {
 		BlockPos pos = this.blockPosition();
-		Random random = this.getRandom();
+		RandomSource random = this.getRandom();
 		EntityDimensions size = this.getDimensions(this.getPose());
 		Level world = this.level;
 		for (int i = 0; i < attempts; i++) {
@@ -562,7 +510,7 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 				} else {
 					double dx = vector3d.x;
 					double dz = vector3d.z;
-					purpoid.yRot = purpoid.yBodyRot = this.rotlerp(purpoid.yRot, (float)(Mth.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F);
+					purpoid.setYRot(purpoid.yBodyRot = this.rotlerp(purpoid.getYRot(), (float)(Mth.atan2(dz, dx) * (double)(180F / (float)Math.PI)) - 90.0F, 90.0F));
 					float newMoveSpeed = Mth.lerp(0.125F, purpoid.getSpeed(), (boosting ? 1.25F : 1.0F) * (float)(this.speedModifier * purpoid.getAttributeValue(Attributes.MOVEMENT_SPEED)));
 					purpoid.setSpeed(newMoveSpeed);
 					double normalizedY = vector3d.y / distance;
@@ -574,7 +522,7 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 					double d8 = x + (dx / distance) * 2.0D;
 					double d9 = purpoid.getEyeY() + normalizedY / distance;
 					double d10 = z + (dz / distance) * 2.0D;
-					if (!lookcontroller.isHasWanted()) {
+					if (!lookcontroller.isLookingAtTarget()) {
 						d11 = d8;
 						d12 = d9;
 						d13 = d10;
@@ -606,9 +554,9 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 		private BlockPos destination;
 
 		private void tick(PurpoidEntity purpoid) {
-			if ((purpoid.isEndimationPlaying(TELEPORT_TO_ANIMATION) || purpoid.isEndimationPlaying(FAST_TELEPORT_TO_ANIMATION)) && purpoid.getAnimationTick() == 10) {
+			if ((purpoid.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || purpoid.isEndimationPlaying(EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO)) && purpoid.getAnimationTick() == 10) {
 				this.teleportToDestination(purpoid);
-			} else if (purpoid.isEndimationPlaying(TELEPORT_FROM_ANIMATION)) {
+			} else if (purpoid.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM)) {
 				purpoid.setDeltaMovement(Vec3.ZERO);
 			}
 		}
@@ -627,7 +575,7 @@ public class PurpoidEntity extends PathfinderMob implements IEndimatedEntity {
 		}
 
 		public void beginTeleportation(PurpoidEntity purpoid, BlockPos destination, boolean fast) {
-			NetworkUtil.setPlayingAnimationMessage(purpoid, fast ? PurpoidEntity.FAST_TELEPORT_TO_ANIMATION : PurpoidEntity.TELEPORT_TO_ANIMATION);
+			NetworkUtil.setPlayingAnimation(purpoid, fast ? EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO : EEPlayableEndimations.PURPOID_TELEPORT_TO);
 			this.destination = destination;
 		}
 

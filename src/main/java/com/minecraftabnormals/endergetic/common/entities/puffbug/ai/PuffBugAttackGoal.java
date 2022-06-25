@@ -20,8 +20,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class PuffBugAttackGoal extends Goal {
 	public static final float SHOOT_RANGE = 8.0F;
 	private final PuffBugEntity puffbug;
@@ -87,7 +85,7 @@ public class PuffBugAttackGoal extends Goal {
 			if (this.puffbug.distanceTo(target) <= SHOOT_RANGE) {
 				Vec3 distance = new Vec3(target.getX() - this.puffbug.getX(), target.getY() - this.puffbug.getY(), target.getZ() - this.puffbug.getZ());
 
-				float pitch = -((float) (Mth.atan2(distance.y(), (double) Mth.sqrt(distance.x() * distance.x() + distance.z() * distance.z())) * (double) (180F / (float) Math.PI)));
+				float pitch = -((float) (Mth.atan2(distance.y(), Mth.sqrt((float) (distance.x() * distance.x() + distance.z() * distance.z()))) * (double) (180F / (float) Math.PI)));
 				float yaw = (float) (Mth.atan2(distance.z(), distance.x()) * (double) (180F / (float) Math.PI)) - 90F;
 
 				double startingDistance = SHOOT_RANGE;

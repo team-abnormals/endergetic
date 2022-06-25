@@ -1,9 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 
@@ -12,7 +14,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	private float originalPosX, originalPosY, originalPosZ;
 
 	public PuffBugPollinateGoal(PuffBugEntity puffbug) {
-		super(puffbug, PuffBugEntity.POLLINATE_ANIMATION);
+		super(puffbug, EEPlayableEndimations.PUFF_BUG_POLLINATE);
 		this.world = puffbug.level;
 	}
 
@@ -20,9 +22,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	public boolean canUse() {
 		if (this.entity.getPollinationPos() != null) {
 			BlockEntity te = this.world.getBlockEntity(this.entity.getPollinationPos());
-			if (te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened()) {
-				return true;
-			}
+			return te instanceof BolloomBudTileEntity && ((BolloomBudTileEntity) te).canBeOpened();
 		}
 		return false;
 	}
@@ -39,7 +39,7 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 		}
 		return
 				!this.entity.hasLevitation() &&
-						this.entity.isEndimationPlaying(PuffBugEntity.POLLINATE_ANIMATION) &&
+						this.entity.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_POLLINATE) &&
 						this.entity.getX() == this.originalPosX &&
 						this.entity.getZ() == this.originalPosZ &&
 						Math.abs(this.originalPosY - this.entity.getY()) < 0.5F
@@ -73,6 +73,6 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 	public void stop() {
 		this.entity.setPollinationPos(null);
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
-		this.playEndimation(PuffBugEntity.BLANK_ANIMATION);
+		this.playEndimation(PlayableEndimation.BLANK);
 	}
 }

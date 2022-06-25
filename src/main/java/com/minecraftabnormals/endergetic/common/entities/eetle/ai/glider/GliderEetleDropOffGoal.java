@@ -1,10 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -16,8 +16,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.*;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class GliderEetleDropOffGoal extends Goal {
 	private final GliderEetleEntity glider;

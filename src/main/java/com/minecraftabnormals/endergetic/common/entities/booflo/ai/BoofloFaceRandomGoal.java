@@ -8,8 +8,6 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.Gro
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.effect.MobEffects;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloFaceRandomGoal extends Goal {
 	private final BoofloEntity booflo;
 	private float chosenDegrees;

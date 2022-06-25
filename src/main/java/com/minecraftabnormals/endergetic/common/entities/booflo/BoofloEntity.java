@@ -8,16 +8,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.api.IAgeableEntity;
-import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedEntity;
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.api.entity.util.EntityItemStackHelper;
 import com.minecraftabnormals.endergetic.api.entity.util.RayTraceHelper;
+import com.minecraftabnormals.endergetic.api.util.TemporaryMathUtil;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomFruitEntity;
@@ -42,16 +37,14 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.Endimatable;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
+import com.teamabnormals.blueprint.core.endimator.TimedEndimation;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.core.Position;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
@@ -93,7 +86,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
+public class BoofloEntity extends PathfinderMob implements Endimatable {
 	public static final Predicate<Entity> IS_SCARED_BY = (entity) -> {
 		if (entity instanceof Player) {
 			return !entity.isSpectator() && !((Player) entity).isCreative();
@@ -120,20 +113,9 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	private static final EntityDataAccessor<Integer> BRACELETS_COLOR = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.FLOAT);
 
-	public static final Endimation CROAK = new Endimation(55);
-	public static final Endimation HOP = new Endimation(25);
-	public static final Endimation HURT = new Endimation(15);
-	public static final Endimation BIRTH = new Endimation(140);
-	public static final Endimation INFLATE = new Endimation(10);
-	public static final Endimation SWIM = new Endimation(20);
-	public static final Endimation EAT = new Endimation(160);
-	public static final Endimation CHARGE = new Endimation(75);
-	public static final Endimation SLAM = new Endimation(10);
-	public static final Endimation GROWL = new Endimation(60);
-
 	private static final EntityDimensions BOOFED_SIZE = EntityDimensions.fixed(2.0F, 1.5F);
-	public final ControlledEndimation OPEN_JAW = new ControlledEndimation(25, 0);
-	public final ControlledEndimation FRUIT_HOVER = new ControlledEndimation(8, 0);
+	public final TimedEndimation OPEN_JAW = new TimedEndimation(25, 0);
+	public final TimedEndimation FRUIT_HOVER = new TimedEndimation(8, 0);
 
 	private final EndergeticFlyingPathNavigator attackingNavigator;
 	private UUID playerInLove;
@@ -235,7 +217,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		}
 
 		if (!this.level.isClientSide) {
-			if (this.isEndimationPlaying(BoofloEntity.CHARGE) && this.getAnimationTick() >= 15) {
+			if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_CHARGE) && this.getAnimationTick() >= 15) {
 				this.push(0.0F, -0.225F, 0.0F);
 			}
 
@@ -260,7 +242,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					}
 				} else {
 					if (!this.isBoostLocked() && this.getControllingPassenger() instanceof Player) {
-						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_INFLATE);
 						this.playSound(this.getInflateSound(), 0.75F, 1.0F);
 					}
 					this.setBoostExpanding(false);
@@ -281,15 +263,15 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 			if (this.isBoofed() && this.isNoEndimationPlaying() && this.isMovingInAir()) {
 				if (RayTraceHelper.rayTrace(this, 2.0D, 1.0F).getType() != Type.BLOCK) {
-					NetworkUtil.setPlayingAnimationMessage(this, BoofloEntity.SWIM);
+					NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_SWIM);
 				}
 			}
 
-			if (this.isEndimationPlaying(SWIM) && this.getAnimationTick() <= 15) {
+			if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_SWIM) && this.getAnimationTick() <= 15) {
 				this.setMovingInAir(true);
 			}
 
-			if (this.isEndimationPlaying(EAT)) {
+			if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT)) {
 				if ((this.getAnimationTick() > 20 && this.getAnimationTick() <= 140)) {
 					if (this.getAnimationTick() % 20 == 0) {
 						if (this.level instanceof ServerLevel && this.hasCaughtFruit()) {
@@ -308,13 +290,13 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 						if (this.hasCaughtPuffBug()) {
 							this.playSound(SoundEvents.PLAYER_BURP, 1.0F, 0.75F);
-							this.getPassengers().get(0).remove();
+							this.getPassengers().get(0).discard();
 						}
 					}
 				}
 			}
 
-			if (this.isEndimationPlaying(HOP)) {
+			if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_HOP)) {
 				if (this.getAnimationTick() == 10) {
 					this.playSound(this.getHopSound(false), 0.95F, this.getVoicePitch());
 					this.shouldPlayLandSound = true;
@@ -327,11 +309,11 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 		}
 
-		if (this.isEndimationPlaying(INFLATE) && this.getAnimationTick() == 2) {
+		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_INFLATE) && this.getAnimationTick() == 2) {
 			this.boof(1.0F, 1.0F, false);
 		}
 
-		if (!this.isWorldRemote() && this.isEndimationPlaying(GROWL)) {
+		if (!this.level.isClientSide && this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_GROWL)) {
 			if (this.getAnimationTick() == 10) {
 				this.playSound(this.getGrowlSound(), 0.75F, this.getVoicePitch());
 			}
@@ -345,7 +327,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 		}
 
-		if (this.isEndimationPlaying(SLAM) && this.getAnimationTick() == 3) {
+		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_SLAM) && this.getAnimationTick() == 3) {
 			this.boof(1.2F, 2.2F, true);
 			this.playSound(this.getSlamSound(), 0.75F, 1.0F);
 		}
@@ -360,18 +342,18 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 		if (this.isOnGround() && this.isBoofed()) {
 			if (this.hasAggressiveAttackTarget() && !this.hasCaughtPuffBug()) {
-				if (!this.isWorldRemote()) {
+				if (!this.level.isClientSide) {
 					if (this.isNoEndimationPlaying()) {
-						NetworkUtil.setPlayingAnimationMessage(this, INFLATE);
-					} else if (this.isEndimationPlaying(CHARGE)) {
-						NetworkUtil.setPlayingAnimationMessage(this, SLAM);
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_INFLATE);
+					} else if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_CHARGE)) {
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_SLAM);
 					}
 				}
 			} else {
-				if (this.isVehicle() && this.isEndimationPlaying(CHARGE)) {
-					NetworkUtil.setPlayingAnimationMessage(this, SLAM);
+				if (this.isVehicle() && this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_CHARGE)) {
+					NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_SLAM);
 				} else {
-					if (this.deflateDelay <= 0 && (!this.isEndimationPlaying(SLAM) && !this.isInWater())) {
+					if (this.deflateDelay <= 0 && (!this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_SLAM) && !this.isInWater())) {
 						this.setBoofed(false);
 					}
 				}
@@ -382,19 +364,15 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			this.setHungry(true);
 		}
 
-		if (this.isWorldRemote()) {
+		if (this.level.isClientSide) {
 			if (this.isBoofed()) {
 				this.OPEN_JAW.setDecrementing(this.getBoofloAttackTarget() == null || this.hasCaughtPuffBug() || (this.hasAggressiveAttackTarget() && !(this.getBoofloAttackTarget() instanceof PuffBugEntity)));
-
-				this.OPEN_JAW.update();
 
 				this.OPEN_JAW.tick();
 			}
 		}
 
-		this.FRUIT_HOVER.update();
-
-		if (this.isEndimationPlaying(EAT)) {
+		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT)) {
 			if ((this.getAnimationTick() >= 20) && this.getAnimationTick() < 140) {
 				if (this.getAnimationTick() % 10 == 0) {
 					if (this.getAnimationTick() == 20) {
@@ -412,8 +390,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 		this.wasOnGround = this.onGround;
 
-		if (this.isEndimationPlaying(EAT) && !this.hasCaughtFruit()) {
-			this.yRot = this.yHeadRot = this.yBodyRot = this.getLockedYaw();
+		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT) && !this.hasCaughtFruit()) {
+			this.setYRot(this.yHeadRot = this.yBodyRot = this.getLockedYaw());
 		}
 	}
 
@@ -433,19 +411,19 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 		}
 
-		if (!this.isWorldRemote() && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.random.nextInt(1000) < this.ambientSoundTime++ && this.isNoEndimationPlaying() && this.getPassengers().isEmpty()) {
+		if (!this.level.isClientSide && this.croakDelay == 0 && !this.isTempted() && this.isAlive() && this.onGround && !this.isBoofed() && this.random.nextInt(1000) < this.ambientSoundTime++ && this.isNoEndimationPlaying() && this.getPassengers().isEmpty()) {
 			this.ambientSoundTime = -this.getAmbientSoundInterval();
-			NetworkUtil.setPlayingAnimationMessage(this, CROAK);
+			NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_CROAK);
 		}
 
-		if (this.isEndimationPlaying(CROAK) && this.getAnimationTick() == 5 && !this.isWorldRemote()) {
+		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_CROAK) && this.getAnimationTick() == 5 && !this.level.isClientSide) {
 			this.playSound(this.getAmbientSound(), 1.25F, this.getVoicePitch());
 		}
 
 		if (this.hasAggressiveAttackTarget()) {
-			this.yRot = this.yHeadRot;
+			this.setYRot(this.yHeadRot);
 			Entity attackTarget = this.getBoofloAttackTarget();
-			if (!this.isWorldRemote() && (this.distanceToSqr(attackTarget) > 1152.0D || attackTarget.isInvisible() || (attackTarget instanceof PuffBugEntity && attackTarget.isPassenger()))) {
+			if (!this.level.isClientSide && (this.distanceToSqr(attackTarget) > 1152.0D || attackTarget.isInvisible() || (attackTarget instanceof PuffBugEntity && attackTarget.isPassenger()))) {
 				this.setBoofloAttackTargetId(0);
 			}
 		}
@@ -537,7 +515,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.moveControl = new FlyingMoveController(this);
 				this.lookControl = new FlyingLookController(this, 10);
 
-				if (!this.isWorldRemote() && this.tickCount > 5) {
+				if (!this.level.isClientSide && this.tickCount > 5) {
 					this.playSound(this.getInflateSound(), this.getSoundVolume(), this.getVoicePitch());
 				}
 
@@ -547,11 +525,11 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.moveControl = new GroundMoveHelperController(this);
 				this.lookControl = new LookControl(this);
 
-				if (!this.isWorldRemote() && this.tickCount > 5) {
+				if (!this.level.isClientSide && this.tickCount > 5) {
 					this.playSound(this.getDeflateSound(), this.getSoundVolume(), this.getVoicePitch());
 				}
 
-				if (this.isWorldRemote()) {
+				if (this.level.isClientSide) {
 					this.OPEN_JAW.setTick(0);
 					this.setBoofloAttackTargetId(0);
 				}
@@ -561,62 +539,65 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 	@Override
 	public void travel(Vec3 vec3d) {
-		if (this.isAlive() && this.isVehicle() && this.canBeControlledByRider()) {
-			LivingEntity rider = (LivingEntity) this.getControllingPassenger();
-			this.yRot = rider.yRot;
-			this.yRotO = this.yRot;
-			this.xRot = 0.0F;
-			this.setRot(this.yRot, this.xRot);
-			this.yBodyRot = this.yRot;
-			this.yHeadRot = this.yRot;
+		if (this.isAlive() && this.isVehicle()) {
+			Entity controllingPassenger = this.getControllingPassenger();
+			if (controllingPassenger instanceof Player) {
+				LivingEntity rider = (LivingEntity) this.getControllingPassenger();
+				this.setYRot(rider.getYRot());
+				this.yRotO = this.getYRot();
+				this.setXRot(0.0F);
+				this.setRot(this.getYRot(), this.getXRot());
+				this.yBodyRot = this.getYRot();
+				this.yHeadRot = this.getYRot();
 
-			float playerMoveFoward = rider.zza;
+				float playerMoveFoward = rider.zza;
 
-			if (!this.isWorldRemote() && playerMoveFoward > 0.0F) {
-				if (this.isOnGround() && this.isNoEndimationPlaying() && !this.isBoofed()) {
-					NetworkUtil.setPlayingAnimationMessage(this, HOP);
-				} else if (!this.isOnGround() && this.isNoEndimationPlaying() && this.isBoofed()) {
-					NetworkUtil.setPlayingAnimationMessage(this, SWIM);
-				}
-			}
-
-			if (this.isBoofed()) {
-				float gravity = this.getBoostPower() > 0 ? 0.01F : 0.035F;
-
-				if (this.isPathFinding()) {
-					this.getNavigation().stop();
+				if (!this.level.isClientSide && playerMoveFoward > 0.0F) {
+					if (this.isOnGround() && this.isNoEndimationPlaying() && !this.isBoofed()) {
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_HOP);
+					} else if (!this.isOnGround() && this.isNoEndimationPlaying() && this.isBoofed()) {
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_SWIM);
+					}
 				}
 
-				if (this.getBoofloAttackTarget() != null) {
-					this.setBoofloAttackTargetId(0);
-				}
+				if (this.isBoofed()) {
+					float gravity = this.getBoostPower() > 0 ? 0.01F : 0.035F;
 
-				this.move(MoverType.SELF, this.getDeltaMovement());
-				this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
-				if (!this.isInWater()) {
-					this.setDeltaMovement(this.getDeltaMovement().subtract(0, gravity, 0));
-				}
-			} else {
-				if (this.onGround && this.isEndimationPlaying(HOP) && this.getAnimationTick() == 10) {
-					Vec3 motion = this.getDeltaMovement();
-					MobEffectInstance jumpBoost = this.getEffect(MobEffects.JUMP);
-					float boostPower = jumpBoost == null ? 1.0F : (float) (jumpBoost.getAmplifier() + 1);
+					if (this.isPathFinding()) {
+						this.getNavigation().stop();
+					}
 
-					this.setDeltaMovement(motion.x, 0.55F * boostPower, motion.z);
-					this.hasImpulse = true;
+					if (this.getBoofloAttackTarget() != null) {
+						this.setBoofloAttackTargetId(0);
+					}
 
-					float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
-					float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(1.0F * ((float) Math.PI / 180F));
-
-					float multiplier = 0.35F + (float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
-
-					this.setDeltaMovement(this.getDeltaMovement().add(xMotion * multiplier, 0.0F, zMotion * multiplier));
-				}
-
-				if (this.isControlledByLocalInstance()) {
-					super.travel(new Vec3(0.0F, vec3d.y, 0.0F));
+					this.move(MoverType.SELF, this.getDeltaMovement());
+					this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+					if (!this.isInWater()) {
+						this.setDeltaMovement(this.getDeltaMovement().subtract(0, gravity, 0));
+					}
 				} else {
-					this.setDeltaMovement(Vec3.ZERO);
+					if (this.onGround && this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_HOP) && this.getAnimationTick() == 10) {
+						Vec3 motion = this.getDeltaMovement();
+						MobEffectInstance jumpBoost = this.getEffect(MobEffects.JUMP);
+						float boostPower = jumpBoost == null ? 1.0F : (float) (jumpBoost.getAmplifier() + 1);
+
+						this.setDeltaMovement(motion.x, 0.55F * boostPower, motion.z);
+						this.hasImpulse = true;
+
+						float xMotion = -Mth.sin(this.getYRot() * ((float) Math.PI / 180F));
+						float zMotion = Mth.cos(this.getYRot() * ((float) Math.PI / 180F));
+
+						float multiplier = 0.35F + (float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
+
+						this.setDeltaMovement(this.getDeltaMovement().add(xMotion * multiplier, 0.0F, zMotion * multiplier));
+					}
+
+					if (this.isControlledByLocalInstance()) {
+						super.travel(new Vec3(0.0F, vec3d.y, 0.0F));
+					} else {
+						this.setDeltaMovement(Vec3.ZERO);
+					}
 				}
 			}
 		} else {
@@ -858,11 +839,10 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public void setTamedBy(Player player) {
 		this.setTamed(true);
 		this.setOwnerId(player.getUUID());
-		if (player instanceof ServerPlayer) {
-			ServerPlayer serverPlayer = (ServerPlayer) player;
+		if (player instanceof ServerPlayer serverPlayer) {
 			//Creates wolf to still trigger tamed - as booflo isn't an AnimalEntity
 			CriteriaTriggers.TAME_ANIMAL.trigger(serverPlayer, EntityType.WOLF.create(this.level));
-			if (!this.isWorldRemote()) {
+			if (!this.level.isClientSide) {
 				EECriteriaTriggers.TAME_BOOFLO.trigger(serverPlayer);
 			}
 		}
@@ -903,36 +883,36 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public void boof(float internalStrength, float offensiveStrength, boolean slam) {
 		float verticalStrength = 1.0F;
 
-		if (this.isVehicle() && this.getControllingPassenger() instanceof Player && !this.isEndimationPlaying(SLAM) && !this.isBoostLocked()) {
+		if (this.isVehicle() && this.getControllingPassenger() instanceof Player && !this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_SLAM) && !this.isBoostLocked()) {
 			float boostPower = Mth.clamp(this.getBoostPower() * 0.01F, 0.35F, 1.82F);
 			offensiveStrength *= Mth.clamp(boostPower / 2, 0.5F, 1.85F);
 			verticalStrength *= Mth.clamp(boostPower, 0.35F, 1.5F);
 
-			float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(this.xRot * ((float) Math.PI / 180F));
-			float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(this.xRot * ((float) Math.PI / 180F));
+			float xMotion = -Mth.sin(this.getYRot() * ((float) Math.PI / 180F)) * Mth.cos(this.getXRot() * ((float) Math.PI / 180F));
+			float zMotion = Mth.cos(this.getYRot() * ((float) Math.PI / 180F)) * Mth.cos(this.getXRot() * ((float) Math.PI / 180F));
 			Vec3 boostFowardForce = new Vec3(xMotion, 1.3F * verticalStrength, zMotion).normalize().scale(boostPower > 0.35 ? boostPower * 2.0F : boostPower);
 
 			this.setDeltaMovement(boostFowardForce.x(), 1.3F * verticalStrength, boostFowardForce.z());
 		} else {
-			this.push(-Mth.sin((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, Mth.cos((float) (this.yRot * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F);
+			this.push(-Mth.sin((float) (this.getYRot() * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F, 1.3F * verticalStrength, Mth.cos((float) (this.getYRot() * Math.PI / 180.0F)) * ((4 * internalStrength) * (this.random.nextFloat() + 0.1F)) * 0.1F);
 		}
 
 		if (slam) {
 			for (int i = 0; i < 12; i++) {
-				double offsetX = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
-				double offsetZ = MathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
+				double offsetX = TemporaryMathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
+				double offsetZ = TemporaryMathUtil.makeNegativeRandomly(this.random.nextFloat() * 0.25F, this.random);
 
 				double x = this.getX() + 0.5D + offsetX;
 				double y = this.getY() + 0.5D + (this.random.nextFloat() * 0.05F);
 				double z = this.getZ() + 0.5D + offsetZ;
 
-				if (this.isWorldRemote()) {
-					this.level.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, MathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.3F), this.random) + 0.025F, (this.random.nextFloat() * 0.15F) + 0.1F, MathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.3F), this.random) + 0.025F);
+				if (this.level.isClientSide) {
+					this.level.addParticle(EEParticles.POISE_BUBBLE.get(), x, y, z, TemporaryMathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.3F), this.random) + 0.025F, (this.random.nextFloat() * 0.15F) + 0.1F, TemporaryMathUtil.makeNegativeRandomly((this.random.nextFloat() * 0.3F), this.random) + 0.025F);
 				}
 			}
 		}
 
-		for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(3.5F * Math.max(offensiveStrength / 2.0F, 1.0F)), entity -> entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && !(entity instanceof Player && ((Player) entity).isCreative() && ((Player) entity).abilities.flying))) {
+		for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(3.5F * Math.max(offensiveStrength / 2.0F, 1.0F)), entity -> entity != this && (entity instanceof ItemEntity || entity instanceof LivingEntity) && !(entity instanceof Player && ((Player) entity).isCreative() && ((Player) entity).getAbilities().flying))) {
 			float resistance = this.isResistantToBoof(entity) ? 0.15F : 1.0F;
 			float amount = (0.2F * offensiveStrength) * resistance;
 			if (offensiveStrength > 2.0F && resistance > 0.15F && entity != this.getControllingPassenger()) {
@@ -947,7 +927,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public LivingEntity growDown() {
 		if (this.isAlive()) {
 			BoofloAdolescentEntity boofloAdolescent = EEEntities.BOOFLO_ADOLESCENT.get().create(this.level);
-			boofloAdolescent.moveTo(this.getX(), this.getY(), this.getZ(), this.yRot, this.xRot);
+			boofloAdolescent.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
 
 			if (this.hasCustomName()) {
 				boofloAdolescent.setCustomName(this.getCustomName());
@@ -966,7 +946,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			boofloAdolescent.wasBred = this.wasBred;
 			boofloAdolescent.setHealth(boofloAdolescent.getMaxHealth());
 			this.level.addFreshEntity(boofloAdolescent);
-			this.remove();
+			this.discard();
 			return boofloAdolescent;
 		}
 		return this;
@@ -1009,33 +989,12 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[]{
-				CROAK,
-				HOP,
-				HURT,
-				BIRTH,
-				INFLATE,
-				SWIM,
-				EAT,
-				CHARGE,
-				SLAM,
-				GROWL
-		};
-	}
-
-	@Override
-	public Endimation getHurtAnimation() {
-		return HURT;
-	}
-
-	@Override
-	public void onEndimationStart(Endimation endimation) {
-		if (endimation == SWIM) {
-			float pitch = this.isVehicle() ? 1.0F : this.xRot;
-			float xMotion = -Mth.sin(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
+	public void onEndimationStart(PlayableEndimation endimation, PlayableEndimation oldEndimation) {
+		if (endimation == EEPlayableEndimations.BOOFLO_SWIM) {
+			float pitch = this.isVehicle() ? 1.0F : this.getXRot();
+			float xMotion = -Mth.sin(this.getYRot() * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
 			float yMotion = -Mth.sin(pitch * ((float) Math.PI / 180F));
-			float zMotion = Mth.cos(this.yRot * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
+			float zMotion = Mth.cos(this.getYRot() * ((float) Math.PI / 180F)) * Mth.cos(pitch * ((float) Math.PI / 180F));
 
 			double motionScale = (this.hasAggressiveAttackTarget() && !this.hasCaughtPuffBug()) || (!this.getPassengers().isEmpty() && !this.hasCaughtPuffBug()) ? 0.85F : 0.5F;
 
@@ -1065,7 +1024,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		Item item = itemstack.getItem();
 
 		if (item instanceof SpawnEggItem && ((SpawnEggItem) item).spawnsEntity(itemstack.getTag(), this.getType())) {
-			if (!this.isWorldRemote()) {
+			if (!this.level.isClientSide) {
 				BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(this.level);
 				baby.setGrowingAge(-24000);
 				baby.moveTo(this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F);
@@ -1093,8 +1052,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					this.setLastFedId(player.getUUID());
 					particle = ParticleTypes.SMOKE;
 
-					if (!this.isWorldRemote()) {
-						NetworkUtil.setPlayingAnimationMessage(this, GROWL);
+					if (!this.level.isClientSide) {
+						NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_GROWL);
 					}
 				} else {
 					if (player == this.getLastFedPlayer()) {
@@ -1105,7 +1064,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				}
 			}
 
-			if (this.isWorldRemote()) {
+			if (this.level.isClientSide) {
 				for (int i = 0; i < 7; ++i) {
 					double d0 = this.random.nextGaussian() * 0.02D;
 					double d1 = this.random.nextGaussian() * 0.02D;
@@ -1118,7 +1077,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			DyeColor dyecolor = ((DyeItem) item).getDyeColor();
 			if (dyecolor != this.getBraceletsColor()) {
 				this.setBraceletsColor(dyecolor);
-				if (!player.abilities.instabuild) {
+				if (!player.getAbilities().instabuild) {
 					itemstack.shrink(1);
 				}
 				return InteractionResult.sidedSuccess(this.level.isClientSide);
@@ -1131,8 +1090,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 			if (this.isTamed() && !this.isVehicle() && !this.isPregnant()) {
 				if (!this.level.isClientSide) {
-					player.yRot = this.yRot;
-					player.xRot = this.xRot;
+					player.setYRot(this.getYRot());
+					player.setXRot(this.getXRot());
 					player.startRiding(this);
 				}
 				return InteractionResult.PASS;
@@ -1154,12 +1113,12 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				passenger.setPos(this.getX() + ridingOffset.x, this.getY() + 0.9F, this.getZ() + ridingOffset.z);
 			} else if (passenger instanceof PuffBugEntity) {
 				PuffBugEntity puffbug = (PuffBugEntity) passenger;
-				passenger.yRot = puffbug.yBodyRot = puffbug.yHeadRot = (this.yRot - 75.0F);
-				if (this.isEndimationPlaying(EAT) && this.getAnimationTick() > 15) {
-					Vec3 ridingPos = (new Vec3(1.0D, 0.0D, 0.0D)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+				passenger.setYRot(puffbug.yBodyRot = puffbug.yHeadRot = (this.getYRot() - 75.0F));
+				if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT) && this.getAnimationTick() > 15) {
+					Vec3 ridingPos = (new Vec3(1.0D, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 					float yOffset = puffbug.isBaby() ? 0.1F : 0.3F;
 
-					passenger.setPos(this.getX() + ridingPos.x(), this.getY() - yOffset - (0.15F * this.FRUIT_HOVER.getAnimationProgressServer()), this.getZ() + ridingPos.z());
+					passenger.setPos(this.getX() + ridingPos.x(), this.getY() - yOffset - (0.15F * this.FRUIT_HOVER.getServerProgress()), this.getZ() + ridingPos.z());
 				} else {
 					passenger.setPos(this.getX(), this.getY() + 0.25F, this.getZ());
 				}
@@ -1176,11 +1135,6 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	public double getPassengersRidingOffset() {
 		double original = super.getPassengersRidingOffset();
 		return this.isBoofed() ? original + 0.15F : original;
-	}
-
-	@Override
-	public boolean canBeControlledByRider() {
-		return this.getControllingPassenger() instanceof Player;
 	}
 
 	@Override
@@ -1212,7 +1166,11 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 			}
 		}
 		float newCalculatedDamage = source == DamageSource.IN_WALL ? 0.5F : amount;
-		return super.hurt(source, source.getEntity() instanceof PuffBugEntity ? 2.5F : newCalculatedDamage);
+		if (super.hurt(source, source.getEntity() instanceof PuffBugEntity ? 2.5F : newCalculatedDamage)) {
+			if (this.isNoEndimationPlaying()) NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BOOFLO_HURT);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -1256,7 +1214,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	}
 
 	@Override
-	public boolean causeFallDamage(float distance, float damageMultiplier) {
+	public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
 		return false;
 	}
 
@@ -1280,8 +1238,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 	 * @see EntityBooflo#livingTick
 	 */
 	@Override
-	public void playAmbientSound() {
-	}
+	public void playAmbientSound() {}
 
 	public SoundEvent getHopSound(boolean landing) {
 		return landing ? EESounds.BOOFLO_HOP_LAND.get() : EESounds.BOOFLO_HOP.get();
@@ -1323,25 +1280,6 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
 	}
 
-	@Override
-	public boolean hasGrowthProgress() {
-		return false;
-	}
-
-	@Override
-	public void resetGrowthProgress() {
-	}
-
-	@Override
-	public boolean canAge(boolean isGrowing) {
-		return !isGrowing;
-	}
-
-	@Override
-	public LivingEntity attemptAging(boolean isGrowing) {
-		return isGrowing ? this : this.growDown();
-	}
-
 	public static class GroundMoveHelperController extends MoveControl {
 		private final BoofloEntity booflo;
 		private float yRot;
@@ -1350,7 +1288,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		public GroundMoveHelperController(BoofloEntity booflo) {
 			super(booflo);
 			this.booflo = booflo;
-			this.yRot = (float) (180.0F * booflo.yRot / Math.PI);
+			this.yRot = (float) (180.0F * booflo.getYRot() / Math.PI);
 		}
 
 		public void setDirection(float yRot, boolean aggressive) {
@@ -1365,9 +1303,9 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 
 		public void tick() {
 			if (!this.booflo.hasCaughtPuffBug()) {
-				this.mob.yRot = this.rotlerp(this.mob.yRot, this.yRot, 90.0F);
-				this.mob.yHeadRot = this.mob.yRot;
-				this.mob.yBodyRot = this.mob.yRot;
+				this.mob.setYRot(this.rotlerp(this.mob.getYRot(), this.yRot, 90.0F));
+				this.mob.yHeadRot = this.mob.getYRot();
+				this.mob.yBodyRot = this.mob.getYRot();
 			}
 
 			if (this.operation != MoveControl.Operation.MOVE_TO) {
@@ -1376,7 +1314,7 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.operation = MoveControl.Operation.WAIT;
 				if (this.mob.isOnGround()) {
 					this.mob.setSpeed((float) (this.speedModifier * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
-					if (this.booflo.hopDelay == 0 && this.booflo.isEndimationPlaying(HOP) && this.booflo.getAnimationTick() == 10) {
+					if (this.booflo.hopDelay == 0 && this.booflo.isEndimationPlaying(EEPlayableEndimations.BOOFLO_HOP) && this.booflo.getAnimationTick() == 10) {
 						this.booflo.getJumpControl().jump();
 
 						this.booflo.hopDelay = this.booflo.getDefaultGroundHopDelay();
@@ -1403,11 +1341,12 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		public void tick() {
 			if (this.operation == MoveControl.Operation.MOVE_TO && !this.booflo.getNavigation().isDone()) {
 				if (this.booflo.hasAggressiveAttackTarget()) {
-					Vec3 vec3d = this.booflo.getMoveControllerPathDistance(this.wantedX, this.wantedY, this.wantedZ);
+					Position pos = this.booflo.getPos();
+					Vec3 vec3d = new Vec3(this.wantedX - pos.x(), this.wantedY - pos.y(), this.wantedZ - pos.z());
 
-					this.booflo.yRot = this.rotlerp(this.booflo.yRot, this.booflo.getTargetAngleForPathDistance(vec3d), 10.0F);
-					this.booflo.yBodyRot = this.booflo.yRot;
-					this.booflo.yHeadRot = this.booflo.yRot;
+					this.booflo.setYRot(this.rotlerp(this.booflo.getYRot(), (float) ((Mth.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F), 10.0F));
+					this.booflo.yBodyRot = this.booflo.getYRot();
+					this.booflo.yHeadRot = this.booflo.getYRot();
 
 					float f1 = (float) (2 * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 					float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);
@@ -1419,23 +1358,23 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 					double d1 = vec3d.y / d0;
 					float f = (float) (Mth.atan2(vec3d.z, vec3d.x) * (double) (180F / (float) Math.PI)) - 90F;
 
-					this.booflo.yRot = this.rotlerp(this.booflo.yRot, f, 10.0F);
-					this.booflo.yBodyRot = this.booflo.yRot;
-					this.booflo.yHeadRot = this.booflo.yRot;
+					this.booflo.setYRot(this.rotlerp(this.booflo.getYRot(), f, 10.0F));
+					this.booflo.yBodyRot = this.booflo.getYRot();
+					this.booflo.yHeadRot = this.booflo.getYRot();
 
 					float f1 = (float) (this.speedModifier * this.booflo.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
 					float f2 = Mth.lerp(0.125F, this.booflo.getSpeed(), f1);
 
 					this.booflo.setSpeed(f2);
 
-					double d3 = Math.cos((double) (this.booflo.yRot * ((float) Math.PI / 180F)));
-					double d4 = Math.sin((double) (this.booflo.yRot * ((float) Math.PI / 180F)));
+					double d3 = Math.cos(this.booflo.getYRot() * ((float) Math.PI / 180F));
+					double d4 = Math.sin(this.booflo.getYRot() * ((float) Math.PI / 180F));
 					double d5 = Math.sin((double) (this.booflo.tickCount + this.booflo.getId()) * 0.75D) * 0.05D;
 
 					if (!this.booflo.isInWater()) {
-						float f3 = -((float) (Mth.atan2(vec3d.y, (double) Mth.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z)) * (double) (180F / (float) Math.PI)));
+						float f3 = -((float) (Mth.atan2(vec3d.y, Mth.sqrt((float) (vec3d.x * vec3d.x + vec3d.z * vec3d.z))) * (double) (180F / (float) Math.PI)));
 						f3 = Mth.clamp(Mth.wrapDegrees(f3), -85.0F, 85.0F);
-						this.booflo.xRot = this.rotlerp(this.booflo.xRot, f3, 5.0F);
+						this.booflo.setXRot(this.rotlerp(this.booflo.getXRot(), f3, 5.0F));
 					}
 
 					this.booflo.setDeltaMovement(this.booflo.getDeltaMovement().add(0, d5 * (d4 + d3) * 0.25D + (double) f2 * d1 * 0.02D, 0));
@@ -1457,13 +1396,17 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 		}
 
 		public void tick() {
-			if (this.hasWanted) {
-				this.hasWanted = false;
-				this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, this.getYRotD() + 20.0F, this.yMaxRotSpeed);
-				this.mob.xRot = this.rotateTowards(this.mob.xRot, this.getXRotD() + 10.0F, this.xMaxRotAngle);
+			if (this.lookAtCooldown > 0) {
+				--this.lookAtCooldown;
+				this.getYRotD().ifPresent(angle -> {
+					this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, angle + 20.0F, this.yMaxRotSpeed);
+				});
+				this.getXRotD().ifPresent(angle -> {
+					this.mob.setXRot(this.rotateTowards(this.mob.getXRot(), angle + 10.0F, this.xMaxRotAngle));
+				});
 			} else {
 				if (this.mob.getNavigation().isDone()) {
-					this.mob.xRot = this.rotateTowards(this.mob.xRot, 0.0F, 5.0F);
+					this.mob.setXRot(this.rotateTowards(this.mob.getXRot(), 0.0F, 5.0F));
 				}
 				this.mob.yHeadRot = this.rotateTowards(this.mob.yHeadRot, this.mob.yBodyRot, this.yMaxRotSpeed);
 			}
@@ -1475,8 +1418,8 @@ public class BoofloEntity extends EndimatedEntity implements IAgeableEntity {
 				this.mob.yBodyRot += 4.0F;
 			}
 
-			if (((BoofloEntity) this.mob).isEndimationPlaying(CHARGE)) {
-				this.mob.xRot = this.rotateTowards(this.mob.xRot, 0.0F, 10.0F);
+			if (((BoofloEntity) this.mob).isEndimationPlaying(EEPlayableEndimations.BOOFLO_CHARGE)) {
+				this.mob.setXRot(this.rotateTowards(this.mob.getXRot(), 0.0F, 10.0F));
 			}
 		}
 	}

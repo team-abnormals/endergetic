@@ -13,11 +13,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public class PuffBugHiveTileEntityRenderer implements BlockEntityRenderer<PuffBugHiveTileEntity> {
-	private PuffBugHiveModel hiveModel;
+	private final PuffBugHiveModel hiveModel;
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/tile/puffbug_hive.png");
 
 	public PuffBugHiveTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.hiveModel = new PuffBugHiveModel();
+		this.hiveModel = new PuffBugHiveModel(context.bakeLayer(PuffBugHiveModel.LOCATION));
 	}
 
 	@Override

@@ -10,14 +10,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.pathfinder.Path;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloHuntPuffBugGoal extends Goal {
 	private static final float SPEED = 1.0F;
-	private BoofloEntity booflo;
+	private final BoofloEntity booflo;
 	private Path path;
 	private int delayCounter;
-	private double targetX, targetY, targetZ;
 
 	public BoofloHuntPuffBugGoal(BoofloEntity booflo) {
 		this.booflo = booflo;
@@ -30,10 +27,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 			return false;
 		}
 		this.path = this.booflo.getNavigation().createPath(this.booflo.getBoofloAttackTarget(), 0);
-		if (this.path != null) {
-			return true;
-		}
-		return false;
+		return this.path != null;
 	}
 
 	@Override
@@ -62,7 +56,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 
 		this.delayCounter--;
 
-		if (this.delayCounter <= 0 || target.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.booflo.getRandom().nextFloat() < 0.05F) {
+		if (this.delayCounter <= 0 || this.booflo.getRandom().nextFloat() < 0.05F) {
 			this.booflo.getLookControl().setLookAt(target.getX(), target.getY(), target.getZ(), 10.0F, 10.0F);
 
 			this.delayCounter = 4 + this.booflo.getRandom().nextInt(7);

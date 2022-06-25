@@ -1,24 +1,23 @@
 package com.minecraftabnormals.endergetic.common.entities.puffbug.ai;
 
 import java.util.EnumSet;
-import java.util.Random;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
+import com.minecraftabnormals.endergetic.api.util.TemporaryMathUtil;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.effect.MobEffects;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 	private int ticksPassed;
 	private float originalHealth;
 
 	public PuffBugCreateItemGoal(PuffBugEntity puffbug) {
-		super(puffbug, PuffBugEntity.MAKE_ITEM_ANIMATION);
+		super(puffbug, EEPlayableEndimations.PUFF_BUG_MAKE_ITEM);
 		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
@@ -51,7 +50,7 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 		this.entity.getRotationController().rotate(0.0F, 180.0F, 0.0F, 20);
 
 		if (this.isEndimationPlaying() && this.entity.hasStackToCreate()) {
-			Random rand = this.entity.getRandom();
+			RandomSource rand = this.entity.getRandom();
 
 			if (this.isEndimationAtTick(90)) {
 				ItemEntity itementity = new ItemEntity(this.entity.level, this.entity.getX(), this.entity.getY() - 0.5D, this.entity.getZ(), this.entity.getStackToCreate());
@@ -65,14 +64,14 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 				double posY = this.entity.getY();
 				double posZ = this.entity.getZ();
 				for (int i = 0; i < 6; i++) {
-					double offsetX = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
-					double offsetZ = MathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetX = TemporaryMathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
+					double offsetZ = TemporaryMathUtil.makeNegativeRandomly(rand.nextFloat() * 0.1F, rand);
 
 					double x = posX + offsetX;
 					double y = posY + (rand.nextFloat() * 0.05F) + 0.5F;
 					double z = posZ + offsetZ;
 
-					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, MathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
+					NetworkUtil.spawnParticle("endergetic:short_poise_bubble", x, y, z, TemporaryMathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F, (rand.nextFloat() * 0.025F) + 0.025F, TemporaryMathUtil.makeNegativeRandomly((rand.nextFloat() * 0.15F), rand) + 0.025F);
 				}
 			} else if (this.isEndimationAtTick(85)) {
 				this.entity.playSound(this.entity.getItemCreationSound(), 0.1F, this.entity.isBaby() ? (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.5F : (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);

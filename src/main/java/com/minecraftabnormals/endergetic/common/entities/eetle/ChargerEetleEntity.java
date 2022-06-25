@@ -1,9 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger.EetleCatapultGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger.EetleMeleeAttackGoal;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,12 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class ChargerEetleEntity extends AbstractEetleEntity {
-	public static final Endimation ATTACK = new Endimation(10);
-	public static final Endimation CATAPULT = new Endimation(16);
-	public static final Endimation FLAP = new Endimation(20);
 	private EetleMeleeAttackGoal meleeAttackGoal;
 	private EetleCatapultGoal catapultGoal;
 	@Nullable
@@ -78,7 +75,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 				}
 
 				if (this.random.nextFloat() < 0.005F && this.idleDelay <= 0 && this.getTarget() == null && this.isNoEndimationPlaying()) {
-					NetworkUtil.setPlayingAnimationMessage(this, FLAP);
+					NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.CHARGER_EETLE_FLAP);
 					this.resetIdleFlapDelay();
 				}
 			}
@@ -103,7 +100,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 			return false;
 		} else {
 			if (!this.level.isClientSide) {
-				NetworkUtil.setPlayingAnimationMessage(this, ATTACK);
+				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.CHARGER_EETLE_ATTACK);
 			}
 			float attackDamage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 			float damage;
@@ -127,7 +124,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		if (!this.isBaby()) {
 			double knockbackForce = this.getAttributeValue(Attributes.ATTACK_KNOCKBACK) - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 			if (knockbackForce > 0.0D) {
-				Random random = this.level.random;
+				RandomSource random = this.level.random;
 				double scale = knockbackForce * (random.nextFloat() * 1.0F + 0.5F);
 				Vec3 horizontalVelocity = new Vec3(target.getX() - this.getX(), 0.0D, target.getZ() - this.getZ()).normalize().scale(scale);
 				target.push(horizontalVelocity.x, knockbackForce * (random.nextFloat() * 0.05F), horizontalVelocity.z);
@@ -146,11 +143,6 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 			goalSelector.addGoal(1, this.catapultGoal);
 			goalSelector.addGoal(2, this.meleeAttackGoal);
 		}
-	}
-
-	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[]{ATTACK, CATAPULT, FLAP, GROW_UP};
 	}
 
 	@Nullable
@@ -175,7 +167,7 @@ public class ChargerEetleEntity extends AbstractEetleEntity {
 		this.catapultTimer = 25;
 		double xDifference = target.getX() - this.getX();
 		double zDifference = target.getZ() - this.getZ();
-		double verticalOffset = Mth.sqrt(xDifference * xDifference + zDifference * zDifference) * 0.475F;
+		double verticalOffset = Mth.sqrt((float) (xDifference * xDifference + zDifference * zDifference)) * 0.475F;
 		Vec3 launchMotion = new Vec3(xDifference, Math.max(0.0F, target.getY(0.25F) - this.getY() + verticalOffset), zDifference).normalize().scale(1.325F);
 		if (launchMotion.y > 0.9F) {
 			launchMotion = new Vec3(launchMotion.x(), 0.9F, launchMotion.z());

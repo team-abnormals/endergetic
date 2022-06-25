@@ -3,11 +3,11 @@ package com.minecraftabnormals.endergetic.common.world.features.corrock;
 import java.util.List;
 import java.util.Random;
 
-import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.mojang.serialization.Codec;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import com.teamabnormals.blueprint.core.util.GenerationPiece;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.ChorusFlowerBlock;

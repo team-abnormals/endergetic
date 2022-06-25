@@ -12,7 +12,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class BroodEetleHurtByTargetGoal extends Goal {
-	private static final TargetingConditions PREDICATE = (new TargetingConditions()).allowUnseeable().ignoreInvisibilityTesting();
+	private static final TargetingConditions PREDICATE = TargetingConditions.forCombat().ignoreLineOfSight();
 	private final BroodEetleEntity broodEetle;
 	private int revengeTimerOld;
 
@@ -41,7 +41,7 @@ public class BroodEetleHurtByTargetGoal extends Goal {
 
 			double targetDistance = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
 			AABB axisalignedbb = AABB.unitCubeFromLowerCorner(broodEetle.position()).inflate(targetDistance, 10.0D, targetDistance);
-			List<AbstractEetleEntity> list = broodEetle.level.getLoadedEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
+			List<AbstractEetleEntity> list = broodEetle.level.getEntitiesOfClass(AbstractEetleEntity.class, axisalignedbb);
 			for (AbstractEetleEntity eetle : list) {
 				if (!eetle.isBaby() && (eetle.getTarget() == null || !eetle.getTarget().isAlive()) && !eetle.isAlliedTo(revengeTarget)) {
 					eetle.setTarget(revengeTarget);

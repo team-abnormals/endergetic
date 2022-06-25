@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.entity.EntitySelector;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloHuntFruitGoal extends Goal {
 	private final BoofloEntity booflo;
 	protected int attackTick;
@@ -123,7 +121,7 @@ public class BoofloHuntFruitGoal extends Goal {
 				((BolloomFruitEntity) prey).onBroken(false);
 				this.booflo.setCaughtFruit(true);
 				this.booflo.setHungry(false);
-				prey.remove();
+				prey.discard();
 			}
 		}
 	}

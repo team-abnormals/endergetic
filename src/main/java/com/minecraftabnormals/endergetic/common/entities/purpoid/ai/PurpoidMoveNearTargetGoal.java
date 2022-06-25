@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.purpoid.ai;
 
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.pathfinder.Path;
@@ -9,7 +10,6 @@ import net.minecraft.world.entity.EntitySelector;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
 
 public class PurpoidMoveNearTargetGoal extends Goal {
 	private final PurpoidEntity purpoid;
@@ -52,7 +52,7 @@ public class PurpoidMoveNearTargetGoal extends Goal {
 		PurpoidEntity purpoid = this.purpoid;
 		LivingEntity target = purpoid.getTarget();
 		purpoid.getLookControl().setLookAt(target, 30.0F, 30.0F);
-		Random random = purpoid.getRandom();
+		RandomSource random = purpoid.getRandom();
 		if (this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
 			double distanceToTargetSq = purpoid.distanceToSqr(target);

@@ -1,7 +1,7 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.phys.Vec3;
 
@@ -51,7 +51,8 @@ public class GliderEetleFlyGoal extends WaterAvoidingRandomStrollGoal {
 	protected Vec3 getPosition() {
 		GliderEetleEntity glider = this.glider;
 		if (glider.isFlying() && !glider.getPassengers().isEmpty()) {
-			return RandomPos.getAboveLandPos(glider, 8, 8, glider.getViewVector(0.0F), ((float)Math.PI / 2.0F), 2, 1);
+			Vec3 view = glider.getViewVector(0.0F);
+			return HoverRandomPos.getPos(glider, 8, 8, view.x, view.z, ((float)Math.PI / 2.0F), 2, 1);
 		}
 		return super.getPosition();
 	}

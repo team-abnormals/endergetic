@@ -17,7 +17,7 @@ public class BolloomBudTileEntityRenderer implements BlockEntityRenderer<Bolloom
 	private BolloomBudModel budModel;
 
 	public BolloomBudTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-		this.budModel = new BolloomBudModel();
+		this.budModel = new BolloomBudModel(context.bakeLayer(BolloomBudModel.LOCATION));
 	}
 
 	@Override

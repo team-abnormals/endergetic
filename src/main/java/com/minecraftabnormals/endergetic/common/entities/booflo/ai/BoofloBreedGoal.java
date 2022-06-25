@@ -5,11 +5,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.common.advancement.EECriteriaTriggers;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity.GroundMoveHelperController;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -20,10 +21,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class BoofloBreedGoal extends Goal {
-	private static final TargetingConditions MATE_CHECKER = (new TargetingConditions()).range(16.0D).allowInvulnerable().allowSameTeam().allowUnseeable();
+	private static final TargetingConditions MATE_CHECKER = (TargetingConditions.forNonCombat()).range(16.0D).ignoreLineOfSight();
 	protected final BoofloEntity booflo;
 	protected BoofloEntity mate;
 	private int impregnateDelay;
@@ -55,7 +54,7 @@ public class BoofloBreedGoal extends Goal {
 
 	public void tick() {
 		if (this.booflo.hopDelay == 0 && this.booflo.isNoEndimationPlaying() && !this.isBeingRidenOrRiding()) {
-			NetworkUtil.setPlayingAnimationMessage(this.booflo, BoofloEntity.HOP);
+			NetworkUtil.setPlayingAnimation(this.booflo, EEPlayableEndimations.BOOFLO_HOP);
 		}
 
 		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
@@ -65,7 +64,7 @@ public class BoofloBreedGoal extends Goal {
 		double dx = this.mate.getX() - this.booflo.getX();
 		double dz = this.mate.getZ() - this.booflo.getZ();
 
-		float angle = (float) (Mth.atan2(dz, dx) * (double) (180F / Math.PI)) - 90.0F;
+		float angle = (float) (Mth.atan2(dz, dx) * (180F / Math.PI)) - 90.0F;
 
 		if (this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.isBeingRidenOrRiding()) {
 			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(angle, false);

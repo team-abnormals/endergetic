@@ -63,7 +63,7 @@ public class EetleMeleeAttackGoal extends Goal {
 		this.attacker.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
 		double d0 = this.attacker.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
 		this.delayCounter = Math.max(this.delayCounter - 1, 0);
-		if (this.attacker.getSensing().canSee(livingentity) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
+		if (this.attacker.getSensing().hasLineOfSight(livingentity) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRandom().nextFloat() < 0.05F)) {
 			this.targetX = livingentity.getX();
 			this.targetY = livingentity.getY();
 			this.targetZ = livingentity.getZ();
@@ -99,7 +99,7 @@ public class EetleMeleeAttackGoal extends Goal {
 
 	private void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
 		ChargerEetleEntity attacker = this.attacker;
-		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy) && attacker.canSee(enemy)) {
+		if (attacker.isNoEndimationPlaying() && distToEnemySqr <= this.getAttackReachSqr(enemy) && attacker.hasLineOfSight(enemy)) {
 			attacker.doHurtTarget(enemy);
 			this.meleeCooldown += 10 + attacker.getRandom().nextInt(11);
 		}

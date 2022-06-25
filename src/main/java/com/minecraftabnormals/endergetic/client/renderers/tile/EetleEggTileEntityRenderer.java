@@ -29,13 +29,15 @@ public class EetleEggTileEntityRenderer implements BlockEntityRenderer<EetleEggT
 	};
 	private static final BlockState DEFAULT_STATE = EEBlocks.EETLE_EGG.get().defaultBlockState();
 	private static final RandomSource ROTATION_RANDOM = RandomSource.create();
-	private final IEetleEggModel[] eggModels = new IEetleEggModel[] {
-			new SmallEetleEggModel(),
-			new MediumEetleEggModel(),
-			new LargeEetleEggModel()
-	};
+	private final IEetleEggModel[] eggModels;
 
-	public EetleEggTileEntityRenderer(BlockEntityRendererProvider.Context context) {}
+	public EetleEggTileEntityRenderer(BlockEntityRendererProvider.Context context) {
+		this.eggModels = new IEetleEggModel[] {
+				new SmallEetleEggModel(context.bakeLayer(SmallEetleEggModel.LOCATION)),
+				new MediumEetleEggModel(context.bakeLayer(MediumEetleEggModel.LOCATION)),
+				new LargeEetleEggModel(context.bakeLayer(LargeEetleEggModel.LOCATION))
+		};
+	}
 
 	@Override
 	public void render(EetleEggTileEntity eggs, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {

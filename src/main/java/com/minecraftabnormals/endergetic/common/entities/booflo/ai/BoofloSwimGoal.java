@@ -3,7 +3,7 @@ package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 import javax.annotation.Nullable;
 
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.core.BlockPos;
@@ -17,10 +17,9 @@ public class BoofloSwimGoal extends RandomStrollGoal {
 
 	@Nullable
 	protected Vec3 getPosition() {
-		Vec3 vec3d = RandomPos.getPos(this.mob, 8, 2);
+		Vec3 vec3d = DefaultRandomPos.getPos(this.mob, 8, 2);
 
-		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 8; vec3d = RandomPos.getPos(this.mob, 10, 2)) {
-			;
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 8; vec3d = DefaultRandomPos.getPos(this.mob, 10, 2)) {
 		}
 
 		return vec3d;

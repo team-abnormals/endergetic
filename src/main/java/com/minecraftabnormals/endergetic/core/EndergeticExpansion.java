@@ -1,5 +1,16 @@
 package com.minecraftabnormals.endergetic.core;
 
+import com.minecraftabnormals.endergetic.client.models.BoofBlockDispenserModel;
+import com.minecraftabnormals.endergetic.client.models.BoofBlockModel;
+import com.minecraftabnormals.endergetic.client.models.PoiseClusterModel;
+import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomBudModel;
+import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomFruitModel;
+import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
+import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownWallModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggModel;
+import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
@@ -152,7 +163,18 @@ public class EndergeticExpansion {
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+		event.registerLayerDefinition(CorrockCrownStandingModel.LOCATION, CorrockCrownStandingModel::createLayerDefinition);
+		event.registerLayerDefinition(CorrockCrownWallModel.LOCATION, CorrockCrownWallModel::createLayerDefinition);
+		event.registerLayerDefinition(BolloomBudModel.LOCATION, BolloomBudModel::createLayerDefinition);
+		event.registerLayerDefinition(PuffBugHiveModel.LOCATION, PuffBugHiveModel::createLayerDefinition);
+		event.registerLayerDefinition(BoofBlockDispenserModel.LOCATION, BoofBlockDispenserModel::createLayerDefinition);
+		event.registerLayerDefinition(SmallEetleEggModel.LOCATION, SmallEetleEggModel::createLayerDefinition);
+		event.registerLayerDefinition(MediumEetleEggModel.LOCATION, MediumEetleEggModel::createLayerDefinition);
+		event.registerLayerDefinition(LargeEetleEggModel.LOCATION, LargeEetleEggModel::createLayerDefinition);
 
+		event.registerLayerDefinition(BolloomFruitModel.LOCATION, BolloomFruitModel::createLayerDefinition);
+		event.registerLayerDefinition(PoiseClusterModel.LOCATION, PoiseClusterModel::createLayerDefinition);
+		event.registerLayerDefinition(BoofBlockModel.LOCATION, BoofBlockModel::createLayerDefinition);
 	}
 
 	private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

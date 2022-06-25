@@ -8,7 +8,7 @@ public class PuffBugTargetAggressorGoal extends HurtByTargetGoal {
 
 	public PuffBugTargetAggressorGoal(PuffBugEntity puffbug) {
 		super(puffbug);
-		this.setAlertOthers(new Class[]{PuffBugEntity.class});
+		this.setAlertOthers(PuffBugEntity.class);
 	}
 
 	@Override

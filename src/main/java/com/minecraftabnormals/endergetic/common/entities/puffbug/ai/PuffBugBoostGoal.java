@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
-import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.core.BlockPos;
@@ -41,9 +41,12 @@ public class PuffBugBoostGoal extends RandomStrollGoal {
 
 	@Nullable
 	protected Vec3 getPosition() {
-		Vec3 vec3d = RandomPos.getPos(this.mob, 8, 5);
+		Vec3 view = this.mob.getViewVector(0.0F);
+		double viewX = view.x;
+		double viewZ = view.z;
+		Vec3 vec3d = HoverRandomPos.getPos(this.mob, 8, 5, viewX, viewZ, ((float)Math.PI / 2F), 3, 1);
 
-		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = RandomPos.getPos(this.mob, 8, 5)) {
+		for (int i = 0; vec3d != null && !this.mob.level.getBlockState(new BlockPos(vec3d)).isPathfindable(this.mob.level, new BlockPos(vec3d), PathComputationType.AIR) && i++ < 10; vec3d = HoverRandomPos.getPos(this.mob, 8, 5, viewX, viewZ, ((float)Math.PI / 2F), 3, 1)) {
 			;
 		}
 

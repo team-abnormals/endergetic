@@ -1,10 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.util.DetectionHelper;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +17,7 @@ import java.util.List;
 public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public BroodEetleAirSlamGoal(BroodEetleEntity entity) {
-		super(entity, BroodEetleEntity.AIR_CHARGE);
+		super(entity, EEPlayableEndimations.BROOD_EETLE_AIR_CHARGE);
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		if (broodEetle.isOnGround()) {
 			int animationTick = broodEetle.getAnimationTick();
 			if (animationTick >= 10 && animationTick <= 60) {
-				NetworkUtil.setPlayingAnimationMessage(broodEetle, BroodEetleEntity.AIR_SLAM);
+				NetworkUtil.setPlayingAnimation(broodEetle, EEPlayableEndimations.BROOD_EETLE_AIR_SLAM);
 			}
 		}
 	}
@@ -64,9 +65,9 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 				return false;
 			}
 			if (livingEntity instanceof Player) {
-				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && !((Player) livingEntity).isCreative();
+				return livingEntity.isAlive() && !livingEntity.isInvisible() && broodEetle.hasLineOfSight(livingEntity) && !((Player) livingEntity).isCreative();
 			}
-			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.canSee(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
+			return livingEntity.isAlive() && livingEntity.isOnGround() && !livingEntity.isInvisible() && broodEetle.hasLineOfSight(livingEntity) && (livingEntity instanceof Mob && ((Mob) livingEntity).getTarget() == broodEetle || broodEetle.isAnAggressor(livingEntity));
 		});
 	}
 

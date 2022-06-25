@@ -1,6 +1,6 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.flying;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
+import com.teamabnormals.blueprint.client.ClientInfo;
 import net.minecraft.util.Mth;
 
 public final class FlyingRotations {

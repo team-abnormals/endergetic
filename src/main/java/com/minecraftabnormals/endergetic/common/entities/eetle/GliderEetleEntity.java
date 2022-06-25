@@ -1,16 +1,15 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
-import com.minecraftabnormals.abnormals_core.core.endimator.ControlledEndimation;
-import com.minecraftabnormals.abnormals_core.core.endimator.Endimation;
-import com.minecraftabnormals.abnormals_core.core.util.NetworkUtil;
 import com.minecraftabnormals.endergetic.api.entity.pathfinding.EndergeticFlyingPathNavigator;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider.*;
 import com.minecraftabnormals.endergetic.common.entities.eetle.flying.*;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataSerializers;
-import net.minecraft.entity.*;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
+import com.teamabnormals.blueprint.core.endimator.TimedEndimation;
+import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -48,10 +47,8 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	private static final EntityDataAccessor<EntityDimensions> CAUGHT_SIZE = SynchedEntityData.defineId(GliderEetleEntity.class, EEDataSerializers.ENTITY_SIZE);
 	public static final EntityDimensions DEFAULT_SIZE = EntityDimensions.fixed(1.0F, 0.85F);
 	public static final AttributeModifier CAUGHT_KNOCKBACK_RESISTANCE = new AttributeModifier(UUID.fromString("17da0b48-6e5f-11eb-9439-0242ac130002"), "Caught target knockback resistance", 0.8F, AttributeModifier.Operation.ADDITION);
-	public static final Endimation FLAP = new Endimation(22);
-	public static final Endimation MUNCH = new Endimation(25);
-	private final ControlledEndimation takeoffEndimation = new ControlledEndimation(15, 0);
-	private final ControlledEndimation flyingEndimation = new ControlledEndimation(20, 0);
+	private final TimedEndimation takeoffEndimation = new TimedEndimation(15, 0);
+	private final TimedEndimation flyingEndimation = new TimedEndimation(20, 0);
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private GliderEetleLandGoal landGoal;
 	private GliderEetleTakeoffGoal takeoffGoal;
@@ -107,8 +104,8 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 							AABB passengerBoundingBox = passenger.getBoundingBox();
 							double xSize = passengerBoundingBox.getXsize();
 							double zSize = passengerBoundingBox.getZsize();
-							AABB detectionBox = AABB.ofSize(xSize * 0.8F, 0.2F, zSize * 0.8F).move(passenger.getX(), passenger.getY(), passenger.getZ());
-							if (world.getBlockCollisions(passenger, detectionBox, (state, pos) -> !state.getCollisionShape(world, pos).isEmpty()).findAny().isPresent()) {
+							AABB detectionBox = AABB.ofSize(passenger.getPosition(0.0F), xSize * 0.8F, 0.2F, zSize * 0.8F);
+							if (!world.noCollision(passenger, detectionBox)) {
 								BlockPos pos = passenger.blockPosition();
 								if (!hasCollisionsAbove(world, pos.mutable(), getEntitySizeBlocksCeil(passenger))) {
 									passenger.setPos(passenger.getX(), pos.getY() + 1.0F, passenger.getZ());
@@ -197,7 +194,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 				}
 
 				if (this.random.nextFloat() < 0.005F && this.idleDelay <= 0 && !this.isFlying() && this.getTarget() == null && this.isNoEndimationPlaying()) {
-					NetworkUtil.setPlayingAnimationMessage(this, this.random.nextFloat() < 0.6F ? FLAP : MUNCH);
+					NetworkUtil.setPlayingAnimation(this, this.random.nextFloat() < 0.6F ? EEPlayableEndimations.GLIDER_EETLE_FLAP : EEPlayableEndimations.GLIDER_EETLE_MUNCH);
 					this.resetIdleFlapDelay();
 				}
 			}
@@ -213,10 +210,9 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 			}
 		} else {
 			if (!this.isBaby()) {
-				ControlledEndimation takeoff = this.takeoffEndimation;
-				takeoff.update();
+				TimedEndimation takeoff = this.takeoffEndimation;
 				takeoff.tick();
-				if (takeoff.isAtMax()) {
+				if (takeoff.isMaxed()) {
 					this.takeoffMoving = true;
 					takeoff.setDecrementing(true);
 				} else {
@@ -226,8 +222,7 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 						takeoff.setDecrementing(!this.isFlying());
 					}
 				}
-				ControlledEndimation flying = this.flyingEndimation;
-				flying.update();
+				TimedEndimation flying = this.flyingEndimation;
 				flying.tick();
 				boolean moving = this.isMoving();
 				flying.setDecrementing(!moving);
@@ -303,13 +298,13 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 
 	@Override
 	public void positionRider(Entity passenger) {
-		this.setYBodyRot(this.yRot);
+		this.setYBodyRot(this.getYRot());
 		if (this.hasPassenger(passenger)) {
 			if (passenger instanceof LivingEntity && !isEntityLarge(passenger)) {
 				AABB boundingBox = passenger.getBoundingBox();
 				float y = (float) (boundingBox.maxY - boundingBox.minY) * -0.25F;
 				float pitch = this.flyingRotations.getFlyPitch();
-				Vec3 riderPos = (new Vec3(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).xRot(pitch * ((float)Math.PI / 180F));
+				Vec3 riderPos = (new Vec3(0.8D + Math.abs(pitch * 0.002F), y, 0.0D)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float) Math.PI / 2F)).xRot(pitch * ((float)Math.PI / 180F));
 				passenger.setPos(this.getX() + riderPos.x, this.getY() + 0.25F + riderPos.y, this.getZ() + riderPos.z);
 			} else {
 				super.positionRider(passenger);
@@ -451,20 +446,15 @@ public class GliderEetleEntity extends AbstractEetleEntity implements IFlyingEet
 	}
 
 	public float getTakeoffProgress() {
-		return this.takeoffEndimation.getAnimationProgress();
+		return this.takeoffEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public float getFlyingProgress() {
-		return this.flyingEndimation.getAnimationProgress();
+		return this.flyingEndimation.getProgress(ClientInfo.getPartialTicks());
 	}
 
 	public float getWingFlap() {
 		return Mth.lerp(ClientInfo.getPartialTicks(), this.prevWingFlap, this.wingFlap);
-	}
-
-	@Override
-	public Endimation[] getEndimations() {
-		return new Endimation[] {FLAP, MUNCH, GROW_UP};
 	}
 
 	public static boolean isEntityLarge(Entity entity) {

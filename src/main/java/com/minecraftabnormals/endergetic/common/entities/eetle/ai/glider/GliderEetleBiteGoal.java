@@ -1,9 +1,10 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.glider;
 
-import com.minecraftabnormals.abnormals_core.common.world.storage.tracking.IDataManager;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.minecraftabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.common.world.storage.tracking.IDataManager;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -21,7 +22,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 	private int delayCounter;
 
 	public GliderEetleBiteGoal(GliderEetleEntity entity) {
-		super(entity, GliderEetleEntity.MUNCH);
+		super(entity, EEPlayableEndimations.GLIDER_EETLE_MUNCH);
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
 
@@ -61,7 +62,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 		LivingEntity target = glider.getTarget();
 		glider.getLookControl().setLookAt(target, 30.0F, 30.0F);
 		double distanceToTargetSq = glider.distanceToSqr(target);
-		boolean canSeeTarget = glider.getSensing().canSee(target);
+		boolean canSeeTarget = glider.getSensing().hasLineOfSight(target);
 		Random random = this.random;
 		if (canSeeTarget && this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
 			this.delayCounter = 4 + random.nextInt(9);
@@ -82,7 +83,7 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 		if (distanceToTargetSq <= reachRange) {
 			if (!this.isEndimationPlaying()) {
 				this.playEndimation();
-			} else if ((this.isEndimationAtTick(8) || this.isEndimationAtTick(18)) && glider.canSee(target)) {
+			} else if ((this.isEndimationAtTick(8) || this.isEndimationAtTick(18)) && glider.hasLineOfSight(target)) {
 				target.hurt(GliderEetleMunchGoal.causeMunchDamage(glider), (float) glider.getAttributeValue(Attributes.ATTACK_DAMAGE) + random.nextInt(3));
 			}
 		}

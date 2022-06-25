@@ -1,9 +1,11 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.brood;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -17,14 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Random;
-
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 
 	public BroodEetleSlamGoal(BroodEetleEntity entity) {
-		super(entity, BroodEetleEntity.SLAM);
+		super(entity, EEPlayableEndimations.BROOD_EETLE_SLAM);
 		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
@@ -53,11 +52,11 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 	@Override
 	public void tick() {
 		if (this.isEndimationAtTick(14)) {
-			slam(this.entity, this.random, 1.0F);
+			slam(this.entity, this.entity.getRandom(), 1.0F);
 		}
 	}
 
-	public static void slam(BroodEetleEntity broodEetle, Random random, float power) {
+	public static void slam(BroodEetleEntity broodEetle, RandomSource random, float power) {
 		ServerLevel world = (ServerLevel) broodEetle.level;
 		double posX = broodEetle.getX();
 		double posY = broodEetle.getY();
@@ -90,8 +89,7 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	private static List<BlockState> sampleGround(Level world, BlockPos groundPos, Random random) {
+	private static List<BlockState> sampleGround(Level world, BlockPos groundPos, RandomSource random) {
 		List<BlockState> list = new ArrayList<>();
 		int originX = groundPos.getX();
 		int originY = groundPos.getY();

@@ -1,7 +1,8 @@
 package com.minecraftabnormals.endergetic.common.entities.eetle.ai.charger;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -10,15 +11,13 @@ import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
 
-import net.minecraft.world.entity.ai.goal.Goal.Flag;
-
 public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
-	private static final TargetingConditions PREDICATE = new TargetingConditions().allowSameTeam();
+	private static final TargetingConditions PREDICATE = TargetingConditions.forCombat();
 	private static final float MIN_DISTANCE = 2.0F;
 	public int cooldown;
 
 	public EetleCatapultGoal(ChargerEetleEntity entity) {
-		super(entity, ChargerEetleEntity.CATAPULT);
+		super(entity, EEPlayableEndimations.CHARGER_EETLE_CATAPULT);
 		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 	}
 
@@ -49,7 +48,7 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 		if (target != null && target.isAlive()) {
 			ChargerEetleEntity charger = this.entity;
 			LivingEntity attackTarget = charger.getTarget();
-			return attackTarget != null && attackTarget.isAlive() && target.getTarget() == attackTarget && target.distanceTo(charger) <= charger.getAttributeValue(Attributes.FOLLOW_RANGE) && attackTarget.distanceTo(target) >= MIN_DISTANCE && charger.canSee(target) && charger.isOnGround() && PREDICATE.test(charger, target) && PREDICATE.test(charger, attackTarget);
+			return attackTarget != null && attackTarget.isAlive() && target.getTarget() == attackTarget && target.distanceTo(charger) <= charger.getAttributeValue(Attributes.FOLLOW_RANGE) && attackTarget.distanceTo(target) >= MIN_DISTANCE && charger.hasLineOfSight(target) && charger.isOnGround() && PREDICATE.test(charger, target) && PREDICATE.test(charger, attackTarget);
 		}
 		return false;
 	}

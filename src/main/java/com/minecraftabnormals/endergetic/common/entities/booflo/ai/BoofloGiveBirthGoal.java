@@ -1,13 +1,13 @@
 package com.minecraftabnormals.endergetic.common.entities.booflo.ai;
 
-import java.util.Random;
-
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatedGoal;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
@@ -15,7 +15,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 	private float originalYaw;
 
 	public BoofloGiveBirthGoal(BoofloEntity mother) {
-		super(mother, BoofloEntity.BIRTH);
+		super(mother, EEPlayableEndimations.BOOFLO_BIRTH);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public void start() {
-		this.originalYaw = this.entity.yRot;
+		this.originalYaw = this.entity.getYRot();
 		this.entity.setLockedYaw(this.originalYaw);
 		this.playEndimation();
 	}
@@ -48,14 +48,14 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 	public void tick() {
 		this.birthTicks++;
 
-		this.entity.yRot = this.originalYaw;
+		this.entity.setYRot(this.originalYaw);
 
 		if (this.birthTicks % 20 == 0 && this.birthTicks > 0 && this.birthTicks < 70) {
 			Level world = this.entity.level;
-			Random rand = this.entity.getRandom();
+			RandomSource rand = this.entity.getRandom();
 
-			double dx = Math.cos((this.entity.yRot + 90) * Math.PI / 180.0D) * -0.2F;
-			double dz = Math.sin((this.entity.yRot + 90) * Math.PI / 180.0D) * -0.2F;
+			double dx = Math.cos((this.entity.getYRot() + 90) * Math.PI / 180.0D) * -0.2F;
+			double dz = Math.sin((this.entity.getYRot() + 90) * Math.PI / 180.0D) * -0.2F;
 
 			this.entity.playSound(SoundEvents.ITEM_PICKUP, 0.3F, 0.6F);
 
