@@ -69,7 +69,7 @@ public class PoiseBubbleParticle extends TextureSheetParticle {
 	}
 
 	public static class Factory implements ParticleProvider<SimpleParticleType> {
-		private SpriteSet animatedSprite;
+		private final SpriteSet animatedSprite;
 
 		public Factory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;
@@ -82,7 +82,7 @@ public class PoiseBubbleParticle extends TextureSheetParticle {
 	}
 
 	public static class ShortFactory implements ParticleProvider<SimpleParticleType> {
-		private SpriteSet animatedSprite;
+		private final SpriteSet animatedSprite;
 
 		public ShortFactory(SpriteSet animatedSprite) {
 			this.animatedSprite = animatedSprite;

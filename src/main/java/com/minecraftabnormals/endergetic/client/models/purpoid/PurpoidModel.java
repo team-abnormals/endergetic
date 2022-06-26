@@ -1,10 +1,18 @@
 package com.minecraftabnormals.endergetic.client.models.purpoid;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -14,94 +22,58 @@ import net.minecraft.util.Mth;
  * Created using Tabula 7.0.0
  */
 public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
-	public EndimatorModelRenderer head;
-	public EndimatorModelRenderer rim1;
-	public EndimatorModelRenderer rim2;
-	public EndimatorModelRenderer rim3;
-	public EndimatorModelRenderer rim4;
-	public EndimatorModelRenderer tentacleSmall1;
-	public EndimatorModelRenderer tentacleSmall2;
-	public EndimatorModelRenderer tentacleSmall3;
-	public EndimatorModelRenderer tentacleSmall4;
-	public EndimatorModelRenderer tentacleLarge1;
-	public EndimatorModelRenderer tentacleLarge2;
-	public EndimatorModelRenderer tentacleLarge3;
-	public EndimatorModelRenderer tentacleLarge4;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "purpoid"), "main");
+	public ModelPart head;
+	public ModelPart rim1;
+	public ModelPart rim2;
+	public ModelPart rim3;
+	public ModelPart rim4;
+	public ModelPart tentacleSmall1;
+	public ModelPart tentacleSmall2;
+	public ModelPart tentacleSmall3;
+	public ModelPart tentacleSmall4;
+	public ModelPart tentacleLarge1;
+	public ModelPart tentacleLarge2;
+	public ModelPart tentacleLarge3;
+	public ModelPart tentacleLarge4;
 
-	public PurpoidModel() {
-		this.texWidth = 64;
-		this.texHeight = 96;
-		this.rim2 = new EndimatorModelRenderer(this, 12, 59);
-		this.rim2.setPos(0.0F, 0.0F, 7.0F);
-		this.rim2.addBox(-9.0F, 0.0F, 0.0F, 18, 6, 0, 0.0F);
-		this.setRotateAngle(rim2, 0.7853981633974483F, 0.0F, 0.0F);
-		this.head = new EndimatorModelRenderer(this, 0, 32);
-		this.head.setPos(0.0F, 23.0F, 0.0F);
-		this.head.addBox(-7.0F, -13.0F, -7.0F, 14, 13, 14, 0.0F);
-		this.rim3 = new EndimatorModelRenderer(this, 12, 41);
-		this.rim3.setPos(7.0F, 0.0F, 0.0F);
-		this.rim3.addBox(0.0F, 0.0F, -9.0F, 0, 6, 18, 0.0F);
-		this.setRotateAngle(rim3, 0.0F, 0.0F, -0.7853981633974483F);
-		this.tentacleSmall3 = new EndimatorModelRenderer(this, 0, 59);
-		this.tentacleSmall3.mirror = true;
-		this.tentacleSmall3.setPos(5.5F, 0.0F, -6.0F);
-		this.tentacleSmall3.addBox(-1.5F, 0.0F, 0.0F, 3, 32, 0, 0.0F);
-		this.setRotateAngle(tentacleSmall3, 0.0F, -0.7853981633974483F, 0.0F);
-		this.tentacleLarge4 = new EndimatorModelRenderer(this, 6, 59);
-		this.tentacleLarge4.setPos(0.0F, 0.0F, -7.0F);
-		this.tentacleLarge4.addBox(-1.5F, 0.0F, 0.0F, 3, 37, 0, 0.0F);
-		this.tentacleLarge3 = new EndimatorModelRenderer(this, 6, 59);
-		this.tentacleLarge3.mirror = true;
-		this.tentacleLarge3.setPos(0.0F, 0.0F, 7.0F);
-		this.tentacleLarge3.addBox(-1.5F, 0.0F, 0.0F, 3, 37, 0, 0.0F);
-		this.tentacleSmall4 = new EndimatorModelRenderer(this, 0, 59);
-		this.tentacleSmall4.setPos(-5.5F, 0.0F, -6.0F);
-		this.tentacleSmall4.addBox(-1.5F, 0.0F, 0.0F, 3, 32, 0, 0.0F);
-		this.setRotateAngle(tentacleSmall4, 0.0F, 0.7853981633974483F, 0.0F);
-		this.tentacleLarge1 = new EndimatorModelRenderer(this, 6, 59);
-		this.tentacleLarge1.mirror = true;
-		this.tentacleLarge1.setPos(-7.0F, 0.0F, 0.0F);
-		this.tentacleLarge1.addBox(-1.5F, 0.0F, 0.0F, 3, 37, 0, 0.0F);
-		this.setRotateAngle(tentacleLarge1, 0.0F, 1.5707963267948966F, 0.0F);
-		this.rim1 = new EndimatorModelRenderer(this, 12, 59);
-		this.rim1.setPos(0.0F, 0.0F, -7.0F);
-		this.rim1.addBox(-9.0F, 0.0F, 0.0F, 18, 6, 0, 0.0F);
-		this.setRotateAngle(rim1, -0.7853981633974483F, 0.0F, 0.0F);
-		this.rim4 = new EndimatorModelRenderer(this, 12, 41);
-		this.rim4.setPos(-7.0F, 0.0F, 0.0F);
-		this.rim4.addBox(0.0F, 0.0F, -9.0F, 0, 6, 18, 0.0F);
-		this.setRotateAngle(rim4, 0.0F, 0.0F, 0.7853981633974483F);
-		this.tentacleSmall1 = new EndimatorModelRenderer(this, 0, 59);
-		this.tentacleSmall1.setPos(-5.5F, 0.0F, 6.0F);
-		this.tentacleSmall1.addBox(-1.5F, 0.0F, 0.0F, 3, 32, 0, 0.0F);
-		this.setRotateAngle(tentacleSmall1, 0.0F, -0.7853981633974483F, 0.0F);
-		this.tentacleLarge2 = new EndimatorModelRenderer(this, 6, 59);
-		this.tentacleLarge2.setPos(7.0F, 0.0F, 0.0F);
-		this.tentacleLarge2.addBox(-1.5F, 0.0F, 0.0F, 3, 37, 0, 0.0F);
-		this.setRotateAngle(tentacleLarge2, 0.0F, 1.5707963267948966F, 0.0F);
-		this.tentacleSmall2 = new EndimatorModelRenderer(this, 0, 59);
-		this.tentacleSmall2.setPos(5.5F, 0.0F, 6.0F);
-		this.tentacleSmall2.addBox(-1.5F, 0.0F, 0.0F, 3, 32, 0, 0.0F);
-		this.setRotateAngle(tentacleSmall2, 0.0F, 0.7853981633974483F, 0.0F);
-		this.head.addChild(this.rim2);
-		this.head.addChild(this.rim3);
-		this.head.addChild(this.tentacleSmall3);
-		this.head.addChild(this.tentacleLarge4);
-		this.head.addChild(this.tentacleLarge3);
-		this.head.addChild(this.tentacleSmall4);
-		this.head.addChild(this.tentacleLarge1);
-		this.head.addChild(this.rim1);
-		this.head.addChild(this.rim4);
-		this.head.addChild(this.tentacleSmall1);
-		this.head.addChild(this.tentacleLarge2);
-		this.head.addChild(this.tentacleSmall2);
+	public PurpoidModel(ModelPart root) {
+		this.head = root.getChild("head");
+		this.rim1 = root.getChild("rim1");
+		this.rim2 = root.getChild("rim2");
+		this.rim3 = root.getChild("rim3");
+		this.rim4 = root.getChild("rim4");
+		this.tentacleSmall1 = root.getChild("tentacleSmall1");
+		this.tentacleSmall2 = root.getChild("tentacleSmall2");
+		this.tentacleSmall3 = root.getChild("tentacleSmall3");
+		this.tentacleSmall4 = root.getChild("tentacleSmall4");
+		this.tentacleLarge1 = root.getChild("tentacleLarge1");
+		this.tentacleLarge2 = root.getChild("tentacleLarge2");
+		this.tentacleLarge3 = root.getChild("tentacleLarge3");
+		this.tentacleLarge4 = root.getChild("tentacleLarge4");
+	}
 
-		this.setDefaultBoxValues();
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 32).addBox(-7.0F, -13.0F, -7.0F, 14.0F, 13.0F, 14.0F, false), PartPose.offsetAndRotation(0.0F, 23.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition rim1 = root.addOrReplaceChild("rim1", CubeListBuilder.create().texOffs(12, 59).addBox(-9.0F, 0.0F, 0.0F, 18.0F, 6.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, -0.7853982F, 0.0F, 0.0F));
+		PartDefinition rim2 = root.addOrReplaceChild("rim2", CubeListBuilder.create().texOffs(12, 59).addBox(-9.0F, 0.0F, 0.0F, 18.0F, 6.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 7.0F, 0.7853982F, 0.0F, 0.0F));
+		PartDefinition rim3 = root.addOrReplaceChild("rim3", CubeListBuilder.create().texOffs(12, 41).addBox(0.0F, 0.0F, -9.0F, 0.0F, 6.0F, 18.0F, false), PartPose.offsetAndRotation(7.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.7853982F));
+		PartDefinition rim4 = root.addOrReplaceChild("rim4", CubeListBuilder.create().texOffs(12, 41).addBox(0.0F, 0.0F, -9.0F, 0.0F, 6.0F, 18.0F, false), PartPose.offsetAndRotation(-7.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.7853982F));
+		PartDefinition tentacleSmall1 = root.addOrReplaceChild("tentacleSmall1", CubeListBuilder.create().texOffs(0, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 32.0F, 0.0F, false), PartPose.offsetAndRotation(-5.5F, 0.0F, 6.0F, 0.0F, -0.7853982F, 0.0F));
+		PartDefinition tentacleSmall2 = root.addOrReplaceChild("tentacleSmall2", CubeListBuilder.create().texOffs(0, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 32.0F, 0.0F, false), PartPose.offsetAndRotation(5.5F, 0.0F, 6.0F, 0.0F, 0.7853982F, 0.0F));
+		PartDefinition tentacleSmall3 = root.addOrReplaceChild("tentacleSmall3", CubeListBuilder.create().texOffs(0, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 32.0F, 0.0F, true), PartPose.offsetAndRotation(5.5F, 0.0F, -6.0F, 0.0F, -0.7853982F, 0.0F));
+		PartDefinition tentacleSmall4 = root.addOrReplaceChild("tentacleSmall4", CubeListBuilder.create().texOffs(0, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 32.0F, 0.0F, false), PartPose.offsetAndRotation(-5.5F, 0.0F, -6.0F, 0.0F, 0.7853982F, 0.0F));
+		PartDefinition tentacleLarge1 = root.addOrReplaceChild("tentacleLarge1", CubeListBuilder.create().texOffs(6, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 37.0F, 0.0F, true), PartPose.offsetAndRotation(-7.0F, 0.0F, 0.0F, 0.0F, 1.5707964F, 0.0F));
+		PartDefinition tentacleLarge2 = root.addOrReplaceChild("tentacleLarge2", CubeListBuilder.create().texOffs(6, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 37.0F, 0.0F, false), PartPose.offsetAndRotation(7.0F, 0.0F, 0.0F, 0.0F, 1.5707964F, 0.0F));
+		PartDefinition tentacleLarge3 = root.addOrReplaceChild("tentacleLarge3", CubeListBuilder.create().texOffs(6, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 37.0F, 0.0F, true), PartPose.offsetAndRotation(0.0F, 0.0F, 7.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition tentacleLarge4 = root.addOrReplaceChild("tentacleLarge4", CubeListBuilder.create().texOffs(6, 59).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 37.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.head.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -123,100 +95,5 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 		this.tentacleSmall2.xRot += tentacleAngle;
 		this.tentacleSmall3.xRot -= tentacleAngle;
 		this.tentacleSmall4.xRot -= tentacleAngle;
-	}
-
-	@Override
-	public void animateModel(PurpoidEntity purpoid) {
-		super.animateModel(purpoid);
-		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION) || this.tryToPlayEndimation(PurpoidEntity.FAST_TELEPORT_TO_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.head, 1.3F, 1.3F, 1.3F);
-			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.scale(this.head, -1.0F, -1.0F, -1.0F);
-			this.rotate(this.tentacleLarge1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, 0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(8);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_FROM_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.head, 1.3F, 1.3F, 1.3F);
-			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.DEATH_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.head, -0.4F, -0.4F, -0.4F);
-			this.rotate(this.tentacleLarge1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, 0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.scale(this.head, 0.9F, 0.9F, 0.9F);
-			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(10);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEFRAG_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.head, 1.0F, 1.0F, 1.0F);
-			this.rotate(this.tentacleLarge1, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge3, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleLarge4, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall1, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall2, 0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall3, -0.26F, 0.0F, 0.0F);
-			this.rotate(this.tentacleSmall4, -0.26F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		}
-	}
-
-	/**
-	 * This is a helper function from Tabula to set the rotation of model parts
-	 */
-	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
 	}
 }

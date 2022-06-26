@@ -1,39 +1,44 @@
 package com.minecraftabnormals.endergetic.client.models.booflo;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloBabyEntity;
 
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
  * ModelBoofloBaby - Endergized
  * Created using Tabula 7.0.0
  */
-public class BoofloBabyModel<E extends BoofloBabyEntity> extends EndimatorEntityModel<E> {
-	public EndimatorModelRenderer Head;
-	public EndimatorModelRenderer Jaw;
-	public EndimatorModelRenderer Tail;
+public class BoofloBabyModel<E extends BoofloBabyEntity> extends EntityModel<E> {
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "booflo_baby"), "main");
+	public ModelPart Head;
+	public ModelPart Jaw;
+	public ModelPart Tail;
 
-	public BoofloBabyModel() {
-		this.texWidth = 32;
-		this.texHeight = 16;
-		this.Head = new EndimatorModelRenderer(this, 15, 10);
-		this.Head.setPos(0.0F, 21.0F, 0.0F);
-		this.Head.addBox(-2.0F, -2.0F, -2.0F, 4, 2, 4, 0.0F);
-		this.Tail = new EndimatorModelRenderer(this, 0, 2);
-		this.Tail.setPos(0.0F, 0.0F, 2.0F);
-		this.Tail.addBox(0.0F, -2.0F, 0.0F, 0, 4, 8, 0.0F);
-		this.Jaw = new EndimatorModelRenderer(this, 0, 0);
-		this.Jaw.setPos(0.0F, 0.0F, 2.0F);
-		this.Jaw.addBox(-3.0F, 0.0F, -5.0F, 6, 3, 6, 0.0F);
-		this.Head.addChild(this.Tail);
-		this.Head.addChild(this.Jaw);
+	public BoofloBabyModel(ModelPart root) {
+		this.Head = root.getChild("Head");
+		this.Jaw = root.getChild("Jaw");
+		this.Tail = root.getChild("Tail");
+	}
 
-		this.setDefaultBoxValues();
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition Head = root.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(15, 10).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 2.0F, 4.0F, false), PartPose.offsetAndRotation(0.0F, 21.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition Tail = Head.addOrReplaceChild("Tail", CubeListBuilder.create().texOffs(0, 2).addBox(0.0F, -2.0F, 0.0F, 0.0F, 4.0F, 8.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 2.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition Jaw = Head.addOrReplaceChild("Jaw", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, 0.0F, -5.0F, 6.0F, 3.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, 2.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 32, 16);
 	}
 
 	@Override
@@ -41,29 +46,13 @@ public class BoofloBabyModel<E extends BoofloBabyEntity> extends EndimatorEntity
 		this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
-	/**
-	 * This is a helper function from Tabula to set the rotation of model parts
-	 */
-	public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
-		EndimatorModelRenderer.xRot = x;
-		EndimatorModelRenderer.yRot = y;
-		EndimatorModelRenderer.zRot = z;
-	}
-
 	@Override
 	public void setupAnim(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.revertBoxesToDefaultValues();
-
 		float tailAnimation = entityIn.getTailAnimation(ageInTicks - entityIn.tickCount);
 
 		this.Head.yRot = netHeadYaw * (float) (Math.PI / 180F);
 
-		this.Head.xRot = headPitch * (float) (Math.PI / 180F);
-
-		if (entityIn.isBeingBorn()) {
-			float angle = Mth.lerp(ClientInfo.getPartialTicks(), (180 % 360), (180 % 360));
-			this.Head.xRot = angle * (float) (Math.PI / 180F);
-		}
+		this.Head.xRot = entityIn.isBeingBorn() ? (float) Math.PI : headPitch * (float) (Math.PI / 180F);
 
 		if (entityIn.isMoving()) {
 			this.Head.yRot += -1.1F * 0.2F * Mth.sin(0.55F * ageInTicks);

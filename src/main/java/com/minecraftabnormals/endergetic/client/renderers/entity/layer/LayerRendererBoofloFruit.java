@@ -2,9 +2,11 @@ package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -18,14 +20,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class LayerRendererBoofloFruit extends RenderLayer<BoofloEntity, EntityModel<BoofloEntity>> {
+	private final ItemInHandRenderer itemInHandRenderer;
 
-	public LayerRendererBoofloFruit(RenderLayerParent<BoofloEntity, EntityModel<BoofloEntity>> renderer) {
+	public LayerRendererBoofloFruit(RenderLayerParent<BoofloEntity, EntityModel<BoofloEntity>> renderer, ItemInHandRenderer itemInHandRenderer) {
 		super(renderer);
+		this.itemInHandRenderer = itemInHandRenderer;
 	}
 
 	@Override
 	public void render(PoseStack matrixStack, MultiBufferSource bufferIn, int packedLightIn, BoofloEntity booflo, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (booflo.hasCaughtFruit() && !booflo.isBoofed() && booflo.isEndimationPlaying(BoofloEntity.EAT) && booflo.getAnimationTick() > 20) {
+		if (booflo.hasCaughtFruit() && !booflo.isBoofed() && booflo.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT) && booflo.getAnimationTick() > 20) {
 			matrixStack.pushPose();
 
 			Vec3 fruitPos = (new Vec3(-1.25D, 0.0D, 0.0D)).yRot(-netHeadYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
@@ -35,13 +39,12 @@ public class LayerRendererBoofloFruit extends RenderLayer<BoofloEntity, EntityMo
 
 			matrixStack.scale(1.3F, 1.3F, 1.3F);
 
-			Minecraft.getInstance().getItemInHandRenderer().renderItem(booflo, new ItemStack(EEItems.BOLLOOM_FRUIT.get()), ItemTransforms.TransformType.GROUND, false, matrixStack, bufferIn, packedLightIn);
+			this.itemInHandRenderer.renderItem(booflo, new ItemStack(EEItems.BOLLOOM_FRUIT.get()), ItemTransforms.TransformType.GROUND, false, matrixStack, bufferIn, packedLightIn);
 			matrixStack.popPose();
 		}
 	}
 
 	private float getFruitPosOffset(BoofloEntity booflo) {
-		return 0.22F * booflo.FRUIT_HOVER.getAnimationProgress();
+		return 0.22F * booflo.FRUIT_HOVER.getProgress(ClientInfo.getPartialTicks());
 	}
-
 }

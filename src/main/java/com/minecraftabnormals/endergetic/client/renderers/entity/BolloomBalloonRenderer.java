@@ -11,7 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.CameraType;
 import net.minecraft.resources.ResourceLocation;
@@ -21,9 +21,9 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 	private static final Minecraft MC = Minecraft.getInstance();
 	private final BolloomBalloonModel<BolloomBalloonEntity> model;
 
-	public BolloomBalloonRenderer(EntityRenderDispatcher manager) {
-		super(manager);
-		this.model = new BolloomBalloonModel<>();
+	public BolloomBalloonRenderer(EntityRendererProvider.Context context) {
+		super(context);
+		this.model = new BolloomBalloonModel<>(context.bakeLayer(BolloomBalloonModel.LOCATION));
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public final class BolloomBalloonRenderer extends EntityRenderer<BolloomBalloonE
 			return false;
 		}
 		LocalPlayer player = MC.player;
-		return balloon.getAttachedEntity() != player || MC.options.getCameraType() != CameraType.FIRST_PERSON || player.xRot < -45.0F;
+		return balloon.getAttachedEntity() != player || MC.options.getCameraType() != CameraType.FIRST_PERSON || player.getXRot() < -45.0F;
 	}
 
 	@Override

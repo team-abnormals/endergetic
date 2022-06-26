@@ -5,6 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -13,19 +19,22 @@ import net.minecraft.world.entity.LivingEntity;
  * Created using Tabula 7.0.0
  */
 public class BoofloVestModel extends HumanoidModel<LivingEntity> {
-	public static final BoofloVestModel INSTANCE = new BoofloVestModel(1.0F);
+	public static final BoofloVestModel INSTANCE = new BoofloVestModel(createLayerDefinition().bakeRoot());
 	public ModelPart strap;
 	public ModelPart boofer;
 
-	public BoofloVestModel(float modelSize) {
-		super(modelSize, 0.0F, 64, 64);
-		this.strap = new ModelPart(this, 16, 16);
-		this.strap.setPos(-4.0F, 0.0F, -2.0F);
-		this.strap.addBox(0.0F, 0.0F, 0.0F, 8, 11, 4, 0.0F);
-		this.boofer = new ModelPart(this, 0, 32);
-		this.boofer.setPos(0.0F, 2.0F, -2.0F);
-		this.boofer.addBox(0.0F, 0.0F, 0.0F, 8, 8, 8, 0.0F);
-		this.strap.addChild(this.boofer);
+	public BoofloVestModel(ModelPart root) {
+		super(root);
+		this.strap = root.getChild("strap");
+		this.boofer = this.strap.getChild("boofer");
+	}
+
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition strap = root.addOrReplaceChild("strap", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 8.0F, 11.0F, 4.0F, false), PartPose.offsetAndRotation(-4.0F, 0.0F, -2.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition boofer = strap.addOrReplaceChild("boofer", CubeListBuilder.create().texOffs(0, 32).addBox(0.0F, 0.0F, 0.0F, 8.0F, 8.0F, 8.0F, false), PartPose.offsetAndRotation(0.0F, 2.0F, -2.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
 	@Override

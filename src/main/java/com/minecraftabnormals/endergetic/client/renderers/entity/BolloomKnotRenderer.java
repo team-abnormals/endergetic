@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,9 +16,9 @@ public class BolloomKnotRenderer extends EntityRenderer<BolloomKnotEntity> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/bolloom_knot.png");
 	public BolloomKnotModel<BolloomKnotEntity> model;
 
-	public BolloomKnotRenderer(EntityRenderDispatcher manager) {
-		super(manager);
-		this.model = new BolloomKnotModel<BolloomKnotEntity>();
+	public BolloomKnotRenderer(EntityRendererProvider.Context context) {
+		super(context);
+		this.model = new BolloomKnotModel<>(context.bakeLayer(BolloomKnotModel.LOCATION));
 	}
 
 	@Override

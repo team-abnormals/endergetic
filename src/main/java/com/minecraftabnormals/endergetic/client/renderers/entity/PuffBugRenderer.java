@@ -7,7 +7,7 @@ import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +16,8 @@ public class PuffBugRenderer extends MobRenderer<PuffBugEntity, EntityModel<Puff
 	private static final ResourceLocation DEFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_deflated.png");
 	private static final ResourceLocation INFLATED = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/puffbug/puffbug_inflated.png");
 
-	public PuffBugRenderer(EntityRenderDispatcher manager) {
-		super(manager, new PuffBugModel<>(), 0.3F);
+	public PuffBugRenderer(EntityRendererProvider.Context context) {
+		super(context, new PuffBugModel<>(context.bakeLayer(PuffBugModel.LOCATION)), 0.3F);
 		this.addLayer(new LayerRendererPuffBugGlow<>(this));
 	}
 

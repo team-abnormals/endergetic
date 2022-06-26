@@ -1,12 +1,22 @@
 package com.minecraftabnormals.endergetic.client.models.booflo;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescentEntity;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.core.endimator.Endimator;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -14,154 +24,76 @@ import net.minecraft.util.Mth;
  * Created using Tabula 7.0.0
  */
 public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends EndimatorEntityModel<E> {
-	public EndimatorModelRenderer Head;
-	public EndimatorModelRenderer KneeLeft;
-	public EndimatorModelRenderer KneeRight;
-	public EndimatorModelRenderer ArmLeft;
-	public EndimatorModelRenderer ArmRight;
-	public EndimatorModelRenderer Tail;
-	public EndimatorModelRenderer Jaw;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "adolescent_booflo"), "main");
+	public ModelPart Head;
+	public ModelPart KneeLeft;
+	public ModelPart KneeRight;
+	public ModelPart ArmLeft;
+	public ModelPart ArmRight;
+	public ModelPart Tail;
+	public ModelPart Jaw;
 
-	public AdolescentBoofloModel() {
-		this.texWidth = 64;
-		this.texHeight = 48;
-		this.ArmRight = new EndimatorModelRenderer(this, 14, 16);
-		this.ArmRight.setPos(-4.5F, -2.0F, -7.0F);
-		this.ArmRight.addBox(-4.0F, -1.0F, -1.0F, 4, 2, 2, 0.0F);
-		this.setRotateAngle(ArmRight, 0.0F, -0.5585053606381855F, -0.3490658503988659F);
-		this.Head = new EndimatorModelRenderer(this, 0, 0);
-		this.Head.setPos(0.0F, 18.0F, 5.0F);
-		this.Head.addBox(-5.0F, -5.0F, -10.0F, 10, 5, 10, 0.0F);
-		this.KneeLeft = new EndimatorModelRenderer(this, 0, 24);
-		this.KneeLeft.setPos(2.5F, -4.5F, -3.5F);
-		this.KneeLeft.addBox(-1.5F, -5.0F, -1.5F, 3, 5, 3, 0.0F);
-		this.setRotateAngle(KneeLeft, 0.0F, 0.0F, 0.3490658503988659F);
-		this.KneeRight = new EndimatorModelRenderer(this, 14, 24);
-		this.KneeRight.setPos(-2.5F, -4.5F, -3.5F);
-		this.KneeRight.addBox(-1.5F, -5.0F, -1.5F, 3, 5, 3, 0.0F);
-		this.setRotateAngle(KneeRight, 0.0F, 0.0F, -0.3490658503988659F);
-		this.Jaw = new EndimatorModelRenderer(this, 16, 28);
-		this.Jaw.setPos(0.0F, 18.0F, 5.0F);
-		this.Jaw.addBox(-6.0F, 0.0F, -11.0F, 12, 6, 12, 0.0F);
-		this.Tail = new EndimatorModelRenderer(this, 32, 16);
-		this.Tail.setPos(0.0F, -5.0F, 0.0F);
-		this.Tail.addBox(0.0F, 0.0F, 0.0F, 0, 5, 7, 0.0F);
-		this.ArmLeft = new EndimatorModelRenderer(this, 0, 16);
-		this.ArmLeft.setPos(4.5F, -2.0F, -7.0F);
-		this.ArmLeft.addBox(0.0F, -1.0F, -1.0F, 4, 2, 2, 0.0F);
-		this.setRotateAngle(ArmLeft, 0.0F, 0.5585053606381855F, 0.3490658503988659F);
-		this.Head.addChild(this.ArmRight);
-		this.Head.addChild(this.KneeLeft);
-		this.Head.addChild(this.KneeRight);
-		this.Head.addChild(this.Tail);
-		this.Head.addChild(this.ArmLeft);
+	public AdolescentBoofloModel(ModelPart root) {
+		this.Head = root.getChild("Head");
+		this.KneeLeft = root.getChild("KneeLeft");
+		this.KneeRight = root.getChild("KneeRight");
+		this.ArmLeft = root.getChild("ArmLeft");
+		this.ArmRight = root.getChild("ArmRight");
+		this.Tail = root.getChild("Tail");
+		this.Jaw = root.getChild("Jaw");
+		this.endimator = Endimator.compile(root);
+	}
 
-		this.setDefaultBoxValues();
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition Head = root.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -5.0F, -10.0F, 10.0F, 5.0F, 10.0F, false), PartPose.offsetAndRotation(0.0F, 18.0F, 5.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition KneeLeft = root.addOrReplaceChild("KneeLeft", CubeListBuilder.create().texOffs(0, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(2.5F, -4.5F, -3.5F, 0.0F, 0.0F, 0.34906584F));
+		PartDefinition KneeRight = root.addOrReplaceChild("KneeRight", CubeListBuilder.create().texOffs(14, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(-2.5F, -4.5F, -3.5F, 0.0F, 0.0F, -0.34906584F));
+		PartDefinition ArmLeft = root.addOrReplaceChild("ArmLeft", CubeListBuilder.create().texOffs(0, 16).addBox(0.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(4.5F, -2.0F, -7.0F, 0.0F, 0.55850536F, 0.34906584F));
+		PartDefinition ArmRight = root.addOrReplaceChild("ArmRight", CubeListBuilder.create().texOffs(14, 16).addBox(-4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(-4.5F, -2.0F, -7.0F, 0.0F, -0.55850536F, -0.34906584F));
+		PartDefinition Tail = root.addOrReplaceChild("Tail", CubeListBuilder.create().texOffs(32, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 5.0F, 7.0F, false), PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition Jaw = root.addOrReplaceChild("Jaw", CubeListBuilder.create().texOffs(16, 28).addBox(-6.0F, 0.0F, -11.0F, 12.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, 18.0F, 5.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 48);
 	}
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		this.animateModel(this.entity);
-
 		this.Head.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.Jaw.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
-	/**
-	 * This is a helper function from Tabula to set the rotation of model parts
-	 */
-	public void setRotateAngle(EndimatorModelRenderer EndimatorModelRenderer, float x, float y, float z) {
-		EndimatorModelRenderer.xRot = x;
-		EndimatorModelRenderer.yRot = y;
-		EndimatorModelRenderer.zRot = z;
-	}
-
 	@Override
 	public void setupAnim(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		this.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-		this.revertBoxesToDefaultValues();
+		float partialTicks = ClientInfo.getPartialTicks();
+		this.Tail.yRot = 0.1F * Mth.sin(entityIn.getTailAnimation(0.3F * partialTicks)) * (float) Math.PI;
 
-		this.Tail.yRot = 0.1F * Mth.sin(entityIn.getTailAnimation(0.3F * ClientInfo.getPartialTicks())) * (float) Math.PI;
-
-		if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && !entityIn.isInWater()) {
-			if (entityIn.getVehicle() == null && !entityIn.isEating()) {
+		if (!entityIn.isEndimationPlaying(EEPlayableEndimations.ADOLESCENT_BOOFLO_BOOF)) {
+			if (entityIn.isInWater()) {
 				this.Head.y += 0.5F * Mth.sin(0.4F * ageInTicks);
 				this.Jaw.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+				this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * ageInTicks);
+				this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * ageInTicks);
+				this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * ageInTicks) - 0.17F;
+				this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * ageInTicks) + 0.17F;
+			} else {
+				if (!entityIn.isEating()) {
+					if (entityIn.getVehicle() == null) {
+						this.Head.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+						this.Jaw.y += 0.5F * Mth.sin(0.4F * ageInTicks);
+					}
+					this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(partialTicks));
+					this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(partialTicks));
+					this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(partialTicks)) - 0.17F;
+					this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(partialTicks)) + 0.17F;
+				}
 			}
-			if (!entityIn.isEating()) {
-				this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
-				this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks()));
-				this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) - 0.17F;
-				this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * entityIn.getSwimmingAnimation(ClientInfo.getPartialTicks())) + 0.17F;
-			}
-		} else if (!entityIn.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION) && entityIn.isInWater()) {
-			this.Head.y += 0.5F * Mth.sin(0.4F * ageInTicks);
-			this.Jaw.y += 0.5F * Mth.sin(0.4F * ageInTicks);
-			this.KneeLeft.zRot += 0.1F * -Mth.sin(0.6F * ageInTicks);
-			this.KneeRight.zRot += 0.1F * Mth.sin(0.6F * ageInTicks);
-			this.ArmLeft.zRot += 0.3F * -Mth.sin(0.6F * ageInTicks) - 0.17F;
-			this.ArmRight.zRot += 0.3F * Mth.sin(0.6F * ageInTicks) + 0.17F;
 		}
 
 		if (entityIn.isAggressive()) {
 			this.Jaw.xRot += 0.2F * Mth.sin(0.3F * ageInTicks) + 0.4F;
-		}
-	}
-
-	@Override
-	public void animateModel(E booflo) {
-		super.animateModel(booflo);
-
-		if (booflo.isEndimationPlaying(BoofloAdolescentEntity.BOOF_ANIMATION)) {
-			this.setEndimationToPlay(BoofloAdolescentEntity.BOOF_ANIMATION);
-
-			this.startKeyframe(3);
-			this.scale(this.Head, 0.5F, -0.2F, 0.5F);
-			this.scale(this.Jaw, 0.5F, -0.2F, 0.5F);
-			this.move(Head, 0.0F, -0.2F, 0.0F);
-			this.move(Jaw, 0.0F, -0.2F, 0.0F);
-			this.rotate(ArmLeft, 0.0F, 0.0F, -0.4F);
-			this.rotate(ArmRight, 0.0F, 0.0F, 0.4F);
-			this.rotate(KneeLeft, 0.0F, 0.0F, 0.2F);
-			this.rotate(KneeRight, 0.0F, 0.0F, -0.2F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(3);
-
-			this.startKeyframe(4);
-			this.scale(this.Head, -0.0F, 0.0F, -0.0F);
-			this.scale(this.Jaw, -0.0F, 0.0F, -0.0F);
-			this.move(Head, 0.0F, 0F, 0.0F);
-			this.move(Jaw, 0.0F, 0F, 0.0F);
-			this.rotate(ArmLeft, 0.0F, 0.0F, 0.6F);
-			this.rotate(ArmRight, 0.0F, 0.0F, -0.6F);
-			this.rotate(KneeLeft, 0.0F, 0.0F, -0.35F);
-			this.rotate(KneeRight, 0.0F, 0.0F, 0.35F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(4);
-
-			this.startKeyframe(4);
-			this.rotate(ArmLeft, 0.0F, 0.0F, -0.2F);
-			this.rotate(ArmRight, 0.0F, 0.0F, 0.2F);
-			this.rotate(KneeLeft, 0.0F, 0.0F, 0.15F);
-			this.rotate(KneeRight, 0.0F, 0.0F, -0.15F);
-			this.endKeyframe();
-		} else if (booflo.isEndimationPlaying(BoofloAdolescentEntity.EATING_ANIMATION)) {
-			this.setEndimationToPlay(BoofloAdolescentEntity.EATING_ANIMATION);
-
-			this.startKeyframe(5);
-			this.rotate(ArmLeft, 0.0F, -0.42F, 0.0F);
-			this.rotate(ArmRight, 0.0F, 0.42F, 0.0F);
-			this.rotate(Head, -0.6F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.rotate(ArmLeft, 0.0F, -0.0F, 0.0F);
-			this.rotate(ArmRight, 0.0F, 0.0F, 0.0F);
-			this.rotate(Head, -0.0F, 0.0F, 0.0F);
-			this.endKeyframe();
 		}
 	}
 }

@@ -114,7 +114,6 @@ public class FastBlockParticle extends TextureSheetParticle {
 	}
 
 	public static class Factory implements ParticleProvider<BlockParticleOption> {
-		@SuppressWarnings("deprecation")
 		@Override
 		public Particle createParticle(BlockParticleOption data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			BlockState blockstate = data.getState();

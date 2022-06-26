@@ -1,28 +1,44 @@
 package com.minecraftabnormals.endergetic.client.models.purpoid;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
+import com.minecraftabnormals.endergetic.api.util.ModelUtil;
 import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
-	public EndimatorModelRenderer gelLayer;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "purpoid_gel"), "main");
+	public ModelPart gelLayer;
 
-	public PurpoidGelModel() {
-		this.texWidth = 64;
-		this.texHeight = 96;
-		this.gelLayer = new EndimatorModelRenderer(this, 0, 0);
-		this.gelLayer.setPos(0.0F, 1.0F, 0.0F);
-		this.gelLayer.addBox(-8.0F, -16.0F, -8.0F, 16, 16, 16, 0.0F);
-		this.setDefaultBoxValues();
+	public PurpoidGelModel(ModelPart root) {
+		this.gelLayer = root.getChild("gelLayer");
 	}
 
-	public void parentToHead(EndimatorModelRenderer head) {
-		EndimatorModelRenderer gelLayer = this.gelLayer;
-		gelLayer.copyFrom(head);
-		gelLayer.y += 1.0F;
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition gelLayer = root.addOrReplaceChild("gelLayer", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -16.0F, -8.0F, 16.0F, 16.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 96);
+	}
+
+	public void parentToHead(ModelPart head) {
+		ModelPart gelLayer = this.gelLayer;
+		gelLayer.xRot = head.xRot;
+		gelLayer.yRot = head.yRot;
+		gelLayer.zRot = head.zRot;
+		gelLayer.x = head.x;
+		gelLayer.y = head.y + 1.0F;
+		gelLayer.z = head.z;
 	}
 
 	@Override
@@ -36,46 +52,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 		if (entity.isNoEndimationPlaying()) {
 			float scaleOffset = Mth.sin(limbSwing * 0.6F) * Math.min(0.2F, limbSwingAmount);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);
-			this.gelLayer.setScale(1.0F + horizontalScaleOffset, 1.0F - scaleOffset * 0.5F, 1.0F + horizontalScaleOffset);
-		}
-	}
-
-	@Override
-	public void animateModel(PurpoidEntity endimatedEntity) {
-		super.animateModel(endimatedEntity);
-
-		if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_TO_ANIMATION) || this.tryToPlayEndimation(PurpoidEntity.FAST_TELEPORT_TO_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, 1.3F, 1.3F, 1.3F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, -1.0F, -1.0F, -1.0F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(8);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEPORT_FROM_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, 1.3F, 1.3F, 1.3F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.DEATH_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, -0.4F, -0.4F, -0.4F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, 1.15F, 1.0F, 1.15F);
-			this.endKeyframe();
-
-			this.setStaticKeyframe(10);
-		} else if (this.tryToPlayEndimation(PurpoidEntity.TELEFRAG_ANIMATION)) {
-			this.startKeyframe(5);
-			this.scale(this.gelLayer, 1.0F, 1.0F, 1.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
+			ModelUtil.setScale(this.gelLayer, 1.0F + horizontalScaleOffset, 1.0F - scaleOffset * 0.5F, 1.0F + horizontalScaleOffset);
 		}
 	}
 }

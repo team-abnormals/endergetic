@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 
-import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import com.teamabnormals.blueprint.client.BlueprintRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -24,7 +24,7 @@ public class EmissiveLayerRenderer<E extends Entity, M extends EntityModel<E>> e
 	public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		M model = this.getParentModel();
 		model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		VertexConsumer ivertexbuilder = buffer.getBuffer(ACRenderTypes.getEmissiveEntity(this.texture));
+		VertexConsumer ivertexbuilder = buffer.getBuffer(BlueprintRenderTypes.getUnshadedCutoutEntity(this.texture, true));
 		model.renderToBuffer(matrixStack, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

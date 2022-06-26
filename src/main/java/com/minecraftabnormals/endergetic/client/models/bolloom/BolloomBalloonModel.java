@@ -1,48 +1,52 @@
 package com.minecraftabnormals.endergetic.client.models.bolloom;
 
-import com.minecraftabnormals.abnormals_core.client.ClientInfo;
 import com.minecraftabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * ModelBolloomBalloon - Endergized
  * Created using Tabula 7.0.0
  */
 public class BolloomBalloonModel<T extends BolloomBalloonEntity> extends EntityModel<T> {
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "bolloom_balloon"), "main");
 	public ModelPart balloon;
 	public ModelPart x_string;
 	public ModelPart z_string;
 	public ModelPart x_string_2;
 	public ModelPart z_string_2;
 
-	public BolloomBalloonModel() {
-		this.texHeight = 32;
-		this.texWidth = 32;
-		this.z_string_2 = new ModelPart(this, 13, 10);
-		this.z_string_2.setPos(3.0F, 0.0F, 0.0F);
-		this.z_string_2.addBox(0.0F, 0.0F, 0.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(z_string_2, 0.0F, -1.5707963267948966F, 0.0F);
-		this.z_string = new ModelPart(this, 0, 10);
-		this.z_string.setPos(3.0F, 0.0F, 0.0F);
-		this.z_string.addBox(0.0F, 0.0F, 0.0F, 0, 16, 6, 0.0F);
-		this.setRotateAngle(z_string, 0.0F, -1.5707963267948966F, 0.0F);
-		this.x_string = new ModelPart(this, 0, 10);
-		this.x_string.setPos(0.0F, 24.0F, 0.0F);
-		this.x_string.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.balloon = new ModelPart(this, 0, 0);
-		this.balloon.setPos(-4.0F, 16.0F, -4.0F);
-		this.balloon.addBox(0.0F, 0.0F, 0.0F, 8, 8, 8, 0.0F);
-		this.x_string_2 = new ModelPart(this, 13, 10);
-		this.x_string_2.setPos(0.0F, 16.0F, 3.0F);
-		this.x_string_2.addBox(0.0F, 0.0F, -3.0F, 0, 16, 6, 0.0F);
-		this.x_string_2.addChild(this.z_string_2);
-		this.x_string.addChild(this.z_string);
-		this.z_string.addChild(this.x_string_2);
+	public BolloomBalloonModel(ModelPart root) {
+		this.balloon = root.getChild("balloon");
+		this.x_string = root.getChild("x_string");
+		this.z_string = this.x_string.getChild("z_string");
+		this.x_string_2 = this.z_string.getChild("x_string_2");
+		this.z_string_2 = this.x_string_2.getChild("z_string_2");
+	}
+
+	//Layer Definition
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition balloon = root.addOrReplaceChild("balloon", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, 0.0F, 8.0F, 8.0F, 8.0F, false), PartPose.offsetAndRotation(-4.0F, 16.0F, -4.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition x_string = root.addOrReplaceChild("x_string", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 24.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition z_string = x_string.addOrReplaceChild("z_string", CubeListBuilder.create().texOffs(0, 10).addBox(0.0F, 0.0F, 0.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		PartDefinition x_string_2 = z_string.addOrReplaceChild("x_string_2", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, -3.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 16.0F, 3.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition z_string_2 = x_string_2.addOrReplaceChild("z_string_2", CubeListBuilder.create().texOffs(13, 10).addBox(0.0F, 0.0F, 0.0F, 0.0F, 16.0F, 6.0F, false), PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, -1.5707964F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 32, 32);
 	}
 
 	@Override

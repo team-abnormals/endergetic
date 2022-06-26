@@ -1,6 +1,5 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.booflo;
 
-import com.minecraftabnormals.abnormals_core.client.EntitySkinHelper;
 import com.minecraftabnormals.endergetic.client.models.booflo.BoofloModel;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.BoofloEmissiveLayer;
 import com.minecraftabnormals.endergetic.client.renderers.entity.layer.LayerRendererBoofloBracelets;
@@ -9,8 +8,9 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.teamabnormals.blueprint.client.EntitySkinHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.resources.ResourceLocation;
@@ -25,11 +25,11 @@ public class BoofloRenderer extends MobRenderer<BoofloEntity, EntityModel<Booflo
 		skinHelper.putSkins("cam", "cameron", "cam");
 	});
 
-	public BoofloRenderer(EntityRenderDispatcher manager) {
-		super(manager, new BoofloModel<>(), 1.25F);
+	public BoofloRenderer(EntityRendererProvider.Context context) {
+		super(context, new BoofloModel<>(context.bakeLayer(BoofloModel.LOCATION)), 1.25F);
 		this.addLayer(new BoofloEmissiveLayer<>(this));
 		this.addLayer(new LayerRendererBoofloBracelets<>(this));
-		this.addLayer(new LayerRendererBoofloFruit(this));
+		this.addLayer(new LayerRendererBoofloFruit(this, context.getItemInHandRenderer()));
 	}
 
 	@Override

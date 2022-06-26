@@ -5,7 +5,7 @@ import com.minecraftabnormals.endergetic.client.renderers.entity.layer.EmissiveL
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import com.mojang.math.Vector3f;
@@ -18,8 +18,8 @@ public class BroodEetleRenderer extends MobRenderer<BroodEetleEntity, BroodEetle
 	private static final ResourceLocation[] TEXTURES = getStageTextures();
 	private static final ResourceLocation EMISSIVE_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/brood/brood_eetle_emissive.png");
 
-	public BroodEetleRenderer(EntityRenderDispatcher renderManagerIn) {
-		super(renderManagerIn, new BroodEetleModel(), 1.0F);
+	public BroodEetleRenderer(EntityRendererProvider.Context context) {
+		super(context, new BroodEetleModel(context.bakeLayer(BroodEetleModel.LOCATION)), 1.0F);
 		this.addLayer(new EmissiveLayerRenderer<>(this, EMISSIVE_TEXTURE));
 	}
 

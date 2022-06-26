@@ -5,7 +5,7 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloAdolescent
 import com.minecraftabnormals.endergetic.core.registry.EEItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -17,9 +17,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class LayerRendererBoofloAdolescentFruit extends RenderLayer<BoofloAdolescentEntity, AdolescentBoofloModel<BoofloAdolescentEntity>> {
+	private final ItemInHandRenderer itemInHandRenderer;
 
-	public LayerRendererBoofloAdolescentFruit(RenderLayerParent<BoofloAdolescentEntity, AdolescentBoofloModel<BoofloAdolescentEntity>> renderer) {
+	public LayerRendererBoofloAdolescentFruit(RenderLayerParent<BoofloAdolescentEntity, AdolescentBoofloModel<BoofloAdolescentEntity>> renderer, ItemInHandRenderer itemInHandRenderer) {
 		super(renderer);
+		this.itemInHandRenderer = itemInHandRenderer;
 	}
 
 	@Override
@@ -30,9 +32,8 @@ public class LayerRendererBoofloAdolescentFruit extends RenderLayer<BoofloAdoles
 
 			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 
-			Minecraft.getInstance().getItemInHandRenderer().renderItem(adolescent, new ItemStack(EEItems.BOLLOOM_FRUIT.get()), ItemTransforms.TransformType.GROUND, false, matrixStack, bufferIn, packedLightIn);
+			this.itemInHandRenderer.renderItem(adolescent, new ItemStack(EEItems.BOLLOOM_FRUIT.get()), ItemTransforms.TransformType.GROUND, false, matrixStack, bufferIn, packedLightIn);
 			matrixStack.popPose();
 		}
 	}
-
 }

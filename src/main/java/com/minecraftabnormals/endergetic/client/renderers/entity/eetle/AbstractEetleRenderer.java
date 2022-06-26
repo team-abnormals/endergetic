@@ -6,7 +6,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEnti
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.resources.ResourceLocation;
@@ -15,13 +15,14 @@ import javax.annotation.Nonnull;
 
 public abstract class AbstractEetleRenderer<E extends AbstractEetleEntity> extends MobRenderer<E, EntityModel<E>> {
 	private static final ResourceLocation LEETLE_TEXTURE = new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/entity/eetle/leetle.png");
-	private final LeetleModel<E> leetleModel = new LeetleModel<>();
+	private final LeetleModel<E> leetleModel;
 	private final EntityModel<E> adultModel;
 	private final float adultShadowSize;
 
-	public AbstractEetleRenderer(EntityRenderDispatcher renderManager, EntityModel<E> adultModel, ResourceLocation emissiveAdultTexture, float adultShadowSize) {
-		super(renderManager, adultModel, adultShadowSize);
+	public AbstractEetleRenderer(EntityRendererProvider.Context context, EntityModel<E> adultModel, ResourceLocation emissiveAdultTexture, float adultShadowSize) {
+		super(context, adultModel, adultShadowSize);
 		this.addLayer(new EetleEmissiveLayer<>(this, emissiveAdultTexture));
+		this.leetleModel = new LeetleModel<>(context.bakeLayer(LeetleModel.LOCATION));
 		this.adultModel = adultModel;
 		this.adultShadowSize = adultShadowSize;
 	}

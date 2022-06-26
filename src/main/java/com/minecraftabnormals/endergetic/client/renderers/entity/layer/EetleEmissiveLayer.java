@@ -1,9 +1,9 @@
 package com.minecraftabnormals.endergetic.client.renderers.entity.layer;
 
-import com.minecraftabnormals.abnormals_core.client.ACRenderTypes;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.teamabnormals.blueprint.client.BlueprintRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -24,6 +24,6 @@ public class EetleEmissiveLayer<E extends AbstractEetleEntity, M extends EntityM
 	public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn, E entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		M model = this.getParentModel();
 		model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		model.renderToBuffer(matrixStack, buffer.getBuffer(ACRenderTypes.getEmissiveEntity(entity.isBaby() ? LEETLE_TEXTURE : this.adultTexture)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		model.renderToBuffer(matrixStack, buffer.getBuffer(BlueprintRenderTypes.getUnshadedCutoutEntity(entity.isBaby() ? LEETLE_TEXTURE : this.adultTexture, true)), 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

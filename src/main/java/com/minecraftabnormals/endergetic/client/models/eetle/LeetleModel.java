@@ -1,10 +1,18 @@
 package com.minecraftabnormals.endergetic.client.models.eetle;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.AbstractEetleEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -14,55 +22,39 @@ import net.minecraft.util.Mth;
  * Created using Tabula 7.0.0
  */
 public class LeetleModel<E extends AbstractEetleEntity> extends EndimatorEntityModel<E> {
-	public EndimatorModelRenderer body;
-	public EndimatorModelRenderer head;
-	public EndimatorModelRenderer body2;
-	public EndimatorModelRenderer booty;
-	public EndimatorModelRenderer leftLeg1;
-	public EndimatorModelRenderer rightLeg1;
-	public EndimatorModelRenderer leftLeg2;
-	public EndimatorModelRenderer rightLeg2;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "leetle"), "main");
+	public ModelPart body;
+	public ModelPart head;
+	public ModelPart body2;
+	public ModelPart booty;
+	public ModelPart leftLeg1;
+	public ModelPart rightLeg1;
+	public ModelPart leftLeg2;
+	public ModelPart rightLeg2;
 
-	public LeetleModel() {
-		this.texWidth = 64;
-		this.texHeight = 32;
-		this.body2 = new EndimatorModelRenderer(this, 0, 10);
-		this.body2.setPos(0.0F, 0.5F, 5.0F);
-		this.body2.addBox(-3.0F, -2.5F, 0.0F, 6, 5, 4, 0.0F);
-		this.head = new EndimatorModelRenderer(this, 0, 0);
-		this.head.setPos(0.0F, 1.0F, 0.0F);
-		this.head.addBox(-2.5F, -2.0F, -4.0F, 5, 4, 4, 0.0F);
-		this.rightLeg2 = new EndimatorModelRenderer(this, 0, 0);
-		this.rightLeg2.setPos(-3.0F, 2.0F, 2.5F);
-		this.rightLeg2.addBox(0.0F, 0.0F, -0.5F, 0, 2, 1, 0.0F);
-		this.setRotateAngle(rightLeg2, 0.0F, 0.0F, 0.7853981633974483F);
-		this.leftLeg1 = new EndimatorModelRenderer(this, 0, 0);
-		this.leftLeg1.setPos(3.5F, 2.5F, 2.5F);
-		this.leftLeg1.addBox(0.0F, 0.0F, -0.5F, 0, 2, 1, 0.0F);
-		this.setRotateAngle(leftLeg1, 0.0F, 0.0F, -0.7853981633974483F);
-		this.leftLeg2 = new EndimatorModelRenderer(this, 0, 0);
-		this.leftLeg2.setPos(3.0F, 2.0F, 2.5F);
-		this.leftLeg2.addBox(0.0F, 0.0F, -0.5F, 0, 2, 1, 0.0F);
-		this.setRotateAngle(leftLeg2, 0.0F, 0.0F, -0.7853981633974483F);
-		this.booty = new EndimatorModelRenderer(this, 22, 12);
-		this.booty.setPos(0.0F, 0.5F, 4.0F);
-		this.booty.addBox(-2.0F, -2.0F, 0.0F, 4, 4, 2, 0.0F);
-		this.rightLeg1 = new EndimatorModelRenderer(this, 0, 0);
-		this.rightLeg1.setPos(-3.5F, 2.5F, 2.5F);
-		this.rightLeg1.addBox(0.0F, 0.0F, -0.5F, 0, 2, 1, 0.0F);
-		this.setRotateAngle(rightLeg1, 0.0F, 0.0F, 0.7853981633974483F);
-		this.body = new EndimatorModelRenderer(this, 19, 0);
-		this.body.setPos(0.0F, 20.0F, -3.5F);
-		this.body.addBox(-3.5F, -3.0F, 0.0F, 7, 6, 5, 0.0F);
-		this.body.addChild(this.body2);
-		this.body.addChild(this.head);
-		this.body2.addChild(this.rightLeg2);
-		this.body.addChild(this.leftLeg1);
-		this.body2.addChild(this.leftLeg2);
-		this.body2.addChild(this.booty);
-		this.body.addChild(this.rightLeg1);
-
-		this.setDefaultBoxValues();
+	public LeetleModel(ModelPart root) {
+		this.body = root.getChild("body");
+		this.head = root.getChild("head");
+		this.body2 = root.getChild("body2");
+		this.booty = root.getChild("booty");
+		this.leftLeg1 = root.getChild("leftLeg1");
+		this.rightLeg1 = root.getChild("rightLeg1");
+		this.leftLeg2 = root.getChild("leftLeg2");
+		this.rightLeg2 = root.getChild("rightLeg2");
+	}
+	
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(19, 0).addBox(-3.5F, -3.0F, 0.0F, 7.0F, 6.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 20.0F, -3.5F, 0.0F, 0.0F, 0.0F));
+		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -2.0F, -4.0F, 5.0F, 4.0F, 4.0F, false), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition body2 = root.addOrReplaceChild("body2", CubeListBuilder.create().texOffs(0, 10).addBox(-3.0F, -2.5F, 0.0F, 6.0F, 5.0F, 4.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 5.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition booty = root.addOrReplaceChild("booty", CubeListBuilder.create().texOffs(22, 12).addBox(-2.0F, -2.0F, 0.0F, 4.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 4.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition leftLeg1 = root.addOrReplaceChild("leftLeg1", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.5F, 0.0F, 2.0F, 1.0F, false), PartPose.offsetAndRotation(3.5F, 2.5F, 2.5F, 0.0F, 0.0F, -0.7853982F));
+		PartDefinition rightLeg1 = root.addOrReplaceChild("rightLeg1", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.5F, 0.0F, 2.0F, 1.0F, false), PartPose.offsetAndRotation(-3.5F, 2.5F, 2.5F, 0.0F, 0.0F, 0.7853982F));
+		PartDefinition leftLeg2 = root.addOrReplaceChild("leftLeg2", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.5F, 0.0F, 2.0F, 1.0F, false), PartPose.offsetAndRotation(3.0F, 2.0F, 2.5F, 0.0F, 0.0F, -0.7853982F));
+		PartDefinition rightLeg2 = root.addOrReplaceChild("rightLeg2", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, 0.0F, -0.5F, 0.0F, 2.0F, 1.0F, false), PartPose.offsetAndRotation(-3.0F, 2.0F, 2.5F, 0.0F, 0.0F, 0.7853982F));
+		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override
@@ -94,35 +86,6 @@ public class LeetleModel<E extends AbstractEetleEntity> extends EndimatorEntityM
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer vertexBuilder, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.renderToBuffer(matrixStack, vertexBuilder, packedLight, packedOverlay, red, green, blue, alpha);
 		this.body.render(matrixStack, vertexBuilder, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public void animateModel(E endimatedEntity) {
-		super.animateModel(endimatedEntity);
-		if (this.tryToPlayEndimation(AbstractEetleEntity.GROW_UP)) {
-			this.startKeyframe(5);
-			this.scale(this.body, 0.2F, 0.2F, 0.2F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-
-			this.startKeyframe(5);
-			this.scale(this.body, 0.25F, 0.25F, 0.25F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-
-			this.startKeyframe(10);
-			this.scale(this.body, 0.5F, 0.5F, 0.5F);
-			this.endKeyframe();
-		}
-	}
-
-	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
 	}
 }

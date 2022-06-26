@@ -48,10 +48,10 @@ public class SmallEetleEggModel implements IEetleEggModel {
 	public static LayerDefinition createLayerDefinition() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition root = meshdefinition.getRoot();
-		PartDefinition egg = root.addOrReplaceChild("egg", CubeListBuilder.create(), PartPose.offsetAndRotation(4.0F, 24.0F, 4.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition otherEgg = root.addOrReplaceChild("otherEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(-4.0F, 24.0F, 2.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition bigEgg = root.addOrReplaceChild("bigEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(1.5F, 24.0F, -1.5F, 0.0F, 0.0F, 0.0F));
-		PartDefinition smallEgg = root.addOrReplaceChild("smallEgg", CubeListBuilder.create(), PartPose.offsetAndRotation(-4.5F, 24.0F, -5.5F, 0.0F, 0.0F, 0.0F));
+		PartDefinition egg = root.addOrReplaceChild("egg", CubeListBuilder.create().texOffs(46, 0).addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, false), PartPose.offsetAndRotation(4.0F, 24.0F, 4.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition otherEgg = root.addOrReplaceChild("otherEgg", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -4.0F, -2.0F, 4.0F, 4.0F, 4.0F, false), PartPose.offsetAndRotation(-4.0F, 24.0F, 2.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition bigEgg = root.addOrReplaceChild("bigEgg", CubeListBuilder.create().texOffs(17, 2).addBox(-2.5F, -5.0F, -2.5F, 5.0F, 5.0F, 5.0F, false), PartPose.offsetAndRotation(1.5F, 24.0F, -1.5F, 0.0F, 0.0F, 0.0F));
+		PartDefinition smallEgg = root.addOrReplaceChild("smallEgg", CubeListBuilder.create().texOffs(33, 0).addBox(-1.5F, -3.0F, -1.5F, 3.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(-4.5F, 24.0F, -5.5F, 0.0F, 0.0F, 0.0F));
 		PartDefinition cross1 = root.addOrReplaceChild("cross1", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(-7.8F, 21.0F, 7.8F, 0.0F, 0.7853982F, 0.0F));
 		PartDefinition cross2 = root.addOrReplaceChild("cross2", CubeListBuilder.create().texOffs(0, 29).addBox(0.0F, 0.0F, 0.0F, 11.0F, 3.0F, 0.0F, false), PartPose.offsetAndRotation(-7.8F, 21.0F, -7.8F, 0.0F, -0.7853982F, 0.0F));
 		PartDefinition base = root.addOrReplaceChild("base", CubeListBuilder.create().texOffs(-16, 38).addBox(-8.0F, 0.0F, -8.0F, 16.0F, 0.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, 23.99F, 0.0F, 0.0F, 0.0F, 0.0F));

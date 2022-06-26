@@ -1,10 +1,18 @@
 package com.minecraftabnormals.endergetic.client.models.eetle;
 
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorEntityModel;
-import com.minecraftabnormals.abnormals_core.core.endimator.entity.EndimatorModelRenderer;
 import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntity;
+import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -14,70 +22,46 @@ import net.minecraft.util.Mth;
  * Created using Tabula 7.0.0
  */
 public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> {
-	public EndimatorModelRenderer body;
-	public EndimatorModelRenderer frontLeftLeg;
-	public EndimatorModelRenderer frontRightLeg;
-	public EndimatorModelRenderer backLeftLeg;
-	public EndimatorModelRenderer backRightLeg;
-	public EndimatorModelRenderer rightWing;
-	public EndimatorModelRenderer leftWing;
-	public EndimatorModelRenderer head;
-	public EndimatorModelRenderer mouth;
-	public EndimatorModelRenderer claw;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "charger_eetle"), "main");
 
-	public ChargerEetleModel() {
-		this.texWidth = 64;
-		this.texHeight = 32;
-		this.head = new EndimatorModelRenderer(this, 0, 23);
-		this.head.setPos(0.0F, 0.5F, 0.0F);
-		this.head.addBox(-3.0F, -2.0F, -5.0F, 6, 4, 5, 0.0F);
-		this.setRotateAngle(head, 0.35F, 0.0F, 0.0F);
-		this.backLeftLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.backLeftLeg.mirror = true;
-		this.backLeftLeg.setPos(2.0F, 16.0F, 4.5F);
-		this.backLeftLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
-		this.setRotateAngle(backLeftLeg, 0.4363323129985824F, 0.15707963267948966F, -0.7853981633974483F);
-		this.frontLeftLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.frontLeftLeg.mirror = true;
-		this.frontLeftLeg.setPos(2.0F, 16.0F, -1.5F);
-		this.frontLeftLeg.addBox(0.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
-		this.setRotateAngle(frontLeftLeg, -0.488692191F, 0.0F, -0.7853981633974483F);
-		this.frontRightLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.frontRightLeg.setPos(-2.0F, 16.0F, -1.5F);
-		this.frontRightLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
-		this.setRotateAngle(frontRightLeg, -0.488692191F, 0.0F, 0.7853981633974483F);
-		this.backRightLeg = new EndimatorModelRenderer(this, 52, 0);
-		this.backRightLeg.setPos(-2.0F, 16.0F, 4.5F);
-		this.backRightLeg.addBox(-3.0F, 0.0F, -1.5F, 3, 12, 3, 0.0F);
-		this.setRotateAngle(backRightLeg, 0.4363323129985824F, 0.0F, 0.7853981633974483F);
-		this.mouth = new EndimatorModelRenderer(this, 22, 0);
-		this.mouth.setPos(0.0F, 2.0F, -5.0F);
-		this.mouth.addBox(-2.0F, -8.0F, 0.0F, 4, 8, 3, 0.0F);
-		this.setRotateAngle(mouth, 0.5235987755982988F, 0.0F, 0.0F);
-		this.claw = new EndimatorModelRenderer(this, 20, 18);
-		this.claw.setPos(0.0F, -7.0F, 1.0F);
-		this.claw.addBox(-3.0F, -5.0F, -1.5F, 6, 5, 3, 0.0F);
-		this.setRotateAngle(claw, -0.4363323129985824F, 0.0F, 0.0F);
-		this.rightWing = new EndimatorModelRenderer(this, 0, 0);
-		this.rightWing.setPos(0.0F, -3.0F, 0.0F);
-		this.rightWing.addBox(-5.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
-		this.setRotateAngle(rightWing, -0.08726646259971647F, -0.03490658503988659F, 0.0F);
-		this.body = new EndimatorModelRenderer(this, 28, 16);
-		this.body.setPos(0.0F, 13.5F, -3.5F);
-		this.body.addBox(-4.0F, -3.0F, 0.0F, 8, 6, 10, 0.0F);
-		this.setRotateAngle(body, -0.17453292519943295F, 0.0F, 0.0F);
-		this.leftWing = new EndimatorModelRenderer(this, 0, 0);
-		this.leftWing.mirror = true;
-		this.leftWing.setPos(0.0F, -3.0F, 0.0F);
-		this.leftWing.addBox(0.0F, -1.0F, -1.0F, 5, 6, 12, 0.0F);
-		this.setRotateAngle(leftWing, -0.08726646259971647F, 0.03490658503988659F, 0.0F);
-		this.body.addChild(this.head);
-		this.head.addChild(this.mouth);
-		this.mouth.addChild(this.claw);
-		this.body.addChild(this.rightWing);
-		this.body.addChild(this.leftWing);
+	public ModelPart body;
+	public ModelPart frontLeftLeg;
+	public ModelPart frontRightLeg;
+	public ModelPart backLeftLeg;
+	public ModelPart backRightLeg;
+	public ModelPart rightWing;
+	public ModelPart leftWing;
+	public ModelPart head;
+	public ModelPart mouth;
+	public ModelPart claw;
 
-		this.setDefaultBoxValues();
+	public ChargerEetleModel(ModelPart root) {
+		this.body = root.getChild("body");
+		this.frontLeftLeg = root.getChild("frontLeftLeg");
+		this.frontRightLeg = root.getChild("frontRightLeg");
+		this.backLeftLeg = root.getChild("backLeftLeg");
+		this.backRightLeg = root.getChild("backRightLeg");
+		this.rightWing = root.getChild("rightWing");
+		this.leftWing = root.getChild("leftWing");
+		this.head = root.getChild("head");
+		this.mouth = root.getChild("mouth");
+		this.claw = root.getChild("claw");
+	}
+
+	public static LayerDefinition createLayerDefinition() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition root = meshdefinition.getRoot();
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(28, 16).addBox(-4.0F, -3.0F, 0.0F, 8.0F, 6.0F, 10.0F, false), PartPose.offsetAndRotation(0.0F, 13.5F, -3.5F, -0.17453292F, 0.0F, 0.0F));
+		PartDefinition frontLeftLeg = root.addOrReplaceChild("frontLeftLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, -1.5F, -0.4886922F, 0.0F, -0.7853982F));
+		PartDefinition frontRightLeg = root.addOrReplaceChild("frontRightLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, false), PartPose.offsetAndRotation(-2.0F, 16.0F, -1.5F, -0.4886922F, 0.0F, 0.7853982F));
+		PartDefinition backLeftLeg = root.addOrReplaceChild("backLeftLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, 4.5F, 0.43633232F, 0.15707964F, -0.7853982F));
+		PartDefinition backRightLeg = root.addOrReplaceChild("backRightLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, false), PartPose.offsetAndRotation(-2.0F, 16.0F, 4.5F, 0.43633232F, 0.0F, 0.7853982F));
+		PartDefinition rightWing = root.addOrReplaceChild("rightWing", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, -0.034906585F, 0.0F));
+		PartDefinition leftWing = root.addOrReplaceChild("leftWing", CubeListBuilder.create().texOffs(0, 12).addBox(0.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, 0.034906585F, 0.0F));
+		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 23).addBox(-3.0F, -2.0F, -5.0F, 6.0F, 4.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.35F, 0.0F, 0.0F));
+		PartDefinition mouth = root.addOrReplaceChild("mouth", CubeListBuilder.create().texOffs(22, 0).addBox(-2.0F, -8.0F, 0.0F, 4.0F, 8.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 2.0F, -5.0F, 0.5235988F, 0.0F, 0.0F));
+		PartDefinition claw = root.addOrReplaceChild("claw", CubeListBuilder.create().texOffs(20, 18).addBox(-3.0F, -5.0F, -1.5F, 6.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, -7.0F, 1.0F, -0.43633232F, 0.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
 	@Override
@@ -104,71 +88,10 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 
 	@Override
 	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-		super.renderToBuffer(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.body.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.frontLeftLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.frontRightLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.backLeftLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 		this.backRightLeg.render(matrixStack, buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-	}
-
-	@Override
-	public void animateModel(ChargerEetleEntity eetle) {
-		super.animateModel(eetle);
-		if (this.tryToPlayEndimation(ChargerEetleEntity.ATTACK)) {
-			this.startKeyframe(2);
-			this.rotate(this.head, 0.25F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(3);
-			this.rotate(this.head, -0.75F, 0.0F, 0.0F);
-			this.rotate(this.mouth, -0.09F, 0.0F, 0.0F);
-			this.rotate(this.claw, -0.05F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		} else if (this.tryToPlayEndimation(ChargerEetleEntity.CATAPULT)) {
-			this.startKeyframe(3);
-			this.rotate(this.head, 0.32F, 0.0F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(3);
-			this.rotate(this.head, -0.85F, 0.0F, 0.0F);
-			this.rotate(this.mouth, -0.09F, 0.0F, 0.0F);
-			this.rotate(this.claw, -0.05F, 0.0F, 0.0F);
-			this.rotate(this.leftWing, 0.325F, 0.325F, 0.0F);
-			this.rotate(this.rightWing, 0.325F, -0.325F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.rotate(this.leftWing, 0.1625F, 0.1625F, 0.0F);
-			this.rotate(this.rightWing, 0.1625F, -0.1625F, 0.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		} else if (this.tryToPlayEndimation(ChargerEetleEntity.FLAP)) {
-			this.startKeyframe(5);
-			this.rotate(this.leftWing, 0.26F, 0.26F, 0.0F);
-			this.rotate(this.rightWing, 0.26F, -0.26F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.rotate(this.leftWing, 0.13F, 0.13F, 0.0F);
-			this.rotate(this.rightWing, 0.13F, -0.13F, 0.0F);
-			this.endKeyframe();
-
-			this.startKeyframe(5);
-			this.rotate(this.leftWing, 0.26F, 0.26F, 0.0F);
-			this.rotate(this.rightWing, 0.26F, -0.26F, 0.0F);
-			this.endKeyframe();
-
-			this.resetKeyframe(5);
-		}
-	}
-
-	public void setRotateAngle(EndimatorModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.xRot = x;
-		modelRenderer.yRot = y;
-		modelRenderer.zRot = z;
 	}
 }

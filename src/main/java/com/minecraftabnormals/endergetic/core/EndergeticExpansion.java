@@ -3,14 +3,26 @@ package com.minecraftabnormals.endergetic.core;
 import com.minecraftabnormals.endergetic.client.models.BoofBlockDispenserModel;
 import com.minecraftabnormals.endergetic.client.models.BoofBlockModel;
 import com.minecraftabnormals.endergetic.client.models.PoiseClusterModel;
+import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomBalloonModel;
 import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomBudModel;
 import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomFruitModel;
+import com.minecraftabnormals.endergetic.client.models.bolloom.BolloomKnotModel;
+import com.minecraftabnormals.endergetic.client.models.booflo.AdolescentBoofloModel;
+import com.minecraftabnormals.endergetic.client.models.booflo.BoofloBabyModel;
+import com.minecraftabnormals.endergetic.client.models.booflo.BoofloModel;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
 import com.minecraftabnormals.endergetic.client.models.corrock.CorrockCrownWallModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.BroodEetleModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.ChargerEetleModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.GliderEetleModel;
+import com.minecraftabnormals.endergetic.client.models.eetle.LeetleModel;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggModel;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
 import com.minecraftabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggModel;
 import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
+import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
+import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
+import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
@@ -175,6 +187,18 @@ public class EndergeticExpansion {
 		event.registerLayerDefinition(BolloomFruitModel.LOCATION, BolloomFruitModel::createLayerDefinition);
 		event.registerLayerDefinition(PoiseClusterModel.LOCATION, PoiseClusterModel::createLayerDefinition);
 		event.registerLayerDefinition(BoofBlockModel.LOCATION, BoofBlockModel::createLayerDefinition);
+		event.registerLayerDefinition(BolloomKnotModel.LOCATION, BolloomKnotModel::createLayerDefinition);
+		event.registerLayerDefinition(BolloomBalloonModel.LOCATION, BolloomBalloonModel::createLayerDefinition);
+		event.registerLayerDefinition(PuffBugModel.LOCATION, PuffBugModel::createLayerDefinition);
+		event.registerLayerDefinition(BoofloBabyModel.LOCATION, BoofloBabyModel::createLayerDefinition);
+		event.registerLayerDefinition(AdolescentBoofloModel.LOCATION, AdolescentBoofloModel::createLayerDefinition);
+		event.registerLayerDefinition(BoofloModel.LOCATION, BoofloModel::createLayerDefinition);
+		event.registerLayerDefinition(LeetleModel.LOCATION, LeetleModel::createLayerDefinition);
+		event.registerLayerDefinition(ChargerEetleModel.LOCATION, ChargerEetleModel::createLayerDefinition);
+		event.registerLayerDefinition(GliderEetleModel.LOCATION, GliderEetleModel::createLayerDefinition);
+		event.registerLayerDefinition(BroodEetleModel.LOCATION, BroodEetleModel::createLayerDefinition);
+		event.registerLayerDefinition(PurpoidGelModel.LOCATION, PurpoidGelModel::createLayerDefinition);
+		event.registerLayerDefinition(PurpoidModel.LOCATION, PurpoidModel::createLayerDefinition);
 	}
 
 	private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
