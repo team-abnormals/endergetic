@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public final class C2SSlamMessage {
 					if (ridingEntity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) ridingEntity;
 						if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {
-							NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.CHARGE);
+							NetworkUtil.setPlayingAnimation(booflo, EEPlayableEndimations.BOOFLO_CHARGE);
 							booflo.setBoostExpanding(true);
 							booflo.setBoostLocked(true);
 						}

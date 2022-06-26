@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public final class C2SBoostMessage {
 					if (entity instanceof BoofloEntity) {
 						BoofloEntity booflo = (BoofloEntity) entity;
 						if (booflo.isBoostExpanding() && !booflo.isBoostLocked() && !booflo.isOnGround() && booflo.isBoofed() && booflo.getBoostPower() > 0) {
-							NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.INFLATE);
+							NetworkUtil.setPlayingAnimation(booflo, EEPlayableEndimations.BOOFLO_INFLATE);
 							booflo.playSound(booflo.getInflateSound(), 0.75F, 1.0F);
 							booflo.setBoostExpanding(false);
 						}

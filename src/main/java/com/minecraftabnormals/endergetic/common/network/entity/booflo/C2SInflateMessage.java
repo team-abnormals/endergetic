@@ -1,6 +1,7 @@
 package com.minecraftabnormals.endergetic.common.network.entity.booflo;
 
 import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
+import com.minecraftabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,7 @@ public final class C2SInflateMessage {
 							if (!booflo.isBoofed()) {
 								booflo.setBoostLocked(true);
 								booflo.setBoofed(true);
-								NetworkUtil.setPlayingAnimation(booflo, BoofloEntity.INFLATE);
+								NetworkUtil.setPlayingAnimation(booflo, EEPlayableEndimations.BOOFLO_INFLATE);
 							}
 							booflo.setBoostExpanding(true);
 						}
