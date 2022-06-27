@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
@@ -10,14 +9,15 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
@@ -31,15 +31,15 @@ public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
-		if (rand.nextFloat() < 0.1F) return false;
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
 		BlockPos hivePos = pos.below();
-
 		if (world.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.above()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
 			if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 				world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
 				world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
-				this.spawnPuffBugs(world, hivePos, rand);
+				this.spawnPuffBugs(world, hivePos, context.random());
 				return true;
 			}
 		} else {
@@ -47,7 +47,7 @@ public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 				if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
 					world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
 					world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
-					this.spawnPuffBugs(world, hivePos, rand);
+					this.spawnPuffBugs(world, hivePos, context.random());
 					return true;
 				}
 			}
@@ -55,7 +55,7 @@ public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 		return false;
 	}
 
-	private void spawnPuffBugs(WorldGenLevel world, BlockPos pos, Random rand) {
+	private void spawnPuffBugs(WorldGenLevel world, BlockPos pos, RandomSource rand) {
 		int maxPuffBugs = rand.nextInt(4) + 2;
 
 		List<Direction> openSides = this.getOpenSides(world, pos);

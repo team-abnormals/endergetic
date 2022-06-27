@@ -1,19 +1,17 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
-import java.util.Random;
-
 import com.minecraftabnormals.endergetic.common.blocks.AcidianLanternBlock;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class EndergeticEndPodiumFeature extends EndPodiumFeature {
@@ -35,50 +33,52 @@ public class EndergeticEndPodiumFeature extends EndPodiumFeature {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		BlockPos pos = context.origin();
+		WorldGenLevel level = context.level();
 		for (BlockPos blockpos : BlockPos.betweenClosed(new BlockPos(pos.getX() - 4, pos.getY() - 1, pos.getZ() - 4), new BlockPos(pos.getX() + 4, pos.getY() + 32, pos.getZ() + 4))) {
 			boolean flag = blockpos.closerThan(pos, 2.5D);
 			if (flag || blockpos.closerThan(pos, 3.5D)) {
 				if (blockpos.getY() < pos.getY()) {
 					if (flag) {
-						this.setBlockState(worldIn, blockpos.above(), MYSTICAL_OBSIDIAN);
+						this.setBlockState(level, blockpos.above(), MYSTICAL_OBSIDIAN);
 					} else if (blockpos.getY() < pos.getY()) {
-						this.setBlockState(worldIn, blockpos.above(), Blocks.END_STONE.defaultBlockState());
+						this.setBlockState(level, blockpos.above(), Blocks.END_STONE.defaultBlockState());
 					}
 				} else if (blockpos.getY() > pos.getY()) {
-					this.setBlockState(worldIn, blockpos.above(), Blocks.AIR.defaultBlockState());
+					this.setBlockState(level, blockpos.above(), Blocks.AIR.defaultBlockState());
 				} else if (!flag) {
-					this.setBlockState(worldIn, blockpos.above(), MYSTICAL_OBSIDIAN);
+					this.setBlockState(level, blockpos.above(), MYSTICAL_OBSIDIAN);
 				} else if (this.activePortal) {
-					this.setBlockState(worldIn, blockpos.above(), Blocks.END_PORTAL.defaultBlockState());
+					this.setBlockState(level, blockpos.above(), Blocks.END_PORTAL.defaultBlockState());
 				} else {
-					this.setBlockState(worldIn, blockpos.above(), Blocks.AIR.defaultBlockState());
+					this.setBlockState(level, blockpos.above(), Blocks.AIR.defaultBlockState());
 				}
 			}
 		}
 
-		this.setBlockState(worldIn, pos.above(2).north(2).east(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.above(2).north(2).west(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.above(2).south(2).east(2), MYSTICAL_OBSIDIAN_WALL);
-		this.setBlockState(worldIn, pos.above(2).south(2).west(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(level, pos.above(2).north(2).east(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(level, pos.above(2).north(2).west(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(level, pos.above(2).south(2).east(2), MYSTICAL_OBSIDIAN_WALL);
+		this.setBlockState(level, pos.above(2).south(2).west(2), MYSTICAL_OBSIDIAN_WALL);
 
 		for (int i = 1; i < 6; i++) {
 			if (i > 3) {
-				this.setBlockState(worldIn, pos.above(i), MYSTICAL_OBSIDIAN_WALL);
+				this.setBlockState(level, pos.above(i), MYSTICAL_OBSIDIAN_WALL);
 			} else {
-				this.setBlockState(worldIn, pos.above(i), MYSTICAL_OBSIDIAN);
+				this.setBlockState(level, pos.above(i), MYSTICAL_OBSIDIAN);
 			}
 		}
 
 		for (int i = 2; i < 6; i++) {
-			this.createRuneSide(worldIn, pos, Direction.from3DDataValue(i), this.activePortal);
+			this.createRuneSide(level, pos, Direction.from3DDataValue(i), this.activePortal);
 		}
 
 		if (this.activePortal) {
-			this.setBlockState(worldIn, pos.above(3).north(2).east(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.above(3).north(2).west(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.above(3).south(2).east(2), ACIDIAN_LANTERN);
-			this.setBlockState(worldIn, pos.above(3).south(2).west(2), ACIDIAN_LANTERN);
+			this.setBlockState(level, pos.above(3).north(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(level, pos.above(3).north(2).west(2), ACIDIAN_LANTERN);
+			this.setBlockState(level, pos.above(3).south(2).east(2), ACIDIAN_LANTERN);
+			this.setBlockState(level, pos.above(3).south(2).west(2), ACIDIAN_LANTERN);
 		}
 
 		return true;

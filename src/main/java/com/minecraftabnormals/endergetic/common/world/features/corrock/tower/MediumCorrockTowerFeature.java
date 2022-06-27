@@ -1,24 +1,22 @@
 package com.minecraftabnormals.endergetic.common.world.features.corrock.tower;
 
 import com.google.common.collect.Lists;
-import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.world.configs.CorrockTowerConfig;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.blueprint.core.util.GenerationPiece;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import java.util.List;
-import java.util.Random;
-
-import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature.ChorusPlantPart;
 
 public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<CorrockTowerConfig> {
 
@@ -27,10 +25,14 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
+	public boolean place(FeaturePlaceContext<CorrockTowerConfig> context) {
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
 		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 			GenerationPiece base = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
+			RandomSource rand = context.random();
+			CorrockTowerConfig config = context.config();
 			int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
 			fillUp(base, corrockBlockState, pos, height);
 
@@ -118,7 +120,7 @@ public final class MediumCorrockTowerFeature extends AbstractCorrockFeature<Corr
 		}
 	}
 
-	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(LevelAccessor world, BlockPos pos, Random rand, float crownChance, float chorusChance) {
+	private static Pair<GenerationPiece, List<ChorusPlantPart>> getTop(LevelAccessor world, BlockPos pos, RandomSource rand, float crownChance, float chorusChance) {
 		GenerationPiece top = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
 		List<ChorusPlantPart> growths = Lists.newArrayList();
 		List<BlockPos> corners = Lists.newArrayList();

@@ -4,15 +4,14 @@ import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
-
-import java.util.Random;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 	private static final Direction[] DIRECTIONS = Direction.values();
@@ -24,9 +23,12 @@ public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, EndergeticPatchConfig config) {
+	public boolean place(FeaturePlaceContext<EndergeticPatchConfig> context) {
 		int i = 0;
-		pos = EndergeticPatchConfig.getPos(world, pos, config.shouldSearchDown());
+		WorldGenLevel world = context.level();
+		EndergeticPatchConfig config = context.config();
+		BlockPos pos = EndergeticPatchConfig.getPos(world, context.origin(), config.shouldSearchDown());
+		RandomSource rand = context.random();
 		EetleEggBlock.shuffleDirections(DIRECTIONS, rand);
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		float chance = config.getFrequency();
@@ -53,15 +55,15 @@ public class EetleEggPatchFeature extends Feature<EndergeticPatchConfig> {
 		return i > 0;
 	}
 
-	private static void spreadInfestedCorrockAtPos(WorldGenLevel world, BlockPos pos, Random random, Block corrockBlock) {
+	private static void spreadInfestedCorrockAtPos(WorldGenLevel level, BlockPos pos, RandomSource random, Block corrockBlock) {
 		int radius = 1;
-		world.setBlock(pos, INFESTED_STATE, 2);
+		level.setBlock(pos, INFESTED_STATE, 2);
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
 				for (int z = -radius; z <= radius; z++) {
-					if (world.getBlockState(mutable.setWithOffset(pos, x, y, z)).getBlock() == corrockBlock && random.nextFloat() <= 0.25F) {
-						world.setBlock(mutable, INFESTED_STATE, 2);
+					if (level.getBlockState(mutable.setWithOffset(pos, x, y, z)).getBlock() == corrockBlock && random.nextFloat() <= 0.25F) {
+						level.setBlock(mutable, INFESTED_STATE, 2);
 					}
 				}
 			}

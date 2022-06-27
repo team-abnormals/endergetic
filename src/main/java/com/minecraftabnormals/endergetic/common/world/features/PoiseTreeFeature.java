@@ -10,6 +10,7 @@ import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -17,9 +18,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.LevelSimulatedRW;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
@@ -35,20 +36,20 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		RandomSource rand = context.random();
 		int treeHeight = rand.nextInt(19) + 13;
 		int size = 0;
-		//Random tree top size; small(45%), medium(40%), large(15%)
 		float rng = rand.nextFloat();
-		if (rng <= 0.45F) {
-			size = 0;
-		} else {
+		if (rng >= 0.45F) {
 			if (rng >= 0.85F) {
 				size = 2;
 			} else {
 				size = 1;
 			}
 		}
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
 		if (this.isValidGround(world, pos.below()) && this.isAreaOpen(world, pos)) {
 			boolean[] isSutableForSizes = new boolean[]{
 					GenerationUtils.isAreaReplacable(world, pos.north(3).west(3).above(treeHeight).getX(), pos.north(3).west(3).above(treeHeight).getY(), pos.north(3).west(3).above(treeHeight).getZ(), pos.south(3).east(3).above(treeHeight + 7).getX(), pos.south(3).east(3).above(treeHeight + 7).getY(), pos.south(3).east(3).above(treeHeight + 7).getZ()),
@@ -153,7 +154,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		return false;
 	}
 
-	private void buildTreeBase(LevelAccessor world, BlockPos pos, Random rand) {
+	private void buildTreeBase(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		int[] sideRandValues = new int[]{
 				rand.nextInt(8) + 2,
 				rand.nextInt(8) + 2,
@@ -185,14 +186,14 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildStem(LevelAccessor world, BlockPos pos, Random rand, int height) {
+	private void buildStem(LevelAccessor world, BlockPos pos, RandomSource rand, int height) {
 		for (int y = 1; y < height; y++) {
 			boolean doBubbles = y <= height - 2 ? false : true;
 			this.setPoiseLog(world, pos.above(y), rand, false, doBubbles);
 		}
 	}
 
-	private void buildTreeTop(LevelAccessor world, BlockPos pos, Random rand, int arrivedPos, int size) {
+	private void buildTreeTop(LevelAccessor world, BlockPos pos, RandomSource rand, int arrivedPos, int size) {
 		if (size == 0) {
 			for (int x = pos.getX() - 1; x <= pos.getX() + 1; x++) {
 				for (int z = pos.getZ() - 1; z <= pos.getZ() + 1; z++) {
@@ -445,7 +446,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 			if (rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.south(), rand, false, true);
 			if (rand.nextFloat() <= 0.75F) this.setPoiseLog(world, origin.west(), rand, false, true);
 
-			GenerationUtils.fillWithRandomTwoBlocksCube(world, origin.above().north().west().getX(), origin.above().north().west().getY(), origin.above().north().west().getZ(), origin.above(2).east().south().getX(), origin.above(2).east().south().getY(), origin.above(2).east().south().getZ(), rand, POISE_STEM.get(), GLOWING_POISE_STEM.get(), 0.10F);
+			GenerationUtils.fillWithRandomTwoBlocksCube(world, origin.above().north().west().getX(), origin.above().north().west().getY(), origin.above().north().west().getZ(), origin.above(2).east().south().getX(), origin.above(2).east().south().getY(), origin.above(2).east().south().getZ(), new Random(rand.nextLong()), POISE_STEM.get(), GLOWING_POISE_STEM.get(), 0.10F);
 
 			for (int x = origin.getX() - 1; x <= origin.getX() + 1; x++) {
 				for (int z = origin.getZ() - 3; z <= origin.getZ() + 3; z++) {
@@ -620,7 +621,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void addTreeDomeTop(LevelAccessor world, BlockPos pos, Random rand, int arrivedPos, int size) {
+	private void addTreeDomeTop(LevelAccessor world, BlockPos pos, RandomSource rand, int arrivedPos, int size) {
 		BlockPos origin = pos.above(arrivedPos);
 		if (size == 0) {
 			//North
@@ -907,7 +908,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void tryToBuildBranch(LevelAccessor world, BlockPos pos, Random rand, int treeHeight) {
+	private void tryToBuildBranch(LevelAccessor world, BlockPos pos, RandomSource rand, int treeHeight) {
 		// First array - Values for the amout of blocks in the facing direction, Second Array - Values for the amount of blocks up
 		int[] branchLengths = new int[]{
 				rand.nextInt(3) + 1,
@@ -922,7 +923,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 				rand.nextInt(4) + 4
 		};
 		Direction randDir = Direction.from3DDataValue(rand.nextInt(4) + 2);
-		int pickedHeight = rand.nextInt((int) Math.ceil(treeHeight / 3)) + 6;
+		int pickedHeight = rand.nextInt((int) Math.ceil(treeHeight / 3.0F)) + 6;
 		BlockPos pickedPosition = pos.relative(randDir).above(pickedHeight);
 		if (world.getBlockState(pickedPosition).getMaterial().isReplaceable() && treeHeight > 15) {
 			if (this.isViableBranchArea(world, pickedPosition, randDir, 2 + branchLengths[0] + branchLengths[1], pickedPosition.relative(randDir, branchLengths[0] + branchLengths[1] + branchLengths[2] + branchLengths[3]).above(3 + branchHeights[2]).above(branchHeights[3]))) {
@@ -963,7 +964,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildSideBubble(LevelAccessor world, BlockPos pos, Random rand) {
+	private void buildSideBubble(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		int variant = rand.nextInt(100);
 		if (variant >= 49) {
 			Direction randDir = Direction.from3DDataValue(rand.nextInt(4) + 2);
@@ -1055,7 +1056,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	public void buildPoismossCircle(LevelAccessor world, LevelSimulatedRW reader, Random random, BlockPos pos) {
+	public void buildPoismossCircle(LevelAccessor world, LevelSimulatedRW reader, RandomSource random, BlockPos pos) {
 		this.placePoismossCircle(world, reader, pos.west().north());
 		this.placePoismossCircle(world, reader, pos.east(2).north());
 		this.placePoismossCircle(world, reader, pos.west().south(2));
@@ -1096,7 +1097,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void placeInnerDomeFeatures(LevelAccessor world, Random rand, BlockPos pos) {
+	private void placeInnerDomeFeatures(LevelAccessor world, RandomSource rand, BlockPos pos) {
 		if (rand.nextFloat() > 0.75) return;
 
 		for (int x = 0; x < 128; x++) {
@@ -1135,7 +1136,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		return true;
 	}
 
-	private void setPoiseLog(LevelAccessor world, BlockPos pos, Random rand, boolean isTreeBase, boolean noBubbles) {
+	private void setPoiseLog(LevelAccessor world, BlockPos pos, RandomSource rand, boolean isTreeBase, boolean noBubbles) {
 		BlockState logState = rand.nextFloat() <= 0.11F ? GLOWING_POISE_STEM.get() : POISE_STEM.get();
 		if (world.getBlockState(pos).getMaterial().isReplaceable() || world.getBlockState(pos).getBlock() == EEBlocks.POISE_CLUSTER.get()) {
 			world.setBlock(pos, logState, 2);
@@ -1158,7 +1159,7 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void setPoiseLogWithDirection(LevelAccessor world, BlockPos pos, Random rand, Direction direction) {
+	private void setPoiseLogWithDirection(LevelAccessor world, BlockPos pos, RandomSource rand, Direction direction) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? POISE_STEM.get().setValue(GlowingPoiseStemBlock.AXIS, direction.getAxis()) : GLOWING_POISE_STEM.get().setValue(GlowingPoiseStemBlock.AXIS, direction.getAxis());
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, logState, 2);
@@ -1179,27 +1180,19 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 		int y = topPosition.getY() - pos.getY();
 		if (direction == Direction.NORTH) {
 			if (GenerationUtils.isAreaReplacable(world, pos.below().west().north(directionLength).getX(), pos.below().west().north(directionLength).getY(), pos.below().west().north(directionLength).getZ(), pos.above(y).east().getX(), pos.above(y).east().getY(), pos.above(y).east().getZ())) {
-				if (GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ())) {
-					return true;
-				}
+				return GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ());
 			}
 		} else if (direction == Direction.EAST) {
 			if (GenerationUtils.isAreaReplacable(world, pos.below().north().east(directionLength).getX(), pos.below().north().east(directionLength).getY(), pos.below().north().east(directionLength).getZ(), pos.above(y).west().getX(), pos.above(y).west().getY(), pos.above(y).west().getZ())) {
-				if (GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ())) {
-					return true;
-				}
+				return GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ());
 			}
 		} else if (direction == Direction.SOUTH) {
 			if (GenerationUtils.isAreaReplacable(world, pos.below().west().getX(), pos.below().west().getY(), pos.below().west().getZ(), pos.above(y).east().south(directionLength).getX(), pos.above(y).east().south(directionLength).getY(), pos.above(y).east().south(directionLength).getZ())) {
-				if (GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ())) {
-					return true;
-				}
+				return GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ());
 			}
 		} else {
 			if (GenerationUtils.isAreaReplacable(world, pos.below().north().getX(), pos.below().north().getY(), pos.below().north().getZ(), pos.above(y).south().west(directionLength).getX(), pos.above(y).south().west(directionLength).getY(), pos.above(y).south().west(directionLength).getZ())) {
-				if (GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ())) {
-					return true;
-				}
+				return GenerationUtils.isAreaReplacable(world, topPosition.north(3).west(3).getX(), topPosition.north(3).west(3).getY(), topPosition.north(3).west(3).getZ(), topPosition.south(3).east(3).above(7).getX(), topPosition.south(3).east(3).above(7).getY(), topPosition.south(3).east(3).above(7).getZ());
 			}
 		}
 		return false;
@@ -1219,7 +1212,8 @@ public class PoiseTreeFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	private boolean isValidGround(LevelAccessor world, BlockPos pos) {
-		Block block = world.getBlockState(pos).getBlock();
-		return block == Blocks.END_STONE.getBlock() || block.is(EETags.Blocks.END_PLANTABLE) || block.is(EETags.Blocks.POISE_PLANTABLE);
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		return block == Blocks.END_STONE || state.is(EETags.Blocks.END_PLANTABLE) || state.is(EETags.Blocks.POISE_PLANTABLE);
 	}
 }

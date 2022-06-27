@@ -1,19 +1,18 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
-import java.util.Random;
-
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.LevelSimulatedRW;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
@@ -23,7 +22,10 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
+		RandomSource rand = context.random();
 		if (world.getBlockState(pos.below()).getBlock() == Blocks.END_STONE && isViableDomeArea(world, pos) && this.isGroundViable(world, pos.below(3), rand)) {
 			this.buildDomeBase(world, pos, rand);
 			this.buildDome(world, pos, rand);
@@ -32,8 +34,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		return false;
 	}
 
-	private void buildDomeBase(LevelAccessor world, BlockPos pos, Random rand) {
-		BlockPos origin = pos;
+	private void buildDomeBase(LevelAccessor world, BlockPos origin, RandomSource rand) {
 		for (int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
 			for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
 				if (x == origin.getX() - 13 || x == origin.getX() + 13) {
@@ -210,7 +211,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		this.buildPoismossCircle(world, world, rand, origin);
 	}
 
-	private void buildDome(LevelAccessor world, BlockPos origin, Random rand) {
+	private void buildDome(LevelAccessor world, BlockPos origin, RandomSource rand) {
 		/*
 		 * North
 		 */
@@ -663,7 +664,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildPoismossCircle(LevelAccessor world, LevelSimulatedRW reader, Random random, BlockPos pos) {
+	private void buildPoismossCircle(LevelAccessor world, LevelSimulatedRW reader, RandomSource random, BlockPos pos) {
 		this.placePoismossCircle(world, reader, pos.west().north());
 		this.placePoismossCircle(world, reader, pos.east(2).north());
 		this.placePoismossCircle(world, reader, pos.west().south(2));
@@ -689,7 +690,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildDomeHole(LevelAccessor world, BlockPos pos, Random rand, boolean top, int variant) {
+	private void buildDomeHole(LevelAccessor world, BlockPos pos, RandomSource rand, boolean top, int variant) {
 		if (top) {
 			switch (variant) {
 				case 0:
@@ -999,7 +1000,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildGround(LevelAccessor world, BlockPos pos, Random rand) {
+	private void buildGround(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		BlockPos origin = pos.below();
 		for (int x = origin.getX() - 13; x <= origin.getX() + 13; x++) {
 			for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
@@ -1057,7 +1058,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void buildPoiseHanger(LevelAccessor world, BlockPos pos, Random rand, int direction, boolean corner) {
+	private void buildPoiseHanger(LevelAccessor world, BlockPos pos, RandomSource rand, int direction, boolean corner) {
 		if (!corner) {
 			switch (direction) {
 				case 0:
@@ -1315,7 +1316,7 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		return GenerationUtils.isAreaReplacable(world, pos.north(13).west(13).getX(), pos.north(13).west(13).getY(), pos.north(13).west(13).getZ(), pos.above(16).south(13).east(13).getX(), pos.above(16).south(13).east(13).getY(), pos.above(16).south(13).east(13).getZ());
 	}
 
-	private boolean isGroundViable(LevelAccessor world, BlockPos pos, Random rand) {
+	private boolean isGroundViable(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		for (int xx = pos.north(13).west(13).getX(); xx <= pos.south(13).east(13).getX(); xx++) {
 			for (int zz = pos.north(13).west(13).getZ(); zz <= pos.south(13).east(13).getZ(); zz++) {
 				if (!isProperBlock(world, new BlockPos(xx, pos.getY(), zz))) {
@@ -1338,27 +1339,27 @@ public class PoiseDomeFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	private void setPoiseCluster(LevelAccessor world, BlockPos pos, Random rand) {
+	private void setPoiseCluster(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, EEBlocks.POISE_CLUSTER.get().defaultBlockState(), 2);
 		}
 	}
 
-	private void setPoiseLogHighProb(LevelAccessor world, BlockPos pos, Random rand) {
+	private void setPoiseLogHighProb(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		BlockState logState = rand.nextFloat() <= 0.35F ? EEBlocks.POISE_STEM.get().defaultBlockState() : EEBlocks.GLOWING_POISE_STEM.get().defaultBlockState();
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, logState, 2);
 		}
 	}
 
-	private void setPoiseLog(LevelAccessor world, BlockPos pos, Random rand) {
+	private void setPoiseLog(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_STEM.get().defaultBlockState() : EEBlocks.GLOWING_POISE_STEM.get().defaultBlockState();
 		if (world.getBlockState(pos).getMaterial().isReplaceable()) {
 			world.setBlock(pos, logState, 2);
 		}
 	}
 
-	private void setPoiseLogUnsafe(LevelAccessor world, BlockPos pos, Random rand) {
+	private void setPoiseLogUnsafe(LevelAccessor world, BlockPos pos, RandomSource rand) {
 		BlockState logState = rand.nextFloat() <= 0.90F ? EEBlocks.POISE_STEM.get().defaultBlockState() : EEBlocks.GLOWING_POISE_STEM.get().defaultBlockState();
 		world.setBlock(pos, logState, 2);
 	}

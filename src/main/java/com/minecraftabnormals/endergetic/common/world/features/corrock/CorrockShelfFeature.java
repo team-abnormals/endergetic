@@ -5,19 +5,19 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockPlantBlock;
 import com.minecraftabnormals.endergetic.common.world.structures.pieces.EetleNestPieces;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatureConfiguration> {
 	private static final Direction[] DIRECTIONS = getDirections(false);
@@ -29,17 +29,20 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityFeatureConfiguration config) {
+	public boolean place(FeaturePlaceContext<ProbabilityFeatureConfiguration> context) {
 		//Dirty trick to fix Shelfs attaching to not yet generated chunks in Eetle Nests
-		if (EetleNestPieces.isNotInsideGeneratingBounds(pos) && world.isEmptyBlock(pos) && world.getBlockState(pos.above()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(world, pos)) {
+		BlockPos pos = context.origin();
+		WorldGenLevel level = context.level();
+		if (EetleNestPieces.isNotInsideGeneratingBounds(pos) && level.isEmptyBlock(pos) && level.getBlockState(pos.above()).getBlock() != CORROCK_BLOCK_BLOCK && isTouchingWall(level, pos)) {
+			RandomSource rand = context.random();
 			int size = rand.nextBoolean() ? 3 : 4;
-			generateShelf(world, rand, pos.getX(), pos.getY(), pos.getZ(), size, 10, rand.nextInt(2) + 2, rand.nextInt(2) + 2, config.probability);
+			generateShelf(level, rand, pos.getX(), pos.getY(), pos.getZ(), size, 10, rand.nextInt(2) + 2, rand.nextInt(2) + 2, context.config().probability);
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			BlockState corrockState = CORROCK_STATE.get();
 			for (int i = 0; i < 16; i++) {
-				if (rand.nextFloat() < 0.4F && world.isEmptyBlock(mutable.setWithOffset(pos, rand.nextInt(size) - rand.nextInt(size), 1, rand.nextInt(size) - rand.nextInt(size)))) {
-					if (world.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
-						world.setBlock(mutable, corrockState, 2);
+				if (rand.nextFloat() < 0.4F && level.isEmptyBlock(mutable.setWithOffset(pos, rand.nextInt(size) - rand.nextInt(size), 1, rand.nextInt(size) - rand.nextInt(size)))) {
+					if (level.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
+						level.setBlock(mutable, corrockState, 2);
 					}
 				}
 			}
@@ -73,7 +76,7 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 		return false;
 	}
 
-	private static void generateShelf(WorldGenLevel world, Random rand, int originX, int originY, int originZ, int size, int edgeBias, float underXDistance, float underZDistance, float crownChance) {
+	private static void generateShelf(WorldGenLevel level, RandomSource rand, int originX, int originY, int originZ, int size, int edgeBias, float underXDistance, float underZDistance, float crownChance) {
 		int min = -(size / edgeBias + size);
 		int max = size / edgeBias + size;
 		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
@@ -83,18 +86,18 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 		for (int x = min; x <= max; x++) {
 			for (int z = min; z <= max; z++) {
 				mutable.set(originX + x, originY, originZ + z);
-				if (canReplace(world, mutable)) {
+				if (canReplace(level, mutable)) {
 					double radius = (Math.cos(4 * Math.atan2(z, x)) / edgeBias + 1) * size;
 					int distance = x * x + z * z;
 					if (distance < radius * radius) {
-						world.setBlock(mutable, corrockBlockState, 2);
+						level.setBlock(mutable, corrockBlockState, 2);
 						if (rand.nextFloat() < 0.25F) {
 							speckledPatchPositions.add(mutable.immutable());
 						}
 						if (x * x < (radius - underXDistance) * (radius - underXDistance) && z * z < (radius - underZDistance) * (radius - underZDistance)) {
 							BlockPos down = mutable.below();
-							if (canReplace(world, down)) {
-								world.setBlock(down, corrockBlockState, 2);
+							if (canReplace(level, down)) {
+								level.setBlock(down, corrockBlockState, 2);
 							}
 						}
 						if (rand.nextFloat() < crownChance) {
@@ -102,8 +105,8 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 							if (distance > radiusMinusOne * radiusMinusOne) {
 								if (rand.nextBoolean()) {
 									BlockPos up = mutable.above();
-									if (canReplace(world, up)) {
-										world.setBlock(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
+									if (canReplace(level, up)) {
+										level.setBlock(up, getCorrockCrownStanding(rand.nextInt(16)), 2);
 									}
 								} else {
 									wallCrowns.add(mutable.immutable());
@@ -120,8 +123,8 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 			Direction[] directions = rand.nextBoolean() ? DIRECTIONS : DIRECTIONS_REVERSED;
 			for (Direction direction : directions) {
 				BlockPos offset = pos.relative(direction);
-				if (canReplace(world, offset)) {
-					world.setBlock(offset, getCorrockCrownWall(direction), 2);
+				if (canReplace(level, offset)) {
+					level.setBlock(offset, getCorrockCrownWall(direction), 2);
 					if (rand.nextFloat() > crownChance || crownsPlaced++ == 1) {
 						break;
 					}
@@ -144,8 +147,8 @@ public class CorrockShelfFeature extends AbstractCorrockFeature<ProbabilityFeatu
 								y += (rand.nextInt(3) - rand.nextInt(3));
 							}
 						}
-						if (world.getBlockState(mutable.setWithOffset(pos, x, y, z)).getBlock() == Blocks.END_STONE && rand.nextFloat() < 0.6F) {
-							world.setBlock(mutable, SPECKLED_CORROCK, 2);
+						if (level.getBlockState(mutable.setWithOffset(pos, x, y, z)).getBlock() == Blocks.END_STONE && rand.nextFloat() < 0.6F) {
+							level.setBlock(mutable, SPECKLED_CORROCK, 2);
 						}
 					}
 				}

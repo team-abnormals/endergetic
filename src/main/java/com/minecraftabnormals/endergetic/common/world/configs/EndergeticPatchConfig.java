@@ -32,7 +32,6 @@ public final class EndergeticPatchConfig implements FeatureConfiguration {
 		return this.searchDown;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static BlockPos getPos(WorldGenLevel world, BlockPos pos, boolean searchDown) {
 		if (searchDown) {
 			BlockPos.MutableBlockPos mutable = pos.mutable();

@@ -5,19 +5,19 @@ import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchCon
 import com.minecraftabnormals.endergetic.common.world.configs.MultiPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
@@ -31,22 +31,26 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
-		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).below();
-		Block downBlock = world.getBlockState(down).getBlock();
+	public boolean place(FeaturePlaceContext<MultiPatchConfig> context) {
+		WorldGenLevel level = context.level();
+		BlockPos pos = context.origin();
+		BlockPos down = EndergeticPatchConfig.getPos(level, pos, false).below();
+		Block downBlock = level.getBlockState(down).getBlock();
 		if (downBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
+			RandomSource rand = context.random();
+			MultiPatchConfig config = context.config();
 			int extraPatches = 1 + rand.nextInt(config.getMaxExtraPatches() + 1);
 			int maxExtraRadius = config.getMaxExtraRadius();
-			generatePatch(world, down, rand, maxExtraRadius);
+			generatePatch(level, down, rand, maxExtraRadius);
 			for (int i = 0; i < extraPatches; i++) {
-				generatePatch(world, down.offset(rand.nextInt(3) - rand.nextInt(3) , 0, rand.nextInt(3) - rand.nextInt(3)), rand, maxExtraRadius);
+				generatePatch(level, down.offset(rand.nextInt(3) - rand.nextInt(3) , 0, rand.nextInt(3) - rand.nextInt(3)), rand, maxExtraRadius);
 			}
 			return true;
 		}
 		return false;
 	}
 
-	private static void generatePatch(WorldGenLevel world, BlockPos origin, Random rand, int maxExtraRadius) {
+	private static void generatePatch(WorldGenLevel level, BlockPos origin, RandomSource rand, int maxExtraRadius) {
 		int radius = 2 + rand.nextInt(maxExtraRadius);
 		int radiusSquared = radius * radius;
 		int originX = origin.getX();
@@ -58,12 +62,12 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 			for (int z = -radius; z <= radius; z++) {
 				int distanceSq = x * x + z * z - rand.nextInt(2);
 				if (distanceSq <= radiusSquared) {
-					BlockPos pos = world.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
+					BlockPos pos = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, mutable.set(originX + x, originY, originZ + z)).below();
 					int distanceY = Math.abs(originY - pos.getY());
 					if (distanceY <= 1) {
-						if (TRANSFORMABLE_BLOCKS.contains(world.getBlockState(pos).getBlock())) {
+						if (TRANSFORMABLE_BLOCKS.contains(level.getBlockState(pos).getBlock())) {
 							positions.add(pos);
-							world.setBlock(pos, END_STONE, 2);
+							level.setBlock(pos, END_STONE, 2);
 						}
 					}
 				}
@@ -73,12 +77,12 @@ public class SpeckledCorrockPatchFeature extends Feature<MultiPatchConfig> {
 			int neighborCorrocks = 0;
 			for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 				BlockPos offset = pos.relative(horizontal);
-				if (world.getBlockState(offset).getBlock() == CORROCK_BLOCK) {
+				if (level.getBlockState(offset).getBlock() == CORROCK_BLOCK) {
 					neighborCorrocks++;
 				}
 			}
 			if (neighborCorrocks > 0 && rand.nextFloat() >= neighborCorrocks * 0.25F) {
-				world.setBlock(pos, SPECKLED_CORROCK, 2);
+				level.setBlock(pos, SPECKLED_CORROCK, 2);
 			}
 		});
 	}

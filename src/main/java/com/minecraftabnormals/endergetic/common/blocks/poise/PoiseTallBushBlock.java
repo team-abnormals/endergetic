@@ -3,7 +3,7 @@ package com.minecraftabnormals.endergetic.common.blocks.poise;
 import javax.annotation.Nullable;
 
 import com.minecraftabnormals.endergetic.client.particles.EEParticles;
-import com.minecraftabnormals.endergetic.common.world.other.PoiseTree;
+import com.minecraftabnormals.endergetic.common.world.features.PoiseTreeFeature;
 import com.minecraftabnormals.endergetic.core.registry.EESounds;
 import com.minecraftabnormals.endergetic.core.registry.other.EETags;
 
@@ -31,6 +31,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.BlockGetter;
@@ -188,9 +190,8 @@ public class PoiseTallBushBlock extends Block implements BonemealableBlock {
 			worldIn.setBlock(pos, state.cycle(STAGE), 4);
 		} else {
 			if (!ForgeEventFactory.saplingGrowTree(worldIn, rand, pos)) return;
-			PoiseTree tree = new PoiseTree();
 			BlockPos treePos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
-			tree.spawn(worldIn, worldIn.getChunkSource().getGenerator(), treePos, state, rand);
+			(new PoiseTreeFeature(NoneFeatureConfiguration.CODEC)).place(FeatureConfiguration.NONE, worldIn, worldIn.getChunkSource().getGenerator(), rand, treePos);
 		}
 	}
 

@@ -5,15 +5,16 @@ import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock
 import com.minecraftabnormals.endergetic.common.world.configs.CorrockArchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.*;
@@ -25,7 +26,9 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockArchConfig config) {
+	public boolean place(FeaturePlaceContext<CorrockArchConfig> context) {
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
 		Block below = world.getBlockState(pos.below()).getBlock();
 		if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get()) && world.isEmptyBlock(pos)) {
 			int originX = pos.getX();
@@ -34,10 +37,12 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 			if (isGroundSolid(world, originX, originY - 1, originZ)) {
 				BlockPos.MutableBlockPos mutable = pos.mutable();
 				BlockPos end = null;
+				CorrockArchConfig config = context.config();
 				float maxDistance = config.getMaxDistance();
 				int maxDistanceInt = (int) maxDistance;
 				float minDistance = config.getMinDistance();
 				double distance = 0.0F;
+				RandomSource rand = context.random();
 				for (int i = 0; i < 10; i++) {
 					int xPos = originX + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
 					int zPos = originZ + rand.nextInt(maxDistanceInt) - rand.nextInt(maxDistanceInt);
@@ -45,7 +50,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 					mutable.setY(world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, xPos, zPos));
 					below = world.getBlockState(mutable.below()).getBlock();
 					if ((below == CORROCK_BLOCK_BLOCK || below == EEBlocks.EUMUS.get() || below == Blocks.END_STONE) && isGroundSolid(world, xPos, mutable.getY() - 1, zPos)) {
-						distance = Mth.sqrt(mutable.distSqr(pos));
+						distance = Mth.sqrt((float) mutable.distSqr(pos));
 						if (distance >= minDistance && distance <= maxDistance && isGroundSolid(world, xPos, mutable.getY() - 1, zPos) && world.isEmptyBlock(mutable)) {
 							end = mutable.immutable();
 							break;
@@ -74,7 +79,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 							for (int x = -radius; x <= radius; x++) {
 								for (int z = -radius; z <= radius; z++) {
 									BlockPos placingPos = interpolatedPos.offset(x, y, z);
-									if (Mth.sqrt(pos.distSqr(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
+									if (Mth.sqrt((float) pos.distSqr(placingPos)) <= 32.0D && x * x + y * y + z * z <= offsetRadius) {
 										if (world.isEmptyBlock(placingPos)) {
 											corrockBlockPositions.add(placingPos);
 										} else {
@@ -142,7 +147,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 		private static final Vec3 UP = new Vec3(0.0D, 1.0D, 1.0D);
 		private final Vec3[] points;
 
-		private ArchSpline(BlockPos start, BlockPos end, Random rand, float maxArchHeight) {
+		private ArchSpline(BlockPos start, BlockPos end, RandomSource rand, float maxArchHeight) {
 			List<Vec3> points = new ArrayList<>();
 			Vec3 startVec = Vec3.atLowerCornerOf(start);
 			Vec3 endVec = Vec3.atLowerCornerOf(end);
@@ -229,7 +234,7 @@ public class CorrockArchFeature extends AbstractCorrockFeature<CorrockArchConfig
 
 		private static float computeT(Vec3 point1, Vec3 point2, float offset) {
 			//Raising to power of 0.5 results in a centripetal Catmull–Rom spline, which is equivalent to taking the square root
-			return Mth.sqrt(point2.subtract(point1).length()) + offset;
+			return Mth.sqrt((float) point2.subtract(point1).length()) + offset;
 		}
 	}
 

@@ -1,32 +1,33 @@
 package com.minecraftabnormals.endergetic.common.world.placements;
 
+import com.minecraftabnormals.endergetic.core.registry.EEPlacementModifierTypes;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.placement.DecorationContext;
-import net.minecraft.world.level.levelgen.placement.EdgeDecorator;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneDecoratorConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.Random;
 import java.util.stream.Stream;
 
-public class HeightmapSpreadLowerPlacement extends EdgeDecorator<NoneDecoratorConfiguration> {
+public class HeightmapSpreadLowerPlacement extends PlacementModifier {
+	public static final HeightmapSpreadLowerPlacement INSTANCE = new HeightmapSpreadLowerPlacement();
+	public static final Codec<HeightmapSpreadLowerPlacement> CODEC = Codec.unit(INSTANCE);
 
-	public HeightmapSpreadLowerPlacement(Codec<NoneDecoratorConfiguration> codec) {
-		super(codec);
-	}
+	private HeightmapSpreadLowerPlacement() {}
 
 	@Override
-	protected Heightmap.Types type(NoneDecoratorConfiguration config) {
-		return Heightmap.Types.MOTION_BLOCKING;
-	}
-
-	public Stream<BlockPos> getPositions(DecorationContext helper, Random rand, NoneDecoratorConfiguration config, BlockPos pos) {
+	public Stream<BlockPos> getPositions(PlacementContext context, RandomSource rand, BlockPos pos) {
 		int x = pos.getX();
 		int z = pos.getZ();
-		int height = helper.getHeight(this.type(config), x, z);
+		int height = context.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
 		return height == 0 ? Stream.of() : Stream.of(new BlockPos(x, Mth.clamp(rand.nextInt((int) (height * 0.85F)), rand.nextInt(10) + 22, 57), z));
 	}
 
+	@Override
+	public PlacementModifierType<?> type() {
+		return EEPlacementModifierTypes.HEIGHTMAP_SPREAD_LOWER.get();
+	}
 }

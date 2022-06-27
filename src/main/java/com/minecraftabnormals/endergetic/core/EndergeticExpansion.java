@@ -23,8 +23,9 @@ import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
 import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
-import com.minecraftabnormals.endergetic.common.world.placements.EEPlacements;
 import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
+import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
+import com.minecraftabnormals.endergetic.core.registry.EEPlacementModifierTypes;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
@@ -48,11 +49,9 @@ import com.minecraftabnormals.endergetic.common.network.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
-import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
-import com.minecraftabnormals.endergetic.common.world.surfacebuilders.EESurfaceBuilders;
+import com.minecraftabnormals.endergetic.core.registry.EEFeatures;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
-import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
@@ -100,10 +99,11 @@ public class EndergeticExpansion {
 
 		REGISTRY_HELPER.register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
-		EESurfaceBuilders.SURFACE_BUILDERS.register(modEventBus);
+		EEPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
+		EEFeatures.Configured.CONFIGURED_FEATURES.register(modEventBus);
+		EEFeatures.Placed.PLACED_FEATURES.register(modEventBus);
 		EEStructures.STRUCTURES.register(modEventBus);
-		EEPlacements.PLACEMENTS.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfigEvent event) -> {
@@ -127,11 +127,8 @@ public class EndergeticExpansion {
 		event.enqueueWork(() -> {
 			EEDispenserBehaviors.registerAll();
 			EELootInjectors.registerLootInjectors();
-			EESurfaceBuilders.Configs.registerConfiguredSurfaceBuilders();
-			EEFeatures.Configured.registerConfiguredFeatures();
 			EEStructures.Configured.registerConfiguredStructures();
 			EEStructures.setupStructureInfo();
-			EEBiomes.setupBiomeInfo();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 		});
@@ -231,7 +228,7 @@ public class EndergeticExpansion {
 		EERenderLayers.setupRenderLayers();
 		KeybindHandler.registerKeys();
 		EndCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
-		BiomeUtil.markEndBiomeCustomMusic(new ResourceLocation("endergetic:poise_forest"));
+		BiomeUtil.markEndBiomeCustomMusic(EEBiomes.POISE_FOREST.getKey());
 	}
 
 	private void setupMessages() {

@@ -1,24 +1,22 @@
 package com.minecraftabnormals.endergetic.common.world.features.corrock.tower;
 
-import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.world.configs.CorrockTowerConfig;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.blueprint.core.util.GenerationPiece;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature.ChorusPlantPart;
 
 public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<CorrockTowerConfig> {
 
@@ -27,11 +25,13 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, CorrockTowerConfig config) {
-		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
+	public boolean place(FeaturePlaceContext<CorrockTowerConfig> context) {
+		WorldGenLevel level = context.level();
+		BlockPos pos = context.origin();
+		if (level.isEmptyBlock(pos) && level.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && level.getBlockState(pos.below(2)).canOcclude()) {
 			BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 			List<BlockPos> corrockPositions = new ArrayList<>();
-			if (tryToMakeGroundSuitable(world, corrockPositions, pos)) {
+			if (tryToMakeGroundSuitable(level, corrockPositions, pos)) {
 				BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 				int startX = pos.getX();
 				int startY = pos.getY();
@@ -40,7 +40,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 					for (int x = 0; x < 4; x++) {
 						for (int z = 0; z < 4; z++) {
 							mutable.set(startX + x, startY + y, startZ + z);
-							if (world.isEmptyBlock(mutable)) {
+							if (level.isEmptyBlock(mutable)) {
 								corrockPositions.add(mutable.immutable());
 							} else {
 								return false;
@@ -49,25 +49,27 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 					}
 				}
 
-				tryToMakeSide(world, rand, corrockPositions, pos.north().east(rand.nextInt(2) + 1), Direction.NORTH);
-				tryToMakeSide(world, rand, corrockPositions, pos.west().south(rand.nextInt(2) + 1), Direction.WEST);
-				tryToMakeSide(world, rand, corrockPositions, pos.south(4).east(rand.nextInt(2) + 1), Direction.SOUTH);
-				tryToMakeSide(world, rand, corrockPositions, pos.east(4).south(rand.nextInt(2) + 1), Direction.EAST);
+				RandomSource rand = context.random();
+				tryToMakeSide(level, rand, corrockPositions, pos.north().east(rand.nextInt(2) + 1), Direction.NORTH);
+				tryToMakeSide(level, rand, corrockPositions, pos.west().south(rand.nextInt(2) + 1), Direction.WEST);
+				tryToMakeSide(level, rand, corrockPositions, pos.south(4).east(rand.nextInt(2) + 1), Direction.SOUTH);
+				tryToMakeSide(level, rand, corrockPositions, pos.east(4).south(rand.nextInt(2) + 1), Direction.EAST);
 
+				CorrockTowerConfig config = context.config();
 				int height = rand.nextInt(config.getMaxHeight() - config.getMinHeight() + 1) + config.getMinHeight();
 				float crownChance = config.getCrownChance();
-				if (tryToMakeMiddle(world, rand, corrockPositions, pos, height)) {
-					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(world, rand, corrockPositions, pos.above(3 + height), crownChance, config.getChorusChance());
+				if (tryToMakeMiddle(level, rand, corrockPositions, pos, height)) {
+					Pair<GenerationPiece, List<ChorusPlantPart>> top = tryToMakeLargeTop(level, rand, corrockPositions, pos.above(3 + height), crownChance, config.getChorusChance());
 					if (top != null) {
-						corrockPositions.forEach(corrockPos -> world.setBlock(corrockPos, corrockBlockState, 2));
-						top.getFirst().place(world);
-						top.getSecond().forEach(chorusPlantPart -> chorusPlantPart.placeGrowth(world, rand));
+						corrockPositions.forEach(corrockPos -> level.setBlock(corrockPos, corrockBlockState, 2));
+						top.getFirst().place(level);
+						top.getSecond().forEach(chorusPlantPart -> chorusPlantPart.placeGrowth(level, rand));
 						BlockPos topMiddle = pos.above(4 + height);
 						BlockState corrockPlantState = CORROCK_STATE.get();
 						for (int i = 0; i < 16; i++) {
-							if (rand.nextFloat() < 0.6F && world.isEmptyBlock(mutable.setWithOffset(topMiddle, rand.nextInt(7) - rand.nextInt(7), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(7) - rand.nextInt(7)))) {
-								if (world.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
-									world.setBlock(mutable, corrockPlantState, 2);
+							if (rand.nextFloat() < 0.6F && level.isEmptyBlock(mutable.setWithOffset(topMiddle, rand.nextInt(7) - rand.nextInt(7), rand.nextInt(2) - rand.nextInt(2), rand.nextInt(7) - rand.nextInt(7)))) {
+								if (level.getBlockState(mutable.below()).getBlock() == CORROCK_BLOCK_BLOCK) {
+									level.setBlock(mutable, corrockPlantState, 2);
 								}
 							}
 						}
@@ -80,12 +82,12 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		return false;
 	}
 
-	private static boolean tryToMakeGroundSuitable(WorldGenLevel world, List<BlockPos> positions, BlockPos origin) {
+	private static boolean tryToMakeGroundSuitable(WorldGenLevel level, List<BlockPos> positions, BlockPos origin) {
 		BlockPos down = origin.below(2);
 		int startX = down.getX();
 		int startY = down.getY();
 		int startZ = down.getZ();
-		boolean isSolidBelow = GenerationUtils.isAreaCompletelySolid(world, startX - 2, startY, startZ - 2, startX + 2, startY, startZ + 2);
+		boolean isSolidBelow = GenerationUtils.isAreaCompletelySolid(level, startX - 2, startY, startZ - 2, startX + 2, startY, startZ + 2);
 		if (isSolidBelow) {
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			for (int y = 0; y < 2; y++) {
@@ -93,7 +95,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 					for (int z = 0; z < 4; z++) {
 						mutable.set(startX + x, startY + y, startZ + z);
 						BlockPos immutable = mutable.immutable();
-						if (world.getBlockState(immutable).getMaterial().isReplaceable()) {
+						if (level.getBlockState(immutable).getMaterial().isReplaceable()) {
 							positions.add(immutable);
 						}
 					}
@@ -104,36 +106,36 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		return false;
 	}
 
-	private static void tryToMakeSide(WorldGenLevel world, Random rand, List<BlockPos> positions, BlockPos origin, Direction facing) {
+	private static void tryToMakeSide(WorldGenLevel level, RandomSource rand, List<BlockPos> positions, BlockPos origin, Direction facing) {
 		List<BlockPos> toAdd = new ArrayList<>();
-		if (world.isEmptyBlock(origin)) {
-			tryToMakeSidePillar(world, rand, 0, rand.nextInt(2) + 2, origin, toAdd, facing);
+		if (level.isEmptyBlock(origin)) {
+			tryToMakeSidePillar(level, rand, 0, rand.nextInt(2) + 2, origin, toAdd, facing);
 		}
 		positions.addAll(toAdd);
 	}
 
-	private static void tryToMakeSidePillar(WorldGenLevel world, Random rand, int index, int height, BlockPos origin, List<BlockPos> positions, Direction facing) {
+	private static void tryToMakeSidePillar(WorldGenLevel level, RandomSource rand, int index, int height, BlockPos origin, List<BlockPos> positions, Direction facing) {
 		BlockPos.MutableBlockPos mutable = origin.mutable();
 		int startX = origin.getX();
 		int startY = origin.getY();
 		int startZ = origin.getZ();
 		for (int y = 0; y < height; y++) {
 			mutable.set(startX, startY + y, startZ);
-			if (world.isEmptyBlock(mutable)) {
+			if (level.isEmptyBlock(mutable)) {
 				positions.add(mutable.immutable());
 			} else {
 				positions.clear();
 				return;
 			}
-			if (!tryToBuildPillarDownwards(world, positions, origin)) {
+			if (!tryToBuildPillarDownwards(level, positions, origin)) {
 				positions.clear();
 				return;
 			}
 			if (index < 1) {
 				BlockPos offset = origin.relative(rand.nextBoolean() ? facing.getClockWise() : facing.getCounterClockWise());
-				if (world.isEmptyBlock(offset)) {
+				if (level.isEmptyBlock(offset)) {
 					//If to the right or left of the pillar there is space, attempt to create another pillar
-					tryToMakeSidePillar(world, rand, index + 1, height - 1, offset, positions, facing);
+					tryToMakeSidePillar(level, rand, index + 1, height - 1, offset, positions, facing);
 				}
 			}
 		}
@@ -153,7 +155,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 		return foundGround;
 	}
 
-	private static boolean tryToMakeMiddle(WorldGenLevel world, Random rand, List<BlockPos> positions, BlockPos origin, int height) {
+	private static boolean tryToMakeMiddle(WorldGenLevel world, RandomSource rand, List<BlockPos> positions, BlockPos origin, int height) {
 		int startX = origin.getX() + 1;
 		int startY = origin.getY() + 3;
 		int startZ = origin.getZ() + 1;
@@ -211,7 +213,7 @@ public final class LargeCorrockTowerFeature extends AbstractCorrockFeature<Corro
 	 * Returns a pair of corrock crowns and chorus plant parts, or null if there wasn't space for the top.
 	 */
 	@Nullable
-	private static Pair<GenerationPiece, List<ChorusPlantPart>> tryToMakeLargeTop(WorldGenLevel world, Random rand, List<BlockPos> positions, BlockPos origin, float crownChance, float chorusChance) {
+	private static Pair<GenerationPiece, List<ChorusPlantPart>> tryToMakeLargeTop(WorldGenLevel world, RandomSource rand, List<BlockPos> positions, BlockPos origin, float crownChance, float chorusChance) {
 		int startX = origin.getX();
 		int startY = origin.getY();
 		int startZ = origin.getZ();

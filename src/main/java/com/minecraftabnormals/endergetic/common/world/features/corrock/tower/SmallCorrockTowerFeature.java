@@ -1,20 +1,20 @@
 package com.minecraftabnormals.endergetic.common.world.features.corrock.tower;
 
-import com.minecraftabnormals.abnormals_core.core.util.GenerationPiece;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.AbstractCorrockFeature;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.blueprint.core.util.GenerationPiece;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<ProbabilityFeatureConfiguration> {
 
@@ -23,13 +23,16 @@ public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<Proba
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, ProbabilityFeatureConfiguration config) {
-		if (world.isEmptyBlock(pos) && world.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && world.getBlockState(pos.below(2)).canOcclude()) {
-			GenerationPiece base = getBase(world, pos, rand);
+	public boolean place(FeaturePlaceContext<ProbabilityFeatureConfiguration> context) {
+		WorldGenLevel level = context.level();
+		BlockPos pos = context.origin();
+		if (level.isEmptyBlock(pos) && level.getBlockState(pos.below()).getBlock() == EEBlocks.CORROCK_END_BLOCK.get() && level.getBlockState(pos.below(2)).canOcclude()) {
+			GenerationPiece base = getBase(level, pos);
 			if (base != null) {
-				float crownChance = config.probability;
 				BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
 				GenerationPiece topPiece = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos));
+				RandomSource rand = context.random();
+				float crownChance = context.config().probability;
 				for (int x = -1; x < 2; x++) {
 					for (int z = -1; z < 2; z++) {
 						BlockPos placingPos = pos.offset(x, 1, z);
@@ -62,10 +65,10 @@ public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<Proba
 					}
 				}
 
-				if (topPiece.canPlace(world)) {
-					base.place(world);
-					topPiece.place(world);
-					world.setBlock(pos, corrockBlockState, 2);
+				if (topPiece.canPlace(level)) {
+					base.place(level);
+					topPiece.place(level);
+					level.setBlock(pos, corrockBlockState, 2);
 					return true;
 				}
 			}
@@ -74,7 +77,7 @@ public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<Proba
 	}
 
 	@Nullable
-	private static GenerationPiece getBase(LevelAccessor world, BlockPos pos, Random rand) {
+	private static GenerationPiece getBase(LevelAccessor level, BlockPos pos) {
 		int successfulSides = 0;
 		GenerationPiece piece = new GenerationPiece((w, p) -> w.isEmptyBlock(p.pos) && Block.canSupportRigidBlock(w, p.pos.below()));
 		BlockState corrockBlockState = CORROCK_BLOCK_STATE.get();
@@ -82,7 +85,7 @@ public final class SmallCorrockTowerFeature extends AbstractCorrockFeature<Proba
 			int length = 0;
 			for (int i = 1; i < 3; i++) {
 				BlockPos offset = pos.relative(horizontal, i);
-				if (world.isEmptyBlock(offset) && Block.canSupportRigidBlock(world, offset.below())) {
+				if (level.isEmptyBlock(offset) && Block.canSupportRigidBlock(level, offset.below())) {
 					length++;
 				} else {
 					break;

@@ -5,16 +5,16 @@ import com.minecraftabnormals.endergetic.common.world.configs.EndergeticPatchCon
 import com.minecraftabnormals.endergetic.common.world.configs.MultiPatchConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
-import java.util.Random;
 import java.util.Set;
 
 public class EumusPatchFeature extends Feature<MultiPatchConfig> {
@@ -26,22 +26,25 @@ public class EumusPatchFeature extends Feature<MultiPatchConfig> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, MultiPatchConfig config) {
-		BlockPos down = EndergeticPatchConfig.getPos(world, pos, false).below();
-		Block downBlock = world.getBlockState(down).getBlock();
+	public boolean place(FeaturePlaceContext<MultiPatchConfig> context) {
+		WorldGenLevel level = context.level();
+		BlockPos down = EndergeticPatchConfig.getPos(level, context.origin(), false).below();
+		Block downBlock = level.getBlockState(down).getBlock();
 		if (downBlock == EEBlocks.CORROCK_END_BLOCK.get()) {
+			RandomSource rand = context.random();
+			MultiPatchConfig config = context.config();
 			int extraPatches = 1 + rand.nextInt(config.getMaxExtraPatches() + 1);
 			int maxExtraRadius = config.getMaxExtraRadius();
-			generatePatch(world, down, rand, maxExtraRadius);
+			generatePatch(level, down, rand, maxExtraRadius);
 			for (int i = 0; i < extraPatches; i++) {
-				generatePatch(world, down.offset(rand.nextInt(2) - rand.nextInt(2) , 0, rand.nextInt(2) - rand.nextInt(2)), rand, maxExtraRadius);
+				generatePatch(level, down.offset(rand.nextInt(2) - rand.nextInt(2) , 0, rand.nextInt(2) - rand.nextInt(2)), rand, maxExtraRadius);
 			}
 			return true;
 		}
 		return false;
 	}
 
-	private static void generatePatch(WorldGenLevel world, BlockPos origin, Random rand, int maxExtraRadius) {
+	private static void generatePatch(WorldGenLevel world, BlockPos origin, RandomSource rand, int maxExtraRadius) {
 		int radius = 1 + rand.nextInt(maxExtraRadius);
 		int radiusSquared = radius * radius;
 		int originX = origin.getX();

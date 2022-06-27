@@ -1,8 +1,5 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
-import java.util.Random;
-
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
 import com.mojang.serialization.Codec;
 import com.minecraftabnormals.endergetic.api.util.GenerationUtils;
 import com.minecraftabnormals.endergetic.common.blocks.poise.BolloomBudBlock;
@@ -10,14 +7,16 @@ import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntit
 import com.minecraftabnormals.endergetic.common.tileentities.BolloomBudTileEntity.BudSide;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 
+import com.teamabnormals.blueprint.core.util.MathUtil;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
@@ -31,8 +30,11 @@ public class BolloomBudFeature extends Feature<NoneFeatureConfiguration> {
 	}
 
 	@Override
-	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config) {
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		WorldGenLevel world = context.level();
+		BlockPos pos = context.origin();
 		if (world.isEmptyBlock(pos) && world.isEmptyBlock(pos.above())) {
+			RandomSource rand = context.random();
 			if (rand.nextFloat() > 0.75) {
 				if (isValidGround(world, pos)) {
 					world.setBlock(pos, BOLLOOM_BUD, 2);

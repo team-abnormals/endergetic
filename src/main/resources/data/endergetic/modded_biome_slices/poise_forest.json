@@ -1,0 +1,21 @@
+{
+	"name": "endergetic:poise_forest",
+	"provider": {
+		"type": "blueprint:overlay",
+		"overlays": [
+			{
+				"biome_source": {
+					"type": "minecraft:fixed",
+					"biome": "endergetic:poise_forest"
+				},
+				"matches_biomes": [
+					"minecraft:end_highlands",
+					"minecraft:end_midlands",
+					"minecraft:end_barrens"
+				]
+			}
+		]
+	},
+	"selector": "minecraft:the_end",
+	"weight": 4
+}

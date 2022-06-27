@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.endergetic.common.world.features.EEFeatures;
+import com.minecraftabnormals.endergetic.core.registry.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.features.EndergeticEndPodiumFeature;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -294,7 +294,7 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(Mth.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, Mth.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
 			this.level.levelEvent(3000, pos, 0);
-			EEFeatures.Configured.END_GATEWAY_DELAYED.place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), pos);
+			EEFeatures.Configured.END_GATEWAY_DELAYED.get().place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), pos);
 		}
 	}
 }
