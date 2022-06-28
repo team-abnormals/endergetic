@@ -12,8 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 
 public final class EEProperties {
-	public static final BlockBehaviour.Properties FRISBLOOM_STEM = BlockBehaviour.Properties.of(Material.PLANT, MaterialColor.TERRACOTTA_PURPLE).strength(0F);
-	public static final BlockBehaviour.Properties FRISBLOOM_BUD = BlockBehaviour.Properties.of(Material.PLANT, MaterialColor.TERRACOTTA_PURPLE).randomTicks().strength(0F);
 	public static final BlockBehaviour.Properties POISE_CLUSTER = BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PINK).noOcclusion().strength(0.15F);
 	//Tool: AXE
 	public static final BlockBehaviour.Properties POISE_WOOD = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.WOOD).strength(2);

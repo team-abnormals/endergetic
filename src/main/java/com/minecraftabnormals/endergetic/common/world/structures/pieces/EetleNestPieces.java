@@ -1,38 +1,43 @@
 package com.minecraftabnormals.endergetic.common.world.structures.pieces;
 
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.abnormals_core.core.util.MathUtil;
+import com.minecraftabnormals.endergetic.api.util.TemporaryMathUtil;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownStandingBlock;
 import com.minecraftabnormals.endergetic.common.blocks.CorrockCrownWallBlock;
 import com.minecraftabnormals.endergetic.common.blocks.EetleEggBlock;
 import com.minecraftabnormals.endergetic.common.entities.eetle.BroodEetleEntity;
-import com.minecraftabnormals.endergetic.common.world.structures.EEStructures;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
 import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.core.util.MathUtil;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
-import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+
+import com.minecraftabnormals.endergetic.core.registry.EEStructures;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -44,7 +49,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 public final class EetleNestPieces {
-	private static Set<BoundingBox> GENERATING_BOUNDS = new HashSet<>();
+	private static final Set<BoundingBox> GENERATING_BOUNDS = new HashSet<>();
 	private static final Direction[] ATTACHMENT_DIRECTIONS = Direction.values();
 	private static final Direction[] TUNNEL_SIDES = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 	private static final Direction[] EGG_DIRECTIONS = Direction.values();
@@ -82,19 +87,18 @@ public final class EetleNestPieces {
 		private final StructureTemplate arena;
 		private NestDesign nestDesign = null;
 
-		public EetleNestPiece(StructureManager manager, CompoundTag compoundNBT) {
-			super(EEStructures.PieceTypes.EETLE_NEST, compoundNBT);
-			this.arena = manager.get(ARENA);
+		public EetleNestPiece(StructureTemplateManager manager, CompoundTag compoundNBT) {
+			super(EEStructures.PieceTypes.EETLE_NEST.get(), compoundNBT);
+			this.arena = manager.get(ARENA).orElseThrow(() -> new RuntimeException("Failed to get Eetle Nest Arena Template!"));
 		}
 
-		public EetleNestPiece(StructureManager manager, BlockPos corner) {
-			super(EEStructures.PieceTypes.EETLE_NEST, 0);
-			this.boundingBox = new BoundingBox(corner.offset(-64, -48, -64), corner.offset(64, 6, 64));
-			this.arena = manager.get(ARENA);
+		public EetleNestPiece(StructureTemplateManager manager, BlockPos corner) {
+			super(EEStructures.PieceTypes.EETLE_NEST.get(), 0, new BoundingBox(corner.getX() - 64, corner.getY() - 48, corner.getZ() - 64, corner.getX() + 64, corner.getY() + 6, corner.getZ() + 64));
+			this.arena = manager.get(ARENA).orElseThrow(() -> new RuntimeException("Failed to get Eetle Nest Arena Template!"));
 		}
 
 		private static void transformSurface(WorldGenLevel world, int x, int z, int maxDepth, int depthScale, double noise, BoundingBox boundingBox, BlockState topState, BlockState under) {
-			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, boundingBox.y0, z);
+			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, boundingBox.minY(), z);
 			if (boundingBox.isInside(mutable)) {
 				int startingY = world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
 				int depth = (int) (Math.abs(noise) * depthScale + 14.0D);
@@ -140,18 +144,18 @@ public final class EetleNestPieces {
 		}
 
 		@Override
-		protected void addAdditionalSaveData(CompoundTag tagCompound) {
-		}
+		protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag compoundTag) {}
 
 		@SuppressWarnings("deprecation")
 		@Override
-		public boolean postProcess(WorldGenLevel world, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random random, BoundingBox bounds, ChunkPos chunkPos, BlockPos pos) {
+		public void postProcess(WorldGenLevel world, StructureManager structureManager, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox bounds, ChunkPos chunkPos, BlockPos pos) {
 			GENERATING_BOUNDS.add(this.boundingBox);
 			int originX = pos.getX();
 			int originZ = pos.getZ();
-			pos = new BlockPos(originX, chunkGenerator.getFirstFreeHeight(originX, originZ, Heightmap.Types.WORLD_SURFACE_WG), originZ);
+			RandomState randomState = world.getLevel().getChunkSource().randomState();
+			pos = new BlockPos(originX, chunkGenerator.getFirstFreeHeight(originX, originZ, Heightmap.Types.WORLD_SURFACE_WG, world, randomState), originZ);
 
-			PerlinSimplexNoise surfaceNoise = SURFACE_NOISE.computeIfAbsent(world.getSeed(), seedL -> new PerlinSimplexNoise(new WorldgenRandom(seedL), IntStream.rangeClosed(-3, 0)));
+			PerlinSimplexNoise surfaceNoise = SURFACE_NOISE.computeIfAbsent(world.getSeed(), seedL -> new PerlinSimplexNoise(new WorldgenRandom(RandomSource.create(seedL)), List.of(-3, 0)));
 			int radius = 32;
 			for (int x = -radius; x < radius; x++) {
 				for (int z = -radius; z < radius; z++) {
@@ -175,7 +179,7 @@ public final class EetleNestPieces {
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			BlockPos carvingPos = pos.below(24);
 			int originY = carvingPos.getY();
-			PerlinNoise undergroundNoise = UNDERGROUND_NOISE.computeIfAbsent(world.getSeed(), seedL -> new PerlinNoise(new WorldgenRandom(seedL), IntStream.rangeClosed(-4, -3)));
+			PerlinNoise undergroundNoise = UNDERGROUND_NOISE.computeIfAbsent(world.getSeed(), seedL -> PerlinNoise.create(new WorldgenRandom(RandomSource.create(seedL)), IntStream.rangeClosed(-4, -3)));
 
 			if (this.nestDesign == null) {
 				this.nestDesign = new NestDesign(random);
@@ -223,7 +227,7 @@ public final class EetleNestPieces {
 							break;
 						}
 					}
-					tunnel.setup(mutable, chunkGenerator, undergroundNoise, random);
+					tunnel.setup(mutable, chunkGenerator, world, randomState, undergroundNoise, random);
 					BlockPos tunnelStart = tunnel.start;
 					//Helps reduce the chance of shelves generating near tunnel entrances
 					corrockShelves.removeIf(corrockShelf -> tunnelStart.distSqr(corrockShelf.pos) <= 64);
@@ -247,7 +251,6 @@ public final class EetleNestPieces {
 
 			nestCore.generateCorrockShelfDecorations(world, bounds);
 			nestCore.generateCorrockPatches(world, random, bounds);
-			return true;
 		}
 
 		/**
@@ -260,7 +263,7 @@ public final class EetleNestPieces {
 			private final List<NestStalactite> stalactites = new ArrayList<>();
 			private final List<NestTunnel> tunnels = new ArrayList<>();
 
-			private NestDesign(Random random) {
+			private NestDesign(RandomSource random) {
 				int eumusPatchCount = random.nextInt(3) + 3;
 				for (int i = 0; i < eumusPatchCount; i++) {
 					this.eumusPatches.add(new EumusPatch(EumusPatch.PatchType.CORE, random));
@@ -299,7 +302,7 @@ public final class EetleNestPieces {
 			private final List<CorrockShelf> corrockShelves = new ArrayList<>();
 			private final Map<Pair<Integer, Integer>, Integer> horizontalToMaxHeight = new HashMap<>(5);
 
-			private void setup(int originX, int originY, int originZ, Random random, PerlinNoise undergroundNoise) {
+			private void setup(int originX, int originY, int originZ, RandomSource random, PerlinNoise undergroundNoise) {
 				StateMap stateMap = this.stateMap;
 				BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 				int horizontalRadius = 28;
@@ -334,7 +337,7 @@ public final class EetleNestPieces {
 				int shelfs = random.nextInt(3) + 2;
 				for (int i = 0; i < shelfs; i++) {
 					Direction horizontal = Direction.Plane.HORIZONTAL.getRandomDirection(random);
-					BlockPos.MutableBlockPos mutable1 = new BlockPos.MutableBlockPos(originX, originY + MathUtil.makeNegativeRandomly(random.nextInt(8), random), originZ);
+					BlockPos.MutableBlockPos mutable1 = new BlockPos.MutableBlockPos(originX, originY + TemporaryMathUtil.makeNegativeRandomly(random.nextInt(8), random), originZ);
 					if (random.nextFloat() < 0.25F) {
 						for (int j = 0; j < horizontalRadius; j++) {
 							mutable1.move(horizontal);
@@ -360,7 +363,7 @@ public final class EetleNestPieces {
 				this.stateMap.generate(world, bounds);
 			}
 
-			private void generateCorrockPatches(WorldGenLevel world, Random random, BoundingBox bounds) {
+			private void generateCorrockPatches(WorldGenLevel world, RandomSource random, BoundingBox bounds) {
 				BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 				List<BlockPos> corrockPatchPositions = this.corrockPatchPositions;
 				for (int i = 0; i < corrockPatchPositions.size(); i++) {
@@ -409,12 +412,12 @@ public final class EetleNestPieces {
 			private final int yOffset;
 			private final int zOffset;
 
-			private EumusPatch(PatchType type, Random random) {
+			private EumusPatch(PatchType type, RandomSource random) {
 				this.radius = random.nextInt(type.boundRadius) + type.minRadius;
 				int maxHorizontalOffset = type.maxHorizontalOffset;
 				this.xOffset = random.nextInt(maxHorizontalOffset) - random.nextInt(maxHorizontalOffset);
 				int halfMaxYOffset = type.halfMaxYOffset;
-				this.yOffset = (int) MathUtil.makeNegativeRandomly(random.nextInt(halfMaxYOffset + 1) + halfMaxYOffset, random);
+				this.yOffset = (int) TemporaryMathUtil.makeNegativeRandomly(random.nextInt(halfMaxYOffset + 1) + halfMaxYOffset, random);
 				this.zOffset = random.nextInt(maxHorizontalOffset) - random.nextInt(maxHorizontalOffset);
 			}
 
@@ -493,7 +496,7 @@ public final class EetleNestPieces {
 			private final StateMap mediumStep = new StateMap();
 			private final StateMap largeStep = new StateMap();
 
-			private NestArena(Random random) {
+			private NestArena(RandomSource random) {
 				this.rotation = Rotation.getRandom(random);
 				this.bottomDoorDirection = Direction.Plane.HORIZONTAL.getRandomDirection(random);
 				this.stepsRotation = Rotation.getRandom(random);
@@ -501,7 +504,7 @@ public final class EetleNestPieces {
 				this.topDoorLeftOrRight = random.nextBoolean() ? this.topDoorDirection.getClockWise() : this.topDoorDirection.getCounterClockWise();
 			}
 
-			private static void searchAndPlaceTopGate(WorldGenLevel world, BlockPos start, Random random, Direction opposite, BoundingBox bounds) {
+			private static void searchAndPlaceTopGate(WorldGenLevel world, BlockPos start, RandomSource random, Direction opposite, BoundingBox bounds) {
 				BlockPos.MutableBlockPos mutable = start.mutable();
 				for (int i = 0; i <= 7; i++) {
 					if (bounds.isInside(mutable)) {
@@ -516,7 +519,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createOuterStairPiece(WorldGenLevel world, BlockPos start, Random random, Direction opposite, BoundingBox bounds) {
+			private static void createOuterStairPiece(WorldGenLevel world, BlockPos start, RandomSource random, Direction opposite, BoundingBox bounds) {
 				BlockPos.MutableBlockPos mutable = start.mutable();
 				for (int i = 0; i <= 8; i++) {
 					if (bounds.isInside(mutable)) {
@@ -532,7 +535,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createLedgePiece(WorldGenLevel world, BlockPos middle, Direction right, Direction left, Random random, int radius, boolean generateCrowns, BoundingBox bounds) {
+			private static void createLedgePiece(WorldGenLevel world, BlockPos middle, Direction right, Direction left, RandomSource random, int radius, boolean generateCrowns, BoundingBox bounds) {
 				BlockPos.MutableBlockPos leftMutable = middle.mutable();
 				BlockPos.MutableBlockPos rightMutable = middle.mutable();
 				for (int i = 0; i <= radius; i++) {
@@ -555,11 +558,11 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static int randomRange(int min, int max, Random random) {
+			private static int randomRange(int min, int max, RandomSource random) {
 				return random.nextInt(max - min + 1) + min;
 			}
 
-			private static void tryToPlaceCrownAroundPos(WorldGenLevel world, BlockPos pos, Random random, BoundingBox bounds) {
+			private static void tryToPlaceCrownAroundPos(WorldGenLevel world, BlockPos pos, RandomSource random, BoundingBox bounds) {
 				EetleEggBlock.shuffleDirections(ATTACHMENT_DIRECTIONS, random);
 				for (Direction direction : ATTACHMENT_DIRECTIONS) {
 					if (direction.getAxis() == Direction.Axis.Y) {
@@ -583,7 +586,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createHorizontalCrownedCluster(StateMap stateMap, BlockPos pos, Random random) {
+			private static void createHorizontalCrownedCluster(StateMap stateMap, BlockPos pos, RandomSource random) {
 				BlockPos up = pos.above(2);
 				for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 					if (random.nextFloat() < 0.8F) {
@@ -619,7 +622,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createLargeStepBottom(StateMap stateMap, BlockPos pos, Random random) {
+			private static void createLargeStepBottom(StateMap stateMap, BlockPos pos, RandomSource random) {
 				for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 					if (random.nextBoolean()) {
 						BlockPos offset = pos.relative(horizontal);
@@ -645,7 +648,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createLargeStepTop(StateMap stateMap, BlockPos pos, Random random) {
+			private static void createLargeStepTop(StateMap stateMap, BlockPos pos, RandomSource random) {
 				for (Direction horizontal : Direction.Plane.HORIZONTAL) {
 					BlockPos offset = pos.relative(horizontal);
 					stateMap.setBlockState(offset, CORROCK_BLOCK_STATE);
@@ -703,7 +706,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private void createWayUp(WorldGenLevel world, BlockPos center, Direction horizontal, Direction leftOrRight, Random random, BoundingBox bounds) {
+			private void createWayUp(WorldGenLevel world, BlockPos center, Direction horizontal, Direction leftOrRight, RandomSource random, BoundingBox bounds) {
 				BlockPos.MutableBlockPos mutable = center.mutable();
 				mutable.move(horizontal, 7);
 
@@ -758,7 +761,7 @@ public final class EetleNestPieces {
 				searchAndPlaceTopGate(world, mutable.move(leftOrRightOpposite, 3), random, opposite, bounds);
 			}
 
-			private void createCenterSteps(WorldGenLevel world, BlockPos center, Rotation rotation, Random random, BoundingBox bounds) {
+			private void createCenterSteps(WorldGenLevel world, BlockPos center, Rotation rotation, RandomSource random, BoundingBox bounds) {
 				StateMap smallStep = this.smallSteps;
 				BottomStepsRotationInfo bottomRotationInfo = BOTTOM_STEPS_ROTATION_INFO.get(rotation);
 
@@ -794,7 +797,7 @@ public final class EetleNestPieces {
 				this.createLargeStep(world, center.offset(bottomRotationInfo.largeStepOffsetX, 0, bottomRotationInfo.largeStepOffsetZ), random, bottomRotationInfo.largeStepDirection, bounds);
 			}
 
-			private void createMediumStep(WorldGenLevel world, BlockPos pos, Random random, Direction direction, BoundingBox bounds) {
+			private void createMediumStep(WorldGenLevel world, BlockPos pos, RandomSource random, Direction direction, BoundingBox bounds) {
 				StateMap mediumStep = this.mediumStep;
 				if (!mediumStep.setup) {
 					BlockPos.MutableBlockPos mutable = pos.mutable();
@@ -826,7 +829,7 @@ public final class EetleNestPieces {
 				});
 			}
 
-			private void createLargeStep(WorldGenLevel world, BlockPos pos, Random random, Direction direction, BoundingBox bounds) {
+			private void createLargeStep(WorldGenLevel world, BlockPos pos, RandomSource random, Direction direction, BoundingBox bounds) {
 				StateMap largeStep = this.largeStep;
 				if (!largeStep.setup) {
 					BlockPos.MutableBlockPos mutable = pos.mutable();
@@ -860,7 +863,7 @@ public final class EetleNestPieces {
 				});
 			}
 
-			private void generate(WorldGenLevel world, BlockPos origin, Random random, StructureTemplate arena, BoundingBox bounds) {
+			private void generate(WorldGenLevel world, BlockPos origin, RandomSource random, StructureTemplate arena, BoundingBox bounds) {
 				BlockPos min = origin.offset(-11, -16, -11);
 				BlockPos max = origin.offset(11, 1, 11);
 				arena.placeInWorld(world, offsetPosForRotation(min, this.rotation), origin, new StructurePlaceSettings().setRotation(this.rotation).setBoundingBox(bounds), random, 2);
@@ -1022,14 +1025,14 @@ public final class EetleNestPieces {
 			private final int xOffset;
 			private final int zOffset;
 
-			private NestStalactite(Random random) {
+			private NestStalactite(RandomSource random) {
 				this.radius = random.nextInt(2) + 3;
 				this.length = random.nextInt(3) + 5;
 				this.xOffset = random.nextInt(15) - random.nextInt(15);
 				this.zOffset = random.nextInt(15) - random.nextInt(15);
 			}
 
-			private void generate(WorldGenLevel world, BlockPos origin, Random random, PerlinNoise noiseGenerator, BoundingBox boundingBox) {
+			private void generate(WorldGenLevel world, BlockPos origin, RandomSource random, PerlinNoise noiseGenerator, BoundingBox boundingBox) {
 				List<BlockPos> possibleDecorationPositions = new ArrayList<>();
 				BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 				int originX = origin.getX();
@@ -1103,7 +1106,7 @@ public final class EetleNestPieces {
 			private NestCave nestCave = null;
 			private boolean goesToSurface;
 
-			private NestTunnel(Random random, Direction facing) {
+			private NestTunnel(RandomSource random, Direction facing) {
 				this.facing = facing;
 				this.yOffset = random.nextInt(6) - random.nextInt(6);
 				Direction rotateY = facing.getClockWise();
@@ -1112,7 +1115,7 @@ public final class EetleNestPieces {
 				this.zOffset = rotateY.getStepZ() * offset;
 			}
 
-			private void setup(BlockPos startPos, ChunkGenerator chunkGenerator, PerlinNoise noiseGenerator, Random random) {
+			private void setup(BlockPos startPos, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, RandomState randomState, PerlinNoise noiseGenerator, RandomSource random) {
 				startPos = startPos.offset(this.xOffset, this.yOffset, this.zOffset);
 				this.start = startPos;
 				List<Vec3> points = new ArrayList<>();
@@ -1120,10 +1123,10 @@ public final class EetleNestPieces {
 				BlockPos end;
 				Direction facing = this.facing;
 				if (this.goesToSurface) {
-					end = startPos.relative(facing, 16 + random.nextInt(9)).relative(facing.getClockWise(), (int) MathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random));
+					end = startPos.relative(facing, 16 + random.nextInt(9)).relative(facing.getClockWise(), (int) TemporaryMathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random));
 					int endX = end.getX();
 					int endZ = end.getZ();
-					int topY = chunkGenerator.getFirstFreeHeight(endX, endZ, Heightmap.Types.WORLD_SURFACE);
+					int topY = chunkGenerator.getFirstFreeHeight(endX, endZ, Heightmap.Types.WORLD_SURFACE, heightAccessor, randomState);
 					end = new BlockPos(endX, topY, endZ);
 
 					Vec3 endVec = Vec3.atLowerCornerOf(end);
@@ -1147,7 +1150,7 @@ public final class EetleNestPieces {
 					points.add(endVec);
 					points.add(anchorEnd);
 				} else {
-					end = startPos.relative(facing, 24 + random.nextInt(9)).relative(facing.getClockWise(), (int) MathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random)).relative(Direction.UP, (int) MathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random));
+					end = startPos.relative(facing, 24 + random.nextInt(9)).relative(facing.getClockWise(), (int) TemporaryMathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random)).relative(Direction.UP, (int) TemporaryMathUtil.makeNegativeRandomly(random.nextInt(7) + 6, random));
 					Vec3 endVec = Vec3.atLowerCornerOf(end);
 					Vec3 difference = endVec.subtract(startVec);
 					Vec3 normalizedDifference = difference.normalize();
@@ -1173,7 +1176,7 @@ public final class EetleNestPieces {
 
 					NestCave nestCave = this.nestCave;
 					if (nestCave != null) {
-						nestCave.setup(end, random, chunkGenerator, noiseGenerator);
+						nestCave.setup(end, random, chunkGenerator, heightAccessor, randomState, noiseGenerator);
 					}
 				}
 				MathUtil.CatmullRomSpline spline = new MathUtil.CatmullRomSpline(points.toArray(new Vec3[0]), MathUtil.CatmullRomSpline.SplineType.CHORDAL);
@@ -1224,14 +1227,14 @@ public final class EetleNestPieces {
 				decorations.addAll(eggsAndCorrock);
 			}
 
-			private void generateCave(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+			private void generateCave(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 				NestCave nestCave = this.nestCave;
 				if (nestCave != null) {
 					nestCave.generate(world, noiseGenerator, random, bounds);
 				}
 			}
 
-			private void generate(WorldGenLevel world, Random random, BoundingBox bounds) {
+			private void generate(WorldGenLevel world, RandomSource random, BoundingBox bounds) {
 				for (BlockPos pos : this.airPositions) {
 					if (bounds.isInside(pos) && CARVABLE_BLOCKS.contains(world.getBlockState(pos).getBlock())) {
 						world.setBlock(pos, CAVE_AIR, 2);
@@ -1262,7 +1265,7 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private void generateDecorations(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+			private void generateDecorations(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 				for (TunnelDecoration decoration : this.decorations) {
 					if (decoration.isNotSetup()) {
 						decoration.setup(random);
@@ -1272,9 +1275,9 @@ public final class EetleNestPieces {
 			}
 
 			interface TunnelDecoration {
-				void setup(Random random);
+				void setup(RandomSource random);
 
-				void generate(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds);
+				void generate(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds);
 
 				boolean isNotSetup();
 			}
@@ -1289,11 +1292,11 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void setup(Random random) {
+				public void setup(RandomSource random) {
 				}
 
 				@Override
-				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 					createEumusPatch(world, this.origin, noiseGenerator, this.radius, bounds);
 				}
 
@@ -1312,7 +1315,7 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void setup(Random random) {
+				public void setup(RandomSource random) {
 					StateMap stateMap = this.stateMap;
 					BlockPos origin = this.origin;
 					BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
@@ -1330,7 +1333,7 @@ public final class EetleNestPieces {
 					stateMap.setup = true;
 				}
 
-				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 					StateMap stateMap = this.stateMap;
 					stateMap.stateMap.forEach((pos, state) -> {
 						if (bounds.isInside(pos) && world.isEmptyBlock(pos)) {
@@ -1361,7 +1364,7 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void setup(Random random) {
+				public void setup(RandomSource random) {
 					StateMap stateMap = this.stateMap;
 					BlockPos origin = this.origin;
 					BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
@@ -1375,7 +1378,7 @@ public final class EetleNestPieces {
 				}
 
 				@Override
-				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+				public void generate(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 					StateMap stateMap = this.stateMap;
 					stateMap.stateMap.forEach((pos, state) -> {
 						if (bounds.isInside(pos) && world.isEmptyBlock(pos)) {
@@ -1401,16 +1404,16 @@ public final class EetleNestPieces {
 				private final List<CorrockPatch> corrockPatches = new ArrayList<>();
 				private BlockPos center;
 
-				private NestCave(Random random) {
+				private NestCave(RandomSource random) {
 					this.type = NestCaveType.random(random);
 				}
 
-				private void setup(BlockPos end, Random random, ChunkGenerator chunkGenerator, PerlinNoise noiseGenerator) {
+				private void setup(BlockPos end, RandomSource random, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, RandomState randomState, PerlinNoise noiseGenerator) {
 					this.center = end;
 					NestCaveType type = this.type;
 					int horizontalRadius = type.horizontalRadius;
 					int verticalRadius = type.verticalRadius;
-					if (isAreaCarvable(end, horizontalRadius, verticalRadius, chunkGenerator)) {
+					if (isAreaCarvable(end, horizontalRadius, verticalRadius, chunkGenerator, heightAccessor, randomState)) {
 						int endX = end.getX();
 						int endY = end.getY();
 						int endZ = end.getZ();
@@ -1452,7 +1455,7 @@ public final class EetleNestPieces {
 					}
 				}
 
-				private void generate(WorldGenLevel world, PerlinNoise noiseGenerator, Random random, BoundingBox bounds) {
+				private void generate(WorldGenLevel world, PerlinNoise noiseGenerator, RandomSource random, BoundingBox bounds) {
 					this.cave.generate(world, bounds);
 					BlockPos center = this.center;
 					for (EetleNestPiece.EumusPatch eumusPatch : this.eumusPatches) {
@@ -1466,8 +1469,7 @@ public final class EetleNestPieces {
 					}
 				}
 
-				private static boolean isAreaCarvable(BlockPos center, int horizontalRadius, int verticalRadius, ChunkGenerator chunkGenerator) {
-					BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+				private static boolean isAreaCarvable(BlockPos center, int horizontalRadius, int verticalRadius, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, RandomState randomState) {
 					int foundAirBlocks = 0;
 					int centerX = center.getX();
 					int centerY = center.getY();
@@ -1475,9 +1477,9 @@ public final class EetleNestPieces {
 					int maxAirBlocks = (int) (horizontalRadius * 2 * horizontalRadius * 2 * 0.25F);
 					for (int x = centerX - horizontalRadius; x <= centerX + horizontalRadius; x++) {
 						for (int z = centerZ - horizontalRadius; z <= centerZ + horizontalRadius; z++) {
-							BlockGetter reader = chunkGenerator.getBaseColumn(x, z);
+							NoiseColumn column = chunkGenerator.getBaseColumn(x, z, heightAccessor, randomState);
 							for (int y = centerY - verticalRadius; y <= centerY + verticalRadius; y++) {
-								Block block = reader.getBlockState(mutable.set(x, y, z)).getBlock();
+								Block block = column.getBlock(y).getBlock();
 								if (!EetleNestPieces.CARVABLE_BLOCKS.contains(block)) {
 									if (block == Blocks.AIR) {
 										if (foundAirBlocks++ >= maxAirBlocks) {
@@ -1496,7 +1498,7 @@ public final class EetleNestPieces {
 				static class EetleEggPatch {
 					private final StateMap stateMap = new StateMap();
 
-					EetleEggPatch(BlockPos origin, Random random) {
+					EetleEggPatch(BlockPos origin, RandomSource random) {
 						EetleEggBlock.shuffleDirections(EGG_DIRECTIONS, random);
 						BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 						StateMap stateMap = this.stateMap;
@@ -1512,7 +1514,7 @@ public final class EetleNestPieces {
 						}
 					}
 
-					private void generate(WorldGenLevel world, Random random, BoundingBox bounds) {
+					private void generate(WorldGenLevel world, RandomSource random, BoundingBox bounds) {
 						this.stateMap.stateMap.forEach((pos, state) -> {
 							if (bounds.isInside(pos) && world.isEmptyBlock(pos)) {
 								BlockPos offset = pos.relative(state.getValue(EetleEggBlock.FACING).getOpposite());
@@ -1527,7 +1529,7 @@ public final class EetleNestPieces {
 						});
 					}
 
-					private static void spreadInfestedCorrockAtPos(WorldGenLevel world, BlockPos pos, Random random, BoundingBox bounds) {
+					private static void spreadInfestedCorrockAtPos(WorldGenLevel world, BlockPos pos, RandomSource random, BoundingBox bounds) {
 						int radius = 1;
 						if (bounds.isInside(pos)) {
 							world.setBlock(pos, INFESTED_STATE, 2);
@@ -1550,7 +1552,7 @@ public final class EetleNestPieces {
 				static class CorrockPatch {
 					private final StateMap stateMap = new StateMap();
 
-					CorrockPatch(BlockPos origin, Random random) {
+					CorrockPatch(BlockPos origin, RandomSource random) {
 						StateMap stateMap = this.stateMap;
 						BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 						for (int i = 0; i < 32; i++) {
@@ -1593,7 +1595,7 @@ public final class EetleNestPieces {
 						this.patchType = patchType;
 					}
 
-					private static NestCaveType random(Random random) {
+					private static NestCaveType random(RandomSource random) {
 						return VALUES[random.nextInt(VALUES.length)];
 					}
 				}
@@ -1606,12 +1608,11 @@ public final class EetleNestPieces {
 			private final StateMap corrock = new StateMap();
 			private final StateMap decorations = new StateMap();
 
-			CorrockShelf(BlockPos pos, Random random) {
+			CorrockShelf(BlockPos pos, RandomSource random) {
 				this.pos = pos;
 				int size = random.nextBoolean() ? 3 : 4;
 				int edgeBias = 10;
-				int min = -(size / edgeBias + size);
-				int max = size / edgeBias + size;
+				int min = -size;
 				int originX = pos.getX();
 				int originY = pos.getY();
 				int originZ = pos.getZ();
@@ -1621,8 +1622,8 @@ public final class EetleNestPieces {
 				StateMap corrock = this.corrock;
 				StateMap decorations = this.decorations;
 				List<BlockPos> wallCrowns = new ArrayList<>();
-				for (int x = min; x <= max; x++) {
-					for (int z = min; z <= max; z++) {
+				for (int x = min; x <= size; x++) {
+					for (int z = min; z <= size; z++) {
 						mutable.set(originX + x, originY, originZ + z);
 						double radius = (Math.cos(4 * Math.atan2(z, x)) / edgeBias + 1) * size;
 						int distance = x * x + z * z;

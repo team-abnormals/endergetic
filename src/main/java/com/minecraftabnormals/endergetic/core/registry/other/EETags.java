@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry.other;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.blueprint.core.util.TagUtil;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -35,6 +36,10 @@ public final class EETags {
 		private static TagKey<EntityType<?>> createTag(String name) {
 			return TagUtil.entityTypeTag(EndergeticExpansion.MOD_ID, name);
 		}
+	}
+
+	public static final class Biomes {
+		public static final TagKey<Biome> HAS_EETLE_NEST = TagUtil.biomeTag(EndergeticExpansion.MOD_ID, "has_structure/eetle_nest");
 	}
 
 }
