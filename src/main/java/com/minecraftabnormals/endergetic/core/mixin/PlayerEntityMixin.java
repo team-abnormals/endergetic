@@ -43,8 +43,7 @@ public final class PlayerEntityMixin {
 		Player player = (Player) (Object) this;
 		if (player.isShiftKeyDown() && player.isAlive() && !player.isSpectator() && !player.isCreative() && player.level.getDifficulty() != Difficulty.PEACEFUL) {
 			Entity entity = player.getVehicle();
-			if (entity instanceof GliderEetleEntity) {
-				GliderEetleEntity glider = (GliderEetleEntity) entity;
+			if (entity instanceof GliderEetleEntity glider) {
 				if (!glider.isBaby() && glider.isAlive() && glider.isFlying()) {
 					info.setReturnValue(false);
 				}

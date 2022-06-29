@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 public class EntityItemStackHelper {
 
 	public static void consumeItemFromStack(Player player, ItemStack stack) {
-		if (!player.abilities.instabuild) stack.shrink(1);
+		if (!player.getAbilities().instabuild) stack.shrink(1);
 	}
 
 }

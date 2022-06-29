@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(ChorusPlantBlock.class)
 public final class ChorusPlantBlockMixin {
 
-	@Inject(at = @At(value = "RETURN", shift = At.Shift.BEFORE), method = "getStateForPlacement(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+	@Inject(at = @At(value = "RETURN", shift = At.Shift.BEFORE), method = "Lnet/minecraft/world/level/block/ChorusPlantBlock;getStateForPlacement(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private void makePlantConnections(BlockGetter blockReader, BlockPos pos, CallbackInfoReturnable<BlockState> info, BlockState block, BlockState block1, BlockState block2, BlockState block3, BlockState block4, BlockState block5) {
 		Block thisBlock = (Block) (Object) this;
 		if (block.is(EETags.Blocks.CHORUS_PLANTABLE)) {
@@ -33,7 +33,7 @@ public final class ChorusPlantBlockMixin {
 	}
 
 	@Inject(at = @At(value = "JUMP", ordinal = 1, shift = At.Shift.AFTER), method = "updateShape", cancellable = true)
-	private void updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> info) {
+	private void updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelAccessor, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> info) {
 		if (facing == Direction.DOWN && facingState.is(EETags.Blocks.CHORUS_PLANTABLE)) {
 			info.setReturnValue(stateIn.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(facing), true));
 		} else {
@@ -46,7 +46,6 @@ public final class ChorusPlantBlockMixin {
 	 * Anyways this'll likely be a Forge PR eventually.
 	 * TODO: Make this not overwrite
 	 */
-	@SuppressWarnings("deprecation")
 	@Overwrite
 	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
 		BlockState downState = worldIn.getBlockState(pos.below());

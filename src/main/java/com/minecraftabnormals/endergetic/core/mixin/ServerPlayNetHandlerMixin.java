@@ -17,7 +17,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 @Mixin(ServerGamePacketListenerImpl.class)
 public final class ServerPlayNetHandlerMixin {
 	@Shadow
-	private ServerPlayer player;
+	public ServerPlayer player;
 
 	@Shadow
 	private int aboveGroundVehicleTickCount;

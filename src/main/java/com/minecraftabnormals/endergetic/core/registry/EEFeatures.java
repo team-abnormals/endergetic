@@ -69,33 +69,33 @@ public final class EEFeatures {
 	public static final class Configured {
 		public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, EndergeticExpansion.MOD_ID);
 
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_DOME = register("poise_dome", EEFeatures.POISE_DOME, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_TREE = register("poise_tree", EEFeatures.POISE_TREE, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_CLUSTER = register("poise_cluster", EEFeatures.POISE_CLUSTER, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> PUFF_BUG_HIVE = register("puff_bug_hive", EEFeatures.PUFFBUG_HIVE, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> BOLLOOM_BUD = register("bolloom_bud", EEFeatures.BOLLOOM_BUD, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_BUSH_PATCH = register("poise_bush_patch", EEFeatures.POISE_BUSH_PATCH, FeatureConfiguration.NONE);
-		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", EEFeatures.TALL_POISE_BUSH_PATCH, FeatureConfiguration.NONE);
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_DOME = register("poise_dome", () -> new ConfiguredFeature<>(EEFeatures.POISE_DOME.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_TREE = register("poise_tree", () -> new ConfiguredFeature<>(EEFeatures.POISE_TREE.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_CLUSTER = register("poise_cluster", () -> new ConfiguredFeature<>( EEFeatures.POISE_CLUSTER.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> PUFF_BUG_HIVE = register("puff_bug_hive", () -> new ConfiguredFeature<>(EEFeatures.PUFFBUG_HIVE.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> BOLLOOM_BUD = register("bolloom_bud", () -> new ConfiguredFeature<>(EEFeatures.BOLLOOM_BUD.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_BUSH_PATCH = register("poise_bush_patch", () -> new ConfiguredFeature<>(EEFeatures.POISE_BUSH_PATCH.get(), FeatureConfiguration.NONE));
+		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", () -> new ConfiguredFeature<>(EEFeatures.TALL_POISE_BUSH_PATCH.get(), FeatureConfiguration.NONE));
 
-		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_RETURN = register("end_gateway_return", EEFeatures.ENDERGETIC_GATEWAY, EndGatewayConfiguration.knownExit(ServerLevel.END_SPAWN_POINT, true));
-		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_DELAYED = register("end_gateway_delayed", EEFeatures.ENDERGETIC_GATEWAY, EndGatewayConfiguration.delayedExitSearch());
+		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_RETURN = register("end_gateway_return", () -> new ConfiguredFeature<>(EEFeatures.ENDERGETIC_GATEWAY.get(), EndGatewayConfiguration.knownExit(ServerLevel.END_SPAWN_POINT, true)));
+		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_DELAYED = register("end_gateway_delayed", () -> new ConfiguredFeature<>(EEFeatures.ENDERGETIC_GATEWAY.get(), EndGatewayConfiguration.delayedExitSearch()));
 
-		public static final RegistryObject<ConfiguredFeature<EndergeticPatchConfig, ?>> CORROCK_PATCH = register("corrock_patch", EEFeatures.CORROCK_PATCH, new EndergeticPatchConfig(0.175F, false));
-		public static final RegistryObject<ConfiguredFeature<DiskConfiguration, ?>> DISK_CORROCK = register("disk_corrock", EEFeatures.CORROCK_GROUND_PATCH, new DiskConfiguration(RuleBasedBlockStateProvider.simple(EEBlocks.CORROCK_END_BLOCK.get()), BlockPredicate.matchesBlocks(Blocks.END_STONE), UniformInt.of(2, 3), 3));
-		public static final RegistryObject<ConfiguredFeature<CorrockBranchConfig, ?>> EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH = register("extra_branch_decorations_corrock_branch", EEFeatures.CORROCK_BRANCH, new CorrockBranchConfig(ImmutableList.of(Blocks.END_STONE.defaultBlockState(), EEBlocks.CORROCK_END_BLOCK.get().defaultBlockState()), 0.4F, 0.5F));
-		public static final RegistryObject<ConfiguredFeature<CorrockBranchConfig, ?>> EXTRA_CROWNS_CORROCK_BRANCH = register("extra_crowns_corrock_branch", EEFeatures.CORROCK_BRANCH, new CorrockBranchConfig(ImmutableList.of(EEBlocks.CORROCK_END_BLOCK.get().defaultBlockState(), EEBlocks.EUMUS.get().defaultBlockState()), 0.5F, 0.4F));
-		public static final RegistryObject<ConfiguredFeature<ProbabilityFeatureConfiguration, ?>> SMALL_CORROCK_TOWER = register("small_corrock_tower", EEFeatures.SMALL_CORROCK_TOWER, new ProbabilityFeatureConfiguration(0.25F));
-		public static final RegistryObject<ConfiguredFeature<CorrockTowerConfig, ?>> MEDIUM_CORROCK_TOWER = register("medium_corrock_tower", EEFeatures.MEDIUM_CORROCK_TOWER, new CorrockTowerConfig(3, 4, 0.7F, 0.075F));
-		public static final RegistryObject<ConfiguredFeature<CorrockTowerConfig, ?>> LARGE_CORROCK_TOWER = register("large_corrock_tower", EEFeatures.LARGE_CORROCK_TOWER, new CorrockTowerConfig(2, 5, 0.9F, 0.1F));
-		public static final RegistryObject<ConfiguredFeature<WeightedFeatureConfig, ?>> CORROCK_TOWER = register("corrock_tower", EEFeatures.WEIGHTED_FEATURES, WeightedFeatureConfig.createFromPairs(Pair.of(SMALL_CORROCK_TOWER.getHolder().get(), 6), Pair.of(MEDIUM_CORROCK_TOWER.getHolder().get(), 12), Pair.of(LARGE_CORROCK_TOWER.getHolder().get(), 4)));
-		public static final RegistryObject<ConfiguredFeature<ProbabilityFeatureConfiguration, ?>> CORROCK_SHELF = register("corrock_shelf", EEFeatures.CORROCK_SHELF, new ProbabilityFeatureConfiguration(0.75F));
-		public static final RegistryObject<ConfiguredFeature<CorrockArchConfig, ?>> CORROCK_ARCH = register("corrock_arch", EEFeatures.CORROCK_ARCH, new CorrockArchConfig(0.1F, 0.25F, 13.0F, 22.0F, 7.0F));
-		public static final RegistryObject<ConfiguredFeature<EndergeticPatchConfig, ?>> EETLE_EGG_PATCH = register("eetle_egg_patch", EEFeatures.EETLE_EGG, new EndergeticPatchConfig(0.75F, false));
-		public static final RegistryObject<ConfiguredFeature<MultiPatchConfig, ?>> EUMUS_PATCH = register("eumus_patch", EEFeatures.EUMUS_PATCH, new MultiPatchConfig(2, 3));
-		public static final RegistryObject<ConfiguredFeature<MultiPatchConfig, ?>> SPECKLED_CORROCK_PATCH = register("speckled_corrock_patch", EEFeatures.SPECKLED_CORROCK_PATCH, new MultiPatchConfig(2, 3));
+		public static final RegistryObject<ConfiguredFeature<EndergeticPatchConfig, ?>> CORROCK_PATCH = register("corrock_patch", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_PATCH.get(), new EndergeticPatchConfig(0.175F, false)));
+		public static final RegistryObject<ConfiguredFeature<DiskConfiguration, ?>> DISK_CORROCK = register("disk_corrock", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_GROUND_PATCH.get(), new DiskConfiguration(RuleBasedBlockStateProvider.simple(EEBlocks.CORROCK_END_BLOCK.get()), BlockPredicate.matchesBlocks(Blocks.END_STONE), UniformInt.of(2, 3), 3)));
+		public static final RegistryObject<ConfiguredFeature<CorrockBranchConfig, ?>> EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH = register("extra_branch_decorations_corrock_branch", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_BRANCH.get(), new CorrockBranchConfig(ImmutableList.of(Blocks.END_STONE.defaultBlockState(), EEBlocks.CORROCK_END_BLOCK.get().defaultBlockState()), 0.4F, 0.5F)));
+		public static final RegistryObject<ConfiguredFeature<CorrockBranchConfig, ?>> EXTRA_CROWNS_CORROCK_BRANCH = register("extra_crowns_corrock_branch", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_BRANCH.get(), new CorrockBranchConfig(ImmutableList.of(EEBlocks.CORROCK_END_BLOCK.get().defaultBlockState(), EEBlocks.EUMUS.get().defaultBlockState()), 0.5F, 0.4F)));
+		public static final RegistryObject<ConfiguredFeature<ProbabilityFeatureConfiguration, ?>> SMALL_CORROCK_TOWER = register("small_corrock_tower", () -> new ConfiguredFeature<>(EEFeatures.SMALL_CORROCK_TOWER.get(), new ProbabilityFeatureConfiguration(0.25F)));
+		public static final RegistryObject<ConfiguredFeature<CorrockTowerConfig, ?>> MEDIUM_CORROCK_TOWER = register("medium_corrock_tower", () -> new ConfiguredFeature<>(EEFeatures.MEDIUM_CORROCK_TOWER.get(), new CorrockTowerConfig(3, 4, 0.7F, 0.075F)));
+		public static final RegistryObject<ConfiguredFeature<CorrockTowerConfig, ?>> LARGE_CORROCK_TOWER = register("large_corrock_tower", () -> new ConfiguredFeature<>(EEFeatures.LARGE_CORROCK_TOWER.get(), new CorrockTowerConfig(2, 5, 0.9F, 0.1F)));
+		public static final RegistryObject<ConfiguredFeature<WeightedFeatureConfig, ?>> CORROCK_TOWER = register("corrock_tower", () -> new ConfiguredFeature<>(EEFeatures.WEIGHTED_FEATURES.get(), WeightedFeatureConfig.createFromPairs(Pair.of(SMALL_CORROCK_TOWER.getHolder().get(), 6), Pair.of(MEDIUM_CORROCK_TOWER.getHolder().get(), 12), Pair.of(LARGE_CORROCK_TOWER.getHolder().get(), 4))));
+		public static final RegistryObject<ConfiguredFeature<ProbabilityFeatureConfiguration, ?>> CORROCK_SHELF = register("corrock_shelf", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_SHELF.get(), new ProbabilityFeatureConfiguration(0.75F)));
+		public static final RegistryObject<ConfiguredFeature<CorrockArchConfig, ?>> CORROCK_ARCH = register("corrock_arch", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_ARCH.get(), new CorrockArchConfig(0.1F, 0.25F, 13.0F, 22.0F, 7.0F)));
+		public static final RegistryObject<ConfiguredFeature<EndergeticPatchConfig, ?>> EETLE_EGG_PATCH = register("eetle_egg_patch", () -> new ConfiguredFeature<>(EEFeatures.EETLE_EGG.get(), new EndergeticPatchConfig(0.75F, false)));
+		public static final RegistryObject<ConfiguredFeature<MultiPatchConfig, ?>> EUMUS_PATCH = register("eumus_patch", () -> new ConfiguredFeature<>(EEFeatures.EUMUS_PATCH.get(), new MultiPatchConfig(2, 3)));
+		public static final RegistryObject<ConfiguredFeature<MultiPatchConfig, ?>> SPECKLED_CORROCK_PATCH = register("speckled_corrock_patch", () -> new ConfiguredFeature<>(EEFeatures.SPECKLED_CORROCK_PATCH.get(), new MultiPatchConfig(2, 3)));
 
-		private static <FC extends FeatureConfiguration, F extends Feature<FC>> RegistryObject<ConfiguredFeature<FC, ?>> register(String name, Supplier<F> feature, FC config) {
-			return CONFIGURED_FEATURES.register(name, () -> new ConfiguredFeature<>(feature.get(), config));
+		private static <FC extends FeatureConfiguration, F extends Feature<FC>> RegistryObject<ConfiguredFeature<FC, ?>> register(String name, Supplier<ConfiguredFeature<FC, F>> feature) {
+			return CONFIGURED_FEATURES.register(name, feature);
 		}
 	}
 

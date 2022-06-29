@@ -18,11 +18,10 @@ public final class LivingEntityMixin {
 	@Shadow
 	protected Player lastHurtByPlayer;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setLastHurtByMob(Lnet/minecraft/entity/LivingEntity;)V", ordinal = 0), method = "hurt")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setLastHurtByMob(Lnet/minecraft/world/entity/LivingEntity;)V", ordinal = 0), method = "hurt")
 	private void tryToAttackAsBoofloOwner(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
 		Entity entity = source.getEntity();
-		if (entity instanceof BoofloEntity) {
-			BoofloEntity booflo = (BoofloEntity) entity;
+		if (entity instanceof BoofloEntity booflo) {
 			if (booflo.isTamed()) {
 				this.lastHurtByPlayerTime = 100;
 				LivingEntity owner = booflo.getOwner();

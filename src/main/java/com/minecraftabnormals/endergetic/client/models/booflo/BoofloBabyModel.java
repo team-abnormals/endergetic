@@ -28,8 +28,8 @@ public class BoofloBabyModel<E extends BoofloBabyEntity> extends EntityModel<E> 
 
 	public BoofloBabyModel(ModelPart root) {
 		this.Head = root.getChild("Head");
-		this.Jaw = root.getChild("Jaw");
-		this.Tail = root.getChild("Tail");
+		this.Tail = this.Head.getChild("Tail");
+		this.Jaw = this.Head.getChild("Jaw");
 	}
 
 	public static LayerDefinition createLayerDefinition() {

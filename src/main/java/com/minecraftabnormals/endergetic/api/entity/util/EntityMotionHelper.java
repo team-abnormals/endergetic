@@ -7,9 +7,9 @@ public class EntityMotionHelper {
 
 	public static void knockbackEntity(Entity entity, float xzForce, float yForce, boolean reverse, boolean setVelocity) {
 		if (reverse) {
-			setOrAddVelocity(entity, -Mth.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, Mth.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, -Mth.sin((float) Math.toRadians(entity.getYRot())) * xzForce * 0.1F, yForce, Mth.cos((float) Math.toRadians(entity.getYRot())) * xzForce * 0.1F, setVelocity);
 		} else {
-			setOrAddVelocity(entity, Mth.sin((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, yForce, -Mth.cos((float) Math.toRadians(entity.yRot)) * xzForce * 0.1F, setVelocity);
+			setOrAddVelocity(entity, Mth.sin((float) Math.toRadians(entity.getYRot())) * xzForce * 0.1F, yForce, -Mth.cos((float) Math.toRadians(entity.getYRot())) * xzForce * 0.1F, setVelocity);
 		}
 	}
 

@@ -65,8 +65,8 @@ import net.minecraft.world.entity.Pose;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEetle {
-	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213325_aI");
-	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "field_213326_aJ");
+	private static final Field SIZE_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "f_19815_");
+	private static final Field EYE_HEIGHT_FIELD = ObfuscationReflectionHelper.findField(Entity.class, "f_19816_");
 	private static final EntityDataAccessor<Boolean> FIRING_CANNON = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(BroodEetleEntity.class, EntityDataSerializers.BOOLEAN);

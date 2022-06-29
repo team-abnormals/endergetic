@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public final class EnderCrystalItemMixin {
 
 	@Inject(at = @At("HEAD"), method = "useOn", cancellable = true)
-	private void onItemUse(UseOnContext context, CallbackInfoReturnable<InteractionResult> info) {
+	private void useOn(UseOnContext context, CallbackInfoReturnable<InteractionResult> info) {
 		Level world = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 		BlockState blockstate = world.getBlockState(blockpos);
-		if (!blockstate.getBlock().is(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
+		if (!blockstate.is(EETags.Blocks.END_CRYSTAL_PLACEABLE)) {
 			info.setReturnValue(InteractionResult.FAIL);
 		} else {
 			BlockPos blockpos1 = blockpos.above();

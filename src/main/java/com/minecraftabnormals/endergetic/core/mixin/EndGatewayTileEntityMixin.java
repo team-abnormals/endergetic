@@ -18,7 +18,7 @@ public abstract class EndGatewayTileEntityMixin {
 	 * Overwrite since not overwriting it would have basically the same effect as a redirect.
 	 */
 	@Overwrite
-	private void spawnGatewayPortal(ServerLevel level, BlockPos pos, EndGatewayConfiguration configuration) {
+	private static void spawnGatewayPortal(ServerLevel level, BlockPos pos, EndGatewayConfiguration configuration) {
 		EEFeatures.ENDERGETIC_GATEWAY.get().place(configuration, level, level.getChunkSource().getGenerator(), RandomSource.create(), pos);
 	}
 

@@ -35,26 +35,20 @@ public final class PlayerListMixin {
 	@Final
 	private MinecraftServer server;
 
-	@SuppressWarnings("deprecation")
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;save(Lnet/minecraft/entity/player/ServerPlayerEntity;)V", shift = At.Shift.AFTER), method = "remove")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;save(Lnet/minecraft/server/level/ServerPlayer;)V", shift = At.Shift.AFTER), method = "remove")
 	private void removeBalloons(ServerPlayer player, CallbackInfo info) {
 		List<BolloomBalloonEntity> balloons = ((BalloonHolder) player).getBalloons();
-		if (!balloons.isEmpty()) {
-			ServerLevel serverWorld = (ServerLevel) player.level;
-			for (BolloomBalloonEntity balloon : balloons) {
-				serverWorld.despawn(balloon);
-				balloon.removed = true;
-			}
-			serverWorld.getChunk(player.xChunk, player.zChunk).markUnsaved();
+		for (BolloomBalloonEntity balloon : balloons) {
+			balloon.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "placeNewPlayer")
-	private void spawnBalloons(Connection netManager, ServerPlayer player, CallbackInfo info) {
+	private void spawnBalloons(Connection connection, ServerPlayer player, CallbackInfo info) {
 		ServerLevel serverWorld = (ServerLevel) player.level;
 
 		CompoundTag compound = this.server.getWorldData().getLoadedPlayerTag();
-		if (!(compound != null && player.getName().getString().equals(this.server.getSingleplayerName()))) {
+		if (!(compound != null && this.server.isSingleplayerOwner(player.getGameProfile()))) {
 			try {
 				File playerDataFile = new File(this.playerIo.getPlayerDataFolder(), player.getStringUUID() + ".dat");
 				if (playerDataFile.exists() && playerDataFile.isFile()) {

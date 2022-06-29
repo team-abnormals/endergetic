@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.core.mixin;
 
-import java.util.Random;
-
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,8 +17,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.SpikeConfigurat
 public final class EndSpikeFeatureMixin {
 
 	@Inject(at = @At("TAIL"), method = "placeSpike")
-	private void placeCrystalHolder(ServerLevelAccessor world, Random rand, SpikeConfiguration config, SpikeFeature.EndSpike spike, CallbackInfo info) {
-		world.setBlock(new BlockPos(spike.getCenterX(), spike.getHeight(), spike.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().defaultBlockState(), 3);
+	private void placeCrystalHolder(ServerLevelAccessor level, RandomSource rand, SpikeConfiguration config, SpikeFeature.EndSpike spike, CallbackInfo info) {
+		level.setBlock(new BlockPos(spike.getCenterX(), spike.getHeight(), spike.getCenterZ()), EEBlocks.CRYSTAL_HOLDER.get().defaultBlockState(), 3);
 	}
 
 }

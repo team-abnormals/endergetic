@@ -7,13 +7,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.teamabnormals.blueprint.core.endimator.EndimatorModelPart;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
+import com.teamabnormals.blueprint.core.endimator.model.EndimatorLayerDefinition;
+import com.teamabnormals.blueprint.core.endimator.model.EndimatorPartDefinition;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -82,34 +82,33 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 	}
 
 	public static LayerDefinition createLayerDefinition() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition root = meshdefinition.getRoot();
-		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 59).addBox(-12.0F, 0.0F, 0.0F, 24.0F, 14.0F, 27.0F, false), PartPose.offsetAndRotation(0.0F, -8.0F, -15.0F, -0.08726646F, 0.0F, 0.0F));
-		PartDefinition leftShell = root.addOrReplaceChild("leftShell", CubeListBuilder.create().texOffs(217, 0).addBox(0.0F, 0.0F, 0.0F, 13.0F, 12.0F, 27.0F, false), PartPose.offsetAndRotation(0.0F, -0.5F, -0.5F, 0.0F, 0.034906585F, 0.0F));
-		PartDefinition rightShell = root.addOrReplaceChild("rightShell", CubeListBuilder.create().texOffs(217, 27).addBox(-13.0F, 0.0F, 0.0F, 13.0F, 12.0F, 27.0F, true), PartPose.offsetAndRotation(0.0F, -0.5F, -0.5F, 0.0F, -0.034906585F, 0.0F));
-		PartDefinition wingLeft = root.addOrReplaceChild("wingLeft", CubeListBuilder.create().texOffs(120, 0).addBox(0.0F, 0.0F, 0.0F, 12.0F, 0.0F, 40.0F, false), PartPose.offsetAndRotation(0.0F, -0.2F, 0.0F, 0.0F, 0.017453292F, 0.0F));
-		PartDefinition wingRight = root.addOrReplaceChild("wingRight", CubeListBuilder.create().texOffs(120, 40).addBox(-12.0F, 0.0F, 0.0F, 12.0F, 0.0F, 40.0F, true), PartPose.offsetAndRotation(0.0F, -0.2F, 0.0F, 0.0F, -0.017453292F, 0.0F));
-		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -6.0F, -14.0F, 16.0F, 12.0F, 14.0F, false), PartPose.offsetAndRotation(0.0F, 8.5F, 1.5F, 0.2617994F, 0.0F, 0.0F));
-		PartDefinition egg = root.addOrReplaceChild("egg", CubeListBuilder.create().texOffs(61, 0).addBox(0.0F, -10.0F, 0.0F, 26.0F, 20.0F, 17.0F, false), PartPose.offsetAndRotation(-13.0F, 6.0F, 24.0F, 0.40142572F, 0.0F, 0.0F));
-		PartDefinition leftFrontLeg = root.addOrReplaceChild("leftFrontLeg", CubeListBuilder.create().texOffs(103, 79).addBox(-5.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, false), PartPose.offsetAndRotation(13.0F, 6.0F, 5.0F, 0.0F, 0.08726646F, -0.61086524F));
-		PartDefinition rightFrontLeg = root.addOrReplaceChild("rightFrontLeg", CubeListBuilder.create().texOffs(103, 84).addBox(0.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, true), PartPose.offsetAndRotation(-13.0F, 6.0F, 5.0F, 0.0F, -0.08726646F, 0.61086524F));
-		PartDefinition leftBackLeg = root.addOrReplaceChild("leftBackLeg", CubeListBuilder.create().texOffs(103, 79).addBox(-5.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, false), PartPose.offsetAndRotation(13.0F, 6.0F, 23.0F, 0.2617994F, 0.08726646F, -0.7853982F));
-		PartDefinition rightBackLeg = root.addOrReplaceChild("rightBackLeg", CubeListBuilder.create().texOffs(103, 84).addBox(0.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, true), PartPose.offsetAndRotation(-13.0F, 6.0F, 23.0F, 0.2617994F, -0.08726646F, 0.7853982F));
-		PartDefinition horn = root.addOrReplaceChild("horn", CubeListBuilder.create().texOffs(0, 62).addBox(-3.0F, -15.0F, -3.0F, 6.0F, 15.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -11.5F, 0.34906584F, 0.0F, 0.0F));
-		PartDefinition rightMandible = root.addOrReplaceChild("rightMandible", CubeListBuilder.create().texOffs(93, 75).addBox(-15.0F, 0.0F, -16.0F, 15.0F, 0.0F, 15.0F, true), PartPose.offsetAndRotation(0.0F, 3.0F, -13.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition leftMandible = root.addOrReplaceChild("leftMandible", CubeListBuilder.create().texOffs(93, 60).addBox(0.0F, 0.0F, -15.0F, 15.0F, 0.0F, 15.0F, false), PartPose.offsetAndRotation(0.0F, 3.0F, -14.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition hornTop = root.addOrReplaceChild("hornTop", CubeListBuilder.create().texOffs(62, 38).addBox(0.0F, 0.0F, 0.0F, 26.0F, 20.0F, 0.0F, false), PartPose.offsetAndRotation(-13.0F, -30.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition eggLayer = root.addOrReplaceChild("eggLayer", CubeListBuilder.create().texOffs(210, 56).addBox(0.0F, 0.0F, 0.0F, 27.0F, 21.0F, 18.0F, false), PartPose.offsetAndRotation(-0.5F, -10.5F, -0.5F, 0.0F, 0.0F, 0.0F));
-		PartDefinition eggSack = root.addOrReplaceChild("eggSack", CubeListBuilder.create().texOffs(5, 27).addBox(-8.0F, -8.0F, 0.0F, 16.0F, 16.0F, 11.0F, false), PartPose.offsetAndRotation(13.0F, 0.0F, 17.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition eggMouthTop = root.addOrReplaceChild("eggMouthTop", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(11.0F, -10.5F, 0.5F, 0.0F, 0.0F, 1.5707964F));
-		PartDefinition eggMouthBottom = root.addOrReplaceChild("eggMouthBottom", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(-11.0F, 10.5F, 0.5F, 0.0F, 0.0F, 4.712389F));
-		PartDefinition eggMouthLeft = root.addOrReplaceChild("eggMouthLeft", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(11.0F, 10.5F, 0.5F, 0.0F, 0.0F, 3.1415927F));
-		PartDefinition eggMouthRight = root.addOrReplaceChild("eggMouthRight", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(-11.0F, -10.5F, 0.5F, 0.0F, 0.0061086523F, 0.0F));
-		PartDefinition leftFrontFoot = root.addOrReplaceChild("leftFrontFoot", CubeListBuilder.create().texOffs(77, 61).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, false), PartPose.offsetAndRotation(-2.5F, 12.0F, 0.0F, 0.034906585F, 0.0F, 0.57595867F));
-		PartDefinition rightFrontFoot = root.addOrReplaceChild("rightFrontFoot", CubeListBuilder.create().texOffs(77, 68).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, true), PartPose.offsetAndRotation(2.5F, 12.0F, 0.0F, 0.034906585F, 0.0F, -0.57595867F));
-		PartDefinition leftBackFoot = root.addOrReplaceChild("leftBackFoot", CubeListBuilder.create().texOffs(77, 61).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, false), PartPose.offsetAndRotation(-2.5F, 12.0F, 0.0F, -0.13962634F, 0.0F, 0.7853982F));
-		PartDefinition rightBackFoot = root.addOrReplaceChild("rightBackFoot", CubeListBuilder.create().texOffs(77, 68).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, true), PartPose.offsetAndRotation(2.5F, 12.0F, 0.0F, -0.13962634F, 0.0F, -0.7853982F));
-		return LayerDefinition.create(meshdefinition, 300, 100);
+		EndimatorPartDefinition root = EndimatorPartDefinition.root();
+		EndimatorPartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 59).addBox(-12.0F, 0.0F, 0.0F, 24.0F, 14.0F, 27.0F, false), PartPose.offsetAndRotation(0.0F, -8.0F, -15.0F, -0.08726646F, 0.0F, 0.0F));
+		EndimatorPartDefinition leftShell = root.addOrReplaceChild("leftShell", CubeListBuilder.create().texOffs(217, 0).addBox(0.0F, 0.0F, 0.0F, 13.0F, 12.0F, 27.0F, false), PartPose.offsetAndRotation(0.0F, -0.5F, -0.5F, 0.0F, 0.034906585F, 0.0F));
+		EndimatorPartDefinition rightShell = root.addOrReplaceChild("rightShell", CubeListBuilder.create().texOffs(217, 27).addBox(-13.0F, 0.0F, 0.0F, 13.0F, 12.0F, 27.0F, true), PartPose.offsetAndRotation(0.0F, -0.5F, -0.5F, 0.0F, -0.034906585F, 0.0F));
+		EndimatorPartDefinition wingLeft = root.addOrReplaceChild("wingLeft", CubeListBuilder.create().texOffs(120, 0).addBox(0.0F, 0.0F, 0.0F, 12.0F, 0.0F, 40.0F, false), PartPose.offsetAndRotation(0.0F, -0.2F, 0.0F, 0.0F, 0.017453292F, 0.0F));
+		EndimatorPartDefinition wingRight = root.addOrReplaceChild("wingRight", CubeListBuilder.create().texOffs(120, 40).addBox(-12.0F, 0.0F, 0.0F, 12.0F, 0.0F, 40.0F, true), PartPose.offsetAndRotation(0.0F, -0.2F, 0.0F, 0.0F, -0.017453292F, 0.0F));
+		EndimatorPartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -6.0F, -14.0F, 16.0F, 12.0F, 14.0F, false), PartPose.offsetAndRotation(0.0F, 8.5F, 1.5F, 0.2617994F, 0.0F, 0.0F));
+		EndimatorPartDefinition egg = root.addOrReplaceChild("egg", CubeListBuilder.create().texOffs(61, 0).addBox(0.0F, -10.0F, 0.0F, 26.0F, 20.0F, 17.0F, false), PartPose.offsetAndRotation(-13.0F, 6.0F, 24.0F, 0.40142572F, 0.0F, 0.0F));
+		EndimatorPartDefinition leftFrontLeg = root.addOrReplaceChild("leftFrontLeg", CubeListBuilder.create().texOffs(103, 79).addBox(-5.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, false), PartPose.offsetAndRotation(13.0F, 6.0F, 5.0F, 0.0F, 0.08726646F, -0.61086524F));
+		EndimatorPartDefinition rightFrontLeg = root.addOrReplaceChild("rightFrontLeg", CubeListBuilder.create().texOffs(103, 84).addBox(0.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, true), PartPose.offsetAndRotation(-13.0F, 6.0F, 5.0F, 0.0F, -0.08726646F, 0.61086524F));
+		EndimatorPartDefinition leftBackLeg = root.addOrReplaceChild("leftBackLeg", CubeListBuilder.create().texOffs(103, 79).addBox(-5.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, false), PartPose.offsetAndRotation(13.0F, 6.0F, 23.0F, 0.2617994F, 0.08726646F, -0.7853982F));
+		EndimatorPartDefinition rightBackLeg = root.addOrReplaceChild("rightBackLeg", CubeListBuilder.create().texOffs(103, 84).addBox(0.0F, 0.0F, -2.5F, 5.0F, 14.0F, 5.0F, true), PartPose.offsetAndRotation(-13.0F, 6.0F, 23.0F, 0.2617994F, -0.08726646F, 0.7853982F));
+		EndimatorPartDefinition horn = root.addOrReplaceChild("horn", CubeListBuilder.create().texOffs(0, 62).addBox(-3.0F, -15.0F, -3.0F, 6.0F, 15.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -11.5F, 0.34906584F, 0.0F, 0.0F));
+		EndimatorPartDefinition rightMandible = root.addOrReplaceChild("rightMandible", CubeListBuilder.create().texOffs(93, 75).addBox(-15.0F, 0.0F, -16.0F, 15.0F, 0.0F, 15.0F, true), PartPose.offsetAndRotation(0.0F, 3.0F, -13.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition leftMandible = root.addOrReplaceChild("leftMandible", CubeListBuilder.create().texOffs(93, 60).addBox(0.0F, 0.0F, -15.0F, 15.0F, 0.0F, 15.0F, false), PartPose.offsetAndRotation(0.0F, 3.0F, -14.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition hornTop = root.addOrReplaceChild("hornTop", CubeListBuilder.create().texOffs(62, 38).addBox(0.0F, 0.0F, 0.0F, 26.0F, 20.0F, 0.0F, false), PartPose.offsetAndRotation(-13.0F, -30.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition eggLayer = root.addOrReplaceChild("eggLayer", CubeListBuilder.create().texOffs(210, 56).addBox(0.0F, 0.0F, 0.0F, 27.0F, 21.0F, 18.0F, false), PartPose.offsetAndRotation(-0.5F, -10.5F, -0.5F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition eggSack = root.addOrReplaceChild("eggSack", CubeListBuilder.create().texOffs(5, 27).addBox(-8.0F, -8.0F, 0.0F, 16.0F, 16.0F, 11.0F, false), PartPose.offsetAndRotation(13.0F, 0.0F, 17.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition eggMouthTop = root.addOrReplaceChild("eggMouthTop", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(11.0F, -10.5F, 0.5F, 0.0F, 0.0F, 1.5707964F));
+		EndimatorPartDefinition eggMouthBottom = root.addOrReplaceChild("eggMouthBottom", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(-11.0F, 10.5F, 0.5F, 0.0F, 0.0F, 4.712389F));
+		EndimatorPartDefinition eggMouthLeft = root.addOrReplaceChild("eggMouthLeft", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(11.0F, 10.5F, 0.5F, 0.0F, 0.0F, 3.1415927F));
+		EndimatorPartDefinition eggMouthRight = root.addOrReplaceChild("eggMouthRight", CubeListBuilder.create().texOffs(125, 60).addBox(0.0F, 0.0F, 0.0F, 21.0F, 21.0F, 17.0F, false), PartPose.offsetAndRotation(-11.0F, -10.5F, 0.5F, 0.0F, 0.0061086523F, 0.0F));
+		EndimatorPartDefinition leftFrontFoot = root.addOrReplaceChild("leftFrontFoot", CubeListBuilder.create().texOffs(77, 61).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, false), PartPose.offsetAndRotation(-2.5F, 12.0F, 0.0F, 0.034906585F, 0.0F, 0.57595867F));
+		EndimatorPartDefinition rightFrontFoot = root.addOrReplaceChild("rightFrontFoot", CubeListBuilder.create().texOffs(77, 68).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, true), PartPose.offsetAndRotation(2.5F, 12.0F, 0.0F, 0.034906585F, 0.0F, -0.57595867F));
+		EndimatorPartDefinition leftBackFoot = root.addOrReplaceChild("leftBackFoot", CubeListBuilder.create().texOffs(77, 61).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, false), PartPose.offsetAndRotation(-2.5F, 12.0F, 0.0F, -0.13962634F, 0.0F, 0.7853982F));
+		EndimatorPartDefinition rightBackFoot = root.addOrReplaceChild("rightBackFoot", CubeListBuilder.create().texOffs(77, 68).addBox(-3.5F, 0.0F, -3.5F, 7.0F, 14.0F, 7.0F, true), PartPose.offsetAndRotation(2.5F, 12.0F, 0.0F, -0.13962634F, 0.0F, -0.7853982F));
+		return new EndimatorLayerDefinition(root, 300, 100);
 	}
 
 	@Override

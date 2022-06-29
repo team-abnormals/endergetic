@@ -10,6 +10,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.client.player.Input;
+import net.minecraft.world.entity.player.ProfilePublicKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,13 +18,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import javax.annotation.Nullable;
+
 @Mixin(LocalPlayer.class)
 public final class ClientPlayerEntityMixin extends AbstractClientPlayer {
 	@Shadow
 	public Input input;
 
-	private ClientPlayerEntityMixin(ClientLevel world, GameProfile profile) {
-		super(world, profile);
+	private ClientPlayerEntityMixin(ClientLevel level, GameProfile profile, @Nullable ProfilePublicKey profilePublicKey) {
+		super(level, profile, profilePublicKey);
 	}
 
 	/**
@@ -31,11 +34,10 @@ public final class ClientPlayerEntityMixin extends AbstractClientPlayer {
 	 *
 	 * @param flag wasJumping boolean.
 	 */
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MovementInput;tick(Z)V", shift = At.Shift.AFTER), method = "aiStep", locals = LocalCapture.CAPTURE_FAILSOFT)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/Input;tick(ZF)V", shift = At.Shift.AFTER), method = "aiStep", locals = LocalCapture.CAPTURE_FAILSOFT)
 	private void onTickMovementInput(CallbackInfo info, boolean flag) {
 		Entity ridingEntity = this.getVehicle();
-		if (ridingEntity instanceof BoofloEntity) {
-			BoofloEntity booflo = (BoofloEntity) ridingEntity;
+		if (ridingEntity instanceof BoofloEntity booflo) {
 			if (!booflo.isOnGround()) {
 				if (!flag && this.input.jumping) {
 					EndergeticExpansion.CHANNEL.sendToServer(new C2SInflateMessage());

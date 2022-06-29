@@ -7,11 +7,10 @@ import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +27,7 @@ public final class ClientPlayNetHandlerMixin {
 
 	@Inject(at = @At("RETURN"), method = "handleGameEvent")
 	private void detachBalloons(ClientboundGameEventPacket packet, CallbackInfo info) {
-		if (this.minecraft.gameMode.getPlayerMode() == GameType.SPECTATOR) {
+		if (packet.getEvent() == ClientboundGameEventPacket.CHANGE_GAME_MODE && this.minecraft.gameMode.getPlayerMode() == GameType.SPECTATOR) {
 			BalloonHolder holder = (BalloonHolder) this.minecraft.player;
 			if (!holder.getBalloons().isEmpty()) {
 				holder.detachBalloons();
@@ -36,13 +35,13 @@ public final class ClientPlayNetHandlerMixin {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/IngameGui;setOverlayMessage(Lnet/minecraft/util/text/ITextComponent;Z)V", shift = At.Shift.AFTER), method = "handleSetEntityPassengersPacket")
-	private void setBoofloRidingOverlayMessage(ClientboundSetPassengersPacket packetIn, CallbackInfo info) {
-		Entity entity = this.level.getEntity(packetIn.getVehicle());
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;setOverlayMessage(Lnet/minecraft/network/chat/Component;Z)V", shift = At.Shift.AFTER), method = "handleSetEntityPassengersPacket")
+	private void setBoofloRidingOverlayMessage(ClientboundSetPassengersPacket packet, CallbackInfo info) {
+		Entity entity = this.level.getEntity(packet.getVehicle());
 		if (entity instanceof BoofloEntity) {
-			this.minecraft.gui.setOverlayMessage(new TranslatableComponent("overlay.mount.booflo", this.minecraft.options.keyShift.getTranslatedKeyMessage(), KeybindHandler.BOOFLO_SLAM.getTranslatedKeyMessage()), false);
+			this.minecraft.gui.setOverlayMessage(Component.translatable("overlay.mount.booflo", this.minecraft.options.keyShift.getTranslatedKeyMessage(), KeybindHandler.BOOFLO_SLAM.getTranslatedKeyMessage()), false);
 		} else if (entity instanceof GliderEetleEntity) {
-			this.minecraft.gui.setOverlayMessage(TextComponent.EMPTY, false);
+			this.minecraft.gui.setOverlayMessage(Component.empty(), false);
 		}
 	}
 }

@@ -21,9 +21,9 @@ public final class AbstractFireBlockMixin extends Block {
 		super(properties);
 	}
 
-	@Inject(at = @At("HEAD"), method = "getState(Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", cancellable = true)
-	private static void enderFirePlacement(BlockGetter reader, BlockPos pos, CallbackInfoReturnable<BlockState> info) {
-		if (EnderFireBlock.isEnderFireBase(reader.getBlockState(pos.below()))) {
+	@Inject(at = @At("HEAD"), method = "getState(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", cancellable = true)
+	private static void enderFirePlacement(BlockGetter getter, BlockPos pos, CallbackInfoReturnable<BlockState> info) {
+		if (EnderFireBlock.isEnderFireBase(getter.getBlockState(pos.below()))) {
 			info.setReturnValue(EEBlocks.ENDER_FIRE.get().defaultBlockState());
 		}
 	}

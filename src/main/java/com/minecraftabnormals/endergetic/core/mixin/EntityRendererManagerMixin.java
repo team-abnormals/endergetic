@@ -19,26 +19,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public final class EntityRendererManagerMixin {
 
 	@Inject(at = @At(value = "JUMP", shift = At.Shift.BEFORE, ordinal = 0), method = "renderHitbox")
-	private void renderEggSackBoundingBox(PoseStack matrixStack, VertexConsumer bufferIn, Entity entity, float partialTicks, CallbackInfo info) {
+	private static void renderEggSackBoundingBox(PoseStack poseStack, VertexConsumer bufferIn, Entity entity, float partialTicks, CallbackInfo info) {
 		if (entity instanceof BroodEetleEntity) {
 			BroodEggSackEntity eggSackEntity = ((BroodEetleEntity) entity).getEggSack(entity.level);
 			if (eggSackEntity != null) {
-				matrixStack.pushPose();
+				poseStack.pushPose();
 				double x = -Mth.lerp(partialTicks, entity.xOld, entity.getX());
 				double y = -Mth.lerp(partialTicks, entity.yOld, entity.getY());
 				double z = -Mth.lerp(partialTicks, entity.zOld, entity.getZ());
 				BroodEetleEntity broodEetleEntity = (BroodEetleEntity) entity;
 				Vec3 eggSackPos = BroodEggSackEntity.getEggPos(new Vec3(-x, -y, -z), Mth.lerp(partialTicks, broodEetleEntity.yBodyRotO, broodEetleEntity.yBodyRot), broodEetleEntity.getEggCannonProgress(), broodEetleEntity.getEggCannonFlyingProgress(), broodEetleEntity.getFlyingRotations().getRenderFlyPitch(), broodEetleEntity.isOnLastHealthStage());
-				matrixStack.translate(x + eggSackPos.x, y + eggSackPos.y, z + eggSackPos.z);
+				poseStack.translate(x + eggSackPos.x, y + eggSackPos.y, z + eggSackPos.z);
 				AABB axisalignedbb = eggSackEntity.getBoundingBox().move(-eggSackEntity.getX(), -eggSackEntity.getY(), -eggSackEntity.getZ());
-				LevelRenderer.renderLineBox(matrixStack, bufferIn, axisalignedbb, 0.25F, 1.0F, 0.0F, 1.0F);
-				matrixStack.popPose();
+				LevelRenderer.renderLineBox(poseStack, bufferIn, axisalignedbb, 0.25F, 1.0F, 0.0F, 1.0F);
+				poseStack.popPose();
 			}
 		}
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "renderHitbox", cancellable = true)
-	private void cancelDefaultEggSackBoundingBox(PoseStack matrixStack, VertexConsumer bufferIn, Entity entity, float partialTicks, CallbackInfo info) {
+	private static void cancelDefaultEggSackBoundingBox(PoseStack poseStack, VertexConsumer vertexConsumer, Entity entity, float partialTicks, CallbackInfo info) {
 		if (entity instanceof BroodEggSackEntity) {
 			info.cancel();
 		}

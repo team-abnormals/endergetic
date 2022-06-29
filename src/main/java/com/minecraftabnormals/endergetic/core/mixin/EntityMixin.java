@@ -9,7 +9,6 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.GliderEetleEntity
 import com.minecraftabnormals.endergetic.core.interfaces.BalloonHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,14 +30,9 @@ public final class EntityMixin implements BalloonHolder {
 	@Shadow
 	private Level level;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;moveTo(DDDFF)V", shift = At.Shift.AFTER), method = "teleportTo")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;moveTo(DDDFF)V", shift = At.Shift.AFTER), method = "teleportTo")
 	private void updateBalloonPositions(double x, double y, double z, CallbackInfo info) {
-		ServerLevel level = (ServerLevel) this.level;
-		this.balloons.forEach(balloon -> {
-			level.updateChunkPos(balloon);
-			balloon.forceChunkAddition = true;
-			balloon.updateAttachedPosition();
-		});
+		this.balloons.forEach(BolloomBalloonEntity::updateAttachedPosition);
 	}
 
 	@Inject(at = @At(value = "RETURN"), method = "unRide")

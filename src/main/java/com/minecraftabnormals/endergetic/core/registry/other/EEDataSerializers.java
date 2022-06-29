@@ -18,9 +18,9 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class EEDataSerializers {
-	public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.DATA_SERIALIZERS.get(), EndergeticExpansion.MOD_ID);
+	public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.Keys.DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
 
-	public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VEC3D = new EntityDataSerializer<Optional<Vec3>>() {
+	public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VEC3D = new EntityDataSerializer<>() {
 		@Override
 		public void write(FriendlyByteBuf buf, Optional<Vec3> value) {
 			buf.writeBoolean(value.isPresent());
@@ -44,7 +44,7 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final EntityDataSerializer<BalloonColor> BALLOON_COLOR = new EntityDataSerializer<BalloonColor>() {
+	public static final EntityDataSerializer<BalloonColor> BALLOON_COLOR = new EntityDataSerializer<>() {
 		@Override
 		public void write(FriendlyByteBuf buf, BalloonColor value) {
 			buf.writeEnum(value);
@@ -61,7 +61,7 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final EntityDataSerializer<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new EntityDataSerializer<TargetFlyingRotations>() {
+	public static final EntityDataSerializer<TargetFlyingRotations> TARGET_FLYING_ROTATIONS = new EntityDataSerializer<>() {
 		@Override
 		public void write(FriendlyByteBuf buf, TargetFlyingRotations value) {
 			buf.writeFloat(value.getTargetFlyPitch());
@@ -79,7 +79,7 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final EntityDataSerializer<EntityDimensions> ENTITY_SIZE = new EntityDataSerializer<EntityDimensions>() {
+	public static final EntityDataSerializer<EntityDimensions> ENTITY_SIZE = new EntityDataSerializer<>() {
 		@Override
 		public void write(FriendlyByteBuf buf, EntityDimensions value) {
 			buf.writeFloat(value.width);
@@ -98,7 +98,7 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final EntityDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new EntityDataSerializer<HealthStage>() {
+	public static final EntityDataSerializer<HealthStage> BROOD_HEALTH_STAGE = new EntityDataSerializer<>() {
 		public void write(FriendlyByteBuf buf, HealthStage value) {
 			buf.writeEnum(value);
 		}
@@ -112,7 +112,7 @@ public final class EEDataSerializers {
 		}
 	};
 
-	public static final EntityDataSerializer<PurpoidSize> PURPOID_SIZE = new EntityDataSerializer<PurpoidSize>() {
+	public static final EntityDataSerializer<PurpoidSize> PURPOID_SIZE = new EntityDataSerializer<>() {
 		public void write(FriendlyByteBuf buf, PurpoidSize value) {
 			buf.writeEnum(value);
 		}

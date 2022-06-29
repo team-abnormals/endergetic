@@ -43,25 +43,25 @@ public class EetleEggBlock extends BaseEntityBlock implements SimpleWaterloggedB
 			new VoxelShape[] {
 					box(1.0F, 11.0F, 1.0F, 15.0F, 16.0F, 15.0F),
 					box(1.0F, 0.0F, 1.0F, 15.0F, 5.0F, 15.0F),
-					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 11.0F),
+					box(1.0F, 1.0F, 11.0F, 15.0F, 15.0F, 16.0F),
 					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 5.0F),
-					box(16.0F, 1.0F, 1.0F, 11.0F, 15.0F, 15.0F),
+					box(11.0F, 1.0F, 1.0F, 16.0F, 15.0F, 15.0F),
 					box(0.0F, 1.0F, 1.0F, 5.0F, 15.0F, 15.0F),
 			},
 			new VoxelShape[] {
 					box(1.0F, 8.0F, 1.0F, 15.0F, 16.0F, 15.0F),
 					box(1.0F, 0.0F, 1.0F, 15.0F, 8.0F, 15.0F),
-					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 8.0F),
+					box(1.0F, 1.0F, 8.0F, 15.0F, 15.0F, 16.0F),
 					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 8.0F),
-					box(16.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
+					box(8.0F, 1.0F, 1.0F, 16.0F, 15.0F, 15.0F),
 					box(0.0F, 1.0F, 1.0F, 8.0F, 15.0F, 15.0F),
 			},
 			new VoxelShape[] {
 					box(1.0F, 4.0F, 1.0F, 15.0F, 16.0F, 15.0F),
 					box(1.0F, 0.0F, 1.0F, 15.0F, 12.0F, 15.0F),
-					box(15.0F, 1.0F, 16.0F, 1.0F, 15.0F, 4.0F),
+					box(1.0F, 1.0F, 4.0F, 15.0F, 15.0F, 16.0F),
 					box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 12.0F),
-					box(16.0F, 1.0F, 1.0F, 4.0F, 15.0F, 15.0F),
+					box(4.0F, 1.0F, 1.0F, 16.0F, 15.0F, 15.0F),
 					box(0.0F, 1.0F, 1.0F, 12.0F, 15.0F, 15.0F),
 			}
 	};

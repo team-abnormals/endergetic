@@ -18,7 +18,7 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.19)"
+    versionRange = "[1.19,)"
     ordering = "AFTER"
     side = "BOTH"
 

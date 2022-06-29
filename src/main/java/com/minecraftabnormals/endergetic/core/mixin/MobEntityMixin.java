@@ -15,7 +15,7 @@ public final class MobEntityMixin {
 	protected MoveControl moveControl;
 
 	/**
-	 * Vanilla doesn't check for instanceof on certain mobs when casting to their custom {@link MovementController}.
+	 * Vanilla doesn't check for instanceof on certain mobs when casting to their custom {@link MoveControl}.
 	 */
 	@Inject(at = @At("HEAD"), method = "getMoveControl", cancellable = true)
 	private void getMoveHelper(CallbackInfoReturnable<MoveControl> info) {
