@@ -57,6 +57,6 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 	@Nullable
 	private static Vec3 findPos(BroodEetleEntity broodEetle, Vec3 takeoffPos) {
 		boolean verticalFarAway = Math.abs(broodEetle.getY() - takeoffPos.y()) >= 6;
-		return DefaultRandomPos.getPosTowards(broodEetle, 8, verticalFarAway ? -1 : 6, takeoffPos, ((float)Math.PI / 2.0F));
+		return DefaultRandomPos.getPosTowards(broodEetle, 8, verticalFarAway ? 0 : 6, takeoffPos, ((float)Math.PI / 2.0F));
 	}
 }

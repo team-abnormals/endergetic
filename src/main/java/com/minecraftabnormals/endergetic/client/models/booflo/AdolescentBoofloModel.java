@@ -35,12 +35,13 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
 
 	public AdolescentBoofloModel(ModelPart root) {
 		this.Head = root.getChild("Head");
-		this.KneeLeft = root.getChild("KneeLeft");
-		this.KneeRight = root.getChild("KneeRight");
-		this.ArmLeft = root.getChild("ArmLeft");
-		this.ArmRight = root.getChild("ArmRight");
-		this.Tail = root.getChild("Tail");
+		this.KneeLeft = this.Head.getChild("KneeLeft");
+		this.KneeRight = this.Head.getChild("KneeRight");
+		this.ArmLeft = this.Head.getChild("ArmLeft");
+		this.ArmRight = this.Head.getChild("ArmRight");
+		this.Tail = this.Head.getChild("Tail");
 		this.Jaw = root.getChild("Jaw");
+
 		this.endimator = Endimator.compile(root);
 	}
 
@@ -48,11 +49,11 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition root = meshdefinition.getRoot();
 		PartDefinition Head = root.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -5.0F, -10.0F, 10.0F, 5.0F, 10.0F, false), PartPose.offsetAndRotation(0.0F, 18.0F, 5.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition KneeLeft = root.addOrReplaceChild("KneeLeft", CubeListBuilder.create().texOffs(0, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(2.5F, -4.5F, -3.5F, 0.0F, 0.0F, 0.34906584F));
-		PartDefinition KneeRight = root.addOrReplaceChild("KneeRight", CubeListBuilder.create().texOffs(14, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(-2.5F, -4.5F, -3.5F, 0.0F, 0.0F, -0.34906584F));
-		PartDefinition ArmLeft = root.addOrReplaceChild("ArmLeft", CubeListBuilder.create().texOffs(0, 16).addBox(0.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(4.5F, -2.0F, -7.0F, 0.0F, 0.55850536F, 0.34906584F));
-		PartDefinition ArmRight = root.addOrReplaceChild("ArmRight", CubeListBuilder.create().texOffs(14, 16).addBox(-4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(-4.5F, -2.0F, -7.0F, 0.0F, -0.55850536F, -0.34906584F));
-		PartDefinition Tail = root.addOrReplaceChild("Tail", CubeListBuilder.create().texOffs(32, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 5.0F, 7.0F, false), PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition KneeLeft = Head.addOrReplaceChild("KneeLeft", CubeListBuilder.create().texOffs(0, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(2.5F, -4.5F, -3.5F, 0.0F, 0.0F, 0.34906584F));
+		PartDefinition KneeRight = Head.addOrReplaceChild("KneeRight", CubeListBuilder.create().texOffs(14, 24).addBox(-1.5F, -5.0F, -1.5F, 3.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(-2.5F, -4.5F, -3.5F, 0.0F, 0.0F, -0.34906584F));
+		PartDefinition ArmLeft = Head.addOrReplaceChild("ArmLeft", CubeListBuilder.create().texOffs(0, 16).addBox(0.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(4.5F, -2.0F, -7.0F, 0.0F, 0.55850536F, 0.34906584F));
+		PartDefinition ArmRight = Head.addOrReplaceChild("ArmRight", CubeListBuilder.create().texOffs(14, 16).addBox(-4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, false), PartPose.offsetAndRotation(-4.5F, -2.0F, -7.0F, 0.0F, -0.55850536F, -0.34906584F));
+		PartDefinition Tail = Head.addOrReplaceChild("Tail", CubeListBuilder.create().texOffs(32, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 5.0F, 7.0F, false), PartPose.offsetAndRotation(0.0F, -5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
 		PartDefinition Jaw = root.addOrReplaceChild("Jaw", CubeListBuilder.create().texOffs(16, 28).addBox(-6.0F, 0.0F, -11.0F, 12.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, 18.0F, 5.0F, 0.0F, 0.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 48);
 	}
@@ -65,7 +66,7 @@ public class AdolescentBoofloModel<E extends BoofloAdolescentEntity> extends End
 
 	@Override
 	public void setupAnim(E entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
 		float partialTicks = ClientInfo.getPartialTicks();
 		this.Tail.yRot = 0.1F * Mth.sin(entityIn.getTailAnimation(0.3F * partialTicks)) * (float) Math.PI;

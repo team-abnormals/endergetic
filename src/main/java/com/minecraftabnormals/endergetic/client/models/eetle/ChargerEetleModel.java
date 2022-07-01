@@ -4,6 +4,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.ChargerEetleEntit
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.Endimator;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -41,26 +42,27 @@ public class ChargerEetleModel extends EndimatorEntityModel<ChargerEetleEntity> 
 		this.frontRightLeg = root.getChild("frontRightLeg");
 		this.backLeftLeg = root.getChild("backLeftLeg");
 		this.backRightLeg = root.getChild("backRightLeg");
-		this.rightWing = root.getChild("rightWing");
-		this.leftWing = root.getChild("leftWing");
-		this.head = root.getChild("head");
-		this.mouth = root.getChild("mouth");
-		this.claw = root.getChild("claw");
+		this.rightWing = this.body.getChild("rightWing");
+		this.leftWing = this.body.getChild("leftWing");
+		this.head = this.body.getChild("head");
+		this.mouth = this.head.getChild("mouth");
+		this.claw = this.mouth.getChild("claw");
+		this.endimator = Endimator.compile(root);
 	}
 
 	public static LayerDefinition createLayerDefinition() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition root = meshdefinition.getRoot();
 		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(28, 16).addBox(-4.0F, -3.0F, 0.0F, 8.0F, 6.0F, 10.0F, false), PartPose.offsetAndRotation(0.0F, 13.5F, -3.5F, -0.17453292F, 0.0F, 0.0F));
-		PartDefinition frontLeftLeg = root.addOrReplaceChild("frontLeftLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, -1.5F, -0.4886922F, 0.0F, -0.7853982F));
+		PartDefinition frontLeftLeg = root.addOrReplaceChild("frontLeftLeg", CubeListBuilder.create().texOffs(52, 0).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, -1.5F, -0.4886922F, 0.0F, -0.7853982F));
 		PartDefinition frontRightLeg = root.addOrReplaceChild("frontRightLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, false), PartPose.offsetAndRotation(-2.0F, 16.0F, -1.5F, -0.4886922F, 0.0F, 0.7853982F));
-		PartDefinition backLeftLeg = root.addOrReplaceChild("backLeftLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, 4.5F, 0.43633232F, 0.15707964F, -0.7853982F));
+		PartDefinition backLeftLeg = root.addOrReplaceChild("backLeftLeg", CubeListBuilder.create().texOffs(52, 0).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 16.0F, 4.5F, 0.43633232F, 0.15707964F, -0.7853982F));
 		PartDefinition backRightLeg = root.addOrReplaceChild("backRightLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, false), PartPose.offsetAndRotation(-2.0F, 16.0F, 4.5F, 0.43633232F, 0.0F, 0.7853982F));
-		PartDefinition rightWing = root.addOrReplaceChild("rightWing", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, -0.034906585F, 0.0F));
-		PartDefinition leftWing = root.addOrReplaceChild("leftWing", CubeListBuilder.create().texOffs(0, 12).addBox(0.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, 0.034906585F, 0.0F));
-		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 23).addBox(-3.0F, -2.0F, -5.0F, 6.0F, 4.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.35F, 0.0F, 0.0F));
-		PartDefinition mouth = root.addOrReplaceChild("mouth", CubeListBuilder.create().texOffs(22, 0).addBox(-2.0F, -8.0F, 0.0F, 4.0F, 8.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 2.0F, -5.0F, 0.5235988F, 0.0F, 0.0F));
-		PartDefinition claw = root.addOrReplaceChild("claw", CubeListBuilder.create().texOffs(20, 18).addBox(-3.0F, -5.0F, -1.5F, 6.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, -7.0F, 1.0F, -0.43633232F, 0.0F, 0.0F));
+		PartDefinition rightWing = body.addOrReplaceChild("rightWing", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, -0.034906585F, 0.0F));
+		PartDefinition leftWing = body.addOrReplaceChild("leftWing", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, -0.08726646F, 0.034906585F, 0.0F));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 23).addBox(-3.0F, -2.0F, -5.0F, 6.0F, 4.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.35F, 0.0F, 0.0F));
+		PartDefinition mouth = head.addOrReplaceChild("mouth", CubeListBuilder.create().texOffs(22, 0).addBox(-2.0F, -8.0F, 0.0F, 4.0F, 8.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 2.0F, -5.0F, 0.5235988F, 0.0F, 0.0F));
+		PartDefinition claw = mouth.addOrReplaceChild("claw", CubeListBuilder.create().texOffs(20, 18).addBox(-3.0F, -5.0F, -1.5F, 6.0F, 5.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, -7.0F, 1.0F, -0.43633232F, 0.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 

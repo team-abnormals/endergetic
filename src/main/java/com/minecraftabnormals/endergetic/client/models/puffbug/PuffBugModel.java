@@ -8,6 +8,7 @@ import com.minecraftabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 
 import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.core.endimator.Endimator;
 import com.teamabnormals.blueprint.core.endimator.EndimatorModelPart;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
 import com.teamabnormals.blueprint.core.endimator.model.EndimatorLayerDefinition;
@@ -54,45 +55,51 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 	@SuppressWarnings("all")
 	public PuffBugModel(ModelPart root) {
 		this.Body = (EndimatorModelPart) root.getChild("Body");
-		this.Stinger = (EndimatorModelPart) root.getChild("Stinger");
-		this.Neck = (EndimatorModelPart) root.getChild("Neck");
-		this.Head = (EndimatorModelPart) root.getChild("Head");
-		this.Sensor1 = (EndimatorModelPart) root.getChild("Sensor1");
-		this.Sensor2 = (EndimatorModelPart) root.getChild("Sensor2");
+		this.Stinger = (EndimatorModelPart) this.Body.getChild("Stinger");
+		this.Neck = (EndimatorModelPart) this.Body.getChild("Neck");
+		this.Head = (EndimatorModelPart) this.Neck.getChild("Head");
+		this.Sensor1 = (EndimatorModelPart) this.Head.getChild("Sensor1");
+		this.Sensor2 = (EndimatorModelPart) this.Head.getChild("Sensor2");
+
 		this.BodyDeflated = (EndimatorModelPart) root.getChild("BodyDeflated");
-		this.StingerDeflated = (EndimatorModelPart) root.getChild("StingerDeflated");
-		this.NeckDeflated = (EndimatorModelPart) root.getChild("NeckDeflated");
-		this.HeadDeflated = (EndimatorModelPart) root.getChild("HeadDeflated");
-		this.Sensor1Deflated = (EndimatorModelPart) root.getChild("Sensor1Deflated");
-		this.Sensor2Deflated = (EndimatorModelPart) root.getChild("Sensor2Deflated");
+		this.StingerDeflated = (EndimatorModelPart) this.BodyDeflated.getChild("StingerDeflated");
+		this.NeckDeflated = (EndimatorModelPart) this.BodyDeflated.getChild("NeckDeflated");
+		this.HeadDeflated = (EndimatorModelPart) this.NeckDeflated.getChild("HeadDeflated");
+		this.Sensor1Deflated = (EndimatorModelPart) this.HeadDeflated.getChild("Sensor1Deflated");
+		this.Sensor2Deflated = (EndimatorModelPart) this.HeadDeflated.getChild("Sensor2Deflated");
+
 		this.BodyDeflatedProjectile = (EndimatorModelPart) root.getChild("BodyDeflatedProjectile");
-		this.StingerDeflatedProjectile = (EndimatorModelPart) root.getChild("StingerDeflatedProjectile");
-		this.NeckDeflatedProjectile = (EndimatorModelPart) root.getChild("NeckDeflatedProjectile");
-		this.HeadDeflatedProjectile = (EndimatorModelPart) root.getChild("HeadDeflatedProjectile");
-		this.Sensor1DeflatedProjectile = (EndimatorModelPart) root.getChild("Sensor1DeflatedProjectile");
-		this.Sensor2DeflatedProjectile = (EndimatorModelPart) root.getChild("Sensor2DeflatedProjectile");
+		this.StingerDeflatedProjectile = (EndimatorModelPart) this.BodyDeflatedProjectile.getChild("StingerDeflatedProjectile");
+		this.NeckDeflatedProjectile = (EndimatorModelPart) this.BodyDeflatedProjectile.getChild("NeckDeflatedProjectile");
+		this.HeadDeflatedProjectile = (EndimatorModelPart) this.NeckDeflatedProjectile.getChild("HeadDeflatedProjectile");
+		this.Sensor1DeflatedProjectile = (EndimatorModelPart) this.HeadDeflatedProjectile.getChild("Sensor1DeflatedProjectile");
+		this.Sensor2DeflatedProjectile = (EndimatorModelPart) this.HeadDeflatedProjectile.getChild("Sensor2DeflatedProjectile");
+
+		this.endimator = Endimator.compile(root);
 	}
 
 	public static EndimatorLayerDefinition createLayerDefinition() {
 		EndimatorPartDefinition root = EndimatorPartDefinition.root();
 		EndimatorPartDefinition Body = root.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(8, 3).addBox(-3.0F, -3.5F, -3.0F, 6.0F, 7.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, 0.045553092F, 0.0F));
-		EndimatorPartDefinition Stinger = root.addOrReplaceChild("Stinger", CubeListBuilder.create().texOffs(26, 0).addBox(0.0F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-0.5F, -3.5F, 0.0F, 0.0F, 0.0F, 0.0F));
-		EndimatorPartDefinition Neck = root.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 2.5F, 0.0F, -0.13665928F, 0.0F, 0.0F));
-		EndimatorPartDefinition Head = root.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13665928F, 0.0F, 0.0F));
-		EndimatorPartDefinition Sensor1 = root.addOrReplaceChild("Sensor1", CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
-		EndimatorPartDefinition Sensor2 = root.addOrReplaceChild("Sensor2", CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.0F));
+		EndimatorPartDefinition Stinger = Body.addOrReplaceChild("Stinger", CubeListBuilder.create().texOffs(26, 0).addBox(0.0F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-0.5F, -3.5F, 0.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition Neck = Body.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 2.5F, 0.0F, -0.13665928F, 0.0F, 0.0F));
+		EndimatorPartDefinition Head = Neck.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13665928F, 0.0F, 0.0F));
+		EndimatorPartDefinition Sensor1 = Head.addOrReplaceChild("Sensor1", CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
+		EndimatorPartDefinition Sensor2 = Head.addOrReplaceChild("Sensor2", CubeListBuilder.create().texOffs(30, 0).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.0F));
+
 		EndimatorPartDefinition BodyDeflated = root.addOrReplaceChild("BodyDeflated", CubeListBuilder.create().texOffs(10, 7).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 6.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 11.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-		EndimatorPartDefinition StingerDeflated = root.addOrReplaceChild("StingerDeflated", CubeListBuilder.create().texOffs(15, 1).addBox(-0.5F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-		EndimatorPartDefinition NeckDeflated = root.addOrReplaceChild("NeckDeflated", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 3.0F, 0.0F, -0.13962634F, 0.0F, 0.0F));
-		EndimatorPartDefinition HeadDeflated = root.addOrReplaceChild("HeadDeflated", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13962634F, 0.0F, 0.0F));
-		EndimatorPartDefinition Sensor1Deflated = root.addOrReplaceChild("Sensor1Deflated", CubeListBuilder.create().texOffs(18, 1).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
-		EndimatorPartDefinition Sensor2Deflated = root.addOrReplaceChild("Sensor2Deflated", CubeListBuilder.create().texOffs(18, 1).addBox(-0.1F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.0F));
+		EndimatorPartDefinition StingerDeflated = BodyDeflated.addOrReplaceChild("StingerDeflated", CubeListBuilder.create().texOffs(15, 1).addBox(-0.5F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition NeckDeflated = BodyDeflated.addOrReplaceChild("NeckDeflated", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 3.0F, 0.0F, -0.13962634F, 0.0F, 0.0F));
+		EndimatorPartDefinition HeadDeflated = NeckDeflated.addOrReplaceChild("HeadDeflated", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13962634F, 0.0F, 0.0F));
+		EndimatorPartDefinition Sensor1Deflated = HeadDeflated.addOrReplaceChild("Sensor1Deflated", CubeListBuilder.create().texOffs(18, 1).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
+		EndimatorPartDefinition Sensor2Deflated = HeadDeflated.addOrReplaceChild("Sensor2Deflated", CubeListBuilder.create().texOffs(18, 1).addBox(-0.1F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.0F));
+
 		EndimatorPartDefinition BodyDeflatedProjectile = root.addOrReplaceChild("BodyDeflatedProjectile", CubeListBuilder.create().texOffs(10, 7).addBox(-1.0F, 0.5F, -1.0F, 2.0F, 6.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 23.0F, 0.0F, 0.0F, 0.0F, 0.0F));
-		EndimatorPartDefinition StingerDeflatedProjectile = root.addOrReplaceChild("StingerDeflatedProjectile", CubeListBuilder.create().texOffs(15, 1).addBox(-0.5F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 0.0F));
-		EndimatorPartDefinition NeckDeflatedProjectile = root.addOrReplaceChild("NeckDeflatedProjectile", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 6.5F, 0.0F, -0.13665928F, 0.0F, 0.0F));
-		EndimatorPartDefinition HeadDeflatedProjectile = root.addOrReplaceChild("HeadDeflatedProjectile", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13962634F, 0.0F, 0.0F));
-		EndimatorPartDefinition Sensor1DeflatedProjectile = root.addOrReplaceChild("Sensor1DeflatedProjectile", CubeListBuilder.create().texOffs(18, 1).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
-		EndimatorPartDefinition Sensor2DeflatedProjectile = root.addOrReplaceChild("Sensor2DeflatedProjectile", CubeListBuilder.create().texOffs(18, 1).addBox(-0.1F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.08726646F));
+		EndimatorPartDefinition StingerDeflatedProjectile = BodyDeflatedProjectile.addOrReplaceChild("StingerDeflatedProjectile", CubeListBuilder.create().texOffs(15, 1).addBox(-0.5F, -4.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 0.0F));
+		EndimatorPartDefinition NeckDeflatedProjectile = BodyDeflatedProjectile.addOrReplaceChild("NeckDeflatedProjectile", CubeListBuilder.create().texOffs(0, 6).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 4.0F, 2.0F, false), PartPose.offsetAndRotation(0.0F, 6.5F, 0.0F, -0.13665928F, 0.0F, 0.0F));
+		EndimatorPartDefinition HeadDeflatedProjectile = NeckDeflatedProjectile.addOrReplaceChild("HeadDeflatedProjectile", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, 0.0F, -1.5F, 4.0F, 3.0F, 3.0F, false), PartPose.offsetAndRotation(0.0F, 3.7F, 0.0F, -0.13962634F, 0.0F, 0.0F));
+		EndimatorPartDefinition Sensor1DeflatedProjectile = HeadDeflatedProjectile.addOrReplaceChild("Sensor1DeflatedProjectile", CubeListBuilder.create().texOffs(18, 1).addBox(0.0F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(-2.0F, 3.0F, 0.5F, 0.0F, 1.5707964F, 0.7330383F));
+		EndimatorPartDefinition Sensor2DeflatedProjectile = HeadDeflatedProjectile.addOrReplaceChild("Sensor2DeflatedProjectile", CubeListBuilder.create().texOffs(18, 1).addBox(-0.1F, 0.0F, 0.0F, 1.0F, 4.0F, 0.0F, false), PartPose.offsetAndRotation(2.0F, 3.0F, 0.5F, 0.7330383F, 1.5707964F, 0.08726646F));
 		return new EndimatorLayerDefinition(root, 32, 16);
 	}
 

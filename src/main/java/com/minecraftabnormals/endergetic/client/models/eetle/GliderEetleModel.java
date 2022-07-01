@@ -5,6 +5,7 @@ import com.minecraftabnormals.endergetic.common.entities.eetle.flying.FlyingRota
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.core.endimator.Endimator;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -40,34 +41,36 @@ public class GliderEetleModel extends EndimatorEntityModel<GliderEetleEntity> {
 	//Constructor
 	public GliderEetleModel(ModelPart root) {
 		this.body = root.getChild("body");
-		this.rightElytron = root.getChild("rightElytron");
-		this.leftElytron = root.getChild("leftElytron");
-		this.leftWing = root.getChild("leftWing");
-		this.rightWing = root.getChild("rightWing");
-		this.head = root.getChild("head");
-		this.leftBackLeg = root.getChild("leftBackLeg");
-		this.rightBackLeg = root.getChild("rightBackLeg");
-		this.rightFrontLeg = root.getChild("rightFrontLeg");
-		this.leftFrontLeg = root.getChild("leftFrontLeg");
-		this.leftMandible = root.getChild("leftMandible");
-		this.rightMandible = root.getChild("rightMandible");
+		this.rightElytron = this.body.getChild("rightElytron");
+		this.leftElytron = this.body.getChild("leftElytron");
+		this.leftWing = this.body.getChild("leftWing");
+		this.rightWing = this.body.getChild("rightWing");
+		this.head = this.body.getChild("head");
+		this.leftBackLeg = this.body.getChild("leftBackLeg");
+		this.rightBackLeg = this.body.getChild("rightBackLeg");
+		this.rightFrontLeg = this.body.getChild("rightFrontLeg");
+		this.leftFrontLeg = this.body.getChild("leftFrontLeg");
+		this.leftMandible = this.head.getChild("leftMandible");
+		this.rightMandible = this.head.getChild("rightMandible");
+
+		this.endimator = Endimator.compile(root);
 	}
 
 	public static LayerDefinition createLayerDefinition() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition root = meshdefinition.getRoot();
 		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(28, 16).addBox(-4.0F, -3.0F, 0.0F, 8.0F, 6.0F, 10.0F, false), PartPose.offsetAndRotation(0.0F, 13.3F, -4.0F, -0.17453292F, 0.0F, 0.0F));
-		PartDefinition rightElytron = root.addOrReplaceChild("rightElytron", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, -0.034906585F, 0.0F));
-		PartDefinition leftElytron = root.addOrReplaceChild("leftElytron", CubeListBuilder.create().texOffs(0, 12).addBox(0.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.034906585F, 0.0F));
-		PartDefinition leftWing = root.addOrReplaceChild("leftWing", CubeListBuilder.create().texOffs(22, 0).addBox(0.0F, 0.0F, 0.0F, 7.0F, 0.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.05F, 0.0F, 0.0F));
-		PartDefinition rightWing = root.addOrReplaceChild("rightWing", CubeListBuilder.create().texOffs(22, 16).addBox(-7.0F, 0.0F, 0.0F, 7.0F, 0.0F, 16.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.05F, 0.0F, 0.0F));
-		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 23).addBox(-3.0F, -2.0F, -5.0F, 6.0F, 4.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.34906584F, 0.0F, 0.0F));
-		PartDefinition leftBackLeg = root.addOrReplaceChild("leftBackLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(1.9F, 1.0F, 8.0F, 0.61086524F, 0.0F, -0.7853982F));
-		PartDefinition rightBackLeg = root.addOrReplaceChild("rightBackLeg", CubeListBuilder.create().texOffs(52, 3).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(-1.9F, 1.0F, 8.0F, 0.61086524F, 0.0F, 0.7853982F));
-		PartDefinition rightFrontLeg = root.addOrReplaceChild("rightFrontLeg", CubeListBuilder.create().texOffs(52, 3).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(-2.0F, 2.5F, 2.0F, -0.2617994F, 0.0F, 0.7853982F));
-		PartDefinition leftFrontLeg = root.addOrReplaceChild("leftFrontLeg", CubeListBuilder.create().texOffs(52, 3).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 2.5F, 2.0F, -0.2617994F, 0.0F, -0.7853982F));
-		PartDefinition leftMandible = root.addOrReplaceChild("leftMandible", CubeListBuilder.create().texOffs(16, 0).addBox(0.0F, 0.0F, -6.0F, 5.0F, 0.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -5.0F, 0.0F, 0.0F, 0.0F));
-		PartDefinition rightMandible = root.addOrReplaceChild("rightMandible", CubeListBuilder.create().texOffs(16, 6).addBox(-5.0F, 0.0F, -6.0F, 5.0F, 0.0F, 6.0F, true), PartPose.offsetAndRotation(0.0F, 0.0F, -5.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition rightElytron = body.addOrReplaceChild("rightElytron", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, -0.034906585F, 0.0F));
+		PartDefinition leftElytron = body.addOrReplaceChild("leftElytron", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -1.0F, -1.0F, 5.0F, 6.0F, 12.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.0F, 0.034906585F, 0.0F));
+		PartDefinition leftWing = body.addOrReplaceChild("leftWing", CubeListBuilder.create().texOffs(22, 0).addBox(0.0F, 0.0F, 0.0F, 7.0F, 0.0F, 16.0F, false), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.05F, 0.0F, 0.0F));
+		PartDefinition rightWing = body.addOrReplaceChild("rightWing", CubeListBuilder.create().texOffs(22, 0).addBox(-7.0F, 0.0F, 0.0F, 7.0F, 0.0F, 16.0F, true), PartPose.offsetAndRotation(0.0F, -3.0F, 0.0F, 0.05F, 0.0F, 0.0F));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 23).addBox(-3.0F, -2.0F, -5.0F, 6.0F, 4.0F, 5.0F, false), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.34906584F, 0.0F, 0.0F));
+		PartDefinition leftBackLeg = body.addOrReplaceChild("leftBackLeg", CubeListBuilder.create().texOffs(52, 0).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(1.9F, 1.0F, 8.0F, 0.61086524F, 0.0F, -0.7853982F));
+		PartDefinition rightBackLeg = body.addOrReplaceChild("rightBackLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(-1.9F, 1.0F, 8.0F, 0.61086524F, 0.0F, 0.7853982F));
+		PartDefinition rightFrontLeg = body.addOrReplaceChild("rightFrontLeg", CubeListBuilder.create().texOffs(52, 0).addBox(-3.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(-2.0F, 2.5F, 2.0F, -0.2617994F, 0.0F, 0.7853982F));
+		PartDefinition leftFrontLeg = body.addOrReplaceChild("leftFrontLeg", CubeListBuilder.create().texOffs(52, 0).addBox(0.0F, 0.0F, -1.5F, 3.0F, 12.0F, 3.0F, true), PartPose.offsetAndRotation(2.0F, 2.5F, 2.0F, -0.2617994F, 0.0F, -0.7853982F));
+		PartDefinition leftMandible = head.addOrReplaceChild("leftMandible", CubeListBuilder.create().texOffs(16, 0).addBox(0.0F, 0.0F, -6.0F, 5.0F, 0.0F, 6.0F, false), PartPose.offsetAndRotation(0.0F, 0.0F, -5.0F, 0.0F, 0.0F, 0.0F));
+		PartDefinition rightMandible = head.addOrReplaceChild("rightMandible", CubeListBuilder.create().texOffs(16, 0).addBox(-5.0F, 0.0F, -6.0F, 5.0F, 0.0F, 6.0F, true), PartPose.offsetAndRotation(0.0F, 0.0F, -5.0F, 0.0F, 0.0F, 0.0F));
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 

@@ -32,7 +32,7 @@ public class PuffBugHiveModel {
 		PartDefinition root = meshdefinition.getRoot();
 		PartDefinition HiveBase = root.addOrReplaceChild("HiveBase", CubeListBuilder.create().texOffs(0, 1).addBox(0.0F, 0.0F, 0.0F, 16.0F, 13.0F, 16.0F, false), PartPose.offsetAndRotation(-8.0F, 8.0F, -8.0F, 0.0F, 0.0F, 0.0F));
 		PartDefinition HiveBottom = root.addOrReplaceChild("HiveBottom", CubeListBuilder.create().texOffs(0, 15).addBox(0.0F, 0.0F, 0.0F, 14.0F, 3.0F, 14.0F, false), PartPose.offsetAndRotation(-7.0F, 21.0F, -7.0F, 0.0F, 0.0F, 0.0F));
-		return LayerDefinition.create(meshdefinition, 64, 32);
+		return LayerDefinition.create(meshdefinition, 100, 64);
 	}
 
 	public void renderAll(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn) {
