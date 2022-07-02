@@ -107,8 +107,8 @@ public final class EEFeatures {
 		public static final RegistryObject<PlacedFeature> POISE_CLUSTER = register("poise_cluster", Configured.POISE_CLUSTER, new NoiseHeightmap32Placement(-0.8D, 4, 22), BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> PUFF_BUG_HIVE = register("puff_bug_hive", Configured.PUFF_BUG_HIVE, new NoiseHeightmap32Placement(-0.8D, 9, 25), BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> BOLLOOM_BUD = register("bolloom_bud", Configured.BOLLOOM_BUD, new NoiseHeightmap32Placement(-0.9D, 90, 90), BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> POISE_BUSH_PATCH = register("poise_bush_patch", Configured.POISE_BUSH_PATCH, NoiseThresholdCountPlacement.of(-0.8D, 5, 10), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", Configured.TALL_POISE_BUSH_PATCH, new NoiseHeightmap32Placement(-0.8D, 0, 7), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> POISE_BUSH_PATCH = register("poise_bush_patch", Configured.POISE_BUSH_PATCH, NoiseThresholdCountPlacement.of(-0.8D, 5, 10), PlacementUtils.FULL_RANGE, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", Configured.TALL_POISE_BUSH_PATCH, new NoiseHeightmap32Placement(-0.8D, 2, 8), PlacementUtils.FULL_RANGE, BiomeFilter.biome());
 
 		public static final RegistryObject<PlacedFeature> END_GATEWAY_RETURN = register("end_gateway_return", Configured.END_GATEWAY_RETURN, RarityFilter.onAverageOnceEvery(700), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, RandomOffsetPlacement.vertical(UniformInt.of(3, 9)), BiomeFilter.biome());
 

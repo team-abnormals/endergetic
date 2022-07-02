@@ -23,17 +23,18 @@ import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
 import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
-import com.minecraftabnormals.endergetic.core.registry.EEBiomes;
-import com.minecraftabnormals.endergetic.core.registry.EEPlacementModifierTypes;
-import com.minecraftabnormals.endergetic.core.registry.EEStructures;
+import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
+import com.minecraftabnormals.endergetic.core.registry.*;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -49,11 +50,8 @@ import com.minecraftabnormals.endergetic.common.network.*;
 import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
-import com.minecraftabnormals.endergetic.core.registry.EEFeatures;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
-import com.minecraftabnormals.endergetic.core.registry.EEEntities;
-import com.minecraftabnormals.endergetic.core.registry.EETileEntities;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EndCrystalRenderer;
@@ -99,6 +97,7 @@ public class EndergeticExpansion {
 
 		REGISTRY_HELPER.register(modEventBus);
 		EEParticles.PARTICLES.register(modEventBus);
+		EESurfaceRules.RULES.register(modEventBus);
 		EEPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(modEventBus);
 		EEFeatures.FEATURES.register(modEventBus);
 		EEFeatures.Configured.CONFIGURED_FEATURES.register(modEventBus);
@@ -122,6 +121,7 @@ public class EndergeticExpansion {
 		});
 
 		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
+		modEventBus.addListener(this::dataSetup);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
 	}
 
@@ -132,7 +132,11 @@ public class EndergeticExpansion {
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 		});
-		modifyBiomes();
+	}
+
+	private void dataSetup(GatherDataEvent event) {
+		DataGenerator generator = event.getGenerator();
+		generator.addProvider(event.includeServer(), new EEChunkGeneratorModifierProvider(generator));
 	}
 
 	private static void modifyBiomes() {

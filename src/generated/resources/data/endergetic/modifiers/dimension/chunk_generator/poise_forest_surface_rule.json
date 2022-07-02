@@ -1,0 +1,93 @@
+{
+  "modifiers": [
+    {
+      "type": "surface_rule",
+      "config": {
+        "surface_rule": {
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "blueprint:modded_slice",
+            "slice_name": "endergetic:poise_forest"
+          },
+          "then_run": {
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:biome",
+              "biome_is": [
+                "endergetic:poise_forest"
+              ]
+            },
+            "then_run": {
+              "type": "minecraft:sequence",
+              "sequence": [
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "max_threshold": 1.7976931348623157E308,
+                    "min_threshold": 0.4300000071525574,
+                    "noise": "minecraft:surface"
+                  },
+                  "then_run": {
+                    "type": "minecraft:sequence",
+                    "sequence": [
+                      {
+                        "type": "minecraft:condition",
+                        "if_true": {
+                          "type": "minecraft:stone_depth",
+                          "add_surface_depth": false,
+                          "offset": 0,
+                          "secondary_depth_range": 0,
+                          "surface_type": "floor"
+                        },
+                        "then_run": {
+                          "type": "minecraft:block",
+                          "result_state": {
+                            "Name": "endergetic:poismoss"
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:block",
+                        "result_state": {
+                          "Name": "minecraft:end_stone"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:noise_threshold",
+                    "max_threshold": 0.4300000071525574,
+                    "min_threshold": 0.3499999940395355,
+                    "noise": "minecraft:surface"
+                  },
+                  "then_run": {
+                    "type": "minecraft:condition",
+                    "if_true": {
+                      "type": "minecraft:stone_depth",
+                      "add_surface_depth": true,
+                      "offset": 0,
+                      "secondary_depth_range": 0,
+                      "surface_type": "floor"
+                    },
+                    "then_run": {
+                      "type": "minecraft:block",
+                      "result_state": {
+                        "Name": "endergetic:eumus"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "priority": "normal",
+  "selector": "minecraft:the_end"
+}

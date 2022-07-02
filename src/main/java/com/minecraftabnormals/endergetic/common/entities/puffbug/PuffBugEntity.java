@@ -714,7 +714,7 @@ public class PuffBugEntity extends Animal implements Endimatable {
 
 	@Override
 	public void onEndimationEnd(PlayableEndimation endimation, PlayableEndimation newEndimation) {
-		if (endimation == EEPlayableEndimations.PUFF_BUG_TELEPORT_TO) {
+		if (newEndimation != EEPlayableEndimations.PUFF_BUG_TELEPORT_FROM && endimation == EEPlayableEndimations.PUFF_BUG_TELEPORT_TO) {
 			if (!this.level.isClientSide) {
 				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.PUFF_BUG_TELEPORT_FROM);
 				this.playSound(this.getTeleportSound(true), 0.65F, this.getVoicePitch());
