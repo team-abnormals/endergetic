@@ -74,7 +74,7 @@ public class BoofloNearestAttackableTargetGoal<E extends Entity> extends TargetG
 
 	@Nullable
 	public E findEntity(Class<? extends E> target, TargetingConditions predicate, @Nullable LivingEntity attacker, double p_225318_4_, double p_225318_6_, double p_225318_8_, AABB bb) {
-		return this.getClosestEntity(attacker.level.getEntitiesOfClass(target, bb, null), predicate, attacker, p_225318_4_, p_225318_6_, p_225318_8_);
+		return this.getClosestEntity(attacker.level.getEntitiesOfClass(target, bb, entity -> true), predicate, attacker, p_225318_4_, p_225318_6_, p_225318_8_);
 	}
 
 	@Nullable

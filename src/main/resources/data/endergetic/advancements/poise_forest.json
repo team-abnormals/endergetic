@@ -17,10 +17,25 @@
   },
   "criteria": {
     "in_poise_forest": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "biome": "endergetic:poise_forest"
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biome": "endergetic:poise_forest"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "in_poise_forest"
+    ]
+  ]
 }

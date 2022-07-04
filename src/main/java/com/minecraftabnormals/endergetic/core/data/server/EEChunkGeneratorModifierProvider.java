@@ -16,7 +16,7 @@ import net.minecraft.world.level.levelgen.SurfaceRules;
 
 import static net.minecraft.world.level.levelgen.SurfaceRules.*;
 
-public class EEChunkGeneratorModifierProvider extends ChunkGeneratorModifierProvider {
+public final class EEChunkGeneratorModifierProvider extends ChunkGeneratorModifierProvider {
 
 	public EEChunkGeneratorModifierProvider(DataGenerator dataGenerator) {
 		super(dataGenerator, EndergeticExpansion.MOD_ID);

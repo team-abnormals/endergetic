@@ -1,33 +1,41 @@
 {
-  "parent": "minecraft:end/enter_end_gateway",
-  "display": {
-	"icon": {
-	  "item": "endergetic:end_corrock_block"
+	"parent": "minecraft:end/enter_end_gateway",
+	"display": {
+		"icon": {
+			"item": "endergetic:end_corrock_block"
+		},
+		"title": {
+			"translate": "advancements.endergetic.find_eetle_nest.title"
+		},
+		"description": {
+			"translate": "advancements.endergetic.find_eetle_nest.description"
+		},
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
 	},
-	"title": {
-	  "translate": "advancements.endergetic.find_eetle_nest.title"
-	},
-	"description": {
-	  "translate": "advancements.endergetic.find_eetle_nest.description"
-	},
-	"frame": "task",
-	"show_toast": true,
-	"announce_to_chat": true,
-	"hidden": false
-  },
-  "criteria": {
-	"in_nest": {
-	  "trigger": "minecraft:location",
-	  "conditions": {
-		"location": {
-		  "feature": "eetle_nest"
+	"criteria": {
+		"in_nest": {
+			"conditions": {
+				"player": [
+					{
+						"condition": "minecraft:entity_properties",
+						"entity": "this",
+						"predicate": {
+							"location": {
+								"structure": "endergetic:eetle_nest"
+							}
+						}
+					}
+				]
+			},
+			"trigger": "minecraft:location"
 		}
-	  }
-	}
-  },
-  "requirements": [
-	[
-	  "in_nest"
+	},
+	"requirements": [
+		[
+			"in_nest"
+		]
 	]
-  ]
 }

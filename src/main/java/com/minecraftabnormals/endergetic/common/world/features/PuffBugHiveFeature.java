@@ -1,7 +1,6 @@
 package com.minecraftabnormals.endergetic.common.world.features;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.minecraftabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
@@ -10,10 +9,10 @@ import com.minecraftabnormals.endergetic.core.registry.EEEntities;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -22,32 +21,28 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 
-	private Supplier<BlockState> HIVE_STATE(boolean hanger) {
-		return hanger ? () -> EEBlocks.HIVE_HANGER.get().defaultBlockState() : () -> EEBlocks.PUFFBUG_HIVE.get().defaultBlockState();
-	}
-
 	public PuffBugHiveFeature(Codec<NoneFeatureConfiguration> configFactoryIn) {
 		super(configFactoryIn);
 	}
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		WorldGenLevel world = context.level();
+		WorldGenLevel level = context.level();
 		BlockPos pos = context.origin();
 		BlockPos hivePos = pos.below();
-		if (world.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_STEM.get() || world.getBlockState(pos.above()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
-			if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-				world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
-				world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
-				this.spawnPuffBugs(world, hivePos, context.random());
+		if (level.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_STEM.get() || level.getBlockState(pos.above()).getBlock() == EEBlocks.GLOWING_POISE_STEM.get()) {
+			if (level.getBlockState(pos).getMaterial().isReplaceable() && level.getBlockState(pos).getMaterial().isReplaceable()) {
+				level.setBlock(pos, EEBlocks.HIVE_HANGER.get().defaultBlockState(), 2);
+				level.setBlock(hivePos, EEBlocks.PUFFBUG_HIVE.get().defaultBlockState(), 2);
+				spawnPuffBugs(level, hivePos, context.random());
 				return true;
 			}
 		} else {
-			if (world.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_CLUSTER.get() && world.getMaxBuildHeight() > 90) {
-				if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getMaterial().isReplaceable()) {
-					world.setBlock(pos, this.HIVE_STATE(true).get(), 2);
-					world.setBlock(hivePos, this.HIVE_STATE(false).get(), 2);
-					this.spawnPuffBugs(world, hivePos, context.random());
+			if (level.getBlockState(pos.above()).getBlock() == EEBlocks.POISE_CLUSTER.get() && level.getMaxBuildHeight() > 90) {
+				if (level.getBlockState(pos).getMaterial().isReplaceable() && level.getBlockState(pos).getMaterial().isReplaceable()) {
+					level.setBlock(pos, EEBlocks.HIVE_HANGER.get().defaultBlockState(), 2);
+					level.setBlock(hivePos, EEBlocks.PUFFBUG_HIVE.get().defaultBlockState(), 2);
+					spawnPuffBugs(level, hivePos, context.random());
 					return true;
 				}
 			}
@@ -55,29 +50,30 @@ public class PuffBugHiveFeature extends Feature<NoneFeatureConfiguration> {
 		return false;
 	}
 
-	private void spawnPuffBugs(WorldGenLevel world, BlockPos pos, RandomSource rand) {
+	private static void spawnPuffBugs(WorldGenLevel level, BlockPos pos, RandomSource rand) {
+		if (!level.getLevel().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) return;
 		int maxPuffBugs = rand.nextInt(4) + 2;
 
-		List<Direction> openSides = this.getOpenSides(world, pos);
+		List<Direction> openSides = getOpenSides(level, pos);
 		for (Direction openSide : openSides) {
 			BlockPos offset = pos.relative(openSide);
-			PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(world.getLevel());
+			PuffBugEntity puffbug = EEEntities.PUFF_BUG.get().create(level.getLevel());
 			if (puffbug != null) {
 				puffbug.moveTo(offset.getX() + 0.5F, offset.getY() + 0.5F, offset.getZ() + 0.5F, 0.0F, 0.0F);
-				puffbug.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null, null);
+				puffbug.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null, null);
 				puffbug.setHivePos(pos);
-				world.addFreshEntity(puffbug);
+				level.addFreshEntity(puffbug);
 			}
 			if (maxPuffBugs-- <= 0) break;
 		}
 	}
 
-	private List<Direction> getOpenSides(LevelAccessor world, BlockPos pos) {
+	private static List<Direction> getOpenSides(LevelAccessor level, BlockPos pos) {
 		List<Direction> openDirections = Lists.newArrayList();
 		for (Direction directions : Direction.values()) {
 			if (directions != Direction.UP) {
 				BlockPos offsetPos = pos.relative(directions);
-				if (world.isEmptyBlock(offsetPos) && world.isEmptyBlock(offsetPos.above())) {
+				if (level.isEmptyBlock(offsetPos) && level.isEmptyBlock(offsetPos.above())) {
 					openDirections.add(directions);
 				}
 			}

@@ -23,7 +23,9 @@ import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
 import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
+import com.minecraftabnormals.endergetic.core.data.server.EEAdvancementModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
+import com.minecraftabnormals.endergetic.core.data.server.EELootModifierProvider;
 import com.minecraftabnormals.endergetic.core.registry.*;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
@@ -128,7 +130,6 @@ public class EndergeticExpansion {
 	void setupCommon(final FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
 			EEDispenserBehaviors.registerAll();
-			EELootInjectors.registerLootInjectors();
 			EEFlammables.registerFlammables();
 			EECompostables.registerCompostables();
 		});
@@ -136,7 +137,10 @@ public class EndergeticExpansion {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
-		generator.addProvider(event.includeServer(), new EEChunkGeneratorModifierProvider(generator));
+		boolean includeServer = event.includeServer();
+		generator.addProvider(includeServer, new EEChunkGeneratorModifierProvider(generator));
+		generator.addProvider(includeServer, new EEAdvancementModifierProvider(generator));
+		generator.addProvider(includeServer, new EELootModifierProvider(generator));
 	}
 
 	private static void modifyBiomes() {

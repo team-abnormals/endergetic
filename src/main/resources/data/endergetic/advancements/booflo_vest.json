@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "endergetic:booflo_vest"
+            "items": [
+              "endergetic:booflo_vest"
+            ]
           }
         ]
       }

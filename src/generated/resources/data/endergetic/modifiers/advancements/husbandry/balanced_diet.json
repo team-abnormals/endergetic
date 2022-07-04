@@ -1,26 +1,29 @@
 {
-  "advancement": "minecraft:husbandry/balanced_diet",
   "modifiers": [
     {
       "type": "criteria",
       "config": {
-        "mode": "modify",
         "criteria": {
           "endergetic:bolloom_fruit": {
-            "trigger": "minecraft:consume_item",
             "conditions": {
               "item": {
-                "item": "endergetic:bolloom_fruit"
+                "items": [
+                  "endergetic:bolloom_fruit"
+                ]
               }
-            }
+            },
+            "trigger": "minecraft:consume_item"
           }
         },
         "requirements": [
           [
             "endergetic:bolloom_fruit"
           ]
-        ]
+        ],
+        "should_replace_requirements": false
       }
     }
-  ]
+  ],
+  "priority": "normal",
+  "selector": "minecraft:husbandry/balanced_diet"
 }

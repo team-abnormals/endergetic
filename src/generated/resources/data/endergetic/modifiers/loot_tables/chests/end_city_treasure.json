@@ -1,0 +1,36 @@
+{
+  "modifiers": [
+    {
+      "type": "pools",
+      "config": {
+        "pools": [
+          {
+            "bonus_rolls": 0.0,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "functions": [
+                  {
+                    "add": false,
+                    "count": {
+                      "type": "minecraft:binomial",
+                      "n": 1.0,
+                      "p": 0.08
+                    },
+                    "function": "minecraft:set_count"
+                  }
+                ],
+                "name": "endergetic:music_disc_kilobyte"
+              }
+            ],
+            "name": "endergetic:kilobyte",
+            "rolls": 1.0
+          }
+        ],
+        "replace": false
+      }
+    }
+  ],
+  "priority": "normal",
+  "selector": "minecraft:chests/end_city_treasure"
+}
