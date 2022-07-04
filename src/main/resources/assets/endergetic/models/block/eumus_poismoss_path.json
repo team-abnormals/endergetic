@@ -1,5 +1,5 @@
 {
-	"parent": "block/grass_path",
+	"parent": "block/dirt_path",
 	"textures": {
 		"particle": "endergetic:block/eumus",
 		"top": "endergetic:block/poismoss_path_top",
