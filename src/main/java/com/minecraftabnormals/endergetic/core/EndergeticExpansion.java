@@ -26,6 +26,7 @@ import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.minecraftabnormals.endergetic.core.data.server.EEAdvancementModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EELootModifierProvider;
+import com.minecraftabnormals.endergetic.core.data.server.tags.EEBiomeTagsProvider;
 import com.minecraftabnormals.endergetic.core.registry.*;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
@@ -35,6 +36,7 @@ import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -138,9 +140,13 @@ public class EndergeticExpansion {
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
 		boolean includeServer = event.includeServer();
+
 		generator.addProvider(includeServer, new EEChunkGeneratorModifierProvider(generator));
 		generator.addProvider(includeServer, new EEAdvancementModifierProvider(generator));
 		generator.addProvider(includeServer, new EELootModifierProvider(generator));
+
+		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+		generator.addProvider(includeServer, new EEBiomeTagsProvider(generator, existingFileHelper));
 	}
 
 	private static void modifyBiomes() {

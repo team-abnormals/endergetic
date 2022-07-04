@@ -1,0 +1,8 @@
+// 1.19	2022-07-04T17:31:08.5992916	Tags for minecraft:worldgen/biome
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_cold.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_cold/end.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_end.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_magical.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_sparse.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_sparse/end.json
+ae7c663cd28a686f7cc706e915a272bbe939b65b data/minecraft/tags/worldgen/biome/is_end.json
