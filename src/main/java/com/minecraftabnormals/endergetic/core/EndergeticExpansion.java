@@ -109,6 +109,7 @@ public class EndergeticExpansion {
 		EEStructures.STRUCTURE_TYPES.register(modEventBus);
 		EEStructures.STRUCTURES.register(modEventBus);
 		EEStructures.PieceTypes.STRUCTURE_PIECE_TYPES.register(modEventBus);
+		EEStructures.Sets.STRUCTURE_SETS.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfigEvent event) -> {
