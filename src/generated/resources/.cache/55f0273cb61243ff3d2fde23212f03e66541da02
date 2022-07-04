@@ -1,4 +1,5 @@
-// 1.19	2022-07-04T17:31:08.5992916	Tags for minecraft:worldgen/biome
+// 1.19	2022-07-04T17:34:08.9909181	Tags for minecraft:worldgen/biome
+cda6293db681f770e7df5daf2a245897ebf08fe5 data/endergetic/tags/worldgen/biome/has_structure/eetle_nest.json
 ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_cold.json
 ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_cold/end.json
 ae7c663cd28a686f7cc706e915a272bbe939b65b data/forge/tags/worldgen/biome/is_end.json
