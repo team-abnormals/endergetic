@@ -13,22 +13,16 @@ import net.minecraft.world.level.BlockGetter;
 
 public final class EEProperties {
 	public static final BlockBehaviour.Properties POISE_CLUSTER = BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PINK).noOcclusion().strength(0.15F);
-	//Tool: AXE
 	public static final BlockBehaviour.Properties POISE_WOOD = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.WOOD).strength(2);
-	//Tool: AXE
 	public static final BlockBehaviour.Properties POISE_WOOD_NOT_SOLID = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.WOOD).noOcclusion().strength(2, 10);
-	//Tool: AXE
 	public static final BlockBehaviour.Properties POISE_LOG_GLOWING = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.WOOD).strength(2, 10).lightLevel((state) -> 15);
 	public static final BlockBehaviour.Properties BOOF_BLOCK = BlockBehaviour.Properties.of(Material.WOOL, MaterialColor.TERRACOTTA_YELLOW).sound(SoundType.WOOL).strength(0.85F);
 	public static final BlockBehaviour.Properties EUMUS = BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.TERRACOTTA_PURPLE).strength(0.5F).sound(SoundType.GRAVEL);
 	public static final BlockBehaviour.Properties EUMUS_POISMOSS = BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.GRASS);
-	//Tool: SHOVEL
 	public static final BlockBehaviour.Properties EUMUS_POISMOSS_PATH = BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).strength(0.6F).sound(SoundType.GRASS).isViewBlocking(EEProperties::blocksVision);
 	public static final BlockBehaviour.Properties POISMOSS_PATH = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).requiresCorrectToolForDrops().strength(3.0F, 9.0F).isViewBlocking(EEProperties::blocksVision);
-	//Tool: PICKAXE
 	public static final BlockBehaviour.Properties EUMUS_BRICKS = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_PURPLE).sound(SoundType.STONE).strength(2, 30);
 	public static final BlockBehaviour.Properties MYSTICAL_OBSIDIAN = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(-1.0F, 3600000.0F).noLootTable();
-	//Tool: PICKAXE
 	public static final BlockBehaviour.Properties ACIDIAN_LANTERN = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(50F, 6000.0F).lightLevel(state -> 15).requiresCorrectToolForDrops();
 	public static final BlockBehaviour.Properties BOLLOOM_CRATE = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_YELLOW).strength(1.5F).sound(SoundType.WOOD);
 	public static final BlockBehaviour.Properties EETLE_EGG = BlockBehaviour.Properties.of(Material.WATER_PLANT, MaterialColor.COLOR_PURPLE).lightLevel(state -> 7 + state.getValue(EetleEggBlock.SIZE)).noLootTable().requiresCorrectToolForDrops().strength(1.0F).sound(EESounds.EESoundTypes.EETLE_EGG);

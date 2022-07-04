@@ -1,0 +1,32 @@
+{
+	"replace": false,
+	"values": [
+		"endergetic:stripped_poise_stem",
+		"endergetic:stripped_poise_wood",
+		"endergetic:poise_stem",
+		"endergetic:poise_wood",
+		"endergetic:glowing_poise_stem",
+		"endergetic:glowing_poise_wood",
+		"endergetic:poise_planks",
+		"endergetic:poise_door",
+		"endergetic:poise_slab",
+		"endergetic:poise_stairs",
+		"endergetic:poise_fence",
+		"endergetic:poise_fence_gate",
+		"endergetic:poise_pressure_plate",
+		"endergetic:poise_button",
+		"endergetic:vertical_poise_planks",
+		"endergetic:poise_vertical_slab",
+		"endergetic:poise_bookshelf",
+		"endergetic:poise_ladder",
+		"endergetic:poise_beehive",
+		"endergetic:stripped_poise_post",
+		"endergetic:poise_post",
+		"endergetic:poise_sign",
+		"endergetic:poise_wall_sign",
+		"endergetic:poise_chest",
+		"endergetic:poise_trapped_chest",
+		"endergetic:bolloom_bud",
+		"endergetic:ender_campfire"
+	]
+}
