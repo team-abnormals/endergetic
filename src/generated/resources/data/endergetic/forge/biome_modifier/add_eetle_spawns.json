@@ -1,0 +1,21 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": [
+    "minecraft:end_highlands",
+    "minecraft:end_midlands"
+  ],
+  "spawners": [
+    {
+      "type": "endergetic:charger_eetle",
+      "maxCount": 5,
+      "minCount": 2,
+      "weight": 12
+    },
+    {
+      "type": "endergetic:charger_eetle",
+      "maxCount": 4,
+      "minCount": 2,
+      "weight": 8
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import com.minecraftabnormals.endergetic.common.world.configs.*;
 import com.minecraftabnormals.endergetic.common.world.features.*;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.*;
 import com.minecraftabnormals.endergetic.common.world.features.corrock.tower.*;
+import com.minecraftabnormals.endergetic.common.world.placements.HeightmapSpreadDoublePlacement;
 import com.minecraftabnormals.endergetic.common.world.placements.HeightmapSpreadLowerPlacement;
 import com.minecraftabnormals.endergetic.common.world.placements.NoiseHeightmap32Placement;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
@@ -112,15 +113,15 @@ public final class EEFeatures {
 
 		public static final RegistryObject<PlacedFeature> END_GATEWAY_RETURN = register("end_gateway_return", Configured.END_GATEWAY_RETURN, RarityFilter.onAverageOnceEvery(700), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, RandomOffsetPlacement.vertical(UniformInt.of(3, 9)), BiomeFilter.biome());
 
-		public static final RegistryObject<PlacedFeature> CORROCK_PATCH = register("corrock_patch", Configured.CORROCK_PATCH, CountPlacement.of(3), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> CORROCK_PATCH = register("corrock_patch", Configured.CORROCK_PATCH, CountPlacement.of(3), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> DISK_CORROCK = register("disk_corrock", Configured.DISK_CORROCK, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> SPARSE_CORROCK_BRANCH = register("sparse_corrock_branch", Configured.EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH, CountPlacement.of(5), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> CORROCK_BRANCH = register("corrock_branch", Configured.EXTRA_CROWNS_CORROCK_BRANCH, CountPlacement.of(64), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> CORROCK_TOWER = register("corrock_tower", Configured.CORROCK_TOWER, CountPlacement.of(128), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> SPARSE_CORROCK_BRANCH = register("sparse_corrock_branch", Configured.EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH, CountPlacement.of(5), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> CORROCK_BRANCH = register("corrock_branch", Configured.EXTRA_CROWNS_CORROCK_BRANCH, CountPlacement.of(64), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> CORROCK_TOWER = register("corrock_tower", Configured.CORROCK_TOWER, CountPlacement.of(128), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> CORROCK_SHELF = register("corrock_shelf", Configured.CORROCK_SHELF, CountPlacement.of(8), InSquarePlacement.spread(), HeightmapSpreadLowerPlacement.INSTANCE, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> CORROCK_ARCH = register("corrock_arch", Configured.CORROCK_ARCH, CountPlacement.of(26), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> EETLE_EGG_PATCH = register("eetle_egg_patch", Configured.EETLE_EGG_PATCH, CountPlacement.of(1), BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> EUMUS_PATCH = register("eumus_patch", Configured.EUMUS_PATCH, CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> CORROCK_ARCH = register("corrock_arch", Configured.CORROCK_ARCH, CountPlacement.of(26), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> EETLE_EGG_PATCH = register("eetle_egg_patch", Configured.EETLE_EGG_PATCH, CountPlacement.of(1), InSquarePlacement.spread(), BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> EUMUS_PATCH = register("eumus_patch", Configured.EUMUS_PATCH, CountPlacement.of(2), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> SPECKLED_CORROCK_PATCH = register("speckled_corrock", Configured.SPECKLED_CORROCK_PATCH, RarityFilter.onAverageOnceEvery(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome());
 		
 		@SuppressWarnings("unchecked")

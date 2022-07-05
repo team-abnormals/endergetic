@@ -24,6 +24,7 @@ import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.minecraftabnormals.endergetic.core.data.server.EEAdvancementModifierProvider;
+import com.minecraftabnormals.endergetic.core.data.server.EEBiomeModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EELootModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.tags.EEBiomeTagsProvider;
@@ -111,6 +112,7 @@ public class EndergeticExpansion {
 		EEStructures.PieceTypes.STRUCTURE_PIECE_TYPES.register(modEventBus);
 		EEStructures.Sets.STRUCTURE_SETS.register(modEventBus);
 		EEDataSerializers.SERIALIZERS.register(modEventBus);
+		EEBiomeModifierSerializers.SERIALIZERS.register(modEventBus);
 
 		modEventBus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
@@ -148,42 +150,7 @@ public class EndergeticExpansion {
 
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 		generator.addProvider(includeServer, new EEBiomeTagsProvider(generator, existingFileHelper));
-	}
-
-	private static void modifyBiomes() {
-		//TODO: Replace with Forge's biome modifiers
-//		BiomeModificationManager modificationManager = BiomeModificationManager.INSTANCE;
-//		BiPredicate<ResourceKey<Biome>, Biome> highlandsOnly = BiomeModificationPredicates.forBiomeKey(Biomes.END_HIGHLANDS);
-//		BiPredicate<ResourceKey<Biome>, Biome> highlandsOrMidlands = highlandsOnly.or(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS));
-//		modificationManager.addModifier(BiomeFeatureModifier.createFeatureReplacer(highlandsOnly, EnumSet.of(GenerationStep.Decoration.SURFACE_STRUCTURES), () -> Feature.END_GATEWAY, () -> EEFeatures.Configured.END_GATEWAY));
-//		modificationManager.addModifier(BiomeSurfaceBuilderModifier.surfaceBuilderReplacer(highlandsOrMidlands, () -> EESurfaceBuilders.Configs.SPARSE_CORROCK));
-//		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStep.Decoration.VEGETAL_DECORATION, Sets.newHashSet(
-//				() -> EEFeatures.Configured.CORROCK_PATCH,
-//				() -> EEFeatures.Configured.EETLE_EGG
-//		)));
-//		modificationManager.addModifier(BiomeFeatureModifier.createMultiFeatureAdder(highlandsOrMidlands, GenerationStep.Decoration.SURFACE_STRUCTURES, Sets.newHashSet(
-//				() -> EEFeatures.Configured.CORROCK_BRANCH,
-//				() -> EEFeatures.Configured.CORROCK_TOWER,
-//				() -> EEFeatures.Configured.CORROCK_SHELF,
-//				() -> EEFeatures.Configured.CORROCK_ARCH,
-//				() -> EEFeatures.Configured.EUMUS_PATCH,
-//				() -> EEFeatures.Configured.SPECKLED_CORROCK_PATCH
-//		)));
-//		modificationManager.addModifier(BiomeStructureModifier.createStructureAdder(highlandsOnly, () -> EEStructures.Configured.EETLE_NEST));
-//		modificationManager.addModifier(BiomeSpawnsModifier.createMultiSpawnAdder(highlandsOrMidlands, MobCategory.MONSTER, Sets.newHashSet(
-//				new BiomeSpawnsModifier.SpawnInfo(EEEntities.CHARGER_EETLE, 12, 2, 5),
-//				new BiomeSpawnsModifier.SpawnInfo(EEEntities.GLIDER_EETLE, 8, 2, 4)
-//		)));
-//		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.CHARGER_EETLE::get, 0.8D, 1.0D));
-//		modificationManager.addModifier(BiomeSpawnsModifier.createSpawnCost(highlandsOrMidlands, EEEntities.GLIDER_EETLE::get, 0.8D, 1.0D));
-//		modificationManager.addModifier(BiomeFeatureModifier.createFeatureAdder(BiomeModificationPredicates.forBiomeKey(Biomes.END_MIDLANDS), GenerationStep.Decoration.SURFACE_STRUCTURES, () -> EEFeatures.Configured.SPARSE_CORROCK_BRANCH));
-//
-//		modificationManager.addModifier(BiomeAmbienceModifier.createAmbienceReplacer(BiomeModificationPredicates.forBiomeKey(Biomes.SMALL_END_ISLANDS), () -> {
-//			return new BiomeSpecialEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0)
-//					.ambientLoopSound(EESounds.SMALL_END_ISLANDS_LOOP.get())
-//					.ambientAdditionsSound(new AmbientAdditionsSettings(EESounds.SMALL_END_ISLANDS_ADDITIONS.get(), 0.0111D))
-//					.build();
-//		}));
+		generator.addProvider(includeServer, EEBiomeModifierProvider.create(generator, existingFileHelper));
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {

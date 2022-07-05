@@ -28,17 +28,13 @@ public class EetleNestStructure extends Structure {
 		RandomState randomState = context.randomState();
 		ChunkGenerator chunkGenerator = context.chunkGenerator();
 		int foundAirBlocks = 0;
-		for (int posX = x - 24; posX < x + 24; posX++) {
-			for (int posZ = z - 24; posZ < z + 24; posZ++) {
-				NoiseColumn reader = chunkGenerator.getBaseColumn(posX, posZ, levelHeightAccessor, randomState);
+		for (int posX = x - 24; posX <= x + 24; posX++) {
+			for (int posZ = z - 24; posZ <= z + 24; posZ++) {
+				NoiseColumn column = chunkGenerator.getBaseColumn(posX, posZ, levelHeightAccessor, randomState);
 				for (int posY = y - 40; posY < y - 8; posY++) {
-					Block block = reader.getBlock(posY).getBlock();
+					Block block = column.getBlock(posY).getBlock();
 					if (!EetleNestPieces.CARVABLE_BLOCKS.contains(block)) {
-						if (block == Blocks.AIR) {
-							if (foundAirBlocks++ >= 576) {
-								return false;
-							}
-						} else {
+						if (block != Blocks.AIR || ++foundAirBlocks >= 576) {
 							return false;
 						}
 					}

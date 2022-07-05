@@ -1,0 +1,12 @@
+{
+  "type": "forge:add_features",
+  "biomes": [
+    "minecraft:end_highlands",
+    "minecraft:end_midlands"
+  ],
+  "features": [
+    "endergetic:corrock_patch",
+    "endergetic:eetle_egg_patch"
+  ],
+  "step": "vegetal_decoration"
+}
