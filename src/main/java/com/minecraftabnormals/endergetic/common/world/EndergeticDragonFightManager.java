@@ -6,6 +6,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.minecraftabnormals.endergetic.core.registry.EEFeatures;
 import com.minecraftabnormals.endergetic.common.world.features.EndergeticEndPodiumFeature;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
 import com.minecraftabnormals.endergetic.core.registry.EEBlocks;
@@ -289,12 +290,15 @@ public final class EndergeticDragonFightManager extends EndDragonFight {
 
 	@Override
 	protected void spawnNewGateway() {
-		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(EndDragonFight.class, this, "field_186111_e");
+		List<Integer> gateways = ObfuscationReflectionHelper.getPrivateValue(EndDragonFight.class, this, "f_64062_");
 		if (!gateways.isEmpty()) {
 			int removed = gateways.remove(gateways.size() - 1);
 			BlockPos pos = new BlockPos(Mth.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))), 75, Mth.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double) removed))));
-			this.level.levelEvent(3000, pos, 0);
-			EEFeatures.Configured.END_GATEWAY_DELAYED.get().place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), pos);
+			ServerLevel level = this.level;
+			level.levelEvent(3000, pos, 0);
+			//Turns out datapacks can't replace the delayed end gateway. Silly Mojang!
+			var endGateway = level.registryAccess().registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY).get(new ResourceLocation("end_gateway_delayed"));
+			if (endGateway != null) endGateway.place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), pos);
 		}
 	}
 }

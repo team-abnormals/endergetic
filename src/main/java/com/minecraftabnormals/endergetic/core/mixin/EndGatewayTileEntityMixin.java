@@ -19,7 +19,7 @@ public abstract class EndGatewayTileEntityMixin {
 	 */
 	@Overwrite
 	private static void spawnGatewayPortal(ServerLevel level, BlockPos pos, EndGatewayConfiguration configuration) {
-		EEFeatures.ENDERGETIC_GATEWAY.get().place(configuration, level, level.getChunkSource().getGenerator(), RandomSource.create(), pos);
+		EEFeatures.ENDERGETIC_END_GATEWAY.get().place(configuration, level, level.getChunkSource().getGenerator(), RandomSource.create(), pos);
 	}
 
 }

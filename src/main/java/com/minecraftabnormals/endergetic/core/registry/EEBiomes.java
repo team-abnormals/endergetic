@@ -3,6 +3,7 @@ package com.minecraftabnormals.endergetic.core.registry;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 
 import com.teamabnormals.blueprint.core.util.registry.BiomeSubRegistryHelper;
+import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.sounds.Musics;
 import net.minecraft.world.level.biome.AmbientAdditionsSettings;
 import net.minecraft.world.level.biome.AmbientMoodSettings;
@@ -49,7 +50,7 @@ public final class EEBiomes {
 						new BiomeGenerationSettings.Builder()
 								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEFeatures.Placed.POISE_DOME.getHolder().get())
 								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEFeatures.Placed.POISE_TREE.getHolder().get())
-								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEFeatures.Placed.END_GATEWAY_RETURN.getHolder().get())
+								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EndPlacements.END_GATEWAY_RETURN)
 								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.POISE_CLUSTER.getHolder().get())
 								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.PUFF_BUG_HIVE.getHolder().get())
 								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.BOLLOOM_BUD.getHolder().get())

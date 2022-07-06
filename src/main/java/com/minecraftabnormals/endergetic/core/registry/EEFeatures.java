@@ -16,7 +16,6 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.Registry;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.NoiseThresholdCountPlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -65,7 +63,7 @@ public final class EEFeatures {
 	public static final RegistryObject<Feature<MultiPatchConfig>> SPECKLED_CORROCK_PATCH = FEATURES.register("speckled_corrock_patch", () -> new SpeckledCorrockPatchFeature(MultiPatchConfig.CODEC));
 
 	public static final RegistryObject<Feature<WeightedFeatureConfig>> WEIGHTED_FEATURES = FEATURES.register("weighted_features", () -> new WeightedMultiFeature(WeightedFeatureConfig.CODEC));
-	public static final RegistryObject<Feature<EndGatewayConfiguration>> ENDERGETIC_GATEWAY = FEATURES.register("gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfiguration.CODEC));
+	public static final RegistryObject<Feature<EndGatewayConfiguration>> ENDERGETIC_END_GATEWAY = FEATURES.register("end_gateway", () -> new EndergeticEndGatewayFeature(EndGatewayConfiguration.CODEC));
 
 	public static final class Configured {
 		public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, EndergeticExpansion.MOD_ID);
@@ -77,9 +75,6 @@ public final class EEFeatures {
 		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> BOLLOOM_BUD = register("bolloom_bud", () -> new ConfiguredFeature<>(EEFeatures.BOLLOOM_BUD.get(), FeatureConfiguration.NONE));
 		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> POISE_BUSH_PATCH = register("poise_bush_patch", () -> new ConfiguredFeature<>(EEFeatures.POISE_BUSH_PATCH.get(), FeatureConfiguration.NONE));
 		public static final RegistryObject<ConfiguredFeature<NoneFeatureConfiguration, ?>> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", () -> new ConfiguredFeature<>(EEFeatures.TALL_POISE_BUSH_PATCH.get(), FeatureConfiguration.NONE));
-
-		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_RETURN = register("end_gateway_return", () -> new ConfiguredFeature<>(EEFeatures.ENDERGETIC_GATEWAY.get(), EndGatewayConfiguration.knownExit(ServerLevel.END_SPAWN_POINT, true)));
-		public static final RegistryObject<ConfiguredFeature<EndGatewayConfiguration, ?>> END_GATEWAY_DELAYED = register("end_gateway_delayed", () -> new ConfiguredFeature<>(EEFeatures.ENDERGETIC_GATEWAY.get(), EndGatewayConfiguration.delayedExitSearch()));
 
 		public static final RegistryObject<ConfiguredFeature<EndergeticPatchConfig, ?>> CORROCK_PATCH = register("corrock_patch", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_PATCH.get(), new EndergeticPatchConfig(0.175F, false)));
 		public static final RegistryObject<ConfiguredFeature<DiskConfiguration, ?>> DISK_CORROCK = register("disk_corrock", () -> new ConfiguredFeature<>(EEFeatures.CORROCK_GROUND_PATCH.get(), new DiskConfiguration(RuleBasedBlockStateProvider.simple(EEBlocks.CORROCK_END_BLOCK.get()), BlockPredicate.matchesBlocks(Blocks.END_STONE), UniformInt.of(2, 3), 3)));
@@ -110,8 +105,6 @@ public final class EEFeatures {
 		public static final RegistryObject<PlacedFeature> BOLLOOM_BUD = register("bolloom_bud", Configured.BOLLOOM_BUD, new NoiseHeightmap32Placement(-0.9D, 90, 90), BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> POISE_BUSH_PATCH = register("poise_bush_patch", Configured.POISE_BUSH_PATCH, NoiseThresholdCountPlacement.of(-0.8D, 5, 10), PlacementUtils.FULL_RANGE, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", Configured.TALL_POISE_BUSH_PATCH, new NoiseHeightmap32Placement(-0.8D, 2, 8), PlacementUtils.FULL_RANGE, BiomeFilter.biome());
-
-		public static final RegistryObject<PlacedFeature> END_GATEWAY_RETURN = register("end_gateway_return", Configured.END_GATEWAY_RETURN, RarityFilter.onAverageOnceEvery(700), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, RandomOffsetPlacement.vertical(UniformInt.of(3, 9)), BiomeFilter.biome());
 
 		public static final RegistryObject<PlacedFeature> CORROCK_PATCH = register("corrock_patch", Configured.CORROCK_PATCH, CountPlacement.of(3), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> DISK_CORROCK = register("disk_corrock", Configured.DISK_CORROCK, BiomeFilter.biome());
