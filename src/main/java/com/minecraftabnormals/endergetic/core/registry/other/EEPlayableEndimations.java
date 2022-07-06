@@ -37,7 +37,7 @@ public final class EEPlayableEndimations {
 	public static final PlayableEndimation PUFF_BUG_LAND = register("puff_bug/land", 20, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_PULL = register("puff_bug/pull", 25, LoopType.NONE);
 
-	public static final PlayableEndimation EETLE_GROW_UP = register("eetle/grow_up", 25, LoopType.NONE);
+	public static final PlayableEndimation EETLE_GROW_UP = register("eetle/grow_up", 30, LoopType.NONE);
 
 	public static final PlayableEndimation CHARGER_EETLE_ATTACK = register("eetle/charger_attack", 10, LoopType.NONE);
 	public static final PlayableEndimation CHARGER_EETLE_CATAPULT = register("eetle/charger_catapult", 16, LoopType.NONE);
@@ -51,9 +51,11 @@ public final class EEPlayableEndimations {
 	public static final PlayableEndimation BROOD_EETLE_ATTACK = register("eetle/brood_attack", 12, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_SLAM = register("eetle/brood_slam", 20, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_LAUNCH = register("eetle/brood_launch", 18, LoopType.NONE);
+	public static final PlayableEndimation BROOD_EETLE_DROP_EGGS = register("eetle/brood_drop_eggs", 18, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_AIR_CHARGE = register("eetle/brood_air_charge", 80, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_AIR_SLAM = register("eetle/brood_air_slam", 11, LoopType.NONE);
-	public static final PlayableEndimation BROOD_EETLE_DEATH = register("eetle/brood_death", 115, LoopType.NONE);
+	public static final PlayableEndimation BROOD_EETLE_DEATH_LEFT = register("eetle/brood_death_left", 115, LoopType.NONE);
+	public static final PlayableEndimation BROOD_EETLE_DEATH_RIGHT = register("eetle/brood_death_right", 115, LoopType.NONE);
 
 	public static final PlayableEndimation PURPOID_TELEPORT_TO = register("purpoid/teleport_to", 18, LoopType.NONE);
 	public static final PlayableEndimation PURPOID_FAST_TELEPORT_TO = register("purpoid/fast_teleport_to", 15, LoopType.NONE);

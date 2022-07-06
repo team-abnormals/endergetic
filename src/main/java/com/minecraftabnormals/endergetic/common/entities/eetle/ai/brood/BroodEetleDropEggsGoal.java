@@ -18,7 +18,7 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 	private int ticksPassed;
 
 	public BroodEetleDropEggsGoal(BroodEetleEntity entity) {
-		super(entity, EEPlayableEndimations.BROOD_EETLE_LAUNCH);
+		super(entity, EEPlayableEndimations.BROOD_EETLE_DROP_EGGS);
 	}
 
 	@Override

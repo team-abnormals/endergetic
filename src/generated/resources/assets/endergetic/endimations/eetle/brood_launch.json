@@ -1,0 +1,397 @@
+{
+  "length": 0.9,
+  "parts": {
+    "egg": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            15.469861,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.7,
+          "transform": [
+            7.448451,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "scale": [
+        {
+          "time": 0.0,
+          "transform": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            1.1,
+            1.1,
+            1.1
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    "eggMouthBottom": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            0.0,
+            -9.740283,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.7,
+          "transform": [
+            0.0,
+            -4.0107045,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "eggMouthLeft": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            0.0,
+            -9.740283,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.7,
+          "transform": [
+            0.0,
+            -4.0107045,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "eggMouthRight": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            0.0,
+            -9.740283,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.7,
+          "transform": [
+            0.0,
+            -4.0107045,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "eggMouthTop": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            0.0,
+            -9.740283,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.7,
+          "transform": [
+            0.0,
+            -4.0107045,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "eggSack": {
+      "scale": [
+        {
+          "time": 0.0,
+          "transform": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            1.2,
+            1.2,
+            1.2
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45,
+          "transform": [
+            1.1375,
+            1.1375,
+            1.1375
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    "head": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            17.188734,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45,
+          "transform": [
+            4.2971835,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    "horn": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.25,
+          "transform": [
+            29.793804,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45,
+          "transform": [
+            7.448451,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.9,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    }
+  }
+}

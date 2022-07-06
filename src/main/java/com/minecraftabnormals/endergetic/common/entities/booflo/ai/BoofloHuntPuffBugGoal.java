@@ -87,4 +87,9 @@ public class BoofloHuntPuffBugGoal extends Goal {
 			this.booflo.catchPuffBug(enemy);
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

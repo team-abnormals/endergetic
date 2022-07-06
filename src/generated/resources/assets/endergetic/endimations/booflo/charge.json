@@ -1,0 +1,209 @@
+{
+  "length": 3.75,
+  "parts": {
+    "KneeLeftInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            -22.918312
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            -22.918312
+          ]
+        }
+      ]
+    },
+    "KneeRightInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            22.918312
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            22.918312
+          ]
+        }
+      ]
+    },
+    "LegBackLeftInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            -28.64789
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            -28.64789
+          ]
+        }
+      ]
+    },
+    "LegBackRightInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            28.64789
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            28.64789
+          ]
+        }
+      ]
+    },
+    "LegLeftInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            -28.64789
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            -28.64789
+          ]
+        }
+      ]
+    },
+    "LegRightInflated": {
+      "rotation": [
+        {
+          "time": 0.0,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            28.64789
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 3.75,
+          "transform": [
+            0.0,
+            0.0,
+            28.64789
+          ]
+        }
+      ]
+    }
+  }
+}

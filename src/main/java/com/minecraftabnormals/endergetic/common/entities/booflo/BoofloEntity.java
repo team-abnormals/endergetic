@@ -115,7 +115,6 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 
 	private static final EntityDimensions BOOFED_SIZE = EntityDimensions.fixed(2.0F, 1.5F);
 	public final TimedEndimation OPEN_JAW = new TimedEndimation(25, 0);
-	public final TimedEndimation FRUIT_HOVER = new TimedEndimation(8, 0);
 
 	private final EndergeticFlyingPathNavigator attackingNavigator;
 	private UUID playerInLove;
@@ -371,22 +370,6 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 				this.OPEN_JAW.tick();
 			}
 		}
-
-		if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT)) {
-			if ((this.getAnimationTick() >= 20) && this.getAnimationTick() < 140) {
-				if (this.getAnimationTick() % 10 == 0) {
-					if (this.getAnimationTick() == 20) {
-						this.FRUIT_HOVER.setDecrementing(false);
-						this.FRUIT_HOVER.setTick(0);
-					}
-					this.FRUIT_HOVER.setDecrementing(!this.FRUIT_HOVER.isDecrementing());
-				}
-			} else if (this.getAnimationTick() >= 140) {
-				this.FRUIT_HOVER.setDecrementing(false);
-			}
-		}
-
-		this.FRUIT_HOVER.tick();
 
 		this.wasOnGround = this.onGround;
 
@@ -1118,7 +1101,7 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 					Vec3 ridingPos = (new Vec3(1.0D, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 					float yOffset = puffbug.isBaby() ? 0.1F : 0.3F;
 
-					passenger.setPos(this.getX() + ridingPos.x(), this.getY() - yOffset - (0.15F * this.FRUIT_HOVER.getServerProgress()), this.getZ() + ridingPos.z());
+					passenger.setPos(this.getX() + ridingPos.x(), this.getY() - yOffset - (0.15F * getEatingOffsetProgress(this.getAnimationTick())), this.getZ() + ridingPos.z());
 				} else {
 					passenger.setPos(this.getX(), this.getY() + 0.25F, this.getZ());
 				}
@@ -1278,6 +1261,10 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 	@Override
 	public ItemStack getPickedResult(HitResult target) {
 		return new ItemStack(EEItems.BOOFLO_SPAWN_EGG.get());
+	}
+
+	public static float getEatingOffsetProgress(float ticks) {
+		return Mth.abs(2.0F * Mth.frac(ticks / 20.0F) - 1.0F);
 	}
 
 	public static class GroundMoveHelperController extends MoveControl {

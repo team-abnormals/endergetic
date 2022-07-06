@@ -34,4 +34,9 @@ public class BoofloFaceRandomGoal extends Goal {
 			((GroundMoveHelperController) this.booflo.getMoveControl()).setDirection(this.chosenDegrees, false);
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

@@ -162,4 +162,9 @@ public class AdolescentAttackGoal extends Goal {
 		}
 		return this.attacker.getNavigation().createPath(entity.blockPosition(), 0);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

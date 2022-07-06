@@ -54,6 +54,7 @@ public class BoofloHuntFruitGoal extends Goal {
 		}
 	}
 
+	@Override
 	public boolean canContinueToUse() {
 		Entity target = this.booflo.getBoofloAttackTarget();
 		if (target == null) {
@@ -87,6 +88,8 @@ public class BoofloHuntFruitGoal extends Goal {
 	public void tick() {
 		this.delayCounter--;
 		Entity target = this.booflo.getBoofloAttackTarget();
+		//TODO: Weird way of storing the target, needs rework
+		if (target == null) return;
 
 		double distToEnemySqr = this.booflo.distanceToSqr(target.getX(), target.getBoundingBox().minY, target.getZ());
 		this.booflo.getLookControl().setLookAt(target.getX(), target.getY(), target.getZ(), 10.0F, 10.0F);
@@ -128,5 +131,10 @@ public class BoofloHuntFruitGoal extends Goal {
 
 	protected double getAttackReachSqr(Entity attackTarget) {
 		return (this.booflo.getBbWidth() * 2.0F * this.booflo.getBbWidth() * 2.0F + attackTarget.getBbWidth()) * 0.85F;
+	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
 	}
 }

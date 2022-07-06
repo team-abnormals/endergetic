@@ -70,4 +70,9 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 			}
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

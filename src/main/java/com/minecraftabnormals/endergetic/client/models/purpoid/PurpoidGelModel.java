@@ -5,6 +5,10 @@ import com.minecraftabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.minecraftabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.core.endimator.Endimation;
+import com.teamabnormals.blueprint.core.endimator.Endimator;
+import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatorEntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -22,6 +26,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 
 	public PurpoidGelModel(ModelPart root) {
 		this.gelLayer = root.getChild("gelLayer");
+		this.endimator = Endimator.compile(root);
 	}
 
 	public static LayerDefinition createLayerDefinition() {
@@ -48,8 +53,20 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 
 	@Override
 	public void setupAnim(PurpoidEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		if (entity.isNoEndimationPlaying()) {
+		ModelPart gelLayer = this.gelLayer;
+		gelLayer.xScale = gelLayer.yScale = gelLayer.zScale = 1.0F;
+		PlayableEndimation playingEndimation = entity.getPlayingEndimation();
+		Endimation endimation = playingEndimation.asEndimation();
+		if (endimation != null) {
+			float time = (entity.getAnimationTick() + ClientInfo.getPartialTicks()) * 0.05F;
+			float length = endimation.getLength();
+			if (time > length) {
+				time = length;
+			}
+			this.endimator.apply(endimation, time, Endimator.ResetMode.RESET);
+			entity.getEffectHandler().update(endimation, time);
+		}
+		if (playingEndimation == PlayableEndimation.BLANK) {
 			float scaleOffset = Mth.sin(limbSwing * 0.6F) * Math.min(0.2F, limbSwingAmount);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);
 			ModelUtil.setScale(this.gelLayer, 1.0F + horizontalScaleOffset, 1.0F - scaleOffset * 0.5F, 1.0F + horizontalScaleOffset);

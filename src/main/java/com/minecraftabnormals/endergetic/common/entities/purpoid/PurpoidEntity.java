@@ -106,7 +106,6 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	@Override
 	public void tick() {
 		super.tick();
-		this.endimateTick();
 		Level world = this.level;
 		if (world.isClientSide) {
 			this.prevPull = this.pull;
@@ -459,7 +458,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 
 	@Override
 	public void onEndimationEnd(PlayableEndimation endimation, PlayableEndimation newEndimation) {
-		if (!this.level.isClientSide && (endimation == EEPlayableEndimations.PURPOID_TELEPORT_TO || endimation == EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO)) {
+		if (!this.level.isClientSide && newEndimation != EEPlayableEndimations.PURPOID_TELEPORT_FROM && (endimation == EEPlayableEndimations.PURPOID_TELEPORT_TO || endimation == EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO)) {
 			NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.PURPOID_TELEPORT_FROM);
 		}
 	}

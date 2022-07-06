@@ -49,4 +49,8 @@ public class BoofloGroundHopGoal extends EndimatedGoal<BoofloEntity> {
 			((GroundMoveHelperController) this.entity.getMoveControl()).setSpeed(1.25D);
 		}
 	}
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

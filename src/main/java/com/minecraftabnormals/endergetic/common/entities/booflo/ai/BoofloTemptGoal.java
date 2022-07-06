@@ -36,11 +36,11 @@ public class BoofloTemptGoal extends Goal {
 
 	@Override
 	public boolean canContinueToUse() {
-		this.tempter = this.booflo.level.getNearestPlayer(SHOULD_FOLLOW, this.booflo);
-		if (this.tempter == null) {
+		Player tempter = this.tempter = this.booflo.level.getNearestPlayer(SHOULD_FOLLOW, this.booflo);
+		if (tempter == null) {
 			return false;
 		} else {
-			return this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.booflo.isTamed() && !this.booflo.isInLove() && !this.booflo.isBoofed();
+			return (this.isTemptedBy(tempter.getMainHandItem()) || this.isTemptedBy(tempter.getOffhandItem())) && this.booflo.getMoveControl() instanceof GroundMoveHelperController && !this.booflo.isTamed() && !this.booflo.isInLove() && !this.booflo.isBoofed();
 		}
 	}
 
@@ -73,5 +73,10 @@ public class BoofloTemptGoal extends Goal {
 
 	private boolean isTemptedBy(ItemStack stack) {
 		return stack.getItem() == EEItems.BOLLOOM_FRUIT.get();
+	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
 	}
 }

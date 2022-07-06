@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Vector3f;
@@ -45,6 +46,6 @@ public class LayerRendererBoofloFruit extends RenderLayer<BoofloEntity, EntityMo
 	}
 
 	private float getFruitPosOffset(BoofloEntity booflo) {
-		return 0.22F * booflo.FRUIT_HOVER.getProgress(ClientInfo.getPartialTicks());
+		return 0.22F * BoofloEntity.getEatingOffsetProgress(booflo.getAnimationTick() + ClientInfo.getPartialTicks());
 	}
 }

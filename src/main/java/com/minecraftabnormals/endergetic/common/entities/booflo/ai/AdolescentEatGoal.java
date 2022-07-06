@@ -101,4 +101,9 @@ public class AdolescentEatGoal extends EndimatedGoal<BoofloAdolescentEntity> {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

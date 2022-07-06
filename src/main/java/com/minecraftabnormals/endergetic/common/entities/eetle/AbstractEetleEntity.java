@@ -100,7 +100,6 @@ public abstract class AbstractEetleEntity extends Monster implements Endimatable
 	@Override
 	public void tick() {
 		super.tick();
-		this.endimateTick();
 
 		if (!this.level.isClientSide && this.isAlive()) {
 			int age = this.growingAge;

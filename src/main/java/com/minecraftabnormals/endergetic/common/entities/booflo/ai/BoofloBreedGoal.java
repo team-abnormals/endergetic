@@ -131,4 +131,9 @@ public class BoofloBreedGoal extends Goal {
 	private boolean isBeingRidenOrRiding() {
 		return this.booflo.isPassenger() || this.booflo.isVehicle();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

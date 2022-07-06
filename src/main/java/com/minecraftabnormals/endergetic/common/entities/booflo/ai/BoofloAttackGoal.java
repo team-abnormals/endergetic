@@ -123,4 +123,9 @@ public class BoofloAttackGoal extends Goal {
 		}
 		return isOpenBelow ? targetPos : null;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

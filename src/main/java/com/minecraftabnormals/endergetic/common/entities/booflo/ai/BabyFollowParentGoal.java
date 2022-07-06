@@ -67,4 +67,9 @@ public class BabyFollowParentGoal extends Goal {
 			this.baby.getNavigation().moveTo(this.parent, this.moveSpeed);
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

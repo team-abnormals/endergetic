@@ -24,10 +24,9 @@ public class PurpoidGelLayer extends RenderLayer<PurpoidEntity, PurpoidModel> {
 	@Override
 	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, PurpoidEntity purpoidEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 		PurpoidGelModel gelModel = this.gelModel;
-		gelModel.setupAnim(purpoidEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		gelModel.parentToHead(this.getParentModel().head);
+		gelModel.setupAnim(purpoidEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		int overlay = LivingEntityRenderer.getOverlayCoords(purpoidEntity, 0.0F);
-		gelModel.animateModel(purpoidEntity, partialTicks);
 		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(purpoidEntity))), packedLightIn, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(BlueprintRenderTypes.getUnshadedCutoutEntity(PurpoidRenderer.EMISSIVE_TEXTURE, true)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 	}

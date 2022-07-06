@@ -76,4 +76,9 @@ public class BoofloEatPuffBugGoal extends EndimatedGoal<BoofloEntity> {
 			}
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

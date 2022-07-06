@@ -132,4 +132,9 @@ public class PuffBugAttackGoal extends Goal {
 		Vec3 vec3d2 = eyeVec.add(lookVec.x() * SHOOT_RANGE, lookVec.y() * SHOOT_RANGE, lookVec.z() * SHOOT_RANGE);
 		return this.puffbug.level.clip(new ClipContext(eyeVec, vec3d2, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.puffbug));
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

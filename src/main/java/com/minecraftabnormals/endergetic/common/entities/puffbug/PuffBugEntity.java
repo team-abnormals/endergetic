@@ -207,7 +207,6 @@ public class PuffBugEntity extends Animal implements Endimatable {
 		}
 
 		super.tick();
-		this.endimateTick();
 		this.getRotationController().tick();
 		this.keepEffectsAbsorbed();
 

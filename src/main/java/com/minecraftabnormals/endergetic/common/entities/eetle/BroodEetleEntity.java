@@ -88,7 +88,6 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 	private final Set<ServerPlayer> trackedPlayers = new HashSet<>();
 	private final FlyingRotations flyingRotations = new FlyingRotations();
 	private final Set<LivingEntity> revengeTargets = new HashSet<>();
-	public final HeadTiltDirection headTiltDirection;
 	@Nullable
 	public BlockPos takeoffPos;
 	private int idleDelay;
@@ -105,7 +104,6 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 
 	public BroodEetleEntity(EntityType<? extends BroodEetleEntity> type, Level world) {
 		super(type, world);
-		this.headTiltDirection = this.getRandom().nextBoolean() ? HeadTiltDirection.LEFT : HeadTiltDirection.RIGHT;
 		this.xpReward = 50;
 		this.prevWingFlap = this.wingFlap = this.random.nextFloat();
 		this.prevHealthPercentage = 1.0F;
@@ -193,12 +191,11 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 	@Override
 	public void tick() {
 		super.tick();
-		this.endimateTick();
 
 		Level world = this.level;
 		if (this.isDeadOrDying()) {
-			if (!this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH) && !world.isClientSide) {
-				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.BROOD_EETLE_DEATH);
+			if (!this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH_LEFT) && !this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH_RIGHT) && !world.isClientSide) {
+				NetworkUtil.setPlayingAnimation(this, this.random.nextBoolean() ? EEPlayableEndimations.BROOD_EETLE_DEATH_LEFT : EEPlayableEndimations.BROOD_EETLE_DEATH_RIGHT);
 			}
 			if (++this.deathTime >= 105) {
 				if (!world.isClientSide) {
@@ -293,7 +290,7 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 		}
 
 		TimedEndimation eggCannonEndimation = this.eggCannonEndimation;
-		eggCannonEndimation.setDecrementing(!this.isFiringCannon() && !(this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH) && this.getAnimationTick() >= 15));
+		eggCannonEndimation.setDecrementing(!this.isFiringCannon() && !((this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH_LEFT) || this.isEndimationPlaying(EEPlayableEndimations.BROOD_EETLE_DEATH_RIGHT)) && this.getAnimationTick() >= 15));
 		eggCannonEndimation.tick();
 
 		TimedEndimation eggMouthEndimation = this.eggMouthEndimation;
@@ -726,12 +723,12 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 
 	@Override
 	public void onEndimationStart(PlayableEndimation endimation, PlayableEndimation oldEndimation) {
-		if (endimation == EEPlayableEndimations.BROOD_EETLE_DEATH) {
+		if (endimation == EEPlayableEndimations.BROOD_EETLE_DEATH_LEFT || endimation == EEPlayableEndimations.BROOD_EETLE_DEATH_RIGHT) {
 			this.deathTime = 0;
 			this.setFlying(false);
 			this.setDroppingEggs(false);
 			this.setFiringCannon(false);
-		} else if (endimation == EEPlayableEndimations.BROOD_EETLE_LAUNCH) {
+		} else if (endimation == EEPlayableEndimations.BROOD_EETLE_LAUNCH || endimation == EEPlayableEndimations.BROOD_EETLE_DROP_EGGS) {
 			Level world = this.level;
 			if (world instanceof ServerLevel) {
 				Vec3 eggSackPos = BroodEggSackEntity.getEggPos(this.position(), this.yBodyRot, this.getEggCannonProgressServer(), this.getEggCannonFlyingProgressServer(), this.getFlyingRotations().getFlyPitch(), this.isOnLastHealthStage());

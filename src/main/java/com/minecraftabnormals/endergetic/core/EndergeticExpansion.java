@@ -23,6 +23,7 @@ import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
 import com.minecraftabnormals.endergetic.client.models.puffbug.PuffBugModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.minecraftabnormals.endergetic.client.models.purpoid.PurpoidModel;
+import com.minecraftabnormals.endergetic.core.data.client.EEEndimationProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEAdvancementModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEBiomeModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
@@ -151,6 +152,9 @@ public class EndergeticExpansion {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 		generator.addProvider(includeServer, new EEBiomeTagsProvider(generator, existingFileHelper));
 		generator.addProvider(includeServer, EEBiomeModifierProvider.create(generator, existingFileHelper));
+
+		boolean includeClient = event.includeClient();
+		generator.addProvider(includeClient, new EEEndimationProvider(generator));
 	}
 
 	private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {

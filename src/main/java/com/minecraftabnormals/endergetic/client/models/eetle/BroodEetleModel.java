@@ -82,6 +82,7 @@ public class BroodEetleModel extends EndimatorEntityModel<BroodEetleEntity> {
 		this.rightBackFoot = (EndimatorModelPart) this.rightBackLeg.getChild("rightBackFoot");
 
 		this.endimator = Endimator.compile(root);
+		this.eggSack.setShouldScaleChildren(false);
 	}
 
 	public static LayerDefinition createLayerDefinition() {
