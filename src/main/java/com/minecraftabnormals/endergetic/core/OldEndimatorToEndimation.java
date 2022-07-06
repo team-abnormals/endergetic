@@ -10,20 +10,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//Goofy ahh rushed converter for Old Endimator code to Endimation JSONS
+@Deprecated(forRemoval = true)
 public final class OldEndimatorToEndimation {
 	private static final Pattern KEYFRAME = Pattern.compile("(startKeyframe|resetKeyframe|setStaticKeyframe)\\((\\d+)\\)");
 	private static final Pattern POSE = Pattern.compile("(((move|rotate|rotateAdditive|scale|offset)\\((\\w*), ([+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+))F, ([+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+))F, ([+-]?([0-9]+\\.?[0-9]*|\\.[0-9]+))F\\))|(endKeyframe))");
 
 	public static void main(String[] args) {
-		System.out.println(getCodeFor("startKeyframe(10);\n" +
-				"\t\t\trotate(Jaw, 0.25F, 0.0F, 0.0F);\n" +
-				"\t\t\tendKeyframe();\n" +
-				"\n" +
-				"\t\t\tsetStaticKeyframe(45);\n" +
-				"\n" +
-				"\t\t\tstartKeyframe(5);\n" +
-				"\t\t\trotate(Jaw, -0.0F, 0.0F, 0.0F);\n" +
-				"\t\t\tendKeyframe();"));
+
 	}
 
 	public static String getCodeFor(String oldInstructionsCode) {
