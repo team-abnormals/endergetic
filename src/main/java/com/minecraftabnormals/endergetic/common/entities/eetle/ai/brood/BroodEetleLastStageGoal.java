@@ -71,4 +71,9 @@ public class BroodEetleLastStageGoal extends Goal {
 		BroodEetleEntity broodEetle = this.broodEetle;
 		broodEetle.setFiringCannon(false);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

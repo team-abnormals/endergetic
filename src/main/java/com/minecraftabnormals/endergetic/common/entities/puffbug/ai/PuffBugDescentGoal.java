@@ -96,4 +96,9 @@ public class PuffBugDescentGoal extends Goal {
 
 		return false;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

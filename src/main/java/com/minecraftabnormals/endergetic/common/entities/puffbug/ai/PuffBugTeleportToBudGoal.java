@@ -94,4 +94,9 @@ public class PuffBugTeleportToBudGoal extends Goal {
 	private boolean isPathNotBlockedByEntity(BolloomBudTileEntity bud) {
 		return this.world.getEntitiesOfClass(Entity.class, new AABB(bud.getBlockPos()).expandTowards(0.0F, 3.0F, 0.0F)).isEmpty();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

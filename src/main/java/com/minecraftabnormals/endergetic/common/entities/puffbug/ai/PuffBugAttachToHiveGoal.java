@@ -50,4 +50,9 @@ public class PuffBugAttachToHiveGoal extends Goal {
 	public void stop() {
 		this.ticksPassed = 0;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

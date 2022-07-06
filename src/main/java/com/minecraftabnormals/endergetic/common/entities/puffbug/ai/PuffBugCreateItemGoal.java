@@ -84,4 +84,9 @@ public class PuffBugCreateItemGoal extends EndimatedGoal<PuffBugEntity> {
 		this.ticksPassed = 0;
 		this.originalHealth = 0.0F;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

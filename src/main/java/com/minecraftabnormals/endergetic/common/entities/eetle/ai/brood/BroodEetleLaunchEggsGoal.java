@@ -75,6 +75,11 @@ public class BroodEetleLaunchEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		this.shotsToFire = 0;
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	private static double computeAverageAggressorDistanceSq(Vec3 pos, List<LivingEntity> aggressors) {
 		double total = 0.0F;
 		for (LivingEntity livingEntity : aggressors) {

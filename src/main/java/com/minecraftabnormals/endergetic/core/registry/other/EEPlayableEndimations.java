@@ -33,6 +33,7 @@ public final class EEPlayableEndimations {
 	public static final PlayableEndimation PUFF_BUG_ROTATE =  register("puff_bug/rotate", 20, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_POLLINATE = register("puff_bug/pollinate", 120, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_MAKE_ITEM = register("puff_bug/make_item", 100, LoopType.NONE);
+	//TODO: Does this need to be an PlayableEndimation actually?
 	public static final PlayableEndimation PUFF_BUG_FLY = register("puff_bug/fly", 25, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_LAND = register("puff_bug/land", 20, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_PULL = register("puff_bug/pull", 25, LoopType.NONE);

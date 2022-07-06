@@ -1,85 +1,7 @@
 {
-  "length": 0.9,
+  "length": 1.0,
   "parts": {
-    "gelLayer": {
-      "scale": [
-        {
-          "time": 0.0,
-          "transform": [
-            1.0,
-            1.0,
-            1.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            2.3,
-            2.3,
-            2.3
-          ]
-        },
-        {
-          "time": 0.5,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "time": 0.9,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "head": {
-      "scale": [
-        {
-          "time": 0.0,
-          "transform": [
-            1.0,
-            1.0,
-            1.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            2.3,
-            2.3,
-            2.3
-          ]
-        },
-        {
-          "time": 0.5,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "time": 0.9,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "tentacleLarge1": {
+    "HeadDeflatedProjectile": {
       "rotation": [
         {
           "time": 0.0,
@@ -90,12 +12,9 @@
           ]
         },
         {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
+          "time": 0.15,
           "transform": [
-            -14.896902,
+            0.0,
             0.0,
             0.0
           ]
@@ -104,7 +23,40 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
-          "time": 0.5,
+          "time": 0.3,
+          "transform": [
+            -40.107044,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45000002,
+          "transform": [
+            40.107044,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.6,
+          "transform": [
+            -20.053522,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
           "transform": [
             14.896902,
             0.0,
@@ -117,14 +69,22 @@
           },
           "time": 0.9,
           "transform": [
-            14.896902,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "time": 1.0,
+          "transform": [
+            0.0,
             0.0,
             0.0
           ]
         }
       ]
     },
-    "tentacleLarge2": {
+    "NeckDeflatedProjectile": {
       "rotation": [
         {
           "time": 0.0,
@@ -135,12 +95,9 @@
           ]
         },
         {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
+          "time": 0.15,
           "transform": [
-            14.896902,
+            0.0,
             0.0,
             0.0
           ]
@@ -149,9 +106,42 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
-          "time": 0.5,
+          "time": 0.3,
           "transform": [
-            -14.896902,
+            -28.64789,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45000002,
+          "transform": [
+            28.64789,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.6,
+          "transform": [
+            -25.210142,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.75,
+          "transform": [
+            8.594367,
             0.0,
             0.0
           ]
@@ -162,14 +152,25 @@
           },
           "time": 0.9,
           "transform": [
-            -14.896902,
+            -8.594367,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 1.0,
+          "transform": [
+            0.0,
             0.0,
             0.0
           ]
         }
       ]
     },
-    "tentacleLarge3": {
+    "Sensor1DeflatedProjectile": {
       "rotation": [
         {
           "time": 0.0,
@@ -180,12 +181,9 @@
           ]
         },
         {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
+          "time": 0.15,
           "transform": [
-            14.896902,
+            0.0,
             0.0,
             0.0
           ]
@@ -194,9 +192,31 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
-          "time": 0.5,
+          "time": 0.3,
           "transform": [
-            -14.896902,
+            0.0,
+            0.0,
+            117.456345
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45000002,
+          "transform": [
+            0.0,
+            0.0,
+            117.456345
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.6,
+          "transform": [
+            0.0,
             0.0,
             0.0
           ]
@@ -205,16 +225,32 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
           "time": 0.9,
           "transform": [
-            -14.896902,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "time": 1.0,
+          "transform": [
+            0.0,
             0.0,
             0.0
           ]
         }
       ]
     },
-    "tentacleLarge4": {
+    "Sensor2DeflatedProjectile": {
       "rotation": [
         {
           "time": 0.0,
@@ -225,12 +261,9 @@
           ]
         },
         {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
+          "time": 0.15,
           "transform": [
-            -14.896902,
+            0.0,
             0.0,
             0.0
           ]
@@ -239,9 +272,31 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
-          "time": 0.5,
+          "time": 0.3,
           "transform": [
-            14.896902,
+            91.67325,
+            0.0,
+            -25.210142
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.45000002,
+          "transform": [
+            91.67325,
+            0.0,
+            -25.210142
+          ]
+        },
+        {
+          "interpolation": {
+            "type": "minecraft:catmullrom"
+          },
+          "time": 0.6,
+          "transform": [
+            0.0,
             0.0,
             0.0
           ]
@@ -250,189 +305,25 @@
           "interpolation": {
             "type": "minecraft:catmullrom"
           },
+          "time": 0.75,
+          "transform": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
           "time": 0.9,
           "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "tentacleSmall1": {
-      "rotation": [
-        {
-          "time": 0.0,
-          "transform": [
             0.0,
             0.0,
             0.0
           ]
         },
         {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.5,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.9,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "tentacleSmall2": {
-      "rotation": [
-        {
-          "time": 0.0,
+          "time": 1.0,
           "transform": [
             0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.5,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.9,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "tentacleSmall3": {
-      "rotation": [
-        {
-          "time": 0.0,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.5,
-          "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.9,
-          "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        }
-      ]
-    },
-    "tentacleSmall4": {
-      "rotation": [
-        {
-          "time": 0.0,
-          "transform": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.25,
-          "transform": [
-            -14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.5,
-          "transform": [
-            14.896902,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "interpolation": {
-            "type": "minecraft:catmullrom"
-          },
-          "time": 0.9,
-          "transform": [
-            14.896902,
             0.0,
             0.0
           ]

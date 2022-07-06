@@ -88,4 +88,9 @@ public class PuffBugRotateToFireGoal extends Goal {
 
 		this.puffbug.getRotationController().rotate((float) Mth.wrapDegrees(launchDirection.y() - this.puffbug.getY()), (float) launchDirection.x() + 90.0F, 0.0F, 10);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

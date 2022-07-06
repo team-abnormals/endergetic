@@ -57,4 +57,9 @@ public class PurpoidRestOnFlowerGoal extends Goal {
 		BlockPos flowerPos = purpoid.getFlowerPos();
 		return flowerPos != null && purpoid.level.getBlockState(flowerPos).getBlock() == Blocks.CHORUS_FLOWER && Vec3.upFromBottomCenterOf(flowerPos, 1.0F).distanceToSqr(purpoid.position()) <= 0.02F;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

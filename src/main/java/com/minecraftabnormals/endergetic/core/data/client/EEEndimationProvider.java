@@ -137,6 +137,80 @@ public final class EEEndimationProvider extends EndimationProvider {
 								.part("Jaw", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 14.323945F, 0.0F, 0.0F), catmullRom(2.75F, 14.323945F, 0.0F, 0.0F), catmullRom(3.0F)))
 				);
 
+		this.endimation("puff_bug/claim_hive")
+				.keyframes(
+						keyframes()
+								.part("Sensor1", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 0.0F, 0.0F, 25.7831F), catmullRom(0.5F), catmullRom(0.75F, 0.0F, 0.0F, 25.7831F), catmullRom(1.0F)))
+								.part("Sensor2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 25.7831F, 0.0F, 0.0F), catmullRom(0.5F), catmullRom(0.75F, 25.7831F, 0.0F, 0.0F), catmullRom(1.0F)))
+				);
+
+		this.endimation("puff_bug/puff")
+				.keyframes(
+						keyframes()
+								.part("Head", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 31.51268F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("Sensor1", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 0.0F, 0.0F, -28.64789F), catmullRom(1.0F)))
+								.part("Sensor2", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, -28.64789F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("Neck", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 22.918312F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("Body", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 14.323945F, 0.0F, 0.0F), catmullRom(1.0F)).scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.5F, 1.4F, 1.4F, 1.4F), catmullRom(1.0F, 1.0F, 1.0F, 1.0F)))
+				);
+
+		this.endimation("puff_bug/teleport_to")
+				.keyframes(
+						keyframes()
+								.part("Body", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), linear(0.4F), linear(0.75F)))
+				);
+
+		this.endimation("puff_bug/teleport_from")
+				.keyframes(
+						keyframes()
+								.part("Body", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), catmullRom(0.5F, 1.0F, 1.0F, 1.0F)))
+				);
+
+		this.endimation("puff_bug/rotate")
+				.keyframes(
+						keyframes()
+								.part("Head", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, -28.64789F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("Neck", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, -28.64789F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("Stinger", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 22.918312F, 0.0F, 0.0F), catmullRom(1.0F)))
+				);
+
+		this.endimation("puff_bug/pollinate")
+				.keyframes(
+						keyframes()
+								.part("Head", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 0.0F, 0.0F, 20.053522F), catmullRom(0.5F), catmullRom(0.75F, 0.0F, 0.0F, -20.053522F), catmullRom(1.0F), catmullRom(1.25F, 0.0F, 0.0F, 20.053522F), catmullRom(1.5F), catmullRom(1.75F, 0.0F, 0.0F, -20.053522F), catmullRom(2.0F), catmullRom(2.25F, 0.0F, 0.0F, 20.053522F), catmullRom(2.5F), catmullRom(2.75F, 0.0F, 0.0F, -20.053522F), catmullRom(3.0F), catmullRom(3.25F, 0.0F, 0.0F, 20.053522F), catmullRom(3.5F), catmullRom(3.75F, 0.0F, 0.0F, -20.053522F), catmullRom(4.0F), catmullRom(4.25F, 0.0F, 0.0F, 20.053522F), catmullRom(4.5F), catmullRom(4.75F, 0.0F, 0.0F, -20.053522F), catmullRom(5.0F), catmullRom(6.0F)))
+								.part("Sensor1", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 0.0F, 0.0F, -37.242256F), catmullRom(0.5F), catmullRom(0.75F, 0.0F, 0.0F, -37.242256F), catmullRom(1.0F), catmullRom(1.25F, 0.0F, 0.0F, -37.242256F), catmullRom(1.5F), catmullRom(1.75F, 0.0F, 0.0F, -37.242256F), catmullRom(2.0F), catmullRom(2.25F, 0.0F, 0.0F, -37.242256F), catmullRom(2.5F), catmullRom(2.75F, 0.0F, 0.0F, -37.242256F), catmullRom(3.0F), catmullRom(3.25F, 0.0F, 0.0F, -37.242256F), catmullRom(3.5F), catmullRom(3.75F, 0.0F, 0.0F, -37.242256F), catmullRom(4.0F), catmullRom(4.25F, 0.0F, 0.0F, -37.242256F), catmullRom(4.5F), catmullRom(4.75F, 0.0F, 0.0F, -37.242256F), catmullRom(5.0F), catmullRom(6.0F)))
+								.part("Sensor2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 0.0F, 0.0F, 28.64789F), catmullRom(0.5F), catmullRom(0.75F, 0.0F, 0.0F, 28.64789F), catmullRom(1.0F), catmullRom(1.25F, 0.0F, 0.0F, 28.64789F), catmullRom(1.5F), catmullRom(1.75F, 0.0F, 0.0F, 28.64789F), catmullRom(2.0F), catmullRom(2.25F, 0.0F, 0.0F, 28.64789F), catmullRom(2.5F), catmullRom(2.75F, 0.0F, 0.0F, 28.64789F), catmullRom(3.0F), catmullRom(3.25F, 0.0F, 0.0F, 28.64789F), catmullRom(3.5F), catmullRom(3.75F, 0.0F, 0.0F, 28.64789F), catmullRom(4.0F), catmullRom(4.25F, 0.0F, 0.0F, 28.64789F), catmullRom(4.5F), catmullRom(4.75F, 0.0F, 0.0F, 28.64789F), catmullRom(5.0F), catmullRom(6.0F)))
+								.part("Neck", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 0.0F, 0.0F, 9.740283F), catmullRom(0.5F), catmullRom(0.75F, 0.0F, 0.0F, -9.740283F), catmullRom(1.0F), catmullRom(1.25F, 0.0F, 0.0F, 9.740283F), catmullRom(1.5F), catmullRom(1.75F, 0.0F, 0.0F, -9.740283F), catmullRom(2.0F), catmullRom(2.25F, 0.0F, 0.0F, 9.740283F), catmullRom(2.5F), catmullRom(2.75F, 0.0F, 0.0F, -9.740283F), catmullRom(3.0F), catmullRom(3.25F, 0.0F, 0.0F, 9.740283F), catmullRom(3.5F), catmullRom(3.75F, 0.0F, 0.0F, -9.740283F), catmullRom(4.0F), catmullRom(4.25F, 0.0F, 0.0F, 9.740283F), catmullRom(4.5F), catmullRom(4.75F, 0.0F, 0.0F, -9.740283F), catmullRom(5.0F), catmullRom(6.0F)))
+								.part("Body", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), linear(5.0F, 1.0F, 1.0F, 1.0F), catmullRom(5.5F, 1.4F, 1.4F, 1.4F), catmullRom(6.0F, 1.0F, 1.0F, 1.0F)))
+				);
+
+		this.endimation("puff_bug/make_item")
+				.keyframes(
+						keyframes()
+								.part("Head", partKeyframes().rotate(linear(0.0F), linear(4.0F), catmullRom(4.5F, -20.053522F, 0.0F, 0.0F), catmullRom(5.0F)))
+								.part("Sensor1", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 0.0F, 0.0F, 28.64789F), catmullRom(1.0F), catmullRom(1.5F, 0.0F, 0.0F, 28.64789F), catmullRom(2.0F), catmullRom(2.5F, 0.0F, 0.0F, 28.64789F), catmullRom(3.0F), catmullRom(3.5F, 0.0F, 0.0F, 28.64789F), catmullRom(4.0F), catmullRom(4.5F, 0.0F, 0.0F, 34.37747F), catmullRom(5.0F)))
+								.part("Sensor2", partKeyframes().rotate(linear(0.0F), catmullRom(0.5F, 28.64789F, 0.0F, 0.0F), catmullRom(1.0F), catmullRom(1.5F, 28.64789F, 0.0F, 0.0F), catmullRom(2.0F), catmullRom(2.5F, 28.64789F, 0.0F, 0.0F), catmullRom(3.0F), catmullRom(3.5F, 28.64789F, 0.0F, 0.0F), catmullRom(4.0F), catmullRom(4.5F, 34.37747F, 0.0F, 0.0F), catmullRom(5.0F)))
+								.part("Neck", partKeyframes().rotate(linear(0.0F), linear(4.0F), catmullRom(4.5F, -14.323945F, 0.0F, 0.0F), catmullRom(5.0F)))
+								.part("Body", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.5F, 1.2F, 1.2F, 1.2F), catmullRom(1.0F, 1.0F, 1.0F, 1.0F), catmullRom(1.5F, 1.2F, 1.2F, 1.2F), catmullRom(2.0F, 1.0F, 1.0F, 1.0F), catmullRom(2.5F, 1.2F, 1.2F, 1.2F), catmullRom(3.0F, 1.0F, 1.0F, 1.0F), catmullRom(3.5F, 1.2F, 1.2F, 1.2F), catmullRom(4.0F, 1.0F, 1.0F, 1.0F), catmullRom(4.5F, 1.4F, 1.4F, 1.4F), catmullRom(5.0F, 1.0F, 1.0F, 1.0F)))
+				);
+
+		this.endimation("puff_bug/land")
+				.keyframes(
+						keyframes()
+								.part("Sensor1DeflatedProjectile", partKeyframes().rotate(linear(0.0F), linear(0.15F), catmullRom(0.3F, 0.0F, 0.0F, 117.456345F), catmullRom(0.45000002F, 0.0F, 0.0F, 117.456345F), catmullRom(0.6F), catmullRom(0.75F), linear(0.9F), linear(1.0F)))
+								.part("NeckDeflatedProjectile", partKeyframes().rotate(linear(0.0F), linear(0.15F), catmullRom(0.3F, -28.64789F, 0.0F, 0.0F), catmullRom(0.45000002F, 28.64789F, 0.0F, 0.0F), catmullRom(0.6F, -25.210142F, 0.0F, 0.0F), catmullRom(0.75F, 8.594367F, 0.0F, 0.0F), catmullRom(0.9F, -8.594367F, 0.0F, 0.0F), catmullRom(1.0F)))
+								.part("HeadDeflatedProjectile", partKeyframes().rotate(linear(0.0F), linear(0.15F), catmullRom(0.3F, -40.107044F, 0.0F, 0.0F), catmullRom(0.45000002F, 40.107044F, 0.0F, 0.0F), catmullRom(0.6F, -20.053522F, 0.0F, 0.0F), catmullRom(0.75F, 14.896902F, 0.0F, 0.0F), catmullRom(0.9F), linear(1.0F)))
+								.part("Sensor2DeflatedProjectile", partKeyframes().rotate(linear(0.0F), linear(0.15F), catmullRom(0.3F, 91.67325F, 0.0F, -25.210142F), catmullRom(0.45000002F, 91.67325F, 0.0F, -25.210142F), catmullRom(0.6F), catmullRom(0.75F), linear(0.9F), linear(1.0F)))
+				);
+
+		this.endimation("puff_bug/pull")
+				.keyframes(
+						keyframes()
+								.part("NeckDeflatedProjectile", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 37.242256F, 0.0F, 0.0F), catmullRom(0.75F, 13.178029F, 0.0F, 0.0F), catmullRom(1.25F)))
+								.part("HeadDeflatedProjectile", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 22.918312F, 0.0F, 0.0F), catmullRom(0.75F, 5.729578F, 0.0F, 0.0F), catmullRom(1.25F)))
+								.part("BodyDeflatedProjectile", partKeyframes().offset(linear(0.0F), catmullRom(0.25F, 0.0F, -0.08333333333F, 0.0F), catmullRom(0.75F, 0.0F, -0.04166666666F, 0.0F), catmullRom(1.25F)))
+				);
+
 		this.endimation("eetle/grow_up")
 				.keyframes(
 						keyframes()
@@ -290,7 +364,7 @@ public final class EEEndimationProvider extends EndimationProvider {
 		this.endimation("purpoid/teleport_to")
 				.keyframes(
 						keyframes()
-								.part("head", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), catmullRom(0.5F), catmullRom(0.9F)))
+								.part("head", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), linear(0.5F), linear(0.9F)))
 								.part("tentacleLarge3", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.9F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleSmall3", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, -14.896902F, 0.0F, 0.0F), catmullRom(0.5F, 14.896902F, 0.0F, 0.0F), catmullRom(0.9F, 14.896902F, 0.0F, 0.0F)))
 								.part("tentacleLarge4", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, -14.896902F, 0.0F, 0.0F), catmullRom(0.5F, 14.896902F, 0.0F, 0.0F), catmullRom(0.9F, 14.896902F, 0.0F, 0.0F)))
@@ -299,13 +373,13 @@ public final class EEEndimationProvider extends EndimationProvider {
 								.part("tentacleSmall1", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.9F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleLarge2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.9F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleSmall2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.9F, -14.896902F, 0.0F, 0.0F)))
-								.part("gelLayer", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), catmullRom(0.5F, 0.99F, 0.99F, 0.99F), catmullRom(0.9F, 0.99F, 0.99F, 0.99F)))
+								.part("gelLayer", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), linear(0.5F), linear(0.9F)))
 				);
 
 		this.endimation("purpoid/fast_teleport_to")
 				.keyframes(
 						keyframes()
-								.part("head", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), catmullRom(0.5F), catmullRom(0.75F)))
+								.part("head", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), linear(0.5F), linear(0.75F)))
 								.part("tentacleLarge3", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.75F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleSmall3", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, -14.896902F, 0.0F, 0.0F), catmullRom(0.5F, 14.896902F, 0.0F, 0.0F), catmullRom(0.75F, 14.896902F, 0.0F, 0.0F)))
 								.part("tentacleLarge4", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, -14.896902F, 0.0F, 0.0F), catmullRom(0.5F, 14.896902F, 0.0F, 0.0F), catmullRom(0.75F, 14.896902F, 0.0F, 0.0F)))
@@ -314,7 +388,7 @@ public final class EEEndimationProvider extends EndimationProvider {
 								.part("tentacleSmall1", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.75F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleLarge2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.75F, -14.896902F, 0.0F, 0.0F)))
 								.part("tentacleSmall2", partKeyframes().rotate(linear(0.0F), catmullRom(0.25F, 14.896902F, 0.0F, 0.0F), catmullRom(0.5F, -14.896902F, 0.0F, 0.0F), catmullRom(0.75F, -14.896902F, 0.0F, 0.0F)))
-								.part("gelLayer", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), catmullRom(0.5F, 0.99F, 0.99F, 0.99F), catmullRom(0.75F, 0.99F, 0.99F, 0.99F)))
+								.part("gelLayer", partKeyframes().scale(linear(0.0F, 1.0F, 1.0F, 1.0F), catmullRom(0.25F, 2.3F, 2.3F, 2.3F), linear(0.5F), linear(0.75F)))
 				);
 
 		this.endimation("purpoid/teleport_from")

@@ -81,4 +81,9 @@ public class PurpoidMoveNearTargetGoal extends Goal {
 		purpoid.setAggressive(false);
 		purpoid.getNavigation().stop();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

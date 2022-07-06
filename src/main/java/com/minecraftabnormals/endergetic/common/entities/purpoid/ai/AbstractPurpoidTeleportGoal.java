@@ -55,4 +55,9 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 
 	@Nullable
 	abstract BlockPos generateTeleportPos(PurpoidEntity purpoid, RandomSource random);
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

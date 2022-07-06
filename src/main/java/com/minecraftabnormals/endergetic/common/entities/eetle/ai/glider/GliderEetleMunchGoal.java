@@ -53,6 +53,11 @@ public class GliderEetleMunchGoal extends EndimatedGoal<GliderEetleEntity> {
 		this.munchCooldown = this.entity.getRandom().nextInt(41) + 20;
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	public static DamageSource causeMunchDamage(GliderEetleEntity glider) {
 		return new EntityDamageSource("endergetic.munch", glider);
 	}

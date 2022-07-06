@@ -135,4 +135,9 @@ public class GliderEetleDiveGoal extends Goal {
 		}
 		return 11;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

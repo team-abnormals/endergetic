@@ -59,6 +59,11 @@ public class BroodEetleAirSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		return this.entity.isFlying() && this.isEndimationPlaying();
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	private static List<LivingEntity> searchForAggressorsUnder(BroodEetleEntity broodEetle, AABB otherBounds) {
 		return broodEetle.level.getEntitiesOfClass(LivingEntity.class, DetectionHelper.expandDownwards(broodEetle.getBoundingBox(), 10.0F), livingEntity -> {
 			if (broodEetle.getY() - livingEntity.getY() < 4 || !otherBounds.contains(livingEntity.position())) {

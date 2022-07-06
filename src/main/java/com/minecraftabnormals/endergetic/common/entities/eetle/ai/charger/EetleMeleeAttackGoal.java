@@ -109,4 +109,9 @@ public class EetleMeleeAttackGoal extends Goal {
 		float widthDoubled = this.attacker.getBbWidth() * 2.0F;
 		return widthDoubled * widthDoubled + attackTarget.getBbWidth();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

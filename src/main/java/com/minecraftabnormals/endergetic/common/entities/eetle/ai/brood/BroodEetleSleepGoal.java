@@ -51,6 +51,11 @@ public class BroodEetleSleepGoal extends Goal {
 		return broodEetle.isAlive() && broodEetle.isSleeping();
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	private static boolean areAnyPlayersClose(BroodEetleEntity broodEetle) {
 		return !broodEetle.level.getEntitiesOfClass(Player.class, broodEetle.getBoundingBox().inflate(2.0F, 0.1F, 2.0F), player -> {
 			return player.isAlive() && !player.isInvisible() && !player.isCreative();

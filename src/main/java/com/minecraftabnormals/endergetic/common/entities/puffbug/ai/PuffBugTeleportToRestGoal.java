@@ -53,4 +53,9 @@ public class PuffBugTeleportToRestGoal extends Goal {
 	public boolean canContinueToUse() {
 		return !this.puffbug.isInLove() && this.puffbug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

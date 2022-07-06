@@ -148,7 +148,7 @@ public class PuffBugModel<E extends PuffBugEntity> extends EndimatorEntityModel<
 	public void setupAnim(E puffBug, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(puffBug, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-		this.Body.setShouldScaleChildren(false);
+		this.Body.setShouldScaleChildren(puffBug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO) || puffBug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_FROM));
 
 		if (!puffBug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_PUFF) && !puffBug.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_POLLINATE)) {
 			float angle = 0.1F * Mth.sin(0.25F * ageInTicks);

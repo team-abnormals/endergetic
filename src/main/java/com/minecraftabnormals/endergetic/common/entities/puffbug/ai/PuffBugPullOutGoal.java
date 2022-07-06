@@ -60,4 +60,9 @@ public class PuffBugPullOutGoal extends EndimatedGoal<PuffBugEntity> {
 	public void stop() {
 		NetworkUtil.setPlayingAnimation(this.entity, PlayableEndimation.BLANK);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

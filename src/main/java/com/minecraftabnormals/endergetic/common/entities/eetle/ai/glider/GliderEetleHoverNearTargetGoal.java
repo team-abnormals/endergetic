@@ -84,4 +84,9 @@ public class GliderEetleHoverNearTargetGoal extends Goal {
 		glider.setAggressive(false);
 		glider.getNavigation().stop();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

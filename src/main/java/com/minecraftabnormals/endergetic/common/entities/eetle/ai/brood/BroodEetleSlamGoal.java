@@ -56,6 +56,11 @@ public class BroodEetleSlamGoal extends EndimatedGoal<BroodEetleEntity> {
 		}
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	public static void slam(BroodEetleEntity broodEetle, RandomSource random, float power) {
 		ServerLevel world = (ServerLevel) broodEetle.level;
 		double posX = broodEetle.getX();

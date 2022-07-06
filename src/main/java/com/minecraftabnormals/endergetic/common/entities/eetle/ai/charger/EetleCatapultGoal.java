@@ -94,4 +94,9 @@ public class EetleCatapultGoal extends EndimatedGoal<ChargerEetleEntity> {
 			}
 		}
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

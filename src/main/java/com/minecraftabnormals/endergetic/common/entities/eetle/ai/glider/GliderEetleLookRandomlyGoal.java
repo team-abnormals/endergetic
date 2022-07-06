@@ -35,4 +35,9 @@ public class GliderEetleLookRandomlyGoal extends Goal {
 		--this.idleTime;
 		this.glider.getLookControl().setLookAt(this.glider.getX() + this.lookX, this.glider.getEyeY(), this.glider.getZ() + this.lookZ);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

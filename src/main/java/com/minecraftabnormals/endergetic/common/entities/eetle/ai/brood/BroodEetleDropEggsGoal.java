@@ -65,6 +65,11 @@ public class BroodEetleDropEggsGoal extends EndimatedGoal<BroodEetleEntity> {
 		this.entity.setDroppingEggs(false);
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	public static boolean areFewEetlesNearby(BroodEetleEntity broodEetle) {
 		double followRange = broodEetle.getAttributeValue(Attributes.FOLLOW_RANGE);
 		Sensing senses = broodEetle.getSensing();

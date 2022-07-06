@@ -140,4 +140,9 @@ public class PurpoidAttackGoal extends Goal {
 		}
 		return mutable;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

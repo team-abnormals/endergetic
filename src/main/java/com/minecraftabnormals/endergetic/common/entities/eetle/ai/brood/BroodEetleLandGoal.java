@@ -90,4 +90,9 @@ public class BroodEetleLandGoal extends Goal {
 		this.ticksNearTakeoffPos = 0;
 		this.ticksNoPath = 0;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

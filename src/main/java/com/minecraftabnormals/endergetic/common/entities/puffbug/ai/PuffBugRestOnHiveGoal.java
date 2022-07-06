@@ -52,4 +52,9 @@ public class PuffBugRestOnHiveGoal extends Goal {
 	public void stop() {
 		this.ticksRested = 0;
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

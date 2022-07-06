@@ -77,6 +77,11 @@ public class BroodEetleFlingGoal extends Goal {
 		this.ticksPassed = 0;
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	private static double getAttackReachSqr(float width, LivingEntity attackTarget) {
 		return width * 2.0F * width * 2.0F + attackTarget.getBbWidth();
 	}

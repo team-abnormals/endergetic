@@ -75,4 +75,9 @@ public class PuffBugPollinateGoal extends EndimatedGoal<PuffBugEntity> {
 		this.originalPosX = this.originalPosY = this.originalPosZ = 0.0F;
 		this.playEndimation(PlayableEndimation.BLANK);
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

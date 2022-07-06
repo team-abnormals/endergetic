@@ -99,6 +99,11 @@ public class GliderEetleDropOffGoal extends Goal {
 		}
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	@Nullable
 	private static AABB getProjectedBoundingBox(GliderEetleEntity glider) {
 		BlockPos.MutableBlockPos mutable = glider.blockPosition().mutable();

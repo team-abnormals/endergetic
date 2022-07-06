@@ -132,6 +132,11 @@ public class PurpoidTelefragGoal extends Goal {
 		purpoid.setAggressive(false);
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	static class TeleportPattern {
 		private final boolean[] sequence;
 		private int index;

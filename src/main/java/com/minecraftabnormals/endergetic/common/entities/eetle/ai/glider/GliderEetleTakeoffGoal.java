@@ -42,6 +42,11 @@ public class GliderEetleTakeoffGoal extends Goal {
 		this.ticksPassed++;
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	private static boolean willFallFar(GliderEetleEntity gliderEetleEntity) {
 		Level world = gliderEetleEntity.level;
 		BlockPos.MutableBlockPos mutable = gliderEetleEntity.blockPosition().mutable();

@@ -50,4 +50,9 @@ public class PurpoidTeleportToFlowerGoal extends AbstractPurpoidTeleportGoal {
 		return flowerPositions.isEmpty() ? null : flowerPositions.get(random.nextInt(flowerPositions.size()));
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 }

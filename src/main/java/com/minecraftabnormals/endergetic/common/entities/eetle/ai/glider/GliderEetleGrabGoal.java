@@ -123,6 +123,11 @@ public class GliderEetleGrabGoal extends Goal {
 		glider.getNavigation().stop();
 	}
 
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
+
 	public static BlockPos getAirPosAboveTarget(Level world, LivingEntity target) {
 		BlockPos.MutableBlockPos mutable = target.blockPosition().mutable();
 		for (int y = 0; y < 4; y++) {

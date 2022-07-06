@@ -99,4 +99,9 @@ public class GliderEetleBiteGoal extends EndimatedGoal<GliderEetleEntity> {
 		glider.setAggressive(false);
 		glider.getNavigation().stop();
 	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
+	}
 }

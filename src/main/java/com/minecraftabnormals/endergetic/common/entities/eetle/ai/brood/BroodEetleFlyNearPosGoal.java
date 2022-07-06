@@ -45,6 +45,7 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 		this.broodEetle.getNavigation().moveTo(this.x, this.y, this.z, 1.0F);
 	}
 
+	@Override
 	public boolean canContinueToUse() {
 		return !this.broodEetle.getNavigation().isDone();
 	}
@@ -52,6 +53,11 @@ public class BroodEetleFlyNearPosGoal extends Goal {
 	@Override
 	public void stop() {
 		this.broodEetle.getNavigation().stop();
+	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
 	}
 
 	@Nullable
