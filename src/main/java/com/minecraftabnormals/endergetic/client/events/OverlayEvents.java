@@ -20,9 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -48,12 +47,12 @@ public final class OverlayEvents {
 	}
 
 	@SubscribeEvent
-	public static void renderOverlays(RenderGameOverlayEvent.PreLayer event) {
+	public static void renderOverlays(RenderGuiOverlayEvent.Pre event) {
 		LocalPlayer player = MC.player;
 		if (player != null) {
 			if (!MC.options.hideGui) {
-				IIngameOverlay overlay = event.getOverlay();
-				if (overlay == ForgeIngameGui.EXPERIENCE_BAR_ELEMENT) {
+				ResourceLocation overlayID = event.getOverlay().id();
+				if (overlayID == VanillaGuiOverlay.EXPERIENCE_BAR.id()) {
 					if (player.isPassenger() && player.getVehicle() instanceof BoofloEntity) {
 						event.setCanceled(true);
 
@@ -74,9 +73,9 @@ public final class OverlayEvents {
 
 						stack.popPose();
 					}
-				} else if (overlay == ForgeIngameGui.MOUNT_HEALTH_ELEMENT && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
+				} else if (overlayID == VanillaGuiOverlay.MOUNT_HEALTH.id() && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
 					event.setCanceled(true);
-				} else if (overlay == ForgeIngameGui.VIGNETTE_ELEMENT && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
+				} else if (overlayID == VanillaGuiOverlay.VIGNETTE.id() && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
 					float purpoidFlashProgress = Mth.lerp(event.getPartialTick(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;
 					if (purpoidFlashProgress > 0.0F) {
 						PoseStack stack = event.getPoseStack();

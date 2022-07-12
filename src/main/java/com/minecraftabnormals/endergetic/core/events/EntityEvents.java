@@ -206,7 +206,7 @@ public final class EntityEvents {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void onPlayerSwing(InputEvent.ClickInputEvent event) {
+	public static void onPlayerSwing(InputEvent.InteractionKeyMappingTriggered event) {
 		if (event.isAttack()) {
 			LocalPlayer player = ClientInfo.getClientPlayer();
 			if (player.getXRot() > -25.0F) return;

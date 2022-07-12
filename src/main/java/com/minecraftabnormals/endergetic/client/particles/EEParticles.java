@@ -13,7 +13,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -49,7 +49,7 @@ public class EEParticles {
 
 		@OnlyIn(Dist.CLIENT)
 		@SubscribeEvent(priority = EventPriority.LOWEST)
-		public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
+		public static void registerParticleTypes(RegisterParticleProvidersEvent event) {
 			ParticleEngine particleManager = Minecraft.getInstance().particleEngine;
 			if (ENDER_FLAME.isPresent()) {
 				particleManager.register(ENDER_FLAME.get(), FlameParticle.Provider::new);

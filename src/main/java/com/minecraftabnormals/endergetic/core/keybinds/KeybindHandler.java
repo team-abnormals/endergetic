@@ -16,8 +16,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -27,13 +27,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
  */
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public final class KeybindHandler {
-	private static List<KeyMapping> keyBinds = Lists.newArrayList();
+	private static final List<KeyMapping> keyBinds = Lists.newArrayList();
 	private static final KeyMapping BOOF_VEST = registerKeybind(new KeyMapping("key.endergetic.booflo_vest", 32, "key.categories.movement"));
 	public static final KeyMapping BOOFLO_SLAM = registerKeybind(new KeyMapping("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
 
-	public static void registerKeys() {
-		for (KeyMapping keys : keyBinds) {
-			ClientRegistry.registerKeyBinding(keys);
+	public static void registerKeys(RegisterKeyMappingsEvent event) {
+		for (KeyMapping key : keyBinds) {
+			event.register(key);
 		}
 	}
 
@@ -43,12 +43,12 @@ public final class KeybindHandler {
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public static void onKeyPressed(KeyInputEvent event) {
+	public static void onKeyPressed(InputEvent.Key event) {
 		if (Minecraft.getInstance().screen != null) return;
 		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		if (BOOF_VEST.consumeClick() && !player.getAbilities().flying) {
+		if (BOOF_VEST.isDown() && !player.getAbilities().flying) {
 			ItemStack stack = player.getInventory().getArmor(2);
 			if (stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.isOnGround() && !player.isSpectator()) {
 				if (BoofloVestItem.canBoof(stack, player)) {
@@ -60,7 +60,7 @@ public final class KeybindHandler {
 		if (player.getVehicle() instanceof BoofloEntity) {
 			BoofloEntity booflo = (BoofloEntity) player.getVehicle();
 			if (!booflo.isOnGround()) {
-				if (BOOFLO_SLAM.consumeClick()) {
+				if (BOOFLO_SLAM.isDown()) {
 					if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {
 						EndergeticExpansion.CHANNEL.sendToServer(new C2SSlamMessage());
 					}

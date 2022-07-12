@@ -19,9 +19,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.Consumer;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author - SmellyModder(Luke Tonon)
@@ -84,11 +86,12 @@ public class BoofloVestItem extends ArmorItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-		consumer.accept(new IItemRenderProperties() {
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
 			@Override
-			public HumanoidModel<?> getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
-				return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BoofloVestModel.INSTANCE : null;
+			@NotNull
+			public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack stack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+				return stack.hasTag() && stack.getTag().getBoolean(BOOFED_TAG) ? BoofloVestModel.INSTANCE : original;
 			}
 		});
 	}

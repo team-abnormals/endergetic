@@ -29,6 +29,7 @@ import com.minecraftabnormals.endergetic.core.data.server.EEBiomeModifierProvide
 import com.minecraftabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.EELootModifierProvider;
 import com.minecraftabnormals.endergetic.core.data.server.tags.EEBiomeTagsProvider;
+import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
 import com.minecraftabnormals.endergetic.core.registry.*;
 import com.minecraftabnormals.endergetic.core.registry.other.*;
 import com.minecraftabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
@@ -57,7 +58,6 @@ import com.minecraftabnormals.endergetic.common.network.entity.*;
 import com.minecraftabnormals.endergetic.common.network.entity.booflo.*;
 import com.minecraftabnormals.endergetic.common.network.entity.puffbug.*;
 import com.minecraftabnormals.endergetic.core.config.EEConfig;
-import com.minecraftabnormals.endergetic.core.keybinds.KeybindHandler;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EndCrystalRenderer;
@@ -124,6 +124,7 @@ public class EndergeticExpansion {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
+			modEventBus.addListener(KeybindHandler::registerKeys);
 			modEventBus.addListener(this::registerLayerDefinitions);
 			modEventBus.addListener(this::registerRenderers);
 		});
@@ -212,7 +213,6 @@ public class EndergeticExpansion {
 	@OnlyIn(Dist.CLIENT)
 	void setupClient(final FMLClientSetupEvent event) {
 		EERenderLayers.setupRenderLayers();
-		KeybindHandler.registerKeys();
 		EndCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
 		BiomeUtil.markEndBiomeCustomMusic(EEBiomes.POISE_FOREST.getKey());
 	}
