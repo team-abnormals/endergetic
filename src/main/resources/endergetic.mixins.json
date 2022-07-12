@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.minecraftabnormals.endergetic.core.mixin",
+	"package": "com.teamabnormals.endergetic.core.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"minVersion": "0.8",
 	"refmap": "endergetic.refmap.json",
