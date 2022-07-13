@@ -55,9 +55,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -92,15 +92,13 @@ public final class EntityEvents {
 	@SubscribeEvent
 	public static void onThrowableImpact(final ProjectileImpactEvent event) {
 		Projectile projectileEntity = event.getProjectile();
-		if (projectileEntity instanceof ThrownPotion) {
-			ThrownPotion potionEntity = ((ThrownPotion) projectileEntity);
+		if (projectileEntity instanceof ThrownPotion potionEntity) {
 			ItemStack itemstack = potionEntity.getItem();
 			Potion potion = PotionUtils.getPotion(itemstack);
 			List<MobEffectInstance> list = PotionUtils.getMobEffects(itemstack);
 
-			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockHitResult) {
+			if (potion == Potions.WATER && list.isEmpty() && event.getRayTraceResult() instanceof BlockHitResult blockraytraceresult) {
 				Level world = potionEntity.level;
-				BlockHitResult blockraytraceresult = (BlockHitResult) event.getRayTraceResult();
 				Direction direction = blockraytraceresult.getDirection();
 				BlockPos blockpos = blockraytraceresult.getBlockPos().relative(Direction.DOWN).relative(direction);
 
@@ -114,8 +112,8 @@ public final class EntityEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingTick(LivingUpdateEvent event) {
-		LivingEntity entity = event.getEntityLiving();
+	public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+		LivingEntity entity = event.getEntity();
 		if (!entity.level.isClientSide) {
 			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
 			AttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
@@ -149,8 +147,7 @@ public final class EntityEvents {
 				}
 			}
 
-			if (entity instanceof IDataManager) {
-				IDataManager dataManager = (IDataManager) entity;
+			if (entity instanceof IDataManager dataManager) {
 				int cooldown = dataManager.getValue(EEDataProcessors.CATCHING_COOLDOWN);
 				if (cooldown > 0) {
 					dataManager.setValue(EEDataProcessors.CATCHING_COOLDOWN, cooldown - 1);
@@ -161,10 +158,9 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void onEntityTracked(PlayerEvent.StartTracking event) {
-		ServerPlayer player = (ServerPlayer) event.getPlayer();
+		ServerPlayer player = (ServerPlayer) event.getEntity();
 		Entity trackingEntity = event.getTarget();
-		if (trackingEntity instanceof BolloomBalloonEntity) {
-			BolloomBalloonEntity balloon = (BolloomBalloonEntity) trackingEntity;
+		if (trackingEntity instanceof BolloomBalloonEntity balloon) {
 			Entity attachedEntity = balloon.getAttachedEntity();
 			if (attachedEntity != null) {
 				EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new S2CUpdateBalloonsMessage(attachedEntity));
@@ -176,7 +172,7 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-		BalloonHolder holder = (BalloonHolder) event.getPlayer();
+		BalloonHolder holder = (BalloonHolder) event.getEntity();
 		if (!holder.getBalloons().isEmpty()) {
 			holder.detachBalloons();
 		}
@@ -184,21 +180,21 @@ public final class EntityEvents {
 
 	@SubscribeEvent
 	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		Level world = event.getWorld();
+		Level level = event.getLevel();
 		BlockPos pos = event.getPos();
-		BlockState state = world.getBlockState(pos);
-		Player player = event.getPlayer();
+		BlockState state = level.getBlockState(pos);
+		Player player = event.getEntity();
 		ItemStack stack = event.getItemStack();
 		Item item = stack.getItem();
 		InteractionHand hand = event.getHand();
 
 		if (event.getFace() != Direction.DOWN && item instanceof ShovelItem && !player.isSpectator()) {
 			BlockState newState = state.is(EEBlocks.POISMOSS.get()) ? EEBlocks.POISMOSS_PATH.get().defaultBlockState() : state.is(EEBlocks.EUMUS_POISMOSS.get()) ? EEBlocks.EUMUS_POISMOSS_PATH.get().defaultBlockState() : null;
-			if (newState != null && world.isEmptyBlock(pos.above())) {
-				world.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-				world.setBlock(pos, newState, 11);
+			if (newState != null && level.isEmptyBlock(pos.above())) {
+				level.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+				level.setBlock(pos, newState, 11);
 				event.getItemStack().hurtAndBreak(1, player, (damage) -> damage.broadcastBreakEvent(hand));
-				event.setCancellationResult(InteractionResult.sidedSuccess(world.isClientSide()));
+				event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide()));
 				event.setCanceled(true);
 			}
 		}
@@ -222,7 +218,7 @@ public final class EntityEvents {
 	}
 
 	@SubscribeEvent
-	public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
+	public static void onEntityJoinWorld(EntityJoinLevelEvent event) {
 		Entity entity = event.getEntity();
 		if (entity.level.isClientSide && entity instanceof PurpoidEntity) {
 			((PurpoidEntity) entity).updatePull(entity.position());

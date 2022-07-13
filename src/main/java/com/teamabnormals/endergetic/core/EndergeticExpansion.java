@@ -40,8 +40,8 @@ import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -84,7 +84,7 @@ public class EndergeticExpansion {
 	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MOD_ID, helper -> {
 		helper.putSubHelper(ForgeRegistries.ITEMS, new EndergeticItemSubRegistryHelper(helper));
 		helper.putSubHelper(ForgeRegistries.BLOCKS, new EndergeticBlockSubRegistryHelper(helper));
-		helper.putSubHelper(ForgeRegistries.ENTITIES, new EndergeticEntitySubRegistryHelper(helper));
+		helper.putSubHelper(ForgeRegistries.ENTITY_TYPES, new EndergeticEntitySubRegistryHelper(helper));
 	});
 
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MOD_ID, "net"))

@@ -18,7 +18,7 @@ import java.util.Optional;
  * @author SmellyModder (Luke Tonon)
  */
 public final class EEDataSerializers {
-	public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.Keys.DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
+	public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, EndergeticExpansion.MOD_ID);
 
 	public static final EntityDataSerializer<Optional<Vec3>> OPTIONAL_VEC3D = new EntityDataSerializer<>() {
 		@Override

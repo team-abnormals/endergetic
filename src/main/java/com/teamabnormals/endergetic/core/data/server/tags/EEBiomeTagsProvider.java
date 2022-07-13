@@ -25,7 +25,6 @@ public final class EEBiomeTagsProvider extends BiomeTagsProvider {
 		this.tag(Tags.Biomes.IS_SPARSE).add(EEBiomes.POISE_FOREST.get());
 		this.tag(Tags.Biomes.IS_SPARSE_END).add(EEBiomes.POISE_FOREST.get());
 		this.tag(Tags.Biomes.IS_MAGICAL).add(EEBiomes.POISE_FOREST.get());
-		this.tag(Tags.Biomes.IS_END).add(EEBiomes.POISE_FOREST.get());
 		this.tag(EETags.Biomes.HAS_EETLE_NEST).add(Biomes.END_HIGHLANDS);
 	}
 

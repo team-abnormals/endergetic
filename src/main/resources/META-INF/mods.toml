@@ -25,13 +25,13 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "forge"
     mandatory = true
-    versionRange = "[41.0.64,)"
+    versionRange = "[41.0.98,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.endergetic]]
     modId = "blueprint"
     mandatory = true
-    versionRange = "[6.0.3,)"
+    versionRange = "[6.0.4,)"
     ordering = "AFTER"
     side = "BOTH"
