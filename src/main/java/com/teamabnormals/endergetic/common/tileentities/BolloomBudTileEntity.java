@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
 public class BolloomBudTileEntity extends BlockEntity {
 	public final TimedEndimation pedalAnimation = new TimedEndimation(20, 20);
@@ -48,7 +49,7 @@ public class BolloomBudTileEntity extends BlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().inflate(1.0F);
+		return INFINITE_EXTENT_AABB;
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, BolloomBudTileEntity bud) {

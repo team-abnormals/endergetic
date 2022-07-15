@@ -1,4 +1,4 @@
-package com.teamabnormals.endergetic.client.models.puffbug;
+package com.teamabnormals.endergetic.client.models;
 
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;

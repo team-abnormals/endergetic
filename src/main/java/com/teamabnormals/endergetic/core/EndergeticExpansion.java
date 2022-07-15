@@ -19,8 +19,7 @@ import com.teamabnormals.endergetic.client.models.eetle.LeetleModel;
 import com.teamabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggModel;
 import com.teamabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
 import com.teamabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggModel;
-import com.teamabnormals.endergetic.client.models.puffbug.PuffBugHiveModel;
-import com.teamabnormals.endergetic.client.models.puffbug.PuffBugModel;
+import com.teamabnormals.endergetic.client.models.PuffBugModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.teamabnormals.endergetic.core.data.client.EEEndimationProvider;
@@ -162,7 +161,6 @@ public class EndergeticExpansion {
 		event.registerLayerDefinition(CorrockCrownStandingModel.LOCATION, CorrockCrownStandingModel::createLayerDefinition);
 		event.registerLayerDefinition(CorrockCrownWallModel.LOCATION, CorrockCrownWallModel::createLayerDefinition);
 		event.registerLayerDefinition(BolloomBudModel.LOCATION, BolloomBudModel::createLayerDefinition);
-		event.registerLayerDefinition(PuffBugHiveModel.LOCATION, PuffBugHiveModel::createLayerDefinition);
 		event.registerLayerDefinition(BoofBlockDispenserModel.LOCATION, BoofBlockDispenserModel::createLayerDefinition);
 		event.registerLayerDefinition(SmallEetleEggModel.LOCATION, SmallEetleEggModel::createLayerDefinition);
 		event.registerLayerDefinition(MediumEetleEggModel.LOCATION, MediumEetleEggModel::createLayerDefinition);
@@ -188,7 +186,6 @@ public class EndergeticExpansion {
 	private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(EETileEntities.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);
 		event.registerBlockEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(EETileEntities.PUFFBUG_HIVE.get(), PuffBugHiveTileEntityRenderer::new);
 		event.registerBlockEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), DispensedBoofBlockTileEntityRenderer::new);
 		event.registerBlockEntityRenderer(EETileEntities.ENDER_CAMPFIRE.get(), CampfireRenderer::new);
 		event.registerBlockEntityRenderer(EETileEntities.EETLE_EGG.get(), EetleEggTileEntityRenderer::new);

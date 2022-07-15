@@ -46,6 +46,11 @@ public class PuffBugHiveBlock extends BaseEntityBlock {
 	}
 
 	@Override
+	public RenderShape getRenderShape(BlockState p_49232_) {
+		return RenderShape.MODEL;
+	}
+
+	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		return HIVE_SHAPE;
 	}
@@ -107,11 +112,6 @@ public class PuffBugHiveBlock extends BaseEntityBlock {
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		BlockState down = world.getBlockState(pos.below());
 		return (world.getBlockState(pos.above()).getBlock() instanceof PuffbugHiveHangerBlock) || down.canOcclude() || down.getBlock() instanceof PuffBugHiveBlock;
-	}
-
-	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	public static BlockState alertPuffBugs(LevelAccessor world, BlockPos pos, @Nullable LivingEntity breaker) {

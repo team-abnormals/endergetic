@@ -1,5 +1,40 @@
 {
-    "textures": {
-        "particle": "endergetic:block/puffbug_hive"
-    }
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"0": "endergetic:block/puff_bug_hive_top",
+		"1": "endergetic:block/puff_bug_hive_side",
+		"2": "endergetic:block/puff_bug_hive_underside",
+		"3": "endergetic:block/puff_bug_hive_bottom",
+		"4": "endergetic:block/puff_bug_hive_bottom_side",
+		"particle": "endergetic:block/puffbug_hive"
+	},
+	"elements": [
+		{
+			"name": "top",
+			"from": [0, 3, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"east": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"west": {"uv": [0, 0, 16, 13], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#2"}
+			}
+		},
+		{
+			"name": "bottom",
+			"from": [1, 0, 1],
+			"to": [15, 3, 15],
+			"faces": {
+				"north": {"uv": [1, 0, 15, 3], "texture": "#4"},
+				"east": {"uv": [1, 0, 15, 3], "texture": "#4"},
+				"south": {"uv": [1, 0, 15, 3], "texture": "#4"},
+				"west": {"uv": [1, 0, 15, 3], "texture": "#4"},
+				"up": {"uv": [1, 1, 15, 14], "texture": "#0"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#3"}
+			}
+		}
+	]
 }

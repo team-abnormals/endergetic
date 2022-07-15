@@ -15,7 +15,7 @@ public class CorrockCrownTileEntity extends BlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().inflate(8.0D);
+		return INFINITE_EXTENT_AABB;
 	}
 
 }

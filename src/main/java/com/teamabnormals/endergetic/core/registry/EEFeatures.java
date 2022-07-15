@@ -101,7 +101,7 @@ public final class EEFeatures {
 		public static final RegistryObject<PlacedFeature> POISE_DOME = register("poise_dome", Configured.POISE_DOME, PlacementUtils.countExtra(3, 0.02F, 1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> POISE_TREE = register("poise_tree", Configured.POISE_TREE, PlacementUtils.countExtra(2, 0.05F, 1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> POISE_CLUSTER = register("poise_cluster", Configured.POISE_CLUSTER, new NoiseHeightmap32Placement(-0.8D, 4, 22), BiomeFilter.biome());
-		public static final RegistryObject<PlacedFeature> PUFF_BUG_HIVE = register("puff_bug_hive", Configured.PUFF_BUG_HIVE, new NoiseHeightmap32Placement(-0.8D, 9, 25), BiomeFilter.biome());
+		public static final RegistryObject<PlacedFeature> PUFF_BUG_HIVE = register("puff_bug_hive", Configured.PUFF_BUG_HIVE, new NoiseHeightmap32Placement(-0.8D, 8, 23), BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> BOLLOOM_BUD = register("bolloom_bud", Configured.BOLLOOM_BUD, new NoiseHeightmap32Placement(-0.9D, 90, 90), BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> POISE_BUSH_PATCH = register("poise_bush_patch", Configured.POISE_BUSH_PATCH, NoiseThresholdCountPlacement.of(-0.8D, 5, 10), PlacementUtils.FULL_RANGE, BiomeFilter.biome());
 		public static final RegistryObject<PlacedFeature> TALL_POISE_BUSH_PATCH = register("tall_poise_bush_patch", Configured.TALL_POISE_BUSH_PATCH, new NoiseHeightmap32Placement(-0.8D, 2, 8), PlacementUtils.FULL_RANGE, BiomeFilter.biome());

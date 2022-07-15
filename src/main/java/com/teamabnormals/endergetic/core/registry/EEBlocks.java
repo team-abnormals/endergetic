@@ -10,7 +10,6 @@ import com.teamabnormals.endergetic.common.blocks.poise.*;
 import com.teamabnormals.endergetic.common.blocks.poise.boof.*;
 import com.teamabnormals.endergetic.common.blocks.poise.hive.*;
 import com.teamabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
-import com.teamabnormals.endergetic.common.tileentities.PuffBugHiveTileEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 
 import com.teamabnormals.blueprint.client.renderer.block.TypedBlockEntityWithoutLevelRenderer;
@@ -119,7 +118,7 @@ public final class EEBlocks {
 	public static final Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> 	 POISE_CHEST = HELPER.createCompatChestBlocks("quark", "poise", MaterialColor.TERRACOTTA_PURPLE);
 
 	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithBEWLR("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> () -> new BEWLRBlockItem.LazyBEWLR(bolloomBudISTER()), CreativeModeTab.TAB_DECORATIONS);
-	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlockWithBEWLR("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), () -> () -> new BEWLRBlockItem.LazyBEWLR(puffbugHiveISTER()), CreativeModeTab.TAB_DECORATIONS);
+	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlock("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> HIVE_HANGER 			= HELPER.createBlockNoItem("hive_hanger", () -> new PuffbugHiveHangerBlock(EEProperties.getPuffBugHive(false)));
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE      = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.getPoiseWood(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK            = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), CreativeModeTab.TAB_DECORATIONS);
@@ -167,10 +166,5 @@ public final class EEBlocks {
 	@OnlyIn(Dist.CLIENT)
 	private static BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> bolloomBudISTER() {
 		return (dispatcher, modelSet) -> new TypedBlockEntityWithoutLevelRenderer<>(dispatcher, modelSet, new BolloomBudTileEntity(BlockPos.ZERO, BOLLOOM_BUD.get().defaultBlockState()));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> puffbugHiveISTER() {
-		return (dispatcher, modelSet) -> new TypedBlockEntityWithoutLevelRenderer<>(dispatcher, modelSet, new PuffBugHiveTileEntity(BlockPos.ZERO, PUFFBUG_HIVE.get().defaultBlockState()));
 	}
 }

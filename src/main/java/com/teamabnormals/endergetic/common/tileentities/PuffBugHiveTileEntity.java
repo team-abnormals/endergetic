@@ -180,7 +180,7 @@ public class PuffBugHiveTileEntity extends BlockEntity {
 
 	@Override
 	public AABB getRenderBoundingBox() {
-		return super.getRenderBoundingBox().inflate(1084);
+		return INFINITE_EXTENT_AABB;
 	}
 
 	public static class HiveOccupantData {

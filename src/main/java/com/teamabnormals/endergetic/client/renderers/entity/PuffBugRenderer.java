@@ -1,6 +1,6 @@
 package com.teamabnormals.endergetic.client.renderers.entity;
 
-import com.teamabnormals.endergetic.client.models.puffbug.PuffBugModel;
+import com.teamabnormals.endergetic.client.models.PuffBugModel;
 import com.teamabnormals.endergetic.client.renderers.entity.layer.LayerRendererPuffBugGlow;
 import com.teamabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
