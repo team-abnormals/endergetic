@@ -21,4 +21,8 @@ public class EndergeticEntitySubRegistryHelper extends EntitySubRegistryHelper {
 		return this.deferredRegister.register(name, () -> EntityType.Builder.of(factory, entityClassification).sized(width, height).noSummon().setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(1).setCustomClientFactory(clientFactory).build(this.parent.prefix(name).toString()));
 	}
 
+	public <E extends Entity> RegistryObject<EntityType<E>> createManuallyUpdatedEntity(String name, EntityType.EntityFactory<E> factory, BiFunction<PlayMessages.SpawnEntity, Level, E> clientFactory, MobCategory entityClassification, float width, float height) {
+		return this.deferredRegister.register(name, () -> EntityType.Builder.of(factory, entityClassification).sized(width, height).setTrackingRange(64).setShouldReceiveVelocityUpdates(true).setUpdateInterval(Integer.MAX_VALUE).setCustomClientFactory(clientFactory).build(this.parent.prefix(name).toString()));
+	}
+
 }

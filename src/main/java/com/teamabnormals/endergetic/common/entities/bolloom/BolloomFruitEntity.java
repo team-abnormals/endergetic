@@ -87,8 +87,8 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	}
 
 	@Override
-	public float getVineAngle() {
-		return (float) Math.atan(this.getSway() / (this.getVineHeight()));
+	public float getVineXRot() {
+		return (float) Math.atan(this.getSway() / this.getVineHeight());
 	}
 
 	public void setVineHeight(int height) {
@@ -102,10 +102,11 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 	@Override
 	public void updatePositionAndMotion(double angleX, double angleZ) {
 		if (!this.isUntied()) {
+			float sway = this.getSway();
 			this.setPos(
-					this.getOriginX() + this.getSway() * angleX,
+					this.getOriginX() + sway * angleX,
 					this.getOriginY(),
-					this.getOriginZ() + this.getSway() * angleZ
+					this.getOriginZ() + sway * angleZ
 			);
 		} else {
 			this.move(MoverType.SELF, this.getDeltaMovement());

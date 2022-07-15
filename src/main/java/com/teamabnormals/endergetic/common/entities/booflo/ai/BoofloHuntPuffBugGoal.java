@@ -51,6 +51,7 @@ public class BoofloHuntPuffBugGoal extends Goal {
 	@Override
 	public void tick() {
 		PuffBugEntity target = (PuffBugEntity) this.booflo.getBoofloAttackTarget();
+		if (target == null) return;
 
 		double distToEnemySqr = this.booflo.distanceToSqr(target.getX(), target.getBoundingBox().minY, target.getZ());
 

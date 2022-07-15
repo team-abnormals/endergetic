@@ -86,8 +86,8 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		this.yo = posY;
 		this.zo = posZ;
 		this.setUntied(true);
-		this.setDesiredAngle((float) (this.random.nextDouble() * 2 * Math.PI));
-		this.setAngle((float) (this.random.nextDouble() * 2 * Math.PI));
+		this.setDesiredVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
+		this.setVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 			if (this.attachedEntity instanceof CustomBalloonPositioner) {
 				((CustomBalloonPositioner) this.attachedEntity).updateAttachedPosition(this);
 			} else if (this.attachedEntity != null) {
-				this.setPos(this.attachedEntity.getX() + this.getSway() * Mth.sin(-this.getAngle()), this.attachedEntity.getY() + this.getPassengersRidingOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getZ() + this.getSway() * Mth.cos(-this.getAngle()));
+				this.setPos(this.attachedEntity.getX() + this.getSway() * Mth.sin(-this.getVineYRot()), this.attachedEntity.getY() + this.getPassengersRidingOffset() + this.attachedEntity.getEyeHeight(), this.attachedEntity.getZ() + this.getSway() * Mth.cos(-this.getVineYRot()));
 			}
 		}
 	}
@@ -213,10 +213,11 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	public void updatePositionAndMotion(double angleX, double angleZ) {
 		if (this.level.isAreaLoaded(this.blockPosition(), 1)) {
 			if (!this.isUntied()) {
+				float sway = this.getSway();
 				this.setPos(
-						this.getOriginX() + this.getSway() * angleX,
+						this.getOriginX() + sway * angleX,
 						this.getOriginY(),
-						this.getOriginZ() + this.getSway() * angleZ
+						this.getOriginZ() + sway * angleZ
 				);
 			} else if (!this.isAttachedToEntity()) {
 				this.move(MoverType.SELF, this.getDeltaMovement());

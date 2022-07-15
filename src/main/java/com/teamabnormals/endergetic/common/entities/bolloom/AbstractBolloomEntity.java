@@ -29,14 +29,14 @@ public abstract class AbstractBolloomEntity extends Entity {
 	private static final EntityDataAccessor<Float> ORIGIN_X = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> ORIGIN_Y = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> ORIGIN_Z = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Float> ANGLE = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Float> DESIRED_ANGLE = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Float> SWAY = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.INT); //Vanilla's ticksExisted isn't synced between server and client
+	private static final EntityDataAccessor<Float> DESIRED_VINE_Y_ROT = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Integer> CLIENT_TICKS_EXISTED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> UNTIED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.BOOLEAN);
 
-	private float prevVineAngle;
-	private float prevAngle;
+	private float sway;
+	private float prevVineXRot;
+	private float prevVineYRot, vineYRot;
+	private int ticksExisted;
 
 	protected AbstractBolloomEntity(EntityType<?> entityType, Level world) {
 		super(entityType, world);
@@ -47,73 +47,73 @@ public abstract class AbstractBolloomEntity extends Entity {
 		this.entityData.define(ORIGIN_X, 0.0F);
 		this.entityData.define(ORIGIN_Y, 0.0F);
 		this.entityData.define(ORIGIN_Z, 0.0F);
-		this.entityData.define(ANGLE, 0.0F);
-		this.entityData.define(DESIRED_ANGLE, 0.0F);
-		this.entityData.define(SWAY, 0.0F);
+		this.entityData.define(DESIRED_VINE_Y_ROT, 0.0F);
 		this.entityData.define(UNTIED, false);
-		this.entityData.define(TICKS_EXISTED, 0);
+		this.entityData.define(CLIENT_TICKS_EXISTED, 0);
 	}
 
 	@Override
 	public void tick() {
-		this.xo = this.getX();
-		this.yo = this.getY();
-		this.zo = this.getZ();
-		this.prevVineAngle = this.getVineAngle();
-		this.prevAngle = this.getAngle();
+		this.xOld = this.xo = this.getX();
+		this.yOld = this.yo = this.getY();
+		this.zOld = this.zo = this.getZ();
+		this.prevVineXRot = this.getVineXRot();
+		float vineYRot = this.getVineYRot();
+		this.prevVineYRot = vineYRot;
 
-		this.setSway(Mth.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F);
-		this.updatePositionAndMotion(Mth.sin(-this.getAngle()), Mth.cos(-this.getAngle()));
+		this.sway = Mth.sin((float) (2 * Math.PI / 100 * this.getTicksExisted())) * 0.5F;
+		this.updatePositionAndMotion(Mth.sin(-vineYRot), Mth.cos(-vineYRot));
+
+		float seekingVineYRot = this.getDesiredVineYRot() - vineYRot;
+
+		while (seekingVineYRot > Math.PI) {
+			seekingVineYRot -= 2 * Math.PI;
+		}
+
+		while (seekingVineYRot <= -Math.PI) {
+			seekingVineYRot += 2 * Math.PI;
+		}
+
+		if (Math.abs(seekingVineYRot) <= 0.1F) {
+			this.vineYRot = vineYRot + seekingVineYRot;
+		} else if (seekingVineYRot > 0) {
+			this.vineYRot = vineYRot + 0.03F;
+		} else {
+			this.vineYRot = vineYRot - 0.03F;
+		}
 
 		if (!this.level.isClientSide) {
-			if (this.getTicksExisted() % 45 == 0) {
-				this.setDesiredAngle((float) (this.random.nextDouble() * 2 * Math.PI));
-			}
-
 			if (this.getY() >= 254 && this.isUntied()) {
 				this.onBroken(true);
 				this.discard();
 			}
 
-			float dangle = this.getDesiredAngle() - this.getAngle();
-
-			while (dangle > Math.PI) {
-				dangle -= 2 * Math.PI;
+			if (this.ticksExisted % 50 == 0) {
+				this.setDesiredVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
 			}
+		}
 
-			while (dangle <= -Math.PI) {
-				dangle += 2 * Math.PI;
-			}
-
-			if (Math.abs(dangle) <= 0.1F) {
-				this.setAngle(this.getAngle() + dangle);
-			} else if (dangle > 0) {
-				this.setAngle(this.getAngle() + 0.03F);
-			} else {
-				this.setAngle(this.getAngle() - 0.03F);
-			}
+		if (this.shouldIncrementTicksExisted()) {
+			this.incrementTicksExisted();
 		}
 
 		this.updateUntied();
 		this.clearFire();
-		if (this.shouldIncrementTicksExisted()) {
-			this.incrementTicksExisted();
-		}
 	}
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
-		compound.putBoolean("UNTIED", this.isUntied());
-		compound.putFloat("ORIGIN_X", this.getOriginX());
-		compound.putFloat("ORIGIN_Y", this.getOriginY());
-		compound.putFloat("ORIGIN_Z", this.getOriginZ());
+		compound.putBoolean("Untied", this.isUntied());
+		compound.putFloat("OriginX", this.getOriginX());
+		compound.putFloat("OriginY", this.getOriginY());
+		compound.putFloat("OriginZ", this.getOriginZ());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
-		this.setUntied(compound.getBoolean("UNTIED"));
-		if (compound.contains("ORIGIN_X", 5) && compound.contains("ORIGIN_Y", 5) && compound.contains("ORIGIN_Z", 5)) {
-			this.setOrigin(compound.getFloat("ORIGIN_X"), compound.getFloat("ORIGIN_Y"), compound.getFloat("ORIGIN_Z"));
+		this.setUntied(compound.getBoolean("Untied"));
+		if (compound.contains("OriginX", 5) && compound.contains("OriginY", 5) && compound.contains("OriginZ", 5)) {
+			this.setOrigin(compound.getFloat("OriginX"), compound.getFloat("OriginY"), compound.getFloat("OriginZ"));
 		} else {
 			this.setUntied(true);
 		}
@@ -137,32 +137,28 @@ public abstract class AbstractBolloomEntity extends Entity {
 		return this.entityData.get(ORIGIN_Z);
 	}
 
-	public void setAngle(float degree) {
-		this.entityData.set(ANGLE, degree);
+	public void setVineYRot(float angle) {
+		this.vineYRot = angle;
 	}
 
-	public float getAngle() {
-		return this.entityData.get(ANGLE);
+	public float getVineYRot() {
+		return this.vineYRot;
 	}
 
-	public void setDesiredAngle(float angle) {
-		this.entityData.set(DESIRED_ANGLE, angle);
+	public void setDesiredVineYRot(float angle) {
+		this.entityData.set(DESIRED_VINE_Y_ROT, angle);
 	}
 
-	public float getDesiredAngle() {
-		return this.entityData.get(DESIRED_ANGLE);
+	public float getDesiredVineYRot() {
+		return this.entityData.get(DESIRED_VINE_Y_ROT);
 	}
 
-	public float getVineAngle() {
+	public float getVineXRot() {
 		return (float) Math.atan(this.getSway() / 2F);
 	}
 
-	public void setSway(float sway) {
-		this.entityData.set(SWAY, sway);
-	}
-
 	public float getSway() {
-		return this.entityData.get(SWAY);
+		return this.sway;
 	}
 
 	public void setUntied(boolean untied) {
@@ -174,18 +170,22 @@ public abstract class AbstractBolloomEntity extends Entity {
 	}
 
 	public void incrementTicksExisted() {
-		this.entityData.set(TICKS_EXISTED, this.getTicksExisted() + 1);
+		if (this.level.isClientSide) {
+			this.entityData.set(CLIENT_TICKS_EXISTED, this.entityData.get(CLIENT_TICKS_EXISTED) + 1);
+		} else if (++this.ticksExisted % 20 == 0) {
+			this.entityData.set(CLIENT_TICKS_EXISTED, this.ticksExisted);
+		}
 	}
 
 	public int getTicksExisted() {
-		return this.entityData.get(TICKS_EXISTED);
+		return this.level.isClientSide ? this.entityData.get(CLIENT_TICKS_EXISTED) : this.ticksExisted;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public float[] getVineAnimation(float partialTicks) {
 		return new float[]{
-				Mth.lerp(partialTicks, this.prevVineAngle, this.getVineAngle()),
-				Mth.lerp(partialTicks, this.prevAngle, this.getAngle()),
+				Mth.lerp(partialTicks, this.prevVineXRot, this.getVineXRot()),
+				Mth.lerp(partialTicks, this.prevVineYRot, this.getVineYRot()),
 		};
 	}
 

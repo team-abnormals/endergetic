@@ -38,10 +38,10 @@ public final class EEEntities {
 	public static final EndergeticEntitySubRegistryHelper HELPER = EndergeticExpansion.REGISTRY_HELPER.getEntitySubHelper();
 
 	public static final RegistryObject<EntityType<PoiseClusterEntity>> POISE_CLUSTER = HELPER.createLivingEntity("poise_cluster", PoiseClusterEntity::new, MobCategory.MISC, 1F, 1F);
-	public static final RegistryObject<EntityType<BolloomFruitEntity>> BOLLOOM_FRUIT = HELPER.createEntity("bolloom_fruit", BolloomFruitEntity::new, BolloomFruitEntity::new, MobCategory.MISC, 0.5F, 0.5F);
+	public static final RegistryObject<EntityType<BolloomFruitEntity>> BOLLOOM_FRUIT = HELPER.createManuallyUpdatedEntity("bolloom_fruit", BolloomFruitEntity::new, BolloomFruitEntity::new, MobCategory.MISC, 0.5F, 0.5F);
 	public static final RegistryObject<EntityType<BoofBlockEntity>> BOOF_BLOCK = HELPER.createEntity("boof_block", BoofBlockEntity::new, BoofBlockEntity::new, MobCategory.MISC, 1.75F, 1.75F);
 	public static final RegistryObject<EntityType<PuffBugEntity>> PUFF_BUG = HELPER.createLivingEntity("puff_bug", PuffBugEntity::new, MobCategory.CREATURE, 0.3F, 1.15F);
-	public static final RegistryObject<EntityType<BolloomBalloonEntity>> BOLLOOM_BALLOON = HELPER.createEntity("bolloom_balloon", BolloomBalloonEntity::new, BolloomBalloonEntity::new, MobCategory.MISC, 0.5F, 0.5F);
+	public static final RegistryObject<EntityType<BolloomBalloonEntity>> BOLLOOM_BALLOON = HELPER.createManuallyUpdatedEntity("bolloom_balloon", BolloomBalloonEntity::new, BolloomBalloonEntity::new, MobCategory.MISC, 0.5F, 0.5F);
 	public static final RegistryObject<EntityType<BolloomKnotEntity>> BOLLOOM_KNOT = HELPER.createEntity("bolloom_knot", BolloomKnotEntity::new, BolloomKnotEntity::new, MobCategory.MISC, 0.375F, 0.19F);
 	public static final RegistryObject<EntityType<BoofloBabyEntity>> BOOFLO_BABY = HELPER.createLivingEntity("booflo_baby", BoofloBabyEntity::new, MobCategory.CREATURE, 0.375F, 0.325F);
 	public static final RegistryObject<EntityType<BoofloAdolescentEntity>> BOOFLO_ADOLESCENT = HELPER.createLivingEntity("booflo_adolescent", BoofloAdolescentEntity::new, MobCategory.CREATURE, 0.8F, 0.7F);
