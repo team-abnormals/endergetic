@@ -98,7 +98,7 @@ public class BoofloBreedGoal extends Goal {
 		}
 
 		if (!this.mate.isPregnant()) {
-			this.booflo.setPregnant(true);
+			this.booflo.babiesToBirth = 3;
 		}
 
 		this.booflo.resetInLove();

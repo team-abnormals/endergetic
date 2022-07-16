@@ -7,8 +7,8 @@ import com.teamabnormals.endergetic.core.registry.EEEntities;
 import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.endimator.entity.EndimatedGoal;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 	private int birthTicks;
@@ -37,37 +37,31 @@ public class BoofloGiveBirthGoal extends EndimatedGoal<BoofloEntity> {
 
 	@Override
 	public void stop() {
-		if (this.birthTicks >= 70) {
-			this.entity.setPregnant(false);
-		}
 		this.entity.hopDelay = this.entity.getDefaultGroundHopDelay();
 		this.birthTicks = 0;
 	}
 
 	@Override
 	public void tick() {
-		this.birthTicks++;
-
-		this.entity.setYRot(this.originalYaw);
-
-		if (this.birthTicks % 20 == 0 && this.birthTicks > 0 && this.birthTicks < 70) {
-			Level world = this.entity.level;
-			RandomSource rand = this.entity.getRandom();
-
-			double dx = Math.cos((this.entity.getYRot() + 90) * Math.PI / 180.0D) * -0.2F;
-			double dz = Math.sin((this.entity.getYRot() + 90) * Math.PI / 180.0D) * -0.2F;
-
-			this.entity.playSound(SoundEvents.ITEM_PICKUP, 0.3F, 0.6F);
-
-			BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(world);
+		BoofloEntity booflo = this.entity;
+		booflo.setYRot(this.originalYaw);
+		if (++this.birthTicks % 20 == 0 && booflo.babiesToBirth > 0) {
+			Level level = booflo.level;
+			BoofloBabyEntity baby = EEEntities.BOOFLO_BABY.get().create(level);
 			if (baby != null) {
-				baby.setBeingBorn(true);
+				booflo.playSound(SoundEvents.ITEM_PICKUP, 0.3F, 0.6F);
+
+				baby.setBirthTimer(60);
+				baby.setBirthPosition(BoofloBabyEntity.BirthPosition.get(3 - booflo.babiesToBirth));
 				baby.setGrowingAge(-24000);
-				baby.setPos(this.entity.getX() + dx, this.entity.getY() + 0.9F + (rand.nextFloat() * 0.05F), this.entity.getZ() + dz);
-				baby.startRiding(this.entity, true);
-				baby.wasBred = this.entity.tickCount > 200;
-				world.addFreshEntity(baby);
+
+				Vec3 ridingOffset = baby.getBirthPositionOffset().yRot(-booflo.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+				baby.setPos(booflo.getX() + ridingOffset.x, booflo.getY() + 0.9F, booflo.getZ() + ridingOffset.z);
+				baby.startRiding(booflo, true);
+				baby.wasBred = booflo.tickCount > 200;
+				level.addFreshEntity(baby);
 			}
+			booflo.babiesToBirth--;
 		}
 	}
 

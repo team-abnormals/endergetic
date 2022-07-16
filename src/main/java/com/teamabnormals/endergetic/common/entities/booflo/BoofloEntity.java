@@ -102,7 +102,6 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 	private static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> MOVING_IN_AIR = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> BOOFED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Boolean> PREGNANT = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> HUNGRY = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> HAS_FRUIT = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Integer> FRUITS_NEEDED = SynchedEntityData.defineId(BoofloEntity.class, EntityDataSerializers.INT);
@@ -122,6 +121,7 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 	public int breedDelay;
 	private int croakDelay;
 	private int deflateDelay;
+	public int babiesToBirth;
 	public boolean wasBred;
 	private boolean shouldPlayLandSound;
 	private boolean wasOnGround;
@@ -143,7 +143,6 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 		this.entityData.define(TAMED, false);
 		this.entityData.define(MOVING_IN_AIR, false);
 		this.entityData.define(BOOFED, false);
-		this.entityData.define(PREGNANT, false);
 		this.entityData.define(HUNGRY, this.getRandom().nextFloat() < 0.6F);
 		this.entityData.define(HAS_FRUIT, false);
 		this.entityData.define(BOOST_STATUS, (byte) 0);
@@ -417,13 +416,13 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("IsMovingInAir", this.isMovingInAir());
 		compound.putBoolean("IsBoofed", this.isBoofed());
-		compound.putBoolean("IsPregnant", this.isPregnant());
 		compound.putBoolean("IsHungry", this.isHungry());
 		compound.putBoolean("HasFruit", this.hasCaughtFruit());
 		compound.putBoolean("WasBred", this.wasBred);
 		compound.putInt("FruitsNeededTillTamed", this.getFruitsNeededTillTamed());
 		compound.putInt("InLove", this.getInLoveTicks());
 		compound.putInt("BoofloTargetId", this.getBoofloAttackTargetId());
+		compound.putInt("BabiesToBirth", this.babiesToBirth);
 		compound.putByte("BraceletsColor", (byte) this.getBraceletsColor().getId());
 		compound.putFloat("BirthYaw", this.getLockedYaw());
 
@@ -445,11 +444,11 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 		super.readAdditionalSaveData(compound);
 		this.setMovingInAir(compound.getBoolean("IsMovingInAir"));
 		this.setBoofed(compound.getBoolean("IsBoofed"));
-		this.setPregnant(compound.getBoolean("IsPregnant"));
 		this.setHungry(compound.getBoolean("IsHungry"));
 		this.setCaughtFruit(compound.getBoolean("HasFruit"));
 		this.setInLove(compound.getInt("InLove"));
 		this.setBoofloAttackTargetId(compound.getInt("BoofloTargetId"));
+		this.babiesToBirth = compound.getInt("BabiesToBirth");
 		this.setLockedYaw(compound.getFloat("BirthYaw"));
 		this.playerInLove = compound.hasUUID("LoveCause") ? compound.getUUID("LoveCause") : null;
 		this.wasBred = compound.getBoolean("WasBred");
@@ -603,7 +602,7 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 		if (reason == MobSpawnType.NATURAL) {
 			Random rand = new Random();
 			if (rand.nextFloat() < 0.2F) {
-				this.setPregnant(true);
+				this.babiesToBirth = 3;
 			}
 			this.setFruitsNeeded(rand.nextInt(3) + 2);
 		}
@@ -673,11 +672,7 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 	}
 
 	public boolean isPregnant() {
-		return this.entityData.get(PREGNANT);
-	}
-
-	public void setPregnant(boolean pregnant) {
-		this.entityData.set(PREGNANT, pregnant);
+		return this.babiesToBirth > 0;
 	}
 
 	public boolean isHungry() {
@@ -1086,16 +1081,10 @@ public class BoofloEntity extends PathfinderMob implements Endimatable {
 	@Override
 	public void positionRider(Entity passenger) {
 		if (this.hasPassenger(passenger)) {
-			if (passenger instanceof BoofloBabyEntity) {
-				int passengerIndex = this.getPassengers().indexOf(passenger);
-
-				double xOffset = passengerIndex == 0 ? 0.25F : -0.25F;
-				double zOffset = passengerIndex == 0 ? 0.0F : passengerIndex == 1 ? -0.25F : 0.25F;
-				Vec3 ridingOffset = (new Vec3(xOffset, 0.0D, zOffset)).yRot(-this.getLockedYaw() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-
+			if (passenger instanceof BoofloBabyEntity boofloBaby) {
+				Vec3 ridingOffset = boofloBaby.getBirthPositionOffset().yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
 				passenger.setPos(this.getX() + ridingOffset.x, this.getY() + 0.9F, this.getZ() + ridingOffset.z);
-			} else if (passenger instanceof PuffBugEntity) {
-				PuffBugEntity puffbug = (PuffBugEntity) passenger;
+			} else if (passenger instanceof PuffBugEntity puffbug) {
 				passenger.setYRot(puffbug.yBodyRot = puffbug.yHeadRot = (this.getYRot() - 75.0F));
 				if (this.isEndimationPlaying(EEPlayableEndimations.BOOFLO_EAT) && this.getAnimationTick() > 15) {
 					Vec3 ridingPos = (new Vec3(1.0D, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));

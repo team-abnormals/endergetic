@@ -9,9 +9,6 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEPlayableEndimations {
-	//TODO: Does this need to be an PlayableEndimation actually?
-	public static final PlayableEndimation BABY_BOOFLO_BIRTH = register("baby_booflo/birth", 60, LoopType.NONE);
-
 	public static final PlayableEndimation ADOLESCENT_BOOFLO_BOOF = register("adolescent_booflo/boof", 10, LoopType.NONE);
 	public static final PlayableEndimation ADOLESCENT_BOOFLO_EATING = register("adolescent_booflo/eating", 10, LoopType.NONE);
 

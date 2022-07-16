@@ -7,7 +7,6 @@ import com.teamabnormals.endergetic.common.entities.booflo.ai.BabyFollowParentGo
 import com.teamabnormals.endergetic.core.registry.EEEntities;
 import com.teamabnormals.endergetic.core.registry.EEItems;
 
-import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.endimator.Endimatable;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.util.HoverRandomPos;
@@ -51,8 +50,9 @@ import net.minecraft.world.entity.SpawnGroupData;
 
 public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 	private static final EntityDataAccessor<Boolean> MOVING = SynchedEntityData.defineId(BoofloBabyEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> BEING_BORN = SynchedEntityData.defineId(BoofloBabyEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Integer> BIRTH_TIMER = SynchedEntityData.defineId(BoofloBabyEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> MOTHER_IMMUNITY_TICKS = SynchedEntityData.defineId(BoofloBabyEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> BIRTH_POSITION_ID = SynchedEntityData.defineId(BoofloBabyEntity.class, EntityDataSerializers.INT);
 	public boolean wasBred;
 	public int growingAge;
 	public int forcedAge;
@@ -73,8 +73,9 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(MOVING, false);
-		this.entityData.define(BEING_BORN, false);
+		this.entityData.define(BIRTH_TIMER, 0);
 		this.entityData.define(MOTHER_IMMUNITY_TICKS, 0);
+		this.entityData.define(BIRTH_POSITION_ID, 0);
 	}
 
 	@Override
@@ -121,9 +122,10 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putBoolean("Moving", this.isMoving());
-		compound.putBoolean("IsBeingBorn", this.isBeingBorn());
+		compound.putInt("BirthTime", this.getBirthTimer());
 		compound.putInt("Age", this.getGrowingAge());
 		compound.putInt("MotherImmunityTicks", this.getMotherNoClipTicks());
+		compound.putInt("BirthPosition", this.getBirthPositionID());
 		compound.putInt("ForcedAge", this.forcedAge);
 		compound.putBoolean("WasBred", this.wasBred);
 	}
@@ -132,9 +134,10 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.setMoving(compound.getBoolean("Moving"));
-		this.setBeingBorn(compound.getBoolean("IsBeingBorn"));
+		this.setBirthTimer(compound.getInt("BirthTime"));
 		this.setGrowingAge(compound.getInt("Age"));
 		this.setMotherNoClipTicks(compound.getInt("MotherImmunityTicks"));
+		this.setBirthPosition(BirthPosition.get(Math.min(compound.getInt("BirthPosition"), 2)));
 		this.forcedAge = compound.getInt("ForcedAge");
 		this.wasBred = compound.getBoolean("WasBred");
 	}
@@ -147,12 +150,16 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 		this.entityData.set(MOVING, moving);
 	}
 
-	public boolean isBeingBorn() {
-		return this.entityData.get(BEING_BORN);
+	public int getBirthTimer() {
+		return this.entityData.get(BIRTH_TIMER);
 	}
 
-	public void setBeingBorn(boolean beingBorn) {
-		this.entityData.set(BEING_BORN, beingBorn);
+	public boolean isBeingBorn() {
+		return this.getBirthTimer() > 0;
+	}
+
+	public void setBirthTimer(int birthTimer) {
+		this.entityData.set(BIRTH_TIMER, birthTimer);
 	}
 
 	public int getMotherNoClipTicks() {
@@ -161,6 +168,18 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 
 	public void setMotherNoClipTicks(int ticks) {
 		this.entityData.set(MOTHER_IMMUNITY_TICKS, ticks);
+	}
+
+	public Vec3 getBirthPositionOffset() {
+		return BirthPosition.get(this.getBirthPositionID()).offset;
+	}
+
+	public int getBirthPositionID() {
+		return this.entityData.get(BIRTH_POSITION_ID);
+	}
+
+	public void setBirthPosition(BirthPosition birthPosition) {
+		this.entityData.set(BIRTH_POSITION_ID, birthPosition.ordinal());
 	}
 
 	public int getGrowingAge() {
@@ -179,18 +198,14 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 		}
 	}
 
-	public void addGrowth(int growth) {
-		this.ageUp(growth, false);
-	}
-
 	@OnlyIn(Dist.CLIENT)
 	public float getTailAnimation(float ptc) {
 		return Mth.lerp(ptc, this.prevTailAnimation, this.tailAnimation);
 	}
 
 	@Override
-	public boolean isNoAi() {
-		return this.isBeingBorn() || super.isNoAi();
+	public boolean isEffectiveAi() {
+		return !this.isBeingBorn() && super.isEffectiveAi();
 	}
 
 	@Override
@@ -229,6 +244,18 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 				this.tailSpeed += (0.1875F - this.tailSpeed) * 0.1F;
 			}
 			this.tailAnimation += this.tailSpeed;
+		} else {
+			int birthTimer = this.getBirthTimer();
+			if (birthTimer > 0) {
+				if (--birthTimer == 0) {
+					Vec3 posBeforeDismount = this.position();
+					this.stopRiding();
+					this.setPos(posBeforeDismount);
+					this.setXRot(180.0F);
+					this.setMotherNoClipTicks(50);
+				}
+				this.setBirthTimer(birthTimer);
+			}
 		}
 
 		if (this.level.isClientSide) {
@@ -252,26 +279,6 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 
 		if (this.getMotherNoClipTicks() > 0) {
 			this.setMotherNoClipTicks(this.getMotherNoClipTicks() - 1);
-		}
-
-		if (this.isBeingBorn() && this.isNoEndimationPlaying()) {
-			this.setPlayingEndimation(EEPlayableEndimations.BABY_BOOFLO_BIRTH);
-		}
-
-		if (this.isEndimationPlaying(EEPlayableEndimations.BABY_BOOFLO_BIRTH)) {
-			if (this.getAnimationTick() == 59) {
-				double[] oldPosition = {this.getX(), this.getY(), this.getZ()};
-				this.stopRiding();
-				this.setBeingBorn(false);
-				this.setPos(oldPosition[0], oldPosition[1], oldPosition[2]);
-				this.setXRot(180.0F);
-				this.setMotherNoClipTicks(50);
-			}
-		} else if (this.isNoEndimationPlaying() && this.getVehicle() instanceof BoofloEntity) {
-			if (this.tickCount > 260) {
-				this.stopRiding();
-				this.setBeingBorn(false);
-			}
 		}
 	}
 
@@ -444,6 +451,23 @@ public class BoofloBabyEntity extends PathfinderMob implements Endimatable {
 				this.booflo.setSpeed(0F);
 				this.booflo.setMoving(false);
 			}
+		}
+	}
+
+	public enum BirthPosition {
+		BACK(-0.25F, 0.0F),
+		LEFT(0.2F, -0.3F),
+		RIGHT(0.2F, 0.3F);
+
+		private static final BirthPosition[] VALUES = values();
+		private final Vec3 offset;
+
+		BirthPosition(float xOffset, float zOffset) {
+			this.offset = new Vec3(xOffset, 0.0F, zOffset);
+		}
+
+		public static BirthPosition get(int id) {
+			return VALUES[id];
 		}
 	}
 }
