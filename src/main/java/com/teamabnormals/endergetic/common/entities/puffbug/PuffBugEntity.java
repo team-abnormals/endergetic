@@ -577,8 +577,8 @@ public class PuffBugEntity extends Animal implements Endimatable {
 		return this.entityData.get(ATTACHED_HIVE_SIDE);
 	}
 
-	public void setAttachedHiveSide(Direction side) {
-		this.entityData.set(ATTACHED_HIVE_SIDE, side);
+	public void setAttachedHiveSide(@Nullable Direction side) {
+		this.entityData.set(ATTACHED_HIVE_SIDE, side == null ? Direction.UP : side);
 	}
 
 	@Nullable
