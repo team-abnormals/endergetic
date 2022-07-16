@@ -1,4 +1,4 @@
-// 1.19	2022-07-06T14:58:37.3100693	Endimation generator for endergetic
+// 1.19	2022-07-15T23:42:29.6137436	Endimation generator for endergetic
 5342104ee6f5020f5cd34c514142881bfaf7622f assets/endergetic/endimations/adolescent_booflo/boof.json
 f3c10a0b6d762c901c58e99f0e1352416c459e6b assets/endergetic/endimations/adolescent_booflo/eating.json
 955efb468c5c303334bcf1cf474a8ac9d04ca938 assets/endergetic/endimations/booflo/birth.json
@@ -27,11 +27,11 @@ f2c5ca3d171610c01d90a808ff1c9ad5d05ce639 assets/endergetic/endimations/eetle/cha
 bdde3697bf8d11f4e1cc5ba9ddda867b6a37eb4b assets/endergetic/endimations/eetle/glider_flap.json
 f8cbc8367a1bba748f46dd677da921e2cabd6491 assets/endergetic/endimations/eetle/glider_munch.json
 507ab0406cb230f35dc907de2899f63726d740e6 assets/endergetic/endimations/eetle/grow_up.json
-150e3ed63f8fe94be1e61eabd56dbde7944c056e assets/endergetic/endimations/puff_bug/claim_hive.json
+bfebb41ead7bfd7d8afe6e960c7251b6c5e00b20 assets/endergetic/endimations/puff_bug/claim_hive.json
 a91cf232b1e8b78352db847bb3713ab481aa7c65 assets/endergetic/endimations/puff_bug/land.json
-30e7a0bc1ed1308b58ac9bc9a1d55bfd9d08d0ec assets/endergetic/endimations/puff_bug/make_item.json
-d3a4daa6f292b803a7db4e0ff5cd808f758c096f assets/endergetic/endimations/puff_bug/pollinate.json
-f971e90a917226c37ffa5327bc93e3641ddecbf1 assets/endergetic/endimations/puff_bug/puff.json
+cab2f75a9dd2bdd6161b3e4d3c8d401ce3e181f1 assets/endergetic/endimations/puff_bug/make_item.json
+48ac4d8e56c4baf3f036a3f8fe3b7c6c10a29508 assets/endergetic/endimations/puff_bug/pollinate.json
+0c00886a1d7cd9cf879cd8aa2f21a6e7ac8d2d17 assets/endergetic/endimations/puff_bug/puff.json
 73d5518d0f9e95268b30140f5a3b1f016bd32e4b assets/endergetic/endimations/puff_bug/pull.json
 6bcb1642e12c50c62fd663f858907cba1ffc9ca4 assets/endergetic/endimations/puff_bug/rotate.json
 a00bd7cbb8f81bf4473f31857f40cd86c2df7380 assets/endergetic/endimations/puff_bug/teleport_from.json

@@ -207,7 +207,7 @@
         }
       ]
     },
-    "Sensor1": {
+    "Sensor1Deflated": {
       "rotation": [
         {
           "time": 0.0,
@@ -329,7 +329,7 @@
         }
       ]
     },
-    "Sensor2": {
+    "Sensor2Deflated": {
       "rotation": [
         {
           "time": 0.0,
