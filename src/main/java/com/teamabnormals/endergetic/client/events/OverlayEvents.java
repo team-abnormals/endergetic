@@ -1,11 +1,11 @@
 package com.teamabnormals.endergetic.client.events;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
 import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.teamabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -80,10 +81,13 @@ public final class OverlayEvents {
 					if (purpoidFlashProgress > 0.0F) {
 						PoseStack stack = event.getPoseStack();
 						stack.pushPose();
-						RenderSystem.setShaderTexture(0, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
+						RenderSystem.disableDepthTest();
+						RenderSystem.depthMask(false);
 						RenderSystem.enableBlend();
-						RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+						RenderSystem.defaultBlendFunc();
+						RenderSystem.setShader(GameRenderer::getPositionTexShader);
 						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, purpoidFlashProgress);
+						RenderSystem.setShaderTexture(0, new ResourceLocation(EndergeticExpansion.MOD_ID, "textures/gui/overlay/purpoid_flash.png"));
 						Tesselator tessellator = Tesselator.getInstance();
 						BufferBuilder bufferbuilder = tessellator.getBuilder();
 						bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -95,6 +99,9 @@ public final class OverlayEvents {
 						bufferbuilder.vertex(scaledWidth, 0.0D, -90.0D).uv(1.0F, 0.0F).endVertex();
 						bufferbuilder.vertex(0.0D, 0.0D, -90.0D).uv(0.0F, 0.0F).endVertex();
 						tessellator.end();
+						RenderSystem.depthMask(true);
+						RenderSystem.enableDepthTest();
+						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 						stack.popPose();
 					}
 				}
