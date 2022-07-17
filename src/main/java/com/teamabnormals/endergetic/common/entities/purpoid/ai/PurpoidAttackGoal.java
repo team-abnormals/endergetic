@@ -69,12 +69,12 @@ public class PurpoidAttackGoal extends Goal {
 		double distanceToTargetSq = purpoid.distanceToSqr(target);
 		RandomSource random = purpoid.getRandom();
 		if (this.delayCounter <= 0 && random.nextFloat() < 0.05F) {
-			this.delayCounter = 4 + random.nextInt(9);
+			this.delayCounter = 15 + random.nextInt(11);
 			PathNavigation pathNavigator = purpoid.getNavigation();
 			if (distanceToTargetSq >= 9.0F) {
 				Path path = pathNavigator.createPath(findAirPosAboveTarget(purpoid.level, target), 0);
 				if (path == null || !pathNavigator.moveTo(path, 2.25F)) {
-					this.delayCounter += 15;
+					this.delayCounter += 20;
 				}
 			} else {
 				purpoid.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), 2.25F);
@@ -82,7 +82,7 @@ public class PurpoidAttackGoal extends Goal {
 		}
 
 		boolean small = purpoid.getSize() == PurpoidSize.PURP;
-		float width = purpoid.getBbWidth() * (small ? 2.85F : 2.0F);
+		float width = purpoid.getBbWidth() * (small ? 3.0F : 2.0F);
 		double reachRange = width * width + target.getBbWidth();
 		if (distanceToTargetSq <= reachRange) {
 			if (small) {

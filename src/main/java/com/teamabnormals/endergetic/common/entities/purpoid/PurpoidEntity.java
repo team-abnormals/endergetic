@@ -308,6 +308,11 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		return this.getSize() == PurpoidSize.PURP;
 	}
 
+	@Override
+	public float getScale() {
+		return this.getSize().getScale();
+	}
+
 	private CorrockCrownParticleData createParticleData() {
 		return new CorrockCrownParticleData(EEParticles.END_CROWN.get(), false, 0.2F * this.getSize().getScale());
 	}
@@ -430,11 +435,6 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	}
 
 	@Override
-	public EntityDimensions getDimensions(Pose poseIn) {
-		return super.getDimensions(poseIn).scale(this.getSize().getScale());
-	}
-
-	@Override
 	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions size) {
 		return size.height * 0.5F;
 	}
@@ -514,20 +514,20 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 					purpoid.setSpeed(newMoveSpeed);
 					double normalizedY = vector3d.y / distance;
 					purpoid.setDeltaMovement(purpoid.getDeltaMovement().add(0.0F, newMoveSpeed * normalizedY * 0.1D, 0.0F));
-					LookControl lookcontroller = purpoid.getLookControl();
-					double d11 = lookcontroller.getWantedX();
-					double d12 = lookcontroller.getWantedY();
-					double d13 = lookcontroller.getWantedZ();
+					LookControl lookControl = purpoid.getLookControl();
+					double d11 = lookControl.getWantedX();
+					double d12 = lookControl.getWantedY();
+					double d13 = lookControl.getWantedZ();
 					double d8 = x + (dx / distance) * 2.0D;
 					double d9 = purpoid.getEyeY() + normalizedY / distance;
 					double d10 = z + (dz / distance) * 2.0D;
-					if (!lookcontroller.isLookingAtTarget()) {
+					if (!lookControl.isLookingAtTarget()) {
 						d11 = d8;
 						d12 = d9;
 						d13 = d10;
 					}
 
-					purpoid.getLookControl().setLookAt(Mth.lerp(0.125D, d11, d8), Mth.lerp(0.125D, d12, d9), Mth.lerp(0.125D, d13, d10), 10.0F, 40.0F);
+					lookControl.setLookAt(Mth.lerp(0.125D, d11, d8), Mth.lerp(0.125D, d12, d9), Mth.lerp(0.125D, d13, d10), 10.0F, 40.0F);
 
 					if (this.prevPos.distanceToSqr(pos) <= 0.005F) {
 						if (++this.stuckTicks >= 60) {

@@ -67,7 +67,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 			entity.getEffectHandler().update(endimation, time);
 		}
 		if (playingEndimation == PlayableEndimation.BLANK) {
-			float scaleOffset = Mth.sin(limbSwing * 0.6F) * Math.min(0.2F, limbSwingAmount);
+			float scaleOffset = Mth.sin(limbSwing * 0.6F) * Math.min(0.2F, entity.isBaby() ? limbSwingAmount / 3.0F : limbSwingAmount);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);
 			ModelUtil.setScale(this.gelLayer, 1.0F + horizontalScaleOffset, 1.0F - scaleOffset * 0.5F, 1.0F + horizontalScaleOffset);
 		}
