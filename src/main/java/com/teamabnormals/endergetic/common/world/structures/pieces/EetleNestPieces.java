@@ -498,8 +498,12 @@ public final class EetleNestPieces {
 
 			private NestArena(RandomSource random) {
 				this.rotation = Rotation.getRandom(random);
-				this.bottomDoorDirection = Direction.Plane.HORIZONTAL.getRandomDirection(random);
-				this.stepsRotation = Rotation.getRandom(random);
+				switch (this.bottomDoorDirection = Direction.Plane.HORIZONTAL.getRandomDirection(random)) {
+					default -> this.stepsRotation = Rotation.COUNTERCLOCKWISE_90;
+					case EAST -> this.stepsRotation = Rotation.NONE;
+					case SOUTH -> this.stepsRotation = Rotation.CLOCKWISE_90;
+					case WEST -> this.stepsRotation = Rotation.CLOCKWISE_180;
+				}
 				this.topDoorDirection = Direction.Plane.HORIZONTAL.getRandomDirection(random);
 				this.topDoorLeftOrRight = random.nextBoolean() ? this.topDoorDirection.getClockWise() : this.topDoorDirection.getCounterClockWise();
 			}
@@ -519,15 +523,15 @@ public final class EetleNestPieces {
 				}
 			}
 
-			private static void createOuterStairPiece(WorldGenLevel world, BlockPos start, RandomSource random, Direction opposite, BoundingBox bounds) {
+			private static void createOuterStairPiece(WorldGenLevel world, BlockPos start, RandomSource random, Direction opposite, BoundingBox bounds, int length) {
 				BlockPos.MutableBlockPos mutable = start.mutable();
-				for (int i = 0; i <= 8; i++) {
+				for (int i = 0; i < length; i++) {
 					if (bounds.isInside(mutable)) {
 						world.setBlock(mutable, CORROCK_BLOCK_STATE, 2);
-						mutable.move(opposite);
-						if (world.getBlockState(mutable).getBlock() == CORROCK_BLOCK) {
-							break;
-						}
+					}
+					mutable.move(opposite);
+					if (bounds.isInside(mutable) && world.getBlockState(mutable).getBlock() == CORROCK_BLOCK) {
+						break;
 					}
 				}
 				if (random.nextBoolean()) {
@@ -671,8 +675,8 @@ public final class EetleNestPieces {
 				for (int i = 0; i <= 4; i++) {
 					if (bounds.isInside(mutable)) {
 						world.setBlock(mutable, CAVE_AIR, 2);
-						mutable.move(forward);
 					}
+					mutable.move(forward);
 				}
 			}
 
@@ -750,10 +754,10 @@ public final class EetleNestPieces {
 				for (int n = 0; n < 6; n++) {
 					term += (n % 2);
 					mutable.setY(startY + term);
-					createOuterStairPiece(world, mutable.move(leftOrRight), random, opposite, bounds);
+					createOuterStairPiece(world, mutable.move(leftOrRight), random, opposite, bounds, 5);
 				}
-				createOuterStairPiece(world, mutable.move(leftOrRight).move(opposite), random, opposite, bounds);
-				createOuterStairPiece(world, mutable.move(leftOrRight).move(opposite), random, opposite, bounds);
+				createOuterStairPiece(world, mutable.move(leftOrRight).move(opposite), random, opposite, bounds, 7);
+				createOuterStairPiece(world, mutable.move(leftOrRight).move(opposite), random, opposite, bounds, 7);
 				Direction leftOrRightOpposite = leftOrRight.getOpposite();
 				carveForwardLimited(world, mutable.move(Direction.UP).move(leftOrRightOpposite), opposite, bounds);
 				carveForwardLimited(world, mutable.move(leftOrRightOpposite), opposite, bounds);
