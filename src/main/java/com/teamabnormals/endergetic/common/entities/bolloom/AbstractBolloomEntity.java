@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author - SmellyModder (Luke Tonon)
@@ -29,14 +30,14 @@ public abstract class AbstractBolloomEntity extends Entity {
 	private static final EntityDataAccessor<Float> ORIGIN_X = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> ORIGIN_Y = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> ORIGIN_Z = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> VINE_Y_ROT = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> DESIRED_VINE_Y_ROT = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Integer> CLIENT_TICKS_EXISTED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> TICKS_EXISTED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> UNTIED = SynchedEntityData.defineId(AbstractBolloomEntity.class, EntityDataSerializers.BOOLEAN);
 
 	private float sway;
 	private float prevVineXRot;
-	private float prevVineYRot, vineYRot;
-	private int ticksExisted;
+	private float prevVineYRot;
 
 	protected AbstractBolloomEntity(EntityType<?> entityType, Level world) {
 		super(entityType, world);
@@ -47,9 +48,10 @@ public abstract class AbstractBolloomEntity extends Entity {
 		this.entityData.define(ORIGIN_X, 0.0F);
 		this.entityData.define(ORIGIN_Y, 0.0F);
 		this.entityData.define(ORIGIN_Z, 0.0F);
+		this.entityData.define(VINE_Y_ROT, 0.0F);
 		this.entityData.define(DESIRED_VINE_Y_ROT, 0.0F);
 		this.entityData.define(UNTIED, false);
-		this.entityData.define(CLIENT_TICKS_EXISTED, 0);
+		this.entityData.define(TICKS_EXISTED, 0);
 	}
 
 	@Override
@@ -74,30 +76,33 @@ public abstract class AbstractBolloomEntity extends Entity {
 			seekingVineYRot += 2 * Math.PI;
 		}
 
+		boolean isOnServerSide = !this.level.isClientSide;
+
 		if (Math.abs(seekingVineYRot) <= 0.1F) {
-			this.vineYRot = vineYRot + seekingVineYRot;
+			this.setVineYRot(vineYRot + seekingVineYRot, isOnServerSide);
 		} else if (seekingVineYRot > 0) {
-			this.vineYRot = vineYRot + 0.03F;
+			this.setVineYRot(vineYRot + 0.03F, isOnServerSide);
 		} else {
-			this.vineYRot = vineYRot - 0.03F;
+			this.setVineYRot(vineYRot - 0.03F, isOnServerSide);
 		}
 
-		if (!this.level.isClientSide) {
+		if (isOnServerSide) {
 			if (this.getY() >= 254 && this.isUntied()) {
 				this.onBroken(true);
 				this.discard();
 			}
 
-			if (this.ticksExisted % 50 == 0) {
+			if (this.getTicksExisted() % 50 == 0) {
 				this.setDesiredVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
 			}
+
+			this.updateUntied();
 		}
 
 		if (this.shouldIncrementTicksExisted()) {
-			this.incrementTicksExisted();
+			this.incrementTicksExisted(isOnServerSide);
 		}
 
-		this.updateUntied();
 		this.clearFire();
 	}
 
@@ -137,16 +142,23 @@ public abstract class AbstractBolloomEntity extends Entity {
 		return this.entityData.get(ORIGIN_Z);
 	}
 
-	public void setVineYRot(float angle) {
-		this.vineYRot = angle;
+	public void setVineYRot(float radians, boolean updateClient) {
+		SynchedEntityData.DataItem<Float> dataItem = this.entityData.getItem(VINE_Y_ROT);
+		if (ObjectUtils.notEqual(radians, dataItem.getValue())) {
+			dataItem.setValue(radians);
+			this.onSyncedDataUpdated(VINE_Y_ROT);
+			//We can only mark the item as dirty because marking entityData as dirty could cause a positional update and possible jitter
+			//Our setDesiredVineYRot() method will trigger the routine positional updates. Entity networking is wacky!
+			if (updateClient) dataItem.setDirty(true);
+		}
 	}
 
 	public float getVineYRot() {
-		return this.vineYRot;
+		return this.entityData.get(VINE_Y_ROT);
 	}
 
-	public void setDesiredVineYRot(float angle) {
-		this.entityData.set(DESIRED_VINE_Y_ROT, angle);
+	public void setDesiredVineYRot(float radians) {
+		this.entityData.set(DESIRED_VINE_Y_ROT, radians);
 	}
 
 	public float getDesiredVineYRot() {
@@ -169,16 +181,20 @@ public abstract class AbstractBolloomEntity extends Entity {
 		return this.entityData.get(UNTIED);
 	}
 
-	public void incrementTicksExisted() {
-		if (this.level.isClientSide) {
-			this.entityData.set(CLIENT_TICKS_EXISTED, this.entityData.get(CLIENT_TICKS_EXISTED) + 1);
-		} else if (++this.ticksExisted % 20 == 0) {
-			this.entityData.set(CLIENT_TICKS_EXISTED, this.ticksExisted);
+	public void incrementTicksExisted(boolean updateClient) {
+		int ticksExisted = this.entityData.get(TICKS_EXISTED) + 1;
+		SynchedEntityData.DataItem<Integer> dataItem = this.entityData.getItem(TICKS_EXISTED);
+		if (ObjectUtils.notEqual(ticksExisted, dataItem.getValue())) {
+			dataItem.setValue(ticksExisted);
+			this.onSyncedDataUpdated(TICKS_EXISTED);
+			//We can only mark the item as dirty because marking entityData as dirty could cause a positional update and possible jitter
+			//Our setDesiredVineYRot() method will trigger the routine positional updates. Entity networking is wacky!
+			if (updateClient) dataItem.setDirty(true);
 		}
 	}
 
 	public int getTicksExisted() {
-		return this.level.isClientSide ? this.entityData.get(CLIENT_TICKS_EXISTED) : this.ticksExisted;
+		return this.entityData.get(TICKS_EXISTED);
 	}
 
 	@OnlyIn(Dist.CLIENT)

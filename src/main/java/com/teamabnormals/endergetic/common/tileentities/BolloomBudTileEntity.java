@@ -30,7 +30,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
 public class BolloomBudTileEntity extends BlockEntity {
 	public final TimedEndimation pedalAnimation = new TimedEndimation(20, 20);
@@ -61,9 +60,10 @@ public class BolloomBudTileEntity extends BlockEntity {
 			if (sideData.growing && sideData.growTimer <= 0) {
 				if (!bud.level.isClientSide() && bud.getBlockState().getValue(BolloomBudBlock.OPENED)) {
 					int height = rand.nextInt(bud.maxFruitHeight) + 1;
-					BolloomFruitEntity fruit = new BolloomFruitEntity(bud.level, bud.worldPosition, side.offsetPosition(bud.worldPosition).above(height - 1), height, side.direction);
+					BolloomFruitEntity fruit = new BolloomFruitEntity(bud.level, bud.worldPosition, bud.worldPosition.above(height - 1), height, side.direction);
 					bud.level.addFreshEntity(fruit);
 					sideData.fruitUUID = fruit.getUUID();
+					bud.setChanged();
 				}
 				sideData.growing = false;
 				sideData.growTimer = 0;
@@ -291,7 +291,8 @@ public class BolloomBudTileEntity extends BlockEntity {
 			if (this.growing) {
 				return true;
 			}
-			return this.getFruit(world) != null && this.getFruit(world).isAlive() && !this.getFruit(world).isUntied();
+			BolloomFruitEntity fruit = this.getFruit(world);
+			return fruit != null && fruit.isAlive() && !fruit.isUntied();
 		}
 	}
 }

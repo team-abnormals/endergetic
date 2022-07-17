@@ -15,7 +15,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.level.Level;
@@ -39,8 +38,8 @@ public class BolloomFruitEntity extends AbstractBolloomEntity {
 
 	public BolloomFruitEntity(Level world, BlockPos budPos, BlockPos origin, int height, Direction direction) {
 		this(EEEntities.BOLLOOM_FRUIT.get(), world);
-		float xPos = origin.getX() + 0.5F + (direction.getAxis() == Axis.Z ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
-		float zPos = origin.getZ() + 0.5F + (direction.getAxis() == Axis.X ? 0.0F : -0.2F * direction.getAxisDirection().getStep());
+		float xPos = origin.getX() + 0.5F + 0.8125F * direction.getStepX();
+		float zPos = origin.getZ() + 0.5F + 0.8125F * direction.getStepZ();
 		float yPos = origin.getY() + 1.15F;
 
 		this.setPos(xPos, yPos, zPos);

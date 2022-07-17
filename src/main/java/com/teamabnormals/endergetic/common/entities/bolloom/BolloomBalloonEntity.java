@@ -87,7 +87,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		this.zo = posZ;
 		this.setUntied(true);
 		this.setDesiredVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
-		this.setVineYRot((float) (this.random.nextDouble() * 2 * Math.PI));
+		this.setVineYRot((float) (this.random.nextDouble() * 2 * Math.PI), true);
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 		this.setDeltaMovement(Vec3.ZERO);
 		if (this.canUpdate()) {
 			this.tick();
-			this.incrementTicksExisted();
+			this.incrementTicksExisted(!this.level.isClientSide);
 			if (this.attachedEntity instanceof CustomBalloonPositioner) {
 				((CustomBalloonPositioner) this.attachedEntity).updateAttachedPosition(this);
 			} else if (this.attachedEntity != null) {
@@ -230,17 +230,15 @@ public class BolloomBalloonEntity extends AbstractBolloomEntity {
 	public void updateUntied() {
 		if (this.level.isAreaLoaded(this.getFencePos(), 1) && !this.isUntied()) {
 			if (!this.level.getBlockState(this.getFencePos()).is(BlockTags.FENCES)) {
-				if (!this.level.isClientSide && this.getKnot() != null) {
-					BolloomKnotEntity knotEntity = ((BolloomKnotEntity) this.getKnot());
-					knotEntity.setBalloonsTied(knotEntity.getBalloonsTied() - 1);
+				if (this.getKnot() instanceof BolloomKnotEntity bolloomKnot) {
+					bolloomKnot.setBalloonsTied(bolloomKnot.getBalloonsTied() - 1);
 				}
 				this.setUntied(true);
 			}
 		}
 		if (this.isAttachmentBlocked()) {
-			if (!this.level.isClientSide && this.getKnot() != null && !this.isUntied()) {
-				BolloomKnotEntity knotEntity = ((BolloomKnotEntity) this.getKnot());
-				knotEntity.setBalloonsTied(knotEntity.getBalloonsTied() - 1);
+			if (!this.isUntied() && this.getKnot() instanceof BolloomKnotEntity bolloomKnot) {
+				bolloomKnot.setBalloonsTied(bolloomKnot.getBalloonsTied() - 1);
 			}
 			this.setUntied(true);
 		}
