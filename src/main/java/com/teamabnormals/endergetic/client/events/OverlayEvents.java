@@ -1,6 +1,5 @@
 package com.teamabnormals.endergetic.client.events;
 
-import com.teamabnormals.blueprint.client.ClientInfo;
 import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
 import com.teamabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
