@@ -458,7 +458,7 @@ public class BroodEetleEntity extends Monster implements Endimatable, IFlyingEet
 		if (source.getDirectEntity() instanceof AbstractArrow) {
 			return false;
 		}
-		return super.hurt(source, amount * (source.isProjectile() ? 0.05F : 0.1F));
+		return super.hurt(source, source.isMagic() && source.isBypassArmor() ? amount : amount * (source.isProjectile() ? 0.05F : 0.1F));
 	}
 
 	public boolean attackEntityFromEggSack(DamageSource source, float amount) {
