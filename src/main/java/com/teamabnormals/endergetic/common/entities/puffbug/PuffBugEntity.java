@@ -230,7 +230,7 @@ public class PuffBugEntity extends Animal implements Endimatable {
 				}
 			}
 
-			if (this.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO) && this.getAnimationTick() == 10) {
+			if (this.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_TO) && this.getAnimationTick() == 10 && !this.getTeleportController().hasNoDestination()) {
 				this.getTeleportController().bringToDestination();
 			} else if (this.isEndimationPlaying(EEPlayableEndimations.PUFF_BUG_TELEPORT_FROM)) {
 				this.setDeltaMovement(Vec3.ZERO);
