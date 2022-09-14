@@ -20,6 +20,8 @@ import com.teamabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggModel;
 import com.teamabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
 import com.teamabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggModel;
 import com.teamabnormals.endergetic.client.models.PuffBugModel;
+import com.teamabnormals.endergetic.client.models.purpoid.PurpModel;
+import com.teamabnormals.endergetic.client.models.purpoid.PurpazoidModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.teamabnormals.endergetic.core.data.client.EEEndimationProvider;
@@ -179,8 +181,12 @@ public class EndergeticExpansion {
 		event.registerLayerDefinition(ChargerEetleModel.LOCATION, ChargerEetleModel::createLayerDefinition);
 		event.registerLayerDefinition(GliderEetleModel.LOCATION, GliderEetleModel::createLayerDefinition);
 		event.registerLayerDefinition(BroodEetleModel.LOCATION, BroodEetleModel::createLayerDefinition);
-		event.registerLayerDefinition(PurpoidGelModel.LOCATION, PurpoidGelModel::createLayerDefinition);
+		event.registerLayerDefinition(PurpoidGelModel.PURPOID_LOCATION, PurpoidGelModel::createPurpoidLayerDefinition);
+		event.registerLayerDefinition(PurpoidGelModel.PURP_LOCATION, PurpoidGelModel::createPurpLayerDefinition);
+		event.registerLayerDefinition(PurpoidGelModel.PURPAZOID_LOCATION, PurpoidGelModel::createPurpazoidLayerDefinition);
 		event.registerLayerDefinition(PurpoidModel.LOCATION, PurpoidModel::createLayerDefinition);
+		event.registerLayerDefinition(PurpModel.LOCATION, PurpModel::createLayerDefinition);
+		event.registerLayerDefinition(PurpazoidModel.LOCATION, PurpazoidModel::createLayerDefinition);
 	}
 
 	private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

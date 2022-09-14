@@ -52,7 +52,6 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 		this.tentacleLarge2 = this.head.getChild("tentacleLarge2");
 		this.tentacleLarge3 = this.head.getChild("tentacleLarge3");
 		this.tentacleLarge4 = this.head.getChild("tentacleLarge4");
-
 		this.endimator = Endimator.compile(root);
 	}
 
