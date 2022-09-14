@@ -212,8 +212,8 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	public void setSize(PurpoidSize size, boolean updateHealth) {
 		this.entityData.set(SIZE, size);
 		float scale = size.getScale();
-		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(scale * 25.0F);
-		this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(scale * 4.0F);
+		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue((int) (scale * 25.0F));
+		this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue((int) (scale * 4.0F));
 		if (updateHealth) {
 			this.setHealth(this.getMaxHealth());
 		}
