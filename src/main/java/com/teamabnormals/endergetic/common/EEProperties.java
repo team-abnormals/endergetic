@@ -25,7 +25,7 @@ public final class EEProperties {
 	public static final BlockBehaviour.Properties MYSTICAL_OBSIDIAN = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(-1.0F, 3600000.0F).noLootTable();
 	public static final BlockBehaviour.Properties ACIDIAN_LANTERN = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.PODZOL).strength(50F, 6000.0F).lightLevel(state -> 15).requiresCorrectToolForDrops();
 	public static final BlockBehaviour.Properties BOLLOOM_CRATE = BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.TERRACOTTA_YELLOW).strength(1.5F).sound(SoundType.WOOD);
-	public static final BlockBehaviour.Properties EETLE_EGG = BlockBehaviour.Properties.of(Material.WATER_PLANT, MaterialColor.COLOR_PURPLE).lightLevel(state -> 7 + state.getValue(EetleEggBlock.SIZE)).noLootTable().requiresCorrectToolForDrops().strength(1.0F).sound(EESounds.EESoundTypes.EETLE_EGG);
+	public static final BlockBehaviour.Properties EETLE_EGG = BlockBehaviour.Properties.of(Material.WATER_PLANT, MaterialColor.COLOR_PURPLE).lightLevel(state -> 7 + state.getValue(EetleEggBlock.SIZE)).strength(1.0F).sound(EESounds.EESoundTypes.EETLE_EGG);
 	public static final BlockBehaviour.Properties INFESTED_CORROCK = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).lightLevel(state -> 12).randomTicks().strength(1.5F, 6.0F).sound(SoundType.CORAL_BLOCK);
 	public static final BlockBehaviour.Properties PETRIFIED_INFESTED_CORROCK = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_PURPLE).lightLevel(state -> 12).strength(1.5F, 6.0F).sound(SoundType.CORAL_BLOCK);
 

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smoking",
+  "cookingtime": 100,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "endergetic:eetle_egg"
+  },
+  "result": "endergetic:cooked_eetle_egg"
+}
