@@ -72,7 +72,7 @@ public class PurpoidAttackGoal extends Goal {
 			this.delayCounter = 15 + random.nextInt(11);
 			PathNavigation pathNavigator = purpoid.getNavigation();
 			if (distanceToTargetSq >= 9.0F) {
-				Path path = pathNavigator.createPath(findAirPosAboveTarget(purpoid.level, target), 0);
+				Path path = pathNavigator.createPath(purpoid.getSize() == PurpoidSize.NORMAL ? findAirPosAboveTarget(purpoid.level, target) : target.blockPosition().above(random.nextInt(3)), 0);
 				if (path == null || !pathNavigator.moveTo(path, 2.25F)) {
 					this.delayCounter += 20;
 				}
