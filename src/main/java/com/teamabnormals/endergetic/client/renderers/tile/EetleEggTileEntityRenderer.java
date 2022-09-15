@@ -73,7 +73,7 @@ public class EetleEggTileEntityRenderer implements BlockEntityRenderer<EetleEggT
 	}
 
 	private static long getPosSeed(BlockPos pos) {
-		return pos.getX() * 0x2FF20L ^ pos.getY() * 0x0FFFF ^ pos.getZ();
+		return 825276691L + ((pos.getX() * 73856093L) ^ (pos.getY() * 19349663L) ^ (pos.getZ() * 83492791L));
 	}
 
 	@Override
