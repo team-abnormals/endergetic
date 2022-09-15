@@ -79,4 +79,9 @@ public class CorrockCrownTileEntityRenderer implements BlockEntityRenderer<Corro
 			return 2;
 		}
 	}
+
+	@Override
+	public int getViewDistance() {
+		return 256;
+	}
 }

@@ -75,4 +75,9 @@ public class EetleEggTileEntityRenderer implements BlockEntityRenderer<EetleEggT
 	private static long getPosSeed(BlockPos pos) {
 		return pos.getX() * 0x2FF20L ^ pos.getY() * 0x0FFFF ^ pos.getZ();
 	}
+
+	@Override
+	public int getViewDistance() {
+		return 256;
+	}
 }

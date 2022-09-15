@@ -31,4 +31,9 @@ public class BolloomBudTileEntityRenderer implements BlockEntityRenderer<Bolloom
 
 		matrixStack.popPose();
 	}
+
+	@Override
+	public int getViewDistance() {
+		return 256;
+	}
 }
