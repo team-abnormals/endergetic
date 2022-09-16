@@ -132,6 +132,7 @@
   "item.endergetic.music_disc_kilobyte": "Music Disc",
   "item.endergetic.music_disc_kilobyte.desc": "RENREN - Kilobyte",
   "item.endergetic.cooked_eetle_egg": "Cooked Eetle Egg",
+  "item.endergetic.portaplasm": "Portaplasm",
   "__comment": "Entities",
   "entity.endergetic.poise_cluster": "Poise Cluster",
   "entity.endergetic.bolloom_fruit": "Bolloom Fruit",
