@@ -22,6 +22,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 	public static final ModelLayerLocation PURP_LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "purp_gel"), "main");
 	public static final ModelLayerLocation PURPAZOID_LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "purpazoid_gel"), "main");
 	public ModelPart gelLayer;
+	private float headScale;
 
 	public PurpoidGelModel(ModelPart root) {
 		this.gelLayer = root.getChild("gelLayer");
@@ -57,6 +58,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 		gelLayer.x = head.x;
 		gelLayer.y = head.y + 1.0F;
 		gelLayer.z = head.z;
+		this.headScale = head.yScale;
 	}
 
 	@Override
@@ -82,7 +84,8 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 		if (playingEndimation == PlayableEndimation.BLANK) {
 			float scaleOffset = Mth.sin((entity.isBaby() ? limbSwing / 3.0F : limbSwing) * 0.6F) * Math.min(0.17F, limbSwingAmount * 0.85F);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);
-			ModelUtil.setScale(this.gelLayer, 1.0F + horizontalScaleOffset, 1.0F - scaleOffset * 0.5F, 1.0F + horizontalScaleOffset);
+			float baseScale = entity.getRestOntoFlowerAnimationProgress(ClientInfo.getPartialTicks()) > 0.0F ? this.headScale : 1.0F;
+			ModelUtil.setScale(this.gelLayer, baseScale + horizontalScaleOffset, baseScale - scaleOffset * 0.5F, baseScale + horizontalScaleOffset);
 		}
 	}
 }

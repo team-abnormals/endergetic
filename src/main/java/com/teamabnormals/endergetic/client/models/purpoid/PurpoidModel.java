@@ -1,5 +1,8 @@
 package com.teamabnormals.endergetic.client.models.purpoid;
 
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.blueprint.core.Blueprint;
+import com.teamabnormals.blueprint.core.endimator.Endimation;
 import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,6 +27,7 @@ import net.minecraft.util.Mth;
  */
 public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EndergeticExpansion.MOD_ID, "purpoid"), "main");
+	private static final ResourceLocation REST_ONTO_FLOWER_ENDIMATION = new ResourceLocation(EndergeticExpansion.MOD_ID, "purpoid/rest_onto_flower");
 	public ModelPart head;
 	public ModelPart rim1;
 	public ModelPart rim2;
@@ -82,6 +86,11 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	@Override
 	public void setupAnim(PurpoidEntity purpoid, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(purpoid, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		Endimation endimation = Blueprint.ENDIMATION_LOADER.getEndimation(REST_ONTO_FLOWER_ENDIMATION);
+		if (endimation != null) {
+			float time = purpoid.getRestOntoFlowerAnimationProgress(ClientInfo.getPartialTicks()) * endimation.getLength();
+			if (time > 0.0F) this.endimator.apply(endimation, time, Endimator.ResetMode.UNAPPLY);
+		}
 		if (purpoid.isBaby()) limbSwing /= 3.0F;
 		float rimAngle = 0.17F * Mth.sin(0.1F * ageInTicks) + Mth.cos(limbSwing * 0.8F) * limbSwingAmount * 1.16F;
 		this.rim1.xRot -= rimAngle;

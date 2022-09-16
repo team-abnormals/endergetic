@@ -11,7 +11,7 @@ public class PurpoidRandomTeleportGoal extends AbstractPurpoidTeleportGoal {
 	}
 
 	@Override
-	BlockPos generateTeleportPos(PurpoidEntity purpoid, RandomSource random) {
+	protected BlockPos generateTeleportPos(PurpoidEntity purpoid, RandomSource random) {
 		return purpoid.blockPosition().offset(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
 	}
 

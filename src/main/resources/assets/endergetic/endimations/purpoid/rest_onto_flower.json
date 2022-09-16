@@ -1,0 +1,561 @@
+{
+  "length": 1.88,
+  "parts": {
+    "head": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [10, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.96,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [11.73, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ],
+      "scale": [
+        {
+          "time": 0,
+          "transform": [1, 1, 1],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.64,
+          "transform": [1, 1, 1],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.96,
+          "transform": [1, 1, 1],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.24,
+          "transform": [1.4861, 1.4111, 1.4111],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.4,
+          "transform": [1.2, 1.2, 1.2],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleSmall3": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [-15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [-15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [-55, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleLarge4": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [-20, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [-20, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [-67.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleLarge3": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [20, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [20, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [67.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [-5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleSmall4": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [-15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [-15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [-55, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleLarge1": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [-12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [-12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [-62.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [-12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleSmall1": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [55, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleLarge2": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [62.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [-5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [12.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    },
+    "tentacleSmall2": {
+      "rotation": [
+        {
+          "time": 0,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.36,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 0.76,
+          "transform": [15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1,
+          "transform": [15, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.16,
+          "transform": [55, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.48,
+          "transform": [0, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.64,
+          "transform": [-7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        },
+        {
+          "time": 1.88,
+          "transform": [7.5, 0, 0],
+          "interpolation": {
+            "type": "linear"
+          }
+        }
+      ]
+    }
+  }
+}
