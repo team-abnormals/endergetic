@@ -86,11 +86,7 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 	@Override
 	public void setupAnim(PurpoidEntity purpoid, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(purpoid, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		Endimation endimation = Blueprint.ENDIMATION_LOADER.getEndimation(REST_ONTO_FLOWER_ENDIMATION);
-		if (endimation != null) {
-			float time = purpoid.getRestOntoFlowerAnimationProgress(ClientInfo.getPartialTicks()) * endimation.getLength();
-			if (time > 0.0F) this.endimator.apply(endimation, time, Endimator.ResetMode.UNAPPLY);
-		}
+		this.applyRestingAnimation(purpoid);
 		if (purpoid.isBaby()) limbSwing /= 3.0F;
 		float rimAngle = 0.17F * Mth.sin(0.1F * ageInTicks) + Mth.cos(limbSwing * 0.8F) * limbSwingAmount * 1.16F;
 		this.rim1.xRot -= rimAngle;
@@ -106,5 +102,13 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 		this.tentacleSmall2.xRot += tentacleAngle;
 		this.tentacleSmall3.xRot -= tentacleAngle;
 		this.tentacleSmall4.xRot -= tentacleAngle;
+	}
+
+	protected void applyRestingAnimation(PurpoidEntity purpoid) {
+		Endimation endimation = Blueprint.ENDIMATION_LOADER.getEndimation(REST_ONTO_FLOWER_ENDIMATION);
+		if (endimation != null) {
+			float time = purpoid.getRestOntoAnimationProgress(ClientInfo.getPartialTicks()) * endimation.getLength();
+			if (time > 0.0F) this.endimator.apply(endimation, time, Endimator.ResetMode.UNAPPLY);
+		}
 	}
 }

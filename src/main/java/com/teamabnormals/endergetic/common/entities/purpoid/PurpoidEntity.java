@@ -12,6 +12,7 @@ import com.teamabnormals.blueprint.core.endimator.Endimatable;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
 import com.teamabnormals.blueprint.core.util.MathUtil;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
@@ -51,19 +52,24 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	private static final EntityDataAccessor<PurpoidSize> SIZE = SynchedEntityData.defineId(PurpoidEntity.class, EEDataSerializers.PURPOID_SIZE);
 	private static final EntityDataAccessor<Integer> BOOSTING_TICKS = SynchedEntityData.defineId(PurpoidEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Optional<BlockPos>> RESTING_POS = SynchedEntityData.defineId(PurpoidEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+	private static final EntityDataAccessor<Direction> RESTING_SIDE = SynchedEntityData.defineId(PurpoidEntity.class, EntityDataSerializers.DIRECTION);
 	private static final ResourceLocation PURP_LOOT_TABLE = new ResourceLocation(EndergeticExpansion.MOD_ID, "entities/purpoid/purp");
 	private static final ResourceLocation PURPAZOID_LOOT_TABLE = new ResourceLocation(EndergeticExpansion.MOD_ID, "entities/purpoid/purpazoid");
 	private final TeleportController teleportController = new TeleportController();
 	private int growingAge;
 	private int teleportCooldown;
 	private int restCooldown;
-	private float restOntoFlowerProgressO, restOntoFlowerProgress;
+	private float restOntoProgressO, restOntoProgress;
 	private Vec3 prevPull = Vec3.ZERO, pull = Vec3.ZERO;
+	@Nullable
+	public BlockPos forcedRelativeTeleportingPos;
 	private PurpoidTelefragGoal telefragGoal;
 	private PurpoidMoveNearTargetGoal moveNearTargetGoal;
 	private PurpoidAttackGoal attackGoal;
-	private PurpoidRestOnFlowerGoal restOnFlowerGoal;
+	private PurpoidRestGoal restGoal;
 	private PurpoidTeleportToFlowerGoal teleportToFlowerGoal;
+	private PurpTeleportToPlantGoal teleportToPlantGoal;
+	private PurpFollowPurpoidsGoal followPurpoidsGoal;
 
 	public PurpoidEntity(EntityType<? extends PathfinderMob> type, Level world) {
 		super(type, world);
@@ -78,6 +84,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		this.entityData.define(SIZE, PurpoidSize.NORMAL);
 		this.entityData.define(BOOSTING_TICKS, 0);
 		this.entityData.define(RESTING_POS, Optional.empty());
+		this.entityData.define(RESTING_SIDE, Direction.DOWN);
 	}
 
 	@Override
@@ -85,18 +92,19 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		this.goalSelector.addGoal(1, this.telefragGoal = new PurpoidTelefragGoal(this));
 		this.goalSelector.addGoal(2, this.moveNearTargetGoal = new PurpoidMoveNearTargetGoal(this));
 		this.goalSelector.addGoal(2, this.attackGoal = new PurpoidAttackGoal(this));
-		this.goalSelector.addGoal(3, this.restOnFlowerGoal = new PurpoidRestOnFlowerGoal(this));
+		this.goalSelector.addGoal(3, this.restGoal = new PurpoidRestGoal(this));
 		this.goalSelector.addGoal(4, this.teleportToFlowerGoal = new PurpoidTeleportToFlowerGoal(this));
+		this.goalSelector.addGoal(4, this.teleportToPlantGoal = new PurpTeleportToPlantGoal(this));
 		this.goalSelector.addGoal(4, new PurpoidRandomTeleportGoal(this));
-		this.goalSelector.addGoal(5, new PurpoidMoveRandomGoal(this));
+		this.goalSelector.addGoal(5, this.followPurpoidsGoal = new PurpFollowPurpoidsGoal(this));
+		this.goalSelector.addGoal(6, new PurpoidMoveRandomGoal(this));
+
 		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
 	}
 
 	@Override
 	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-		if (SIZE.equals(key)) {
-			this.refreshDimensions();
-		}
+		if (SIZE.equals(key)) this.refreshDimensions();
 		super.onSyncedDataUpdated(key);
 	}
 
@@ -111,12 +119,12 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 
 	@Override
 	public void tick() {
-		this.noPhysics = this.restOntoFlowerProgress >= 0.6F;
+		this.noPhysics = this.getSize() == PurpoidSize.NORMAL && this.restOntoProgress >= 0.6F;
 		super.tick();
 		this.noPhysics = false;
 		Level world = this.level;
 		if (world.isClientSide) {
-			this.restOntoFlowerProgressO = this.restOntoFlowerProgress;
+			this.restOntoProgressO = this.restOntoProgress;
 			this.prevPull = this.pull;
 			Vec3 pos = this.position();
 			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
@@ -130,9 +138,19 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 				}
 			}
 
-			if (!this.isDeadOrDying() && (this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM) || this.isPassenger() || this.restOntoFlowerProgressO > 0.0F)) {
+			if (!this.isDeadOrDying() && (this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_FAST_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM) || this.isPassenger())) {
 				pos = pos.subtract(0.0F, 1.0F, 0.0F);
 				this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
+			} else {
+				float restOntoProgressO = this.restOntoProgressO;
+				if (restOntoProgressO > 0.0F) {
+					Direction restingSide = this.getRestingSide();
+					if (restingSide != Direction.DOWN) {
+						restOntoProgressO *= restOntoProgressO;
+						pos = pos.subtract(restOntoProgressO * restingSide.getStepX(), restOntoProgressO * restingSide.getStepY(), restOntoProgressO * restingSide.getStepZ());
+						this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
+					}
+				}
 			}
 
 			int animationTick = this.getAnimationTick();
@@ -170,9 +188,15 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 
 		BlockPos restingPos = this.getRestingPos();
 		if (restingPos != null && !(this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_TO) || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEPORT_FROM))) {
-			this.restOntoFlowerProgress = 1.0F - Mth.clamp((float) (this.getY() - restingPos.getY()) / 3.0F, 0.0F, 1.0F);
+			Direction side = this.getRestingSide();
+			Direction.Axis axis = side.getAxis();
+			double chosenTestingPos = axis.choose(restingPos.getX(), restingPos.getY(), restingPos.getZ());
+			if (side.getAxis().getPlane() == Direction.Plane.HORIZONTAL && side.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+				chosenTestingPos += 1.0D;
+			}
+			this.restOntoProgress = (float) (1.0F - Mth.clamp(Math.abs(chosenTestingPos - axis.choose(this.getX(), this.getY(), this.getZ())) / 3.0D, 0.0D, 1.0D));
 		} else {
-			this.restOntoFlowerProgress = Math.max(this.restOntoFlowerProgress - 0.025F, 0.0F);
+			this.restOntoProgress = Math.max(this.restOntoProgress - 0.025F, 0.0F);
 		}
 
 		if (this.isDeadOrDying()) {
@@ -207,6 +231,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		if (this.isResting()) {
 			compound.put("RestingPos", NbtUtils.writeBlockPos(this.getRestingPos()));
 		}
+		compound.putInt("RestingSide", this.getRestingSide().get3DDataValue());
 	}
 
 	@Override
@@ -224,6 +249,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		if (compound.contains("RestingPos", 10)) {
 			this.setRestingPos(NbtUtils.readBlockPos(compound.getCompound("RestingPos")));
 		}
+		this.setRestingSide(Direction.from3DDataValue(compound.getInt("RestingSide")));
 	}
 
 	public void setSize(PurpoidSize size, boolean updateHealth) {
@@ -238,19 +264,26 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		if (size == PurpoidSize.PURPAZOID) {
 			goalSelector.removeGoal(this.moveNearTargetGoal);
 			goalSelector.removeGoal(this.attackGoal);
-			goalSelector.removeGoal(this.restOnFlowerGoal);
+			goalSelector.removeGoal(this.restGoal);
 			goalSelector.removeGoal(this.teleportToFlowerGoal);
+			goalSelector.removeGoal(this.teleportToPlantGoal);
 			goalSelector.removeGoal(this.telefragGoal);
+			goalSelector.removeGoal(this.followPurpoidsGoal);
 		} else {
 			if (size == PurpoidSize.NORMAL) {
 				goalSelector.addGoal(1, this.telefragGoal);
+				goalSelector.addGoal(4, this.teleportToFlowerGoal);
+				goalSelector.removeGoal(this.teleportToPlantGoal);
+				goalSelector.removeGoal(this.followPurpoidsGoal);
 			} else {
+				goalSelector.addGoal(4, this.teleportToPlantGoal);
+				goalSelector.addGoal(5, this.followPurpoidsGoal);
 				goalSelector.removeGoal(this.telefragGoal);
+				goalSelector.removeGoal(this.teleportToFlowerGoal);
 			}
 			goalSelector.addGoal(2, this.moveNearTargetGoal);
 			goalSelector.addGoal(2, this.attackGoal);
-			goalSelector.addGoal(3, this.restOnFlowerGoal);
-			goalSelector.addGoal(4, this.teleportToFlowerGoal);
+			goalSelector.addGoal(3, this.restGoal);
 		}
 		this.xpReward = (int) (2 * scale);
 	}
@@ -287,6 +320,10 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		return this.teleportCooldown > 0;
 	}
 
+	public void allowRest() {
+		this.restCooldown = 0;
+	}
+
 	public void resetRestCooldown() {
 		this.restCooldown = this.getRandom().nextInt(2001) + 600;
 	}
@@ -295,12 +332,12 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		return this.restCooldown > 0;
 	}
 
-	public float getRestOntoFlowerProgress() {
-		return this.restOntoFlowerProgress;
+	public float getRestOntoProgress() {
+		return this.restOntoProgress;
 	}
 
-	public float getRestOntoFlowerAnimationProgress(float partialTicks) {
-		return Mth.lerp(partialTicks, this.restOntoFlowerProgressO, this.restOntoFlowerProgress);
+	public float getRestOntoAnimationProgress(float partialTicks) {
+		return Mth.lerp(partialTicks, this.restOntoProgressO, this.restOntoProgress);
 	}
 
 	public void updatePull(Vec3 pos) {
@@ -309,6 +346,11 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 
 	public Vec3 getPull(float partialTicks) {
 		return MathUtil.lerp(this.prevPull, this.pull, partialTicks);
+	}
+
+	@Nullable
+	public PurpoidEntity getLeader() {
+		return this.followPurpoidsGoal.leader;
 	}
 
 	public TeleportController getTeleportController() {
@@ -326,6 +368,14 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 
 	public boolean isResting() {
 		return this.getRestingPos() != null;
+	}
+
+	public void setRestingSide(Direction side) {
+		this.entityData.set(RESTING_SIDE, side);
+	}
+
+	public Direction getRestingSide() {
+		return this.entityData.get(RESTING_SIDE);
 	}
 
 	@Override
@@ -607,10 +657,11 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 			if (this.isTeleporting()) {
 				BlockPos destination = this.destination;
 				Entity ridingEntity = purpoid.getVehicle();
+				float y = purpoid.isBaby() ? destination.getY() + 0.25F : destination.getY();
 				if (ridingEntity != null) {
-					ridingEntity.teleportToWithTicket(destination.getX() + 0.5F, destination.getY(), destination.getZ() + 0.5F);
+					ridingEntity.teleportToWithTicket(destination.getX() + 0.5F, y, destination.getZ() + 0.5F);
 				} else {
-					NetworkUtil.teleportEntity(purpoid, destination.getX() + 0.5F, destination.getY(), destination.getZ() + 0.5F);
+					NetworkUtil.teleportEntity(purpoid, destination.getX() + 0.5F, y, destination.getZ() + 0.5F);
 				}
 				this.destination = null;
 			}

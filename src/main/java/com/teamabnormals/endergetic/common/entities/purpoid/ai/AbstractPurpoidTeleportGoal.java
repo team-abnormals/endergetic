@@ -24,28 +24,31 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 	@Override
 	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		if (!purpoid.getMoveControl().hasWanted()) {
-			this.notMovingTicks++;
-		} else {
-			this.notMovingTicks = 0;
-		}
-		if (this.notMovingTicks >= 20 && !purpoid.isPassenger() && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown() && purpoid.isNoEndimationPlaying()) {
-			BlockPos randomPos = this.generateTeleportPos(purpoid, purpoid.getRandom());
-			Level world = purpoid.level;
-			if (randomPos != null && world.hasChunkAt(randomPos)) {
-				AABB collisionBox = purpoid.getDimensions(purpoid.getPose()).makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
-				if (world.noCollision(collisionBox) && world.isUnobstructed(purpoid, Shapes.create(collisionBox)) && !world.containsAnyLiquid(collisionBox)) {
-					this.beginTeleportation(purpoid, randomPos);
-					return true;
+		this.notMovingTicks = !purpoid.getMoveControl().hasWanted() ? this.notMovingTicks + 1 : 0;
+		boolean canUse = false;
+		if ((purpoid.forcedRelativeTeleportingPos != null || (this.notMovingTicks >= 20 && !purpoid.isBoosting() && !purpoid.hasTeleportCooldown())) && !purpoid.isPassenger() && purpoid.isNoEndimationPlaying()) {
+			BlockPos teleportPos = this.generateTeleportPos(purpoid, purpoid.getRandom());
+			Level level = purpoid.level;
+			if (teleportPos != null && level.hasChunkAt(teleportPos)) {
+				AABB collisionBox = purpoid.getDimensions(purpoid.getPose()).makeBoundingBox(teleportPos.getX() + 0.5F, teleportPos.getY(), teleportPos.getZ() + 0.5F);
+				if (level.noCollision(collisionBox) && level.isUnobstructed(purpoid, Shapes.create(collisionBox)) && !level.containsAnyLiquid(collisionBox)) {
+					this.beginTeleportation(purpoid, teleportPos);
+					canUse = true;
 				}
 			}
 		}
-		return false;
+		purpoid.forcedRelativeTeleportingPos = null;
+		return canUse;
 	}
 
 	@Override
 	public boolean canContinueToUse() {
 		return this.purpoid.getTeleportController().isTeleporting();
+	}
+
+	@Override
+	public boolean requiresUpdateEveryTick() {
+		return true;
 	}
 
 	protected void beginTeleportation(PurpoidEntity purpoid, BlockPos pos) {
@@ -55,9 +58,4 @@ public abstract class AbstractPurpoidTeleportGoal extends Goal {
 
 	@Nullable
 	protected abstract BlockPos generateTeleportPos(PurpoidEntity purpoid, RandomSource random);
-
-	@Override
-	public boolean requiresUpdateEveryTick() {
-		return true;
-	}
 }

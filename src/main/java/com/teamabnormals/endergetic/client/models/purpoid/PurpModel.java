@@ -2,6 +2,8 @@ package com.teamabnormals.endergetic.client.models.purpoid;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -38,5 +40,20 @@ public class PurpModel extends PurpoidModel {
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	@Override
+	protected void applyRestingAnimation(PurpoidEntity purpoid) {
+		float restingTentacleAngle = 1.65806F * purpoid.getRestOntoAnimationProgress(ClientInfo.getPartialTicks());
+		if (restingTentacleAngle > 0.0F) {
+			this.tentacleLarge1.xRot -= restingTentacleAngle;
+			this.tentacleLarge2.xRot += restingTentacleAngle;
+			this.tentacleLarge3.xRot += restingTentacleAngle;
+			this.tentacleLarge4.xRot -= restingTentacleAngle;
+			this.tentacleSmall1.xRot += restingTentacleAngle;
+			this.tentacleSmall2.xRot += restingTentacleAngle;
+			this.tentacleSmall3.xRot -= restingTentacleAngle;
+			this.tentacleSmall4.xRot -= restingTentacleAngle;
+		}
 	}
 }

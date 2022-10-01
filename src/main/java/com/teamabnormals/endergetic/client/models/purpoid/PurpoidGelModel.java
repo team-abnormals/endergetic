@@ -2,6 +2,7 @@ package com.teamabnormals.endergetic.client.models.purpoid;
 
 import com.teamabnormals.endergetic.api.util.ModelUtil;
 import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
+import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidSize;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -84,7 +85,7 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 		if (playingEndimation == PlayableEndimation.BLANK) {
 			float scaleOffset = Mth.sin((entity.isBaby() ? limbSwing / 3.0F : limbSwing) * 0.6F) * Math.min(0.17F, limbSwingAmount * 0.85F);
 			float horizontalScaleOffset = Math.max(-0.05F, scaleOffset);
-			float baseScale = entity.getRestOntoFlowerAnimationProgress(ClientInfo.getPartialTicks()) > 0.0F ? this.headScale : 1.0F;
+			float baseScale = entity.getSize() == PurpoidSize.NORMAL && entity.getRestOntoAnimationProgress(ClientInfo.getPartialTicks()) > 0.0F ? this.headScale : 1.0F;
 			ModelUtil.setScale(this.gelLayer, baseScale + horizontalScaleOffset, baseScale - scaleOffset * 0.5F, baseScale + horizontalScaleOffset);
 		}
 	}

@@ -2,6 +2,7 @@ package com.teamabnormals.endergetic.client.models.purpoid;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -41,4 +42,7 @@ public class PurpazoidModel extends PurpoidModel {
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		this.head.render(poseStack, buffer, packedLight, packedOverlay);
 	}
+
+	@Override
+	protected void applyRestingAnimation(PurpoidEntity purpoid) {}
 }
