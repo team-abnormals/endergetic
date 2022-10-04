@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -37,6 +38,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -46,6 +48,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class PurpoidEntity extends PathfinderMob implements Endimatable {
@@ -60,6 +64,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 	private int teleportCooldown;
 	private int restCooldown;
 	private float restOntoProgressO, restOntoProgress;
+	private boolean wantsToFlee;
 	private Vec3 prevPull = Vec3.ZERO, pull = Vec3.ZERO;
 	@Nullable
 	public BlockPos forcedRelativeTeleportingPos;
@@ -122,19 +127,19 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		this.noPhysics = this.getSize() == PurpoidSize.NORMAL && this.restOntoProgress >= 0.6F;
 		super.tick();
 		this.noPhysics = false;
-		Level world = this.level;
-		if (world.isClientSide) {
+		Level level = this.level;
+		if (level.isClientSide) {
 			this.restOntoProgressO = this.restOntoProgress;
 			this.prevPull = this.pull;
 			Vec3 pos = this.position();
 			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
 
-			if (this.isBoosting() && world.getGameTime() % 4 == 0) {
+			if (this.isBoosting() && level.getGameTime() % 4 == 0) {
 				double dy = this.pull.y() - pos.y();
 				CorrockCrownParticleData particleData = this.createParticleData();
 				RandomSource random = this.getRandom();
 				for (int i = 0; i < 2; i++) {
-					world.addParticle(particleData, this.getRandomX(0.5D), this.getY() + this.getEyeHeight(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
+					level.addParticle(particleData, this.getRandomX(0.5D), this.getY() + this.getEyeHeight(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random), dy * random.nextDouble(), TemporaryMathUtil.makeNegativeRandomly(random.nextDouble() * 0.05F, random));
 				}
 			}
 
@@ -158,7 +163,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 				CorrockCrownParticleData particleData = this.createParticleData();
 				RandomSource random = this.getRandom();
 				for (int i = 0; i < 12; i++) {
-					world.addParticle(particleData, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+					level.addParticle(particleData, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 				}
 			}
 		} else {
@@ -171,12 +176,45 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 				}
 			}
 
-			if (this.hasTeleportCooldown()) {
-				this.teleportCooldown--;
+			if (this.wantsToFlee && this.isNoEndimationPlaying() && !this.getTeleportController().isTeleporting()) {
+				BlockPos pos = this.blockPosition();
+				int purpoidBlockX = pos.getX();
+				int purpoidBlockZ = pos.getZ();
+				int levelHeight = level.getHeight();
+				RandomSource random = this.getRandom();
+				EntityDimensions size = this.getDimensions(this.getPose());
+				List<BlockPos> possiblePositions = new ArrayList<>();
+				BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+				for (int relX = -16; relX <= 16; relX++) {
+					int x = purpoidBlockX + relX;
+					double xMiddle = x + 0.5D;
+					for (int relZ = -16; relZ <= 16; relZ++) {
+						int z = purpoidBlockZ + relZ;
+						int heightAtXZ = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+						if (!Block.canSupportRigidBlock(level, mutableBlockPos.set(x, heightAtXZ - 1, z))) continue;
+						double zMiddle = z + 0.5D;
+						int minColumnHeight = Math.min(heightAtXZ + 8, levelHeight);
+						int y = Math.min(minColumnHeight + 8 + random.nextInt(9), levelHeight);
+						while (y >= minColumnHeight) {
+							if (level.noCollision(size.makeBoundingBox(xMiddle, y, zMiddle))) {
+								possiblePositions.add(new BlockPos(x, y, z));
+								break;
+							}
+							y--;
+						}
+					}
+				}
+				if (!possiblePositions.isEmpty()) {
+					this.teleportController.beginTeleportation(this, possiblePositions.get(random.nextInt(possiblePositions.size())), false);
+					this.wantsToFlee = false;
+				} else if (this.tryToTeleportRandomly(0, 24, 32)) {
+					this.wantsToFlee = false;
+				}
 			}
-			if (this.hasRestCooldown()) {
-				this.restCooldown--;
-			}
+
+			if (this.hasTeleportCooldown()) this.teleportCooldown--;
+			if (this.hasRestCooldown()) this.restCooldown--;
+
 			if (this.isBoosting()) {
 				this.setBoostingTicks(this.getBoostingTicks() - 1);
 			} else if (!this.isPassenger() && this.hasTeleportCooldown() && !this.isResting() && this.random.nextFloat() <= 0.001F) {
@@ -200,20 +238,20 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		}
 
 		if (this.isDeadOrDying()) {
-			if (!this.isEndimationPlaying(EEPlayableEndimations.PURPOID_DEATH) && !world.isClientSide) {
+			if (!this.isEndimationPlaying(EEPlayableEndimations.PURPOID_DEATH) && !level.isClientSide) {
 				NetworkUtil.setPlayingAnimation(this, EEPlayableEndimations.PURPOID_DEATH);
 			}
 			if (++this.deathTime >= 20) {
-				if (!world.isClientSide) {
+				if (!level.isClientSide) {
 					this.discard();
 				} else {
 					CorrockCrownParticleData particleData = this.createParticleData();
 					RandomSource random = this.getRandom();
 					for (int i = 0; i < 12; ++i) {
-						world.addParticle(particleData, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
+						level.addParticle(particleData, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random), (random.nextFloat() - random.nextFloat()) * 0.3F + 0.1F, TemporaryMathUtil.makeNegativeRandomly(random.nextFloat() * 0.25F, random));
 					}
 					for (int i = 0; i < 20; ++i) {
-						world.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
+						level.addParticle(ParticleTypes.POOF, this.getRandomX(1.0D), this.getRandomY(), this.getRandomZ(1.0D), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
 					}
 				}
 			}
@@ -257,9 +295,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		float scale = size.getScale();
 		this.getAttribute(Attributes.MAX_HEALTH).setBaseValue((int) (scale * 25.0F));
 		this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue((int) (scale * 4.0F));
-		if (updateHealth) {
-			this.setHealth(this.getMaxHealth());
-		}
+		if (updateHealth) this.setHealth(this.getMaxHealth());
 		GoalSelector goalSelector = this.goalSelector;
 		if (size == PurpoidSize.PURPAZOID) {
 			goalSelector.removeGoal(this.moveNearTargetGoal);
@@ -411,8 +447,7 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		}
 
 		RandomSource random = this.random;
-		if (spawnData instanceof AgeableMob.AgeableMobGroupData) {
-			AgeableMob.AgeableMobGroupData ageableData = (AgeableMob.AgeableMobGroupData) spawnData;
+		if (spawnData instanceof AgeableMob.AgeableMobGroupData ageableData) {
 			if (ageableData.isShouldSpawnBaby() && ageableData.getGroupSize() > 0 && random.nextFloat() <= ageableData.getBabySpawnChance()) {
 				this.updateAge(-24000);
 			} else if (random.nextFloat() <= 0.005F) {
@@ -473,13 +508,19 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 				this.stopRiding();
 				return super.hurt(source, amount);
 			}
-			if (this.isNoEndimationPlaying() && !this.getTeleportController().isTeleporting()) {
+			if (this.getSize() == PurpoidSize.PURPAZOID) {
 				if (source instanceof IndirectEntityDamageSource) {
-					if (this.tryToTeleportRandomly(12)) {
-						return true;
-					}
-				} else if (!(source.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
-					this.tryToTeleportRandomly(1);
+					if (this.isNoEndimationPlaying() && !this.getTeleportController().isTeleporting() && this.tryToTeleportRandomly(2, 16, 12)) return true;
+					this.wantsToFlee = true;
+					return true;
+				}
+				this.wantsToFlee = true;
+				return super.hurt(source, amount);
+			} else if (this.isNoEndimationPlaying() && !this.getTeleportController().isTeleporting()) {
+				if (source instanceof IndirectEntityDamageSource) {
+					if (this.tryToTeleportRandomly(2, 16, 12)) return true;
+				} else if (!(source.getEntity() instanceof LivingEntity)) {
+					this.tryToTeleportRandomly(2, 16, 4);
 				}
 			}
 		}
@@ -556,16 +597,17 @@ public class PurpoidEntity extends PathfinderMob implements Endimatable {
 		}
 	}
 
-	private boolean tryToTeleportRandomly(int attempts) {
+	private boolean tryToTeleportRandomly(int minDistance, int maxDistance, int attempts) {
 		BlockPos pos = this.blockPosition();
 		RandomSource random = this.getRandom();
 		EntityDimensions size = this.getDimensions(this.getPose());
 		Level world = this.level;
+		int upperBound = maxDistance - minDistance + 1;
 		for (int i = 0; i < attempts; i++) {
-			BlockPos randomPos = pos.offset(random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17), random.nextInt(17) - random.nextInt(17));
+			BlockPos randomPos = pos.offset(TemporaryMathUtil.makeNegativeRandomly(minDistance + random.nextInt(upperBound), random), TemporaryMathUtil.makeNegativeRandomly(minDistance + random.nextInt(upperBound), random), TemporaryMathUtil.makeNegativeRandomly(minDistance + random.nextInt(upperBound), random));
 			AABB collisionBox = size.makeBoundingBox(randomPos.getX() + 0.5F, randomPos.getY(), randomPos.getZ() + 0.5F);
 			if (world.noCollision(collisionBox) && !world.containsAnyLiquid(collisionBox)) {
-				this.teleportController.beginTeleportation(this, randomPos, this.getVehicle() != null);
+				this.teleportController.beginTeleportation(this, randomPos, true);
 				return true;
 			}
 		}
