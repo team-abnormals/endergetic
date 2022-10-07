@@ -158,7 +158,7 @@
 				}
 			]
 		},
-		"rim_1": {
+		"rim1": {
 			"rotation": [
 				{
 					"time": 0,
@@ -211,7 +211,7 @@
 				}
 			]
 		},
-		"rim_2": {
+		"rim2": {
 			"rotation": [
 				{
 					"time": 0,
@@ -264,7 +264,7 @@
 				}
 			]
 		},
-		"rim_3": {
+		"rim3": {
 			"rotation": [
 				{
 					"time": 0,
@@ -317,7 +317,7 @@
 				}
 			]
 		},
-		"rim_4": {
+		"rim4": {
 			"rotation": [
 				{
 					"time": 0,
@@ -370,7 +370,7 @@
 				}
 			]
 		},
-		"ear_1": {
+		"ear1": {
 			"rotation": [
 				{
 					"time": 0,
@@ -409,7 +409,7 @@
 				}
 			]
 		},
-		"ear_2": {
+		"ear2": {
 			"rotation": [
 				{
 					"time": 0,
@@ -448,7 +448,7 @@
 				}
 			]
 		},
-		"tentacle_1": {
+		"tentacleSmall3": {
 			"rotation": [
 				{
 					"time": 0,
@@ -466,28 +466,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [-74.40077, -19.07442, -7.47349],
+					"transform": [-75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [-96.90077, -19.07442, -7.47349],
+					"transform": [-90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [15, -19.07442, -7.47349],
+					"transform": [15, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [15, -19.07442, -7.47349],
+					"transform": [15, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -501,7 +501,7 @@
 				}
 			]
 		},
-		"tentacle_2": {
+		"tentacleSmall4": {
 			"rotation": [
 				{
 					"time": 0,
@@ -519,28 +519,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [-51.43852, -22.17155, -21.87368],
+					"transform": [-75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [-71.43852, -22.17155, -21.87368],
+					"transform": [-90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [30, -22.17155, -21.87368],
+					"transform": [15, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [30, -22.17155, -21.87368],
+					"transform": [15, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -554,7 +554,7 @@
 				}
 			]
 		},
-		"tentacle_3": {
+		"tentacleSmall1": {
 			"rotation": [
 				{
 					"time": 0,
@@ -572,28 +572,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [74.40077, -19.07442, 7.47349],
+					"transform": [75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [91.90077, -19.07442, 7.47349],
+					"transform": [90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [-15, -19.07442, 7.47349],
+					"transform": [-15, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [-15, -19.07442, 7.47349],
+					"transform": [-15, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -607,7 +607,7 @@
 				}
 			]
 		},
-		"tentacle_4": {
+		"tentacleSmall2": {
 			"rotation": [
 				{
 					"time": 0,
@@ -625,28 +625,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [57.69903, -18.09053, 14.97915],
+					"transform": [75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [80.19903, -18.09053, 14.97915],
+					"transform": [90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [-32.30097, -18.09053, 14.97915],
+					"transform": [-15, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [-32.30097, -18.09053, 14.97915],
+					"transform": [-15, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -660,7 +660,7 @@
 				}
 			]
 		},
-		"tentacle_5": {
+		"tentacleLarge4": {
 			"rotation": [
 				{
 					"time": 0,
@@ -678,28 +678,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [-68.82717, -18.74724, -7.09597],
+					"transform": [-75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [-90, -18.74724, -7.09597],
+					"transform": [-90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [10, -18.74724, -7.09597],
+					"transform": [10, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [10, -18.74724, -7.09597],
+					"transform": [10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -713,7 +713,7 @@
 				}
 			]
 		},
-		"tentacle_6": {
+		"tentacleLarge3": {
 			"rotation": [
 				{
 					"time": 0,
@@ -731,28 +731,28 @@
 				},
 				{
 					"time": 1.85,
-					"transform": [69.11148, -16.41371, 6.15491],
+					"transform": [75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [90, -16.41371, 6.15491],
+					"transform": [90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [-10, -16.41371, 6.15491],
+					"transform": [-10, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [-10, -16.41371, 6.15491],
+					"transform": [-10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -766,7 +766,7 @@
 				}
 			]
 		},
-		"tentacle_7": {
+		"tentacleLarge2": {
 			"rotation": [
 				{
 					"time": 0,
@@ -777,35 +777,35 @@
 				},
 				{
 					"time": 0.3,
-					"transform": [0, 0, -10],
+					"transform": [-10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.85,
-					"transform": [-90, 17.5, 160],
+					"transform": [75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [-70, 17.5, 160],
+					"transform": [90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [-172.5, 17.5, 160],
+					"transform": [-10, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [-172.5, 17.5, 160],
+					"transform": [-10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
@@ -819,7 +819,7 @@
 				}
 			]
 		},
-		"tentacle_8": {
+		"tentacleLarge1": {
 			"rotation": [
 				{
 					"time": 0,
@@ -830,35 +830,35 @@
 				},
 				{
 					"time": 0.3,
-					"transform": [0, 0, 10],
+					"transform": [10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.85,
-					"transform": [90, -25, 20],
+					"transform": [-75, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 1.95,
-					"transform": [107.5, -25, 20],
+					"transform": [-90, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 2.3,
-					"transform": [10, -25, 20],
+					"transform": [10, -15, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
 				},
 				{
 					"time": 3.05,
-					"transform": [10, -25, 20],
+					"transform": [10, 0, 0],
 					"interpolation": {
 						"type": "catmullrom"
 					}
