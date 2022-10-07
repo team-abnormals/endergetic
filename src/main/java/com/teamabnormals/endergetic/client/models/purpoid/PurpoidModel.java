@@ -93,7 +93,7 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 		this.rim2.xRot += rimAngle;
 		this.rim3.zRot -= rimAngle;
         this.rim4.zRot += rimAngle;
-        float tentacleAngle = 0.09F * Mth.cos(0.1F * ageInTicks + 1.0F) + Mth.sin(limbSwing * 0.6F) * Math.min(0.3F, limbSwingAmount) * 0.5F;
+        float tentacleAngle = ((purpoid.getStunTimer() <= 0 ? 0.09F : 0.0863938F) * Mth.cos(0.1F * ageInTicks + 1.0F)) + Mth.sin(limbSwing * 0.6F) * Math.min(0.3F, limbSwingAmount) * 0.5F;
         this.tentacleLarge1.xRot -= tentacleAngle;
 		this.tentacleLarge2.xRot += tentacleAngle;
 		this.tentacleLarge3.xRot += tentacleAngle;

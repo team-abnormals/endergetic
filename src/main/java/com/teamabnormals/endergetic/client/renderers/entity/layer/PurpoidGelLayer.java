@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.util.Mth;
 
 public class PurpoidGelLayer extends RenderLayer<PurpoidEntity, PurpoidModel> {
 	private final PurpoidGelModel[] gelModels;
@@ -32,6 +33,13 @@ public class PurpoidGelLayer extends RenderLayer<PurpoidEntity, PurpoidModel> {
 		gelModel.setupAnim(purpoid, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		int overlay = LivingEntityRenderer.getOverlayCoords(purpoid, 0.0F);
 		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(purpoid))), packedLightIn, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
-		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(BlueprintRenderTypes.getUnshadedCutoutEntity(PurpoidEmissiveLayer.TEXTURES[ordinal], true)), 240, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		float alpha = 1.0F;
+		int stunTimer = purpoid.getStunTimer();
+		if (stunTimer > 0) {
+			float stunTimerHalfCycles = stunTimer / 20.0F;
+			float progress = 1.0F - 2.0F * Mth.abs(stunTimerHalfCycles - Mth.floor(stunTimerHalfCycles + 0.5F));
+			alpha = (progress * progress);
+		}
+		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(BlueprintRenderTypes.getUnshadedTranslucentEntity(PurpoidEmissiveLayer.TEXTURES[ordinal], true)), 240, overlay, 1.0F, 1.0F, 1.0F, alpha);
 	}
 }
