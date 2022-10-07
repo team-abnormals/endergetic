@@ -32,7 +32,7 @@ public class PurpoidStunnedGoal extends Goal {
 		purpoid.setSpeed(0.0F);
 		purpoid.getNavigation().stop();
 		if (++this.ticksPassed <= 15) {
-			purpoid.setDeltaMovement(purpoid.getDeltaMovement().multiply(0.5F, 1.0F, 0.5F).add(0.0F, 0.025F, 0.0F));
+			purpoid.setDeltaMovement(purpoid.getDeltaMovement().multiply(0.5F, 1.0F, 0.5F).add(0.0F, 0.075F, 0.0F));
 			if (purpoid.shouldApplyRotationSnaps()) purpoid.setShouldApplyRotationSnaps(false);
 		} else {
 			purpoid.setDeltaMovement(purpoid.getDeltaMovement().multiply(0.5F, 1.0F, 0.5F).subtract(0.0F, 0.05F, 0.0F));

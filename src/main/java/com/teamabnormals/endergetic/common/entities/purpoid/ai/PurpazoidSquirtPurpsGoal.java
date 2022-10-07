@@ -82,6 +82,7 @@ public class PurpazoidSquirtPurpsGoal extends Goal {
 					RandomSource random = purpoid.getRandom();
 					purp.setDeltaMovement(deltaMovement.add(random.triangle(0.0D, 1.0F), 0.0F, random.triangle(0.0D, 1.0F)).scale(-2.0F));
 					purp.setTarget(this.nearbyRevengeTargets.get(random.nextInt(this.nearbyRevengeTargets.size())));
+					purp.randomizeDespawnTimer();
 					purpoid.level.addFreshEntity(purp);
 				}
 			}
