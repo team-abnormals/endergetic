@@ -89,4 +89,11 @@ public class PurpoidGelModel extends EndimatorEntityModel<PurpoidEntity> {
 			ModelUtil.setScale(this.gelLayer, baseScale + horizontalScaleOffset, baseScale - scaleOffset * 0.5F, baseScale + horizontalScaleOffset);
 		}
 	}
+
+	public void reset() {
+		this.endimator.getPoseMap().forEach((partName, posedPart) -> {
+			posedPart.reset();
+			posedPart.part.reset();
+		});
+	}
 }

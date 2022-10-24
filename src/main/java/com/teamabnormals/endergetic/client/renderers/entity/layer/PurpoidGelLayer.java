@@ -42,4 +42,8 @@ public class PurpoidGelLayer extends RenderLayer<PurpoidEntity, PurpoidModel> {
 		}
 		gelModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(BlueprintRenderTypes.getUnshadedTranslucentEntity(PurpoidEmissiveLayer.TEXTURES[ordinal], true)), 240, overlay, 1.0F, 1.0F, 1.0F, alpha);
 	}
+
+	public PurpoidGelModel getGelModel(int index) {
+		return this.gelModels[index];
+	}
 }

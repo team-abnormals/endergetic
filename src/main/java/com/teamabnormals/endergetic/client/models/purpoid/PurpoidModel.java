@@ -111,4 +111,11 @@ public class PurpoidModel extends EndimatorEntityModel<PurpoidEntity> {
 			if (time > 0.0F) this.endimator.apply(endimation, time, Endimator.ResetMode.UNAPPLY);
 		}
 	}
+
+	public void reset() {
+		this.endimator.getPoseMap().forEach((partName, posedPart) -> {
+			posedPart.reset();
+			posedPart.part.reset();
+		});
+	}
 }

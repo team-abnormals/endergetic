@@ -6,7 +6,9 @@ import com.teamabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -18,6 +20,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -28,6 +31,7 @@ public class PurpoidAttackGoal extends Goal {
 	@Nullable
 	private Path path;
 	private int delayCounter;
+	private int teleportToTargetTimer;
 
 	public PurpoidAttackGoal(PurpoidEntity purpoid) {
 		this.purpoid = purpoid;
@@ -37,7 +41,7 @@ public class PurpoidAttackGoal extends Goal {
 	@Override
 	public boolean canUse() {
 		PurpoidEntity purpoid = this.purpoid;
-		if (shouldFollowTarget(purpoid, false)) {
+		if (purpoid.isNoEndimationPlaying() && !purpoid.getTeleportController().isTeleporting() && shouldFollowTarget(purpoid, false)) {
 			this.path = purpoid.getNavigation().createPath(purpoid.getTarget(), 0);
 			return this.path != null;
 		}
@@ -50,6 +54,7 @@ public class PurpoidAttackGoal extends Goal {
 		purpoid.getNavigation().moveTo(this.path, 2.25F);
 		purpoid.setAggressive(true);
 		this.delayCounter = 0;
+		this.teleportToTargetTimer = 0;
 	}
 
 	@Override
@@ -87,6 +92,7 @@ public class PurpoidAttackGoal extends Goal {
 		if (distanceToTargetSq <= reachRange) {
 			if (small) {
 				if (purpoid.isEndimationPlaying(EEPlayableEndimations.PURPOID_TELEFRAG) && purpoid.getAnimationTick() == 5) {
+					target.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
 					double targetX = target.getX();
 					double targetY = target.getY();
 					double targetZ = target.getZ();
@@ -95,7 +101,6 @@ public class PurpoidAttackGoal extends Goal {
 						double randomY = targetY + (random.nextInt(33) - 16);
 						double randomZ = targetZ + (random.nextDouble() - 0.5D) * 32.0D;
 						if (target.randomTeleport(randomX, randomY, randomZ, false)) {
-							target.hurt(DamageSource.mobAttack(purpoid), (float) purpoid.getAttributeValue(Attributes.ATTACK_DAMAGE));
 							if (target instanceof ServerPlayer) {
 								EndergeticExpansion.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) target), new S2CEnablePurpoidFlash());
 							}
@@ -108,6 +113,26 @@ public class PurpoidAttackGoal extends Goal {
 			} else {
 				purpoid.startRiding(target);
 			}
+			this.teleportToTargetTimer = 0;
+		} else if (small && distanceToTargetSq >= 2.0D && distanceToTargetSq <= 1024.0D && random.nextFloat() < 0.1F && ++this.teleportToTargetTimer >= 10) {
+			double targetX = target.getX();
+			double targetY = target.getY();
+			double targetZ = target.getZ();
+			Level level = purpoid.level;
+			EntityDimensions dimensions = purpoid.getDimensions(purpoid.getPose());
+			double predictedXDisplacement = Mth.clamp(target.getDeltaMovement().x() * 57.0F, -7.0D, 7.0D);
+			double predictedZDisplacement = Mth.clamp(target.getDeltaMovement().z() * 57.0F, -7.0D, 7.0D);
+			for (int i = 0; i < 16; i++) {
+				double randomX = targetX + predictedXDisplacement;
+				double randomY = targetY + random.triangle(0.0D, 2.0D);
+				double randomZ = targetZ + predictedZDisplacement;
+				if (level.noCollision(dimensions.makeBoundingBox(randomX, randomY, randomZ))) {
+					purpoid.getTeleportController().beginTeleportation(purpoid, new Vec3(randomX, randomY, randomZ), false);
+					purpoid.getNavigation().stop();
+					break;
+				}
+			}
+			this.teleportToTargetTimer = 0;
 		}
 	}
 
