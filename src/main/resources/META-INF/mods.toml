@@ -18,20 +18,20 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.19,)"
+    versionRange = "[1.19.2,1.20)"
     ordering = "AFTER"
     side = "BOTH"
 
 [[dependencies.endergetic]]
     modId = "forge"
     mandatory = true
-    versionRange = "[41.0.98,)"
+    versionRange = "[43.1.0,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.endergetic]]
     modId = "blueprint"
     mandatory = true
-    versionRange = "[6.0.4,)"
+    versionRange = "[6.1.0,)"
     ordering = "AFTER"
     side = "BOTH"
