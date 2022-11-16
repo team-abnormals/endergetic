@@ -19,7 +19,7 @@
   "conditions": [
     {
       "type": "forge:mod_loaded",
-      "modid": "buzzier_bees"
+      "modid": "woodworks"
     }
   ]
 }
