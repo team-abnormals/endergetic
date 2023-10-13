@@ -1,5 +1,6 @@
 package com.teamabnormals.endergetic.core.registry;
 
+import com.teamabnormals.blueprint.core.util.registry.AbstractSubRegistryHelper;
 import com.teamabnormals.endergetic.common.entities.bolloom.BalloonColor;
 import com.teamabnormals.endergetic.common.items.*;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
@@ -8,10 +9,12 @@ import com.teamabnormals.endergetic.core.registry.util.EndergeticItemSubRegistry
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.item.BlueprintRecordItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
+import com.teamabnormals.endergetic.integration.boatload.EEBoatTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -22,6 +25,9 @@ public final class EEItems {
 	public static final RegistryObject<Item> EUMUS_BRICK = HELPER.createItem("eumus_brick", () -> new Item(ItemSubRegistryHelper.createSimpleItemProperty(64, CreativeModeTab.TAB_MATERIALS)));
 
 	public static final Pair<RegistryObject<Item>, RegistryObject<Item>> POISE_BOAT = HELPER.createBoatAndChestBoatItem("poise", EEBlocks.POISE_PLANKS);
+	public static final RegistryObject<Item> POISE_FURNACE_BOAT = HELPER.createItem("poise_furnace_boat", ModList.get().isLoaded("boatload") ? EEBoatTypes.POISE_FURNACE_BOAT : () -> new Item(new Item.Properties().tab(AbstractSubRegistryHelper.areModsLoaded("boatload") ? CreativeModeTab.TAB_TRANSPORTATION : null)));
+	public static final RegistryObject<Item> LARGE_POISE_BOAT = HELPER.createItem("large_poise_boat", ModList.get().isLoaded("boatload") ? EEBoatTypes.LARGE_POISE_BOAT : () -> new Item(new Item.Properties().tab(AbstractSubRegistryHelper.areModsLoaded("boatload") ? CreativeModeTab.TAB_TRANSPORTATION : null)));
+
 	public static final RegistryObject<Item> BOLLOOM_FRUIT = HELPER.createItem("bolloom_fruit", () -> new BolloomFruitItem(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(EEFoods.BOLLOOM_FRUIT)));
 	public static final RegistryObject<Item> BOOFLO_HIDE = HELPER.createItem("booflo_hide", () -> new Item(ItemSubRegistryHelper.createSimpleItemProperty(64, CreativeModeTab.TAB_MATERIALS)));
 	public static final RegistryObject<Item> BOOFLO_VEST = HELPER.createItem("booflo_vest", () -> new BoofloVestItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));

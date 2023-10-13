@@ -62,7 +62,8 @@ minecraft {
             property "forge.logging.console.level", "debug"
             property "mixin.env.remapRefMap", "true"
             property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
-            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources")
+            property "blueprint.indev", "true"
+            args "--mod", project.modId, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources"), "--existing-mod", "blueprint"
             mods {
                 endergetic {
                     source sourceSets.main
@@ -80,8 +81,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft}-${project.forge}"
     implementation fg.deobf("com.teamabnormals:blueprint:${project.minecraft}-${project.blueprint}")
 
-    //compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}-forge-api:${project.jei}")
-    //implementation fg.deobf("mezz.jei:jei-${project.minecraft}-forge:${project.jei}")
+    implementation fg.deobf("com.teamabnormals:boatload:${project.minecraft}-${project.boatload}")
+    compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}-common-api:${project.jei}")
+    compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}-forge-api:${project.jei}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft}-forge:${project.jei}")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

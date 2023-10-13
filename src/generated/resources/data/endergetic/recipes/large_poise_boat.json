@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "boatload"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "group": "large_boat",
+        "key": {
+          "#": {
+            "item": "endergetic:poise_planks"
+          },
+          "B": {
+            "item": "endergetic:poise_boat"
+          }
+        },
+        "pattern": [
+          "#B#",
+          "###"
+        ],
+        "result": {
+          "item": "endergetic:large_poise_boat"
+        }
+      }
+    }
+  ]
+}

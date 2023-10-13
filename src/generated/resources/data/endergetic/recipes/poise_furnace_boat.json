@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "boatload"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "group": "furnace_boat",
+        "ingredients": [
+          {
+            "item": "minecraft:furnace"
+          },
+          {
+            "item": "endergetic:poise_boat"
+          }
+        ],
+        "result": {
+          "item": "endergetic:poise_furnace_boat"
+        }
+      }
+    }
+  ]
+}

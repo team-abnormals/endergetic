@@ -11,17 +11,18 @@ import java.util.Set;
  * @author - SmellyModder (Luke Tonon)
  */
 public enum BalloonOrder {
-	FIRST(0.9F, 1.6F, -0.5F),
-	SECOND(-0.9F, -1.6F, 0.5F),
-	THIRD(-0.9F, -1.6F, -0.5F),
-	LAST(0.9F, 1.6F, 0.5F);
+	FIRST(0.9F, 1.7F, -0.5F, -0.65F),
+	SECOND(-0.9F, -1.7F, 0.5F, 0.65F),
+	THIRD(-0.9F, -1.7F, -0.5F, -0.65F),
+	LAST(0.9F, 1.7F, 0.5F, 0.65F);
 
-	public final float normalX, largeX, normalZ;
+	public final float normalX, largeX, normalZ, largeZ;
 
-	BalloonOrder(float normalX, float largeX, float normalZ) {
+	BalloonOrder(float normalX, float largeX, float normalZ, float largeZ) {
 		this.normalX = normalX;
 		this.largeX = largeX;
 		this.normalZ = normalZ;
+		this.largeZ = largeZ;
 	}
 
 	/**

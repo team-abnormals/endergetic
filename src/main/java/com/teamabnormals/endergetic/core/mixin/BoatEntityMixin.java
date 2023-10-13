@@ -65,7 +65,8 @@ public abstract class BoatEntityMixin extends Entity implements CustomBalloonPos
 		Map<UUID, BalloonOrder> orderMap = ((IDataManager) this).getValue(EEDataProcessors.ORDER_DATA);
 		if (!orderMap.containsKey(balloon.getUUID())) return;
 		BalloonOrder balloonOrder = orderMap.get(balloon.getUUID());
-		Vec3 attachedOffset = (new Vec3(this.getType() == ForgeRegistries.ENTITY_TYPES.getValue(LARGE_BOAT_NAME) ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, balloonOrder.normalZ)).yRot((float) (-this.getYRot() * (Math.PI / 180F) - (Math.PI / 2F)));
+		boolean large = this.getType() == ForgeRegistries.ENTITY_TYPES.getValue(LARGE_BOAT_NAME);
+		Vec3 attachedOffset = (new Vec3(large ? balloonOrder.largeX : balloonOrder.normalX, 0.0D, large ? balloonOrder.largeZ : balloonOrder.normalZ)).yRot((float) (-this.getYRot() * (Math.PI / 180F) - (Math.PI / 2F)));
 		balloon.setPos(this.getX() + attachedOffset.x() + balloon.getSway() * Math.sin(-balloon.getVineYRot()), this.getY() + balloon.getPassengersRidingOffset() + balloon.getEyeHeight(), this.getZ() + attachedOffset.z() + balloon.getSway() * Math.cos(-balloon.getVineYRot()));
 	}
 

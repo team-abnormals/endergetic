@@ -25,11 +25,10 @@ import com.teamabnormals.endergetic.client.models.purpoid.PurpazoidModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
 import com.teamabnormals.endergetic.client.models.purpoid.PurpoidModel;
 import com.teamabnormals.endergetic.core.data.client.EEEndimationProvider;
-import com.teamabnormals.endergetic.core.data.server.EEAdvancementModifierProvider;
-import com.teamabnormals.endergetic.core.data.server.EEBiomeModifierProvider;
-import com.teamabnormals.endergetic.core.data.server.EEChunkGeneratorModifierProvider;
-import com.teamabnormals.endergetic.core.data.server.EELootModifierProvider;
+import com.teamabnormals.endergetic.core.data.server.*;
 import com.teamabnormals.endergetic.core.data.server.tags.EEBiomeTagsProvider;
+import com.teamabnormals.endergetic.core.data.server.tags.EEBlockTagsProvider;
+import com.teamabnormals.endergetic.core.data.server.tags.EEItemTagsProvider;
 import com.teamabnormals.endergetic.core.keybinds.KeybindHandler;
 import com.teamabnormals.endergetic.core.registry.*;
 import com.teamabnormals.endergetic.core.registry.other.*;
@@ -39,6 +38,7 @@ import com.teamabnormals.endergetic.core.registry.util.EndergeticItemSubRegistry
 import com.teamabnormals.blueprint.core.util.BiomeUtil;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -145,15 +145,18 @@ public class EndergeticExpansion {
 
 	private void dataSetup(GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
-		boolean includeServer = event.includeServer();
+		ExistingFileHelper helper = event.getExistingFileHelper();
 
+		boolean includeServer = event.includeServer();
 		generator.addProvider(includeServer, new EEChunkGeneratorModifierProvider(generator));
+		generator.addProvider(includeServer, new EERecipeProvider(generator));
 		generator.addProvider(includeServer, new EEAdvancementModifierProvider(generator));
 		generator.addProvider(includeServer, new EELootModifierProvider(generator));
-
-		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-		generator.addProvider(includeServer, new EEBiomeTagsProvider(generator, existingFileHelper));
-		generator.addProvider(includeServer, EEBiomeModifierProvider.create(generator, existingFileHelper));
+		EEBlockTagsProvider blockTags = new EEBlockTagsProvider(generator, helper);
+		generator.addProvider(includeServer, blockTags);
+		generator.addProvider(includeServer, new EEItemTagsProvider(generator, blockTags, helper));
+		generator.addProvider(includeServer, new EEBiomeTagsProvider(generator, helper));
+		generator.addProvider(includeServer, EEBiomeModifierProvider.create(generator, helper));
 
 		boolean includeClient = event.includeClient();
 		generator.addProvider(includeClient, new EEEndimationProvider(generator));
