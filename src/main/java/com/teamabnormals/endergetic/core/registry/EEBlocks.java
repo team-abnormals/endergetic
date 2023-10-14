@@ -2,6 +2,7 @@ package com.teamabnormals.endergetic.core.registry;
 
 import java.util.function.BiFunction;
 
+import com.teamabnormals.blueprint.common.block.*;
 import com.teamabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.endergetic.common.EEProperties;
@@ -13,10 +14,6 @@ import com.teamabnormals.endergetic.common.tileentities.BolloomBudTileEntity;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 
 import com.teamabnormals.blueprint.client.renderer.block.TypedBlockEntityWithoutLevelRenderer;
-import com.teamabnormals.blueprint.common.block.BlueprintBeehiveBlock;
-import com.teamabnormals.blueprint.common.block.BlueprintLadderBlock;
-import com.teamabnormals.blueprint.common.block.BookshelfBlock;
-import com.teamabnormals.blueprint.common.block.VerticalSlabBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
 import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
@@ -26,7 +23,7 @@ import com.teamabnormals.blueprint.common.item.BEWLRBlockItem;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -35,13 +32,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.PressurePlateBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -123,7 +113,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> BOLLOOM_PARTICLE      = HELPER.createBlockNoItem("bolloom_particle", () -> new Block(EEProperties.getPoiseWood(false, true)));
 	public static final RegistryObject<Block> BOOF_BLOCK            = HELPER.createBlock("boof_block", () -> new BoofBlock(EEProperties.BOOF_BLOCK), CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> BOOF_BLOCK_DISPENSED  = HELPER.createBlockNoItem("dispensed_boof_block", () -> new DispensedBoofBlock(EEProperties.BOOF_BLOCK.noCollission().noOcclusion().strength(-1, 3600000.0F)));
-	public static final RegistryObject<Block> BOLLOOM_CRATE			= HELPER.createCompatFuelBlock("quark", "bolloom_crate", () -> new Block(EEProperties.BOLLOOM_CRATE), 300, CreativeModeTab.TAB_DECORATIONS);
+	public static final RegistryObject<Block> BOLLOOM_CRATE			= HELPER.createCompatFuelBlock("quark", "bolloom_crate", () -> new BlueprintDirectionalBlock(EEProperties.BOLLOOM_CRATE), 300, CreativeModeTab.TAB_DECORATIONS);
 
 	/*
 	 * Misc

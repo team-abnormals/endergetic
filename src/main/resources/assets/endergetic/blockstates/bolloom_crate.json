@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
+    "facing=down": {
+      "model": "endergetic:block/bolloom_crate",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "endergetic:block/bolloom_crate",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "endergetic:block/bolloom_crate",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "endergetic:block/bolloom_crate",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
       "model": "endergetic:block/bolloom_crate"
+    },
+    "facing=west": {
+      "model": "endergetic:block/bolloom_crate",
+      "x": 90,
+      "y": 270
     }
   }
 }
