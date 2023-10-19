@@ -1,0 +1,6 @@
+{
+    "parent": "blueprint:block/template_boards",
+    "textures": {
+        "all": "endergetic:block/poise_boards"
+    }
+}

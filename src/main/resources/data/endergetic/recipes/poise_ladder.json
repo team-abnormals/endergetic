@@ -1,27 +1,52 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "group": "endergetic",
-  "pattern": [
-    "# #",
-    "#W#",
-    "# #"
-  ],
-  "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "endergetic:poise_planks"
-    }
-  },
-  "result": {
-    "item": "endergetic:poise_ladder",
-    "count": 4
-  },
-  "conditions": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "type": "blueprint:quark_flag",
-      "flag": "variant_ladders"
+      "conditions": [
+        {
+          "type": "forge:or",
+          "values": [
+            {
+              "type": "blueprint:and",
+              "values": [
+                {
+                  "type": "forge:mod_loaded",
+                  "modid": "woodworks"
+                },
+                {
+                  "type": "woodworks:config",
+                  "value": "wooden_ladders"
+                }
+              ]
+            },
+            {
+              "type": "blueprint:quark_flag",
+              "flag": "variant_ladders"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "group": "wooden_ladder",
+        "key": {
+          "#": {
+            "item": "endergetic:poise_planks"
+          },
+          "S": {
+            "item": "minecraft:stick"
+          }
+        },
+        "pattern": [
+          "S S",
+          "S#S",
+          "S S"
+        ],
+        "result": {
+          "count": 4,
+          "item": "endergetic:poise_ladder"
+        }
+      }
     }
   ]
 }

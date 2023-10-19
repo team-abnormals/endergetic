@@ -12,29 +12,27 @@
             },
             {
               "type": "woodworks:config",
-              "value": "wooden_beehives"
+              "value": "wooden_boards"
             }
           ]
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "group": "wooden_beehive",
+        "group": "wooden_boards",
         "key": {
           "#": {
             "item": "endergetic:poise_planks"
-          },
-          "H": {
-            "item": "minecraft:honeycomb"
           }
         },
         "pattern": [
-          "###",
-          "HHH",
-          "###"
+          "#",
+          "#",
+          "#"
         ],
         "result": {
-          "item": "endergetic:poise_beehive"
+          "count": 3,
+          "item": "endergetic:poise_boards"
         }
       }
     }

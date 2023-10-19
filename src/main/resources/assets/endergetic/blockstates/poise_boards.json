@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "endergetic:block/poise_boards_horizontal",
+      "y": 270
+    },
+    "axis=y": {
+      "model": "endergetic:block/poise_boards"
+    },
+    "axis=z": {
+      "model": "endergetic:block/poise_boards_horizontal"
+    }
+  }
+}

@@ -1,25 +1,51 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "###",
-    "XXX",
-    "###"
-  ],
-  "key": {
-    "#": {
-      "item": "endergetic:poise_planks"
-    },
-    "X": {
-      "item": "minecraft:book"
-    }
-  },
-  "result": {
-    "item": "endergetic:poise_bookshelf"
-  },
-  "conditions": [
+  "type": "forge:conditional",
+  "recipes": [
     {
-      "type": "blueprint:quark_flag",
-      "flag": "variant_bookshelves"
+      "conditions": [
+        {
+          "type": "forge:or",
+          "values": [
+            {
+              "type": "blueprint:and",
+              "values": [
+                {
+                  "type": "forge:mod_loaded",
+                  "modid": "woodworks"
+                },
+                {
+                  "type": "woodworks:config",
+                  "value": "wooden_bookshelves"
+                }
+              ]
+            },
+            {
+              "type": "blueprint:quark_flag",
+              "flag": "variant_bookshelves"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "group": "wooden_bookshelf",
+        "key": {
+          "#": {
+            "item": "endergetic:poise_planks"
+          },
+          "X": {
+            "item": "minecraft:book"
+          }
+        },
+        "pattern": [
+          "###",
+          "XXX",
+          "###"
+        ],
+        "result": {
+          "item": "endergetic:poise_bookshelf"
+        }
+      }
     }
   ]
 }

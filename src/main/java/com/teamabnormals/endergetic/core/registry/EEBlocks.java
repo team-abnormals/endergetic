@@ -99,13 +99,14 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISE_TRAPDOOR        = HELPER.createBlock("poise_trapdoor", () -> new WoodTrapDoorBlock(EEProperties.POISE_WOOD_NOT_SOLID), CreativeModeTab.TAB_REDSTONE);
 	public static final RegistryObject<Block> POISE_VERTICAL_PLANKS = HELPER.createCompatBlock("quark", "vertical_poise_planks", () -> new Block(EEProperties.POISE_WOOD), CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_VERTICAL_SLAB   = HELPER.createCompatFuelBlock("quark", "poise_vertical_slab", () -> new VerticalSlabBlock(EEProperties.POISE_WOOD), 150, CreativeModeTab.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_BOOKSHELF       = HELPER.createCompatFuelBlock("quark", "poise_bookshelf", () -> new BookshelfBlock(Properties.copy(Blocks.BOOKSHELF)), 300, CreativeModeTab.TAB_BUILDING_BLOCKS);
-	public static final RegistryObject<Block> POISE_LADDER          = HELPER.createCompatFuelBlock("quark", "poise_ladder", () -> new BlueprintLadderBlock(Properties.copy(Blocks.LADDER)), 300, CreativeModeTab.TAB_DECORATIONS);
+	public static final RegistryObject<Block> POISE_BOOKSHELF       = HELPER.createCompatFuelBlock("woodworks", "poise_bookshelf", () -> new BookshelfBlock(Properties.copy(Blocks.BOOKSHELF)), 300, CreativeModeTab.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_BOARDS 			= HELPER.createCompatFuelBlock("woodworks", "poise_boards", () -> new RotatedPillarBlock(EEProperties.POISE_WOOD), 300, CreativeModeTab.TAB_BUILDING_BLOCKS);
+	public static final RegistryObject<Block> POISE_LADDER          = HELPER.createCompatFuelBlock("woodworks", "poise_ladder", () -> new BlueprintLadderBlock(Properties.copy(Blocks.LADDER)), 300, CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> POISE_BEEHIVE         = HELPER.createCompatBlock("woodworks", "poise_beehive", () -> new BlueprintBeehiveBlock(Properties.copy(Blocks.BEEHIVE)), CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> STRIPPED_POISE_POST 	= HELPER.createCompatFuelBlock("quark", "stripped_poise_post", () -> new WoodPostBlock(EEProperties.POISE_WOOD), 300, CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final RegistryObject<Block> POISE_POST 			= HELPER.createCompatFuelBlock("quark", "poise_post", () -> new WoodPostBlock(STRIPPED_POISE_POST, EEProperties.POISE_WOOD), 300, CreativeModeTab.TAB_BUILDING_BLOCKS);
 	public static final Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> POISE_SIGN  = HELPER.createSignBlock("poise", MaterialColor.TERRACOTTA_PURPLE);
-	public static final Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> 	 POISE_CHEST = HELPER.createCompatChestBlocks("quark", "poise", MaterialColor.TERRACOTTA_PURPLE);
+	public static final Pair<RegistryObject<BlueprintChestBlock>, RegistryObject<BlueprintTrappedChestBlock>> 	 POISE_CHEST = HELPER.createCompatChestBlocks("woodworks", "poise", MaterialColor.TERRACOTTA_PURPLE);
 
 	public static final RegistryObject<Block> BOLLOOM_BUD           = HELPER.createBlockWithBEWLR("bolloom_bud", () -> new BolloomBudBlock(EEProperties.getPoiseWood(true, false)), () -> () -> new BEWLRBlockItem.LazyBEWLR(bolloomBudISTER()), CreativeModeTab.TAB_DECORATIONS);
 	public static final RegistryObject<Block> PUFFBUG_HIVE          = HELPER.createBlock("puffbug_hive", () -> new PuffBugHiveBlock(EEProperties.getPuffBugHive(true)), CreativeModeTab.TAB_DECORATIONS);
