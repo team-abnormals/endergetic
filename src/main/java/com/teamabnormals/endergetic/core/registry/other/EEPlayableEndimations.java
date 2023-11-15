@@ -1,9 +1,9 @@
 package com.teamabnormals.endergetic.core.registry.other;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimation;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimation.LoopType;
 import com.teamabnormals.blueprint.core.endimator.PlayableEndimationManager;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 
@@ -27,7 +27,7 @@ public final class EEPlayableEndimations {
 	public static final PlayableEndimation PUFF_BUG_PUFF = register("puff_bug/puff", 20, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_TELEPORT_TO = register("puff_bug/teleport_to", 15, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_TELEPORT_FROM = register("puff_bug/teleport_from", 10, LoopType.NONE);
-	public static final PlayableEndimation PUFF_BUG_ROTATE =  register("puff_bug/rotate", 20, LoopType.NONE);
+	public static final PlayableEndimation PUFF_BUG_ROTATE = register("puff_bug/rotate", 20, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_POLLINATE = register("puff_bug/pollinate", 120, LoopType.NONE);
 	public static final PlayableEndimation PUFF_BUG_MAKE_ITEM = register("puff_bug/make_item", 100, LoopType.NONE);
 	//TODO: Does this need to be an PlayableEndimation actually?
@@ -45,7 +45,7 @@ public final class EEPlayableEndimations {
 	public static final PlayableEndimation GLIDER_EETLE_MUNCH = register("eetle/glider_munch", 25, LoopType.NONE);
 
 	public static final PlayableEndimation BROOD_EETLE_FLAP = register("eetle/brood_flap", 22, LoopType.NONE);
-	public static final PlayableEndimation BROOD_EETLE_MUNCH =  register("eetle/brood_munch", 25, LoopType.NONE);
+	public static final PlayableEndimation BROOD_EETLE_MUNCH = register("eetle/brood_munch", 25, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_ATTACK = register("eetle/brood_attack", 12, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_SLAM = register("eetle/brood_slam", 20, LoopType.NONE);
 	public static final PlayableEndimation BROOD_EETLE_LAUNCH = register("eetle/brood_launch", 18, LoopType.NONE);

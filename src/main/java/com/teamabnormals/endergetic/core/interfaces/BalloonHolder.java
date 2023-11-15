@@ -1,15 +1,15 @@
 package com.teamabnormals.endergetic.core.interfaces;
 
-import com.teamabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.teamabnormals.endergetic.common.entity.bolloom.BolloomBalloon;
 
 import java.util.List;
 
 public interface BalloonHolder {
-	List<BolloomBalloonEntity> getBalloons();
+	List<BolloomBalloon> getBalloons();
 
-	void attachBalloon(BolloomBalloonEntity balloon);
+	void attachBalloon(BolloomBalloon balloon);
 
-	void detachBalloon(BolloomBalloonEntity balloonEntity);
+	void detachBalloon(BolloomBalloon balloonEntity);
 
 	void detachBalloons();
 }

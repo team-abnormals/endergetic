@@ -1,19 +1,19 @@
 package com.teamabnormals.endergetic.core.mixin;
 
-import com.teamabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.teamabnormals.endergetic.common.entity.bolloom.BolloomBalloon;
 import com.teamabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.interfaces.BalloonHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraftforge.network.PacketDistributor;
 import org.spongepowered.asm.mixin.Final;
@@ -37,8 +37,8 @@ public final class PlayerListMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;save(Lnet/minecraft/server/level/ServerPlayer;)V", shift = At.Shift.AFTER), method = "remove")
 	private void removeBalloons(ServerPlayer player, CallbackInfo info) {
-		List<BolloomBalloonEntity> balloons = ((BalloonHolder) player).getBalloons();
-		for (BolloomBalloonEntity balloon : balloons) {
+		List<BolloomBalloon> balloons = ((BalloonHolder) player).getBalloons();
+		for (BolloomBalloon balloon : balloons) {
 			balloon.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
 		}
 	}
@@ -64,8 +64,8 @@ public final class PlayerListMixin {
 			if (!balloonsTag.isEmpty()) {
 				for (int i = 0; i < balloonsTag.size(); i++) {
 					Entity entity = EntityType.loadEntityRecursive(balloonsTag.getCompound(i), serverWorld, (balloon -> !serverWorld.addWithUUID(balloon) ? null : balloon));
-					if (entity instanceof BolloomBalloonEntity) {
-						((BolloomBalloonEntity) entity).attachToEntity(player);
+					if (entity instanceof BolloomBalloon) {
+						((BolloomBalloon) entity).attachToEntity(player);
 						EndergeticExpansion.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CUpdateBalloonsMessage(player));
 					}
 				}

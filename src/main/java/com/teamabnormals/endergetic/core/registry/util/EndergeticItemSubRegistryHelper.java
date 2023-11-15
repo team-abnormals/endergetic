@@ -1,10 +1,10 @@
 package com.teamabnormals.endergetic.core.registry.util;
 
-import com.teamabnormals.endergetic.common.items.EetleSpawnEggItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import net.minecraft.world.item.Item;
+import com.teamabnormals.endergetic.common.item.EetleSpawnEggItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
 public final class EndergeticItemSubRegistryHelper extends ItemSubRegistryHelper {

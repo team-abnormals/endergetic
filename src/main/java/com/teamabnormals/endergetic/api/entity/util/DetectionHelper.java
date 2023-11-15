@@ -1,11 +1,10 @@
 package com.teamabnormals.endergetic.api.entity.util;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class DetectionHelper {
 

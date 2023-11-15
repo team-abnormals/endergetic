@@ -1,8 +1,8 @@
 package com.teamabnormals.endergetic.core.registry;
 
-import com.teamabnormals.endergetic.common.world.biome.modifiers.SmallEndIslandsAmbienceBiomeModifier;
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.endergetic.common.levelgen.biome.modifiers.SmallEndIslandsAmbienceBiomeModifier;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

@@ -9,7 +9,8 @@ import java.util.function.Supplier;
 
 public final class S2CEnablePurpoidFlash {
 
-	public void serialize(FriendlyByteBuf buf) {}
+	public void serialize(FriendlyByteBuf buf) {
+	}
 
 	public static S2CEnablePurpoidFlash deserialize(FriendlyByteBuf buf) {
 		return new S2CEnablePurpoidFlash();

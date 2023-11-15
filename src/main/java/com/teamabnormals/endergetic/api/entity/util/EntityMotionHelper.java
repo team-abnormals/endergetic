@@ -1,7 +1,7 @@
 package com.teamabnormals.endergetic.api.entity.util;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
 public class EntityMotionHelper {
 

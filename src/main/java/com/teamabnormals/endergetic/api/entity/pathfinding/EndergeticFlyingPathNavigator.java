@@ -1,17 +1,17 @@
 package com.teamabnormals.endergetic.api.entity.pathfinding;
 
-import net.minecraft.world.entity.Mob;
-import net.minecraft.network.protocol.game.DebugPackets;
-import net.minecraft.world.level.pathfinder.PathFinder;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.Level;
 
 public class EndergeticFlyingPathNavigator extends PathNavigation {
 

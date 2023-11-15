@@ -1,10 +1,8 @@
 package com.teamabnormals.endergetic.core.data.server;
 
-import com.teamabnormals.endergetic.common.world.biome.modifiers.SmallEndIslandsAmbienceBiomeModifier;
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import com.teamabnormals.endergetic.core.registry.EEEntities;
-import com.teamabnormals.endergetic.core.registry.EEFeatures;
 import com.mojang.serialization.JsonOps;
+import com.teamabnormals.endergetic.common.levelgen.biome.modifiers.SmallEndIslandsAmbienceBiomeModifier;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -13,13 +11,10 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.JsonCodecProvider;
 import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 

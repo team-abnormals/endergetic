@@ -1,20 +1,15 @@
 package com.teamabnormals.endergetic.client.events;
 
-import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import com.teamabnormals.endergetic.common.entities.eetle.GliderEetleEntity;
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.gui.GuiComponent;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.teamabnormals.endergetic.common.entity.booflo.Booflo;
+import com.teamabnormals.endergetic.common.entity.eetle.GliderEetle;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -53,14 +48,14 @@ public final class OverlayEvents {
 			if (!MC.options.hideGui) {
 				ResourceLocation overlayID = event.getOverlay().id();
 				if (overlayID == VanillaGuiOverlay.EXPERIENCE_BAR.id()) {
-					if (player.isPassenger() && player.getVehicle() instanceof BoofloEntity) {
+					if (player.isPassenger() && player.getVehicle() instanceof Booflo) {
 						event.setCanceled(true);
 
 						int scaledWidth = event.getWindow().getGuiScaledWidth();
 						int scaledHeight = event.getWindow().getGuiScaledHeight();
 						int top = scaledHeight - 32 + 3;
 						int left = scaledWidth / 2 - 91;
-						int progress = ((BoofloEntity) player.getVehicle()).getBoostPower();
+						int progress = ((Booflo) player.getVehicle()).getBoostPower();
 
 						PoseStack stack = event.getPoseStack();
 						stack.pushPose();
@@ -73,7 +68,7 @@ public final class OverlayEvents {
 
 						stack.popPose();
 					}
-				} else if (overlayID == VanillaGuiOverlay.MOUNT_HEALTH.id() && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetleEntity) {
+				} else if (overlayID == VanillaGuiOverlay.MOUNT_HEALTH.id() && player.level.getDifficulty() != Difficulty.PEACEFUL && !player.isSpectator() && !player.isCreative() && player.isPassenger() && player.getVehicle() instanceof GliderEetle) {
 					event.setCanceled(true);
 				} else if (overlayID == VanillaGuiOverlay.VIGNETTE.id() && MC.options.getCameraType() == CameraType.FIRST_PERSON) {
 					float purpoidFlashProgress = Mth.lerp(event.getPartialTick(), prevPurpoidFlashTime, purpoidFlashTime) * 0.2F;

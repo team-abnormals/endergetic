@@ -1,10 +1,10 @@
 package com.teamabnormals.endergetic.core.registry;
 
-import com.teamabnormals.endergetic.common.world.placements.HeightmapSpreadDoublePlacement;
-import com.teamabnormals.endergetic.common.world.placements.HeightmapSpreadLowerPlacement;
-import com.teamabnormals.endergetic.common.world.placements.NoiseHeightmap32Placement;
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.endergetic.common.levelgen.placement.HeightmapSpreadDoublePlacement;
+import com.teamabnormals.endergetic.common.levelgen.placement.HeightmapSpreadLowerPlacement;
+import com.teamabnormals.endergetic.common.levelgen.placement.NoiseHeightmap32Placement;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;

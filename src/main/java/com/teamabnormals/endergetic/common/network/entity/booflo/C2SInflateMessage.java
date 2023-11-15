@@ -1,11 +1,11 @@
 package com.teamabnormals.endergetic.common.network.entity.booflo;
 
-import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import com.teamabnormals.endergetic.common.entity.booflo.Booflo;
+import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -18,7 +18,8 @@ import java.util.function.Supplier;
  */
 public final class C2SInflateMessage {
 
-	public void serialize(FriendlyByteBuf buf) {}
+	public void serialize(FriendlyByteBuf buf) {
+	}
 
 	public static C2SInflateMessage deserialize(FriendlyByteBuf buf) {
 		return new C2SInflateMessage();
@@ -31,8 +32,8 @@ public final class C2SInflateMessage {
 				Player player = context.getSender();
 				if (player != null) {
 					Entity entity = player.getVehicle();
-					if (entity instanceof BoofloEntity) {
-						BoofloEntity booflo = (BoofloEntity) entity;
+					if (entity instanceof Booflo) {
+						Booflo booflo = (Booflo) entity;
 						if (!booflo.isOnGround() && !booflo.isBoostLocked() && booflo.getBoostPower() <= 0) {
 							if (!booflo.isBoofed()) {
 								booflo.setBoostLocked(true);

@@ -1,16 +1,16 @@
 package com.teamabnormals.endergetic.api.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelSimulatedReader;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public final class GenerationUtils {
 

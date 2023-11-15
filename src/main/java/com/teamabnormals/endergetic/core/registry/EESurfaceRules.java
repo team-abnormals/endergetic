@@ -1,7 +1,7 @@
 package com.teamabnormals.endergetic.core.registry;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.mojang.serialization.Codec;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.KeyDispatchDataCodec;

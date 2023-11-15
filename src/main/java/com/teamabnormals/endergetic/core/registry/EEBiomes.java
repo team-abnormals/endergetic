@@ -1,19 +1,13 @@
 package com.teamabnormals.endergetic.core.registry;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-
 import com.teamabnormals.blueprint.core.util.registry.BiomeSubRegistryHelper;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.EEFeatures.EEPlacedFeatures;
 import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.sounds.Musics;
-import net.minecraft.world.level.biome.AmbientAdditionsSettings;
-import net.minecraft.world.level.biome.AmbientMoodSettings;
-import net.minecraft.world.level.biome.BiomeGenerationSettings;
-import net.minecraft.world.level.biome.BiomeSpecialEffects;
-import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.fml.common.Mod;
-
-import net.minecraft.world.level.biome.Biome;
 
 @Mod.EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class EEBiomes {
@@ -32,30 +26,30 @@ public final class EEBiomes {
 								.waterColor(4159204)
 								.waterFogColor(329011)
 								.fogColor(10518688)
-								.backgroundMusic(Musics.createGameMusic(EESounds.POISE_FOREST_MUSIC.get()))
-								.ambientLoopSound(EESounds.POISE_FOREST_LOOP.get())
-								.ambientAdditionsSound(new AmbientAdditionsSettings(EESounds.POISE_FOREST_ADDITIONS.get(), 0.01D))
-								.ambientMoodSound(new AmbientMoodSettings(EESounds.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
+								.backgroundMusic(Musics.createGameMusic(EESoundEvents.POISE_FOREST_MUSIC.get()))
+								.ambientLoopSound(EESoundEvents.POISE_FOREST_LOOP.get())
+								.ambientAdditionsSound(new AmbientAdditionsSettings(EESoundEvents.POISE_FOREST_ADDITIONS.get(), 0.01D))
+								.ambientMoodSound(new AmbientMoodSettings(EESoundEvents.POISE_FOREST_MOOD.get(), 6000, 8, 2.0D))
 								.build()
 				)
 				.mobSpawnSettings(
 						new MobSpawnSettings.Builder()
-								.addSpawn(EEEntities.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntities.BOOFLO_ADOLESCENT.get(), 5, 1, 2))
-								.addSpawn(EEEntities.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntities.BOOFLO.get(), 15, 1, 3))
-								.addSpawn(EEEntities.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntities.PUFF_BUG.get(), 10, 2, 4))
+								.addSpawn(EEEntityTypes.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntityTypes.BOOFLO_ADOLESCENT.get(), 5, 1, 2))
+								.addSpawn(EEEntityTypes.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntityTypes.BOOFLO.get(), 15, 1, 3))
+								.addSpawn(EEEntityTypes.END_CREATURE, new MobSpawnSettings.SpawnerData(EEEntityTypes.PUFF_BUG.get(), 10, 2, 4))
 								.creatureGenerationProbability(0.9F)
 								.build()
 				)
 				.generationSettings(
 						new BiomeGenerationSettings.Builder()
-								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEFeatures.Placed.POISE_DOME.getHolder().get())
-								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEFeatures.Placed.POISE_TREE.getHolder().get())
+								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEPlacedFeatures.POISE_DOME.getHolder().get())
+								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EEPlacedFeatures.POISE_TREE.getHolder().get())
 								.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, EndPlacements.END_GATEWAY_RETURN)
-								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.POISE_CLUSTER.getHolder().get())
-								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.PUFF_BUG_HIVE.getHolder().get())
-								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.BOLLOOM_BUD.getHolder().get())
-								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.TALL_POISE_BUSH_PATCH.getHolder().get())
-								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEFeatures.Placed.POISE_BUSH_PATCH.getHolder().get())
+								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.POISE_CLUSTER.getHolder().get())
+								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.PUFF_BUG_HIVE.getHolder().get())
+								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.BOLLOOM_BUD.getHolder().get())
+								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.TALL_POISE_BUSH_PATCH.getHolder().get())
+								.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.POISE_BUSH_PATCH.getHolder().get())
 								.build()
 				).build();
 	}

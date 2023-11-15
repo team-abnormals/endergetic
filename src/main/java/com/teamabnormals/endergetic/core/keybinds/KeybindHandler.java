@@ -1,18 +1,15 @@
 package com.teamabnormals.endergetic.core.keybinds;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
-import com.teamabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
 import com.teamabnormals.endergetic.api.entity.util.EntityMotionHelper;
-import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import com.teamabnormals.endergetic.common.items.BoofloVestItem;
+import com.teamabnormals.endergetic.common.entity.booflo.Booflo;
+import com.teamabnormals.endergetic.common.item.BoofloVestItem;
+import com.teamabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
 import com.teamabnormals.endergetic.common.network.entity.booflo.C2SSlamMessage;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.registry.EEItems;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,6 +18,8 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+
+import java.util.List;
 
 /**
  * @author SmellyModder(Luke Tonon)
@@ -57,8 +56,8 @@ public final class KeybindHandler {
 				}
 			}
 		}
-		if (player.getVehicle() instanceof BoofloEntity) {
-			BoofloEntity booflo = (BoofloEntity) player.getVehicle();
+		if (player.getVehicle() instanceof Booflo) {
+			Booflo booflo = (Booflo) player.getVehicle();
 			if (!booflo.isOnGround()) {
 				if (BOOFLO_SLAM.isDown()) {
 					if (booflo.isBoofed() && booflo.getBoostPower() <= 0 && booflo.isNoEndimationPlaying()) {

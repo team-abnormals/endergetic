@@ -1,29 +1,47 @@
 package com.teamabnormals.endergetic.core;
 
-import com.teamabnormals.endergetic.client.models.BoofBlockDispenserModel;
-import com.teamabnormals.endergetic.client.models.BoofBlockModel;
-import com.teamabnormals.endergetic.client.models.PoiseClusterModel;
-import com.teamabnormals.endergetic.client.models.bolloom.BolloomBalloonModel;
-import com.teamabnormals.endergetic.client.models.bolloom.BolloomBudModel;
-import com.teamabnormals.endergetic.client.models.bolloom.BolloomFruitModel;
-import com.teamabnormals.endergetic.client.models.bolloom.BolloomKnotModel;
-import com.teamabnormals.endergetic.client.models.booflo.AdolescentBoofloModel;
-import com.teamabnormals.endergetic.client.models.booflo.BoofloBabyModel;
-import com.teamabnormals.endergetic.client.models.booflo.BoofloModel;
-import com.teamabnormals.endergetic.client.models.corrock.CorrockCrownStandingModel;
-import com.teamabnormals.endergetic.client.models.corrock.CorrockCrownWallModel;
-import com.teamabnormals.endergetic.client.models.eetle.BroodEetleModel;
-import com.teamabnormals.endergetic.client.models.eetle.ChargerEetleModel;
-import com.teamabnormals.endergetic.client.models.eetle.GliderEetleModel;
-import com.teamabnormals.endergetic.client.models.eetle.LeetleModel;
-import com.teamabnormals.endergetic.client.models.eetle.eggs.LargeEetleEggModel;
-import com.teamabnormals.endergetic.client.models.eetle.eggs.MediumEetleEggModel;
-import com.teamabnormals.endergetic.client.models.eetle.eggs.SmallEetleEggModel;
-import com.teamabnormals.endergetic.client.models.PuffBugModel;
-import com.teamabnormals.endergetic.client.models.purpoid.PurpModel;
-import com.teamabnormals.endergetic.client.models.purpoid.PurpazoidModel;
-import com.teamabnormals.endergetic.client.models.purpoid.PurpoidGelModel;
-import com.teamabnormals.endergetic.client.models.purpoid.PurpoidModel;
+import com.teamabnormals.blueprint.core.util.BiomeUtil;
+import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
+import com.teamabnormals.endergetic.client.model.BoofBlockDispenserModel;
+import com.teamabnormals.endergetic.client.model.BoofBlockModel;
+import com.teamabnormals.endergetic.client.model.PoiseClusterModel;
+import com.teamabnormals.endergetic.client.model.PuffBugModel;
+import com.teamabnormals.endergetic.client.model.bolloom.BolloomBalloonModel;
+import com.teamabnormals.endergetic.client.model.bolloom.BolloomBudModel;
+import com.teamabnormals.endergetic.client.model.bolloom.BolloomFruitModel;
+import com.teamabnormals.endergetic.client.model.bolloom.BolloomKnotModel;
+import com.teamabnormals.endergetic.client.model.booflo.AdolescentBoofloModel;
+import com.teamabnormals.endergetic.client.model.booflo.BoofloBabyModel;
+import com.teamabnormals.endergetic.client.model.booflo.BoofloModel;
+import com.teamabnormals.endergetic.client.model.corrock.CorrockCrownStandingModel;
+import com.teamabnormals.endergetic.client.model.corrock.CorrockCrownWallModel;
+import com.teamabnormals.endergetic.client.model.eetle.BroodEetleModel;
+import com.teamabnormals.endergetic.client.model.eetle.ChargerEetleModel;
+import com.teamabnormals.endergetic.client.model.eetle.GliderEetleModel;
+import com.teamabnormals.endergetic.client.model.eetle.LeetleModel;
+import com.teamabnormals.endergetic.client.model.eetle.eggs.LargeEetleEggModel;
+import com.teamabnormals.endergetic.client.model.eetle.eggs.MediumEetleEggModel;
+import com.teamabnormals.endergetic.client.model.eetle.eggs.SmallEetleEggModel;
+import com.teamabnormals.endergetic.client.model.purpoid.PurpModel;
+import com.teamabnormals.endergetic.client.model.purpoid.PurpazoidModel;
+import com.teamabnormals.endergetic.client.model.purpoid.PurpoidGelModel;
+import com.teamabnormals.endergetic.client.model.purpoid.PurpoidModel;
+import com.teamabnormals.endergetic.client.renderer.block.BolloomBudTileEntityRenderer;
+import com.teamabnormals.endergetic.client.renderer.block.CorrockCrownTileEntityRenderer;
+import com.teamabnormals.endergetic.client.renderer.block.DispensedBoofBlockTileEntityRenderer;
+import com.teamabnormals.endergetic.client.renderer.block.EetleEggTileEntityRenderer;
+import com.teamabnormals.endergetic.client.renderer.entity.*;
+import com.teamabnormals.endergetic.client.renderer.entity.booflo.BoofloAdolescentRenderer;
+import com.teamabnormals.endergetic.client.renderer.entity.booflo.BoofloBabyRenderer;
+import com.teamabnormals.endergetic.client.renderer.entity.booflo.BoofloRenderer;
+import com.teamabnormals.endergetic.client.renderer.entity.eetle.*;
+import com.teamabnormals.endergetic.common.network.C2SInflateBoofloVestMessage;
+import com.teamabnormals.endergetic.common.network.entity.S2CEnablePurpoidFlash;
+import com.teamabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
+import com.teamabnormals.endergetic.common.network.entity.booflo.C2SBoostMessage;
+import com.teamabnormals.endergetic.common.network.entity.booflo.C2SInflateMessage;
+import com.teamabnormals.endergetic.common.network.entity.booflo.C2SSlamMessage;
+import com.teamabnormals.endergetic.common.network.entity.puffbug.RotateMessage;
 import com.teamabnormals.endergetic.core.data.client.EEEndimationProvider;
 import com.teamabnormals.endergetic.core.data.server.*;
 import com.teamabnormals.endergetic.core.data.server.tags.EEBiomeTagsProvider;
@@ -31,50 +49,40 @@ import com.teamabnormals.endergetic.core.data.server.tags.EEBlockTagsProvider;
 import com.teamabnormals.endergetic.core.data.server.tags.EEItemTagsProvider;
 import com.teamabnormals.endergetic.core.keybinds.KeybindHandler;
 import com.teamabnormals.endergetic.core.registry.*;
-import com.teamabnormals.endergetic.core.registry.other.*;
+import com.teamabnormals.endergetic.core.registry.EEFeatures.EEConfiguredFeatures;
+import com.teamabnormals.endergetic.core.registry.EEFeatures.EEPlacedFeatures;
+import com.teamabnormals.endergetic.core.registry.other.EEClientCompat;
+import com.teamabnormals.endergetic.core.registry.other.EECompat;
+import com.teamabnormals.endergetic.core.registry.other.EEDataProcessors;
+import com.teamabnormals.endergetic.core.registry.other.EEDataSerializers;
 import com.teamabnormals.endergetic.core.registry.util.EndergeticBlockSubRegistryHelper;
 import com.teamabnormals.endergetic.core.registry.util.EndergeticEntitySubRegistryHelper;
 import com.teamabnormals.endergetic.core.registry.util.EndergeticItemSubRegistryHelper;
-import com.teamabnormals.blueprint.core.util.BiomeUtil;
-import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.teamabnormals.endergetic.client.particles.EEParticles;
-import com.teamabnormals.endergetic.client.renderers.entity.*;
-import com.teamabnormals.endergetic.client.renderers.entity.booflo.*;
-import com.teamabnormals.endergetic.client.renderers.entity.eetle.*;
-import com.teamabnormals.endergetic.client.renderers.tile.*;
-import com.teamabnormals.endergetic.common.network.*;
-import com.teamabnormals.endergetic.common.network.entity.*;
-import com.teamabnormals.endergetic.common.network.entity.booflo.*;
-import com.teamabnormals.endergetic.common.network.entity.puffbug.*;
-import com.teamabnormals.endergetic.core.config.EEConfig;
-
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EndCrystalRenderer;
 import net.minecraft.client.renderer.blockentity.CampfireRenderer;
+import net.minecraft.client.renderer.entity.EndCrystalRenderer;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(value = EndergeticExpansion.MOD_ID)
 public class EndergeticExpansion {
@@ -95,28 +103,30 @@ public class EndergeticExpansion {
 			.simpleChannel();
 
 	public EndergeticExpansion() {
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		ModLoadingContext context = ModLoadingContext.get();
+		MinecraftForge.EVENT_BUS.register(this);
+
 		instance = this;
 
 		this.setupMessages();
 		EEDataProcessors.registerTrackedData();
 
-		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		REGISTRY_HELPER.register(bus);
+		EEParticleTypes.PARTICLES.register(bus);
+		EESurfaceRules.RULES.register(bus);
+		EEPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(bus);
+		EEFeatures.FEATURES.register(bus);
+		EEConfiguredFeatures.CONFIGURED_FEATURES.register(bus);
+		EEPlacedFeatures.PLACED_FEATURES.register(bus);
+		EEStructures.STRUCTURE_TYPES.register(bus);
+		EEStructures.STRUCTURES.register(bus);
+		EEStructures.PieceTypes.STRUCTURE_PIECE_TYPES.register(bus);
+		EEStructures.Sets.STRUCTURE_SETS.register(bus);
+		EEDataSerializers.SERIALIZERS.register(bus);
+		EEBiomeModifierSerializers.SERIALIZERS.register(bus);
 
-		REGISTRY_HELPER.register(modEventBus);
-		EEParticles.PARTICLES.register(modEventBus);
-		EESurfaceRules.RULES.register(modEventBus);
-		EEPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(modEventBus);
-		EEFeatures.FEATURES.register(modEventBus);
-		EEFeatures.Configured.CONFIGURED_FEATURES.register(modEventBus);
-		EEFeatures.Placed.PLACED_FEATURES.register(modEventBus);
-		EEStructures.STRUCTURE_TYPES.register(modEventBus);
-		EEStructures.STRUCTURES.register(modEventBus);
-		EEStructures.PieceTypes.STRUCTURE_PIECE_TYPES.register(modEventBus);
-		EEStructures.Sets.STRUCTURE_SETS.register(modEventBus);
-		EEDataSerializers.SERIALIZERS.register(modEventBus);
-		EEBiomeModifierSerializers.SERIALIZERS.register(modEventBus);
-
-		modEventBus.addListener((ModConfigEvent event) -> {
+		bus.addListener((ModConfigEvent event) -> {
 			final ModConfig config = event.getConfig();
 			if (config.getSpec() == EEConfig.COMMON_SPEC) {
 				EEConfig.ValuesHolder.updateCommonValuesFromConfig(config);
@@ -124,23 +134,27 @@ public class EndergeticExpansion {
 		});
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			modEventBus.addListener(EventPriority.LOWEST, this::setupClient);
-			modEventBus.addListener(KeybindHandler::registerKeys);
-			modEventBus.addListener(this::registerLayerDefinitions);
-			modEventBus.addListener(this::registerRenderers);
+			bus.addListener(EventPriority.LOWEST, this::clientSetup);
+			bus.addListener(KeybindHandler::registerKeys);
+			bus.addListener(this::registerLayerDefinitions);
+			bus.addListener(this::registerRenderers);
 		});
 
-		modEventBus.addListener(EventPriority.LOWEST, this::setupCommon);
-		modEventBus.addListener(this::dataSetup);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
+		bus.addListener(EventPriority.LOWEST, this::commonSetup);
+		bus.addListener(this::dataSetup);
+		context.registerConfig(ModConfig.Type.COMMON, EEConfig.COMMON_SPEC);
 	}
 
-	void setupCommon(final FMLCommonSetupEvent event) {
+	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			EEDispenserBehaviors.registerAll();
-			EEFlammables.registerFlammables();
-			EECompostables.registerCompostables();
+			EECompat.registerCompat();
 		});
+	}
+
+	private void clientSetup(FMLClientSetupEvent event) {
+		EEClientCompat.registerClientCompat();
+		EndCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
+		BiomeUtil.markEndBiomeCustomMusic(EEBiomes.POISE_FOREST.getKey());
 	}
 
 	private void dataSetup(GatherDataEvent event) {
@@ -193,34 +207,27 @@ public class EndergeticExpansion {
 	}
 
 	private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerBlockEntityRenderer(EETileEntities.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(EETileEntities.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(EETileEntities.BOOF_BLOCK_DISPENSED.get(), DispensedBoofBlockTileEntityRenderer::new);
-		event.registerBlockEntityRenderer(EETileEntities.ENDER_CAMPFIRE.get(), CampfireRenderer::new);
-		event.registerBlockEntityRenderer(EETileEntities.EETLE_EGG.get(), EetleEggTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(EEBlockEntityTypes.CORROCK_CROWN.get(), CorrockCrownTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(EEBlockEntityTypes.BOLLOOM_BUD.get(), BolloomBudTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(EEBlockEntityTypes.BOOF_BLOCK_DISPENSED.get(), DispensedBoofBlockTileEntityRenderer::new);
+		event.registerBlockEntityRenderer(EEBlockEntityTypes.ENDER_CAMPFIRE.get(), CampfireRenderer::new);
+		event.registerBlockEntityRenderer(EEBlockEntityTypes.EETLE_EGG.get(), EetleEggTileEntityRenderer::new);
 
-		event.registerEntityRenderer(EEEntities.BOLLOOM_FRUIT.get(), BolloomFruitRenderer::new);
-		event.registerEntityRenderer(EEEntities.POISE_CLUSTER.get(), PoiseClusterRender::new);
-		event.registerEntityRenderer(EEEntities.BOOF_BLOCK.get(), BoofBlockRenderer::new);
-		event.registerEntityRenderer(EEEntities.BOLLOOM_KNOT.get(), BolloomKnotRenderer::new);
-		event.registerEntityRenderer(EEEntities.BOLLOOM_BALLOON.get(), BolloomBalloonRenderer::new);
-		event.registerEntityRenderer(EEEntities.PUFF_BUG.get(), PuffBugRenderer::new);
-		event.registerEntityRenderer(EEEntities.BOOFLO_BABY.get(), BoofloBabyRenderer::new);
-		event.registerEntityRenderer(EEEntities.BOOFLO_ADOLESCENT.get(), BoofloAdolescentRenderer::new);
-		event.registerEntityRenderer(EEEntities.BOOFLO.get(), BoofloRenderer::new);
-		event.registerEntityRenderer(EEEntities.CHARGER_EETLE.get(), ChargerEetleRenderer::new);
-		event.registerEntityRenderer(EEEntities.GLIDER_EETLE.get(), GliderEetleRenderer::new);
-		event.registerEntityRenderer(EEEntities.BROOD_EETLE.get(), BroodEetleRenderer::new);
-		event.registerEntityRenderer(EEEntities.EETLE_EGG.get(), EetleEggRenderer::new);
-		event.registerEntityRenderer(EEEntities.BROOD_EGG_SACK.get(), BroodEggSackRenderer::new);
-		event.registerEntityRenderer(EEEntities.PURPOID.get(), PurpoidRenderer::new);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	void setupClient(final FMLClientSetupEvent event) {
-		EERenderLayers.setupRenderLayers();
-		EndCrystalRenderer.RENDER_TYPE = RenderType.entityCutoutNoCull(new ResourceLocation(MOD_ID, "textures/entity/end_crystal.png"));
-		BiomeUtil.markEndBiomeCustomMusic(EEBiomes.POISE_FOREST.getKey());
+		event.registerEntityRenderer(EEEntityTypes.BOLLOOM_FRUIT.get(), BolloomFruitRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.POISE_CLUSTER.get(), PoiseClusterRender::new);
+		event.registerEntityRenderer(EEEntityTypes.BOOF_BLOCK.get(), BoofBlockRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BOLLOOM_KNOT.get(), BolloomKnotRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BOLLOOM_BALLOON.get(), BolloomBalloonRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.PUFF_BUG.get(), PuffBugRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BOOFLO_BABY.get(), BoofloBabyRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BOOFLO_ADOLESCENT.get(), BoofloAdolescentRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BOOFLO.get(), BoofloRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.CHARGER_EETLE.get(), ChargerEetleRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.GLIDER_EETLE.get(), GliderEetleRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BROOD_EETLE.get(), BroodEetleRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.EETLE_EGG.get(), EetleEggRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.BROOD_EGG_SACK.get(), BroodEggSackRenderer::new);
+		event.registerEntityRenderer(EEEntityTypes.PURPOID.get(), PurpoidRenderer::new);
 	}
 
 	private void setupMessages() {

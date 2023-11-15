@@ -1,19 +1,19 @@
 package com.teamabnormals.endergetic.common.network;
 
-import com.teamabnormals.endergetic.api.entity.util.EntityMotionHelper;
-import com.teamabnormals.endergetic.common.items.BoofloVestItem;
-import com.teamabnormals.endergetic.core.registry.EEItems;
-import com.teamabnormals.endergetic.core.registry.EESounds;
-import com.teamabnormals.endergetic.core.registry.other.EETags;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import com.teamabnormals.endergetic.api.entity.util.EntityMotionHelper;
+import com.teamabnormals.endergetic.common.item.BoofloVestItem;
+import com.teamabnormals.endergetic.core.registry.EEItems;
+import com.teamabnormals.endergetic.core.registry.EESoundEvents;
+import com.teamabnormals.endergetic.core.registry.other.tags.EEEntityTypeTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -51,7 +51,7 @@ public final class C2SInflateBoofloVestMessage {
 						player.getCooldowns().addCooldown(EEItems.BOOFLO_VEST.get(), increment < DELAY_INCREASE_THRESHOLD ? DEFAULT_DELAY : DELAY_MULTIPLIER * increment);
 
 						Entity ridingEntity = player.getVehicle();
-						for (Entity entity : player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(2.0D), entity -> entity != player && entity != ridingEntity && !entity.getType().is(EETags.EntityTypes.BOOF_BLOCK_RESISTANT))) {
+						for (Entity entity : player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(2.0D), entity -> entity != player && entity != ridingEntity && !entity.getType().is(EEEntityTypeTags.BOOF_BLOCK_RESISTANT))) {
 							EntityMotionHelper.knockbackEntity(entity, HORIZONTAL_BOOST_FORCE, VERTICAL_BOOST_FORCE, false, false);
 						}
 
@@ -70,7 +70,7 @@ public final class C2SInflateBoofloVestMessage {
 							NetworkUtil.spawnParticle(POISE_BUBBLE_ID, x, y, z, makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F, (rand.nextFloat() * 0.15F) + 0.1F, makeNegativeRandomly((rand.nextFloat() * 0.3F), rand) + 0.025F);
 						}
 
-						player.level.playSound(null, posX, posY, posZ, EESounds.BOOFLO_VEST_INFLATE.get(), SoundSource.PLAYERS, 1.0F, Mth.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
+						player.level.playSound(null, posX, posY, posZ, EESoundEvents.BOOFLO_VEST_INFLATE.get(), SoundSource.PLAYERS, 1.0F, Mth.clamp(1.3F - (increment * 0.15F), 0.25F, 1.0F));
 					}
 				}
 			});

@@ -1,11 +1,11 @@
 package com.teamabnormals.endergetic.core.data.server;
 
-import com.teamabnormals.endergetic.common.advancement.EECriteriaTriggers;
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import com.teamabnormals.endergetic.core.registry.EEEntities;
-import com.teamabnormals.endergetic.core.registry.EEItems;
 import com.teamabnormals.blueprint.common.advancement.modification.AdvancementModifierProvider;
 import com.teamabnormals.blueprint.common.advancement.modification.modifiers.CriteriaModifier;
+import com.teamabnormals.endergetic.common.advancement.EECriteriaTriggers;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.EEEntityTypes;
+import com.teamabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.BredAnimalsTrigger;
 import net.minecraft.advancements.critereon.ConsumeItemTrigger;
@@ -34,7 +34,7 @@ public final class EEAdvancementModifierProvider extends AdvancementModifierProv
 
 		CriteriaModifier.Builder breedAllAnimals = CriteriaModifier.builder(this.modId);
 		breedAllAnimals.addCriterion("booflo", EECriteriaTriggers.BRED_BOOFLO.createInstance());
-		breedAllAnimals.addCriterion("puff_bug", BredAnimalsTrigger.TriggerInstance.bredAnimals(EntityPredicate.Builder.entity().of(EEEntities.PUFF_BUG.get())));
+		breedAllAnimals.addCriterion("puff_bug", BredAnimalsTrigger.TriggerInstance.bredAnimals(EntityPredicate.Builder.entity().of(EEEntityTypes.PUFF_BUG.get())));
 		this.entry("husbandry/bred_all_animals")
 				.selects("husbandry/bred_all_animals")
 				.addModifier(breedAllAnimals.requirements(RequirementsStrategy.AND).build());
@@ -49,10 +49,10 @@ public final class EEAdvancementModifierProvider extends AdvancementModifierProv
 		CriteriaModifier.Builder killAMob = CriteriaModifier.builder(this.modId);
 		CriteriaModifier.Builder killAllMobs = CriteriaModifier.builder(this.modId);
 		ArrayList<String> names = new ArrayList<>();
-		for (RegistryObject<EntityType<?>> object : EEEntities.HELPER.getDeferredRegister().getEntries()) {
+		for (RegistryObject<EntityType<?>> object : EEEntityTypes.HELPER.getDeferredRegister().getEntries()) {
 			EntityType<?> type = object.get();
 			MobCategory category = type.getCategory();
-			if (category == MobCategory.CREATURE || category == MobCategory.MONSTER || category == EEEntities.END_CREATURE) {
+			if (category == MobCategory.CREATURE || category == MobCategory.MONSTER || category == EEEntityTypes.END_CREATURE) {
 				String name = object.getId().getPath();
 				KilledTrigger.TriggerInstance triggerInstance = KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(type));
 				killAMob.addCriterion(name, triggerInstance);

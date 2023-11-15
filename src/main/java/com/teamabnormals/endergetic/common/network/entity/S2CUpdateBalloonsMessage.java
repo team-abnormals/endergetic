@@ -1,11 +1,11 @@
 package com.teamabnormals.endergetic.common.network.entity;
 
-import com.teamabnormals.endergetic.common.entities.bolloom.BolloomBalloonEntity;
+import com.teamabnormals.blueprint.client.ClientInfo;
+import com.teamabnormals.endergetic.common.entity.bolloom.BolloomBalloon;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.interfaces.BalloonHolder;
-import com.teamabnormals.blueprint.client.ClientInfo;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
@@ -24,7 +24,7 @@ public final class S2CUpdateBalloonsMessage {
 
 	public S2CUpdateBalloonsMessage(Entity entity) {
 		this.entityId = entity.getId();
-		List<BolloomBalloonEntity> balloons = ((BalloonHolder) entity).getBalloons();
+		List<BolloomBalloon> balloons = ((BalloonHolder) entity).getBalloons();
 		this.balloonIds = new int[balloons.size()];
 		for (int i = 0; i < balloons.size(); i++) {
 			this.balloonIds[i] = balloons.get(i).getId();
@@ -52,8 +52,8 @@ public final class S2CUpdateBalloonsMessage {
 					((BalloonHolder) entity).detachBalloons();
 					for (int id : message.balloonIds) {
 						Entity balloon = world.getEntity(id);
-						if (balloon instanceof BolloomBalloonEntity) {
-							((BolloomBalloonEntity) balloon).attachToEntity(entity);
+						if (balloon instanceof BolloomBalloon) {
+							((BolloomBalloon) balloon).attachToEntity(entity);
 						}
 					}
 				}

@@ -1,9 +1,9 @@
 package com.teamabnormals.endergetic.core.data.server;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import com.teamabnormals.endergetic.core.registry.EEItems;
 import com.teamabnormals.blueprint.common.loot.modification.LootModifierProvider;
 import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolsModifier;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.EEItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;

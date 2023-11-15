@@ -1,18 +1,15 @@
 package com.teamabnormals.endergetic.core.data.server;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import com.teamabnormals.endergetic.core.registry.EEBiomes;
-import com.teamabnormals.endergetic.core.registry.EEBlocks;
-import com.teamabnormals.endergetic.core.registry.EESurfaceRules;
 import com.teamabnormals.blueprint.common.world.modification.chunk.ChunkGeneratorModifierProvider;
 import com.teamabnormals.blueprint.common.world.modification.chunk.modifiers.SurfaceRuleModifier;
 import com.teamabnormals.blueprint.core.registry.BlueprintSurfaceRules;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.EEBiomes;
+import com.teamabnormals.endergetic.core.registry.EEBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
-import net.minecraft.world.level.levelgen.SurfaceRules;
 
 import static net.minecraft.world.level.levelgen.SurfaceRules.*;
 

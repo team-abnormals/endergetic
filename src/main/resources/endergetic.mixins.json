@@ -1,36 +1,36 @@
 {
-	"required": true,
-	"package": "com.teamabnormals.endergetic.core.mixin",
-	"compatibilityLevel": "JAVA_8",
-	"minVersion": "0.8",
-	"refmap": "endergetic.refmap.json",
-	"mixins": [
-		"AbstractFireBlockMixin",
-		"ServerWorldMixin",
-		"EndGatewayTileEntityMixin",
-		"EndSpikeFeatureMixin",
-		"BoatEntityMixin",
-		"EntityMixin",
-		"LivingEntityMixin",
-		"MobEntityMixin",
-		"PlayerEntityMixin",
-		"ServerPlayerEntityMixin",
-		"ServerPlayNetHandlerMixin",
-		"SwordItemMixin",
-		"TrackedEntityMixin",
-		"PlayerListMixin",
-		"EnderCrystalItemMixin",
-		"chorus.ChorusPlantFeatureMixin",
-		"chorus.ChorusPlantBlockMixin",
-		"chorus.ChorusFlowerBlockMixin"
-	],
-	"client": [
-		"ClientWorldMixin",
-		"ClientPlayNetHandlerMixin",
-		"ClientPlayerEntityMixin",
-		"EntityRendererManagerMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "com.teamabnormals.endergetic.core.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "endergetic.refmap.json",
+  "mixins": [
+    "BaseFireBlockMixin",
+    "BoatMixin",
+    "EndCrystalItemMixin",
+    "EntityMixin",
+    "LivingEntityMixin",
+    "MobMixin",
+    "PlayerListMixin",
+    "PlayerMixin",
+    "ServerEntityMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerLevelMixin",
+    "ServerPlayerMixin",
+    "SpikeFeatureMixin",
+    "SwordItemMixin",
+    "TheEndGatewayBlockEntityMixin",
+    "chorus.ChorusFlowerBlockMixin",
+    "chorus.ChorusPlantBlockMixin",
+    "chorus.ChorusPlantFeatureMixin"
+  ],
+  "client": [
+	  "client.ClientLevelMixin",
+	  "client.ClientPacketListenerMixin",
+	  "client.EntityRenderDispatcherMixin",
+	  "client.LocalPlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

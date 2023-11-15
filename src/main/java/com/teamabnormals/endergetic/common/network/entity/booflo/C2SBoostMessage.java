@@ -1,11 +1,11 @@
 package com.teamabnormals.endergetic.common.network.entity.booflo;
 
-import com.teamabnormals.endergetic.common.entities.booflo.BoofloEntity;
-import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
 import com.teamabnormals.blueprint.core.util.NetworkUtil;
+import com.teamabnormals.endergetic.common.entity.booflo.Booflo;
+import com.teamabnormals.endergetic.core.registry.other.EEPlayableEndimations;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -32,8 +32,8 @@ public final class C2SBoostMessage {
 				Player player = context.getSender();
 				if (player != null) {
 					Entity entity = player.getVehicle();
-					if (entity instanceof BoofloEntity) {
-						BoofloEntity booflo = (BoofloEntity) entity;
+					if (entity instanceof Booflo) {
+						Booflo booflo = (Booflo) entity;
 						if (booflo.isBoostExpanding() && !booflo.isBoostLocked() && !booflo.isOnGround() && booflo.isBoofed() && booflo.getBoostPower() > 0) {
 							NetworkUtil.setPlayingAnimation(booflo, EEPlayableEndimations.BOOFLO_INFLATE);
 							booflo.playSound(booflo.getInflateSound(), 0.75F, 1.0F);

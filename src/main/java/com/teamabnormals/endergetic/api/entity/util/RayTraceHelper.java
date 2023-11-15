@@ -1,18 +1,17 @@
 package com.teamabnormals.endergetic.api.entity.util;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public class RayTraceHelper {
 

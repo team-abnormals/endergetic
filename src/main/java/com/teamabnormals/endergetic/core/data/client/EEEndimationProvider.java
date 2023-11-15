@@ -1,8 +1,8 @@
 package com.teamabnormals.endergetic.core.data.client;
 
-import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.blueprint.core.endimator.EndimationKeyframe;
 import com.teamabnormals.blueprint.core.endimator.util.EndimationProvider;
+import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import net.minecraft.data.DataGenerator;
 
 import static com.teamabnormals.blueprint.core.endimator.Endimation.Builder.Keyframes.keyframes;

@@ -1,10 +1,9 @@
 package com.teamabnormals.endergetic.common.network.entity.puffbug;
 
-import com.teamabnormals.endergetic.common.entities.puffbug.PuffBugEntity;
-
 import com.teamabnormals.blueprint.client.ClientInfo;
-import net.minecraft.world.entity.Entity;
+import com.teamabnormals.endergetic.common.entity.puffbug.PuffBug;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -47,8 +46,8 @@ public class RotateMessage {
 		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 			context.enqueueWork(() -> {
 				Entity entity = ClientInfo.getClientPlayerLevel().getEntity(message.entityId);
-				if (entity instanceof PuffBugEntity) {
-					((PuffBugEntity) entity).getRotationController().rotate(message.yaw, message.pitch, message.roll, message.tickLength);
+				if (entity instanceof PuffBug) {
+					((PuffBug) entity).getRotationController().rotate(message.yaw, message.pitch, message.roll, message.tickLength);
 				}
 			});
 			context.setPacketHandled(true);

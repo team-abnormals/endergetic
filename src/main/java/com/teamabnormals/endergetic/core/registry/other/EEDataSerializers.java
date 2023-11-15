@@ -1,13 +1,13 @@
 package com.teamabnormals.endergetic.core.registry.other;
 
-import com.teamabnormals.endergetic.common.entities.bolloom.BalloonColor;
-import com.teamabnormals.endergetic.common.entities.eetle.BroodEetleEntity.HealthStage;
-import com.teamabnormals.endergetic.common.entities.eetle.flying.TargetFlyingRotations;
-import com.teamabnormals.endergetic.common.entities.purpoid.PurpoidSize;
+import com.teamabnormals.endergetic.common.entity.bolloom.BalloonColor;
+import com.teamabnormals.endergetic.common.entity.eetle.BroodEetle.HealthStage;
+import com.teamabnormals.endergetic.common.entity.eetle.flying.TargetFlyingRotations;
+import com.teamabnormals.endergetic.common.entity.purpoid.PurpoidSize;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
