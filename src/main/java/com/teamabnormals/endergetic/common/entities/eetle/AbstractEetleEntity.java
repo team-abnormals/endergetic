@@ -351,7 +351,7 @@ public abstract class AbstractEetleEntity extends Monster implements Endimatable
 
 	@Override
 	public ItemStack getPickedResult(HitResult target) {
-		return new ItemStack(EEItems.EETLE_SPAWN_EGG.get());
+		return super.getPickedResult(target); // new ItemStack(EEItems.EETLE_SPAWN_EGG.get());
 	}
 
 	@Override

@@ -34,10 +34,10 @@ public final class EEChunkGeneratorModifierProvider extends ChunkGeneratorModifi
 				.selects("the_end")
 				.addModifier(new SurfaceRuleModifier(poiseForest, false));
 
-		RuleSource corrockPlains = SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS), EESurfaceRules.CorrockRuleSource.INSTANCE);
-		this.entry("corrock_plains_surface")
-				.selects("the_end")
-				.addModifier(new SurfaceRuleModifier(corrockPlains, false));
+//		RuleSource corrockPlains = SurfaceRules.ifTrue(SurfaceRules.isBiome(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS), EESurfaceRules.CorrockRuleSource.INSTANCE);
+//		this.entry("corrock_plains_surface")
+//				.selects("the_end")
+//				.addModifier(new SurfaceRuleModifier(corrockPlains, false));
 	}
 
 }

@@ -33,8 +33,8 @@ public final class EEItems {
 	public static final RegistryObject<Item> BOOFLO_VEST = HELPER.createItem("booflo_vest", () -> new BoofloVestItem(new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 	public static final RegistryObject<Item> PUFFBUG_BOTTLE = HELPER.createItem("puffbug_bottle", () -> new PuffBugBottleItem(ItemSubRegistryHelper.createSimpleItemProperty(1, CreativeModeTab.TAB_MISC)));
 	public static final RegistryObject<Item> MUSIC_DISC_KILOBYTE = HELPER.createItem("music_disc_kilobyte", () -> new BlueprintRecordItem(14, EESounds.KILOBYTE, new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_MISC).rarity(Rarity.RARE), 163));
-	public static final RegistryObject<Item> COOKED_EETLE_EGG = HELPER.createItem("cooked_eetle_egg", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_FOOD).food(EEFoods.COOKED_EETLE_EGG)));
-	public static final RegistryObject<Item> PORTAPLASM = HELPER.createItem("portaplasm", () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_MATERIALS)));
+	public static final RegistryObject<Item> COOKED_EETLE_EGG = HELPER.createItem("cooked_eetle_egg", () -> new Item(new Item.Properties().tab(null).food(EEFoods.COOKED_EETLE_EGG)));
+	public static final RegistryObject<Item> PORTAPLASM = HELPER.createItem("portaplasm", () -> new Item(new Item.Properties().tab(null)));
 
 	public static final RegistryObject<Item> BOLLOOM_BALLOON = HELPER.createItem("bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.DEFAULT));
 	public static final RegistryObject<Item> BOLLOOM_BALLOON_RED = HELPER.createItem("red_bolloom_balloon", () -> new BolloomBalloonItem(ItemSubRegistryHelper.createSimpleItemProperty(16, CreativeModeTab.TAB_TOOLS), BalloonColor.RED));
@@ -56,6 +56,6 @@ public final class EEItems {
 
 	public static final RegistryObject<ForgeSpawnEggItem> PUFF_BUG_SPAWN_EGG = HELPER.createSpawnEggItem("puff_bug", EEEntities.PUFF_BUG::get, 15660724, 16610303);
 	public static final RegistryObject<ForgeSpawnEggItem> BOOFLO_SPAWN_EGG = HELPER.createSpawnEggItem("booflo", EEEntities.BOOFLO::get, 8143741, 16641190);
-	public static final RegistryObject<EetleSpawnEggItem> EETLE_SPAWN_EGG = HELPER.createEetleSpawnEgg();
-	public static final RegistryObject<ForgeSpawnEggItem> PURPOID_SPAWN_EGG = HELPER.createSpawnEggItem("purpoid", EEEntities.PURPOID::get, 6240129, 11179503);
+//	public static final RegistryObject<EetleSpawnEggItem> EETLE_SPAWN_EGG = HELPER.createEetleSpawnEgg();
+//	public static final RegistryObject<ForgeSpawnEggItem> PURPOID_SPAWN_EGG = HELPER.createSpawnEggItem("purpoid", EEEntities.PURPOID::get, 6240129, 11179503);
 }

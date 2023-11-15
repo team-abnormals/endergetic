@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "minecraft:end_midlands",
-  "features": "endergetic:sparse_corrock_branch",
-  "step": "surface_structures"
-}

@@ -37,14 +37,14 @@ public final class EEBiomeModifierProvider {
 
 		HolderSet<Biome> endHighlandsOrMidlands = HolderSet.direct(List.of(biomeRegistry.getHolderOrThrow(Biomes.END_HIGHLANDS), biomeRegistry.getHolderOrThrow(Biomes.END_MIDLANDS)));
 		HashMap<ResourceLocation, BiomeModifier> modifiers = new HashMap<>();
-		addModifier(modifiers, "add_eetle_spawns", new ForgeBiomeModifiers.AddSpawnsBiomeModifier(endHighlandsOrMidlands, List.of(new MobSpawnSettings.SpawnerData(EEEntities.CHARGER_EETLE.get(), 12, 2, 5), new MobSpawnSettings.SpawnerData(EEEntities.CHARGER_EETLE.get(), 8, 2, 4))));
-
-		addModifier(modifiers, "add_corrock_vegetation", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endHighlandsOrMidlands, of(placedFeatures, EEFeatures.Placed.CORROCK_PATCH, EEFeatures.Placed.EETLE_EGG_PATCH), GenerationStep.Decoration.VEGETAL_DECORATION));
-
-		addModifier(modifiers, "add_corrock_surface_structures", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endHighlandsOrMidlands, of(placedFeatures, EEFeatures.Placed.CORROCK_BRANCH, EEFeatures.Placed.CORROCK_TOWER, EEFeatures.Placed.CORROCK_SHELF, EEFeatures.Placed.CORROCK_ARCH, EEFeatures.Placed.EUMUS_PATCH, EEFeatures.Placed.SPECKLED_CORROCK_PATCH), GenerationStep.Decoration.SURFACE_STRUCTURES));
-
-		HolderSet<Biome> endMidlands = HolderSet.direct(biomeRegistry.getHolderOrThrow(Biomes.END_MIDLANDS));
-		addModifier(modifiers, "add_sparse_corrock_branch", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endMidlands, of(placedFeatures, EEFeatures.Placed.SPARSE_CORROCK_BRANCH), GenerationStep.Decoration.SURFACE_STRUCTURES));
+//		addModifier(modifiers, "add_eetle_spawns", new ForgeBiomeModifiers.AddSpawnsBiomeModifier(endHighlandsOrMidlands, List.of(new MobSpawnSettings.SpawnerData(EEEntities.CHARGER_EETLE.get(), 12, 2, 5), new MobSpawnSettings.SpawnerData(EEEntities.CHARGER_EETLE.get(), 8, 2, 4))));
+//
+//		addModifier(modifiers, "add_corrock_vegetation", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endHighlandsOrMidlands, of(placedFeatures, EEFeatures.Placed.CORROCK_PATCH, EEFeatures.Placed.EETLE_EGG_PATCH), GenerationStep.Decoration.VEGETAL_DECORATION));
+//
+//		addModifier(modifiers, "add_corrock_surface_structures", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endHighlandsOrMidlands, of(placedFeatures, EEFeatures.Placed.CORROCK_BRANCH, EEFeatures.Placed.CORROCK_TOWER, EEFeatures.Placed.CORROCK_SHELF, EEFeatures.Placed.CORROCK_ARCH, EEFeatures.Placed.EUMUS_PATCH, EEFeatures.Placed.SPECKLED_CORROCK_PATCH), GenerationStep.Decoration.SURFACE_STRUCTURES));
+//
+//		HolderSet<Biome> endMidlands = HolderSet.direct(biomeRegistry.getHolderOrThrow(Biomes.END_MIDLANDS));
+//		addModifier(modifiers, "add_sparse_corrock_branch", new ForgeBiomeModifiers.AddFeaturesBiomeModifier(endMidlands, of(placedFeatures, EEFeatures.Placed.SPARSE_CORROCK_BRANCH), GenerationStep.Decoration.SURFACE_STRUCTURES));
 
 		addModifier(modifiers, "small_end_islands_ambience", SmallEndIslandsAmbienceBiomeModifier.INSTANCE);
 		return JsonCodecProvider.forDatapackRegistry(dataGenerator, existingFileHelper, EndergeticExpansion.MOD_ID, RegistryOps.create(JsonOps.INSTANCE, access), ForgeRegistries.Keys.BIOME_MODIFIERS, modifiers);
