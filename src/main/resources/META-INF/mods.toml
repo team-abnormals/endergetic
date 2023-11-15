@@ -5,7 +5,7 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 
 [[mods]]
     modId = "endergetic"
-    version = "4.0.0"
+    version = "${file.jarVersion}"
     logoFile = "logo.png"
     itemIcon = "endergetic:poismoss"
     authors = "Team Abnormals"
@@ -18,7 +18,7 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
 [[dependencies.endergetic]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.19.2,1.20)"
+    versionRange = "[1.19.2,1.19.3)"
     ordering = "AFTER"
     side = "BOTH"
 
@@ -26,7 +26,7 @@ license = "https://github.com/team-abnormals/endergetic/blob/main/LICENSE.txt"
     modId = "forge"
     mandatory = true
     versionRange = "[43.2.0,)"
-    ordering = "NONE"
+    ordering = "AFTER"
     side = "BOTH"
 
 [[dependencies.endergetic]]
