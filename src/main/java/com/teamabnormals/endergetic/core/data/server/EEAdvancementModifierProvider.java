@@ -14,11 +14,14 @@ import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 
 public final class EEAdvancementModifierProvider extends AdvancementModifierProvider {
+	private static final EntityType<?>[] BREEDABLE_ANIMALS = new EntityType[]{EEEntityTypes.PUFF_BUG.get()};
+	private static final EntityType<?>[] MOBS_TO_KILL = new EntityType[]{EEEntityTypes.BOOFLO.get(), EEEntityTypes.PUFF_BUG.get()};
 
 	public EEAdvancementModifierProvider(DataGenerator dataGenerator) {
 		super(dataGenerator, EndergeticExpansion.MOD_ID);
@@ -34,10 +37,13 @@ public final class EEAdvancementModifierProvider extends AdvancementModifierProv
 
 		CriteriaModifier.Builder breedAllAnimals = CriteriaModifier.builder(this.modId);
 		breedAllAnimals.addCriterion("booflo", EECriteriaTriggers.BRED_BOOFLO.createInstance());
-		breedAllAnimals.addCriterion("puff_bug", BredAnimalsTrigger.TriggerInstance.bredAnimals(EntityPredicate.Builder.entity().of(EEEntityTypes.PUFF_BUG.get())));
+		for (EntityType<?> entityType : BREEDABLE_ANIMALS) {
+			breedAllAnimals.addCriterion(ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath(), BredAnimalsTrigger.TriggerInstance.bredAnimals(EntityPredicate.Builder.entity().of(entityType)));
+		}
 		this.entry("husbandry/bred_all_animals")
 				.selects("husbandry/bred_all_animals")
 				.addModifier(breedAllAnimals.requirements(RequirementsStrategy.AND).build());
+
 
 		CriteriaModifier.Builder breedAnAnimal = CriteriaModifier.builder(this.modId);
 		breedAnAnimal.addCriterion("bred_booflo", EECriteriaTriggers.BRED_BOOFLO.createInstance());
@@ -49,16 +55,12 @@ public final class EEAdvancementModifierProvider extends AdvancementModifierProv
 		CriteriaModifier.Builder killAMob = CriteriaModifier.builder(this.modId);
 		CriteriaModifier.Builder killAllMobs = CriteriaModifier.builder(this.modId);
 		ArrayList<String> names = new ArrayList<>();
-		for (RegistryObject<EntityType<?>> object : EEEntityTypes.HELPER.getDeferredRegister().getEntries()) {
-			EntityType<?> type = object.get();
-			MobCategory category = type.getCategory();
-			if (category == MobCategory.CREATURE || category == MobCategory.MONSTER || category == EEEntityTypes.END_CREATURE) {
-				String name = object.getId().getPath();
-				KilledTrigger.TriggerInstance triggerInstance = KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(type));
-				killAMob.addCriterion(name, triggerInstance);
-				killAllMobs.addCriterion(name, triggerInstance);
-				names.add(name);
-			}
+		for (EntityType<?> entityType : MOBS_TO_KILL) {
+			String name = ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath();
+			KilledTrigger.TriggerInstance triggerInstance = KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityType));
+			killAMob.addCriterion(name, triggerInstance);
+			killAllMobs.addCriterion(name, triggerInstance);
+			names.add(name);
 		}
 
 		this.entry("adventure/kill_a_mob")

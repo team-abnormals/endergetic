@@ -18,76 +18,6 @@
             },
             "trigger": "minecraft:player_killed_entity"
           },
-          "endergetic:booflo_adolescent": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:booflo_adolescent"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
-          },
-          "endergetic:booflo_baby": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:booflo_baby"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
-          },
-          "endergetic:brood_eetle": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:brood_eetle"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
-          },
-          "endergetic:charger_eetle": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:charger_eetle"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
-          },
-          "endergetic:glider_eetle": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:glider_eetle"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
-          },
           "endergetic:puff_bug": {
             "conditions": {
               "entity": [
@@ -101,46 +31,14 @@
               ]
             },
             "trigger": "minecraft:player_killed_entity"
-          },
-          "endergetic:purpoid": {
-            "conditions": {
-              "entity": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "endergetic:purpoid"
-                  }
-                }
-              ]
-            },
-            "trigger": "minecraft:player_killed_entity"
           }
         },
         "requirements": [
           [
-            "endergetic:puff_bug"
-          ],
-          [
-            "endergetic:booflo_baby"
-          ],
-          [
-            "endergetic:booflo_adolescent"
-          ],
-          [
             "endergetic:booflo"
           ],
           [
-            "endergetic:charger_eetle"
-          ],
-          [
-            "endergetic:glider_eetle"
-          ],
-          [
-            "endergetic:brood_eetle"
-          ],
-          [
-            "endergetic:purpoid"
+            "endergetic:puff_bug"
           ]
         ],
         "should_replace_requirements": false
