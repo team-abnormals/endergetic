@@ -2,7 +2,7 @@
   "parent": "endergetic:poise_forest",
   "display": {
     "icon": {
-      "item": "endergetic:booflo_spawn_egg"
+      "item": "endergetic:booflo_hide"
     },
     "title": {
       "translate": "advancements.endergetic.tame_booflo.title"
