@@ -1102,7 +1102,7 @@ public class PuffBug extends Animal implements Endimatable {
 
 	@Override
 	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-		return this.getHive() == null && !this.isFromBottle() && !this.hasCustomName();
+		return this.getHivePos() == null && !this.isFromBottle() && !this.hasCustomName();
 	}
 
 	@Override
