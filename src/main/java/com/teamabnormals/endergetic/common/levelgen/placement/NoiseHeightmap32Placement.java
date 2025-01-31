@@ -14,16 +14,16 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
+@SuppressWarnings("all")
 public class NoiseHeightmap32Placement extends PlacementModifier {
-	public static final Codec<NoiseHeightmap32Placement> CODEC = RecordCodecBuilder.create((p_191761_) -> {
-		return p_191761_.group(Codec.DOUBLE.fieldOf("noise_level").forGetter((p_191771_) -> {
+	public static final Codec<NoiseHeightmap32Placement> CODEC = RecordCodecBuilder.create((instance) -> {
+		return instance.group(Codec.DOUBLE.fieldOf("noise_level").forGetter((p_191771_) -> {
 			return p_191771_.noiseLevel;
 		}), Codec.INT.fieldOf("below_noise").forGetter((p_191769_) -> {
 			return p_191769_.belowNoise;
 		}), Codec.INT.fieldOf("above_noise").forGetter((p_191763_) -> {
 			return p_191763_.aboveNoise;
-		})).apply(p_191761_, NoiseHeightmap32Placement::new);
+		})).apply(instance, NoiseHeightmap32Placement::new);
 	});
 	private final double noiseLevel;
 	private final int belowNoise;
