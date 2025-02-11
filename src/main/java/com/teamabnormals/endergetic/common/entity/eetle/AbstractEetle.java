@@ -189,7 +189,7 @@ public abstract class AbstractEetle extends Monster implements Endimatable {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
 		//Patches of baby eetles will spawn 40% of the time
-		if (reason == MobSpawnType.NATURAL && this.random.nextFloat() < 0.4F) {
+		if (reason == MobSpawnType.NATURAL && this.random.nextFloat() < 0.25F) {
 			this.updateAge(-(20000 + this.random.nextInt(4001)));
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 			int startX = (int) this.getX();

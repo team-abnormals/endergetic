@@ -169,6 +169,7 @@ public final class EEBlocks {
 	public static final RegistryObject<Block> POISMOSS_PATH = HELPER.createBlock("poismoss_path", () -> new PoismossPathBlock(() -> Blocks.END_STONE, EEProperties.POISMOSS_PATH));
 
 	public static final RegistryObject<Block> EETLE_EGG = HELPER.createBlock("eetle_egg", () -> new EetleEggBlock(EEProperties.EETLE_EGG));
+	public static final RegistryObject<Block> PORTAPLASM_BLOCK = HELPER.createBlock("portaplasm_block", () -> new PortaplasmBlock(EEProperties.PORTAPLASM));
 
 	public static void setupTabEditors() {
 		CreativeModeTabContentsPopulator.mod(EndergeticExpansion.MOD_ID)
@@ -194,8 +195,10 @@ public final class EEBlocks {
 				.addItemsAfter(of(Blocks.SOUL_LANTERN), ENDER_LANTERN)
 				.addItemsBefore(of(Items.END_CRYSTAL), ACIDIAN_LANTERN)
 				.addItemsAfter(of(Blocks.WARPED_HANGING_SIGN), POISE_SIGNS.getFirst(), POISE_HANGING_SIGNS.getFirst())
+				.addItems(PORTAPLASM_BLOCK)
 				.tab(REDSTONE_BLOCKS)
-				.addItemsBefore(of(Blocks.SCULK_SENSOR), BOOF_BLOCK);
+				.addItemsBefore(of(Blocks.SCULK_SENSOR), BOOF_BLOCK)
+				.addItemsAfter(of(Blocks.HONEY_BLOCK), PORTAPLASM_BLOCK);
 
 		CreativeModeTabContentsPopulator.mod("woodworks_1")
 				.tab(FUNCTIONAL_BLOCKS)

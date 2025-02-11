@@ -27,7 +27,6 @@ import java.util.List;
 @EventBusSubscriber(modid = EndergeticExpansion.MOD_ID, value = Dist.CLIENT)
 public final class KeybindHandler {
 	private static final List<KeyMapping> keyBinds = Lists.newArrayList();
-	private static final KeyMapping BOOF_VEST = registerKeybind(new KeyMapping("key.endergetic.booflo_vest", 32, "key.categories.movement"));
 	public static final KeyMapping BOOFLO_SLAM = registerKeybind(new KeyMapping("key.endergetic.booflo_slam", 88, "key.categories.gameplay"));
 
 	public static void registerKeys(RegisterKeyMappingsEvent event) {
@@ -47,7 +46,7 @@ public final class KeybindHandler {
 		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		if (BOOF_VEST.isDown() && !player.getAbilities().flying) {
+		if (Minecraft.getInstance().options.keyJump.isDown() && !player.getAbilities().flying) {
 			ItemStack stack = player.getInventory().getArmor(2);
 			if (stack.getItem() == EEItems.BOOFLO_VEST.get() && !player.onGround() && !player.isSpectator()) {
 				if (BoofloVestItem.canBoof(stack, player)) {

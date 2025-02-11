@@ -62,6 +62,7 @@ public final class EEItems {
 	public static final RegistryObject<ForgeSpawnEggItem> PUFF_BUG_SPAWN_EGG = HELPER.createSpawnEggItem("puff_bug", EEEntityTypes.PUFF_BUG::get, 15660724, 16610303);
 	public static final RegistryObject<ForgeSpawnEggItem> BOOFLO_SPAWN_EGG = HELPER.createSpawnEggItem("booflo", EEEntityTypes.BOOFLO::get, 8143741, 16641190);
 	public static final RegistryObject<EetleSpawnEggItem> EETLE_SPAWN_EGG = HELPER.createEetleSpawnEgg();
+	public static final RegistryObject<ForgeSpawnEggItem> BROOD_EETLE_SPAWN_EGG = HELPER.createSpawnEggItem("brood_eetle", EEEntityTypes.BROOD_EETLE::get, 0x6e7ebe, 0xE78FFF);
 	public static final RegistryObject<ForgeSpawnEggItem> PURPOID_SPAWN_EGG = HELPER.createSpawnEggItem("purpoid", EEEntityTypes.PURPOID::get, 6240129, 11179503);
 
 	public static void setupTabEditors() {

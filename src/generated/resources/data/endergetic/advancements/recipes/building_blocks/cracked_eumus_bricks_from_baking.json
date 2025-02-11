@@ -1,0 +1,56 @@
+{
+  "advancements": [
+    {
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+          "has_eumus_bricks": {
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "endergetic:eumus_bricks"
+                  ]
+                }
+              ]
+            },
+            "trigger": "minecraft:inventory_changed"
+          },
+          "has_the_recipe": {
+            "conditions": {
+              "recipe": "endergetic:cracked_eumus_bricks_from_baking"
+            },
+            "trigger": "minecraft:recipe_unlocked"
+          }
+        },
+        "requirements": [
+          [
+            "has_eumus_bricks",
+            "has_the_recipe"
+          ]
+        ],
+        "rewards": {
+          "recipes": [
+            "endergetic:cracked_eumus_bricks_from_baking"
+          ]
+        },
+        "sends_telemetry_event": false
+      },
+      "conditions": [
+        {
+          "type": "blueprint:and",
+          "values": [
+            {
+              "type": "forge:mod_loaded",
+              "modid": "clayworks"
+            },
+            {
+              "type": "clayworks:config",
+              "value": "kiln"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

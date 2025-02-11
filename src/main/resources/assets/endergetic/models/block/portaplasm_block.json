@@ -1,0 +1,53 @@
+{
+  "loader": "blueprint:fullbright",
+  "texture_size": [64, 64],
+  "parent": "block/block",
+  "textures": {
+    "0": "endergetic:block/portaplasm_block",
+    "emissive": "endergetic:block/portaplasm_block_emissive",
+    "particle": "endergetic:block/portaplasm_gel"
+  },
+  "elements": [
+    {
+      "name": "inner",
+      "from": [1, 1, 1],
+      "to": [15, 15, 15],
+      "faces": {
+        "north": {"uv": [3.5, 11.5, 7, 15], "texture": "#0"},
+        "east": {"uv": [0, 11.5, 3.5, 15], "texture": "#0"},
+        "south": {"uv": [10.5, 11.5, 14, 15], "texture": "#0"},
+        "west": {"uv": [7, 11.5, 10.5, 15], "texture": "#0"},
+        "up": {"uv": [3.5, 11.5, 7, 8], "texture": "#0"},
+        "down": {"uv": [7, 11.5, 10.5, 8], "texture": "#0"}
+      }
+    },
+    {
+      "name": "inner_emissive",
+      "fullbright": true,
+      "shade": false,
+      "from": [1, 1, 1],
+      "to": [15, 15, 15],
+      "faces": {
+        "north": {"uv": [3.5, 11.5, 7, 15], "texture": "#emissive"},
+        "east": {"uv": [0, 11.5, 3.5, 15], "texture": "#emissive"},
+        "south": {"uv": [10.5, 11.5, 14, 15], "texture": "#emissive"},
+        "west": {"uv": [7, 11.5, 10.5, 15], "texture": "#emissive"},
+        "up": {"uv": [3.5, 11.5, 7, 8], "texture": "#emissive"},
+        "down": {"uv": [7, 11.5, 10.5, 8], "texture": "#emissive"}
+      }
+    },
+    {
+      "name": "outer",
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [4, 4, 8, 8], "texture": "#0"},
+        "east": {"uv": [0, 4, 4, 8], "texture": "#0"},
+        "south": {"uv": [12, 4, 16, 8], "texture": "#0"},
+        "west": {"uv": [8, 4, 12, 8], "texture": "#0"},
+        "up": {"uv": [4, 0, 8, 4], "texture": "#0"},
+        "down": {"uv": [8, 0, 12, 4], "texture": "#0"}
+      }
+    }
+  ]
+}

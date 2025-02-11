@@ -144,7 +144,7 @@ public class Purpoid extends PathfinderMob implements Endimatable {
 			this.restOntoProgressO = this.restOntoProgress;
 			this.prevPull = this.pull;
 			Vec3 pos = this.position();
-			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.1F));
+			this.pull = pos.add(this.pull.subtract(pos).normalize().scale(0.25F));
 
 			if ((this.isBoosting() || this.isEndimationPlaying(EEPlayableEndimations.PURPOID_SQUIRT_ATTACK) || this.getStunTimer() > 0) && level.getGameTime() % 4 == 0) {
 				double dy = this.pull.y() - pos.y();
@@ -464,7 +464,7 @@ public class Purpoid extends PathfinderMob implements Endimatable {
 	}
 
 	public void resetRestCooldown() {
-		this.restCooldown = this.getRandom().nextInt(2001) + 600;
+		this.restCooldown = this.getRandom().nextInt(1001) + 600;
 	}
 
 	public boolean hasRestCooldown() {
@@ -569,19 +569,15 @@ public class Purpoid extends PathfinderMob implements Endimatable {
 
 	@Nullable
 	@Override
+	@SuppressWarnings("deprecation")
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
-		if (spawnData == null) {
-			spawnData = new AgeableMob.AgeableMobGroupData(true);
-		}
-
 		RandomSource random = this.random;
-		if (spawnData instanceof AgeableMob.AgeableMobGroupData ageableData) {
-			if (ageableData.isShouldSpawnBaby() && ageableData.getGroupSize() > 0 && random.nextFloat() <= ageableData.getBabySpawnChance()) {
-				this.updateAge(-24000);
-			} else if (random.nextFloat() <= 0.005F) {
-				this.setSize(PurpoidSize.PURPAZOID, true);
-			}
-			ageableData.increaseGroupSizeByOne();
+		if (random.nextFloat() < 0.5F) {
+			this.updateAge(-24000);
+		} else if (random.nextFloat() < 0.005F) {
+			this.setSize(PurpoidSize.PURPAZOID, true);
+		} else if (random.nextFloat() < 0.75F) {
+			this.allowRest();
 		}
 		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnData, dataTag);
 	}

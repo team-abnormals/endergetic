@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "blueprint:and",
+          "values": [
+            {
+              "type": "forge:mod_loaded",
+              "modid": "clayworks"
+            },
+            {
+              "type": "clayworks:config",
+              "value": "kiln"
+            }
+          ]
+        }
+      ],
+      "recipe": {
+        "type": "clayworks:baking",
+        "category": "blocks",
+        "cookingtime": 100,
+        "experience": 0.1,
+        "ingredient": {
+          "item": "minecraft:purpur_block"
+        },
+        "result": "endergetic:cracked_purpur_block"
+      }
+    }
+  ]
+}

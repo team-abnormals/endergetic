@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "phase=0,powered=false": {
+      "model": "endergetic:block/portaplasm_block"
+    },
+    "phase=0,powered=true": {
+      "model": "endergetic:block/portaplasm_block_deactivated"
+    },
+    "phase=1,powered=false": {
+      "model": "endergetic:block/portaplasm_block_transition"
+    },
+    "phase=1,powered=true": {
+      "model": "endergetic:block/portaplasm_block_transition"
+    },
+    "phase=2,powered=false": {
+      "model": "endergetic:block/portaplasm_block_activated"
+    },
+    "phase=2,powered=true": {
+      "model": "endergetic:block/portaplasm_block_activated"
+    },
+    "phase=3,powered=false": {
+      "model": "endergetic:block/portaplasm_block_transition"
+    },
+    "phase=3,powered=true": {
+      "model": "endergetic:block/portaplasm_block_transition"
+    }
+  }
+}

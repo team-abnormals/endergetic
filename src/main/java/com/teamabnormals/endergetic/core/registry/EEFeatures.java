@@ -11,7 +11,9 @@ import com.teamabnormals.endergetic.common.levelgen.feature.corrock.tower.SmallC
 import com.teamabnormals.endergetic.common.levelgen.placement.HeightmapSpreadDoublePlacement;
 import com.teamabnormals.endergetic.common.levelgen.placement.HeightmapSpreadLowerPlacement;
 import com.teamabnormals.endergetic.common.levelgen.placement.NoiseHeightmap32Placement;
+import com.teamabnormals.endergetic.common.levelgen.placement.NoiseRarityFilter;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.builtin.EENoises;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -28,6 +30,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -142,6 +145,8 @@ public final class EEFeatures {
 		public static final ResourceKey<PlacedFeature> SPECKLED_CORROCK_PATCH = createKey("speckled_corrock");
 
 		public static void bootstrap(BootstapContext<PlacedFeature> context) {
+			HolderGetter<NormalNoise.NoiseParameters> noise = context.lookup(Registries.NOISE);
+
 			register(context, POISE_DOME, EEConfiguredFeatures.POISE_DOME, PlacementUtils.countExtra(3, 0.02F, 1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 			register(context, POISE_TREE, EEConfiguredFeatures.POISE_TREE, PlacementUtils.countExtra(2, 0.05F, 1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
 			register(context, POISE_CLUSTER, EEConfiguredFeatures.POISE_CLUSTER, new NoiseHeightmap32Placement(-0.8D, 4, 22), BiomeFilter.biome());
@@ -152,10 +157,10 @@ public final class EEFeatures {
 
 			register(context, CORROCK_PATCH, EEConfiguredFeatures.CORROCK_PATCH, CountPlacement.of(3), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 			register(context, DISK_CORROCK, EEConfiguredFeatures.DISK_CORROCK, BiomeFilter.biome());
-			register(context, SPARSE_CORROCK_BRANCH, EEConfiguredFeatures.EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH, CountPlacement.of(5), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
+			register(context, SPARSE_CORROCK_BRANCH, EEConfiguredFeatures.EXTRA_BRANCH_DECORATIONS_CORROCK_BRANCH, RarityFilter.onAverageOnceEvery(8), CountPlacement.of(3), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 			register(context, CORROCK_BRANCH, EEConfiguredFeatures.EXTRA_CROWNS_CORROCK_BRANCH, CountPlacement.of(64), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 			register(context, CORROCK_TOWER, EEConfiguredFeatures.CORROCK_TOWER, CountPlacement.of(128), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
-			register(context, CORROCK_SHELF, EEConfiguredFeatures.CORROCK_SHELF, CountPlacement.of(8), InSquarePlacement.spread(), HeightmapSpreadLowerPlacement.INSTANCE, BiomeFilter.biome());
+			register(context, CORROCK_SHELF, EEConfiguredFeatures.CORROCK_SHELF, new NoiseRarityFilter(noise.getOrThrow(EENoises.CORROCK), 0.5F, 0.1F, 1.0F), CountPlacement.of(8), InSquarePlacement.spread(), HeightmapSpreadLowerPlacement.INSTANCE, BiomeFilter.biome());
 			register(context, CORROCK_ARCH, EEConfiguredFeatures.CORROCK_ARCH, CountPlacement.of(26), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());
 			register(context, EETLE_EGG_PATCH, EEConfiguredFeatures.EETLE_EGG_PATCH, CountPlacement.of(1), InSquarePlacement.spread(), BiomeFilter.biome());
 			register(context, EUMUS_PATCH, EEConfiguredFeatures.EUMUS_PATCH, CountPlacement.of(2), InSquarePlacement.spread(), HeightmapSpreadDoublePlacement.MOTION_BLOCKING, BiomeFilter.biome());

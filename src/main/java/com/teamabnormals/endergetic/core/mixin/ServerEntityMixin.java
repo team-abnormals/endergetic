@@ -1,6 +1,8 @@
 package com.teamabnormals.endergetic.core.mixin;
 
 import com.google.common.collect.Lists;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.teamabnormals.endergetic.common.entity.bolloom.BolloomBalloon;
 import com.teamabnormals.endergetic.common.network.entity.S2CUpdateBalloonsMessage;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
@@ -13,7 +15,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -35,8 +36,8 @@ public final class ServerEntityMixin {
 		}
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isPassenger()Z"), method = "sendChanges")
-	private boolean redirectPositionUpdate(Entity trackedEntity) {
-		return trackedEntity.isPassenger() || trackedEntity instanceof BolloomBalloon && ((BolloomBalloon) trackedEntity).isAttachedToEntity();
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;isPassenger()Z"), method = "sendChanges")
+	private boolean wrapPositionUpdate(Entity trackedEntity, Operation<Boolean> original) {
+		return original.call(trackedEntity) || trackedEntity instanceof BolloomBalloon balloon && balloon.isAttachedToEntity();
 	}
 }

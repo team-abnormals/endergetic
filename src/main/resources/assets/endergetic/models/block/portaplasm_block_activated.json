@@ -1,0 +1,7 @@
+{
+  "parent": "endergetic:block/portaplasm_block",
+  "textures": {
+    "0": "endergetic:block/portaplasm_block_active",
+    "emissive": "endergetic:block/portaplasm_block_active_emissive"
+  }
+}

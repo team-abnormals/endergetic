@@ -379,7 +379,7 @@ public class BroodEetle extends Monster implements Endimatable, IFlyingEetle {
 					d0 = d0 * 0.05D;
 					d1 = d1 * 0.05D;
 					if (!this.isVehicle()) {
-						this.push(-d0 * 0.2F, 0.0D, -d1 * 0.2F);
+						this.push(-d0 * 0.05F, 0.0D, -d1 * 0.05F);
 					}
 
 					if (!collider.isVehicle()) {

@@ -122,6 +122,8 @@ public class EndergeticExpansion {
 
 		REGISTRY_HELPER.register(bus);
 		EEParticleTypes.PARTICLES.register(bus);
+		EEMobEffects.MOB_EFFECTS.register(bus);
+		EEMobEffects.POTIONS.register(bus);
 		EESurfaceRules.RULES.register(bus);
 		EEPlacementModifierTypes.PLACEMENT_MODIFIER_TYPES.register(bus);
 		EEFeatures.FEATURES.register(bus);
@@ -148,6 +150,7 @@ public class EndergeticExpansion {
 	private void commonSetup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
 			EECompat.registerCompat();
+			EEMobEffects.registerBrewingRecipes();
 		});
 	}
 

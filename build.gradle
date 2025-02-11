@@ -83,18 +83,24 @@ dependencies {
 
     implementation fg.deobf("com.teamabnormals:boatload:${project.minecraft}-${project.boatload}")
     implementation fg.deobf("com.teamabnormals:woodworks:${project.minecraft}-${project.woodworks}")
+    implementation fg.deobf("com.teamabnormals:clayworks:${project.minecraft}-${project.clayworks}")
 
     compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}-common-api:${project.jei}")
     compileOnly fg.deobf("mezz.jei:jei-${project.minecraft}-forge-api:${project.jei}")
     runtimeOnly fg.deobf("mezz.jei:jei-${project.minecraft}-forge:${project.jei}")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
+        jarJar.ranged(it, "[0.4.1,)")
+    }
 }
 
 repositories {
-    maven { url = "https://maven.jaackson.me" }
-    maven { url = "https://dvs1.progwml6.com/files/maven/" }
-    maven { url = "https://modmaven.k-4u.nl" }
+    maven { url "https://maven.teamabnormals.com/" }
+    maven { url "https://dvs1.progwml6.com/files/maven/" }
+    maven { url "https://modmaven.k-4u.nl" }
 }
 
 jar {

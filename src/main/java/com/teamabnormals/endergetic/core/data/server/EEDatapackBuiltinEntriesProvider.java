@@ -6,10 +6,7 @@ import com.teamabnormals.endergetic.core.registry.EEFeatures.EEConfiguredFeature
 import com.teamabnormals.endergetic.core.registry.EEFeatures.EEPlacedFeatures;
 import com.teamabnormals.endergetic.core.registry.EEStructureTypes.EEStructureSets;
 import com.teamabnormals.endergetic.core.registry.EEStructureTypes.EEStructures;
-import com.teamabnormals.endergetic.core.registry.builtin.EEBiomeModifiers;
-import com.teamabnormals.endergetic.core.registry.builtin.EEBiomeSlices;
-import com.teamabnormals.endergetic.core.registry.builtin.EEBiomes;
-import com.teamabnormals.endergetic.core.registry.builtin.EEDamageTypes;
+import com.teamabnormals.endergetic.core.registry.builtin.*;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -27,6 +24,7 @@ public class EEDatapackBuiltinEntriesProvider extends DatapackBuiltinEntriesProv
 			.add(Registries.PLACED_FEATURE, EEPlacedFeatures::bootstrap)
 			.add(Registries.BIOME, EEBiomes::bootstrap)
 			.add(Registries.DAMAGE_TYPE, EEDamageTypes::bootstrap)
+			.add(Registries.NOISE, EENoises::bootstrap)
 			.add(Registries.STRUCTURE, EEStructures::bootstrap)
 			.add(Registries.STRUCTURE_SET, EEStructureSets::bootstrap)
 			.add(BlueprintDataPackRegistries.MODDED_BIOME_SLICES, EEBiomeSlices::bootstrap)

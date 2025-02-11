@@ -3,6 +3,7 @@ package com.teamabnormals.endergetic.core.other;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.util.PropertyUtil.WoodSetProperties;
 import com.teamabnormals.endergetic.common.block.EetleEggBlock;
+import com.teamabnormals.endergetic.common.block.PortaplasmBlock;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.registry.EESoundEvents;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -32,6 +34,10 @@ public final class EEProperties {
 	public static final Properties ACIDIAN_LANTERN = Properties.of().mapColor(MapColor.PODZOL).strength(50F, 6000.0F).lightLevel(state -> 15).requiresCorrectToolForDrops();
 	public static final Properties BOLLOOM_CRATE = Properties.of().mapColor(MapColor.TERRACOTTA_YELLOW).strength(1.5F).sound(SoundType.WOOD).ignitedByLava();
 	public static final Properties EETLE_EGG = Properties.of().mapColor(MapColor.COLOR_PURPLE).lightLevel(state -> 7 + state.getValue(EetleEggBlock.SIZE)).strength(1.0F).sound(EESoundEvents.EESoundTypes.EETLE_EGG).pushReaction(PushReaction.DESTROY);
+	public static final Properties PORTAPLASM = Properties.of().mapColor(MapColor.COLOR_PURPLE).lightLevel(state -> {
+		int phase = state.getValue(PortaplasmBlock.PHASE);
+		return phase > 0 || !state.getValue(BlockStateProperties.POWERED) ? phase + 8 : 0;
+	}).sound(SoundType.HONEY_BLOCK).noOcclusion();
 	public static final Properties INFESTED_CORROCK = Properties.of().mapColor(MapColor.COLOR_PURPLE).lightLevel(state -> 12).randomTicks().strength(1.5F, 6.0F).sound(SoundType.CORAL_BLOCK);
 	public static final Properties PETRIFIED_INFESTED_CORROCK = Properties.of().mapColor(MapColor.COLOR_PURPLE).lightLevel(state -> 12).strength(1.5F, 6.0F).sound(SoundType.CORAL_BLOCK);
 

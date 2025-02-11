@@ -24,5 +24,4 @@ public final class ChorusPlantFeatureMixin {
 			info.setReturnValue(true);
 		}
 	}
-
 }

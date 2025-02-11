@@ -2,11 +2,11 @@ package com.teamabnormals.endergetic.core.registry;
 
 import com.mojang.serialization.Codec;
 import com.teamabnormals.endergetic.core.EndergeticExpansion;
+import com.teamabnormals.endergetic.core.registry.builtin.EENoises;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
@@ -31,7 +31,8 @@ public final class EESurfaceRules extends SurfaceRules {
 
 		@Override
 		public SurfaceRule apply(Context context) {
-			NormalNoise normalNoise = context.randomState.getOrCreateNoise(Noises.SURFACE);
+			NormalNoise corrockNoise = context.randomState.getOrCreateNoise(EENoises.CORROCK);
+			NormalNoise tendrilsNoise = context.randomState.getOrCreateNoise(EENoises.CORROCK_TENDRILS);
 			PositionalRandomFactory randomFactory = context.randomState.getOrCreateRandomFactory(new ResourceLocation(EndergeticExpansion.MOD_ID, "corrock"));
 			BlockState corrock = EEBlocks.END_CORROCK_BLOCK.get().defaultBlockState();
 			BlockState eumus = EEBlocks.EUMUS.get().defaultBlockState();
@@ -46,21 +47,20 @@ public final class EESurfaceRules extends SurfaceRules {
 				public BlockState tryApply(int x, int y, int z) {
 					if (context.lastUpdateXZ != this.lastUpdateXZ) {
 						this.lastUpdateXZ = context.lastUpdateXZ;
-						double noise = normalNoise.getValue(x, 0.0F, z);
-						if (noise > 0.23F) {
-							if (noise <= 0.255F) {
-								if ((randomFactory.at(x, 0, z)).nextFloat() < 0.35F) {
-									this.lastResult = LastResult.SPECKLED;
-								} else {
-									this.lastResult = LastResult.CORROCK_EUMUS;
-								}
-							} else {
-								this.lastResult = LastResult.CORROCK_EUMUS;
-							}
-						} else if (noise > 0.155F && (randomFactory.at(x, 0, z)).nextFloat() <= Math.abs(noise - 0.155F)) {
-							this.lastResult = LastResult.SPECKLED;
-						} else {
+						double corrockNoiseValue = corrockNoise.getValue(x, 0.0F, z);
+						if (corrockNoiseValue < 0.5F) {
 							this.lastResult = LastResult.NOOP;
+						} else {
+							double tendrilNoiseValue = Math.min(Math.abs(tendrilsNoise.getValue(x, 0.0D, z)), 1.0D);
+							double tendrilThreshold = corrockNoiseValue < 0.7D ? 0.125F : 1.5D * (corrockNoiseValue - 0.7D) + 0.125D;
+							double tendrilProgress = tendrilThreshold - tendrilNoiseValue;
+							if (tendrilProgress >= 0.0D) {
+								this.lastResult = LastResult.CORROCK_EUMUS;
+							} else if (tendrilProgress >= -0.05D || (tendrilProgress >= -0.1D && randomFactory.at(x, 0, z).nextFloat() <= -5.0D * tendrilProgress)) {
+								this.lastResult = LastResult.SPECKLED;
+							} else {
+								this.lastResult = LastResult.NOOP;
+							}
 						}
 					}
 

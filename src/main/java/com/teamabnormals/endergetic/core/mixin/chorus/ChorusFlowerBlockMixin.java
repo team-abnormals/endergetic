@@ -1,5 +1,7 @@
 package com.teamabnormals.endergetic.core.mixin.chorus;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.teamabnormals.endergetic.core.other.tags.EEBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -9,7 +11,6 @@ import net.minecraft.world.level.block.ChorusFlowerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
  * @author SmellyModder (Luke Tonon)
@@ -17,14 +18,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ChorusFlowerBlock.class)
 public final class ChorusFlowerBlockMixin {
 
-	@Redirect(at = @At(value = "INVOKE", ordinal = 3), method = "canSurvive")
-	private boolean canSurvive(BlockState state, Block block) {
-		return state.is(EEBlockTags.CHORUS_PLANTABLE);
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z"), method = "canSurvive")
+	private boolean canSurvive(BlockState state, Block block, Operation<Boolean> original) {
+		return original.call(state, block) || block == Blocks.END_STONE && state.is(EEBlockTags.CHORUS_PLANTABLE);
 	}
 
-	@Redirect(at = @At(value = "INVOKE", ordinal = 8), method = "randomTick")
-	private BlockState isEndstone(ServerLevel level, BlockPos pos) {
-		BlockState blockState = level.getBlockState(pos);
-		return blockState.is(EEBlockTags.CHORUS_PLANTABLE) ? Blocks.END_STONE.defaultBlockState() : blockState;
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z"), method = "randomTick")
+	private boolean randomTick(BlockState state, Block block, Operation<Boolean> original) {
+		return original.call(state, block) || block == Blocks.END_STONE && state.is(EEBlockTags.CHORUS_PLANTABLE);
 	}
 }

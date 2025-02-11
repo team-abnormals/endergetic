@@ -2,8 +2,12 @@
   "feature": "endergetic:extra_branch_decorations_corrock_branch",
   "placement": [
     {
+      "type": "minecraft:rarity_filter",
+      "chance": 8
+    },
+    {
       "type": "minecraft:count",
-      "count": 5
+      "count": 3
     },
     {
       "type": "minecraft:in_square"

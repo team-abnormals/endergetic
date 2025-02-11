@@ -12,6 +12,7 @@ import com.teamabnormals.endergetic.core.EndergeticExpansion;
 import com.teamabnormals.endergetic.core.registry.EEBlocks;
 import com.teamabnormals.endergetic.core.registry.EEEntityTypes;
 import com.teamabnormals.endergetic.core.registry.EEStructureTypes.EEStructurePieceTypes;
+import com.teamabnormals.endergetic.core.registry.builtin.EENoises;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.phys.Vec3;
@@ -150,20 +152,26 @@ public final class EetleNestPieces {
 			pos = new BlockPos(originX, chunkGenerator.getFirstFreeHeight(originX, originZ, Heightmap.Types.WORLD_SURFACE_WG, world, randomState), originZ);
 
 			PerlinSimplexNoise surfaceNoise = SURFACE_NOISE.computeIfAbsent(world.getSeed(), seedL -> new PerlinSimplexNoise(new WorldgenRandom(RandomSource.create(seedL)), List.of(-3, 0)));
-			int radius = 32;
-			for (int x = -radius; x < radius; x++) {
-				for (int z = -radius; z < radius; z++) {
+			NormalNoise tendrilNoise = randomState.getOrCreateNoise(EENoises.CORROCK_TENDRILS);
+			int range = 60;
+			int radius = 28;
+			int radiusSquared = radius * radius;
+			for (int x = -range; x < range; x++) {
+				for (int z = -range; z < range; z++) {
 					double noise = surfaceNoise.getValue(x, z, true);
 					double areaNoise = noise * 12.0D - 7.0D;
 					double distanceSq = x * x + z * z + areaNoise * areaNoise;
-					if (distanceSq <= (radius - 3) * (radius - 3)) {
-						int posX = originX + x;
-						int posZ = originZ + z;
+					int posX = originX + x;
+					int posZ = originZ + z;
+					if (distanceSq <= radiusSquared) {
 						transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 40, noise, bounds, CORROCK_BLOCK_STATE, EUMUS_STATE);
-					} else if (distanceSq <= radius * radius) {
-						int posX = originX + x;
-						int posZ = originZ + z;
-						if (random.nextFloat() <= 0.6F - (distanceSq >= (radius - 1.0F) * (radius - 1.0F) ? 0.3F : 0.0F)) {
+					} else {
+						double tendrilNoiseValue = Math.abs(tendrilNoise.getValue(posX, 0.0D, posZ));
+						double distanceDampening = distanceSq / radiusSquared;
+						double tendrilProgress = 0.6D - 0.15D * distanceDampening - tendrilNoiseValue;
+						if (tendrilProgress >= 0.0D) {
+							transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 40, noise, bounds, CORROCK_BLOCK_STATE, EUMUS_STATE);
+						} else if (tendrilProgress >= -0.05D || (tendrilProgress >= -0.1D && random.nextFloat() <= -5.0D * tendrilProgress)) {
 							transformSurface(world, posX, posZ, world.getSeaLevel() / 2, 24, noise, bounds, SPECKLED_CORROCK_STATE, END_STONE);
 						}
 					}

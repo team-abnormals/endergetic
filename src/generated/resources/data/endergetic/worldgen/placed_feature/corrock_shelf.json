@@ -2,6 +2,13 @@
   "feature": "endergetic:corrock_shelf",
   "placement": [
     {
+      "type": "endergetic:noise_rarity_filter",
+      "above_noise": 1.0,
+      "below_noise": 0.10000000149011612,
+      "noise": "endergetic:corrock",
+      "noise_level": 0.5
+    },
+    {
       "type": "minecraft:count",
       "count": 8
     },

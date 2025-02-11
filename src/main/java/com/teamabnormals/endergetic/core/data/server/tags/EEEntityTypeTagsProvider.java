@@ -32,5 +32,13 @@ public final class EEEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				BOOF_BLOCK.get(), POISE_CLUSTER.get(), PUFF_BUG.get(), BOOFLO.get(), BOOFLO_ADOLESCENT.get(), BOOFLO_BABY.get(), BROOD_EETLE.get(),
 				EntityType.SHULKER, EntityType.ARMOR_STAND, EntityType.PHANTOM, EntityType.GHAST, EntityType.WITHER, EntityType.ENDER_DRAGON
 		);
+
+		this.tag(EEEntityTypeTags.TELEPORT_IMMUNE).add(
+				EntityType.SHULKER, EntityType.ENDER_DRAGON, PURPOID.get(), BROOD_EETLE.get()
+		);
+
+		this.tag(EEEntityTypeTags.PORTABLE).add(
+				EntityType.ITEM, EntityType.TNT, EntityType.FALLING_BLOCK
+		);
 	}
 }

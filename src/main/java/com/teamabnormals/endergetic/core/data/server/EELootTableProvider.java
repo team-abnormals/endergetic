@@ -28,7 +28,6 @@ import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
 import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -92,7 +91,7 @@ public class EELootTableProvider extends LootTableProvider {
 			this.dropOther(POISMOSS_PATH.get(), Blocks.END_STONE);
 
 			this.dropSelf(EUMUS.get());
-			this.dropWhenSilkTouch(EUMUS_POISMOSS.get());
+			this.add(EUMUS_POISMOSS.get(), (block) -> this.createSingleItemTableWithSilkTouch(block, EUMUS.get()));
 			this.dropOther(EUMUS_POISMOSS_PATH.get(), EUMUS_POISMOSS.get());
 
 			this.dropSelf(EUMUS_BRICKS.get());
@@ -137,6 +136,7 @@ public class EELootTableProvider extends LootTableProvider {
 
 			this.dropSelf(INFESTED_CORROCK.get());
 			this.dropSelf(PETRIFIED_INFESTED_CORROCK.get());
+			this.dropSelf(PORTAPLASM_BLOCK.get());
 
 			this.dropWhenSilkTouch(END_CORROCK.get());
 			this.dropSelf(END_CORROCK_BLOCK.get());

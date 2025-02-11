@@ -29,7 +29,8 @@ import java.util.stream.Stream;
 public final class EEBiomeModifiers {
 
 	public static void bootstrap(BootstapContext<BiomeModifier> context) {
-		addSpawn(context, "add_eetle_spawns", EEBiomeTags.HAS_EETLE, new MobSpawnSettings.SpawnerData(EEEntityTypes.CHARGER_EETLE.get(), 12, 2, 5), new MobSpawnSettings.SpawnerData(EEEntityTypes.CHARGER_EETLE.get(), 8, 2, 4));
+		addSpawn(context, "add_eetle_spawns", EEBiomeTags.HAS_EETLE, new MobSpawnSettings.SpawnerData(EEEntityTypes.CHARGER_EETLE.get(), 12, 2, 5), new MobSpawnSettings.SpawnerData(EEEntityTypes.GLIDER_EETLE.get(), 8, 2, 4));
+		addSpawn(context, "add_purpoid_spawns", EEBiomeTags.HAS_PURPOID, new MobSpawnSettings.SpawnerData(EEEntityTypes.PURPOID.get(), 12, 1, 6));
 		addFeature(context, "add_corrock_vegetation", EEBiomeTags.HAS_CORROCK, GenerationStep.Decoration.VEGETAL_DECORATION, EEPlacedFeatures.CORROCK_PATCH, EEPlacedFeatures.EETLE_EGG_PATCH);
 		addFeature(context, "add_corrock_surface_structures", EEBiomeTags.HAS_CORROCK, GenerationStep.Decoration.SURFACE_STRUCTURES, EEPlacedFeatures.CORROCK_BRANCH, EEPlacedFeatures.CORROCK_TOWER, EEPlacedFeatures.CORROCK_SHELF, EEPlacedFeatures.CORROCK_ARCH, EEPlacedFeatures.EUMUS_PATCH, EEPlacedFeatures.SPECKLED_CORROCK_PATCH);
 		addFeature(context, "add_sparse_corrock_branch", EEBiomeTags.HAS_SPARSE_CORROCK, GenerationStep.Decoration.SURFACE_STRUCTURES, EEPlacedFeatures.SPARSE_CORROCK_BRANCH);

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.teamabnormals.blueprint.client.BlueprintRenderTypes;
 import com.teamabnormals.endergetic.client.model.purpoid.PurpModel;
-import com.teamabnormals.endergetic.client.model.purpoid.PurpazoidModel;
 import com.teamabnormals.endergetic.client.model.purpoid.PurpoidModel;
 import com.teamabnormals.endergetic.client.renderer.entity.layers.PurpShielderLayer;
 import com.teamabnormals.endergetic.client.renderer.entity.layers.PurpazoidStunLayer;
@@ -28,6 +27,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -81,17 +82,25 @@ public class PurpoidRenderer extends MobRenderer<Purpoid, PurpoidModel> {
 			}
 		} else {
 			Vec3 pull = purpoid.getPull(partialTicks);
-
 			double pulledX = Mth.lerp(partialTicks, purpoid.xo, purpoid.getX()) - pull.x();
 			double pulledY = Mth.lerp(partialTicks, purpoid.yo, purpoid.getY()) - pull.y();
 			double pulledZ = Mth.lerp(partialTicks, purpoid.zo, purpoid.getZ()) - pull.z();
 
+			Vector3f lookDir = new Vector3f((float) pulledX, (float) pulledY, (float) pulledZ);
+			if (lookDir.lengthSquared() < 1e-6F) {
+				lookDir.set(0.0F, 0.0F, 1.0F);
+			} else {
+				lookDir.normalize();
+			}
+
+			Vector3f defaultForward = new Vector3f(0.0F, 0.0F, -1.0F);
+			Quaternionf rotation = new Quaternionf().rotationTo(defaultForward, lookDir);
+			Quaternionf correction = new Quaternionf().rotateX(-Mth.HALF_PI);
+			rotation.mul(correction);
+
 			float rotationOffset = 0.5F * purpoid.getSize().getScale();
-			float yRot = (float) Mth.atan2(pulledZ, pulledX);
 			poseStack.translate(0.0F, rotationOffset, 0.0F);
-			poseStack.mulPose(Axis.YP.rotation(-yRot));
-			poseStack.mulPose(Axis.ZP.rotation((float) ((Mth.atan2(Mth.sqrt((float) (pulledX * pulledX + pulledZ * pulledZ)), -pulledY)) - Math.PI)));
-			poseStack.mulPose(Axis.YP.rotation(yRot));
+			poseStack.mulPose(rotation);
 			poseStack.translate(0.0F, -rotationOffset, 0.0F);
 		}
 		if (purpoid.hasCustomName()) {

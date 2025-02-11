@@ -21,6 +21,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -70,6 +72,10 @@ public final class EEEntityTypes {
 		event.register(PUFF_BUG.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntityTypes::endIslandCondition, Operation.OR);
 		event.register(CHARGER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntityTypes::eetleCondition, Operation.OR);
 		event.register(GLIDER_EETLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntityTypes::eetleCondition, Operation.OR);
+		event.register(PURPOID.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EEEntityTypes::purpoidCondition, Operation.OR);
+		event.register(EntityType.ENDERMAN, null, null, (entity, level, type, pos, random) -> {
+			return !level.getBlockState(pos.below()).is(EEBlocks.END_CORROCK_BLOCK.get());
+		}, Operation.AND);
 	}
 
 	private static boolean eetleCondition(EntityType<? extends Monster> entityType, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, RandomSource random) {
@@ -101,6 +107,18 @@ public final class EEEntityTypes {
 					}
 				}
 			}
+		}
+		return false;
+	}
+
+	private static boolean purpoidCondition(EntityType<? extends Purpoid> entityType, ServerLevelAccessor level, MobSpawnType type, BlockPos pos, RandomSource random) {
+		BlockPos.MutableBlockPos mutable = pos.mutable();
+		for (int i = 0; i < 10; i++) {
+			mutable.setY(mutable.getY() - 1);
+			BlockState state = level.getBlockState(mutable);
+			if (state.is(EEBlocks.SPECKLED_END_CORROCK.get()) || state.is(EEBlocks.END_CORROCK_BLOCK.get()))
+				return true;
+			if (!state.is(Blocks.CHORUS_PLANT) && !state.is(Blocks.CHORUS_FLOWER) && !state.isAir()) return false;
 		}
 		return false;
 	}

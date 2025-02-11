@@ -115,33 +115,36 @@ public final class EEEvents {
 		if (!entity.level().isClientSide) {
 			int balloonCount = ((BalloonHolder) entity).getBalloons().size();
 			AttributeInstance gravity = entity.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
-			boolean hasABalloon = balloonCount > 0;
-			if (hasABalloon) entity.fallDistance = 0.0F;
-			boolean isFalling = entity.getDeltaMovement().y <= 0.0D;
 
-			if (isFalling && balloonCount < 3 && hasABalloon) {
-				if (!gravity.hasModifier(SLOW_BALLOON)) gravity.addTransientModifier(SLOW_BALLOON);
-			} else if (gravity.hasModifier(SLOW_BALLOON)) {
-				gravity.removeModifier(SLOW_BALLOON);
-			}
+			if (gravity != null) {
+				boolean hasABalloon = balloonCount > 0;
+				if (hasABalloon) entity.fallDistance = 0.0F;
+				boolean isFalling = entity.getDeltaMovement().y <= 0.0D;
 
-			if (isFalling && balloonCount == 3) {
-				if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.addTransientModifier(SUPER_SLOW_BALLOON);
-			} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
-				gravity.removeModifier(SUPER_SLOW_BALLOON);
-			}
+				if (isFalling && balloonCount < 3 && hasABalloon) {
+					if (!gravity.hasModifier(SLOW_BALLOON)) gravity.addTransientModifier(SLOW_BALLOON);
+				} else if (gravity.hasModifier(SLOW_BALLOON)) {
+					gravity.removeModifier(SLOW_BALLOON);
+				}
 
-			if (isFalling && entity.hasPassenger(e -> e instanceof Purpoid)) {
-				entity.fallDistance = 0.0F;
-				if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.addTransientModifier(PURPOID_SLOWFALL);
-			} else if (gravity.hasModifier(PURPOID_SLOWFALL)) {
-				gravity.removeModifier(PURPOID_SLOWFALL);
-			}
+				if (isFalling && balloonCount == 3) {
+					if (!gravity.hasModifier(SUPER_SLOW_BALLOON)) gravity.addTransientModifier(SUPER_SLOW_BALLOON);
+				} else if (gravity.hasModifier(SUPER_SLOW_BALLOON)) {
+					gravity.removeModifier(SUPER_SLOW_BALLOON);
+				}
 
-			if (balloonCount > 3) {
-				entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 2, balloonCount - 4, false, false, false));
-				if (entity instanceof ServerPlayer) {
-					EECriteriaTriggers.UP_UP_AND_AWAY.trigger((ServerPlayer) entity);
+				if (isFalling && entity.hasPassenger(e -> e instanceof Purpoid)) {
+					entity.fallDistance = 0.0F;
+					if (!gravity.hasModifier(PURPOID_SLOWFALL)) gravity.addTransientModifier(PURPOID_SLOWFALL);
+				} else if (gravity.hasModifier(PURPOID_SLOWFALL)) {
+					gravity.removeModifier(PURPOID_SLOWFALL);
+				}
+
+				if (balloonCount > 3) {
+					entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 2, balloonCount - 4, false, false, false));
+					if (entity instanceof ServerPlayer serverPlayer) {
+						EECriteriaTriggers.UP_UP_AND_AWAY.trigger(serverPlayer);
+					}
 				}
 			}
 

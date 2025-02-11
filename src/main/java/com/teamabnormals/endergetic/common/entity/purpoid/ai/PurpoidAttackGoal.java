@@ -86,7 +86,7 @@ public class PurpoidAttackGoal extends Goal {
 		}
 
 		boolean small = purpoid.getSize() == PurpoidSize.PURP;
-		float width = purpoid.getBbWidth() * (small ? 3.0F : 2.0F);
+		float width = purpoid.getBbWidth() * (small ? 3.25F : 2.0F);
 		double reachRange = width * width + target.getBbWidth();
 		if (distanceToTargetSq <= reachRange) {
 			if (small) {
