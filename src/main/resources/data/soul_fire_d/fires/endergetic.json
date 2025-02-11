@@ -1,0 +1,9 @@
+{
+  "mod": "endergetic",
+  "fires": [
+    {
+      "fire": "ender",
+      "damage": 3.0
+    }
+  ]
+}
