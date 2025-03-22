@@ -99,6 +99,7 @@
   "block.endergetic.petrified_infested_corrock": "Окаменевший заражённый коррок",
 
   "effect.endergetic.instability": "Нестабильность",
+  "effect.endergetic.instability.desc": "Периодическая неконтролируемая телепортация в случайные места поблизости",
   "item.minecraft.lingering_potion.effect.instability": "Туманное зелье нестабильности",
   "item.minecraft.potion.effect.instability": "Зелье нестабильности",
   "item.minecraft.splash_potion.effect.instability": "Взрывное зелье нестабильности",
