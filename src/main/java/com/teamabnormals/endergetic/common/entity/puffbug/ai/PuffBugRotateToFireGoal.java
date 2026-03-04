@@ -83,9 +83,11 @@ public class PuffBugRotateToFireGoal extends Goal {
 
 		this.puffbug.getNavigation().stop();
 
-		Vec3 launchDirection = this.puffbug.getLaunchDirection();
+		if (this.puffbug.getLaunchDirection() != null) {
+			Vec3 launchDirection = this.puffbug.getLaunchDirection();
 
-		this.puffbug.getRotationController().rotate((float) Mth.wrapDegrees(launchDirection.y() - this.puffbug.getY()), (float) launchDirection.x() + 90.0F, 0.0F, 10);
+			this.puffbug.getRotationController().rotate((float) Mth.wrapDegrees(launchDirection.y() - this.puffbug.getY()), (float) launchDirection.x() + 90.0F, 0.0F, 10);
+		}
 	}
 
 	@Override
